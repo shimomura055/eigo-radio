@@ -1,0 +1,113 @@
+{
+  "prompt": "Score both the Baseline and the Trial English article on each of the 14 criteria below, using a 1-5 scale (5=best) with a short reasoning for each score. For the criterion 'no_monotony_without_headings', Baseline has headings so score it as null with null reasoning (not applicable); only score the Trial for that one criterion. For 'comment_connection_naturalness', judge whether each Comment (below) connects naturally to the audio segment immediately following/preceding it, for the Baseline layout and the Trial layout respectively (the same four Comments are reused in both, only the body split position differs -- see layouts below).\n\nBaseline layout: Comment 1 -> Part 1 (Title + intro, no heading) -> Comment 2 -> heading 1 + Part 2 -> Comment 3 -> heading 2 + Part 3 -> Comment 4 -> In One Line.\nTrial layout: Comment 1 -> Part 1 -> Comment 2 -> Part 2 -> Comment 3 -> Part 3 -> Comment 4 -> In One Line (no headings anywhere).\n\nCriteria:\n- faithfulness_to_ja: 日本語原文への忠実性\n- fact_preservation: Fact保持\n- causal_preservation: 因果保持\n- zero_new_facts: 新規Fact 0\n- order_preservation: 順序保持\n- no_meaning_added_or_removed: 意味の追加・削除がないか\n- readability: 読みやすさ\n- listenability: 聞きやすさ\n- entertainment_value: Entertainment性\n- three_way_split_naturalness: 3分割の自然さ\n- length_balance: 長さバランス\n- comment_connection_naturalness: Commentとの接続自然さ\n- in_one_line_conciseness_accuracy: In One Lineの簡潔さ・要旨正確性\n- no_monotony_without_headings: 見出しをなくした結果、内容が単調になりすぎないか(Trialのみ採点、Baselineはnull)\n\n[Japanese original article]\nAI電話のはずが、舞台裏から人間が登場した\n\nAIに散髪の予約を頼む。店に電話をかけ、在庫を聞き、業者から見積もりを取る。そんな仕事を、画面の中のAIが全部やってくれる。なかなか便利な未来です。\n\nMetaのAIエージェント、Museには、実際にそうした電話機能があります。\n\nところが、その舞台裏で予想外の展開が起きました。Muse経由の電話の一部で、電話をかけていたのはAIではなく、訓練を受けた人間の契約スタッフだったのです。\n\nMuseが依頼を受ける。そこまではAIです。けれど、その先で人間スタッフに仕事を引き渡す。スタッフが電話をかけ、相手とのやり取りを終える。まるでAI主演の舞台に、台本には見えにくい助演者が登場したような話です。\n\nこの仕組みは、人間コンシェルジュと呼ばれていました。人間が電話を担当すること自体が、ただちに問題だったわけではありません。大きな問題になったのは、その事実を十分に知らせないまま、テストが始まったことです。\n\nMetaの従業員からは、電話に必要な利用者の機微情報が、コールセンターの契約スタッフに意図せず共有されるかもしれないという懸念が出ました。\n\nここは大事なところです。大規模な情報漏えいが起きたと確認されたわけではありません。ただ、AIに頼んだ仕事を、実際には誰が担当しているのか分からない。しかも、その人に自分の個人的な情報が伝わる可能性がある。そうなると、便利なサービスが急にミステリー作品のように見えてきます。\n\nMetaの幹部は、適切な説明なしにテストを始めたのはミスだったと認めました。そして、人間が電話を担当する機能を、当面はいったん元に戻しました。Museそのものを止めたわけではありません。\n\n今後は、準備が整い、誰が電話をするのかをきちんと説明できる場合にだけ、公開する方針です。\n\nAIが仕事をしてくれる時代でも、人間が助けに入ることはある。けれど、そのとき必要なのは、こっそり登場することではありません。舞台に上がるなら、最初に名前を名乗る。今回の一件は、そんな当たり前のルールを、かなり印象的に見せてくれました。\n\n[Baseline English article]\n# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage\n\nImagine asking AI to book a haircut. Or asking it to call a store and check whether something is in stock. It could even ask a supplier for a price estimate. In this convenient future, the AI on your screen handles everything for you.\n\nMeta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call. But the picture changed once people looked behind the stage.\n\n### The call that was not made by AI\n\nSome calls through Muse were not made by AI at all. Trained human contract workers made them. Muse received the request—that part was AI—but then passed the job to a person. The worker made the call and finished the conversation. It was like an AI-led play with a hidden supporting actor. The system was called “human concierges.”\n\nThe hidden role made the simple picture less simple.\n\n### Why the hidden role mattered\n\nMeta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.\n\nNo large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.\n\nA Meta executive admitted that starting the test without a proper explanation was a mistake. Meta then temporarily put the human-call feature back on hold. The company did not stop Muse itself.\n\nIn the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.\n\nEven in an age when AI does our work, a human may still need to help. But that person should not appear secretly. If they step onto the stage, they should give their name first. This case made that simple rule unusually clear.\n\n## In one line\n\nAI may need human help, but humans must say clearly when they take over.\n\n[Trial English article]\n# It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes\n\nAsk AI to make a haircut appointment. Have it call a store, ask about an item’s stock, and get an estimate from a supplier. The AI on your screen does all of it. It is a very convenient future.\n\nMeta’s AI agent, Muse, actually has phone features like these.\n\nBut something unexpected happened behind the scenes. In some calls made through Muse, the caller was not AI but trained contract workers.\n\nMuse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.\n\nThis system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.\n\nMeta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.\n\nThis is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.\n\nEven in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.\n\n[Baseline In One Line]\nAI may need human help, but humans must say clearly when they take over.\n\n[Trial In One Line]\nWhat appeared to be AI making calls through Meta’s Muse was sometimes trained human contractors doing the talking, without users being clearly informed.\n\n[Comments reused as-is for both Baseline and Trial]\n[Comment 1 -- plays right before Part 1 / before the first section heading]\nListen for how the call seemed at first and what changed as it continued.\n\n[Comment 2 -- plays between Part 1 and Part 2 / right before the first heading]\nThe key surprise was that some Muse calls were handled by people, not AI. What problem could this create when users shared personal information?\n\n[Comment 3 -- plays between Part 2 and Part 3 / right before the second heading]\nThe story shows that human help may be useful, but users also need to know who is listening. Next, we will look more closely at the person behind the AI sign and at Meta’s response.\n\n[Comment 4 -- plays right after Part 3, right before In One Line]\nThe test raised a simple question about who was really speaking, and Meta said the lack of clear notice was a mistake. Now, let’s bring the main message together.\n\n\nReturn exactly one JSON object with an 'items' array containing one entry per criterion key listed above, in the same order.",
+  "parsed": {
+    "items": [
+      {
+        "key": "faithfulness_to_ja",
+        "baseline_score_1_to_5": 4,
+        "baseline_reasoning": "Faithful overall, but it reorganizes some explanatory material and adds a few interpretive transitions rather than following the Japanese structure exactly.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Very close to the Japanese wording and order, but “put back the feature” can imply that the human-call feature was restored rather than rolled back."
+      },
+      {
+        "key": "fact_preservation",
+        "baseline_score_1_to_5": 5,
+        "baseline_reasoning": "Preserves the main facts, including the human contractors, privacy concern, lack of confirmed large leak, temporary rollback, and continuation of Muse itself.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Preserves nearly all facts, but the description of temporarily “put[ting] back” the human-call feature is factually ambiguous or misleading."
+      },
+      {
+        "key": "causal_preservation",
+        "baseline_score_1_to_5": 4,
+        "baseline_reasoning": "The causal relationships remain understandable, though the employee concern is presented before the explanation that inadequate disclosure was the central problem.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "The cause-and-effect chain is mostly retained, but the potentially reversed description of Meta’s response weakens the ending of the causal sequence."
+      },
+      {
+        "key": "zero_new_facts",
+        "baseline_score_1_to_5": 5,
+        "baseline_reasoning": "The added phrases are rhetorical framing, not new factual claims; no material facts are invented.",
+        "trial_score_1_to_5": 5,
+        "trial_reasoning": "Adds no material facts beyond the Japanese original; the main issue is wording accuracy, not invention."
+      },
+      {
+        "key": "order_preservation",
+        "baseline_score_1_to_5": 4,
+        "baseline_reasoning": "The overall progression is preserved, but the privacy concern and the explanation of why disclosure mattered are partially reordered.",
+        "trial_score_1_to_5": 5,
+        "trial_reasoning": "Follows the Japanese progression closely, from the setup and reveal through the privacy concern, response, and conclusion."
+      },
+      {
+        "key": "no_meaning_added_or_removed",
+        "baseline_score_1_to_5": 4,
+        "baseline_reasoning": "No major idea is omitted, but several interpretive lines repeat or slightly reshape the original emphasis, and the response wording is less exact.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Meaning is largely complete, but “put back the feature” introduces a potentially opposite meaning about what Meta did."
+      },
+      {
+        "key": "readability",
+        "baseline_score_1_to_5": 5,
+        "baseline_reasoning": "Polished, clear prose with effective paragraphing and headings; the argument is easy to follow.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Clear and accessible, though some literal phrases such as “hard to spot in the script” and “put back the feature” are less natural."
+      },
+      {
+        "key": "listenability",
+        "baseline_score_1_to_5": 5,
+        "baseline_reasoning": "The short paragraphs, varied sentence rhythm, and explicit section headings work very well for audio.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Generally easy to hear and follow, but the repeated short constructions and a few awkward literal phrases make it slightly less smooth."
+      },
+      {
+        "key": "entertainment_value",
+        "baseline_score_1_to_5": 5,
+        "baseline_reasoning": "The headline, stage metaphor, mystery framing, and headings create a strong narrative hook.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Retains the original’s theatrical and mystery elements, but the unsectioned presentation is somewhat less engaging than the Baseline’s shaped narrative."
+      },
+      {
+        "key": "three_way_split_naturalness",
+        "baseline_score_1_to_5": 4,
+        "baseline_reasoning": "The sections have coherent themes, but the final section carries substantially more material than the first two.",
+        "trial_score_1_to_5": 5,
+        "trial_reasoning": "The implied divisions naturally separate the introduction, the human/privacy reveal, and Meta’s response and takeaway."
+      },
+      {
+        "key": "length_balance",
+        "baseline_score_1_to_5": 3,
+        "baseline_reasoning": "The third section is noticeably longer and denser than the opening section, despite the headings making the structure clear.",
+        "trial_score_1_to_5": 5,
+        "trial_reasoning": "The three body portions are comparatively well balanced, with the narrative material distributed across the setup, problem, and response."
+      },
+      {
+        "key": "comment_connection_naturalness",
+        "baseline_score_1_to_5": 3,
+        "baseline_reasoning": "Comments 1, 3, and 4 connect well, but Comment 2 asks about the personal-information problem while the immediately following section mainly explains the human-call mechanism; the answer comes later.",
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "The reveal and privacy question connect directly to Part 2, and the final comment fits well; Comment 3 slightly repeats or previews material about the person behind the AI that has already appeared."
+      },
+      {
+        "key": "in_one_line_conciseness_accuracy",
+        "baseline_score_1_to_5": 4,
+        "baseline_reasoning": "Concise and accurate as a lesson, but it abstracts away the specific Muse incident and the lack of user notice.",
+        "trial_score_1_to_5": 5,
+        "trial_reasoning": "A single compact sentence accurately captures the central revelation, the human contractors, the Muse connection, and the inadequate disclosure."
+      },
+      {
+        "key": "no_monotony_without_headings",
+        "baseline_score_1_to_5": null,
+        "baseline_reasoning": null,
+        "trial_score_1_to_5": 4,
+        "trial_reasoning": "Without section headings, the article is somewhat more continuous, but short paragraphs, transitions, and the stage/mystery imagery provide enough variation to avoid serious monotony."
+      }
+    ]
+  },
+  "model": "gpt-5.6-luna",
+  "response_id": "resp_09176478cd0b3a77006aba5ce3ac7087d0b63126234a88043b",
+  "usage": {
+    "input_tokens": 2373,
+    "output_tokens": 8404,
+    "cached_input_tokens": 0
+  },
+  "elapsed_seconds": 103.756
+}

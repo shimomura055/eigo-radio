@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>Family X 見出し廃止Trial: Baseline vs Trial比較(Hormuz/Meta)</title>
+<style>
+body { font-family: -apple-system, "Segoe UI", sans-serif; max-width: 980px; margin: 24px auto; padding: 0 16px; }
+h1 { font-size: 1.4em; }
+h2 { font-size: 1.2em; }
+h3 { font-size: 1.05em; margin-top: 20px; }
+table { font-size: 0.9em; }
+</style>
+</head>
+<body>
+<h1>FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01</h1>
+<p>本文途中の見出しを廃止し、日本語完成記事を忠実英訳した上で、段落境界のみを
+使った決定論的アルゴリズムでPart1/Part2/Part3へ3分割する構成のTrial結果です。
+音声化(TTS)は行っておらず、text比較のみです。判定は<b>USER_DECISION_REQUIRED</b>
+(ユーザー試読待ち)です。</p>
+<ul>
+<li><a href="#hormuz">Hormuz比較</a></li>
+<li><a href="#meta">Meta比較</a></li>
+</ul>
+
+<section id="hormuz" style="margin-bottom:56px;border-top:4px solid #333;padding-top:16px">
+<h2>Hormuz(石油価格ニュース)</h2>
+
+<h3>JA原文(AN3-T0 R2最終、忠実英訳の入力)</h3>
+<div style="background:#f7f7f7;padding:12px;border-radius:6px">
+<p><b>二割の料金案は撤回。それでも原油価格はすぐ戻った</b></p>
+<p>原油価格のニュースには、ときどき政策発表よりも、発表後の値動きが大きなオチを持ってくる。今回のオチは、料金案が舞台から退場したのに、価格が一緒には退場しなかったことだ。</p>
+<p>七月十三日、トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。いきなり大きな数字が登場し、ニュースの舞台に新しい主役が出てきた形だ。</p>
+<p>ところが翌日の七月十四日、その主役はあっさり交代する。トランプ氏は二割の償還料を、湾岸諸国によるアメリカとの貿易や投資の案件に置き換えると投稿した。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明したのだ。</p>
+<p>さらに記者団には、ホルムズ海峡を通る船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないとも述べた。前の日に出てきた料金案が、次の日には別の話へ置き換わったことになる。</p>
+<p>ここで普通なら、料金の話が消えたのだから、原油価格も落ち着きそうに見える。実際、発表直後のブレント原油先物は、上げ幅をいったん縮めた。</p>
+<p>しかし、値動きはそこで終わらない。価格はほどなく、発表前に近い高い水準へ戻った。記事掲載時点では、およそ二・六パーセント高で、一バレル八十五ドルを上回っていた。</p>
+<p>この戻りが面白い。政治の舞台では看板が掛け替えられたのに、価格の舞台では、数字がすぐ元の勢いを取り戻したからだ。しかもその時間帯には、米国とイランの間の攻撃、海上封鎖、タンカーの安全への懸念が続いていた。</p>
+<p>今回わかるのは、発表の言葉が変わったことと、価格の動きが同じようには変わらないことがある、ということだ。料金案は置き換えられても、同じ時間に続いている出来事まで、発表一つで舞台裏へ消えるわけではなかった。</p>
+
+</div>
+
+<h3>Baseline(現行Advanced、見出しあり)出典: FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_REPORT.md</h3>
+<div style="background:#fff7e6;padding:12px;border-radius:6px">
+<p># The 20% Fee Plan Is Withdrawn, but Oil Prices Quickly Return</p>
+<p>Oil price news sometimes gets its best ending not from the policy announcement itself, but from the move that follows. The words on the political stage may change before the market has finished reacting. This story sets up a familiar expectation: if a new charge is withdrawn, the market should settle. The surprise comes when the words change, but the price refuses to follow. The story also unfolds like a play. A new lead appears, leaves the stage, and leaves behind a question: will the market leave with it?</p>
+<p>### A new fee takes center stage</p>
+<p>On July 13, President Trump posted that all cargo passing through the Strait of Hormuz should pay a 20% charge to cover U.S. efforts to keep the strait safe. The next day, he said it would be replaced by trade and investment deals involving Gulf countries and the United States, based on "very productive talks" with Middle Eastern leaders.</p>
+<p>Trump also told reporters that no one should charge ships passing through the strait, and said he did not like the idea of a fee. So the plan announced one day had been replaced by another story the next. With the fee idea gone, oil prices might now be expected to calm down. But the next movement came from another part of the stage.</p>
+<p>### The price refuses to exit</p>
+<p>Brent crude futures briefly gave back some of their gains after the announcement. But prices soon returned to a high level close to where they had been before it. At the time of publication, they were about 2.6% higher, above $85 a barrel. Meanwhile, attacks involving the U.S. and Iran, a sea blockade, and concerns about tanker safety continued.</p>
+<p>## In one line</p>
+<p>The political sign changed, but the price soon returned: the words were replaced, while the events behind them stayed onstage.</p>
+
+</div>
+<p>Baseline In One Line: <i>The political sign changed, but the price soon returned: the words were replaced, while the events behind them stayed onstage.</i></p>
+<p>Baseline Deviation Check(既存artifact reuse、出典: er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01\hormuz/b1b/audit/deviation_checks/advanced_attempt2.json):
+overall_status=<b>LEDGER_COMPLIANT</b>
+(deviations=0)</p>
+
+<h3>Trial(見出し廃止・忠実英訳・決定論的3分割)</h3>
+<div style="background:#e6f3ff;padding:12px;border-radius:6px">
+<p><b># The 20% Fee Plan Was Withdrawn. Even So, Oil Prices Quickly Returned</b></p>
+<p style="color:#0a6">[Comment 1]<br>Listen for what the 20% meant and what was still unclear about the plan.</p>
+<div style="border-left:4px solid #0a6;padding-left:10px">
+<p style="font-size:0.8em;color:#888">Part 1(全体の38.4%、132語)</p>
+<p>Oil-price news sometimes has a bigger twist in the price movement after an announcement than in the policy announcement itself. This time, the fee plan left the stage, but the price did not leave with it.</p>
+<p>On July 13, Trump posted that, for the cost of keeping the Strait of Hormuz safe, the United States would seek a 20% charge on all cargo passing through the strait. A large number suddenly appeared, and it was as if a new main character had entered the news stage.</p>
+<p>But the next day, July 14, that main character was quickly replaced. Trump posted that the 20% charge would be replaced by trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.</p>
+
+</div>
+<p style="color:#0a6">[Comment 2]<br>So far, the key point is that the 20% charge was announced without clear details. Now, what happened to the plan the next day, and when did the oil-price rise occur?</p>
+<div style="border-left:4px solid #0a6;padding-left:10px">
+<p style="font-size:0.8em;color:#888">Part 2(全体の34.0%、117語)</p>
+<p>He also told reporters that no one should charge ships passing through the Strait of Hormuz. He said that he did not like the idea of charging fees itself. The fee plan that appeared the day before had been replaced by another story the next day.</p>
+<p>Normally, if the fee story had disappeared, oil prices would also seem likely to settle down. In fact, just after the announcement, Brent crude futures narrowed their gains for a while.</p>
+<p>But the price movement did not end there. The price soon returned to a high level close to where it had been before the announcement. At the time the article was published, it was up about 2.6% and above $85 a barrel.</p>
+
+</div>
+<p style="color:#0a6">[Comment 3]<br>The 20% charge was announced, but important details were not clear. About a day later, the plan changed to trade and investment projects, while oil prices had already risen amid concern about a planned US sea blockade of Iran and energy shipments through the Strait. Next, listen for how the timing of that oil move fits into the story.</p>
+<div style="border-left:4px solid #0a6;padding-left:10px">
+<p style="font-size:0.8em;color:#888">Part 3(全体の27.6%、95語)</p>
+<p>This return is interesting. The sign had been changed on the political stage, but on the price stage, the price quickly regained its earlier strength. At the same time, attacks between the United States and Iran, a blockade at sea, and worries about tanker safety continued.</p>
+<p>What we can see this time is that the words in an announcement may change, while the price does not always move in the same way. Even if the fee plan was replaced, the events continuing at the same time did not simply disappear backstage because of one announcement.</p>
+
+</div>
+<p style="color:#0a6">[Comment 4]<br>The story began with a proposed 20% charge, then changed quickly the next day. But oil prices did not simply return to where they started, so let’s bring the main point together now.</p>
+<p><b>[In One Line]</b> Although Trump withdrew the proposed 20% fee for ships using the Strait of Hormuz, oil prices quickly returned to near their earlier high as tensions and shipping risks continued.</p>
+</div>
+<p style="font-size:0.85em;color:#888">注: Comment1〜4はer019_output/family_x_audio_production_wiring_01/family_x_b3_diversity_trial_01/hormuz__run_06_flashlite_full_kp/b1b/b1_support_texts.jsonからのreuse
+(AN3-T0本体とは別runの本文から生成、字句は完全一致しない)。</p>
+<p>Trial Deviation Check(新規実行): overall_status=<b>LEDGER_COMPLIANT</b>
+(deviations=0)</p>
+
+<h3>In One Line: Before(Baseline) / After(Trial)</h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%">
+<tr><th>Before(Baseline)</th><th>After(Trial)</th></tr>
+<tr>
+<td>The political sign changed, but the price soon returned: the words were replaced, while the events behind them stayed onstage.<br>
+<span style="font-size:0.8em;color:#888">20語 /
+1文</span></td>
+<td>Although Trump withdrew the proposed 20% fee for ships using the Strait of Hormuz, oil prices quickly returned to near their earlier high as tensions and shipping risks continued.<br>
+<span style="font-size:0.8em;color:#888">28語 /
+1文</span></td>
+</tr>
+</table>
+
+<h3>決定論指標</h3>
+<ul>
+<li>JA段落数 = Trial EN段落数: 8 = 8
+(一致)</li>
+<li>固有名詞・数字(改良カウンタ): JA=8件 /
+Trial EN=7件</li>
+<li>3分割の境界(段落index): 3 / 6
+(全8段落)</li>
+</ul>
+
+<h3>Rubric(1〜5点、Baseline/Trial比較、LLM 1 call)</h3>
+<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><tr><th>評価項目</th><th>Baseline</th><th>Trial</th><th>Baseline根拠</th><th>Trial根拠</th></tr><tr><td>日本語原文への忠実性</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Preserves the central storyline and key details, but compresses the Japanese framing and omits much of the final explanatory paragraph.</td><td style='font-size:0.85em;color:#444'>Closely follows the original paragraph by paragraph, with only minor idiomatic adjustments.</td></tr><tr><td>Fact保持</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Retains the dates, 20% proposal, replacement plan, price movement, 2.6% rise, $85 figure, and continuing risks, but leaves out some supporting detail.</td><td style='font-size:0.85em;color:#444'>Preserves essentially all material facts, figures, events, and chronology.</td></tr><tr><td>因果保持</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Clearly links withdrawal of the fee to an expected calming of prices and then contrasts that expectation with the rebound, though the final causal nuance is compressed.</td><td style='font-size:0.85em;color:#444'>Preserves the sequence and contrast between the changed announcement, the temporary narrowing of gains, the rebound, and continuing tensions.</td></tr><tr><td>新規Fact 0</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Adds theatrical and editorial framing, but no major unsupported factual claims; some generalized statements go beyond the literal source.</td><td style='font-size:0.85em;color:#444'>Adds no substantive facts beyond the Japanese original.</td></tr><tr><td>順序保持</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>The factual body follows the source order, but the introduction foreshadows and reframes the story before the chronological account begins.</td><td style='font-size:0.85em;color:#444'>Maintains the original chronological and argumentative order.</td></tr><tr><td>意味の追加・削除がないか</td><td style='text-align:center'>3</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Adds a substantial play-stage framing and omits the source's explicit concluding point that ongoing events do not disappear because of one announcement.</td><td style='font-size:0.85em;color:#444'>Preserves the source meaning with no significant additions or omissions.</td></tr><tr><td>読みやすさ</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Highly polished and easy to follow, with clear phrasing and helpful section headings.</td><td style='font-size:0.85em;color:#444'>Generally clear, but some literal phrases such as “the idea of charging fees itself” and repeated “price” wording are less smooth.</td></tr><tr><td>聞きやすさ</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Short, well-shaped sentences and headings create strong audio signposting and an easy narrative flow.</td><td style='font-size:0.85em;color:#444'>Readable aloud and well segmented, though the repetition and literal constructions make it slightly less polished for listening.</td></tr><tr><td>Entertainment性</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>The stage metaphor is developed consistently and gives the short market story a strong narrative hook.</td><td style='font-size:0.85em;color:#444'>The original stage imagery remains engaging, but the absence of headings and more literal wording reduces the dramatic effect somewhat.</td></tr><tr><td>3分割の自然さ</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>The divisions form a very natural progression: setup, fee-policy developments, and market reaction.</td><td style='font-size:0.85em;color:#444'>The split broadly follows the same progression, but deterministic boundaries are less rhetorically tailored than the headed Baseline divisions.</td></tr><tr><td>長さバランス</td><td style='text-align:center'>3</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>The final market section is noticeably shorter than the introduction and policy section.</td><td style='font-size:0.85em;color:#444'>The three body portions are reasonably close in length, though paragraph-based boundaries prevent perfect balance.</td></tr><tr><td>Commentとの接続自然さ</td><td style='text-align:center'>3</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Comments 3 and 4 lead into or recap the market section reasonably well, but Comments 1 and 2 refer to details and price timing not present in the short introductory Part 1.</td><td style='font-size:0.85em;color:#444'>The comments generally align better with the fuller adjacent segments, especially when moving from the fee announcement to the policy change and market response, though some timing wording is slightly imprecise.</td></tr><tr><td>In One Lineの簡潔さ・要旨正確性</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Concise and broadly accurate, but the metaphorical “political sign” and “stayed onstage” wording is less explicit about the fee and continuing risks.</td><td style='font-size:0.85em;color:#444'>Concise, specific, and accurate about the proposed fee, the price rebound, and the continuing tensions and shipping risks.</td></tr><tr><td>見出しをなくした結果、内容が単調になりすぎないか(Trialのみ採点、Baselineはnull)</td><td style='text-align:center'>-</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'></td><td style='font-size:0.85em;color:#444'>Despite having no headings, the chronological reversal and recurring stage imagery provide variety; the continuous prose is somewhat more monotonous than the headed version.</td></tr></table>
+
+<h3>Baseline(見出し除去後) vs Trial 差分(word-level diff)</h3>
+<div style="white-space:pre-wrap;line-height:1.7"><del style="background:#ffe0e0">
+</del><ins style="background:#e0ffe0"># The 20% Fee Plan Was Withdrawn. Even So, </ins>Oil <del style="background:#ffe0e0">price</del><ins style="background:#e0ffe0">Prices Quickly Returned
+
+Oil-price</ins> news sometimes <del style="background:#ffe0e0">gets</del><ins style="background:#e0ffe0">has</ins> <del style="background:#ffe0e0">its</del><ins style="background:#e0ffe0">a</ins> <del style="background:#ffe0e0">best</del><ins style="background:#e0ffe0">bigger</ins> <del style="background:#ffe0e0">ending</del><ins style="background:#e0ffe0">twist</ins> <del style="background:#ffe0e0">not</del><ins style="background:#e0ffe0">in</ins> <del style="background:#ffe0e0">from</del><ins style="background:#e0ffe0">the price movement after an announcement than in</ins> the policy announcement <del style="background:#ffe0e0">itself,</del><ins style="background:#e0ffe0">itself.</ins> <del style="background:#ffe0e0">but</del><ins style="background:#e0ffe0">This</ins> <del style="background:#ffe0e0">from</del><ins style="background:#e0ffe0">time,</ins> the <del style="background:#ffe0e0">move</del><ins style="background:#e0ffe0">fee</ins> <del style="background:#ffe0e0">that</del><ins style="background:#e0ffe0">plan</ins> <del style="background:#ffe0e0">follows. The words on</del><ins style="background:#e0ffe0">left</ins> the <del style="background:#ffe0e0">political stage may change before the market has finished reacting. This story sets up a familiar expectation: if a new charge is withdrawn, the market should settle. The surprise comes when the words change,</del><ins style="background:#e0ffe0">stage,</ins> but the price <del style="background:#ffe0e0">refuses</del><ins style="background:#e0ffe0">did</ins> <del style="background:#ffe0e0">to follow. The story also unfolds like a play. A new lead appears, leaves the stage, and leaves behind a question: will the market</del><ins style="background:#e0ffe0">not</ins> leave with <del style="background:#ffe0e0">it?
+
+
+</del><ins style="background:#e0ffe0">it.
+
+</ins>On July 13, <del style="background:#ffe0e0">President </del>Trump posted <del style="background:#ffe0e0">that</del><ins style="background:#e0ffe0">that, for the cost of keeping the Strait of Hormuz safe, the United States would seek a 20% charge on</ins> all cargo passing through the <del style="background:#ffe0e0">Strait</del><ins style="background:#e0ffe0">strait.</ins> <del style="background:#ffe0e0">of</del><ins style="background:#e0ffe0">A</ins> <del style="background:#ffe0e0">Hormuz</del><ins style="background:#e0ffe0">large</ins> <del style="background:#ffe0e0">should</del><ins style="background:#e0ffe0">number</ins> <del style="background:#ffe0e0">pay</del><ins style="background:#e0ffe0">suddenly appeared, and it was as if</ins> a <del style="background:#ffe0e0">20%</del><ins style="background:#e0ffe0">new</ins> <del style="background:#ffe0e0">charge</del><ins style="background:#e0ffe0">main</ins> <del style="background:#ffe0e0">to</del><ins style="background:#e0ffe0">character</ins> <del style="background:#ffe0e0">cover</del><ins style="background:#e0ffe0">had</ins> <del style="background:#ffe0e0">U.S. efforts to keep</del><ins style="background:#e0ffe0">entered</ins> the <del style="background:#ffe0e0">strait</del><ins style="background:#e0ffe0">news</ins> <del style="background:#ffe0e0">safe.</del><ins style="background:#e0ffe0">stage.
+
+But</ins> <del style="background:#ffe0e0">The</del><ins style="background:#e0ffe0">the</ins> next day, <del style="background:#ffe0e0">he</del><ins style="background:#e0ffe0">July</ins> <del style="background:#ffe0e0">said</del><ins style="background:#e0ffe0">14,</ins> <del style="background:#ffe0e0">it</del><ins style="background:#e0ffe0">that main character was quickly replaced. Trump posted that the 20% charge</ins> would be replaced by trade and investment deals <del style="background:#ffe0e0">involving</del><ins style="background:#e0ffe0">between the</ins> Gulf <del style="background:#ffe0e0">countries</del><ins style="background:#e0ffe0">states</ins> and the United <del style="background:#ffe0e0">States,</del><ins style="background:#e0ffe0">States. He explained that the decision was</ins> based on <del style="background:#ffe0e0">"very</del><ins style="background:#e0ffe0">“very</ins> productive <del style="background:#ffe0e0">talks"</del><ins style="background:#e0ffe0">talks”</ins> with Middle Eastern leaders.
+
+<del style="background:#ffe0e0">Trump</del><ins style="background:#e0ffe0">He</ins> also told reporters that no one should charge ships passing through the <del style="background:#ffe0e0">strait,</del><ins style="background:#e0ffe0">Strait</ins> <del style="background:#ffe0e0">and</del><ins style="background:#e0ffe0">of Hormuz. He</ins> said<ins style="background:#e0ffe0"> that</ins> he did not like the idea of <del style="background:#ffe0e0">a</del><ins style="background:#e0ffe0">charging</ins> <del style="background:#ffe0e0">fee.</del><ins style="background:#e0ffe0">fees</ins> <del style="background:#ffe0e0">So</del><ins style="background:#e0ffe0">itself. The fee plan that appeared</ins> the <del style="background:#ffe0e0">plan</del><ins style="background:#e0ffe0">day</ins> <del style="background:#ffe0e0">announced one day</del><ins style="background:#e0ffe0">before</ins> had been replaced by another story the <del style="background:#ffe0e0">next.</del><ins style="background:#e0ffe0">next</ins> <del style="background:#ffe0e0">With</del><ins style="background:#e0ffe0">day.
+
+Normally, if</ins> the fee <del style="background:#ffe0e0">idea</del><ins style="background:#e0ffe0">story</ins> <del style="background:#ffe0e0">gone,</del><ins style="background:#e0ffe0">had disappeared,</ins> oil prices <del style="background:#ffe0e0">might</del><ins style="background:#e0ffe0">would</ins> <del style="background:#ffe0e0">now</del><ins style="background:#e0ffe0">also</ins> <del style="background:#ffe0e0">be</del><ins style="background:#e0ffe0">seem</ins> <del style="background:#ffe0e0">expected</del><ins style="background:#e0ffe0">likely</ins> to <del style="background:#ffe0e0">calm</del><ins style="background:#e0ffe0">settle</ins> down. <del style="background:#ffe0e0">But</del><ins style="background:#e0ffe0">In fact, just after</ins> the <del style="background:#ffe0e0">next</del><ins style="background:#e0ffe0">announcement,</ins> <del style="background:#ffe0e0">movement came from another part of the stage.
+
+
+</del>Brent crude futures <del style="background:#ffe0e0">briefly gave back some of</del><ins style="background:#e0ffe0">narrowed</ins> their gains <del style="background:#ffe0e0">after</del><ins style="background:#e0ffe0">for a while.
+
+But</ins> the <del style="background:#ffe0e0">announcement.</del><ins style="background:#e0ffe0">price</ins> <del style="background:#ffe0e0">But</del><ins style="background:#e0ffe0">movement</ins> <del style="background:#ffe0e0">prices</del><ins style="background:#e0ffe0">did not end there. The price</ins> soon returned to a high level close to where <del style="background:#ffe0e0">they</del><ins style="background:#e0ffe0">it</ins> had been before <del style="background:#ffe0e0">it.</del><ins style="background:#e0ffe0">the announcement.</ins> At the time <del style="background:#ffe0e0">of</del><ins style="background:#e0ffe0">the</ins> <del style="background:#ffe0e0">publication,</del><ins style="background:#e0ffe0">article</ins> <del style="background:#ffe0e0">they</del><ins style="background:#e0ffe0">was</ins> <del style="background:#ffe0e0">were</del><ins style="background:#e0ffe0">published, it was up</ins> about 2.6% <del style="background:#ffe0e0">higher,</del><ins style="background:#e0ffe0">and</ins> above $85 a barrel.<ins style="background:#e0ffe0">
+
+This</ins> <del style="background:#ffe0e0">Meanwhile,</del><ins style="background:#e0ffe0">return is interesting. The sign had been changed on the political stage, but on the price stage, the price quickly regained its earlier strength. At the same time,</ins> attacks <del style="background:#ffe0e0">involving</del><ins style="background:#e0ffe0">between</ins> the <del style="background:#ffe0e0">U.S.</del><ins style="background:#e0ffe0">United States</ins> and Iran, a <del style="background:#ffe0e0">sea</del><ins style="background:#e0ffe0">blockade</ins> <del style="background:#ffe0e0">blockade,</del><ins style="background:#e0ffe0">at sea,</ins> and <del style="background:#ffe0e0">concerns</del><ins style="background:#e0ffe0">worries</ins> about tanker safety continued.<del style="background:#ffe0e0">
+
+
+The</del><ins style="background:#e0ffe0">
+
+What</ins> <del style="background:#ffe0e0">political</del><ins style="background:#e0ffe0">we</ins> <del style="background:#ffe0e0">sign</del><ins style="background:#e0ffe0">can</ins> <del style="background:#ffe0e0">changed,</del><ins style="background:#e0ffe0">see</ins> <del style="background:#ffe0e0">but</del><ins style="background:#e0ffe0">this time is that the words in an announcement may change, while</ins> the price <del style="background:#ffe0e0">soon</del><ins style="background:#e0ffe0">does</ins> <del style="background:#ffe0e0">returned:</del><ins style="background:#e0ffe0">not always move in</ins> the <del style="background:#ffe0e0">words</del><ins style="background:#e0ffe0">same</ins> <del style="background:#ffe0e0">were</del><ins style="background:#e0ffe0">way. Even if the fee plan was</ins> replaced,<del style="background:#ffe0e0"> while</del> the events <del style="background:#ffe0e0">behind</del><ins style="background:#e0ffe0">continuing</ins> <del style="background:#ffe0e0">them</del><ins style="background:#e0ffe0">at</ins> <del style="background:#ffe0e0">stayed</del><ins style="background:#e0ffe0">the</ins> <del style="background:#ffe0e0">onstage.</del><ins style="background:#e0ffe0">same time did not simply disappear backstage because of one announcement.</ins></div>
+
+<p style="font-size:0.85em;color:#888">Cost: 総額 ¥2.1751
+(予算¥30.0、超過=False)</p>
+</section>
+
+
+<section id="meta" style="margin-bottom:56px;border-top:4px solid #333;padding-top:16px">
+<h2>Meta(Muse人間代行ニュース)</h2>
+
+<h3>JA原文(AN3-T0 R2最終、忠実英訳の入力)</h3>
+<div style="background:#f7f7f7;padding:12px;border-radius:6px">
+<p><b>AI電話のはずが、舞台裏から人間が登場した</b></p>
+<p>AIに散髪の予約を頼む。店に電話をかけ、在庫を聞き、業者から見積もりを取る。そんな仕事を、画面の中のAIが全部やってくれる。なかなか便利な未来です。</p>
+<p>MetaのAIエージェント、Museには、実際にそうした電話機能があります。</p>
+<p>ところが、その舞台裏で予想外の展開が起きました。Muse経由の電話の一部で、電話をかけていたのはAIではなく、訓練を受けた人間の契約スタッフだったのです。</p>
+<p>Museが依頼を受ける。そこまではAIです。けれど、その先で人間スタッフに仕事を引き渡す。スタッフが電話をかけ、相手とのやり取りを終える。まるでAI主演の舞台に、台本には見えにくい助演者が登場したような話です。</p>
+<p>この仕組みは、人間コンシェルジュと呼ばれていました。人間が電話を担当すること自体が、ただちに問題だったわけではありません。大きな問題になったのは、その事実を十分に知らせないまま、テストが始まったことです。</p>
+<p>Metaの従業員からは、電話に必要な利用者の機微情報が、コールセンターの契約スタッフに意図せず共有されるかもしれないという懸念が出ました。</p>
+<p>ここは大事なところです。大規模な情報漏えいが起きたと確認されたわけではありません。ただ、AIに頼んだ仕事を、実際には誰が担当しているのか分からない。しかも、その人に自分の個人的な情報が伝わる可能性がある。そうなると、便利なサービスが急にミステリー作品のように見えてきます。</p>
+<p>Metaの幹部は、適切な説明なしにテストを始めたのはミスだったと認めました。そして、人間が電話を担当する機能を、当面はいったん元に戻しました。Museそのものを止めたわけではありません。</p>
+<p>今後は、準備が整い、誰が電話をするのかをきちんと説明できる場合にだけ、公開する方針です。</p>
+<p>AIが仕事をしてくれる時代でも、人間が助けに入ることはある。けれど、そのとき必要なのは、こっそり登場することではありません。舞台に上がるなら、最初に名前を名乗る。今回の一件は、そんな当たり前のルールを、かなり印象的に見せてくれました。</p>
+
+</div>
+
+<h3>Baseline(現行Advanced、見出しあり)出典: er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01\meta/b1b/article.md</h3>
+<div style="background:#fff7e6;padding:12px;border-radius:6px">
+<p># It Was Supposed to Be an AI Call—Then a Human Appeared Backstage</p>
+<p>Imagine asking AI to book a haircut. Or asking it to call a store and check whether something is in stock. It could even ask a supplier for a price estimate. In this convenient future, the AI on your screen handles everything for you.</p>
+<p>Meta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call. But the picture changed once people looked behind the stage.</p>
+<p>### The call that was not made by AI</p>
+<p>Some calls through Muse were not made by AI at all. Trained human contract workers made them. Muse received the request—that part was AI—but then passed the job to a person. The worker made the call and finished the conversation. It was like an AI-led play with a hidden supporting actor. The system was called “human concierges.”</p>
+<p>The hidden role made the simple picture less simple.</p>
+<p>### Why the hidden role mattered</p>
+<p>Meta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.</p>
+<p>No large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.</p>
+<p>A Meta executive admitted that starting the test without a proper explanation was a mistake. Meta then temporarily put the human-call feature back on hold. The company did not stop Muse itself.</p>
+<p>In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.</p>
+<p>Even in an age when AI does our work, a human may still need to help. But that person should not appear secretly. If they step onto the stage, they should give their name first. This case made that simple rule unusually clear.</p>
+<p>## In one line</p>
+<p>AI may need human help, but humans must say clearly when they take over.</p>
+
+</div>
+<p>Baseline In One Line: <i>AI may need human help, but humans must say clearly when they take over.</i></p>
+<p>Baseline Deviation Check(既存artifact reuse、出典: er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01\meta/b1b/audit/deviation_checks/advanced_attempt1.json):
+overall_status=<b>LEDGER_COMPLIANT</b>
+(deviations=0)</p>
+
+<h3>Trial(見出し廃止・忠実英訳・決定論的3分割)</h3>
+<div style="background:#e6f3ff;padding:12px;border-radius:6px">
+<p><b># It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes</b></p>
+<p style="color:#0a6">[Comment 1]<br>Listen for how the call seemed at first and what changed as it continued.</p>
+<div style="border-left:4px solid #0a6;padding-left:10px">
+<p style="font-size:0.8em;color:#888">Part 1(全体の36.0%、123語)</p>
+<p>Ask AI to make a haircut appointment. Have it call a store, ask about an item’s stock, and get an estimate from a supplier. The AI on your screen does all of it. It is a very convenient future.</p>
+<p>Meta’s AI agent, Muse, actually has phone features like these.</p>
+<p>But something unexpected happened behind the scenes. In some calls made through Muse, the caller was not AI but trained contract workers.</p>
+<p>Muse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.</p>
+
+</div>
+<p style="color:#0a6">[Comment 2]<br>The key surprise was that some Muse calls were handled by people, not AI. What problem could this create when users shared personal information?</p>
+<div style="border-left:4px solid #0a6;padding-left:10px">
+<p style="font-size:0.8em;color:#888">Part 2(全体の33.3%、114語)</p>
+<p>This system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.</p>
+<p>Meta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.</p>
+<p>This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.</p>
+
+</div>
+<p style="color:#0a6">[Comment 3]<br>The story shows that human help may be useful, but users also need to know who is listening. Next, we will look more closely at the person behind the AI sign and at Meta’s response.</p>
+<div style="border-left:4px solid #0a6;padding-left:10px">
+<p style="font-size:0.8em;color:#888">Part 3(全体の30.7%、105語)</p>
+<p>Meta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.</p>
+<p>Going forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.</p>
+<p>Even in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.</p>
+
+</div>
+<p style="color:#0a6">[Comment 4]<br>The test raised a simple question about who was really speaking, and Meta said the lack of clear notice was a mistake. Now, let’s bring the main message together.</p>
+<p><b>[In One Line]</b> What appeared to be AI making calls through Meta’s Muse was sometimes trained human contractors doing the talking, without users being clearly informed.</p>
+</div>
+<p style="font-size:0.85em;color:#888">注: Comment1〜4はer019_output/family_x_b3_diversity_trial_01/meta/scaffold_text/b1b/b1_support_texts.jsonからのreuse
+(AN3-T0本体とは別runの本文から生成、字句は完全一致しない)。</p>
+<p>Trial Deviation Check(新規実行): overall_status=<b>LEDGER_DEVIATION</b>
+(deviations=2)</p>
+
+<h3>In One Line: Before(Baseline) / After(Trial)</h3>
+<table border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse;width:100%">
+<tr><th>Before(Baseline)</th><th>After(Trial)</th></tr>
+<tr>
+<td>AI may need human help, but humans must say clearly when they take over.<br>
+<span style="font-size:0.8em;color:#888">14語 /
+1文</span></td>
+<td>What appeared to be AI making calls through Meta’s Muse was sometimes trained human contractors doing the talking, without users being clearly informed.<br>
+<span style="font-size:0.8em;color:#888">24語 /
+1文</span></td>
+</tr>
+</table>
+
+<h3>決定論指標</h3>
+<ul>
+<li>JA段落数 = Trial EN段落数: 10 = 10
+(一致)</li>
+<li>固有名詞・数字(改良カウンタ): JA=3件 /
+Trial EN=2件</li>
+<li>3分割の境界(段落index): 4 / 7
+(全10段落)</li>
+</ul>
+
+<h3>Rubric(1〜5点、Baseline/Trial比較、LLM 1 call)</h3>
+<table border='1' cellpadding='6' cellspacing='0' style='border-collapse:collapse;width:100%'><tr><th>評価項目</th><th>Baseline</th><th>Trial</th><th>Baseline根拠</th><th>Trial根拠</th></tr><tr><td>日本語原文への忠実性</td><td style='text-align:center'>4</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Faithful overall, but it reorganizes some explanatory material and adds a few interpretive transitions rather than following the Japanese structure exactly.</td><td style='font-size:0.85em;color:#444'>Very close to the Japanese wording and order, but “put back the feature” can imply that the human-call feature was restored rather than rolled back.</td></tr><tr><td>Fact保持</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Preserves the main facts, including the human contractors, privacy concern, lack of confirmed large leak, temporary rollback, and continuation of Muse itself.</td><td style='font-size:0.85em;color:#444'>Preserves nearly all facts, but the description of temporarily “put[ting] back” the human-call feature is factually ambiguous or misleading.</td></tr><tr><td>因果保持</td><td style='text-align:center'>4</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>The causal relationships remain understandable, though the employee concern is presented before the explanation that inadequate disclosure was the central problem.</td><td style='font-size:0.85em;color:#444'>The cause-and-effect chain is mostly retained, but the potentially reversed description of Meta’s response weakens the ending of the causal sequence.</td></tr><tr><td>新規Fact 0</td><td style='text-align:center'>5</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>The added phrases are rhetorical framing, not new factual claims; no material facts are invented.</td><td style='font-size:0.85em;color:#444'>Adds no material facts beyond the Japanese original; the main issue is wording accuracy, not invention.</td></tr><tr><td>順序保持</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>The overall progression is preserved, but the privacy concern and the explanation of why disclosure mattered are partially reordered.</td><td style='font-size:0.85em;color:#444'>Follows the Japanese progression closely, from the setup and reveal through the privacy concern, response, and conclusion.</td></tr><tr><td>意味の追加・削除がないか</td><td style='text-align:center'>4</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>No major idea is omitted, but several interpretive lines repeat or slightly reshape the original emphasis, and the response wording is less exact.</td><td style='font-size:0.85em;color:#444'>Meaning is largely complete, but “put back the feature” introduces a potentially opposite meaning about what Meta did.</td></tr><tr><td>読みやすさ</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Polished, clear prose with effective paragraphing and headings; the argument is easy to follow.</td><td style='font-size:0.85em;color:#444'>Clear and accessible, though some literal phrases such as “hard to spot in the script” and “put back the feature” are less natural.</td></tr><tr><td>聞きやすさ</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>The short paragraphs, varied sentence rhythm, and explicit section headings work very well for audio.</td><td style='font-size:0.85em;color:#444'>Generally easy to hear and follow, but the repeated short constructions and a few awkward literal phrases make it slightly less smooth.</td></tr><tr><td>Entertainment性</td><td style='text-align:center'>5</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>The headline, stage metaphor, mystery framing, and headings create a strong narrative hook.</td><td style='font-size:0.85em;color:#444'>Retains the original’s theatrical and mystery elements, but the unsectioned presentation is somewhat less engaging than the Baseline’s shaped narrative.</td></tr><tr><td>3分割の自然さ</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>The sections have coherent themes, but the final section carries substantially more material than the first two.</td><td style='font-size:0.85em;color:#444'>The implied divisions naturally separate the introduction, the human/privacy reveal, and Meta’s response and takeaway.</td></tr><tr><td>長さバランス</td><td style='text-align:center'>3</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>The third section is noticeably longer and denser than the opening section, despite the headings making the structure clear.</td><td style='font-size:0.85em;color:#444'>The three body portions are comparatively well balanced, with the narrative material distributed across the setup, problem, and response.</td></tr><tr><td>Commentとの接続自然さ</td><td style='text-align:center'>3</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'>Comments 1, 3, and 4 connect well, but Comment 2 asks about the personal-information problem while the immediately following section mainly explains the human-call mechanism; the answer comes later.</td><td style='font-size:0.85em;color:#444'>The reveal and privacy question connect directly to Part 2, and the final comment fits well; Comment 3 slightly repeats or previews material about the person behind the AI that has already appeared.</td></tr><tr><td>In One Lineの簡潔さ・要旨正確性</td><td style='text-align:center'>4</td><td style='text-align:center'>5</td><td style='font-size:0.85em;color:#444'>Concise and accurate as a lesson, but it abstracts away the specific Muse incident and the lack of user notice.</td><td style='font-size:0.85em;color:#444'>A single compact sentence accurately captures the central revelation, the human contractors, the Muse connection, and the inadequate disclosure.</td></tr><tr><td>見出しをなくした結果、内容が単調になりすぎないか(Trialのみ採点、Baselineはnull)</td><td style='text-align:center'>-</td><td style='text-align:center'>4</td><td style='font-size:0.85em;color:#444'></td><td style='font-size:0.85em;color:#444'>Without section headings, the article is somewhat more continuous, but short paragraphs, transitions, and the stage/mystery imagery provide enough variation to avoid serious monotony.</td></tr></table>
+
+<h3>Baseline(見出し除去後) vs Trial 差分(word-level diff)</h3>
+<div style="white-space:pre-wrap;line-height:1.7"><del style="background:#ffe0e0">
+Imagine</del><ins style="background:#e0ffe0">#</ins> <del style="background:#ffe0e0">asking</del><ins style="background:#e0ffe0">It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes
+
+Ask</ins> AI to <del style="background:#ffe0e0">book</del><ins style="background:#e0ffe0">make</ins> a <del style="background:#ffe0e0">haircut.</del><ins style="background:#e0ffe0">haircut</ins> <del style="background:#ffe0e0">Or</del><ins style="background:#e0ffe0">appointment.</ins> <del style="background:#ffe0e0">asking</del><ins style="background:#e0ffe0">Have</ins> it<del style="background:#ffe0e0"> to</del> call a <del style="background:#ffe0e0">store</del><ins style="background:#e0ffe0">store, ask about an item’s stock,</ins> and <del style="background:#ffe0e0">check</del><ins style="background:#e0ffe0">get</ins> <del style="background:#ffe0e0">whether</del><ins style="background:#e0ffe0">an</ins> <del style="background:#ffe0e0">something</del><ins style="background:#e0ffe0">estimate</ins> <del style="background:#ffe0e0">is in stock. It could even ask</del><ins style="background:#e0ffe0">from</ins> a <del style="background:#ffe0e0">supplier</del><ins style="background:#e0ffe0">supplier.</ins> <del style="background:#ffe0e0">for a price estimate. In this convenient future, the</del><ins style="background:#e0ffe0">The</ins> AI on your screen <del style="background:#ffe0e0">handles</del><ins style="background:#e0ffe0">does</ins> <del style="background:#ffe0e0">everything</del><ins style="background:#e0ffe0">all</ins> <del style="background:#ffe0e0">for</del><ins style="background:#e0ffe0">of</ins> <del style="background:#ffe0e0">you.</del><ins style="background:#e0ffe0">it. It is a very convenient future.</ins>
+
+Meta’s AI agent, Muse, <del style="background:#ffe0e0">really</del><ins style="background:#e0ffe0">actually</ins> <del style="background:#ffe0e0">does have</del><ins style="background:#e0ffe0">has</ins> phone features like these.<del style="background:#ffe0e0"> So it sounds like a simple story: you make a request, and AI takes care of the call. </del><ins style="background:#e0ffe0">
+
+</ins>But <del style="background:#ffe0e0">the</del><ins style="background:#e0ffe0">something</ins> <del style="background:#ffe0e0">picture</del><ins style="background:#e0ffe0">unexpected</ins> <del style="background:#ffe0e0">changed once people looked</del><ins style="background:#e0ffe0">happened</ins> behind the <del style="background:#ffe0e0">stage.
+
+
+Some</del><ins style="background:#e0ffe0">scenes. In some</ins> calls <ins style="background:#e0ffe0">made </ins>through <del style="background:#ffe0e0">Muse</del><ins style="background:#e0ffe0">Muse,</ins> <del style="background:#ffe0e0">were</del><ins style="background:#e0ffe0">the caller was</ins> not <del style="background:#ffe0e0">made by </del>AI <del style="background:#ffe0e0">at</del><ins style="background:#e0ffe0">but</ins> <del style="background:#ffe0e0">all.</del><ins style="background:#e0ffe0">trained</ins> <del style="background:#ffe0e0">Trained</del><ins style="background:#e0ffe0">contract workers.
+
+Muse receives the request. Up to that point, it is AI. But then it hands the task over to</ins> human <del style="background:#ffe0e0">contract workers made them. Muse received the request—that part was AI—but then passed the job to a person.</del><ins style="background:#e0ffe0">staff.</ins> The <del style="background:#ffe0e0">worker</del><ins style="background:#e0ffe0">staff</ins> <del style="background:#ffe0e0">made</del><ins style="background:#e0ffe0">make</ins> the call and <del style="background:#ffe0e0">finished</del><ins style="background:#e0ffe0">finish</ins> the conversation. It was <del style="background:#ffe0e0">like</del><ins style="background:#e0ffe0">as</ins> <del style="background:#ffe0e0">an</del><ins style="background:#e0ffe0">if</ins> <del style="background:#ffe0e0">AI-led</del><ins style="background:#e0ffe0">a supporting actor, hard to spot in the script, had appeared in a</ins> play <del style="background:#ffe0e0">with</del><ins style="background:#e0ffe0">starring</ins> <del style="background:#ffe0e0">a hidden supporting actor. The</del><ins style="background:#e0ffe0">AI.
+
+This</ins> system was called “human concierges.”<del style="background:#ffe0e0">
+
+</del><ins style="background:#e0ffe0"> </ins>The <del style="background:#ffe0e0">hidden</del><ins style="background:#e0ffe0">fact</ins> <del style="background:#ffe0e0">role</del><ins style="background:#e0ffe0">that</ins> <del style="background:#ffe0e0">made</del><ins style="background:#e0ffe0">humans handled</ins> the <del style="background:#ffe0e0">simple</del><ins style="background:#e0ffe0">calls</ins> <del style="background:#ffe0e0">picture</del><ins style="background:#e0ffe0">was</ins> <del style="background:#ffe0e0">less</del><ins style="background:#e0ffe0">not,</ins> <del style="background:#ffe0e0">simple.
+
+
+</del><ins style="background:#e0ffe0">by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.
+
+</ins>Meta employees <del style="background:#ffe0e0">worried</del><ins style="background:#e0ffe0">raised concerns</ins> that sensitive<ins style="background:#e0ffe0"> user</ins> information needed for the calls might be shared by mistake with <del style="background:#ffe0e0">contract</del><ins style="background:#e0ffe0">contracted</ins> <del style="background:#ffe0e0">workers</del><ins style="background:#e0ffe0">call-center</ins> <del style="background:#ffe0e0">at</del><ins style="background:#e0ffe0">workers.
+
+This is an important point. There was no confirmation that</ins> a <del style="background:#ffe0e0">call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.
+
+No large</del><ins style="background:#e0ffe0">large-scale</ins> information leak <del style="background:#ffe0e0">was</del><ins style="background:#e0ffe0">had</ins> <del style="background:#ffe0e0">confirmed.</del><ins style="background:#e0ffe0">taken place.</ins> But <del style="background:#ffe0e0">users</del><ins style="background:#e0ffe0">people</ins> <del style="background:#ffe0e0">could</del><ins style="background:#e0ffe0">did</ins> not know who was <del style="background:#ffe0e0">really</del><ins style="background:#e0ffe0">actually</ins> <del style="background:#ffe0e0">doing</del><ins style="background:#e0ffe0">handling</ins> the work they had asked AI to <del style="background:#ffe0e0">do—and</del><ins style="background:#e0ffe0">do. Also,</ins> their personal information might reach that person. <del style="background:#ffe0e0">That</del><ins style="background:#e0ffe0">When</ins> <del style="background:#ffe0e0">uncertainty</del><ins style="background:#e0ffe0">that</ins> <del style="background:#ffe0e0">turned convenience into</del><ins style="background:#e0ffe0">happens,</ins> a <del style="background:#ffe0e0">mystery.</del><ins style="background:#e0ffe0">convenient service suddenly starts to look like a mystery story.</ins>
+
+<del style="background:#ffe0e0">A </del>Meta <del style="background:#ffe0e0">executive</del><ins style="background:#e0ffe0">executives</ins> admitted that starting the test without a proper explanation was a mistake. <del style="background:#ffe0e0">Meta</del><ins style="background:#e0ffe0">They</ins> <del style="background:#ffe0e0">then</del><ins style="background:#e0ffe0">also</ins> temporarily put <ins style="background:#e0ffe0">back </ins>the<del style="background:#ffe0e0"> human-call</del> feature <del style="background:#ffe0e0">back</del><ins style="background:#e0ffe0">in</ins> <del style="background:#ffe0e0">on</del><ins style="background:#e0ffe0">which</ins> <del style="background:#ffe0e0">hold.</del><ins style="background:#e0ffe0">humans</ins> <del style="background:#ffe0e0">The</del><ins style="background:#e0ffe0">handled</ins> <del style="background:#ffe0e0">company</del><ins style="background:#e0ffe0">the calls. They</ins> did not stop Muse itself.
+
+<del style="background:#ffe0e0">In</del><ins style="background:#e0ffe0">Going</ins> <del style="background:#ffe0e0">the future,</del><ins style="background:#e0ffe0">forward,</ins> Meta <del style="background:#ffe0e0">will</del><ins style="background:#e0ffe0">plans to</ins> make the feature <del style="background:#ffe0e0">public</del><ins style="background:#e0ffe0">available</ins> only when <del style="background:#ffe0e0">it</del><ins style="background:#e0ffe0">preparations</ins> <del style="background:#ffe0e0">is</del><ins style="background:#e0ffe0">are</ins> <del style="background:#ffe0e0">ready</del><ins style="background:#e0ffe0">complete</ins> and<ins style="background:#e0ffe0"> it</ins> can clearly explain who will make the <del style="background:#ffe0e0">call.</del><ins style="background:#e0ffe0">calls.</ins>
+
+Even in an age when AI does our work, <del style="background:#ffe0e0">a human</del><ins style="background:#e0ffe0">humans</ins> may <del style="background:#ffe0e0">still</del><ins style="background:#e0ffe0">step</ins> <del style="background:#ffe0e0">need</del><ins style="background:#e0ffe0">in</ins> to help. But <del style="background:#ffe0e0">that</del><ins style="background:#e0ffe0">when</ins> <del style="background:#ffe0e0">person</del><ins style="background:#e0ffe0">they do, they</ins> should not appear secretly. If they step onto the stage, they should <del style="background:#ffe0e0">give</del><ins style="background:#e0ffe0">say</ins> <del style="background:#ffe0e0">their</del><ins style="background:#e0ffe0">who</ins> <del style="background:#ffe0e0">name</del><ins style="background:#e0ffe0">they are</ins> first. This <del style="background:#ffe0e0">case</del><ins style="background:#e0ffe0">incident</ins> <del style="background:#ffe0e0">made</del><ins style="background:#e0ffe0">showed</ins> that simple rule <del style="background:#ffe0e0">unusually</del><ins style="background:#e0ffe0">in</ins> <del style="background:#ffe0e0">clear.
+
+
+AI</del><ins style="background:#e0ffe0">a</ins> <del style="background:#ffe0e0">may</del><ins style="background:#e0ffe0">very</ins> <del style="background:#ffe0e0">need</del><ins style="background:#e0ffe0">memorable</ins> <del style="background:#ffe0e0">human help, but humans must say clearly when they take over.</del><ins style="background:#e0ffe0">way.</ins></div>
+
+<p style="font-size:0.85em;color:#888">Cost: 総額 ¥2.9165
+(予算¥30.0、超過=False)</p>
+</section>
+
+</body>
+</html>
