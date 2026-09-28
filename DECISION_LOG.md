@@ -12047,3 +12047,51 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **確認ページ**: https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_01/index.html
 - **根拠**: `TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-01_REPORT.md`、
   commit`8047392c`/`79adef33`。
+
+## TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01: 追補(既存合格Master reuse)+Guardrail超過インシデントの事後開示(2026-09-28)
+
+- **追補内容(a)**: Advanced(B1B)共有narration num_two/num_threeを、
+  Production Master Audio Store(read-only)のASR verified済み既存Master
+  (`75d64a8e14e3b8592db99a5a`/`410e12ebe93da7a797860b89`、
+  `FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]` style、
+  `TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02`由来)から
+  `--reuse-production-master num_two,num_three`でコピー再利用した(¥0、
+  sha256一致、Production Store無変更、Human Review Lock状態無変更)。
+  ユーザー指示「Two./Three.は毎回再生成せず既存合格Masterをreuse」に
+  適合。
+- **インシデント(事後開示)(b)**: 動作確認で`--stage all`を実行し、Trial
+  scriptがshell層以外にcacheを持たないsingle-run設計だったため、Advanced
+  のKey Phrase 10 segment+主記事9 segmentが意図せず再生成され、実費
+  ¥30.80(Guardrail¥5の約6.2倍)を消費した。Bash timeoutでbackground化し
+  検知が遅れ、`raw_usage_log.jsonl`で検出後にprocessを強制終了した。
+  Production Master Store・Human Review Lock共有キューはsha256/mtimeで
+  不変を確認。pre-incidentのwavはgit管理外のため復元不可。既存Gate
+  (`verify_episode_audio_validation_gate`、`ASSET_HASH_MISMATCH`)が
+  Advanced full assemblyを正しくブロックし(既存安全装置の正常動作、
+  独自回避なし)、Sonnetは実装続行せずSTOPして選択肢を提示した。
+- **原因**: (1)Trial scriptがsingle-run設計でshell層以外にcacheを持たない
+  こと、(2)動作確認で`--stage all`(全stage再実行)を選んだこと、(3)Bash
+  timeoutによりbackground化し費用超過の検知が遅れたこと、の複合。
+- **修正2回目(c)**: Fable判断(ユーザー基準「小口APIは事前確認不要」内)で、
+  新規TTS 0件(gemini行数85→85実測)のまま、再生成時の中間attempt
+  file(sha256一致)の実測ASR結果を14 segmentへ再紐付けし、KP JA 5
+  segmentは既存Production検証関数でASR再検証(openai_asr+5、¥0.06)。
+  Gate PASS後`--stage assemble`のみでAdvanced full assembly
+  (`hormuz_advanced_trial.mp3`、4分56秒)を再構成しページ更新。
+  Regression 16/16 PASS。
+- **修正3回目(d)**: ¥0・API 0件で、試聴ページの個別プレビューmp3 21件を
+  現音声から再変換(96kbps)、テーブルのnum_two/num_threeをOK
+  (reuse由来)へ更新。
+- **費用・上限**: 本追補の合計費用¥30.87。本管理IDの実装系Sonnet委任は
+  初回+修正3回の上限に到達済み(本エントリはSSOT反映のみの別区分委任)。
+- **Production実害**: なし(Production Master Store・Human Review Lock
+  共有ログはsha256/mtime不変、既存Gateが正しく機能)。
+- **再発防止案(ユーザー判断待ち、正式ルール化はしない)**: (1)動作確認は
+  部分stage実行のみとし`--stage all`実行は委任文で禁止する、(2)再生成を
+  伴うstage実行前に対象segment数・想定費用を記録する、(3)Trial script
+  自体の再実行guard(既存合格音声の再生成防止、冪等性)の要否は
+  OPEN-226で追跡する。
+- **Opus発火**: なし。
+- **Fable判定**: `USER_DECISION_REQUIRED`(ユーザー試聴待ち、変更なし)。
+- **根拠**: `TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01_REPORT.md`§13〜§15、
+  commit`132828cb`/`105ec62d`/`5f84c670`。
