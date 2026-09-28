@@ -11188,8 +11188,7 @@ REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`)。
   モジュール、Production中核test含む)を収集しない既存gapと、test修正が
   実装切替に追随せずmockが空振りする「mock-drift」構造的リスクへの
   恒久対策の要否を、Fable/ユーザー判断待ちのPM追跡候補として提起した
-  (STOP条件「大規模変更」回避のため本タスクでは未登録・未実装。
-  2026-09-28、本SSOT反映と同時にOPEN-209として正式登録した)。
+  (STOP条件「大規模変更」回避のため本タスクでは未登録・未実装)。
 - **N5/N6(OPEN-202へ追記)**: source_sentenceが記事見出し行になりうる
   構造的リスク(観測、実データでは0件)、canonicalization Rule 7の復元
   余地縮小に伴う`REVIEW_REQUIRED`率の継続監視、をそれぞれOPEN-202へ
@@ -11205,8 +11204,6 @@ REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`)。
 - **STOP該当**: 無し。
 - **根拠**: `docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-
   SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01_02.md`、
-  `docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-SOURCE-
-  REFERENCE-CONTRACT-PRODUCTION-WIRING-01_03.md`、
   `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-
   01_REPORT.md`§10-11。
 
