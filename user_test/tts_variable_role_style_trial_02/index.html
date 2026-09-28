@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02 試聴ページ</title>
+<style>
+body { font-family: sans-serif; max-width: 1200px; margin: 20px auto; padding: 0 12px; }
+table.seg { border-collapse: collapse; width: 100%; margin-bottom: 24px; font-size: 12px; }
+table.seg th, table.seg td { border: 1px solid #ccc; padding: 4px 6px; vertical-align: top; }
+table.seg th { background: #f0f0f0; }
+h2 { border-bottom: 2px solid #333; padding-bottom: 4px; margin-top: 36px; }
+.note { background: #fff3e0; border: 1px solid #ef6c00; padding: 10px; margin: 10px 0; }
+.finding { background: #ffebee; border: 1px solid #c62828; padding: 10px; margin: 10px 0; }
+.link { background: #e3f2fd; border: 1px solid #1565c0; padding: 10px; margin: 10px 0; }
+</style>
+</head>
+<body>
+<h1>TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02</h1>
+<p>管理ID: TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02(Trial、Production未採用)。
+記事: Hormuz(既存テキストartifactを再利用、新規記事生成・新規Key Phrase選定なし)。
+用語: Standard=A2相当、Advanced=B1B相当。実行方式: 同期実行(TTS_EXECUTION_MODE=STANDARD)。
+詳細設計: <code>docs/pm/design_tts_variable_spoken_role_style_trial_02.md</code>。
+本ページはStyle Prompt欄に<b>実際にTTSへ渡した文字列の全文</b>を表示している
+(省略表記は使用していない)。</p>
+
+<div class="finding">
+<b>重要な発見(日本語J0について)</b>: 当初想定されていたJ0「落ち着いた、自然な話し言葉で」は、
+実は現行Productionには配線されておらず、別Trial(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01)が
+Trial限定で導入した値でした。コード実測の結果、現行Production日本語音声(Standard
+preview/comment_1〜4)は<b>常に</b>下記の長文instruction(p9a.JAPANESE_STYLE_PREFIX、
+「noticeably animated, emotionally present, and expressive delivery」等を要求する内容)
+を使っており、role別の短いstyle指定機構自体が存在しません。本ページのJ0は、この
+真のProduction現状を使っています(詳細はdesign doc §1-2、REPORT §後述)。
+</div>
+
+<h2>A. 日本語(Standard/A2) — J0〜J3比較</h2>
+<p>対象segment: preview / comment_1 / comment_2 / comment_3 / comment_4
+(いずれもStandardの可変本文、固定phraseは対象外)。J0は真のProduction現状音声の
+read-onlyコピー再利用(新規TTS呼び出しなし)。J1〜J3は本Trialで新規生成。</p>
+<table class='seg'><tr><th>Segment</th><th>Pattern</th><th>Status</th><th>Style Prompt(全文)</th><th>Canonical Text</th><th>ASR text(実測)</th><th>Duration(s)</th><th>Attempts</th><th>再生</th><th>備考</th></tr><tr><td>preview</td><td><b>J0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。
+
+Speak directly to one interested listener rather than announcing to a large crowd.
+
+Create a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.
+
+Carry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.
+
+Treat the narration as one continuous program, even when it is generated in separate sections.
+
+Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.
+
+Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.
+
+Give the narration a noticeably animated, emotionally present, and expressive delivery.
+
+Use a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.
+
+Make the listener feel that the story matters and that you genuinely want them to keep listening.
+
+Keep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.
+
+Allow the most important moments, contrasts, and conclusions to land with clear emotional impact.
+
+Use stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.
+
+Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.
+
+</pre></td><td style='max-width:260px'>米国がホルムズ海峡をめぐって示した案と、その後の動きを追います。発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td style='max-width:260px'></td><td>12.28</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='preview_J0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>真のProduction現状音声をread-onlyでreuse(design doc §1-3、hormuz__run_06_flashlite_full_kp、asr_verified=true実測確認済み、style override機構自体が現行Productionに存在しないため生成コードパスは実質同一)。</td></tr><tr><td>preview</td><td><b>J1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れに合わせて軽く抑揚をつけてください。</pre></td><td style='max-width:260px'>米国がホルムズ海峡をめぐって示した案と、その後の動きを追います。発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td style='max-width:260px'>米国がホルムズ海峡を巡って示した案と、その後の動きを追います。発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td>13.96</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='preview_J1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>preview</td><td><b>J2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。強調点や話の転換に応じて抑揚をつけてください。大げさにしないでください。</pre></td><td style='max-width:260px'>米国がホルムズ海峡をめぐって示した案と、その後の動きを追います。発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td style='max-width:260px'>米国がホルムズ海峡をめぐって示した案とその後の動きを追います。 発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td>14.48</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='preview_J2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>preview</td><td><b>J3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。</pre></td><td style='max-width:260px'>米国がホルムズ海峡をめぐって示した案と、その後の動きを追います。発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td style='max-width:260px'>米国がホルムズ海峡をめぐって示した案と、その後の動きを追います。発表の日と原油価格が動いた日を分けて聞くことで、政策のニュースと市場の動きを整理して理解できます。</td><td>13.56</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='preview_J3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_1</td><td><b>J0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。
+
+Speak directly to one interested listener rather than announcing to a large crowd.
+
+Create a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.
+
+Carry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.
+
+Treat the narration as one continuous program, even when it is generated in separate sections.
+
+Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.
+
+Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.
+
+Give the narration a noticeably animated, emotionally present, and expressive delivery.
+
+Use a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.
+
+Make the listener feel that the story matters and that you genuinely want them to keep listening.
+
+Keep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.
+
+Allow the most important moments, contrasts, and conclusions to land with clear emotional impact.
+
+Use stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.
+
+Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.
+
+</pre></td><td style='max-width:260px'>まず、20％という計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。</td><td style='max-width:260px'></td><td>9.48</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='comment_1_J0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>真のProduction現状音声をread-onlyでreuse(design doc §1-3、hormuz__run_06_flashlite_full_kp、asr_verified=true実測確認済み、style override機構自体が現行Productionに存在しないため生成コードパスは実質同一)。</td></tr><tr><td>comment_1</td><td><b>J1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れに合わせて軽く抑揚をつけてください。</pre></td><td style='max-width:260px'>まず、20％という計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。</td><td style='max-width:260px'>まず、20%という計画が発表された後、支払い方法など、何がまだ決まっていなかったのかに注目してください。</td><td>9.48</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_1_J1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_1</td><td><b>J2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。強調点や話の転換に応じて抑揚をつけてください。大げさにしないでください。</pre></td><td style='max-width:260px'>まず、20％という計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。</td><td style='max-width:260px'>まず、20%という計画が発表された後、支払い方法など何がまだ決まっていなかったのかに注目してください。</td><td>8.69</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_1_J2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_1</td><td><b>J3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。</pre></td><td style='max-width:260px'>まず、20％という計画が発表されたあと、支払い方法など何がまだ決まっていなかったのかに注目してください。</td><td style='max-width:260px'>まず、20%という計画が発表された後、支払い方法など、何がまだ決まっていなかったのかに注目してください。</td><td>9.28</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_1_J3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_2</td><td><b>J0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。
+
+Speak directly to one interested listener rather than announcing to a large crowd.
+
+Create a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.
+
+Carry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.
+
+Treat the narration as one continuous program, even when it is generated in separate sections.
+
+Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.
+
+Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.
+
+Give the narration a noticeably animated, emotionally present, and expressive delivery.
+
+Use a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.
+
+Make the listener feel that the story matters and that you genuinely want them to keep listening.
+
+Keep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.
+
+Allow the most important moments, contrasts, and conclusions to land with clear emotional impact.
+
+Use stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.
+
+Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.
+
+</pre></td><td style='max-width:260px'>20％という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td style='max-width:260px'></td><td>11.99</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='comment_2_J0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>真のProduction現状音声をread-onlyでreuse(design doc §1-3、hormuz__run_06_flashlite_full_kp、asr_verified=true実測確認済み、style override機構自体が現行Productionに存在しないため生成コードパスは実質同一)。</td></tr><tr><td>comment_2</td><td><b>J1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れに合わせて軽く抑揚をつけてください。</pre></td><td style='max-width:260px'>20％という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td style='max-width:260px'>20%という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td>10.68</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_2_J1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_2</td><td><b>J2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。強調点や話の転換に応じて抑揚をつけてください。大げさにしないでください。</pre></td><td style='max-width:260px'>20％という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td style='max-width:260px'>20%という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td>11.24</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_2_J2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_2</td><td><b>J3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。</pre></td><td style='max-width:260px'>20％という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td style='max-width:260px'>20%という数字は示されましたが、誰が払い、どう集めるかはまだ決まっていませんでした。では、その案は翌日にどう変わったのでしょうか。</td><td>11.91</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_2_J3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_3</td><td><b>J0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。
+
+Speak directly to one interested listener rather than announcing to a large crowd.
+
+Create a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.
+
+Carry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.
+
+Treat the narration as one continuous program, even when it is generated in separate sections.
+
+Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.
+
+Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.
+
+Give the narration a noticeably animated, emotionally present, and expressive delivery.
+
+Use a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.
+
+Make the listener feel that the story matters and that you genuinely want them to keep listening.
+
+Keep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.
+
+Allow the most important moments, contrasts, and conclusions to land with clear emotional impact.
+
+Use stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.
+
+Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.
+
+</pre></td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20％の負担案が、約24時間後に米国との貿易・投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。</td><td style='max-width:260px'></td><td>20.6</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='comment_3_J0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>真のProduction現状音声をread-onlyでreuse(design doc §1-3、hormuz__run_06_flashlite_full_kp、asr_verified=true実測確認済み、style override機構自体が現行Productionに存在しないため生成コードパスは実質同一)。</td></tr><tr><td>comment_3</td><td><b>J1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れに合わせて軽く抑揚をつけてください。</pre></td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20％の負担案が、約24時間後に米国との貿易・投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。</td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20%の負担案が、約24時間後に米国との貿易投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。</td><td>21.64</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_3_J1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_3</td><td><b>J2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。強調点や話の転換に応じて抑揚をつけてください。大げさにしないでください。</pre></td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20％の負担案が、約24時間後に米国との貿易・投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。</td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20%の負担案が、約24時間後に米国との貿易投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。 続いては、この急な変更の前後で原油価格に何が起きたのかを聞いていきます。</td><td>20.97</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_3_J2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_3</td><td><b>J3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。</pre></td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20％の負担案が、約24時間後に米国との貿易・投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。</td><td style='max-width:260px'>ここまでで、ホルムズ海峡を通る貨物への20%の負担案が、約24時間後に米国との貿易投資計画へ変わり、船に料金を求めない方針になったことを押さえてください。続いては、この急な変更の前後で、原油価格に何が起きたのかを聞いていきます。</td><td>20.4</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_3_J3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_4</td><td><b>J0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>次の文章を、翻訳・言い換えせず、日本語のまま読み上げてください。
+
+Speak directly to one interested listener rather than announcing to a large crowd.
+
+Create a natural emotional arc that follows the meaning already present in the script. Let the energy, weight, and pace rise or fall when the story itself changes. Do not add excitement, sadness, urgency, or drama that is not supported by the words.
+
+Carry the meaning naturally across sentence boundaries. Do not reset your pitch, energy, or rhythm after every sentence. Group related sentences into complete thoughts, while keeping important contrasts and turning points clear.
+
+Treat the narration as one continuous program, even when it is generated in separate sections.
+
+Read every title, section heading, and subsection heading exactly as written. Never skip, paraphrase, shorten, or silently absorb a heading into the following text.
+
+Do not shout, sound like a movie trailer, become gloomy or sleepy, or use a distant and overly formal newsreader style.
+
+Give the narration a noticeably animated, emotionally present, and expressive delivery.
+
+Use a clearly wider vocal range, stronger emphasis on important words and turning points, and more distinct rises and falls in energy.
+
+Make the listener feel that the story matters and that you genuinely want them to keep listening.
+
+Keep the narration moving with confident momentum, including during explanatory passages. Avoid becoming passive, flat, or overly restrained.
+
+Allow the most important moments, contrasts, and conclusions to land with clear emotional impact.
+
+Use stronger expression than Level 1, but vary the intensity across the story. Do not stay at maximum intensity throughout.
+
+Do not shout, force emotion, exaggerate feelings that are not present in the script, or sound like a sports commentator or movie trailer.
+
+</pre></td><td style='max-width:260px'>ここまで、ホルムズ海峡を通る貨物に20％の負担を求める案が出たあと、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。発表後、原油価格はいったん上げ幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td style='max-width:260px'></td><td>24.4</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='comment_4_J0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>真のProduction現状音声をread-onlyでreuse(design doc §1-3、hormuz__run_06_flashlite_full_kp、asr_verified=true実測確認済み、style override機構自体が現行Productionに存在しないため生成コードパスは実質同一)。</td></tr><tr><td>comment_4</td><td><b>J1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れに合わせて軽く抑揚をつけてください。</pre></td><td style='max-width:260px'>ここまで、ホルムズ海峡を通る貨物に20％の負担を求める案が出たあと、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。発表後、原油価格はいったん上げ幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td style='max-width:260px'>ここまで、ホルムズ海峡を通る貨物に20%の負担を求める案が出た後、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。 発表後、原油価格は一旦上げ幅を縮めましたが、その後は高い水準に戻りました。 この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td>22.35</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_4_J1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_4</td><td><b>J2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。強調点や話の転換に応じて抑揚をつけてください。大げさにしないでください。</pre></td><td style='max-width:260px'>ここまで、ホルムズ海峡を通る貨物に20％の負担を求める案が出たあと、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。発表後、原油価格はいったん上げ幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td style='max-width:260px'>ここまで、ホルムズ海峡を通る貨物に20%の負担を求める案が出た後、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。 発表後、原油価格は一旦上げ幅を縮めましたが、その後は高い水準に戻りました。 この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td>23.67</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_4_J2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>comment_4</td><td><b>J3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。演技がかった話し方は避けてください。</pre></td><td style='max-width:260px'>ここまで、ホルムズ海峡を通る貨物に20％の負担を求める案が出たあと、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。発表後、原油価格はいったん上げ幅を縮めましたが、その後は高い水準に戻りました。この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td style='max-width:260px'>ここまでホルムズ海峡を通る貨物に20%の負担を求める案が出た後、湾岸諸国とアメリカの貿易や投資の計画に置き換えられた流れを見てきました。 発表後、原油価格は一旦上げ幅を縮めましたが、その後は高い水準に戻りました。 この流れを踏まえて、最後のまとめを英語で聞いてみましょう。</td><td>22.76</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='comment_4_J3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr></table>
+
+<h2>B. 英語本文(Advanced/B1B) — E0〜E3比較</h2>
+<p>対象segment: topic_intro / full_story_part1 / in_one_line(いずれもAdvancedの
+可変本文、固定phraseは対象外)。E0はTask B(TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01、
+er038)出力のread-onlyコピー再利用(style値がProduction FAMILY_X_ROLE_STYLE_ENと
+完全一致することを確認済み、新規TTS呼び出しなし)。E1〜E3は本Trialで新規生成。</p>
+<table class='seg'><tr><th>Segment</th><th>Pattern</th><th>Status</th><th>Style Prompt(全文)</th><th>Canonical Text</th><th>ASR text(実測)</th><th>Duration(s)</th><th>Attempts</th><th>再生</th><th>備考</th></tr><tr><td>topic_intro</td><td><b>E0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>brief, clear, engaging news topic introduction</pre></td><td style='max-width:280px'>Today&#x27;s topic is 20% Withdrawn—but the Oil Chart Was Not Finished Yet.</td><td style='max-width:280px'></td><td>5.65</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='topic_intro_E0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01(Task B、er038)b1b出力をread-onlyでreuse(design doc §1-1、style値がProduction FAMILY_X_ROLE_STYLE_EN[&#x27;TOPIC_INTRO&#x27;]と完全一致することを実測確認済み、en_pronunciation_resolver_info.hints_applied=false実測確認済み)。</td></tr><tr><td>topic_intro</td><td><b>E1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>brief, clear, engaging news topic introduction, with a touch of natural lift.</pre></td><td style='max-width:280px'>Today&#x27;s topic is 20% Withdrawn—but the Oil Chart Was Not Finished Yet.</td><td style='max-width:280px'>Today&#x27;s topic is 20% withdrawn, but the oil chart was not finished yet.</td><td>5.79</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='topic_intro_E1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>topic_intro</td><td><b>E2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>brief, clear, engaging news topic introduction with natural emphasis on the topic; not dramatic.</pre></td><td style='max-width:280px'>Today&#x27;s topic is 20% Withdrawn—but the Oil Chart Was Not Finished Yet.</td><td style='max-width:280px'>Today&#x27;s topic is 20% withdrawn, but the oil chart was not finished yet.</td><td>5.23</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='topic_intro_E2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>topic_intro</td><td><b>E3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>brief, clear, engaging news topic introduction, naturally expressive but understated; not theatrical, not a trailer voice.</pre></td><td style='max-width:280px'>Today&#x27;s topic is 20% Withdrawn—but the Oil Chart Was Not Finished Yet.</td><td style='max-width:280px'>Today&#x27;s topic is 20% withdrawn, but the oil chart was not finished yet.</td><td>5.45</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='topic_intro_E3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>full_story_part1</td><td><b>E0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>calm, steady news narration</pre></td><td style='max-width:280px'>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.
+
+The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.
+
+But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.
+
+The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td style='max-width:280px'></td><td>46.4</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='full_story_part1_E0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01(Task B、er038)b1b出力をread-onlyでreuse(design doc §1-1、style値がProduction FAMILY_X_ROLE_STYLE_EN[&#x27;FULL_STORY&#x27;]と完全一致することを実測確認済み、en_pronunciation_resolver_info.hints_applied=false実測確認済み)。</td></tr><tr><td>full_story_part1</td><td><b>E1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>calm, steady news narration, with a touch of natural inflection that follows the meaning.</pre></td><td style='max-width:280px'>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.
+
+The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.
+
+But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.
+
+The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td style='max-width:280px'>This news feels like a short play in three acts. Act one was 20%. Act two brought an unexpected turn. Act three was an unexpected move in oil prices. The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of U.S. efforts to keep the strait safe. But 20% was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage. The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td>44.59</td><td>2</td><td><audio controls preload='none' style='width:200px'><source src='full_story_part1_E1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>full_story_part1</td><td><b>E2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>calm, steady news narration with natural emphasis at key points and turns; not dramatic.</pre></td><td style='max-width:280px'>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.
+
+The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.
+
+But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.
+
+The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td style='max-width:280px'>This news feels like a short play in three acts. Act one was 20%. Act two brought an unexpected turn. Act three was an unexpected move in oil prices. The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of U.S. efforts to keep the strait safe. But 20% was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage. The number stayed at center stage for about a day, then the story took a sharp turn.</td><td>44.44</td><td>3</td><td><audio controls preload='none' style='width:200px'><source src='full_story_part1_E2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>full_story_part1</td><td><b>E3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>calm, steady news narration, naturally expressive at key points, contrasts, and the conclusion; understated, not theatrical.</pre></td><td style='max-width:280px'>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.
+
+The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.
+
+But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.
+
+The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td style='max-width:280px'>This news feels like a short play in three acts. Act one was 20%. Act two brought an unexpected turn. Act three was an unexpected move in oil prices. The curtain rose on July 13th. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of U.S. efforts to keep the strait safe. But 20% was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage. The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td>45.16</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='full_story_part1_E3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>in_one_line</td><td><b>E0</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>concise, clear</pre></td><td style='max-width:280px'>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td style='max-width:280px'></td><td>16.96</td><td>reuse(0新規)</td><td><audio controls preload='none' style='width:200px'><source src='in_one_line_E0.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'>TTS-ALL-SPOKEN-ROLE-STYLE-TRIAL-01(Task B、er038)b1b出力をread-onlyでreuse(design doc §1-1、style値がProduction FAMILY_X_ROLE_STYLE_EN[&#x27;IN_ONE_LINE&#x27;]と完全一致することを実測確認済み、en_pronunciation_resolver_info.hints_applied=false実測確認済み)。</td></tr><tr><td>in_one_line</td><td><b>E1</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>concise, clear, with a natural closing tone.</pre></td><td style='max-width:280px'>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td style='max-width:280px'>Concerns about U.S.-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering. The policy turn and the oil chart&#x27;s not over yet movement happened on the same day.</td><td>16.67</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='in_one_line_E1.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>in_one_line</td><td><b>E2</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>concise, clear, landing naturally as a settled conclusion; not flat, not dramatic.</pre></td><td style='max-width:280px'>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td style='max-width:280px'>Concerns about U.S.-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering. The policy turn and the oil chart&#x27;s not over yet movement happened on the same day.</td><td>16.88</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='in_one_line_E2.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr><tr><td>in_one_line</td><td><b>E3</b></td><td><span style='color:#2e7d32;font-weight:bold'>OK</span></td><td><pre style='white-space:pre-wrap;max-width:340px;margin:0;font-size:11px'>concise, clear, with a slightly more expressive, confident closing landing; understated, not theatrical.</pre></td><td style='max-width:280px'>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td style='max-width:280px'>Concerns about U.S.-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering. The policy turn and the oil chart&#x27;s not over yet movement happened on the same day.</td><td>16.72</td><td>1</td><td><audio controls preload='none' style='width:200px'><source src='in_one_line_E3.mp3' type='audio/mpeg'></audio></td><td style='max-width:200px;font-size:11px'></td></tr></table>
+
+<h2>C. 固定phrase</h2>
+<p>本ページでは扱いません(Task 2側で対象)。参照:
+<a href="https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_02/index.html">
+fixed_shell_champion_trial_02/index.html</a>(Task 2、並行Trial中)。</p>
+
+<h2>D. Key Phrase英語解説</h2>
+<div class="link">
+本ページでは扱いません(Task 1側で対象、並行Trial中のためURLリンクのみ)。参照:
+<a href="https://shimomura055.github.io/eigo-radio/user_test/kp_advanced_explanation_audio_trial_03/index.html">
+kp_advanced_explanation_audio_trial_03/index.html</a>
+</div>
+
+</body>
+</html>
