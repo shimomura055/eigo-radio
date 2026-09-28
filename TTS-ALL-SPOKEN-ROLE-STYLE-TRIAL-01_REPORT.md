@@ -158,10 +158,13 @@ delegationの「--budget-jpy 22」はper-level想定だったが、両levelで�
 2. **極短context-free単語("Two."/"Three.")のFlash-Lite品質限界が、
    Production既存fallback style("natural, clear, conversational")とは
    異なるTrial style("brief, clear, neutral")でも再現した**(B1Bのみ、
-   3回試行後Human Review Lock到達)。同一テキストはA2側ではattempt1で
-   成功しており、Production既報告(OPEN-201)と同型の非決定的挙動。
-   style文言そのものの問題ではなく、より一般的なFlash-Lite短文脈限界の
-   可能性が高い。
+   3回試行後Human Review Lock到達)。ASR実測(`review_lock_state.json`):
+   num_two 3attempt全て`asr_text`が英語にならず(`'Tu'`→`'二'`→`'二'`、
+   classification=TRUE_CONTENT_MISMATCH)、num_threeも同様(3attempt
+   全て`'三'`)。Production既報告(OPEN-201、ASR='Ту'キリル文字)と同型の、
+   CJK文字への言語ドリフトという非決定的挙動。同一テキストはA2側では
+   attempt1で成功しており、style文言そのものの問題ではなく、より一般的な
+   Flash-Liteの短文脈限界の可能性が高い。
 3. Master Audio Store(`er006_master_audio_store_01.py`)はSTORE_DIR等を
    モジュールグローバル定数として保持し、パラメータ化されていないため、
    実行時モンキーパッチでのみ隔離可能(§12で詳細、Production側の設計
