@@ -12180,3 +12180,37 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **根拠**: `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03_REPORT.md`、
   `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02_REPORT.md`§3。試聴:
   https://shimomura055.github.io/eigo-radio/user_test/kp_advanced_explanation_audio_trial_03/index.html
+
+## TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02: Trial記録(2026-09-28)
+
+- **概要**: commit`7f01bad1`+`29d1b0c3`(本体)、`df96c37c`(修正1回目)、
+  push済み。固定phrase10件(EN9+JA1)でA=現行Production Masterのコピー
+  再利用(¥0)、B/C=新規生成。Style全文: group1(welcome/preview_intro/
+  key_phrases_intro)B・C=「natural, clear, conversational」(現行と同一
+  文言で2回生成)、group2(full_story_intro)B・C=「natural, clear,
+  conversational, unhurried pace, with a brief pause before
+  continuing」、group3(num_one〜num_five、5個セット一括)B=「calm,
+  steady, declarative tone, even volume and pace across the set,
+  ending each word with a clear falling pitch, stated plainly, never
+  rising like a question」/C=「measured, matter-of-fact delivery,
+  consistent energy and tempo for every word, plain falling pitch at
+  the end, spoken as a flat statement, not a question」、group4
+  (point_explanation JA)B=「自然な抑揚をつけて、はっきりと落ち着いた調子で
+  話す」/C=「やわらかい自然な抑揚で、簡潔かつ丁寧に伝える」。
+- **結果**: A 10/10 OK、B 7/10(STOPPED: num_one/num_three/num_four、
+  ASR textは「一」「三」「四」等のCJK数字)、C 9/10(STOPPED: num_three
+  「三」)。welcome/preview/key_phrases/full_story_intro/
+  point_explanationは全候補drift無し。簡易F0 proxyでは現行Baseline(A)の
+  num_four/num_fiveが上昇終止(疑問形っぽさ)判定となり、ユーザー指摘と
+  方向一致。修正1回目でASR未合格attempt12件の音声を「人間確認用・
+  Production登録不可」sectionとして試聴ページへ追加(新規生成なし、¥0)。
+  費用合計¥1.54(Guardrail¥40)。Regression 17/17。Production Master
+  Store・code・Prompt無変更(Trial Store隔離)。Pages 7項目確認PASS
+  (headless Edge、`<audio>`43件)。共有ログ`er011_output/
+  attempt_history.jsonl`への追記(OPEN-223同型)。Opus発火なし。
+- **付記**: Champion選定・Production配線はユーザー判断後に別管理IDで
+  実施する。固定phraseはTask3(可変Role Style比較)の比較表から除外する
+  (ユーザー指示)。
+- **Fable判定**: `USER_DECISION_REQUIRED`(phraseごとのChampion選定待ち)。
+- **根拠**: `TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02_REPORT.md`。試聴:
+  https://shimomura055.github.io/eigo-radio/user_test/fixed_shell_champion_trial_02/index.html
