@@ -11524,3 +11524,40 @@ Pronunciation Phase 4を`PRODUCTION_WIRED`へ表記同期
   実装・検証詳細)、`er035_output/kp_4plus1_evidence_01/summary.md`
   (10観点評価表)。
 - commit: 本コミット(Phase B実装+検証evidence+SSOT反映)。
+
+## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02: 修正3回目
+(Opus L2所見反映、SSOT反映)
+
+- **ユーザー承認原文要旨(2026-09-28)**: 「Flash-Lite修正 承認(shell用
+  短文style配線/共有ナレーションASR不合格時のAssembly STOP/fallback
+  短文style残り2経路/バッチ費用集計修正/記載是正。shell用styleは既存
+  `FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`流用、新しいstyle文言は作らない。
+  既存確定仕様[Standard/Advanced両方に6-role、Standard固有の速度調整
+  維持、Family XはKP含めFlash-Lite統一、同期/バッチ選択可]を崩さない。
+  修正後Gate 3再確認、未達なら`PRODUCTION_WIRED`にしない)」。
+- **Opus L2所見(BLOCKER 3/SHOULD_FIX 7/NOTE 11)対応表(要約)**:
+  BL-1(shell短文style未配線)→`FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`実配線
+  (version bump、旧shell master cache miss化)。BL-2(共有narration非OK時
+  もAssembly続行)→`SharedNarrationBlockedError`/`BLOCKED_SHARED_
+  NARRATION_NOT_OK`で明示STOP新設。BL-3(fallback短文styleが3経路中1経路
+  のみ)→`voice01.generate_charon_english`・`point_headings.generate`・
+  `repro01.generate_english_component_minimal_instruction`の3経路全てへ
+  配線(以前の記載「実配線→1本のみ」は過大につき訂正)。SF-1〜5/N-4/N-7を
+  実装、SF-6/SF-7/N-11はSSOT記録のみ、N-10はユーザー承認scope外として
+  見送り。
+- **検証結果**: Hormuz `hormuz__run_06_flashlite_full_kp`で実API
+  再生成、shell 9件×2レベル全件`status=OK`(`num_two`含む、修正前は
+  確率的に不合格になっていたことを確認、原因はFlash-Liteモデル自体の
+  不安定性ではなくshell segmentへ記事本文向け長文styleを適用していた
+  こと[style層の未切替]と確定)。Assembly再実行(両レベル)成功
+  (`BLOCKED_SHARED_NARRATION_NOT_OK`不発生)。単体test新規17件
+  (BL-1 2件・BL-2 8件・BL-3 2件・SF-1 3件・N-4 1件・N-7 1件)+既存test群
+  全PASS。検証目的でreview_lock `approve_regenerate()`を1回限定実行した
+  (REPORT§10-4)。Lock解除は本来ユーザー明示承認事項であり、Fableが
+  事後開示する。
+- **到達Status**: Gate 3再確認結果はREPORT§10-7参照。`PRODUCTION_WIRED`
+  は本エントリでは宣言しない(Fable判定待ち)。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-02_06.md`、`TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-02_REPORT.md`§10。
+- commit: `ee280e76`。

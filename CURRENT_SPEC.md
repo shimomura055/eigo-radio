@@ -1464,7 +1464,27 @@ google-genai==2.25.0、Production向けrequirementsファイルは本Phaseで
 `semantic_equivalence_info`のtelemetry surfacing追加(attempts_log/
 top-level戻り値)。(4)既知baseline件数を実測更新(下記run_project_
 regression節参照)。既定backend自体はFAMILY-X-02でも変更しない(切替は
-明示指定のまま、既定切替はFable/ユーザー判断待ち)。詳細
+明示指定のまま、既定切替はFable/ユーザー判断待ち)。**修正3回目
+(2026-09-28、Opus L2所見反映)**: shell固定segment(welcome/preview_intro/
+key_phrases_intro/full_story_intro/num_one〜five)は、Flash-Lite backend
+選択時のみ`FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`("natural, clear,
+conversational")をstyleとして使用する(新規style文言の考案なし、既定
+backendは無変更)。fallback(技術的失敗時のminimal instruction)経路も、
+`voice01.generate_charon_english`・`point_headings.generate`・
+`repro01.generate_english_component_minimal_instruction`の3経路全てで
+Flash-Lite backend時は同じ短いstyleを使う(以前の記載「実配線(→3本のうち
+1本のみ)」は過大だったため訂正)。共有narration(shell/Key Phrase含む)が
+1件でも不合格の場合、`er019_family_x_audio_production_runner_01.py`が
+Assemblyへ進む前に停止する(`SharedNarrationBlockedError`/`BLOCKED_
+SHARED_NARRATION_NOT_OK`)。Batch経路の費用もbudget guardへ算入される。
+バッチ実行の想定所要時間: 実測91〜171秒/item、Family X 1レベル約31 call
+(概算50〜90分、両レベル2〜3時間)。正式リリース前のFamily X実行は同期
+実行(`TTS_EXECUTION_MODE=STANDARD`)を推奨。既定`tts_backend`
+("structured_separation")はFamily A/B/C含め無変更のまま(`--tts-backend
+speech_metadata_flash_lite`明示時のみFlash-Lite経路)。検証: Hormuz
+run_06 shell 9件×2レベル実API再生成でnum_two含め全件status=OK確認、
+Assembly再実行(両レベル)成功。commit`ee280e76`。`PRODUCTION_WIRED`は
+Fable Gate 3判定待ちのまま(本追記では宣言しない)。詳細
 `TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02_REPORT.md` | TTS-GEMINI-3.8-FLASH-LITE-NEXT-TRIAL-01(§14-§23)、TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(Phase 0/1/2/3)、TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02 |
 | 短い日本語segmentのASR検証: 発音ベースPhonetic Validation | **目的**: 短く文脈のない日本語Key Phrase/gloss(例:「内在化問題」)は、Azure STTが同音の一般語(例:「内在課問題」)へ書き起こすことがあり、実際には正しく発話されている音声を漢字表記の不一致だけでTTS再生成していた。**期待動作**: `er003_audio_tts_asr_safety.validate_japanese_short_segment_match()`が、EXACT_MATCH/NORMALIZED_MATCH/PHONETIC_MATCH(読みが完全一致、漢字表記は不問)/TRUE_CONTENT_MISMATCH/ASR_UNCERTAINの5分類を返す。EXACT_MATCH・NORMALIZED_MATCH・PHONETIC_MATCHは採用しTTS retryしない。TRUE_CONTENT_MISMATCHはTTS retry候補。ASR_UNCERTAIN(読みが近いが完全一致ではない等、機械的に断定できない)は「TTSが誤っている」と断定せず、既存audioを保持したまま既存fallback/reviewへ委ねる(無条件TTS再生成はしない)。適用対象は`JAPANESE_SHORT_SEGMENT_MAX_CHARS`(30文字)以下の短いsegmentのみ(長文Narrationには適用しない)。**禁止事項**: 数字の実質的な違い・否定の有無・主要語の欠落・明らかに異なる発音・無関係な発話・hallucinationをPHONETIC_MATCHで吸収すること。個別専門用語のwhitelist(1対1のハードコード)を主方式にすること | ER-005-JA-SHORT-ASR-PHONETIC-01 |
 | TTS生成の同一segment総試行回数上限 | **3回**(初回を含め最大3回。「初回+3 retry」ではない。4回目以降は絶対にTTS生成しない)。`er011_human_review_lock_01.PRODUCTION_MAX_TTS_ATTEMPTS`をSSOTとし、Production全7関数(`generate_narration_snippet_verified_strict`/`generate_charon_english`/`generate_charon_japanese`/`generate_news_narration_wide_margin`/point_headings `generate`/`generate_english_segment_with_fallback`/`generate_a2_japanese_with_fallback`)の`max_attempts`既定値がこれを参照する。**標準経路+minimal instruction fallback経路の2段構成を持つ3関数(`generate_charon_japanese`/`generate_a2_japanese_with_fallback`/`generate_english_segment_with_fallback`)の内訳は、標準**2回**(`er011_human_review_lock_01.PRODUCTION_STANDARD_TTS_ATTEMPTS`)+fallback**1回**(`PRODUCTION_MINIMAL_FALLBACK_TTS_ATTEMPTS`)=合計3回に固定する**(ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-25、2026-09-04ユーザー正式決定)。**旧設計の不具合**: 2026-08-28時点の旧設計(ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 Part B)は「標準経路にmax_attempts回すべてを使わせ、fallbackには残り予算(`max_attempts−標準経路の消費試行数`)のみを渡す」というものだったが、標準経路が早期returnせず最後まで回ると`標準経路の消費試行数==max_attempts`に必ず一致するため、fallback予算が構造的に常に0になり、minimal instruction fallbackが実質的に一度も発火しない不具合があった(日本語側で実Production incident 2件を確認、英語Key Phrase側の同種不具合[下記OPEN-103参照、現在はRESOLVED]と同根)。新設計は、標準経路に渡す`max_attempts`をstandard_attempts(既定2)に固定することで解決する。**FINAL-26改訂(2026-09-04、ユーザー正式決定・上記25の方針を撤回)**: wiring-25では「callerがmax_attemptsに6・10等を明示的に渡す既存呼び出し元(`er006_audio_cost_pilot_02_shared_narration.py::ensure_fixed_japanese_segment`[6]、`generate_charon_japanese_with_reading_safety`/`generate_a2_japanese_with_reading_safety`[既定6]、`er003_v1_iran01_b1_kp_homophone_fix.py`の一回限りscript[10]等)の総予算は縮小しない」としていたが、これは「対象Production経路は例外なくTOTAL3回上限に統一する」というユーザー再確認済み正式仕様と矛盾するため撤回した。対象3関数(`generate_charon_japanese`/`generate_a2_japanese_with_fallback`/`generate_english_segment_with_fallback`)は、関数内部でcallerが渡した`max_attempts`を`min(max_attempts, PRODUCTION_MAX_TTS_ATTEMPTS)`により無条件でクランプする。callerがどの値(6・10等)を渡しても、標準2回+fallback1回=TOTAL3回を超えて発火する余地は構造的に存在しない(上記の呼び出し元すべてを含め例外なし)。**例外(2026-09-01追記、ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22、ユーザー正式決定)**: `generate_key_phrase_component_verified`(英語Key Phrase Component専用)はこのSSOT・今回の2+1分割の対象外とし、合計上限**4回**(`KEY_PHRASE_MINIMAL_MAX_ATTEMPTS`=2+`KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS`=2、`KEY_PHRASE_TOTAL_MAX_ATTEMPTS`)を独立して使う(標準経路+fallback経路の2段構成ではなくPrimary+Fallbackがそれぞれ独立予算のため、今回の不具合の対象外だった)。詳細は「Key Phrase」節「英語Component生成方式(Production正式retry構成)」を参照 | `PRODUCTION_WIRED` | ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15(ユーザー正式決定、3回のSSOT)、ER-010-NO9-KEYPHRASE-MINIMAL-ENGLISHLOCK-PRODUCTION-WIRING-22(Key Phrase英語Componentのみ4回への例外、ユーザー正式決定)、ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-25(標準2+fallback1の内訳固定、ユーザー正式決定)、ER-011-TTS-STANDARD2-MINIMAL1-PRODUCTION-WIRING-FINAL-26(caller指定max_attempts[6・10等]によらずTOTAL3回へ無条件クランプ、実TTS/実ASR runtime evidence取得、ユーザー正式決定) |
