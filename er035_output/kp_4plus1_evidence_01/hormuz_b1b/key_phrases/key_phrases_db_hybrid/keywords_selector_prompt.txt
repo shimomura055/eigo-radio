@@ -1,0 +1,86 @@
+以下のB1英語記事本文から、初回リスニングで意味を取れず、その後の理解を止める可能性が高い英語表現を、支援価値の高い順にちょうど5個選んでください。
+
+まず初回リスニングで難しい箇所を見つけ、その箇所をコピーするのではなく、学ぶべき最小の単語・句・コロケーションへ抽出してください。
+
+display_phraseは1〜5語にしてください。完全文、主語と有限動詞を持つ節、記事固有の長い説明は禁止です。
+
+動詞表現は本文の時制を残さず、原則として基本形へ直してください。受動表現を学ぶ価値がある場合は、be + past participleの見出し形を使用できます。
+
+文字で読み返したときではなく、音声で一度だけ聞いたときに意味を処理できるかを最優先してください。
+
+優先順位は、初回音声での処理困難、未知の可能性、瞬時の推測困難、本文の事実・感情・面白さへの影響、記事内重要度、汎用性の順です。
+
+未知単語、題材固有表現、短い複数語パターン、比喩・感情表現を同格の候補として扱ってください。構成語から意味を容易に推測できる透明表現は、記事上重要でも優先度を下げてください。
+
+「ソロ旅行を～％とする」のように、数値を補わないと意味が成立しない句・日本語グロス(数値の穴埋めを必要とする不完全な表現)は選ばないでください。それ単体で意味が成立する句・グロスを選んでください。
+
+選ぶ表現は必ず本文中の実表現(source_span)に対応させ、短く自然な日本語グロスを付けてください。
+
+日本語グロスは、辞書的に正しいだけでなく、日本人の英語学習者が聞いてすぐ意味を理解できる、自然で平易な現代日本語にしてください。直訳調や、「常態」「是正」のような過度に硬い報道語・漢語、一般的な学習者には伝わりにくい表現は避けてください。
+
+日本語グロスには、括弧（　）を使って別の訳し方・専門用語・補足情報を書き添えないでください。音声だけで聞いてそのまま意味が伝わる、平易な言い換えだけの一文にしてください。
+
+日本語グロスは、辞書的な表記として自然な範囲であれば「～」「〜」を使ってもかまいません(例: 「～を示す」)。ただし「…」のようなプレースホルダー記号は使わないでください。日本語グロスに数字を含める場合は、算用数字(1、2、3…)ではなく漢数字(一、二、三…)で書いてください。
+
+5個のうち1個は、汎用性や一般的な学習重要度は必ずしも高くなくても、この記事に特有であり、事前に意味・用法・音を理解しておくことでこの記事の本文全体を追いやすくなる語または表現を選んでください(key_phrase_role="topic")。判断基準は「この語・表現を事前に理解していると、この記事の本文を明確に追いやすくなるか」です。人名・企業名・ブランド名・地名だから選ぶ、専門用語だから選ぶ、といった特定の種類を優先するルールではありません。残り4個は、既存の優先順位(初回音声での処理困難・未知の可能性・瞬時の推測困難・本文の事実/感情/面白さへの影響・記事内重要度・汎用性)に基づいて選んでください(key_phrase_role="important")。このkey_phrase_roleは、候補区分(重要な単語・単語群/phrase・idiom・phrasal verb/word)とは独立した、選定後の役割ラベルです。
+
+【Topic】title: 20% Withdrawn—but the Oil Chart Was Not Finished Yet
+
+【重要な単語・単語群候補】
+- id: C7 | candidate: "center stage" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S11
+- id: C8 | candidate: "sea blockade" | type: noun_phrase | occ: 2 | evidence: repeated_compound_noun | sentence: S22
+- id: C9 | candidate: "Brent crude" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S24
+- id: C10 | candidate: "Middle Eastern" | type: noun_phrase | occ: 1 | evidence: wiktionary_multiword | sentence: S17
+- id: C11 | candidate: "flashy" | type: important_word | occ: 1 | evidence: heuristic[rare_technical_single_word_heuristic] | sentence: S29
+
+【phrase / idiom / phrasal verb候補】
+- id: C1 | candidate: "by trade" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S16
+- id: C2 | candidate: "feels like" | type: idiom | occ: 1 | evidence: wiktionary[idiom] | sentence: S2
+- id: C3 | candidate: "gave back" | type: phrasal_verb | occ: 1 | evidence: wiktionary[idiom,phrasal_verb]+irregular_rescue | sentence: S24
+- id: C4 | candidate: "no one" | type: phrase | occ: 1 | evidence: cefr_j | sentence: S18
+- id: C5 | candidate: "passing through" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S7
+- id: C6 | candidate: "pulled back" | type: phrasal_verb | occ: 1 | evidence: wiktionary[phrasal_verb] | sentence: S29
+
+【word候補】
+- id: C12 | candidate: "disliked" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S18
+- id: C13 | candidate: "Strait" | type: word | occ: 4 | evidence: cefr_j | sentence: S7
+- id: C14 | candidate: "shipments" | type: word | occ: 1 | evidence: ngsl_family | sentence: S22
+- id: C15 | candidate: "futures" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S24
+- id: C16 | candidate: "recovering" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S29
+- id: C17 | candidate: "curtain" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S6
+- id: C18 | candidate: "Withdrawn" | type: word | occ: 1 | evidence: ngsl_family | sentence: S1
+- id: C19 | candidate: "crude" | type: word | occ: 1 | evidence: ngsl_family | sentence: S24
+- id: C20 | candidate: "refuses" | type: word | occ: 1 | evidence: cefr_j+ngsl_family | sentence: S23
+
+【SENTENCE REFERENCE】(文脈参照専用。この表の文字列をそのままitemへ書かないでください)
+S1: "20% Withdrawn—but the Oil Chart Was Not Finished Yet"
+S2: "This news feels like a short play in three acts"
+S6: "The curtain rose on July 13"
+S7: "At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz"
+S11: "For the moment, only a large number stood at center stage"
+S16: "on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US"
+S17: "He cited "very productive discussions" with Middle Eastern leaders"
+S18: "He also said no one should charge ships in the Strait, and that he disliked fees"
+S22: "Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz"
+S23: "The chart refuses to stay down"
+S24: "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains"
+S29: "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart's "not over yet" movement happened on the same day"
+
+【選定方針】
+- 最終的に選ぶ5件は、必ず下記の候補一覧の中から選んでください。候補に
+  無い新しい表現を作らないでください。
+- 5個のうち少なくとも1個は、[重要な単語・単語群候補]区分から選んで
+  ください(記事理解・再利用価値の高い重要な名詞・専門用語・複合語)。
+- 残りは、[phrase / idiom / phrasal verb候補]区分を優先してください。
+  良い候補が不足する場合のみ[word候補]区分で補ってください。
+- CEFR難易度・語彙レベルを主要な判断軸にしないでください。
+- 各itemのsource_candidate_idには、下記候補一覧の各行に付与されている
+  candidate ID(例: C7)のうち、実際に選んだ候補のIDを1つだけ指定して
+  ください。本文の文字列そのもの(元のsource_sentence/source_span相当の
+  自由記述)は一切書かないでください。
+- surface_echoには、選んだ候補が表す表現を短く(1〜6語程度)書いて
+  ください。これは内部確認用の参考情報であり、正誤判定には使用しません。
+
+
+【前回の選定で、以下のペアが意味・用法上の重複と判定されました。今回は同じ概念を指す表現を2件以上選ばないでください】
+- 'give back' と 'pull back': どちらも市場価格が上昇後に一時的に下落する場面で使われ、この記事では同じ「上昇分をいったん失う値動き」を説明している。ただし、「give back」は目的語を取って上昇分を返す型、「pull back」はこの用法では自動詞的に下がる型で、構文上の学習価値は異なる。

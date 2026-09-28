@@ -42,7 +42,7 @@ GOOD_SENTENCES = [
 
 def make_item(rank, display_phrase, source_span, source_sentence, ja_gloss,
               phrase_type="word", normalization_type="none", category="general_unknown_word",
-              substitution=False, substitution_reason=""):
+              substitution=False, substitution_reason="", key_phrase_role="important"):
     return {
         "rank": rank, "display_phrase": display_phrase, "source_span": source_span,
         "source_sentence": source_sentence, "ja_gloss": ja_gloss, "phrase_type": phrase_type,
@@ -52,6 +52,10 @@ def make_item(rank, display_phrase, source_span, source_sentence, ja_gloss,
         "comprehension_impact": "HIGH", "figurative_or_emotional_value": "LOW", "spoiler_risk": "LOW",
         "portfolio_category": category, "portfolio_substitution": substitution,
         "portfolio_substitution_reason": substitution_reason,
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設):
+        # このfixtureは10件研究版(expected_item_count=10)専用のため、
+        # 4+1集計検証の対象外(全件"important"のデフォルトで問題ない)。
+        "key_phrase_role": key_phrase_role,
     }
 
 

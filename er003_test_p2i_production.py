@@ -27,7 +27,8 @@ GOOD_ARTICLE = (
 
 
 def make_item(rank, display_phrase, source_span, source_sentence, ja_gloss="テスト訳語",
-              phrase_type="technical_term", normalization_type="none", category="domain_expression"):
+              phrase_type="technical_term", normalization_type="none", category="domain_expression",
+              key_phrase_role="important"):
     return {
         "rank": rank, "display_phrase": display_phrase, "source_span": source_span,
         "source_sentence": source_sentence, "ja_gloss": ja_gloss, "phrase_type": phrase_type,
@@ -37,14 +38,20 @@ def make_item(rank, display_phrase, source_span, source_sentence, ja_gloss="テ�
         "comprehension_impact": "HIGH", "figurative_or_emotional_value": "LOW", "spoiler_risk": "LOW",
         "portfolio_category": category, "portfolio_substitution": False,
         "portfolio_substitution_reason": "reason",
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設)。
+        "key_phrase_role": key_phrase_role,
     }
 
 
 def make_valid_5_items():
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設): 5件中
+    # 1件(rank3)をtopicとし、4+1構成のPASS fixtureとして成立させる
+    # (残り4件は既定のimportant)。
     return [
         make_item(1, "stoppage time", "stoppage time", "Then came stoppage time."),
         make_item(2, "blow the whistle", "blew the whistle", "The referee blew the whistle."),
-        make_item(3, "wild finish", "a wild finish", "It was a wild finish to the match."),
+        make_item(3, "wild finish", "a wild finish", "It was a wild finish to the match.",
+                  key_phrase_role="topic"),
         make_item(4, "file out", "file out", "Fans began to file out of the stadium."),
         make_item(5, "take charge", "take charge", "The captain decided to take charge of the celebration."),
     ]

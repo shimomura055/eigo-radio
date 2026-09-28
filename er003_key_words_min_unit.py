@@ -42,6 +42,7 @@ from __future__ import annotations
 import json
 import re
 import unicodedata
+from collections import Counter
 from typing import Any, Callable, Optional
 
 import er003_b2_key_words as p2d
@@ -112,6 +113,12 @@ TRI_LEVELS = ("LOW", "MEDIUM", "HIGH")
 PORTFOLIO_CATEGORIES = ("general_unknown_word", "domain_expression", "compact_listening_pattern",
                         "figurative_emotional", "causal_contrast", "other")
 
+# KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28、ユーザー承認
+# APPROVED_FOR_PRODUCTION): 5枠=重要語・重要表現4("important")+Topic
+# Phrase/Word 1("topic")。候補区分(重要な単語・単語群/phrase・idiom・
+# phrasal verb/word)とは独立した、選定後の役割ラベル。
+KEY_PHRASE_ROLES = ("important", "topic")
+
 _ITEM_SCHEMA_PROPERTIES = {
     "rank": {"type": "integer"},
     "display_phrase": {"type": "string"},
@@ -131,6 +138,7 @@ _ITEM_SCHEMA_PROPERTIES = {
     "portfolio_category": {"type": "string", "enum": list(PORTFOLIO_CATEGORIES)},
     "portfolio_substitution": {"type": "boolean"},
     "portfolio_substitution_reason": {"type": "string"},
+    "key_phrase_role": {"type": "string", "enum": list(KEY_PHRASE_ROLES)},
 }
 _ITEM_REQUIRED_FIELDS = tuple(_ITEM_SCHEMA_PROPERTIES.keys())
 
@@ -406,6 +414,14 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
             this_item_reasons.append(f"portfolio_categoryが不正(実際: {item.get('portfolio_category')!r})")
         if not isinstance(item.get("portfolio_substitution"), bool):
             this_item_reasons.append("portfolio_substitutionがbooleanでない")
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28): 候補区分
+        # (phrase_type等)とは独立した選定後の役割ラベル。enum妥当性のみを
+        # ここで検証し、4+1件数の集計検証は下記(rank/display_phrase重複
+        # チェックと同じ箇所)でexpected_item_count==PRODUCTION_ITEM_COUNT_
+        # UNCHANGED(5、本番Production経路のみ)の場合に限定して行う
+        # (B2研究版10件はガードしない)。
+        if item.get("key_phrase_role") not in KEY_PHRASE_ROLES:
+            this_item_reasons.append(f"key_phrase_roleが不正(実際: {item.get('key_phrase_role')!r})")
 
         rank = item.get("rank")
         ranks.append(rank)
@@ -458,6 +474,21 @@ def validate_min_unit_selection(parsed_with_metadata: dict, b2_article_text: str
     if len(display_phrases) != len(set(display_phrases)):
         reasons.append("display_phraseに重複がある")
         ok = False
+
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28、ユーザー承認
+    # APPROVED_FOR_PRODUCTION): 本番Production経路(5件、expected_item_count
+    # ==PRODUCTION_ITEM_COUNT_UNCHANGED)のみ、topic=1件・important=
+    # expected_item_count-1件の4+1構成を検証する。B2研究版(10件)は
+    # この構成契約の対象外のためガードする。不成立は既存
+    # KEY_WORDS_STRUCTURE_INVALIDへそのまま合流する(新しいstatus値は
+    # 作らない)。
+    if expected_item_count == PRODUCTION_ITEM_COUNT_UNCHANGED:
+        role_counts = Counter(it.get("key_phrase_role") for it in items if isinstance(it, dict))
+        if role_counts.get("topic", 0) != 1 or role_counts.get("important", 0) != expected_item_count - 1:
+            reasons.append(
+                f"key_phrase_roleがtopic=1件・important={expected_item_count - 1}件でない"
+                f"(実際: {dict(role_counts)})")
+            ok = False
 
     if item_reasons and any(r["reasons"] for r in item_reasons):
         ok = False

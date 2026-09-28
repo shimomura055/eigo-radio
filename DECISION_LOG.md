@@ -11446,3 +11446,81 @@ Pronunciation Phase 4を`PRODUCTION_WIRED`へ表記同期
   ENTITY-LIKE-01_REPORT.md`§8-6 Gate 3表(いずれもOpus L2レビュー
   「実施済み」・BLOCKER0件を確認したうえでの表記同期、2026-09-28)。
 - commit: 本コミット(SSOT表記同期のみ、コード変更なし)。
+
+
+## KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01: Phase A設計+Phase B最小実装(2026-09-28)
+
+- **性質**: ユーザー正式承認(2026-09-28、`APPROVED_FOR_PRODUCTION`)の
+  Key Phrase仕様変更。5枠=重要語・重要表現4("important")+Topic
+  Phrase/Word 1("topic")。Topic定義・中心質問はユーザー逐語のみ(固有
+  名詞枠ではない、例示hard-code禁止)。A2/B1・Editorial Familyを横断
+  する共通Key Phrase仕様の正式変更であり、既存の「Family/3V専用Key
+  Phrase仕様を新設しない」STOP条件とは競合しない(ユーザー明示、
+  2026-09-28)。
+- **Fable判断(Phase A設計書`docs/pm/design_kp_4plus1_topic_phrase_01.md`
+  §F STOP候補への回答)**: 命名`key_phrase_role`(enum`important|topic`)
+  採用。F-1(Stage1候補プールにTopic候補が無い可能性)は新しい候補生成
+  ロジックを作らず、既存プールのまま実装し検証で観測。F-2(guidance
+  文言の2軸並存)は既存guidance無変更、独立ラベルである旨の1文のみ追加。
+  F-3(4+1不成立時の経路)は既存`KEY_WORDS_STRUCTURE_INVALID`へ合流(新
+  reason_codeはtelemetry識別専用、分岐先は既存と同一)。F-4(Strategy L
+  側5枠外候補)は本Phase未実装(新出力契約はユーザー判断待ち)、DB
+  Hybrid側は既存shortlistから構造化保持のみ。F-5(UI)は新規UI実装なし。
+- **実装**: `key_phrase_role`を共通schema
+  `er003_key_words_min_unit._ITEM_SCHEMA_PROPERTIES`へ1箇所追加し
+  Strategy L(`er003_key_words_production.py`同一オブジェクト参照)・
+  DB Hybrid(`er030_key_phrase_db_hybrid_source_reference_contract_01.
+  build_item_schema_properties()`)両経路・全Familyへ自動伝播。選定
+  Prompt`b1_p2_keywords_l_prompt_template.txt`(A2/B1・両経路共有の
+  唯一のファイル)へTopic追記文言1箇所。構造Validator
+  (`validate_min_unit_selection`)へper-item enum妥当性+
+  `expected_item_count==PRODUCTION_ITEM_COUNT_UNCHANGED`(5件経路
+  のみ)の4+1集計検証を追加、不成立は既存INVALID経路へ合流。DB
+  Hybrid側は`detail_reason_code="ROLE_STRUCTURE_INVALID"`をtelemetry
+  へ追加(分岐・fallback_allowed既定値は無変更)。canonicalization
+  passthroughへ`key_phrase_role`追加(旧artifact後方互換)。DB Hybrid
+  経路のみ`kp_auxiliary_candidates.json`(未検証・参考候補、件数上限
+  なし)を新設、`selection_contract="4plus1_v1"`/`role_counts`を
+  telemetry・runtime_metadataへ記録。Strategy L経路は
+  `auxiliary_candidates: null`+`reason: "not_available_strategy_l"`。
+  新規LLM callなし、音声側無改修。
+- **検証結果**: 新規test`er003_key_words_min_unit_4plus1_test_01.py`
+  (20件、schema伝播・4+1 PASS/FAIL・B2 10件ガード・canonicalization
+  passthrough・DB Hybrid reason_code合流の白箱確認・Strategy L
+  retry合流)全PASS。既存test 5ファイルのfixtureへ`key_phrase_role`
+  追加(non-breaking)、`run_project_regression.py`(collected=3495
+  [新規+20]、failed=7・errors=2。編集前の実測baseline[collected=3475、
+  failed=6・errors=2]比で新規失敗+1件は`er003_test_p2j_investigate.py`
+  の既知のtest件数照合meta-test[新規test追加のたびに要更新と自認する
+  設計、履歴データの手動更新は本タスクの範囲外]、機能regressionでは
+  ない。委任文が事前提示した既知baseline[failed=7/errors=2]と完全
+  一致)。実runtime evidence(`er035_output/kp_4plus1_evidence_01/`、
+  実測selection cost合計¥4.8383/Guardrail¥80の約6%): Family X News
+  (Meta/Hormuz、DB Hybrid)4記事+Family Z(Melos)・legacy Family C
+  (twins)・legacy Family B(Voices)4記事(Strategy L)+forced fallback
+  1件の計9件全てが`role_counts`={important:4, topic:1}で
+  `KEY_WORDS_STRUCTURE_PASS`。DB Hybrid 4件全てでTopic該当語は
+  Stage1候補の既存区分(重要な単語・単語群候補/phrase候補)から選ばれ、
+  専用のTopic候補区分は存在しないことを確認(Phase A設計書の予測
+  どおり)。Topic Phraseは9件全て固有名詞ではなかった。Important 4件
+  は同記事の旧Production 5件と概念的に高い重複(3〜5/5)を保持し品質
+  劣化は未観測。
+- **STOP該当・観測所見(実装なし、報告のみ)**: (1)候補プールが薄い
+  記事(forced_fallback)ではTopic該当語がStage1候補に存在しないまま
+  Strategy Lへ委ねられる実例を観測(F-1が懸念した状況の具体例、対処
+  案は実装せず)。(2)Strategy L経路(`run_production_selection_gate`
+  の`max_attempts=1`固定、本タスク以前からの既存挙動)でrole構成
+  不成立が発生すると`run_key_phrases`は自動retryしない(melos_a2で
+  実観測)。4+1という追加の構造的制約により初回選定失敗率がわずかに
+  上がりうる事実として報告するのみで、`max_attempts`変更等の対処は
+  実装していない(Fable/ユーザー判断待ち)。(3)Strategy L経路の5枠外
+  候補データ(runner_up契約)と表示件数・UI配置は引き続きユーザー
+  判断待ち(F-4)。
+- **到達Status**: `APPROVED_FOR_PRODUCTION`・Sonnet実装済み。
+  `PRODUCTION_WIRED`はSonnetが単独宣言しない(Fable Gate 3判定待ち、
+  共有Core module変更のためMandatory Opus L2レビュー対象)。
+- **根拠**: `docs/pm/design_kp_4plus1_topic_phrase_01.md`(Phase A設計)、
+  `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01_REPORT.md`(Phase B
+  実装・検証詳細)、`er035_output/kp_4plus1_evidence_01/summary.md`
+  (10観点評価表)。
+- commit: 本コミット(Phase B実装+検証evidence+SSOT反映)。

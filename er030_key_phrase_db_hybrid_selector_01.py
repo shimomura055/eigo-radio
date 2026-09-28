@@ -51,6 +51,7 @@ import json
 import os
 import re
 import time
+from collections import Counter
 
 import er003_b1_p2_keywords as bk
 import er003_key_phrase_source_gate_01 as source_gate
@@ -556,10 +557,20 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         usage.get("cached_input_tokens"), usage.get("output_tokens"))
     cost_guard_exceeded = cost_jpy > guard
 
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28): 4+1構成
+    # (key_phrase_role: important|topic)のcontract表示と、選定itemの役割
+    # 内訳(role_counts、observability用。件数検証そのものはvalidatorが
+    # 既に行っている)。parsed["items"]はPASS/INVALID問わず存在する
+    # (schema上必須フィールドのため、モデルが値を返している限りenumの
+    # 妥当性に関わらずカウント可能)。
+    role_counts = dict(Counter(
+        it.get("key_phrase_role") for it in ((parsed or {}).get("items") or []) if isinstance(it, dict)))
+
     runtime_metadata = {
         "article_id": article_id, "strategy_id": prod.STANDARD_STRATEGY_ID, "source_level": source_level,
         "kp_backend": "db_hybrid", "final_status": status, "model_id": model_id, "response_id": response_id,
         "cost_jpy": round(cost_jpy, 4), "cost_guard_exceeded": cost_guard_exceeded, "usage": usage,
+        "selection_contract": "4plus1_v1", "role_counts": role_counts,
         "shortlist_total_count": shortlist_count,
         "shortlist_info": {
             "phrase_included_count": shortlist_info["phrase_included_count"],
@@ -593,10 +604,19 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         json.dump(runtime_metadata, f, ensure_ascii=False, indent=2)
 
     if status != "KEY_WORDS_STRUCTURE_PASS":
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28、Fable
+        # 判断F-3): 分岐先(status/fallback_allowed=True既定)は既存の
+        # KEY_WORDS_STRUCTURE_INVALID経路と完全に同一のまま変更しない
+        # (新しい分岐点を作らない)。telemetry識別のためのタグとして
+        # `role_structure_invalid`のみ追加する(4+1件数不成立がreasonsに
+        # 含まれるかをgrepするだけの非侵襲的な観測フラグ)。
+        validation_reasons = gate_result.get("validation_reasons", []) or []
+        role_structure_invalid = any("key_phrase_role" in r for r in validation_reasons)
         raise DbHybridFailure(
             status, f"DB Hybrid selector gateがPASSしませんでした(status={status})",
             telemetry={"reason_code": status, "cost_jpy": round(cost_jpy, 4), "model_id": model_id,
-                       "shortlist_total_count": shortlist_count})
+                       "shortlist_total_count": shortlist_count,
+                       "detail_reason_code": "ROLE_STRUCTURE_INVALID" if role_structure_invalid else None})
 
     # 修正1回目(Opus L2所見S3): source_span/source_sentenceの生article_text
     # 照合(canonicalization前、machine screeningのみ)。
@@ -614,13 +634,39 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     # 破棄・fallbackしない(より高価な全文方式への再課金を避ける)。
     # cost_guard_exceededは観測用フラグとしてのみ結果へ残す。
 
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28、Fable判断
+    # F-4): 「5枠に入らなかった重要語・重要フレーズ」の後段UI向け構造化
+    # データを、db_hybrid_stage1_debug.jsonと同じ母集団(shortlist_with_ids)
+    # から、選ばれなかった候補を件数上限なし・既存shortlist順のまま
+    # 保持する。validator/canonicalization/source gateを一切通過していない
+    # 未検証の生候補であるため、verification_statusで明示する(表示件数・
+    # UI配置はユーザー判断、ここでは決めない)。
+    selected_candidate_ids = {
+        it.get("source_candidate_id") for it in parsed["items"] if isinstance(it, dict)}
+    auxiliary_candidates = [
+        {**c, "verification_status": "unverified_reference_candidate"}
+        for c in shortlist_with_ids if c.get("candidate_id") not in selected_candidate_ids
+    ]
+    with open(os.path.join(out_dir, "kp_auxiliary_candidates.json"), "w", encoding="utf-8") as f:
+        json.dump({
+            "selection_contract": "4plus1_v1",
+            "source_reference_contract": src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
+            "note": ("Stage1/shortlistの候補のうち、最終5件に選ばれなかったもの。validator/"
+                      "canonicalization/source consistency gateを一切通過していない未検証の"
+                      "参考候補(件数上限なし、順序は既存shortlist出現順)。表示件数・UI配置は未定。"),
+            "auxiliary_candidate_count": len(auxiliary_candidates),
+            "candidates": auxiliary_candidates,
+        }, f, ensure_ascii=False, indent=2)
+
     result = {
         "status": status, "parsed": parsed, "original_items": parsed["items"],
         "model_id": model_id, "response_id": response_id, "cost_jpy": round(cost_jpy, 4),
         "cost_guard_exceeded": cost_guard_exceeded,
         "shortlist_total_count": shortlist_count, "kp_backend": "db_hybrid",
         "source_reference_contract": src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
+        "selection_contract": "4plus1_v1", "role_counts": role_counts,
         "candidate_mismatch_suspected_count": restore_telemetry.get("mismatch_count", 0),
+        "auxiliary_candidate_count": len(auxiliary_candidates),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
     }
     return result

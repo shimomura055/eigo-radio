@@ -617,8 +617,12 @@ def merge_canonicalization_result(original_items: list, canonicalization_items: 
         # された場合のみ選定itemに存在する追加フィールドを、存在する場合
         # だけbackward compatibleに引き継ぐ(Strategy L等、これらの
         # フィールドを持たない既存経路の挙動・出力形は一切変更しない)。
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設):
+        # key_phrase_role(important|topic)も同じbackward compatibleな
+        # passthroughパターンで引き継ぐ(旧artifactに存在しない場合は
+        # 旧contractとして扱う、既存の他フィールドと同様)。
         for passthrough_field in ("source_reference_contract", "source_candidate_id",
-                                   "surface_echo", "candidate_mismatch_suspected"):
+                                   "surface_echo", "candidate_mismatch_suspected", "key_phrase_role"):
             if passthrough_field in original:
                 merged_item[passthrough_field] = original[passthrough_field]
         merged_items.append(merged_item)

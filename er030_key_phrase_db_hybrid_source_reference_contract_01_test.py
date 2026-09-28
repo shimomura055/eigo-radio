@@ -373,6 +373,8 @@ class ProductionValidatorUnchangedIntegrationTests(unittest.TestCase):
             "comprehension_impact": "HIGH", "figurative_or_emotional_value": "LOW",
             "spoiler_risk": "LOW", "portfolio_category": "domain_expression",
             "portfolio_substitution": False, "portfolio_substitution_reason": "",
+            # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設)。
+            "key_phrase_role": "important",
         }
         restored = src_ref_contract.restore_source_fields(
             [item], ids["id_to_candidate"], _fixture_sentence_reference())

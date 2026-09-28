@@ -29,6 +29,7 @@ import json
 import os
 import re
 import time
+from collections import Counter
 
 import er003_audio_tts_asr_safety as safety
 import er003_b1_p2_keywords as bk
@@ -228,11 +229,15 @@ def run_key_phrase_selection(article_text: str, out_dir: str, article_id: str, s
         article_text, out_dir, article_id, source_level, process=process,
         diagnostic_note=diagnostic_note)
     result["kp_backend_used"] = "strategy_l"
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28): この呼び出し
+    # 時点でresult["original_items"]が入手可能な場合のみ(status PASS)
+    # role_countsを記録する(各attemptでのobservability)。
     _log_kp_backend_telemetry(
         article_id, source_level, requested_backend="strategy_l", backend_used="strategy_l",
         final_status=result.get("status"), fallback_triggered=False,
         model_id=result.get("model_id"), cost_jpy=None, synthetic=synthetic,
-        source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID)
+        source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID,
+        role_counts=_role_counts_from_items(result.get("original_items")))
     return result
 
 
@@ -258,11 +263,20 @@ def _run_key_phrase_selection_strategy_l(article_text: str, out_dir: str, articl
         article_id, make_selector_factory, article_text,
         strategy_id=prod.STANDARD_STRATEGY_ID, max_attempts=1,
     )
+    # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28、Fable判断):
+    # Strategy L経路にもDB Hybridと同名のcontract表示・role_countsを
+    # 追加する。5枠外候補データ(F-4)は本Phaseでは実装しない(新出力契約は
+    # ユーザー判断待ち)ため、明示的にauxiliary_candidates=nullで
+    # 「未提供」を記録する(黙示的な欠落にしない)。
+    role_counts = dict(Counter(
+        it.get("key_phrase_role") for it in ((parsed or {}).get("items") or []) if isinstance(it, dict)))
     runtime_metadata = {
         "article_id": article_id, "strategy_id": prod.STANDARD_STRATEGY_ID, "source_level": source_level,
         "record_status": "PROTOTYPE", "approval_status": "NOT_APPROVED",
         "model": bk.SELECTOR_MODEL, "reasoning_effort": bk.SELECTOR_REASONING_EFFORT,
         "final_status": status, "model_id": model_id, "response_id": response_id,
+        "selection_contract": "4plus1_v1", "role_counts": role_counts,
+        "auxiliary_candidates": None, "auxiliary_candidates_reason": "not_available_strategy_l",
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
     }
     with open(f"{out_dir}/keywords_runtime_metadata.json", "w", encoding="utf-8") as f:
@@ -291,6 +305,16 @@ KP_BACKEND_SPEC_ID = "KEY-PHRASE-DB-HYBRID-FAMILY-X-PRODUCTION-WIRING-01"
 # 文字列を直接複製する[両定数は意味的に対になる、値の変更時は両方を
 # 揃えて更新する])。
 FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID = "free_text_strategy_l"
+
+
+def _role_counts_from_items(items):
+    """KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28): telemetry
+    観測用に、items(存在する場合)のkey_phrase_role内訳を集計する
+    (件数検証そのものはvalidatorが既に行っており、ここは観測のみ)。
+    itemsが入手不能な時点(選定失敗直後等)ではNoneを返す。"""
+    if not items:
+        return None
+    return dict(Counter(it.get("key_phrase_role") for it in items if isinstance(it, dict)))
 
 
 def _log_kp_backend_telemetry(article_id: str, source_level: str, requested_backend: str,
@@ -409,7 +433,9 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         shortlist_total_count=result.get("shortlist_total_count"),
         cost_guard_exceeded=result.get("cost_guard_exceeded"),
         source_reference_contract=result.get("source_reference_contract"),
-        candidate_mismatch_suspected_count=result.get("candidate_mismatch_suspected_count"))
+        candidate_mismatch_suspected_count=result.get("candidate_mismatch_suspected_count"),
+        role_counts=_role_counts_from_items(result.get("original_items")),
+        auxiliary_candidate_count=result.get("auxiliary_candidate_count"))
     result["kp_backend_used"] = "db_hybrid"
     _merge_kp_backend_metadata_into_runtime_file(out_dir, {
         "kp_backend": "db_hybrid", "kp_backend_used": "db_hybrid",
@@ -420,6 +446,9 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
         "kp_backend_attempts_detail": result.get("attempts_detail"),
         "kp_backend_source_reference_contract": result.get("source_reference_contract"),
         "kp_backend_candidate_mismatch_suspected_count": result.get("candidate_mismatch_suspected_count"),
+        "kp_backend_selection_contract": result.get("selection_contract"),
+        "kp_backend_role_counts": result.get("role_counts"),
+        "kp_backend_auxiliary_candidate_count": result.get("auxiliary_candidate_count"),
     })
     return result
 

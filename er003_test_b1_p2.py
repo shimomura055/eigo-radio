@@ -18,7 +18,7 @@ import er003_b1_p2_preview as bp
 import er003_key_words_production as prod
 
 
-def make_selection_item(rank, phrase, gloss, sentence, span=None):
+def make_selection_item(rank, phrase, gloss, sentence, span=None, key_phrase_role="important"):
     return {
         "rank": rank, "display_phrase": phrase, "source_span": span or phrase,
         "source_sentence": sentence, "ja_gloss": gloss, "phrase_type": "technical_term",
@@ -28,6 +28,8 @@ def make_selection_item(rank, phrase, gloss, sentence, span=None):
         "figurative_or_emotional_value": "LOW", "spoiler_risk": "LOW",
         "portfolio_category": "domain_expression", "portfolio_substitution": False,
         "portfolio_substitution_reason": "reason",
+        # KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設)。
+        "key_phrase_role": key_phrase_role,
     }
 
 
@@ -37,13 +39,15 @@ GOOD_B1_ARTICLE = (
     "The captain made two assists that night. England took off players to defend."
 )
 
+# KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(2026-09-28新設): 5件中1件
+# (rank3)をtopicとし、4+1構成のPASS fixtureとして成立させる。
 FIVE_ITEMS = [
     make_selection_item(1, "shot on target", "枠内シュート", "Neither team had a shot on target before the break.",
                         span="shot on target"),
     make_selection_item(2, "stoppage time", "アディショナルタイム", "Then stoppage time began.",
                         span="stoppage time"),
     make_selection_item(3, "substitute", "途中出場選手", "Messi crossed the ball to a substitute.",
-                        span="substitute"),
+                        span="substitute", key_phrase_role="topic"),
     make_selection_item(4, "make an assist", "アシストを記録する", "The captain made two assists that night.",
                         span="made two assists"),
     make_selection_item(5, "take off a player", "選手を交代させる", "England took off players to defend.",
