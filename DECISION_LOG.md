@@ -12154,3 +12154,29 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
 - **根拠**: `FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_REPORT.md`、
   `docs/pm/design_family_x_concreteness_an3_t0_production_wiring_01.md`
   §8。
+
+## KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03: text仕様のユーザー正式採用(APPROVED_FOR_PRODUCTION、未配線)+音声Style Before/After Trial記録(2026-09-28)
+
+- **(a) text仕様の正式採用**: Advanced Key Phraseの英語解説text仕様
+  (KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02のB候補: 同一英語
+  Phrase+平易な英語解説、TRIAL-01のexplanation_en仕様文を逐語再利用、
+  語数上限15語目安、新規Fact追加なし)をユーザーが2026-09-28に
+  `APPROVED_FOR_PRODUCTION`と正式決定。Production wiringは未実施
+  (別管理IDでユーザー判断後に実施)。`KEY_PHRASE_EXPLANATION_EN`Role は
+  Production未実装のまま。
+- **(b) TRIAL-03(音声Styleのみ)**: commit`484c233e`(push済み)。Hormuz
+  既存5 Phrase・B解説文を逐語使用(再生成・再選定なし)。Before=「clear,
+  precise, explanatory」(er041既存音声をstyle metadata一致確認のうえ
+  reuse、新規0件)/After=「clear, precise, unhurried」(5件新規、
+  Production同一関数、Trial Store隔離、同期実行)。After 5件
+  asr_verified=True、retry 0、drift なし。費用¥0.73(上限¥10)。
+  Regression 16/16。Production code/Prompt/Key Phrase選定/DB
+  Hybrid/Production Master Store無変更。Pages 7項目確認(HTTP 200、
+  headless Chrome DOM、省略表記0件、Style全文表示、audio 15件、mp3
+  15件200+デコードOK、Style metadata一致)。Opus発火なし。
+- **Fable判定**: `USER_DECISION_REQUIRED`(音声Styleはユーザー試聴で
+  Before/Afterを選ぶ)。text仕様は`APPROVED_FOR_PRODUCTION`(配線未実施、
+  `PRODUCTION_WIRED`ではない)。
+- **根拠**: `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03_REPORT.md`、
+  `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02_REPORT.md`§3。試聴:
+  https://shimomura055.github.io/eigo-radio/user_test/kp_advanced_explanation_audio_trial_03/index.html
