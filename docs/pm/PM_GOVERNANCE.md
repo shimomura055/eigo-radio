@@ -956,11 +956,13 @@ SERIALIZATION-RULE-01`、ユーザー正式採用、再発防止ルール)**:
   差分(stashされていない未追跡ファイル・working tree差分)に対しては、
   上記(a)〜(d)のSSOT直列化ルールと同様、一切触れない。
 - (h) **委任Agentの削除・移動禁止(2026-09-28、`PM-RECOVER-DELETED-
-  UNTRACKED-FILES-01`事後開示を受けた運用補足)**: 委任Agentは自タスク
-  の所有ファイル以外を削除・移動しない(`rm`/`git clean`禁止)。未追跡
-  ファイルは他Agent/ユーザーの作業物として扱う(正式ルール化は
-  ユーザー判断待ち、詳細`DECISION_LOG.md``PM-RECOVER-DELETED-UNTRACKED-
-  FILES-01`エントリ)。
+  UNTRACKED-FILES-01`事後開示を受けた運用補足、2026-09-28ユーザー正式
+  採用)**: 委任Agentは、自タスク外のファイル・差分を削除してはならない。
+  `rm`/`git clean`等により、他Agent・他タスク・未commit作業を消しては
+  ならない。並列Agent環境では、diff ownership確認/自タスク外差分を
+  触らない/不明な未commit差分を勝手にcleanupしない、を徹底する
+  (2026-09-28ユーザー正式採用、詳細`DECISION_LOG.md``PM-RECOVER-
+  DELETED-UNTRACKED-FILES-01`エントリ)。
 
 ## 9. ユーザー向け報告フォーマットとPMとしての説明原則(USER-FACING REPORT FORMAT)
 

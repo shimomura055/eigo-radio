@@ -12264,6 +12264,9 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   `user_test/fixed_shell_champion_trial_02/index.html`の表ヘッダ列順(左=
   Baseline/Candidate A[現行Production Master]、中=Candidate B、右=
   Candidate C)から列位置を確定し、ユーザー選定結果を対応させた。
+  **2026-09-28追記(`PM-USER-DECISIONS-2026-09-28-CONSOLIDATION-SSOT-02`)**:
+  上記の列位置(左=A/中=B/右=C)確定はcommit`d1ddf454`で機械確認・記録済み
+  であり、再確認不要。
 
   | phrase | 列位置 | candidate | style全文 | model/voice |
   |---|---|---|---|---|
@@ -12374,3 +12377,58 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   wiring_regression_01/hormuz/audit/confirmation_regen_results.json`。
 - **到達Status**: `APPROVED_FOR_PRODUCTION`(配線完了・Opus L2レビュー+
   Fable Gate 3判定待ち)。`PRODUCTION_WIRED`は未宣言。
+- **事後開示(2026-09-28、`PM-USER-DECISIONS-2026-09-28-CONSOLIDATION-
+  SSOT-02`)**: 本entryのcommit`9edfdc5f`には`Management-ID:`trailerが
+  欠落している(担当Sonnetの付け忘れ)。履歴書き換え(amend/force push)は
+  行わないため、この事後開示をここに記録する。
+
+## FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01: ユーザー決定によりR1/R2 reminderを削除(2026-09-28)
+
+- **決定**: Trial-02で未検証だった`CONCRETENESS_CONTROL_AN3_REMINDER_JA`
+  (R1/R2 3箇所)をProduction正式経路から削除。AN3はOriginal側のみに戻す
+  (Trial-02と同一条件)。
+- **実装**: `er019_family_x_ja_writer_o_r1_r2_01.py`4箇所をPhase B以前
+  (commit`b814f241`)の逐語へ復元、`verbatim_shas()`から該当sha削除。
+- **テスト**: 新規regression(18件)+既存er019/er037/er039全PASS(1件FAILは
+  並行Task 4のファイルで無関係)。
+- **runtime evidence**: Phase B時点記録は保持、再生成なし(¥0)。
+- **commit**: `54739a9d`/`8d9ef6c6`。
+
+## PM-USER-DECISIONS-2026-09-28-CONSOLIDATION-SSOT-02: ユーザー整理事項の記録(2026-09-28)
+
+- **(A) PM_GOVERNANCE.md 8節(h)の正式採用**: `PM-RECOVER-DELETED-
+  UNTRACKED-FILES-01`事後開示を受けた運用補足だった8節(h)を、ユーザーが
+  正式ルールとして確定した。委任Agentは自タスク外のファイル・差分を
+  削除してはならない(`rm`/`git clean`禁止)。並列Agent環境ではdiff
+  ownership確認・自タスク外差分不介入・不明な未commit差分の勝手な
+  cleanup禁止を徹底する。
+- **(B) origin/main先行commitの正当性確認**: `19065b87`/`686934d3`/
+  `3cd361c0`(`user_test/tts_all_role_style_trial_01/`周辺)は、ユーザーの
+  ChatGPTセッションから直接GitHubへ入れた正当な試聴ページ修正である。
+  不明な第三者変更として扱わない。
+- **(C) OPEN-220**: 現行英語化Prompt維持・英語側への追加抑制なし、はユーザー
+  決定済みのため`DEFERRED`(OPEN_ITEMS.md上は既に`DEFERRED`表記済みを確認、
+  再度`USER_DECISION_REQUIRED`へ戻さない)。
+- **(D) OPEN-225(`a2_jt_debug.json`)**: ユーザー判断対象外と正式決定。
+  Status`CLOSED`(Production/Regression/runtime evidenceに必要と判明した
+  場合のみ技術課題としてClaude側が報告)。
+- **(E) `KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04`記録**
+  (commit`650df8d8`/`dc75d598`): 中間3案A=「clear, precise, at a slightly
+  relaxed pace」B=「clear, precise, at a measured pace, without dragging」
+  C=「clear, precise, carefully paced for understanding, without slowing
+  down」、model gemini-3.8-flash-lite-tts/voice Aoede、15件OK・retry0・
+  drift なし、durationはBefore<A≈B<C<unhurried、費用¥2.02、Regression
+  21/21、Production無変更、Pages 7項目PASS。Status`USER_DECISION_REQUIRED`
+  (Fable判定、試聴でA/B/C選択待ち)。
+- **(F) `TTS-FIXED-SHELL-NUMBER-THREE-FIVE-RETRIAL-01`記録**(commit
+  `fa37cd85`/`59105faa`): 採用済みOne(C)/Two(B)/Four(C)と同model
+  (Flash-Lite)・同voice(Charon)・同Style系統(B/C既存定数)でThree/Five
+  各4 take、16take中OK7(Three: B-take1/B-take4/C-take2、Five: B-take1/
+  C-take2/C-take3/C-take4)、不合格9(極短数字語の既知パターン)は人間確認用
+  として掲載、費用¥1.69、Regression 19/19、Production Store無変更、
+  Pages 7項目PASS。Status`USER_DECISION_REQUIRED`(take選択待ち)。
+- **(G) 固定フレーズChampion対応表**: 既にcommit`d1ddf454`で機械確定・
+  記録済み(左=A/中=B/右=C)。再確認不要(本entry(A)〜(F)の詳細は
+  `docs/pm/REPORT_LEDGER.md`該当行・各REPORTを参照)。
+- **根拠**: ユーザー正式決定(2026-09-28、Fable転記)。SSOT反映のみ
+  (コード/Prompt無変更、API支出¥0)。

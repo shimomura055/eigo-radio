@@ -889,11 +889,11 @@ signal/limitation必須化ルール・Trend成立条件・Evidence Strength分�
 (`er019_family_x_ja_writer_o_r1_r2_01.py::build_original_prompt()`)へ、
 数字・時刻・固有名詞に関する定性的な抑制指示(AN3=A3+N2、`FAMILY-XY-
 CONCRETENESS-CONTROL-TRIAL-01/02`から逐語移設)を`CONCRETENESS_CONTROL_
-AN3_BLOCK`として追加した。R1/R2側にも`CONCRETENESS_CONTROL_AN3_
-REMINDER_JA`(短いreminder文)を、既存retry/fallback/regeneration経路
-(通常r1/r2ループ・R2 Fact Check must-fix・R2音声記号must-fix)全3箇所
-へ個別追加した(既存コードが関数化されていないため、SYMBOL_PREVENTION_
-BLOCK_JAと同型の個別append方式、リファクタリングはしない)。
+AN3_BLOCK`として追加した。R1/R2側にはreminder等の追加instructionは付与しない(2026-09-28ユーザー
+正式決定。当初Production Wiring時に追加した`CONCRETENESS_CONTROL_AN3_
+REMINDER_JA`はTrial-02で検証されていない未Trial追加仕様だったため削除。
+AN3はOriginal側のみ[Trial-02=`er039`実測時と同一条件]。R1/R2は既存
+Revision指示[`REVISION_INSTRUCTIONS["r1"/"r2"]`]のみ)。
 
 **ユーザー正式思想(逐語)**: 「細かい数字・時刻・過度な精度は極力使わず、
 記事理解に本当に必要な数字だけ最小限残す。固有名詞も同様に、理解上
@@ -923,9 +923,10 @@ OPEN-20(固有名詞密度の数値目標REJECTED)とは対象が異なり非衝
 `er019_output/family_x_entertainment_production_runner_01/an3_t0_wiring_regression_01/{hormuz,meta}/`
 にてHormuz・Metaの2記事をJA(Original→R1→R2)+Advanced(English)まで
 正式path(writer/advanced段階のみ、TTS/ASRなし)で再生成した。
-`runtime_evidence.json`に`concreteness_an3_block_sha256`/
-`concreteness_an3_reminder_sha256`が2記事とも記録され、
-`jaw.verbatim_shas()`の値と一致。JA Fact Check最終status: Hormuz
+`runtime_evidence.json`に`concreteness_an3_block_sha256`が2記事とも
+記録され、`jaw.verbatim_shas()`の値と一致(reminder削除は
+`FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_REPORT.md`§16
+[2026-09-28、ユーザー決定]参照)。JA Fact Check最終status: Hormuz
 Original`LEDGER_COMPLIANT`(1発)・R2`LEDGER_COMPLIANT`(既存1回must-fix
 retryでMAJOR解消)、Meta Original`LEDGER_COMPLIANT`(既存1回must-fix
 retryでMAJOR解消)・R2`LEDGER_COMPLIANT`(1発)。Advanced Englishも
