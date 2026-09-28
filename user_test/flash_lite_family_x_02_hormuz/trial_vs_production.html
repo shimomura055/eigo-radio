@@ -24,7 +24,7 @@ button{padding:7px 10px;cursor:pointer}code{font-size:.88em}.small{color:#555;fo
 <h2>記事全体</h2>
 <div class="grid">
 <div class="card"><strong>前回Trial</strong>
-<audio controls preload="none" src="../../er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/full_article_b.mp3"></audio>
+<audio controls preload="none" src="./prev_trial/full_article_b.mp3"></audio>
 <div class="small">Stage 3 / Flash-Lite / Advanced</div></div>
 <div class="card"><strong>今回Production版</strong>
 <audio id="currentFull" controls preload="metadata" src="./hormuz_advanced_flash_lite.mp3"></audio>
@@ -57,7 +57,7 @@ const cur=document.getElementById('curPlayer');
 let stopAt=null;
 function playPrev(id){
   cur.pause(); stopAt=null;
-  prev.src='../../er022_output/tts_gemini_3_8_flash_lite_next_trial_01/stage3/segments_mp3/b/'+id+'.mp3';
+  prev.src='./prev_trial/'+id+'.mp3';
   prev.currentTime=0; prev.play();
 }
 function playCurrent(start,duration){
