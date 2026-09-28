@@ -436,6 +436,11 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     (詳細はTrial-06 REPORT参照)。既存Production validator
     (`p2g.validate_min_unit_selection`)・canonicalization・Source
     Consistency Gateはいずれも無変更のまま通す。"""
+    # SF-7(Opus L2所見、修正1回目、2026-09-28): family_profileの妥当性を
+    # 冒頭(Stage1/Wiktionary lookup前)でfail-closed確認する。未サポート値
+    # (例: "family_z")は、Stage1候補生成・Wiktionary API呼び出し等の
+    # 無駄な処理を発生させる前に即座にNotImplementedErrorで停止する。
+    src_ref_contract._check_family_profile_supported(family_profile)
     os.makedirs(out_dir, exist_ok=True)
     guard = cost_guard_jpy if cost_guard_jpy is not None else DEFAULT_COST_GUARD_JPY
     dbs = dbs if dbs is not None else core.load_group1_dbs()
@@ -489,6 +494,15 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
     shortlist_with_ids = ids_result["shortlist_with_ids"]
     id_to_candidate = ids_result["id_to_candidate"]
     candidate_ids = ids_result["candidate_ids"]
+
+    # SF-1(b)(Opus L2所見、修正1回目、2026-09-28): API呼び出し前にsource_span
+    # 整合性を機械監査・補正する(surface_form/context_sentence_idの独立
+    # 決定に起因する不整合の是正、詳細はsrc_ref_contract側docstring参照)。
+    span_consistency_result = src_ref_contract.correct_shortlist_source_span_consistency(
+        shortlist_with_ids, shortlist_info["sentence_reference"])
+    shortlist_with_ids = span_consistency_result["shortlist_with_ids"]
+    id_to_candidate = span_consistency_result["id_to_candidate"]
+    candidate_ids = span_consistency_result["candidate_ids"]
 
     lightweight_message = src_ref_contract.build_lightweight_user_message(
         title, shortlist_with_ids, shortlist_info["sentence_reference"], static_instructions,
@@ -559,6 +573,20 @@ def run_db_hybrid_selection(article_text: str, out_dir: str, article_id: str, so
         "candidate_mismatch_suspected_count": restore_telemetry.get("mismatch_count", 0),
         "candidate_mismatch_details": restore_telemetry.get("mismatch_details", []),
         "unresolved_candidate_id_count": len(restore_telemetry.get("unresolved", []) or []),
+        # SF-1(b)(修正1回目、Opus L2所見): API呼び出し前のsource_span整合性
+        # 監査・補正結果(corrected/excludedの内訳、非ブロッキング)。
+        "source_span_consistency_audit": {
+            "inconsistent_count": span_consistency_result["inconsistent_count"],
+            "corrected_count": len(span_consistency_result["corrected"]),
+            "excluded_count": len(span_consistency_result["excluded"]),
+            "corrected": span_consistency_result["corrected"],
+            "excluded": span_consistency_result["excluded"],
+        },
+        # SF-1(a)/SF-6(修正1回目、Opus L2所見): restore時点の防御的補正件数・
+        # 同一candidate_id重複選択件数(いずれも非ブロッキング)。
+        "span_corrected_in_restore_count": restore_telemetry.get("span_corrected_in_restore_count", 0),
+        "duplicate_candidate_id_selection_count":
+            restore_telemetry.get("duplicate_candidate_id_selection_count", 0),
         "attempts_detail": [{k: v for k, v in a.items() if k != "raw_text"} for a in attempts],
     }
     with open(os.path.join(out_dir, "keywords_runtime_metadata.json"), "w", encoding="utf-8") as f:

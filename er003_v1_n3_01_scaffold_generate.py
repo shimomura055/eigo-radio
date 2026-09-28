@@ -380,7 +380,13 @@ def _run_key_phrase_selection_db_hybrid_with_fallback(
             article_id, source_level, requested_backend="db_hybrid", backend_used="strategy_l_fallback",
             final_status="FALLBACK_TRIGGERED", fallback_triggered=True, fallback_reason_code=e.reason_code,
             fallback_reason=str(e), synthetic=synthetic,
-            source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID, **e.telemetry)
+            source_reference_contract=FREE_TEXT_SOURCE_REFERENCE_CONTRACT_ID,
+            # 項目15(軽微、Opus L2所見、修正1回目、2026-09-28): fallback
+            # 発火行にも「db_hybrid側で本来試みていた契約」を明記し、
+            # source_reference_contract(=fallback側の契約)と混同しない
+            # ようにする。
+            attempted_source_reference_contract=db_hybrid.src_ref_contract.SOURCE_REFERENCE_CONTRACT_ID,
+            **e.telemetry)
         print(f"[KP-BACKEND] db_hybrid selectorが失敗しました({e.reason_code}: {e})。"
               f"Strategy L全文方式へfallbackします({article_id})。")
         result = _run_key_phrase_selection_strategy_l(

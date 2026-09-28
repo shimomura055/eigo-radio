@@ -170,6 +170,194 @@ class RestoreSourceFieldsTests(unittest.TestCase):
         self.assertEqual(restored["items"][0]["source_span"], "digital twin")
 
 
+def _inconsistent_contract_worker_candidate(context_sentence_id="S1"):
+    """SF-1(Opus L2所見、修正1回目、2026-09-28)fixture: meta_a2実データの
+    `contract worker`/`contract workers`候補を反転させたもの(実データでは
+    最頻表層[surface_form]の"contract workers"が最初出現文にも実在して
+    いたため一致していたが、本fixtureは意図的に不一致にする: surface_form
+    は複数形[最頻]のまま、context_sentence_idが指す文には単数形のみが
+    実在する)。"""
+    return {
+        "surface_form": "contract workers", "canonical_form": "contract workers",
+        "unit_type": "phrase", "important_noun_phrase_candidate": True,
+        "source_span": "contract workers", "context_sentence_id": context_sentence_id,
+        "occurrence_count_in_article": 3,
+        "matched_dbs": ["repeated_compound_noun_heuristic"],
+        "db_categories": ["important_noun_phrase_heuristic"],
+        "observed_surface_variants": ["contract worker", "contract workers"],
+    }
+
+
+class SourceSpanConsistencyCorrectionTests(unittest.TestCase):
+    """SF-1(Opus L2所見、修正1回目、2026-09-28): surface_form(最頻表層)と
+    context_sentence_id(変異形のいずれかが最初にヒットした文)が独立に
+    決まるため、稀にsurface_formがその文自体には実在しないケースが発生
+    する(meta_a2実データ`contract worker`/`contract workers`で確認)。
+    (a)restore_source_fields側の防御的補正、(b)API呼び出し前の
+    correct_shortlist_source_span_consistencyの両方を検証する。"""
+
+    def test_restore_corrects_span_when_surface_form_not_in_context_sentence(self):
+        # (a) 防御的補正: 文には単数形のみ実在。
+        candidate = _inconsistent_contract_worker_candidate()
+        ids = src_ref_contract.assign_candidate_ids([candidate])
+        sentence_reference = {"S1": "The company relies on a contract worker for extra shifts."}
+        items = [{"rank": 1, "source_candidate_id": "C1", "surface_echo": "contract workers"}]
+        restored = src_ref_contract.restore_source_fields(items, ids["id_to_candidate"], sentence_reference)
+        item = restored["items"][0]
+        self.assertEqual(item["source_span"], "contract worker")
+        self.assertEqual(item["source_sentence"],
+                          "The company relies on a contract worker for extra shifts.")
+        self.assertTrue(item["source_span_corrected_in_restore"])
+        self.assertEqual(restored["span_corrected_in_restore_count"], 1)
+        self.assertEqual(restored["unresolved"], [])
+
+    def test_restore_marks_unresolved_when_no_variant_matches_sentence(self):
+        # 補正不能(どのvariantも文に実在しない)場合はfail-closedでunresolved。
+        candidate = _inconsistent_contract_worker_candidate()
+        ids = src_ref_contract.assign_candidate_ids([candidate])
+        sentence_reference = {"S1": "Something entirely unrelated happened yesterday."}
+        items = [{"rank": 1, "source_candidate_id": "C1", "surface_echo": "contract workers"}]
+        restored = src_ref_contract.restore_source_fields(items, ids["id_to_candidate"], sentence_reference)
+        self.assertEqual(len(restored["unresolved"]), 1)
+        self.assertEqual(restored["unresolved"][0]["reason"], "SOURCE_SPAN_NOT_IN_CONTEXT_SENTENCE")
+        self.assertNotIn("source_span", restored["items"][0])
+
+    def test_correct_shortlist_source_span_consistency_fixes_inconsistent_candidate(self):
+        # (b) API呼び出し前の候補ID表補正。
+        consistent = dict(_fixture_shortlist()[0])  # digital twin、S3と整合済み
+        inconsistent = _inconsistent_contract_worker_candidate(context_sentence_id="S9")
+        shortlist_with_ids = src_ref_contract.assign_candidate_ids(
+            [consistent, inconsistent])["shortlist_with_ids"]
+        sentence_reference = dict(_fixture_sentence_reference())
+        sentence_reference["S9"] = "Two contract worker were seen leaving the building."
+        result = src_ref_contract.correct_shortlist_source_span_consistency(
+            shortlist_with_ids, sentence_reference)
+        self.assertEqual(result["inconsistent_count"], 1)
+        self.assertEqual(len(result["corrected"]), 1)
+        self.assertEqual(result["corrected"][0]["corrected_surface_form"], "contract worker")
+        corrected_candidate = result["id_to_candidate"]["C2"]
+        self.assertEqual(corrected_candidate["surface_form"], "contract worker")
+        self.assertEqual(corrected_candidate["source_span"], "contract worker")
+        self.assertEqual(result["candidate_ids"], ["C1", "C2"])
+
+    def test_correct_shortlist_source_span_consistency_excludes_uncorrectable_candidate(self):
+        consistent = dict(_fixture_shortlist()[0])
+        inconsistent = _inconsistent_contract_worker_candidate(context_sentence_id="S9")
+        shortlist_with_ids = src_ref_contract.assign_candidate_ids(
+            [consistent, inconsistent])["shortlist_with_ids"]
+        sentence_reference = dict(_fixture_sentence_reference())
+        sentence_reference["S9"] = "Nothing about workers appears in this sentence at all."
+        result = src_ref_contract.correct_shortlist_source_span_consistency(
+            shortlist_with_ids, sentence_reference)
+        self.assertEqual(len(result["excluded"]), 1)
+        self.assertEqual(result["excluded"][0]["candidate_id"], "C2")
+        self.assertNotIn("C2", result["id_to_candidate"])
+        self.assertEqual(result["candidate_ids"], ["C1"])
+
+    def test_no_correction_needed_returns_shortlist_unchanged(self):
+        shortlist_with_ids = src_ref_contract.assign_candidate_ids(_fixture_shortlist())["shortlist_with_ids"]
+        result = src_ref_contract.correct_shortlist_source_span_consistency(
+            shortlist_with_ids, _fixture_sentence_reference())
+        self.assertEqual(result["inconsistent_count"], 0)
+        self.assertEqual(result["corrected"], [])
+        self.assertEqual(result["excluded"], [])
+        self.assertIs(result["shortlist_with_ids"], shortlist_with_ids)
+
+
+class DisplayPhraseWeakLemmaMismatchTests(unittest.TestCase):
+    """SF-4(Opus L2所見、修正1回目): candidate_mismatch_suspectedの算出に
+    display_phraseと復元候補のlemma許容の弱い一致比較を追加する
+    (非ブロッキング、telemetryのみ)。"""
+
+    def setUp(self):
+        ids = src_ref_contract.assign_candidate_ids(_fixture_shortlist())
+        self.id_to_candidate = ids["id_to_candidate"]
+        self.sentence_reference = _fixture_sentence_reference()
+
+    def test_plural_display_phrase_not_flagged_lemma_tolerant(self):
+        # candidate surface_form="digital twin"、display_phrase="digital
+        # twins"(複数形)は弱いlemma正規化で一致するため非flag。
+        items = [{"rank": 1, "source_candidate_id": "C1", "surface_echo": "digital twin",
+                  "display_phrase": "digital twins"}]
+        restored = src_ref_contract.restore_source_fields(items, self.id_to_candidate, self.sentence_reference)
+        self.assertFalse(restored["items"][0]["candidate_mismatch_suspected"])
+
+    def test_unrelated_display_phrase_flagged_non_blocking(self):
+        items = [{"rank": 1, "source_candidate_id": "C1", "surface_echo": "digital twin",
+                  "display_phrase": "completely unrelated phrase"}]
+        restored = src_ref_contract.restore_source_fields(items, self.id_to_candidate, self.sentence_reference)
+        item = restored["items"][0]
+        self.assertTrue(item["candidate_mismatch_suspected"])
+        self.assertIn("display_phrase", restored["mismatch_details"][0]["signals"])
+        # 非ブロッキング: source_span/source_sentence自体は正常に復元される。
+        self.assertEqual(item["source_span"], "digital twin")
+
+    def test_missing_display_phrase_does_not_crash_or_flag(self):
+        items = [{"rank": 1, "source_candidate_id": "C1", "surface_echo": "digital twin"}]
+        restored = src_ref_contract.restore_source_fields(items, self.id_to_candidate, self.sentence_reference)
+        self.assertFalse(restored["items"][0]["candidate_mismatch_suspected"])
+
+
+class SurfaceFormMissingFailClosedTests(unittest.TestCase):
+    """SF-5(Opus L2所見、修正1回目): surface_form欠落時に旧source_span
+    フィールドへフォールバックしていた挙動を削除し、fail-closed
+    (unresolved)へ倒す。"""
+
+    def test_missing_surface_form_is_unresolved_not_fallback_to_stale_source_span(self):
+        id_to_candidate = {
+            "C1": {"candidate_id": "C1", "surface_form": None,
+                   "source_span": "stale legacy value should not be used",
+                   "context_sentence_id": "S1"},
+        }
+        items = [{"rank": 1, "source_candidate_id": "C1", "surface_echo": "x"}]
+        restored = src_ref_contract.restore_source_fields(items, id_to_candidate, {"S1": "irrelevant."})
+        self.assertEqual(len(restored["unresolved"]), 1)
+        self.assertEqual(restored["unresolved"][0]["reason"], "SURFACE_FORM_MISSING")
+        self.assertNotIn("source_span", restored["items"][0])
+
+
+class DuplicateCandidateIdTelemetryTests(unittest.TestCase):
+    """SF-6(Opus L2所見、修正1回目): 同一source_candidate_idの重複選択
+    件数をrestore_telemetryへ記録する(非ブロッキング)。"""
+
+    def test_duplicate_candidate_id_selection_is_counted(self):
+        ids = src_ref_contract.assign_candidate_ids(_fixture_shortlist())
+        items = [
+            {"rank": 1, "source_candidate_id": "C1", "surface_echo": "digital twin"},
+            {"rank": 2, "source_candidate_id": "C1", "surface_echo": "digital twin"},
+            {"rank": 3, "source_candidate_id": "C2", "surface_echo": "take over"},
+        ]
+        restored = src_ref_contract.restore_source_fields(
+            items, ids["id_to_candidate"], _fixture_sentence_reference())
+        self.assertEqual(restored["duplicate_candidate_id_selection_count"], 1)
+        self.assertEqual(restored["duplicate_candidate_ids"], ["C1"])
+
+    def test_no_duplicates_counts_zero(self):
+        ids = src_ref_contract.assign_candidate_ids(_fixture_shortlist())
+        items = [
+            {"rank": 1, "source_candidate_id": "C1", "surface_echo": "digital twin"},
+            {"rank": 2, "source_candidate_id": "C2", "surface_echo": "take over"},
+        ]
+        restored = src_ref_contract.restore_source_fields(
+            items, ids["id_to_candidate"], _fixture_sentence_reference())
+        self.assertEqual(restored["duplicate_candidate_id_selection_count"], 0)
+        self.assertEqual(restored["duplicate_candidate_ids"], [])
+
+
+class FamilyProfileFailClosedBeforeStage1Tests(unittest.TestCase):
+    """SF-7(Opus L2所見、修正1回目): run_db_hybrid_selection冒頭で
+    _check_family_profile_supportedを呼び、Stage1/Wiktionary lookup前に
+    fail-closedすること(無駄なnetwork呼び出しを発生させない)。"""
+
+    def test_unsupported_family_profile_raises_before_stage1_and_shortlist(self):
+        with mock.patch.object(core, "run_stage1_and_shortlist") as mocked_stage1:
+            with self.assertRaises(NotImplementedError):
+                db_hybrid.run_db_hybrid_selection(
+                    "Some article text.", "er030_output/_test_family_z_guard", "TEST_FAMILY_Z",
+                    "A2_SUPPORT", process=None, family_profile="family_z")
+            mocked_stage1.assert_not_called()
+
+
 class ProductionValidatorUnchangedIntegrationTests(unittest.TestCase):
     """復元後の辞書が既存p2g.validate_min_unit_selection(無変更)をそのまま
     通せる形になっていること。"""

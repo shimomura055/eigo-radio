@@ -13,12 +13,15 @@
 # 引数を新設した点のみがTrialとの差分)。
 #
 # LLM output契約: `source_candidate_id`(必須、当該callのshortlist候補
-# IDのみ、JSON Schema enumで拘束)、`surface_echo`(任意的性質、非
-# ブロッキングの取り違え検知用、真実源にしない)。LLMに`source_sentence`
-# /`source_span`/canonical source textを一切書かせない。システム側で
-# source_candidate_id → Stage 1 candidate(surface_form/context_
-# sentence_id)→ surface_form/canonical source sentenceを決定論的に
-# 復元する。
+# IDのみ、JSON Schema enumで拘束)、`surface_echo`(SF-3、Opus L2所見、
+# 修正1回目、2026-09-28で文言明確化: JSON Schema strict mode制約により
+# schema上は必須プロパティだが[additionalProperties:false+全プロパティ
+# required]、判定[PASS/FAIL]上は非ブロッキングであり、取り違え検知
+# [candidate_mismatch_suspected]専用の参考情報として使うのみで真実源には
+# しない)。LLMに`source_sentence`/`source_span`/canonical source textを
+# 一切書かせない。システム側でsource_candidate_id → Stage 1 candidate
+# (surface_form/context_sentence_id)→ surface_form/canonical source
+# sentenceを決定論的に復元する。
 #
 # Family別最終選定ルールの差込点(`family_profile`引数、既定
 # "family_x"): 現時点でサポートされているのは"family_x"のみ。
@@ -44,6 +47,7 @@
 from __future__ import annotations
 
 import time
+from collections import Counter
 from typing import Callable, Optional
 
 import er003_key_words_min_unit as p2g
@@ -329,24 +333,121 @@ def make_instrumented_selector_factory(user_message: str, model: str, candidate_
 # `er030_key_phrase_db_hybrid_core_01.py`側で実施済み[§Stage 1
 # source_span整理、`legacy_sentence_text`への退避]、本モジュールは
 # `surface_form`のみを復元源とする)。
+#
+# SF-1(a)(Opus L2所見、修正1回目、2026-09-28、防御的補正): `surface_form`
+# (最頻表層)と`context_sentence_id`(`observed_surface_variants`のいずれか
+# が最初にヒットした文、`attach_compact_context`が決定)は独立に決まるため、
+# 単数形で初出→複数形が最頻、といったケースでは`surface_form`自体がその
+# 文には実在しないことがある(meta_a2実データ`contract worker`/`contract
+# workers`で構造を確認、通常はAPI呼び出し前の
+# `correct_shortlist_source_span_consistency`[SF-1(b)]で解消済みのはずだが、
+# 本関数でも同じ補正を防御的に二重化する)。
+#
+# SF-5(Opus L2所見、修正1回目): `surface_form`欠落時に旧`source_span`
+# フィールドへフォールバックしていた挙動を削除し、fail-closed(`unresolved`)
+# へ倒す(不確かな古い値を黙って採用しない)。
 # ------------------------------------------------------------
+def _weak_lemma_normalize(text: str) -> str:
+    """SF-4(Opus L2所見、修正1回目、2026-09-28)専用の簡易正規化(telemetry
+    非ブロッキング検知専用、正式なlemmatizerではない)。空白・大小文字を
+    正規化した上で、各トークン末尾の単純な屈折接尾辞('s/-es/-ing/-ed/-s)を
+    機械的に取り除く。"""
+    norm = p2g._normalize_for_match(text or "")
+    tokens = norm.split()
+
+    def _strip(tok: str) -> str:
+        for suf in ("'s", "es", "ing", "ed", "s"):
+            if tok.endswith(suf) and len(tok) - len(suf) >= 3:
+                return tok[:-len(suf)]
+        return tok
+
+    return " ".join(_strip(t) for t in tokens)
+
+
+def _display_phrase_candidate_mismatch_suspected(display_phrase, candidate_surface_form) -> bool:
+    """SF-4(Opus L2所見、修正1回目): `surface_echo`に加え、選定item自体の
+    `display_phrase`と復元候補の`surface_form`との弱い(lemma許容)一致
+    比較を`candidate_mismatch_suspected`の算出へ追加する(非ブロッキング、
+    telemetryのみ。既存validator/canonicalization判定には一切影響しない)。"""
+    if not display_phrase or not candidate_surface_form:
+        return False
+    norm_display = _weak_lemma_normalize(display_phrase)
+    norm_candidate = _weak_lemma_normalize(candidate_surface_form)
+    if not norm_display or not norm_candidate:
+        return False
+    if norm_display == norm_candidate:
+        return False
+    if norm_display in norm_candidate or norm_candidate in norm_display:
+        return False
+    if set(norm_display.split()) & set(norm_candidate.split()):
+        return False
+    return True
+
+
+def _longest_matching_variant_in_sentence(candidate: dict, sentence: str) -> Optional[str]:
+    """SF-1(Opus L2所見、修正1回目、2026-09-28): `observed_surface_variants`
+    (+`surface_form`自体)のうち、`sentence`内に実在する(`p2g._normalize_
+    for_match`正規化基準)ものを長い順に探し、最初に見つかったものを返す
+    (見つからなければNone)。"""
+    variants = list(candidate.get("observed_surface_variants") or [])
+    if candidate.get("surface_form"):
+        variants.append(candidate["surface_form"])
+    unique_variants = sorted({v for v in variants if v}, key=lambda v: (-len(v), v))
+    norm_sentence = p2g._normalize_for_match(sentence or "")
+    for v in unique_variants:
+        if p2g._normalize_for_match(v) in norm_sentence:
+            return v
+    return None
+
+
 def restore_source_fields(items: list, id_to_candidate: dict, sentence_reference: dict,
                            source_reference_contract: str = SOURCE_REFERENCE_CONTRACT_ID) -> dict:
     restored_items = []
     unresolved = []
     mismatch_count = 0
     mismatch_details = []
+    span_corrected_in_restore_count = 0
+
+    # SF-6(Opus L2所見、修正1回目): 同一source_candidate_idの重複選択件数
+    # を非ブロッキングでtelemetryへ記録する。
+    cid_counts = Counter(item.get("source_candidate_id") for item in items
+                          if item.get("source_candidate_id"))
+    duplicate_candidate_ids = sorted(cid for cid, n in cid_counts.items() if n > 1)
+    duplicate_candidate_id_selection_count = sum(n - 1 for n in cid_counts.values() if n > 1)
+
     for i, item in enumerate(items):
         cid = item.get("source_candidate_id")
         candidate = id_to_candidate.get(cid)
         if candidate is None:
-            unresolved.append({"index": i, "source_candidate_id": cid})
+            unresolved.append({"index": i, "source_candidate_id": cid,
+                                "reason": "CANDIDATE_ID_NOT_FOUND"})
             restored_items.append(dict(item))
             continue
-        source_span = candidate.get("surface_form") or candidate.get("source_span")
+
+        surface_form = candidate.get("surface_form")
+        if not surface_form:
+            # SF-5: surface_form欠落時の旧source_span fallbackを廃止。
+            unresolved.append({"index": i, "source_candidate_id": cid,
+                                "reason": "SURFACE_FORM_MISSING"})
+            restored_items.append(dict(item))
+            continue
+
         sid = candidate.get("context_sentence_id")
         source_sentence = sentence_reference.get(sid) if sid else None
-        if not source_sentence:
+        source_span = surface_form
+        span_corrected = False
+        if source_sentence:
+            if p2g._normalize_for_match(source_span) not in p2g._normalize_for_match(source_sentence):
+                replacement = _longest_matching_variant_in_sentence(candidate, source_sentence)
+                if replacement is not None:
+                    source_span = replacement
+                    span_corrected = True
+                else:
+                    unresolved.append({"index": i, "source_candidate_id": cid,
+                                        "reason": "SOURCE_SPAN_NOT_IN_CONTEXT_SENTENCE"})
+                    restored_items.append(dict(item))
+                    continue
+        else:
             source_sentence = source_span
 
         new_item = dict(item)
@@ -355,9 +456,13 @@ def restore_source_fields(items: list, id_to_candidate: dict, sentence_reference
         new_item["source_reference_contract"] = source_reference_contract
         new_item["resolved_candidate_id"] = cid
         new_item["resolved_candidate_surface_form"] = candidate.get("surface_form")
+        if span_corrected:
+            new_item["source_span_corrected_in_restore"] = True
+            span_corrected_in_restore_count += 1
 
         surface_echo = item.get("surface_echo") or ""
         mismatch = False
+        mismatch_signals = []
         if surface_echo.strip():
             norm_echo = p2g._normalize_for_match(surface_echo)
             norm_surface = p2g._normalize_for_match(candidate.get("surface_form") or "")
@@ -365,17 +470,27 @@ def restore_source_fields(items: list, id_to_candidate: dict, sentence_reference
             if norm_echo != norm_surface and norm_echo != norm_span and \
                     norm_echo not in norm_surface and norm_surface not in norm_echo:
                 mismatch = True
+                mismatch_signals.append("surface_echo")
+        if _display_phrase_candidate_mismatch_suspected(item.get("display_phrase"),
+                                                         candidate.get("surface_form")):
+            mismatch = True
+            mismatch_signals.append("display_phrase")
         new_item["candidate_mismatch_suspected"] = mismatch
         if mismatch:
             mismatch_count += 1
             mismatch_details.append({
                 "index": i, "source_candidate_id": cid, "surface_echo": surface_echo,
+                "display_phrase": item.get("display_phrase"),
                 "candidate_surface_form": candidate.get("surface_form"),
+                "signals": mismatch_signals,
             })
         restored_items.append(new_item)
     return {
         "items": restored_items, "unresolved": unresolved,
         "mismatch_count": mismatch_count, "mismatch_details": mismatch_details,
+        "span_corrected_in_restore_count": span_corrected_in_restore_count,
+        "duplicate_candidate_id_selection_count": duplicate_candidate_id_selection_count,
+        "duplicate_candidate_ids": duplicate_candidate_ids,
     }
 
 
@@ -474,4 +589,63 @@ def audit_shortlist_source_span_consistency(shortlist_with_ids: list, sentence_r
         "inconsistent": inconsistent,
         "no_context_sentence_count": len(no_context_sentence),
         "no_context_sentence": no_context_sentence,
+    }
+
+
+# ------------------------------------------------------------
+# SF-1(b)(Opus L2所見、修正1回目、2026-09-28): API呼び出し前のsource_span
+# 整合性補正。上記`audit_shortlist_source_span_consistency`(診断用、無変更)
+# の結果に基づき、不整合な候補を補正する(その文に実在する最長の
+# `observed_surface_variants`を`surface_form`/`source_span`として採用)。
+# 補正不能(どのvariantも文に実在しない)な候補は、今回のLLM呼び出しの
+# 候補ID表(shortlist_with_ids/id_to_candidate/candidate_ids)自体から
+# 除外する(fail-closed、その候補はこの呼び出しでは選ばせない)。
+# candidate_idは除外後に詰め直さない(欠番を許容する)。
+# ------------------------------------------------------------
+def correct_shortlist_source_span_consistency(shortlist_with_ids: list, sentence_reference: dict) -> dict:
+    audit = audit_shortlist_source_span_consistency(shortlist_with_ids, sentence_reference)
+    inconsistent_ids = {item["candidate_id"] for item in audit["inconsistent"]}
+
+    if not inconsistent_ids:
+        id_to_candidate = {c["candidate_id"]: c for c in shortlist_with_ids}
+        return {
+            "shortlist_with_ids": shortlist_with_ids,
+            "id_to_candidate": id_to_candidate,
+            "candidate_ids": list(id_to_candidate.keys()),
+            "corrected": [], "excluded": [], "inconsistent_count": 0,
+        }
+
+    corrected_shortlist = []
+    corrected = []
+    excluded = []
+    for c in shortlist_with_ids:
+        cid = c.get("candidate_id")
+        if cid not in inconsistent_ids:
+            corrected_shortlist.append(c)
+            continue
+        sid = c.get("context_sentence_id")
+        sentence = sentence_reference.get(sid, "") if sid else ""
+        replacement = _longest_matching_variant_in_sentence(c, sentence)
+        if replacement is None:
+            excluded.append({
+                "candidate_id": cid, "surface_form": c.get("surface_form"),
+                "context_sentence_id": sid, "canonical_form": c.get("canonical_form"),
+            })
+            continue
+        c2 = dict(c)
+        c2["surface_form"] = replacement
+        c2["source_span"] = replacement
+        corrected_shortlist.append(c2)
+        corrected.append({
+            "candidate_id": cid, "original_surface_form": c.get("surface_form"),
+            "corrected_surface_form": replacement, "context_sentence_id": sid,
+        })
+
+    id_to_candidate = {c["candidate_id"]: c for c in corrected_shortlist}
+    return {
+        "shortlist_with_ids": corrected_shortlist,
+        "id_to_candidate": id_to_candidate,
+        "candidate_ids": list(id_to_candidate.keys()),
+        "corrected": corrected, "excluded": excluded,
+        "inconsistent_count": audit["inconsistent_count"],
     }

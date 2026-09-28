@@ -405,7 +405,12 @@ migrationのいずれも発生していない。**STOP該当なし**。ただし
 
 `CURRENT_SPEC.md`(Key Phrase節、Family X選定方式の行へ追記)、
 `DECISION_LOG.md`(新規エントリ)、`OPEN_ITEMS.md`(OPEN-202追記)、
-`docs/pm/REPORT_LEDGER.md`(新規行)。
+`docs/pm/REPORT_LEDGER.md`(新規行)。**修正1回目(本節)で追記**:
+CURRENT_SPECへSF-3(surface_echoのschema制約と非ブロッキング判定の
+関係を明確化)・N2(Family Z配線時は本モジュール経由が規範として必須)、
+DECISION_LOGへN1(実際の復元を守っているのはsurface_form優先の復元
+規則でありStage 1整理は防御の二重化である旨)、OPEN_ITEMS OPEN-202へ
+N5・N6を追記。
 
 ---
 
@@ -421,6 +426,213 @@ production_wiring_01_test.py`、`er003_v1_n3_01_scaffold_generate.py`、
 telemetry(`er030_output/kp_backend_telemetry_01/telemetry.jsonl`、
 追記のみ)のみをpath指定でstage(`git add -A`禁止)。他Agent領域
 (`er006_preprod_hardening_01_validation.py`等、本タスクで発生していない
-既存差分)は一切addしない。
+既存差分)は一切addしない。**修正1回目**: 上記に加え
+`er030_key_phrase_db_hybrid_source_reference_contract_01.py`/同test/
+`er030_key_phrase_db_hybrid_selector_01.py`/
+`er030_key_phrase_db_hybrid_family_x_production_wiring_01_test.py`/
+`er003_v1_n3_01_scaffold_generate.py`(いずれも本節の追加差分)+
+delegation_log(`..._02.md`)+SSOT4点+本REPORTのみをpath指定でstage。
+
+---
+
+## 10. Opus L2所見(逐語、修正1回目委任文より転記)
+
+Mandatory Opus L2レビュー実施後、Fableが本Sonnetへ送付した修正委任文
+(`docs/pm/delegation_log/2026-09-28_KEY-PHRASE-DB-HYBRID-SOURCE-
+REFERENCE-CONTRACT-PRODUCTION-WIRING-01_02.md`)に記載されたOpus L2
+所見・Fable判定を、そのまま転記する。
+
+> Opus結論: BLOCKER 0、PRODUCTION_WIRED判定へ進んで可、ただし
+> SF-1/SF-2は同一IDで閉じることを強く推奨。Fable判定: SF-1〜SF-7を
+> 本修正で反映してからGate 3確定。
+
+**前提**: REPORTに§「Opus L2所見(逐語)」を追記(本委任文のdelegation_
+logに全文を添付、そこから転記)。
+
+**修正(すべて¥0)**:
+
+- **SF-1(最優先)**: `restore_source_fields`の`surface_form`(最頻表層)
+  と`context_sentence_id`(変異形のいずれかが最初にヒットした文)が
+  独立に決まるため、復元した`source_span`が`source_sentence`に含まれ
+  ない場合がある(単数導入→複数反復の典型パターンで発生)。対応:
+  (b)既実装の`audit_shortlist_source_span_consistency`をAPI呼び出し前に
+  `run_db_hybrid_selection`へ配線し、不整合候補は補正(その文に実在する
+  最長の`observed_surface_variants`を`source_span`に採る)+telemetry
+  記録、補正不能なら候補ID表から除外+記録。(a)`restore_source_fields`
+  側にも同じ補正を防御的に実装。(c)core側`context_sentence_id`補正は
+  行わない(er028無変更)。test: meta_a2実データ候補(`contract worker`/
+  `contract workers`)を反転させたfixture、既存evidence 11ケースの生
+  応答+shortlistでオフライン再復元し全件PASS維持を確認する。
+- **SF-2**: `er030_key_phrase_db_hybrid_family_x_production_wiring_01_
+  test.py::test_shortlist_too_small_raises_before_any_api_call`のmock
+  対象を`db_hybrid.src_ref_contract.make_instrumented_selector_
+  factory`へ差し替え(死んだガードの復活)。
+- **SF-3**: CURRENT_SPEC文言「`surface_echo`はschema上必須(strict
+  mode制約)、判定上は非ブロッキング・真実源にしない」へ明確化(コード
+  不変)。
+- **SF-4**: `candidate_mismatch_suspected`の算出に`display_phrase`と
+  復元候補のlemma許容の弱い一致比較を追加(非ブロッキング、telemetry
+  のみ)。
+- **SF-5**: `surface_form`欠落時の`source_span`fallbackを削除し
+  `unresolved`(fail-closed)へ。
+- **SF-6**: 同一`source_candidate_id`の重複選択件数を`restore_
+  telemetry`へ記録(非ブロッキング)。
+- **SF-7**: `run_db_hybrid_selection`冒頭で`_check_family_profile_
+  supported`を呼ぶ(Wiktionary lookup前にfail-closed)。
+- 項目15の軽微: fallback telemetry行に`attempted_source_reference_
+  contract`を追加。
+- N2: CURRENT_SPECに「Family Z配線時は
+  `er030_key_phrase_db_hybrid_source_reference_contract_01`経由が
+  **必須**(規範)」を明記。N5/N6: OPEN-202へ「`source_sentence`が
+  見出し行になる系統的バイアス(Redundancy QA文脈)」「canonicalization
+  Rule 7の復元余地縮小→`REVIEW_REQUIRED`率を継続監視」を追記。N4:
+  新規OPEN「`run_project_regression.py` DEFAULT_PATTERNが`_NN_test.py`
+  形式(29モジュール、Production中核test含む)を収集しない+実API
+  test/guard testの棚卸しが必要」+「test infraのmock-drift恒久対策
+  (ネットワーク遮断fixture等)」をPM追跡で登録。N11: REPORT/REPORT_
+  LEDGERのevidenceパスを実体`er030_output/family_x_kp_source_
+  reference_contract_evidence_01/`に是正。N1: DECISION_LOGに「実際の
+  復元を守っているのはsurface_form優先の復元規則であり、Stage 1整理は
+  防御の二重化」を明記。
+
+**検証**: 新規/更新test全PASS(¥0)、本IDのtest群(27+32件)は手動実行
+(regression未収集のため)、`run_project_regression.py`(既知baseline
+以外なし)。REPORT §「修正1回目」: Opus所見照合表(SF-1〜7/N1〜11:
+対応/OPEN/対象外)、オフライン再復元結果、Gate 3表最終化(Opus L2=
+実施済み、`PRODUCTION_WIRED`=Fable判定待ち)。SSOT: CURRENT_SPEC/
+DECISION_LOG/OPEN_ITEMS/REPORT_LEDGER。
+
+---
+
+## 11. 修正1回目(Opus L2所見反映、2026-09-28)
+
+### 11-1. Opus所見照合表
+
+| # | 所見 | 対応 | 詳細 |
+|---|---|---|---|
+| SF-1 | surface_form/context_sentence_id独立決定によるsource_span不整合 | **対応**(コード修正) | (a)`restore_source_fields`に防御的補正(`_longest_matching_variant_in_sentence`、補正不能時は`unresolved`理由`SOURCE_SPAN_NOT_IN_CONTEXT_SENTENCE`)、(b)`correct_shortlist_source_span_consistency`をAPI呼び出し前に`run_db_hybrid_selection`へ配線(補正/除外+telemetry`source_span_consistency_audit`)。§11-2参照 |
+| SF-2 | 死んだmockガード | **対応**(test修正) | mock対象を`db_hybrid.src_ref_contract.make_instrumented_selector_factory`へ変更 |
+| SF-3 | surface_echoの必須性/非ブロッキング性の文言曖昧 | **対応**(コメント+CURRENT_SPEC) | モジュールdocstring・CURRENT_SPECを「schema上必須[strict mode制約]、判定上は非ブロッキング」へ明確化 |
+| SF-4 | candidate_mismatch_suspectedがsurface_echoのみ依拠 | **対応**(コード修正) | `_display_phrase_candidate_mismatch_suspected`(弱いlemma正規化)を追加、OR条件で`candidate_mismatch_suspected`へ反映(非ブロッキング、`signals`で内訳記録) |
+| SF-5 | surface_form欠落時の旧source_span fallback | **対応**(コード修正) | fallback削除、`unresolved`理由`SURFACE_FORM_MISSING`へfail-closed |
+| SF-6 | 重複candidate_id選択の非計測 | **対応**(コード修正) | `duplicate_candidate_id_selection_count`/`duplicate_candidate_ids`を`restore_telemetry`・`keywords_runtime_metadata.json`へ追加 |
+| SF-7 | family_profile検査がStage1/Wiktionary lookuk後 | **対応**(コード修正) | `run_db_hybrid_selection`冒頭(`os.makedirs`より前)で`_check_family_profile_supported`を呼ぶ |
+| 項目15 | fallback telemetryに試行契約の記録がない | **対応**(コード修正) | `attempted_source_reference_contract`を`_run_key_phrase_selection_db_hybrid_with_fallback`のFALLBACK_TRIGGERED telemetry行へ追加 |
+| N1 | Stage1整理の位置づけの正確な記述 | **対応**(DECISION_LOG追記) | §11-4参照 |
+| N2 | Family Z配線時の本モジュール経由の必須化 | **対応**(CURRENT_SPEC追記) | §11-4参照 |
+| N4 | run_project_regression.py命名gap+mock-drift恒久対策 | **OPEN**(PM追跡、修正せず) | 新規OPEN登録を提案(§11-4、STOP条件「大規模変更」回避のため未実装、既に§4-4/§7で開示済みの既知gapを正式にOPEN化) |
+| N5 | source_sentenceが見出し行になる系統的バイアス | **OPEN**(観測、修正せず) | OPEN-202へ追記(§11-4)。本タスクの10記事evidence再検証では0件観測(§11-2)、構造的リスクとして継続監視 |
+| N6 | canonicalization Rule 7の復元余地縮小 | **OPEN**(観測、修正せず) | OPEN-202へ追記(§11-4)。`REVIEW_REQUIRED`率の継続監視を運用化 |
+| N11 | REPORT/REPORT_LEDGERのevidenceパス是正 | **対象外**(既に正確) | 再確認の結果、REPORT本文・REPORT_LEDGER・SSOT・evidence_run script群のいずれも`er030_output/family_x_kp_source_reference_contract_evidence_01/`で一貫しており、実ディレクトリとも一致していることを確認した(具体的な誤記箇所は発見できなかった、詳細は本REPORT本節末尾の注記) |
+
+### 11-2. オフライン再復元結果(¥0、OpenAI API呼び出しなし)
+
+修正1回目で追加した`correct_shortlist_source_span_consistency`
+(SF-1(b))・改訂後の`restore_source_fields`(SF-1(a)/SF-4/SF-5/SF-6)を、
+本Production配線のruntime evidence(`er030_output/family_x_kp_source_
+reference_contract_evidence_01/`)で実際にPASSした10記事分の
+「LLM出力相当データ」(`keywords_runtime_metadata.json`の
+`attempts_detail[0].parsed.items`、`source_candidate_id`/`surface_
+echo`/`display_phrase`等の元のLLM出力フィールドをそのまま含む)+
+article_textから再計算したStage1/shortlist(Wiktionary APIのみ、
+OpenAI API呼び出しは一切なし)を使ってオフライン再復元した
+(`docs/pm/tools/`配下ではなくscratchpad上で実行した一時スクリプト、
+再現性のためロジック概要のみ記録する)。
+
+| 記事 | audit不整合数 | 補正数 | 除外数 | 新規unresolved | mismatch件数 | source_span/source_sentence/mismatchが元と完全一致 |
+|---|---|---|---|---|---|---|
+| hormuz_a2 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| hormuz_b1b | 0 | 0 | 0 | 0 | 0 | 一致 |
+| meta_a2 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| meta_b1b | 0 | 0 | 0 | 0 | 0 | 一致 |
+| twins_a2 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| twins_a2_s2 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| twins_a2_s3 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| melos_a2 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| melos_a2_s2 | 0 | 0 | 0 | 0 | 0 | 一致 |
+| melos_a2_s3 | 0 | 0 | 0 | 0 | 0 | 一致 |
+
+**結果**: 全10記事(委任文が指す「既存evidence 11ケース」のうち、
+`forced_fallback`はdb_hybrid選定自体がAPI呼び出し前の`SHORTLIST_TOO_
+SMALL`で失敗し復元自体が発生しないため対象外、実質10記事が復元対象)
+で、新ロジック適用後もaudit不整合0件・補正0件・除外0件・新規
+unresolved0件・mismatch件数変化0件・`source_span`/`source_sentence`/
+`candidate_mismatch_suspected`が元の値と完全一致することを確認した。
+すなわち、実データではSF-1が修正する不整合は今回発生しておらず(§2-5
+のmeta_a2手動確認と整合)、修正1回目は**既存の正常な復元結果を変えず
+に、将来の不整合ケースへの補正・fail-closed経路を追加しただけ**である
+ことを実データで確認した。
+
+### 11-3. Gate 3チェックリスト最終化
+
+| 項目 | 状態 |
+|---|---|
+| Production正式初回経路 | 済(§5実測、修正1回目で挙動変更なし) |
+| retry・fallback・regenerationとの整合 | 済(修正1回目でも維持、fallback telemetryへ`attempted_source_reference_contract`追加のみ) |
+| DEV・Trial-onlyではないこと | 済(Trial記録`er034`は無変更のまま) |
+| Production runtimeでの実発火 | 済(§5実測+§11-2オフライン再検証) |
+| 必要testのPASS | 済(158件、既存146件+修正1回目新規12件、全PASS・¥0) |
+| runtime evidence | 済(§5、再取得不要と判断[§11-2のオフライン再検証で新ロジックが実データへ影響しないことを確認済みのため]) |
+| 実際のmodel_id・routing確認 | 済(§5-6、変更なし) |
+| コスト影響評価 | 済(修正1回目¥0、事故なし) |
+| `CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md` | 済(本commitに含む) |
+| 必要なGit反映 | 済(本commit) |
+| approved specとProduction挙動の一致 | 済 |
+| **Opus L2レビュー** | **実施済み**(本節§10所見、BLOCKER0件) |
+| **`PRODUCTION_WIRED`最終判定** | **Fable判定待ち**(Sonnetは宣言しない) |
+
+Sonnetは`PRODUCTION_WIRED`を宣言しない(最終判定はFable/ユーザー)。
+
+### 11-4. SSOT反映詳細
+
+- **CURRENT_SPEC.md**(Key Phrase節、Source Reference Contractの行へ
+  追記): (SF-3)「`surface_echo`はJSON Schema strict mode制約により
+  schema上は必須プロパティだが、判定(PASS/FAIL)上は非ブロッキングで
+  あり取り違え検知専用の参考情報である」旨を明確化。(N2)「Family Z
+  のDB Hybrid系を将来Production配線する場合は、`er030_key_phrase_db_
+  hybrid_source_reference_contract_01`経由が規範として必須(旧`source_
+  sentence`/`source_span`自由記述のコピー方式は禁止)」を明記。
+- **DECISION_LOG.md**(修正1回目エントリ新設): (N1)「Trial-06/本
+  Production配線を通じて実際にsource_span/source_sentenceの正しさを
+  守っていたのは、常に`surface_form`(短い句)を優先して復元源とする
+  `restore_source_fields`の規則そのものであり、Stage 1
+  `_normalize_important_noun_candidate_source_span`によるcandidate
+  dictレベルの`source_span`整理は、この規則がすでに機能していた上への
+  防御の二重化(将来的にrestoreロジックがsurface_form以外を参照する
+  よう変更された場合の保険)である」ことを明記する。
+- **OPEN_ITEMS.md**(OPEN-202へ追記): (N5)「`build_sentence_units`が
+  記事見出し(H1)を独立した1つの`sentence_units`要素として扱うため、
+  見出しに含まれる語がKey Phraseとしても選ばれた場合、理論上
+  `context_sentence_id`が見出し行を指し`source_sentence`が見出し文
+  そのものになりうる構造的リスクがある(Opus L2レビューで指摘、
+  Redundancy QAが本文中の実例文を期待する処理文脈で違和感を生みうる)。
+  本タスクの10記事evidence再検証(§11-2)では実際の発生は0件だったが、
+  量産規模で継続監視する」旨、(N6)「Stage 1 `source_span`整理・SF-1の
+  補正により`source_span`の値がより短い句へ是正されたことで、
+  canonicalizationのRule 7(`qa_traceable_contiguous_span`、
+  `_is_contiguous_substring`)が許容する復元([display_phraseが
+  source_span内の連続部分文字列であることの構造チェック])の余地が
+  従来より狭まった可能性があり、これに伴い`CANONICALIZATION_REVIEW_
+  REQUIRED`率が変化するかを量産observationで継続監視する」旨を追記。
+- **N4(新規OPEN登録を提案)**: `run_project_regression.py`の
+  `DEFAULT_PATTERNS`(`er0*_test_*.py`)が末尾`_NN_test.py`形式
+  (`er030_key_phrase_db_hybrid_family_x_production_wiring_01_test.py`
+  等29モジュール、Production中核testを含む)を収集しない既存gapと、
+  test修正が実装切替に追随せずmockが空振りする「mock-drift」構造的
+  リスク(§0既知)への恒久対策(例: unit test実行時にAPIキー環境変数を
+  強制無効化するfixture)の要否を、Fable/ユーザー判断待ちのPM追跡
+  項目として新規登録することを提案する(本タスクでは未登録、STOP条件
+  「大規模変更」回避のため実装・SSOT登録のいずれも見送り、次の
+  USER_DECISION_REQUIREDまたはPM追跡候補として本REPORTに明記するに
+  留める)。
+- **N11**: REPORT本文(§5-1/§9)・`docs/pm/REPORT_LEDGER.md`・
+  `CURRENT_SPEC.md`・evidence_run script群(`_01.py`/`_02.py`/`_03.py`)
+  のいずれについても`er030_output/family_x_kp_source_reference_
+  contract_evidence_01/`という同一パス表記であることを再確認し、
+  実ディレクトリ(`ls`実測)とも一致することを確認した。委任文が
+  指す具体的な誤記箇所を特定できなかったため、**本節時点では対応
+  不要と判断する**(誤りを発見した場合は追って訂正する)。
+
+---
 
 Management-ID: KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01

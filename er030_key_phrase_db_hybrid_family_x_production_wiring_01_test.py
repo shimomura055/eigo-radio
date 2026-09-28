@@ -554,8 +554,18 @@ class DbHybridFallbackTriggerTests(unittest.TestCase):
     S5改訂[total>=12かつphrase+important>=5]後も同様に成立する)。"""
 
     def test_shortlist_too_small_raises_before_any_api_call(self):
+        # SF-2(Opus L2所見、修正1回目、2026-09-28): run_db_hybrid_selectionの
+        # 実際のAPI呼び出し経路は、候補ID contract切替(KEY-PHRASE-DB-HYBRID-
+        # SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01)により
+        # `db_hybrid._make_instrumented_selector_factory`(旧、実行時には
+        # もう呼ばれない)ではなく
+        # `db_hybrid.src_ref_contract.make_instrumented_selector_factory`
+        # (新)である。旧関数をmockしたままだと、実装が変わってこのガードが
+        # 壊れても(=実際にAPIが呼ばれるようになっても)このtestは検知でき
+        # ない「死んだガード」になっていた。実際に使われている関数をmock
+        # 対象へ修正する。
         tiny_out_dir = os.path.join("er030_output", "kp_backend_telemetry_01", "_test_tiny_shortlist")
-        with mock.patch.object(db_hybrid, "_make_instrumented_selector_factory") as mocked_factory:
+        with mock.patch.object(db_hybrid.src_ref_contract, "make_instrumented_selector_factory") as mocked_factory:
             with self.assertRaises(db_hybrid.DbHybridFailure) as ctx:
                 db_hybrid.run_db_hybrid_selection(
                     "Cats sit. Dogs run.", tiny_out_dir, "TEST_TINY", "A2_SUPPORT", process=None)
