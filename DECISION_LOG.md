@@ -11598,3 +11598,45 @@ Pronunciation Phase 4を`PRODUCTION_WIRED`へ表記同期
 - **根拠**: `EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02_REPORT.md`
   「修正1回目」節、`docs/pm/RESULT_PACKET_ASR4.md`。
 - commit: `7af9b22f`。
+
+## Fable Gate 3判定(2026-09-28): TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-
+WIRING-FAMILY-X-02 / EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02を
+`PRODUCTION_WIRED`へSSOT/REPORT同期
+
+- **性質**: Fable判定の転記(SSOT/REPORT同期のみ)。コード変更なし、
+  API費用¥0。
+- **対象1: `TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02`
+  `PRODUCTION_WIRED`**。スコープ: Family X runnerで`--tts-backend
+  speech_metadata_flash_lite`を明示した場合の経路(主記事+Key Phrase
+  音声+共有ナレーション、同期実行/バッチ実行、Standard/Advanced 6-role
+  +Standard速度調整)が配線済み。**既定`tts_backend`は未変更
+  (structured_separation)であり「Family Xの既定音声がFlash-Liteに
+  なった」ではない**(Opus N-11)。既定切替は別途ユーザー判断。根拠:
+  commit`ccd7070e`/`8bb1518c`/`dc68e949`/`ee280e76`、Opus L2(BLOCKER
+  3件→修正3回目で全反映)、runtime evidence(Hormuz Standard/Advanced
+  フル記事+Assembly、shell 9件再生成全OK、バッチe2e 3/3、forced
+  fallback)、regression新規0、SSOT`b93aceed`、試聴ページ
+  `https://shimomura055.github.io/eigo-radio/user_test/
+  flash_lite_family_x_02_hormuz/index.html`。残OPEN: OPEN-212/213
+  (継続監視、判定を妨げない)。開示: review_lock`approve_regenerate()`
+  の検証実行1回(上記commit`ee280e76`エントリに記録済み)。
+- **対象2: `EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02`
+  `PRODUCTION_WIRED`**。スコープ: strict版Tier 1合成規則(句読点atom
+  必須+片側結合1語条件+否定語二重防御)と分類A技術修正。`'s`は
+  DEFERRED。根拠: commit`3d9a28be`/`7af9b22f`、Opus L3(BLOCKER 1件→
+  修正1回目で反映)、既存corpus 125件無回帰+negative test、false
+  accept 0、オフライン再判定reversal 7件不変、実Production artifact
+  再判定でPASS、SSOT`dea52f64`/`1903e352`。残OPEN: OPEN-214(telemetry
+  混入期間)、OPEN-215(任意)、OPEN-216(`despaced()`既存挙動、ユーザー
+  判断候補)。
+- **STOP該当**: 無し(表記同期のみ、Production挙動・コードの変更なし)。
+- **反映範囲**: `CURRENT_SPEC.md`(Flash-Lite節・ASR節のFable Gate 3
+  判定表記)、`docs/pm/REPORT_LEDGER.md`(両ID行のStatus列)、両REPORT
+  のGate 3表(`PRODUCTION_WIRED`最終判定行)、本エントリ新設。
+  `OPEN_ITEMS.md`は変更なし。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-02_07.md`、
+  `TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02_REPORT.md`
+  §5・§10-7、`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02_REPORT.md`
+  Gate 3表・Gate 3再確認表。
+- commit: 本コミット(SSOT表記同期のみ、コード変更なし)。

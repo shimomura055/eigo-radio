@@ -4,11 +4,12 @@
 日付: 2026-09-28(Phase 1)/2026-09-28(Phase 2)
 Phase: 1(原因分析+coverage再監査+設計案)完了 → 2(Production実装、
 本REPORT末尾のPhase 2節参照)完了 → **修正1回目(Opus L3 BLOCKER-1反映、
-本REPORT末尾「修正1回目」節参照)完了、Fable Gate 3再判定待ち**
+本REPORT末尾「修正1回目」節参照)完了、Fable Gate 3判定`PRODUCTION_WIRED`
+(2026-09-28)**
 Status: **Phase 1 DESIGN_COMPLETED(Opus L2レビュー実施済み、ユーザー
 `APPROVED_FOR_PRODUCTION`承認済み) / Phase 2 IMPLEMENTATION_COMPLETE(Opus
 L3診断によりBLOCKER 1件・SHOULD_FIX 5件検出) / 修正1回目 実装・テスト
-完了、`PRODUCTION_WIRED`はFable Gate 3判定待ち(未宣言)**
+完了、Fable Gate 3判定 `PRODUCTION_WIRED`(2026-09-28)**
 性質(Phase 1): ¥0・API呼び出しなし・Production code変更なし・SSOT本体
 編集なし(Phase 1時点の記載、Phase 2はSSOT編集込み、詳細は末尾節参照)。
 設計全文: `docs/pm/design_en_asr_orthographic_equivalence_coverage_02.md`
@@ -299,8 +300,8 @@ docstringに記載、haiku-worker委任可。
 | 定期offline検知 | 新設・実行済み(`er021_offline_false_reject_
   detector_01.py`) |
 | SSOT反映 | 完了(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/REPORT_LEDGER) |
-| Mandatory Opus L3診断 | **未実施(Fable発火待ち)** |
-| `PRODUCTION_WIRED`最終判定 | **Fable判定待ち** |
+| Mandatory Opus L3診断 | 実施済み(修正1回目節参照、BLOCKER-1反映済み) |
+| `PRODUCTION_WIRED`最終判定 | **Fable判定 `PRODUCTION_WIRED`(2026-09-28、詳細は下記「Gate 3再確認表」参照)** |
 | Git commit/push | 本REPORT保存後に実施予定(RESULT_PACKET参照) |
 
 ## Opus L3申し送り
@@ -575,7 +576,7 @@ semantic_equivalence関連)とは無関係と確認した:
 | 定期offline検知 | Phase 2で新設済み(`er021_offline_false_reject_detector_01.py`)、本修正1回目での追加変更なし |
 | SSOT反映 | 本修正1回目の文案を`RESULT_PACKET_ASR4.md`(一時ファイル)へ記載、`CURRENT_SPEC.md`/`DECISION_LOG.md`/`OPEN_ITEMS.md`/`docs/pm/REPORT_LEDGER.md`本体への反映はFable/ユーザー側の作業(本Sonnetの担当範囲外、衝突回避のため無編集) |
 | Mandatory Opus L3診断 | 実施済み(本REPORT前節「Opus L3診断所見」参照)、BLOCKER-1は本修正1回目で反映 |
-| `PRODUCTION_WIRED`最終判定 | **Fable/ユーザー判定待ち(本Sonnetは宣言しない)** |
+| `PRODUCTION_WIRED`最終判定 | **Fable判定 `PRODUCTION_WIRED`(2026-09-28)** |
 
 ### telemetry隔離の確認
 

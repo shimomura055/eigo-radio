@@ -327,7 +327,7 @@ Batch tier単価)から類推して**1円未満〜数円程度**と見積もる(
   経由で`collected=3432`→本Phase`collected=3450`(新規テスト19件分の
   純増、既存baseline 7 FAIL+2 ERRORの内訳自体に変化なし)。
 
-## 5. Gate 3チェックリスト(ユーザー受入条件反映、Opus L2=未・PRODUCTION_WIRED=Fable判定待ち)
+## 5. Gate 3チェックリスト(ユーザー受入条件反映、Opus L2=未・Fable判定`PRODUCTION_WIRED`[2026-09-28])
 
 | # | 項目 | 状態(FAMILY-X-02後) |
 |---|---|---|
@@ -349,8 +349,7 @@ Batch tier単価)から類推して**1円未満〜数円程度**と見積もる(
 | 16 | バッチ実行検証(2〜3 segment) | **完了**(§3-5、3/3 OK、429エラー0件、Standard所要時間との明確な差異でBatch経由実行を確認) |
 
 **Opus L2レビュー**: 未実施(前ID・本IDあわせてFable/ユーザーが実施要否・
-タイミングを判断)。**`PRODUCTION_WIRED`化**: 本Phaseでは判定しない
-(Fable判定待ち)。
+タイミングを判断)。**Fable判定 `PRODUCTION_WIRED`(2026-09-28)**。
 
 ## 6. Opus L2引き継ぎメモ(新規所見)
 
@@ -1008,11 +1007,13 @@ Assembly成果物へ差し替え(ffmpeg実行コマンドは§8-3と同一方式
 | Git | 所有ファイルのみ明示add、commit hash/push結果はRESULT_PACKET参照。 |
 | Dangling Reference Check | `style_instruction_version`/`shared_narration`/`FAMILY_X_ROLE_STYLE_EN_FALLBACK`/`gemini_batch`をGrepし、新規シンボル(`SharedNarrationBlockedError`等)の定義・参照が所有ファイル内で閉じていることを確認(10-3参照、他Family/他モジュールへの意図しない波及なし)。 |
 
-**`PRODUCTION_WIRED`判定はFable/ユーザーの判断に委ねる(Sonnetは宣言しない)**。
-上記のとおりBLOCKER 3件は実装・実測確認済みだが、SF-4が指す並行ID
-(EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02)の完了状況、SSOT文案の
-実際の反映状況は本タスク範囲外のため、それらを含めた最終判定はFable側で
-行うこと。
+**Fable判定 `PRODUCTION_WIRED`(2026-09-28)**。スコープ: Family X runnerで
+`--tts-backend speech_metadata_flash_lite`を明示した場合の経路(主記事+
+Key Phrase音声+共有ナレーション、同期実行/バッチ実行、Standard/Advanced
+6-role+Standard速度調整)が配線済み。既定`tts_backend`は未変更
+(structured_separation、既定切替は別途ユーザー判断)。並行ID
+(EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02)も同日Fable Gate 3判定
+`PRODUCTION_WIRED`。
 
 ### 10-8. commit hash・raw URL
 
