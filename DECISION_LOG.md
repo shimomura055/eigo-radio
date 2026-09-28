@@ -11123,3 +11123,68 @@ REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`)。
   SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-01_01.md`、
   `KEY-PHRASE-DB-HYBRID-SOURCE-REFERENCE-CONTRACT-PRODUCTION-WIRING-
   01_REPORT.md`。
+
+## TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02: 前ID
+Opus L2所見反映+ユーザー確定仕様(B-1/B-2/C/D)実装
+
+ユーザー確定仕様(2026-09-28、`docs/pm/delegation_log/2026-09-28_TTS-
+GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02_01.md`)に基づき、
+前ID`TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01`のGate 3
+完了後に指摘された所見を反映した。
+
+- **B-1(同期/バッチ実行、Fable決定訂正)**: 「Batch未対応」前提の
+  fail-closed設計にはせず、Flash-Lite経路も既存Production実行方式
+  contract(`er006_batch_tts_wiring_01.resolve_tts_execution_mode`、
+  環境変数`TTS_EXECUTION_MODE`、既定BATCH)と同じ分岐点を通す
+  (`er033_tts_flash_lite_backend_wiring_01.make_speech_metadata_batch_
+  call_fn`新設)。Gemini Batch API(`client.batches.create`)で
+  speech_metadataが実際に受理されることを1 item実測(2026-09-28、
+  SUCCEEDED、170.7秒、pcm 175024 bytes、費用¥0.06未満)で確認した。
+- **B-2(6-role style、Fable決定訂正)**: 前ID Phase 1-3は「A2(Standard)
+  はrole別style非対応のまま」という設計判断を採っていたが、ユーザーは
+  6-role styleをStandard/Advanced**両方**の基本仕様として確定した。
+  Standard固有の速度調整仕様(既承認`n3_tts.A2_SLOWER_PACE_INSTRUCTION`
+  + 6% time-stretch post-process)は失わせず、6-role styleと連結する
+  (`er019_family_x_audio_production_runner_01._role_style_slower()`
+  新設、post-process自体は無変更)。JA segmentは既存styleテキストを
+  流用したまま(変更なし、設計書§(c-2)の既存方針を継続)。
+- **C(Flash-Lite統一)**: Family X内はKey Phrase(shared_narration経由の
+  固定shell segment+Key Phrase English/Japanese Component)も含めて
+  Flash-Liteへ統一する。Master Audio Store(`er006_master_audio_store_
+  01.MasterAudioKey`)が既に`tts_model_id`をkeyへ含む設計だったため、
+  既存Structured Separation資産を無効化せず、Flash-Lite分は別key
+  (別`master_audio_id`)で共存できることを確認した。共有モデルを残さざる
+  を得ない既存構造上の障害は本Phaseでは発見されなかった(STOP無し)。
+- **D(既存不足の是正)**: (1) fallback(minimal instruction)発火時の
+  短文style配線を実配線(`er033_tts_flash_lite_family_x_styles_01.
+  FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]`、以前は未配線のまま長い legacy
+  instruction[`MINIMAL_INSTRUCTION_PREFIX`]を転用していた)。JA側
+  minimal instructionは意図的に無変更のまま(既存テキスト流用方針を
+  継続)。(2) Production SDK version pin新設(`requirements-production-
+  genai-pin.txt`、`google-genai==2.25.0`)。Production `.venv`向けの
+  requirementsファイルはこれまで存在しなかった(`requirements-ci.txt`
+  は`.venv-ci`専用)。Production `.venv`全体[実測100パッケージ]の完全
+  固定は本Itemのスコープ外と判断し、意図的に対象外とした(既存の運用
+  実態[都度pip install]を変える大規模リファクタリングを避けるため)。
+  (3) FULL_STORY経路(`er003_v1_sing01_news_tail_fix.generate_news_
+  narration_wide_margin`)のattempts_log/top-level戻り値へ
+  `semantic_equivalence_info`を昇格(既存`connected_speech_info`等と
+  同じ昇格パターン、telemetry.jsonlへの記録自体は既存のまま無変更)。
+  (4) Act One digit読みfixture(`er003_test_v1_n3_01_tts_generate.
+  ActHeadingDigitReadingRegressionTests`)のdocstringを「既知false
+  rejection記録(OPEN-186/`EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-
+  02_REPORT.md`参照)」へ是正(判定ロジック自体は無変更)。(5) 既知
+  baseline件数を実測更新(下記REPORT参照)。
+- **前ID Opus所見の残り**: N-1(`make_speech_metadata_call_fn`の
+  `output_path`が未使用のdead paramだった)はエラーメッセージへの
+  診断情報として実利用させる形で解消。N-9(並列実行の実測上限=2)は
+  運用記録として本エントリ・REPORTへ記載する(コード上のハード制限
+  ではない、Production通常運用での429監視は継続課題のまま)。N-10
+  (「Key PhraseはPhase 1範囲外につき常にstructured_separation」という
+  stale comment)はC実装により是正。
+- **既定backendの扱い**: 本Phaseでも既定(`structured_separation`)は
+  変更しない。切替は`--tts-backend`明示指定のみ。既定切替の要否は
+  Fable/ユーザーが実運用試聴後に判断する。
+- **根拠**: `docs/pm/delegation_log/2026-09-28_TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-02_01.md`、`TTS-GEMINI-3.8-FLASH-
+  LITE-PRODUCTION-WIRING-FAMILY-X-02_REPORT.md`。

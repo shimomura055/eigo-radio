@@ -15,6 +15,7 @@
 from __future__ import annotations
 
 import io
+import time
 import wave
 from math import gcd
 from typing import Callable, Optional
@@ -145,9 +146,21 @@ def make_speech_metadata_call_fn(model_name: str, voice_name: str, client=None,
     戻り値の生PCMは既存呼び出し元が期待する形式(24000Hz/mono/16bit
     int16 raw PCM、WAVヘッダ無し)に統一する(WAV/PCM防御込み)。
 
-    Batch API(er006_batch_tts_wiring_01)は経由しない(Phase 1範囲外、
-    設計書§(k)Phase 2以降でBatch対応を検討)。Standard同期呼び出しの
-    みをこのモジュールが直接行う。"""
+    Batch API経由が必要な場合はmake_speech_metadata_batch_call_fn()を使う
+    (resolve_tts_call_and_prompt()がresolve_tts_execution_mode()を見て
+    自動的に切り替える、B-1参照)。このfactory自身はStandard同期呼び出し
+    のみを行う。
+
+    output_path: **N-1是正(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-
+    FAMILY-X-02、Opus L2所見、2026-09-28)**: FAMILY-X-01 Phase 1時点では
+    この引数は仮引数として存在するのみでtts_call_fn内部から一切参照
+    されておらず(cost_logger側はer005_cost_logger._patch_gemini()が
+    client.models.generate_content自体をmonkeypatchして自動記録するため、
+    Standard経路は元々output_pathをtelemetryへ渡す設計を必要としない)、
+    dead paramだった。呼び出し元(make_batch_tts_call_fnと同一シグネチャに
+    揃えるためのAPI対称性)としては引き続き受け取るが、実際にエラー
+    メッセージへ含めることで診断用途の実利用を持たせる(cost記録自体は
+    引き続き_patch_gemini()に一任、二重記録はしない)。"""
     assert_sdk_supports_speech_metadata()
     resolved_model_name = routing_contract.require_model(FAMILY_X_FLASH_LITE_TTS_PROCESS, model_name)
 
@@ -179,10 +192,132 @@ def make_speech_metadata_call_fn(model_name: str, voice_name: str, client=None,
         parts = response.candidates[0].content.parts
         raw = b"".join(p.inline_data.data for p in parts if p.inline_data and p.inline_data.data)
         if not raw:
-            raise RuntimeError(f"音声パーツが空でした(parts数: {len(parts)}, speech_metadata_flash_lite backend)")
+            raise RuntimeError(f"音声パーツが空でした(parts数: {len(parts)}, speech_metadata_flash_lite backend"
+                               f"{f', output_path={output_path}' if output_path else ''})")
         samples, framerate = _decode_audio_defensive(raw)
         samples = _resample_to_common_rate(samples, framerate)
         return _float_to_pcm16_bytes(samples)
+
+    return tts_call_fn
+
+
+def make_speech_metadata_batch_call_fn(model_name: str, voice_name: str, client=None,
+                                        output_path: Optional[str] = None,
+                                        poll_interval_seconds: Optional[float] = None,
+                                        timeout_seconds: Optional[float] = None) -> Callable:
+    """B-1(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02、
+    ユーザー確定仕様): speech_metadata方式をGemini Batch API
+    (client.batches.create)経由で実行するcall_fn factory。
+
+    既存Batch wiring(er006_batch_tts_wiring_01)と**同じ分岐点**
+    (resolve_tts_call_and_prompt内でresolve_tts_execution_mode()を見て
+    このfactoryへ切り替える、下記resolve_tts_call_and_prompt参照)・
+    同じpolling/timeout実装(wait_for_batch_multi)・同じtelemetry schema
+    (provider="gemini_batch"、_record()経由でtts_execution_mode="BATCH"
+    が自動記録される)を再利用する。「Batch未対応」を前提にfail-closedへ
+    倒す設計にはしていない(speech_metadataがInlinedRequestで実際に
+    受理されることを2026-09-28に1 item probeで実測確認済み: job
+    SUCCEEDED、170.7秒、pcm 175024 bytes、usage prompt_tokens=12/
+    candidates_tokens=113。詳細はFAMILY-X-02 REPORT参照)。
+
+    Standard版(make_speech_metadata_call_fn)と同じWAV/PCM防御
+    (_decode_audio_defensive/_resample_to_common_rate/
+    _float_to_pcm16_bytes)を適用してから24000Hz/mono/16bit rawとして
+    返す(Batch応答もGemini 3.8系である以上、同じWAVヘッダ付き形式で
+    返る前提のため)。"""
+    assert_sdk_supports_speech_metadata()
+    resolved_model_name = routing_contract.require_model(FAMILY_X_FLASH_LITE_TTS_PROCESS, model_name)
+
+    import er002_gemini_client as gclient
+    import er006_batch_tts_wiring_01 as batch_wiring
+    from google.genai import types
+
+    client = client or gclient.make_client()
+    _poll = poll_interval_seconds if poll_interval_seconds is not None else batch_wiring.DEFAULT_POLL_INTERVAL_SECONDS
+    _timeout = timeout_seconds if timeout_seconds is not None else batch_wiring.DEFAULT_TIMEOUT_SECONDS
+
+    def tts_call_fn(payload) -> bytes:
+        text, style = payload
+        parts_kwargs = {"text": text}
+        if style:
+            parts_kwargs["speech_metadata"] = types.SpeechMetadata(style=style)
+        content = types.Content(parts=[types.Part(**parts_kwargs)], role="user")
+        speech_config = types.SpeechConfig(
+            language_code=common.LANGUAGE_CODE,
+            voice_config=types.VoiceConfig(
+                prebuilt_voice_config=types.PrebuiltVoiceConfig(voice_name=voice_name)
+            ),
+        )
+        req = types.InlinedRequest(
+            model=resolved_model_name,
+            contents=[content],
+            config=types.GenerateContentConfig(
+                response_modalities=["AUDIO"],
+                speech_config=speech_config,
+                http_options=types.HttpOptions(timeout=gclient.TTS_TIMEOUT_MS),
+            ),
+        )
+        t0 = time.time()
+        job = client.batches.create(model=resolved_model_name, src=[req])
+        job_name = job.name
+        job, state = batch_wiring.wait_for_batch_multi(
+            client, job_name, poll_interval_seconds=_poll, timeout_seconds=_timeout)
+        elapsed = time.time() - t0
+        _extra = {"tts_backend": BACKEND_SPEECH_METADATA_FLASH_LITE, "style": style}
+
+        if state == "TIMEOUT_EXCEEDED":
+            batch_wiring._record(batch_wiring.BatchItemStatus.TIMEOUT, resolved_model_name, voice_name, job_name,
+                                  "item_0", elapsed, output_path,
+                                  extra={**_extra, "timeout_seconds": _timeout})
+            raise TimeoutError(
+                f"Gemini Batch job {job_name}(speech_metadata_flash_lite)が{_timeout}秒以内に完了しませんでした")
+        if not state.endswith("SUCCEEDED"):
+            batch_wiring._record(batch_wiring.BatchItemStatus.JOB_FAILED, resolved_model_name, voice_name, job_name,
+                                  "item_0", elapsed, output_path, extra={**_extra, "job_state": state})
+            raise RuntimeError(
+                f"Gemini Batch job {job_name}(speech_metadata_flash_lite)がSUCCEEDEDになりませんでした"
+                f"(state={state})")
+
+        responses = getattr(job.dest, "inlined_responses", None) if job.dest else None
+        if not responses:
+            batch_wiring._record(batch_wiring.BatchItemStatus.MISSING_RESPONSE, resolved_model_name, voice_name,
+                                  job_name, "item_0", elapsed, output_path, extra=_extra)
+            raise RuntimeError(f"Gemini Batch job {job_name}(speech_metadata_flash_lite): "
+                               f"inlined_responsesが空でした(missing response)")
+
+        resp = responses[0]
+        if getattr(resp, "error", None):
+            batch_wiring._record(batch_wiring.BatchItemStatus.API_ERROR, resolved_model_name, voice_name, job_name,
+                                  "item_0", elapsed, output_path,
+                                  extra={**_extra, "error": str(resp.error)[:500]})
+            raise RuntimeError(f"Gemini Batch job {job_name}(speech_metadata_flash_lite) item 0: "
+                               f"API error: {resp.error}")
+
+        try:
+            parts = resp.response.candidates[0].content.parts
+            raw = b"".join(p.inline_data.data for p in parts if p.inline_data and p.inline_data.data)
+        except Exception as e:
+            batch_wiring._record(batch_wiring.BatchItemStatus.INVALID_AUDIO, resolved_model_name, voice_name,
+                                  job_name, "item_0", elapsed, output_path,
+                                  extra={**_extra, "parse_error": str(e)[:500]})
+            raise RuntimeError(f"Gemini Batch job {job_name}(speech_metadata_flash_lite) item 0: "
+                               f"応答の解析に失敗(invalid audio): {e}")
+
+        if not raw:
+            batch_wiring._record(batch_wiring.BatchItemStatus.EMPTY_RESULT, resolved_model_name, voice_name,
+                                  job_name, "item_0", elapsed, output_path, extra=_extra)
+            raise RuntimeError(f"Gemini Batch job {job_name}(speech_metadata_flash_lite) item 0: "
+                               f"音声パーツが空でした(empty result)")
+
+        samples, framerate = _decode_audio_defensive(raw)
+        samples = _resample_to_common_rate(samples, framerate)
+        pcm16 = _float_to_pcm16_bytes(samples)
+
+        usage = getattr(resp.response, "usage_metadata", None)
+        cost_usd = batch_wiring.estimate_cost_usd(resolved_model_name, usage)
+        batch_wiring._record(batch_wiring.BatchItemStatus.SUCCESS, resolved_model_name, voice_name, job_name,
+                              "item_0", elapsed, output_path, usage_metadata=usage, cost_usd=cost_usd, extra=_extra)
+        return pcm16
 
     return tts_call_fn
 
@@ -231,8 +366,21 @@ def resolve_tts_call_and_prompt(text: str, style_prefix: str, model_name: str, v
         raise ValueError(f"unknown tts_backend: {tts_backend!r}(supported: {SUPPORTED_TTS_BACKENDS})")
     if tts_backend == BACKEND_SPEECH_METADATA_FLASH_LITE:
         import er033_tts_flash_lite_family_x_styles_01 as fl_styles
-        call_fn = make_speech_metadata_call_fn(
-            fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, voice_name, output_path=out_path)
+        # B-1(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02、
+        # ユーザー確定仕様): 既存Production実行方式contract
+        # (er006_batch_tts_wiring_01.resolve_tts_execution_mode)と同じ
+        # 分岐点をFlash-Lite経路にも通す(legacy backendと共通の環境変数
+        # TTS_EXECUTION_MODE、既定BATCH)。「Batch未対応」前提のfail-closed
+        # にはしない(Batch APIでspeech_metadataが受理されることは実測
+        # 済み、下記make_speech_metadata_batch_call_fn docstring参照)。
+        import er006_batch_tts_wiring_01 as _batch_wiring_mod
+        mode = _batch_wiring_mod.resolve_tts_execution_mode()
+        if mode == _batch_wiring_mod.TTS_EXECUTION_MODE_BATCH:
+            call_fn = make_speech_metadata_batch_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, voice_name, output_path=out_path)
+        else:
+            call_fn = make_speech_metadata_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, voice_name, output_path=out_path)
         prompt = (text, style_prefix)
         return call_fn, prompt
 

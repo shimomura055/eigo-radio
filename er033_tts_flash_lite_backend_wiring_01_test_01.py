@@ -363,6 +363,195 @@ class MakeSpeechMetadataCallFnShapeTests(unittest.TestCase):
                 call_fn(("Hello.", "calm"))
 
 
+class ExecutionModeDispatchTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(B-1、
+    2026-09-28): resolve_tts_call_and_prompt()がspeech_metadata_flash_lite
+    backend選択時も、既存Production実行方式contract
+    (er006_batch_tts_wiring_01.resolve_tts_execution_mode)と同じ環境変数
+    TTS_EXECUTION_MODEを見て、Standard/Batchのどちらのcall_fn factoryを
+    使うか分岐することを確認する(実API呼び出し無し、factory呼び出し先を
+    mockして呼ばれた関数だけを検証する)。"""
+
+    def setUp(self):
+        import er006_batch_tts_wiring_01 as batch_wiring
+        self.batch_wiring = batch_wiring
+        self._env_backup = dict(__import__("os").environ)
+
+    def tearDown(self):
+        import os
+        os.environ.clear()
+        os.environ.update(self._env_backup)
+
+    def test_standard_mode_uses_sync_call_fn_factory(self):
+        import os
+        os.environ["TTS_EXECUTION_MODE"] = "STANDARD"
+        with mock.patch.object(flw, "make_speech_metadata_call_fn", return_value=lambda p: b"") as m_sync, \
+             mock.patch.object(flw, "make_speech_metadata_batch_call_fn") as m_batch:
+            flw.resolve_tts_call_and_prompt(
+                "text", "style", "gemini-2.5-pro-preview-tts", "Aoede", "out.wav",
+                tts_backend="speech_metadata_flash_lite")
+        m_sync.assert_called_once()
+        m_batch.assert_not_called()
+
+    def test_batch_mode_uses_batch_call_fn_factory(self):
+        import os
+        os.environ["TTS_EXECUTION_MODE"] = "BATCH"
+        with mock.patch.object(flw, "make_speech_metadata_batch_call_fn", return_value=lambda p: b"") as m_batch, \
+             mock.patch.object(flw, "make_speech_metadata_call_fn") as m_sync:
+            flw.resolve_tts_call_and_prompt(
+                "text", "style", "gemini-2.5-pro-preview-tts", "Aoede", "out.wav",
+                tts_backend="speech_metadata_flash_lite")
+        m_batch.assert_called_once()
+        m_sync.assert_not_called()
+
+    def test_default_execution_mode_is_batch_matching_legacy_contract(self):
+        # TTS_EXECUTION_MODE未設定時は既存contractと同じ既定(BATCH)になる
+        # ことを確認する(B-1: 既存contractとの整合、legacy backendと同じ
+        # 分岐点を通ることの裏付け)。
+        import os
+        os.environ.pop("TTS_EXECUTION_MODE", None)
+        self.assertEqual(self.batch_wiring.resolve_tts_execution_mode(),
+                          self.batch_wiring.TTS_EXECUTION_MODE_BATCH)
+        with mock.patch.object(flw, "make_speech_metadata_batch_call_fn", return_value=lambda p: b"") as m_batch:
+            flw.resolve_tts_call_and_prompt(
+                "text", "style", "gemini-2.5-pro-preview-tts", "Aoede", "out.wav",
+                tts_backend="speech_metadata_flash_lite")
+        m_batch.assert_called_once()
+
+    def test_invalid_execution_mode_raises_value_error(self):
+        import os
+        os.environ["TTS_EXECUTION_MODE"] = "BOGUS"
+        with self.assertRaises(ValueError):
+            flw.resolve_tts_call_and_prompt(
+                "text", "style", "gemini-2.5-pro-preview-tts", "Aoede", "out.wav",
+                tts_backend="speech_metadata_flash_lite")
+
+
+class _FakeBatchJob:
+    def __init__(self, name, state, dest=None):
+        self.name = name
+        self.state = state
+        self.dest = dest
+
+
+class _FakeBatchDest:
+    def __init__(self, inlined_responses):
+        self.inlined_responses = inlined_responses
+
+
+class _FakeInlinedResponse:
+    def __init__(self, response=None, error=None):
+        self.response = response
+        self.error = error
+
+
+class MakeSpeechMetadataBatchCallFnShapeTests(unittest.TestCase):
+    """B-1: Batch API(client.batches.create)経由のcall_fnが、Standard版と
+    同じtuple payload形状(text, style)を受け取り、同じWAV/PCM防御を経て
+    生PCMを返すこと、既存er006_batch_tts_wiring_01のtelemetry
+    (_record→cost_logger.record、tts_execution_mode="BATCH")と同じ
+    schemaで記録されることを確認する(実API呼び出し無し、FakeClientで
+    client.batches.create/getをmockする)。"""
+
+    def _make_fake_client(self, wav_bytes, usage_metadata=None):
+        job = _FakeBatchJob(
+            "batches/fake123", "JobState.JOB_STATE_SUCCEEDED",
+            dest=_FakeBatchDest([_FakeInlinedResponse(response=mock.Mock(
+                candidates=[mock.Mock(content=mock.Mock(
+                    parts=[mock.Mock(inline_data=mock.Mock(data=wav_bytes))]))],
+                usage_metadata=usage_metadata))]))
+
+        class FakeBatches:
+            def create(self, model, src):
+                return job
+
+            def get(self, name):
+                return job
+
+        class FakeClient:
+            def __init__(self):
+                self.batches = FakeBatches()
+
+        return FakeClient()
+
+    def test_call_fn_returns_pcm_via_batch_api(self):
+        samples = np.array([100, -100, 200], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        client = self._make_fake_client(wav_bytes)
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types():
+            call_fn = flw.make_speech_metadata_batch_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=client,
+                poll_interval_seconds=0.001, timeout_seconds=5.0)
+            pcm = call_fn(("Hello.", "calm, conversational"))
+        roundtrip = np.frombuffer(pcm, dtype=np.int16)
+        self.assertEqual(len(roundtrip), len(samples))
+
+    def test_call_fn_records_batch_execution_mode_telemetry(self):
+        import er005_cost_logger as cost_logger
+        import er006_batch_tts_wiring_01 as batch_wiring
+        samples = np.array([1, 2, 3], dtype=np.int16)
+        wav_bytes = _make_wav_bytes(samples, 24000)
+        client = self._make_fake_client(wav_bytes)
+        recorded = []
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types(), \
+             mock.patch.object(cost_logger, "_LOG_PATH", "dummy.jsonl"), \
+             mock.patch.object(cost_logger, "record", side_effect=lambda e: recorded.append(e)):
+            call_fn = flw.make_speech_metadata_batch_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=client,
+                poll_interval_seconds=0.001, timeout_seconds=5.0)
+            call_fn(("Hello.", "calm"))
+        self.assertEqual(len(recorded), 1)
+        entry = recorded[0]
+        self.assertEqual(entry["tts_execution_mode"], batch_wiring.TTS_EXECUTION_MODE_BATCH)
+        self.assertEqual(entry["provider"], "gemini_batch")
+        self.assertEqual(entry["tts_backend"], flw.BACKEND_SPEECH_METADATA_FLASH_LITE)
+        self.assertTrue(entry["success"])
+
+    def test_call_fn_raises_on_api_error_item(self):
+        job = _FakeBatchJob(
+            "batches/fakeerr", "JobState.JOB_STATE_SUCCEEDED",
+            dest=_FakeBatchDest([_FakeInlinedResponse(error="some batch api error")]))
+
+        class FakeBatches:
+            def create(self, model, src):
+                return job
+
+            def get(self, name):
+                return job
+
+        class FakeClient:
+            def __init__(self):
+                self.batches = FakeBatches()
+
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types():
+            call_fn = flw.make_speech_metadata_batch_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=FakeClient(),
+                poll_interval_seconds=0.001, timeout_seconds=5.0)
+            with self.assertRaises(RuntimeError):
+                call_fn(("Hello.", "calm"))
+
+    def test_call_fn_raises_on_job_failed_state(self):
+        job = _FakeBatchJob("batches/fakefail", "JobState.JOB_STATE_FAILED", dest=None)
+
+        class FakeBatches:
+            def create(self, model, src):
+                return job
+
+            def get(self, name):
+                return job
+
+        class FakeClient:
+            def __init__(self):
+                self.batches = FakeBatches()
+
+        with mock.patch.object(flw, "_parse_genai_version", return_value=(2, 25, 0)), _patch_genai_types():
+            call_fn = flw.make_speech_metadata_batch_call_fn(
+                fl_styles.FAMILY_X_FLASH_LITE_MODEL_NAME, "Aoede", client=FakeClient(),
+                poll_interval_seconds=0.001, timeout_seconds=5.0)
+            with self.assertRaises(RuntimeError):
+                call_fn(("Hello.", "calm"))
+
+
 class RealSDKSpeechMetadataIntegrationTests(unittest.TestCase):
     """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01 Phase 2
     (2026-09-28): Production `.venv`へgoogle-genai 2.25.0を導入した後、
@@ -459,6 +648,7 @@ def run():
     for cls in (
         DefaultBackendByteIdenticalTests, SDKFailClosedGuardTests, ResolveActualModelNameTests,
         ModelRoutingContractIntegrationTests, WavPcmDefenseTests, MakeSpeechMetadataCallFnShapeTests,
+        ExecutionModeDispatchTests, MakeSpeechMetadataBatchCallFnShapeTests,
         RealSDKSpeechMetadataIntegrationTests,
     ):
         suite.addTests(loader.loadTestsFromTestCase(cls))

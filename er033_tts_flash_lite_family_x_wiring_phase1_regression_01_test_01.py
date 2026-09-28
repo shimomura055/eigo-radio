@@ -126,6 +126,31 @@ class Repro01MinimalInstructionDefaultBackendTests(unittest.TestCase):
         self.assertEqual(prompt, p4c.build_tts_prompt("Some phrase.", repro01.MINIMAL_INSTRUCTION_PREFIX))
 
 
+class Repro01MinimalInstructionFlashLiteFallbackStyleTests(unittest.TestCase):
+    """TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(D-1、
+    2026-09-28): tts_backend="speech_metadata_flash_lite"の場合、fallback
+    (minimal instruction)発火時のspeech_metadata.styleが、既存の長い
+    MINIMAL_INSTRUCTION_PREFIX(legacy structured separation専用の
+    "warm podcast announcer voice"指示)ではなく、
+    `er033_tts_flash_lite_family_x_styles_01.FAMILY_X_ROLE_STYLE_EN_
+    FALLBACK[0]`(短いTrial実測済みfallback style)であることを確認する。
+    既定backend(structured_separation)は上記
+    Repro01MinimalInstructionDefaultBackendTestsでbyte-identicalのまま
+    であることを別途確認済み(無影響)。"""
+
+    def test_flash_lite_backend_uses_short_fallback_style_not_legacy_minimal_prefix(self):
+        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+        with _patched_retry() as fake:
+            repro01.generate_english_component_minimal_instruction(
+                "Some phrase.", DUMMY_OUT_PATH, tts_backend="speech_metadata_flash_lite")
+        self.assertEqual(len(fake.calls), 1)
+        _, prompt = fake.calls[0]
+        text, style = prompt
+        self.assertEqual(text, "Some phrase.")
+        self.assertEqual(style, fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0])
+        self.assertNotEqual(style, repro01.MINIMAL_INSTRUCTION_PREFIX)
+
+
 class NewsTailFixDefaultBackendTests(unittest.TestCase):
     def test_standard_attempt_prompt_matches_legacy(self):
         with _patched_retry() as fake:
@@ -199,6 +224,7 @@ def run():
     for cls in (
         P9aGenerateNarrationSnippetDefaultBackendTests, VoiceCharonEnglishDefaultBackendTests,
         VoiceCharonJapaneseDefaultBackendTests, Repro01MinimalInstructionDefaultBackendTests,
+        Repro01MinimalInstructionFlashLiteFallbackStyleTests,
         NewsTailFixDefaultBackendTests, PointHeadingsDefaultBackendTests,
         A2JapaneseMinimalInstructionDefaultBackendTests, TtsBackendSignatureBackwardCompatibilityTests,
     ):

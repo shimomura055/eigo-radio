@@ -26,6 +26,20 @@ import er006_master_audio_store_01 as store
 TTS_MODEL_EN = "gemini-2.5-pro-preview-tts"
 TTS_MODEL_JA = "gemini-3.1-flash-tts-preview"
 
+# TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(2026-09-28、
+# ユーザー確定仕様C): Family Xでは共有narration(固定shell+Key Phrase)も
+# 含めFlash-Liteへ原則統一する。MasterAudioKey.tts_model_idにこの値を
+# 使うことで、既存Structured Separation資産(TTS_MODEL_EN/JA)とは自動的に
+# 別のmaster_audio_idになり、既存entryを無効化せずbackward compatibleに
+# 共存する(既存entry無変更、Flash-Lite分は別キーで新規生成・保存)。
+TTS_MODEL_FLASH_LITE = "gemini-3.8-flash-lite-tts"
+
+
+def _resolve_shared_narration_model(language: str, tts_backend: str) -> str:
+    if tts_backend == "speech_metadata_flash_lite":
+        return TTS_MODEL_FLASH_LITE
+    return TTS_MODEL_EN if language == "en" else TTS_MODEL_JA
+
 # ER-011-NO18-A2-TIGHT-SPEECH-AND-TRIM030-PRODUCTION-WIRING-23:
 # Key Phrase英語ComponentのMasterAudioKeyにtrim policyのversionを含める。
 # MasterAudioKey.EQUALITY_FIELDS(er006_master_audio_store_01.py)は
@@ -60,57 +74,74 @@ FIXED_JAPANESE_TEXTS_A2_ONLY = {
 }
 
 
-def _make_english_key(text: str) -> store.MasterAudioKey:
+def _make_english_key(text: str, tts_backend: str = "structured_separation") -> store.MasterAudioKey:
     return store.MasterAudioKey(
-        language="en", speaker_voice="Charon", tts_model_id=TTS_MODEL_EN,
+        language="en", speaker_voice="Charon",
+        tts_model_id=_resolve_shared_narration_model("en", tts_backend),
         canonical_text=text, level=None,
         style_instruction_id="charon_english_fixed_shell", style_instruction_version="v1",
     )
 
 
-def _make_japanese_key(text: str) -> store.MasterAudioKey:
+def _make_japanese_key(text: str, tts_backend: str = "structured_separation") -> store.MasterAudioKey:
     return store.MasterAudioKey(
-        language="ja", speaker_voice="Charon", tts_model_id=TTS_MODEL_JA,
+        language="ja", speaker_voice="Charon",
+        tts_model_id=_resolve_shared_narration_model("ja", tts_backend),
         canonical_text=text, level=None,
         style_instruction_id="charon_japanese_fixed_shell", style_instruction_version="v1",
     )
 
 
-def ensure_fixed_english_segment(name: str, narration_dir: str, filename_suffix: str = "") -> dict:
+def ensure_fixed_english_segment(name: str, narration_dir: str, filename_suffix: str = "",
+                                  # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+                                  # (2026-09-28、既定"structured_separation"で既存挙動と
+                                  # byte-identical、既存MasterAudioKeyはtts_model_idが同じ
+                                  # ため無変更): Family X runnerのみが明示的に
+                                  # "speech_metadata_flash_lite"を渡す。
+                                  tts_backend: str = "structured_separation") -> dict:
     text = FIXED_ENGLISH_TEXTS[name]
     out_path = f"{narration_dir}/{name}{filename_suffix}.wav"
-    key = _make_english_key(text)
-    return store.get_or_generate(key, out_path, lambda p: voice01.generate_charon_english(text, p))
+    key = _make_english_key(text, tts_backend)
+    return store.get_or_generate(
+        key, out_path, lambda p: voice01.generate_charon_english(text, p, tts_backend=tts_backend))
 
 
-def ensure_fixed_japanese_segment(name: str, narration_dir: str) -> dict:
+def ensure_fixed_japanese_segment(name: str, narration_dir: str,
+                                   tts_backend: str = "structured_separation") -> dict:
     text = FIXED_JAPANESE_TEXTS_A2_ONLY[name]
     out_path = f"{narration_dir}/{name}.wav"
-    key = _make_japanese_key(text)
+    key = _make_japanese_key(text, tts_backend)
     return store.get_or_generate(
         key, out_path,
-        lambda p: voice01.generate_charon_japanese(text, p, text, max_attempts=6))
+        lambda p: voice01.generate_charon_japanese(text, p, text, max_attempts=6, tts_backend=tts_backend))
 
 
-def ensure_key_phrase_english_component(used_form_tts_safe: str, out_path: str) -> dict:
+def ensure_key_phrase_english_component(used_form_tts_safe: str, out_path: str,
+                                        tts_backend: str = "structured_separation") -> dict:
     """Key Phrase英語Component(voice=Aoede)をMaster Audio Store経由で
     取得する。同一トピックのB1/A2で同じKey Phraseテキスト(tts_safe_kp_en
     正規化後の同一文字列)・同じvoice/model/styleの場合のみreuseされる
     (level=Noneで揃えている)。文字列が少しでも異なれば別のmaster_audio_id
     になり、reuseされない(ER-006-AUDIO-COST-OPTIMIZATION-01 §2.3で
-    確認済みの4件の重複Key Phraseが対象)。"""
+    確認済みの4件の重複Key Phraseが対象)。
+
+    TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(2026-09-28、
+    ユーザー確定仕様C): tts_backend="speech_metadata_flash_lite"の場合、
+    tts_model_idがFlash-Liteになるため既存Structured Separation資産とは
+    別キーになり(既存entry無変更)、Flash-Liteで新規生成・保存される。"""
     key = store.MasterAudioKey(
-        language="en", speaker_voice="Aoede", tts_model_id=TTS_MODEL_EN,
+        language="en", speaker_voice="Aoede",
+        tts_model_id=_resolve_shared_narration_model("en", tts_backend),
         canonical_text=used_form_tts_safe, level=None,
         style_instruction_id="key_phrase_english_component",
         style_instruction_version=KEY_PHRASE_TRIM_POLICY_VERSION,
     )
     return store.get_or_generate(
         key, out_path,
-        lambda p: repro01.generate_key_phrase_component_verified(used_form_tts_safe, p))
+        lambda p: repro01.generate_key_phrase_component_verified(used_form_tts_safe, p, tts_backend=tts_backend))
 
 
-def ensure_all_shared_narration_b1(narration_dir: str) -> dict:
+def ensure_all_shared_narration_b1(narration_dir: str, tts_backend: str = "structured_separation") -> dict:
     """B1向け: Master Audio Store経由でwelcome/preview_intro/key_phrases_
     intro/full_story_intro/num_one〜fiveを取得する。ファイル名は既存の
     er003_v1_n3_01_assemble.py::load_b1_sources()が期待する"_charon"
@@ -120,18 +151,19 @@ def ensure_all_shared_narration_b1(narration_dir: str) -> dict:
     os.makedirs(narration_dir, exist_ok=True)
     results = {}
     for name in FIXED_ENGLISH_TEXTS:
-        results[name] = ensure_fixed_english_segment(name, narration_dir, filename_suffix="_charon")
+        results[name] = ensure_fixed_english_segment(name, narration_dir, filename_suffix="_charon",
+                                                       tts_backend=tts_backend)
     return results
 
 
-def ensure_all_shared_narration_a2(narration_dir: str) -> dict:
+def ensure_all_shared_narration_a2(narration_dir: str, tts_backend: str = "structured_separation") -> dict:
     """A2向け: 上記に加えpoint_explanation(日本語)も取得する。
     Key(level=None)はB1と完全に同一のため、B1側で既にMasterが存在すれば
     ここではTTSを一切呼ばずreuseする。"""
     os.makedirs(narration_dir, exist_ok=True)
     results = {}
     for name in FIXED_ENGLISH_TEXTS:
-        results[name] = ensure_fixed_english_segment(name, narration_dir)
+        results[name] = ensure_fixed_english_segment(name, narration_dir, tts_backend=tts_backend)
     for name in FIXED_JAPANESE_TEXTS_A2_ONLY:
-        results[name] = ensure_fixed_japanese_segment(name, narration_dir)
+        results[name] = ensure_fixed_japanese_segment(name, narration_dir, tts_backend=tts_backend)
     return results

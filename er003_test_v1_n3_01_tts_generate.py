@@ -179,9 +179,22 @@ class ActHeadingDigitReadingRegressionTests(unittest.TestCase):
     text("Act One"/"Act Two"/"Act Three"、綴り文字の幕見出し)と、
     Flash-Liteがattempt1で実際にdigit読みした結果のASR書き起こし文字列
     ("Act 1"/"Act 2"/"Act 3")の組を人工的に再現し、既存Production
-    Validator(classify_asr_match)が正しくTRUE_CONTENT_MISMATCHとして
-    停止させることを確認する(REPORT実測: reason="数字/否定の不一致を
-    検出: numbers=[('', '1')] negation=[]"、REPORT§22.5)。"""
+    Validator(classify_asr_match)が現状どう分類するか(TRUE_CONTENT_
+    MISMATCH)を固定する回帰fixtureである(REPORT実測: reason="数字/
+    否定の不一致を検出: numbers=[('', '1')] negation=[]"、REPORT§22.5)。
+
+    **是正(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02、
+    2026-09-28)**: このTRUE_CONTENT_MISMATCH判定は「意味的に正しい
+    挙動」ではなく、`OPEN-186`(英語ASR照合の数値/表記等価性レビュー、
+    `EN-ASR-SEMANTIC-EQUIVALENCE-COVERAGE-REVIEW-02_REPORT.md`)が
+    指摘する**既知のfalse rejection**である("Act 1"と"Act One"は
+    人間の聞き手にとって同じ意味だが、現行`normalize_numeric()`は
+    digit形↔word形の等価性を判定できず不一致として扱う)。このfixtureの
+    目的は、Flash-Lite移行に伴いこの既知gapが実際にProduction runtime
+    (retry cascade)で発火することを記録・固定することであり、この
+    挙動を「正解」として推奨するものではない。判定ロジック自体の変更
+    (数値等価判定の拡張)は本fixtureの範囲外であり、OPEN-186/
+    COVERAGE-REVIEW-02側の別管理IDで扱う。"""
 
     def test_act_heading_digit_reading_is_true_content_mismatch(self):
         canonical = (

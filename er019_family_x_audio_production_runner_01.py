@@ -404,10 +404,15 @@ def generate_family_x_b1_segments(
         # 唯一、明示的に"speech_metadata_flash_lite"を渡せる呼び出し元
         # (Dangling Reference Check、設計書§(d))。主記事12segment
         # (topic_intro/preview/comment_1-4/full_story_part1-3[+heading]/
-        # in_one_line)のみが対象。Key Phrase(shared_narration経由の
-        # Master Audio Store)はPhase 1範囲外につき常にstructured_
-        # separationのまま(設計書a-1「Key Phrase|共有|Master Audio Store
-        # 経由」、別Phaseで個別対応)。
+        # in_one_line)が対象。
+        # FAMILY-X-02(2026-09-28、ユーザー確定仕様C): Key Phrase
+        # (shared_narration経由のMaster Audio Store)も含め、Family X
+        # ではFlash-Liteへ原則統一する。tts_backendを
+        # `_generate_key_phrase_segments_b1`/`shared_narration.
+        # ensure_all_shared_narration_b1`へそのまま転送する(Master
+        # Audio Keyは`tts_model_id`を含むため、Flash-Lite分は既存
+        # Structured Separation資産と衝突せず別キーで保存される、
+        # 設計はer006_audio_cost_pilot_02_shared_narration.py参照)。
         tts_backend: str = "structured_separation") -> dict:
     """既存Production低レベル関数(voice01.generate_charon_english/
     news_tail_fix.generate_news_narration_wide_margin)をそのまま呼ぶ。
@@ -439,7 +444,7 @@ def generate_family_x_b1_segments(
     # Key Phrase生成のみ明示的にスキップし、他segmentは生成を継続する。
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
-    shared_narration.ensure_all_shared_narration_b1(narration_dir)
+    shared_narration.ensure_all_shared_narration_b1(narration_dir, tts_backend=tts_backend)
     _cached = _load_cached_tts_results(out_dir)
 
     results = {}
@@ -535,7 +540,8 @@ def generate_family_x_b1_segments(
                     tts_backend=tts_backend), expected_text=body_text)
         results[body_name]["canonical_text"] = body_text
 
-    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached) if kp is not None else {}
+    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached,
+                                                   tts_backend=tts_backend) if kp is not None else {}
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -551,7 +557,8 @@ def generate_family_x_b1_segments(
             "tts_backend": tts_backend}
 
 
-def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None) -> dict:
+def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None,
+                                      tts_backend: str = "structured_separation") -> dict:
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     kp_results = {}
     for item in kp_items:
@@ -562,14 +569,15 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
                 lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
-                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav"))
+                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend))
         with cl.segment_context(f"kp{rank}_japanese"):
             ja_r = _generate_or_reuse_kp(
                 cached, rank, "japanese", f"{narration_dir}/kp{rank}_ja_charon.wav",
                 lambda ja_gloss_tts=ja_gloss_tts, used_form=used_form,
                 rank=rank: n3_tts.generate_charon_japanese_with_reading_safety(
                     ja_gloss_tts, f"{narration_dir}/kp{rank}_ja_charon.wav",
-                    n3_tts.expected_substring_ja(ja_gloss_tts), known_key_phrase_terms=[used_form]))
+                    n3_tts.expected_substring_ja(ja_gloss_tts), known_key_phrase_terms=[used_form],
+                    tts_backend=tts_backend))
         ja_r["display_gloss"] = item["japanese_gloss"]
         ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese": ja_r}
@@ -578,18 +586,50 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
 
 def generate_family_x_a2_segments(
         theme_out_dir: str, japanese_title: str,
-        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
-        # 既定"structured_separation"で既存挙動とbyte-identical)。A2は
-        # Trial未実測(Stage3はFamily X Hormuz B1B英語のみ)のため、role別
-        # 短style定数はA2側には適用しない(既存style_prefix_override
-        # [A2_ENGLISH_STYLE_PREFIX_SLOWER、6%減速post-processとの承認済み
-        # 組み合わせ]をそのまま維持し、backend切替時もspeech_metadata.style
-        # フィールドへ同じ文字列を渡すだけに留める、設計書§(e)参照)。
-        # Key PhraseはPhase 1範囲外(常にstructured_separation)。
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02
+        # (既定"structured_separation"で既存挙動とbyte-identical)。
+        # FAMILY-X-02(2026-09-28、ユーザー確定仕様B-2、Fable決定訂正):
+        # role別6-role styleはStandard(A2)/Advanced(B1B)両方の基本仕様。
+        # A2固有の速度調整(A2_SLOWER_PACE_INSTRUCTION+6%減速post-process)
+        # は_role_style_slower()で6-role styleと連結する(下記関数内
+        # 参照)、既存の承認済み速度仕様は失わせない。Key Phraseは
+        # tts_backend引数をそのまま`_generate_key_phrase_segments_a2`へ
+        # 転送する(FAMILY-X-02 C: Key Phrase含めFlash-Lite統一)。
         tts_backend: str = "structured_separation") -> dict:
     """既存Production低レベル関数(crosslevel_common.generate_english_
     segment_with_fallback経由のn3_tts.generate_a2_segment_with_slowdown、
-    n3_tts.generate_a2_japanese_with_reading_safety)をそのまま呼ぶ。"""
+    n3_tts.generate_a2_japanese_with_reading_safety)をそのまま呼ぶ。
+
+    TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(2026-09-28、
+    ユーザー確定仕様B-2、Fable決定訂正): 「A2(Standard)はrole別style
+    非対応のまま」というFAMILY-X-01 Phase 1-3の設計判断を撤回する。
+    6-role styleはStandard/Advanced両方へ適用する基本仕様であり、
+    Standard固有の速度調整仕様(既承認`n3_tts.A2_SLOWER_PACE_INSTRUCTION`
+    + 6% time-stretch post-process)は失わせない。flash-lite backend
+    選択時のみ、speech_metadata.styleへ「6-role短い descriptor」+
+    「既承認の減速instruction(逐語)」を連結した文字列を渡す
+    (post-process自体は`generate_a2_segment_with_slowdown`内で無変更)。
+    JA segment(japanese_title/preview/comment_1-4)は既存
+    `generate_a2_japanese_with_reading_safety`がstyle_prefix_override
+    自体を持たないため無変更(既存JAPANESE_STYLE_PREFIX/minimal
+    instructionテキストをそのまま流用、設計書§(c-2)どおり)。"""
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+
+    def _role_style(role: str) -> str | None:
+        if tts_backend != "speech_metadata_flash_lite":
+            return None
+        return fl_styles.FAMILY_X_ROLE_STYLE_EN.get(role)
+
+    def _role_style_slower(role: str) -> str | None:
+        # Standard固有: 6-role短styleと既承認の減速instruction(逐語、
+        # ER-008-A2-TIMESTRETCH-ABC-10でユーザーが試聴・承認した文言)を
+        # 連結する。base(6-role)がNone(既定backend)の場合はNoneのまま
+        # (既存呼び出し元の挙動を一切変えない)。
+        base = _role_style(role)
+        if base is None:
+            return None
+        return f"{base}\n{n3_tts.A2_SLOWER_PACE_INSTRUCTION.strip()}"
+
     out_dir = f"{theme_out_dir}/a2"
     narration_dir = f"{out_dir}/narration"
     os.makedirs(narration_dir, exist_ok=True)
@@ -602,7 +642,7 @@ def generate_family_x_a2_segments(
     # 回避しない)。
     kp = load_json(kp_path) if os.path.exists(kp_path) else None
 
-    shared_narration.ensure_all_shared_narration_a2(narration_dir)
+    shared_narration.ensure_all_shared_narration_a2(narration_dir, tts_backend=tts_backend)
     _cached = _load_cached_tts_results(out_dir)
 
     results = {}
@@ -615,6 +655,7 @@ def generate_family_x_a2_segments(
             lambda: crosslevel_common.generate_english_segment_with_fallback(
                 n3_tts.tts_safe_number_words_en(n3_tts.tts_safe_en(topic_intro_tts_text)),
                 f"{narration_dir}/topic_intro.wav", n3_tts.first_words(parts["title"], 3), max_extra_chars=30,
+                style_prefix_override=_role_style("TOPIC_INTRO"),
                 enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(
                     "topic_intro"), tts_backend=tts_backend), expected_text=topic_intro_text)
     results["topic_intro"]["canonical_text"] = topic_intro_text
@@ -646,7 +687,8 @@ def generate_family_x_a2_segments(
                 _cached, name, f"{narration_dir}/{name}.wav",
                 lambda tts_input=tts_input, sub=sub, name=name: n3_tts.generate_a2_segment_with_slowdown(
                     tts_input, f"{narration_dir}/{name}.wav", sub,
-                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                    style_prefix_override=(_role_style_slower("IN_ONE_LINE" if name == "in_one_line" else "FULL_STORY")
+                                            or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
                     disfluency_qa=(name == "in_one_line"),
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(name),
                     enable_repetition_qa=(name in _BODY_SEGMENT_NAMES), tts_backend=tts_backend), expected_text=text)
@@ -666,7 +708,9 @@ def generate_family_x_a2_segments(
                 lambda heading_tts_input=heading_tts_input, heading_text=heading_text,
                 heading_name=heading_name: n3_tts.generate_a2_segment_with_slowdown(
                     heading_tts_input, f"{narration_dir}/{heading_name}.wav", n3_tts.first_words(heading_text, 3),
-                    max_extra_chars=20, style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                    max_extra_chars=20,
+                    style_prefix_override=(_role_style_slower("HEADING_READOUT")
+                                            or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
                     disfluency_qa=True, tts_backend=tts_backend), expected_text=heading_text)
         results[heading_name]["canonical_text"] = heading_text
 
@@ -678,14 +722,16 @@ def generate_family_x_a2_segments(
                 lambda body_tts_input=body_tts_input, body_sub=body_sub,
                 body_name=body_name: n3_tts.generate_a2_segment_with_slowdown(
                     body_tts_input, f"{narration_dir}/{body_name}.wav", body_sub,
-                    style_prefix_override=n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER,
+                    style_prefix_override=(_role_style_slower("FULL_STORY")
+                                            or n3_tts.A2_ENGLISH_STYLE_PREFIX_SLOWER),
                     disfluency_qa=False,
                     enable_connected_speech_equivalence_layer=retry_primitive.connected_speech_enabled_for(body_name),
                     enable_repetition_qa=(body_name in _BODY_SEGMENT_NAMES),
                     tts_backend=tts_backend), expected_text=body_text)
         results[body_name]["canonical_text"] = body_text
 
-    kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached) if kp is not None else {}
+    kp_results = _generate_key_phrase_segments_a2(kp, narration_dir, _cached,
+                                                   tts_backend=tts_backend) if kp is not None else {}
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
@@ -701,7 +747,8 @@ def generate_family_x_a2_segments(
             "tts_backend": tts_backend}
 
 
-def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None) -> dict:
+def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None,
+                                      tts_backend: str = "structured_separation") -> dict:
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     kp_results = {}
     for i, item in enumerate(kp_items, start=1):
@@ -712,14 +759,14 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
                 lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
-                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav"))
+                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend))
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
             ja_r = _generate_or_reuse_kp(
                 cached, rank, "japanese_meaning", f"{narration_dir}/meaning_{i}.wav",
                 lambda ja_gloss_tts=ja_gloss_tts, used_form=used_form,
                 i=i: n3_tts.generate_a2_japanese_with_reading_safety(
                     ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
-                    max_extra_chars=30, known_key_phrase_terms=[used_form]))
+                    max_extra_chars=30, known_key_phrase_terms=[used_form], tts_backend=tts_backend))
         ja_r["display_gloss"] = item["japanese_gloss"]
         ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}
@@ -1415,17 +1462,19 @@ def build_arg_parser() -> argparse.ArgumentParser:
                          help="既定: er019_output/family_x_audio_production_wiring_01/<slug>__<run>")
     parser.add_argument("--budget-jpy", type=float, default=150.0,
                          help="scaffold/tts stage後のBudget Guard上限(既定150円、超過でRuntimeError)。")
-    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01(2026-09-27、
-    # 既定"structured_separation"=現行モデル、既存挙動と完全に同一):
-    # Phase 1時点ではspeech_metadata_flash_liteを指定してもSDK未対応
-    # (Production .venv=2.11.0)でfail-closed停止する(設計書§(f)、
-    # Phase 3でSDK 2.25.0導入後にPhase 2 evidence runで明示的に切替予定)。
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02(既定
+    # "structured_separation"=現行モデル、既存挙動と完全に同一): SDK
+    # 2.25.0はProduction `.venv`へ導入済み(FAMILY-X-01 Phase 2、
+    # 2026-09-28)のため、speech_metadata_flash_lite指定時は実際に
+    # Flash-Liteで生成される(Gate 3の16項目は全16件完了済み、
+    # `PRODUCTION_WIRED`化はOpus L2レビュー後にFableが判定)。
     parser.add_argument("--tts-backend", default="structured_separation",
                          choices=("structured_separation", "speech_metadata_flash_lite"),
                          help="既定structured_separation(現行gemini-2.5-pro-preview-tts/"
                               "3.1-flash-tts-preview)。speech_metadata_flash_lite指定時は"
-                              "gemini-3.8-flash-lite-ttsのspeech_metadata方式(Family X先行"
-                              "12segment[主記事本文]のみ、Key Phraseは対象外[Phase 1範囲外])。")
+                              "gemini-3.8-flash-lite-ttsのspeech_metadata方式(Family X、"
+                              "主記事segment+Key Phrase[共有narration含む]の両方が対象、"
+                              "FAMILY-X-02のユーザー確定仕様CでKey Phraseも統一)。")
     return parser
 
 
@@ -1452,10 +1501,12 @@ def main() -> None:
         "source_dir": source_dir, "levels": levels, "stage": args.stage, "dry_run": args.dry_run,
         "japanese_title": japanese_title, "japanese_title_source": ja_title_info["source"],
         "budget_jpy": args.budget_jpy,
-        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01: 実際に
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-01/02: 実際に
         # 使われたTTS backend(既定structured_separation)をrun全体の
-        # traceabilityとして記録する(主記事12segmentのみ対象、Key Phraseは
-        # Phase 1範囲外につき常にstructured_separationのまま)。
+        # traceabilityとして記録する(N-10是正、2026-09-28: FAMILY-X-02
+        # 以降はKey Phrase[共有narration含む]も同じbackendへ統一される、
+        # 「Key PhraseはPhase 1範囲外につき常にstructured_separation」は
+        # 過去の一時的な設計判断でありもう成立しない)。
         "tts_backend": args.tts_backend,
     })
 

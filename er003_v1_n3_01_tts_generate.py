@@ -403,6 +403,14 @@ def _generate_a2_japanese_minimal_instruction(
         # の見落とし箇所として明示された経路。既定"structured_separation"で
         # 既存挙動とbyte-identical): Family X runnerのみが明示的に
         # "speech_metadata_flash_lite"を渡す。
+        # FAMILY-X-02(2026-09-28、D-1、ユーザー確定仕様「JA minimalは既存
+        # テキスト流用を明記」): JA側のfallback instruction
+        # (_A2_JA_MINIMAL_INSTRUCTION_PREFIX)はbackendに関わらず意図的に
+        # 無変更のまま(EN側FAMILY_X_ROLE_STYLE_EN_FALLBACKのような短い
+        # 代替styleは考案しない。理由: JA speech_metadata.styleは
+        # Trial未検証のまま既存JAPANESE_STYLE_PREFIX/minimal instruction
+        # テキストを流用する設計方針[設計書§(c-2)]をfallback経路にも
+        # 一貫して適用するため)。
         tts_backend: str = "structured_separation") -> dict:
     import er002_common as common
     import er003_b1_p3u_audio as p3u

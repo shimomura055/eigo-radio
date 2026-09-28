@@ -523,11 +523,25 @@ def generate_english_component_minimal_instruction(
     # MINIMAL_INSTRUCTION_PREFIXへ適用する。hintが1件も無い場合は
     # instruction_prefixを一切変更しない(既存呼び出し元・既存promptへの
     # 影響をゼロに保つ)。
-    instruction_prefix = MINIMAL_INSTRUCTION_PREFIX
+    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(2026-09-28、
+    # D-1是正): FAMILY-X-01 Phase 1-3は、fallback(minimal instruction)
+    # 発火時もMINIMAL_INSTRUCTION_PREFIX(長い"warm podcast announcer"
+    # 指示文)をそのままspeech_metadata.styleへ渡していた
+    # (`er033_tts_flash_lite_family_x_styles_01.FAMILY_X_ROLE_STYLE_EN_
+    # FALLBACK`は定義済みだが未配線のまま、という既知gap)。ここで実配線
+    # する: tts_backend=="speech_metadata_flash_lite"の場合のみ、
+    # 短いfallback style(role別6-role styleとは独立、Trial attempt2相当の
+    # "natural, clear, conversational")を使う。structured_separation
+    # (既定)は無変更のまま(byte-identical)。
+    if tts_backend == "speech_metadata_flash_lite":
+        import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+        instruction_prefix = fl_styles.FAMILY_X_ROLE_STYLE_EN_FALLBACK[0]
+    else:
+        instruction_prefix = MINIMAL_INSTRUCTION_PREFIX
     en_pronunciation_resolver_info = None
     if enable_pronunciation_resolver:
         augmented_prefix, en_pronunciation_resolver_info = pron_resolver_core.resolve_and_augment_en_style_prefix(
-            MINIMAL_INSTRUCTION_PREFIX, text)
+            instruction_prefix, text)
         if en_pronunciation_resolver_info.get("hints_applied"):
             instruction_prefix = augmented_prefix
     # ER-006-TTS-BATCH-WIRING-SOT-CLEANUP-01: Batch API配線(声・モデルは
@@ -716,7 +730,15 @@ KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT = (
 def generate_key_phrase_component_verified(text: str, out_path: str,
         # ER-008-N8-PRODUCTION-WIRING-AND-FOLLOWUP-19: Key PhraseはPRODUCTION
         # 承認済みのdisfluency QA対象segmentのため既定True(A2/B1共通)。
-        disfluency_qa: bool = True) -> dict:
+        disfluency_qa: bool = True,
+        # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(2026-09-28、
+        # ユーザー確定仕様C、既定"structured_separation"で既存挙動と
+        # byte-identical): shared_narration.ensure_key_phrase_english_
+        # component経由でFamily X runnerのみが明示的に
+        # "speech_metadata_flash_lite"を渡す。Primary/Fallback両方の
+        # generate_narration_snippet_verified_strict呼び出しへ転送する
+        # (retry/fallbackとも同一backend経由)。
+        tts_backend: str = "structured_separation") -> dict:
     """Primary: Minimal instruction(KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX)
     で最大KEY_PHRASE_MINIMAL_MAX_ATTEMPTS(2)回まで試行する。2回とも
     不合格の場合のみ、Fallback: Minimal instruction+English language lock
@@ -742,7 +764,7 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         style_prefix_override=KEY_PHRASE_MINIMAL_INSTRUCTION_PREFIX,
         # KEYPHRASE-EN-ASR-FALSE-REJECTION-CASCADE-PROD-WIRING-01(適用範囲:
         # 英語Key Phrase Component経路のみ、この関数だけが明示的に渡す)。
-        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True)
+        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend)
     if primary.get("status") == "OK":
         primary["fallback_used"] = False
         primary["primary_instruction_type"] = "MINIMAL"
@@ -752,7 +774,7 @@ def generate_key_phrase_component_verified(text: str, out_path: str,
         text, "en", out_path, text, max_extra_chars=10, max_attempts=KEY_PHRASE_ENGLISH_LOCK_MAX_ATTEMPTS,
         safety_margin_seconds=KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS, disfluency_qa=disfluency_qa,
         style_prefix_override=KEY_PHRASE_ENGLISH_LOCK_INSTRUCTION,
-        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True)
+        asr_prompt=KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT, enable_non_latin_cascade=True, tts_backend=tts_backend)
     fallback["fallback_used"] = True
     fallback["primary_instruction_type"] = "ENGLISH_LOCK" if fallback.get("status") == "OK" else "MINIMAL_AND_ENGLISH_LOCK_BOTH_FAILED"
     # record_outcome()のcumulative_tts_attempts集計は

@@ -216,6 +216,20 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
         attempts_log.append({"attempt": attempt, "status": "OK", "asr_text": asr_text,
                               "instruction_type": instruction_type, "audio_classification": cls.classification,
                               "connected_speech_info": getattr(cls, "connected_speech_info", None),
+                              # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02
+                              # (2026-09-28、D-4): FULL_STORY(このgenerate_news_
+                              # narration_wide_margin経路)はEN-ASR-SEMANTIC-
+                              # EQUIVALENCE-PRODUCTION-WIRING-01のFIVE_ROLES_
+                              # APPLICABLEに含まれるが、telemetry
+                              # (er021_output/.../telemetry.jsonl)への記録は
+                              # classify_asr_match/cascade側で既に行われて
+                              # いる一方、この関数のartifact(tts_generation_
+                              # results.json等)側にはsemantic_equivalence_info
+                              # が一切surfaceされていなかった(既存のGate 3表
+                              # 「runtime確認済み」過大記載の是正対象)。他segment
+                              # 種別(connected_speech_info等)と同じ昇格パターンで
+                              # 追加する(判定ロジック自体は無変更)。
+                              "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
                               "length_ok": length_ok, "verified": verified,
                               "trim_info": trim_info, "disfluency_checked": gate["disfluency_checked"],
                               "disfluency_evidence": gate.get("disfluency_evidence"),
@@ -233,6 +247,7 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
             "disfluency_evidence": gate.get("disfluency_evidence"),
             "repetition_qa_checked": rep_gate["repetition_qa_checked"],
             "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
+            "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
         })
         attempts_log[-1]["attempt_audio_path"] = _attempt_audio_path
         if verified:
@@ -250,6 +265,9 @@ def generate_news_narration_wide_margin(text: str, out_path: str,
                     "repetition_qa_evidence": rep_gate.get("repetition_qa_evidence"),
                     "en_pronunciation_resolver_info": en_pronunciation_resolver_info,
                     "cooldown_events": cooldown_events, "tts_backend": tts_backend,
+                    # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(D-4):
+                    # attempts_logと同じ理由でtop-levelにも昇格する。
+                    "semantic_equivalence_info": getattr(cls, "semantic_equivalence_info", None),
                     "model": flw.resolve_actual_model_name(p9a.ENGLISH_MODEL_NAME, tts_backend)}
         if stop_retrying:
             # ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15: 固有名詞的な

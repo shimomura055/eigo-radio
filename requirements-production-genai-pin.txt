@@ -1,0 +1,31 @@
+# requirements-production-genai-pin.txt
+#
+# 目的(TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02、D-2、
+# 2026-09-28新設): Production `.venv`にはこれまで依存関係を固定する
+# requirements ファイルが存在せず(`requirements-ci.txt`は`.venv-ci`
+# 専用、CIテストのimport健全性確認のみが目的で本番運用対象外)、
+# google-genai SDKのバージョンはFAMILY-X-01 Phase 2(2026-09-28)で
+# `pip install google-genai==2.25.0`により手動導入されたのみだった。
+# `er033_tts_flash_lite_backend_wiring_01.assert_sdk_supports_speech_
+# metadata()`はMIN_SUPPORTED_GENAI_VERSION=(2,25,0)の**下限**のみを
+# fail-closedで検査しており、意図しない`pip install --upgrade`等による
+# **上振れ**(例: 3.0.0系がAPI互換性を壊す将来のメジャー更新)は防げない。
+#
+# 本ファイルは、Production `.venv`全体(100パッケージ、Azure Speech/
+# faster-whisper/playwright等 記事生成・ASR・動画関連の多数の直接依存を
+# 含む)を丸ごと固定するものではない(既存の運用実態[requirementsファイル
+# 無しでの都度pip install]を変える大規模リファクタリングは本Itemの
+# スコープ外と判断し、意図的に行わない)。speech_metadata方式が前提とする
+# google-genai SDKバージョンのみを、既存`requirements-ci.txt`と同じ
+# 「exact pin(==)」規約で個別に記録する、最小の防御。
+#
+# 使い方: Production `.venv`の再構築・更新作業時に
+#   `.venv/Scripts/python.exe -m pip install -r requirements-production-genai-pin.txt`
+# を実行し、このpinから外れていないかを確認すること。既存の`pip freeze`
+# 全量比較(`er033_output/sdk_upgrade_01/pip_freeze_before.txt`/
+# `pip_freeze_after.txt`)による巻き込み変化検知(Phase 2で実施済み)を
+# 継続する場合は、そちらも合わせて参照すること。
+#
+# 検証日: 2026-09-28(Production `.venv`実測値と一致確認済み)。
+
+google-genai==2.25.0
