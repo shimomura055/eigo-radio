@@ -1,0 +1,398 @@
+{
+  "step": "step2",
+  "models": [
+    "gpt-5.6-luna",
+    "gpt-6-luna"
+  ],
+  "repeat": 1,
+  "fixtures": [
+    {
+      "id": "B1",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、origin無し[JA側]、changed_scope+unsupported_new_claim)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。",
+                "issue": "原油価格の高止まりがガソリン価格や輸送費などに影響するという波及効果は、Verified Fact Ledgerで確認されていない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerにない具体的な経済波及効果を追加しているため、unsupported_new_claimに該当する。",
+                "related_fact_id": "HF-011",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 4758,
+              "cached_input_tokens": 0,
+              "output_tokens": 2791,
+              "reasoning_tokens": 2588
+            },
+            "ref_cost_jpy": 0.6881,
+            "elapsed_seconds": 18.034
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "「ホルムズ海峡は、中東から原油を運ぶ船が多く通る重要な海の道だ。」",
+                "issue": "海峡が重要な航路であることや、中東から原油を運ぶ船が多く通ることは、Ledgerに記載されていない具体的な主張です。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerは海峡を通る貨物への提案を確認していますが、この航路の重要性や通航船の内訳までは確認していません。unsupported_new_claimに該当します。",
+                "related_fact_id": "HF-002",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+                "issue": "原油価格がガソリン価格や輸送費などに及ぼす影響は、Ledgerに記載されていない因果関係です。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "身近な価格への波及という具体的な主張はLedgerにありません。unsupported_new_claimに該当します。",
+                "related_fact_id": "HF-006",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 4758,
+              "cached_input_tokens": 0,
+              "output_tokens": 3676,
+              "reasoning_tokens": 3277
+            },
+            "ref_cost_jpy": 0.858,
+            "elapsed_seconds": 36.416
+          }
+        ]
+      }
+    },
+    {
+      "id": "B2_hormuz",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、origin=ja_source、changed_causality)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_COMPLIANT",
+            "deviations": [],
+            "usage": {
+              "input_tokens": 5383,
+              "cached_input_tokens": 0,
+              "output_tokens": 1058,
+              "reasoning_tokens": 1034
+            },
+            "ref_cost_jpy": 0.3754,
+            "elapsed_seconds": 9.531
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_COMPLIANT",
+            "deviations": [],
+            "usage": {
+              "input_tokens": 5383,
+              "cached_input_tokens": 0,
+              "output_tokens": 1915,
+              "reasoning_tokens": 1891
+            },
+            "ref_cost_jpy": 0.5399,
+            "elapsed_seconds": 15.553
+          }
+        ]
+      }
+    },
+    {
+      "id": "B3",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、origin=ja_source、changed_causality)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage.",
+                "issue": "継続していた攻撃・封鎖・タンカー安全上の懸念が、20％案の撤回・置換の原因であるかのように「so」で因果関係を示している。Ledgerは撤回・置換について、中東指導者との協議に基づく決定だと確認しているが、これらの懸念が撤回の原因だったとは確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "HF-007およびHF-009/HF-011の事実を、Ledgerにない撤回原因として結び付けているため、changed_causality=true。原文記事にも同じ因果表現があるためoriginはja_source。",
+                "related_fact_id": "HF-007",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5246,
+              "cached_input_tokens": 0,
+              "output_tokens": 1849,
+              "reasoning_tokens": 1552
+            },
+            "ref_cost_jpy": 0.5229,
+            "elapsed_seconds": 14.056
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.”",
+                "issue": "「so」により、継続する懸念が20％案の撤回・置換の原因であり、価格の回復にもつながったかのように因果関係を示している。Ledgerは撤回・置換を中東指導者との協議に基づく決定として記録し、懸念の継続と価格の動きを記録しているが、これらの因果関係は確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "Ledgerにない因果関係を「so」で加えているため、changed_causalityのみtrue。",
+                "related_fact_id": "HF-007",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5246,
+              "cached_input_tokens": 0,
+              "output_tokens": 2663,
+              "reasoning_tokens": 2380
+            },
+            "ref_cost_jpy": 0.6792,
+            "elapsed_seconds": 21.625
+          }
+        ]
+      }
+    },
+    {
+      "id": "B4",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx4、origin=ja_sourcex3+translationx1)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "A person can take over when AI alone has trouble.",
+                "issue": "Ledgerは人間の契約スタッフが一部のMuse経由の電話を担当したことは保証しているが、AIがうまくいかない場合に人間へ切り替わる運用や、その理由までは保証していない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "人間対応の存在を、AIの失敗時に発動するフォールバック機能として具体化しており、Ledgerにない運用条件と因果関係を追加している。",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.",
+                "issue": "Ledgerは、機微情報が契約スタッフに意図せず共有される可能性について従業員が懸念したことを保証しているが、人々の感情や情報共有のしやすさに関する一般的な心理的効果までは保証していない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "個別テストで報告されたプライバシー懸念を、一般的な人々の心理・情報開示行動に拡張している。",
+                "related_fact_id": "MUSE-HC-010",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+                "issue": "Museが電話や予約関連の依頼を扱えることはLedgerにあるが、機能が便利になることで人々が相手の正体を知りたくなるという一般的な因果関係はLedgerにない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "確認済みの電話・予約機能に、利用者の欲求が生じるという未確認の一般化と因果説明を追加している。",
+                "related_fact_id": "MUSE-HC-004",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5399,
+              "cached_input_tokens": 0,
+              "output_tokens": 7288,
+              "reasoning_tokens": 6631
+            },
+            "ref_cost_jpy": 1.5721,
+            "elapsed_seconds": 53.636
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "“Meta had run a test that produced exactly this kind of surprise.”",
+                "issue": "テストで相手がAIだと思い、後に人間だと分かるという驚きが実際に生じたかのように述べている。Ledgerは人間の契約スタッフが一部の電話を担当したことは確認しているが、相手がそのように認識・経験したとは確認していない。原文の「そんな展開を思わせるテスト」より断定的になっている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "実際に驚きが起きたという主張はLedgerにない。原文の想起・連想という枠づけから、翻訳でテストが驚きを生んだとの断定に変わっているため、changed_certaintyとunsupported_new_claimに該当する。",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "“A person can take over when AI alone has trouble.”",
+                "issue": "AIだけでは難しい場合に人間が引き継ぐ仕組みがあるかのように読めるが、Ledgerが確認するのは一部の電話を人間の契約スタッフが担当したことまでで、AIの困難をきっかけに引き継ぐ運用は確認されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "人間が担当した事実に、AIが難しい場合に引き継ぐという未確認の運用条件を加えている。原文にもあるため、逸脱の発生源は原文記事。",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5399,
+              "cached_input_tokens": 0,
+              "output_tokens": 7256,
+              "reasoning_tokens": 6732
+            },
+            "ref_cost_jpy": 1.5659,
+            "elapsed_seconds": 53.464
+          }
+        ]
+      }
+    },
+    {
+      "id": "Meta_run03_standard",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、origin=translation、changed_fact+changed_certainty、related_fact_id=MUSE-HC-010)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_COMPLIANT",
+            "deviations": [],
+            "usage": {
+              "input_tokens": 5411,
+              "cached_input_tokens": 0,
+              "output_tokens": 2210,
+              "reasoning_tokens": 2186
+            },
+            "ref_cost_jpy": 0.5975,
+            "elapsed_seconds": 18.412
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+                "issue": "実際の利用者がAIの利便性を享受し、人間が電話していると気づかなかったと断定しています。Ledgerが確認しているのは、テストが適切な開示なしに始まったことや従業員のプライバシー懸念であり、利用者の認識や体験そのものではありません。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerにない利用者の認識・体験を事実として述べており、テストでの開示不足から利用者が実際に気づかなかったという範囲・確実性へ広げています。原文にも同様の含意があります。",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5411,
+              "cached_input_tokens": 0,
+              "output_tokens": 4651,
+              "reasoning_tokens": 4369
+            },
+            "ref_cost_jpy": 1.0661,
+            "elapsed_seconds": 37.278
+          }
+        ]
+      }
+    }
+  ],
+  "stopped": false,
+  "stop_reason": null,
+  "cumulative_ref_jpy": 21.8567,
+  "cumulative_calls": 44,
+  "cumulative_errors": 0
+}
