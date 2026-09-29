@@ -1229,12 +1229,39 @@ Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり
    Advanced段まで伝播していたLedger外一般化をJA段で捕捉・解消)。固定費
    約¥2.20/記事・latency約110秒(改善候補は`OPEN_ITEMS.md` OPEN-189)。
    関連: `OPEN_ITEMS.md` OPEN-187(`CLOSED`)、OPEN-189。
+5. **ja_source MAJOR時の暫定retry拡張(案B、`APPROVED_FOR_PRODUCTION`・
+   Gate 3待ち、2026-09-29追記、`FAMILY-X-REFRESH-E2E-PRODUCTION-
+   WIRING-01`W6)**: English側(Advanced/Standard)のDeviation Checkが
+   `origin=ja_source`のMAJORを検出した場合、従来は`JARecheckRequired
+   Error`で即STOPしていた(fail-closed、「安全≠成功」原則どおり)。
+   これに加え、**暫定的なProduction retry拡張**として、その具体的な
+   指摘をJA Writer O(`er019_family_x_ja_writer_o_r1_r2_01.run_ja_
+   writer_o_r1_r2`)のOriginal段へmust-fixとして差し戻し、JAを
+   Original→R1→R2→Fact Checkの全体で**1回だけ**再生成し、Advanced/
+   Standardを再実行する経路を`er012_e_family_entertainment_two_level_
+   runner_01.py::run_writer_stage()`(薄いwrapper)へ配線した。**JA差し
+   戻し1回後もMAJORならSTOPする**(fail-closed原則は維持、無限retry
+   はしない。Advanced/Standard合計でJA再生成は1回、Standard段での発生
+   も同じ枠を消費)。Checker Prompt本体(`DEVIATION_PROMPT_TEMPLATE`等)・
+   severity判定基準・Ledger/Deviation設計・JA Writer Prompt本文は本拡張
+   で一切変更していない(既存`build_must_fix_block`機構の再利用のみ)。
+   本対応は**Checker過剰品質問題の正式解決ではなく暫定的な運用拡張**
+   であり、Checker(Ledger/Deviation Check)自体の再設計は`OPEN_ITEMS.md`
+   OPEN-233として`DEFERRED (non-blocking)`(GPT-6 Trial/Production
+   Routing判断後に再開)。ユーザー明示決定(2026-09-29)により
+   `APPROVED_FOR_PRODUCTION`、Gate 3(実E2E完走等)を満たすまで
+   `PRODUCTION_WIRED`としない。詳細:
+   `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§W6、
+   `docs/pm/design_family_x_refresh_e2e_production_wiring_01.md`§9-W6、
+   `DECISION_LOG.md`同日エントリ。
 
 根拠: ユーザー決定(2026-09-26、`PM-USER-DECISIONS-SSOT-CONSOLIDATION-04`)。
 2026-09-27追記の配線根拠: `NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01`、
 `NEWS-FAMILY-X-SECTION-SEGMENTATION-SPEC-DESIGN-01`、
 `NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01`、
 `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`(Stage 1)。
+2026-09-29追記(5)の根拠: ユーザー明示決定(`FAMILY-X-REFRESH-E2E-
+PRODUCTION-WIRING-01`W6、案B採用)。
 
 ## Family Z(Fiction)— 2026-09-26新設(ユーザー確定ルールのSSOT記録、`FICTION-FAMILY-Z-PRODUCTION-E2E-01`)
 

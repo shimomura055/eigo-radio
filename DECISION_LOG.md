@@ -12628,3 +12628,50 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   所見(`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`行459-548)。
   詳細: `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-
   PRODUCTION-WIRING-01_08.md`。
+
+## FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01: ja_source MAJOR暫定対応
+「案B」の正式採用(APPROVED_FOR_PRODUCTION、Gate 3待ち)+Ledger/
+Deviation Check再設計をdeferred non-blocking Open Item化+優先順位①〜④
+(W6、2026-09-29)
+
+- **(a) Checker(Ledger/Deviation Check)再設計は一旦defer**: 理由は
+  GPT-6系への移行可能性が高く、モデル変更により過剰BLOCK傾向・
+  非決定性・changed_causality判定・notes_for_writerの扱い・重大fixture
+  検出率自体が変わる可能性があるため。順序: Family X E2E完了→GPT-6
+  Trial/Routing判断→必要なProduction導入→新モデル前提でChecker問題を
+  再評価。再設計案(`LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`
+  のv0.1案)は破棄せず、deferred/non-blocking Open Item(OPEN-233、下記
+  OPEN_ITEMS反映)として保持する。現時点で`VALIDATED`/
+  `APPROVED_FOR_PRODUCTION`ではない。
+- **(b) ja_source MAJORへの暫定対応として案Bを採用**: **暫定Flow(逐語)**:
+  EN Deviation Checkで`origin=ja_source MAJOR`が出た場合: 1. その具体的
+  な指摘をJA Writer Oへmust-fixとして差し戻す/2. JAを1回だけ再生成/
+  3. 再Fact Check/4. 再英訳/5. 再Deviation Check/6. それでもMAJORなら
+  STOP。**制約(逐語)**: 「1回上限」「fail-closed維持」「無限retry禁止」
+  「Checker Prompt自体は今回変更しない」「Ledger/Deviation severity設計
+  も変更しない」。ユーザー明示決定(2026-09-29)により
+  `APPROVED_FOR_PRODUCTION`。ただしGate 3(実E2E完走・Human Review等)を
+  満たすまで`PRODUCTION_WIRED`としない。**本対応はChecker過剰品質問題の
+  正式解決ではなく、暫定的なProduction retry拡張**である。実装(委任
+  `_11`): `er012_e_family_entertainment_two_level_runner_01.py::run_
+  writer_stage()`(薄いwrapper、`_run_writer_stage_once()`が送出する
+  `JARecheckRequiredError`を捕捉)+`er019_family_x_ja_writer_o_r1_r2_
+  01.py::run_ja_writer_o_r1_r2()`の`original_must_fix`引数(既存
+  `build_must_fix_block`機構への引数追加のみ、新Prompt文言なし)。詳細:
+  `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§W6、設計書
+  `docs/pm/design_family_x_refresh_e2e_production_wiring_01.md`§9-W6。
+- **(c) 優先順位**: ① 案BでFamily X E2E完了 ② Gate 3/PRODUCTION_WIRED
+  判定 ③ GPT-6 Trial/導入判断 ④ 新モデル前提でChecker品質問題へ戻る。
+- **反映範囲**: `OPEN_ITEMS.md`(OPEN-233新規)・`REPORT_LEDGER.md`
+  (`LEDGER-DEVIATION-CHECK-REDESIGN-INVESTIGATION-01_REPORT.md`
+  commit`247e0a1f`・`LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`
+  commit`2c4f5ed3`を登録)・`CURRENT_SPEC.md`(Family X writer経路小節へ
+  暫定retry拡張を追記、fail-closed記述を整合)。
+- **Opus**: 発火なし(本エントリは決定の記録のみ)。
+- **Status**: (a)`DEFERRED (non-blocking)`。(b)`APPROVED_FOR_PRODUCTION`
+  (配線済み、Gate 3判定待ち、`PRODUCTION_WIRED`ではない)。
+- **根拠**: ユーザー明示決定(2026-09-29、Fable転記)+
+  `LEDGER-DEVIATION-CHECK-REDESIGN-INVESTIGATION-01_REPORT.md`+
+  `LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`。詳細:
+  `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-PRODUCTION-
+  WIRING-01_11.md`。
