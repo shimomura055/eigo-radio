@@ -806,3 +806,28 @@ Guardrail遵守確認(W6):
   み)。
 - Ledger/Deviation severity設計・Family A/B/C/Z経路・共有`vfl01`の挙動
   は無変更。
+
+## 9-E2E-run03. Phase C再開(E2E run_03、委任_12、2026-09-29、案B有効
+での実発火・Hormuz再STOP)
+
+案B(§9-W6)をarm(`storyline_b3/fact_selection_evidence.json`をrun_02/
+an3_t0_wiring_regression_01から複製、sha256一致確認済み)した状態で
+run_03を実発火した。Hormuz JA生成(Production JA経路、¥4.018、
+`concreteness_an3_block_sha256`run_02と一致)→English Advanced writer段
+で1回目のja_source MAJOR(HF-009関連、changed_causality)を検知し案Bが
+自動発動、JA Writer Oを1回だけ再生成(`outcome=REGENERATED`)→Advanced
+再実行は`LEDGER_COMPLIANT`で完成(article.md/parts.json保存)→Standard
+(A2)生成でHF-009関連の**別のja_source MAJOR**(changed_scope)が新規
+発生→案Bの1回上限により2回目のJA再生成は行わずfail-closedでSTOP
+(`outcome=STILL_MAJOR_AFTER_RECHECK`)。`_11`委任のテスト
+`test_ja_source_major_persists_after_recheck_then_stops_no_second_
+regeneration`が想定した挙動と、実運用(モックなし・実API)の結果が
+完全に一致することを確認した(設計どおりの安全装置が実データで機能)。
+
+Audio段・Gate 13+9項目・ユーザー指定Gate 3項目・試聴ページはHormuz/Meta
+双方とも未到達。Metaは1記事ずつ完結原則によりHormuz未完了のため着手
+していない(storyline_b3/research_ledgerはrun_03向けに複製・sha256
+確認済みで着手可能な状態のまま待機)。コード・Prompt変更は本委任では
+実施していない。詳細ログ・費用実測(run_03累計¥10.35、本管理ID全体
+累計約¥16.40)・Next Actionは`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_
+REPORT.md`§E2E run_03参照。

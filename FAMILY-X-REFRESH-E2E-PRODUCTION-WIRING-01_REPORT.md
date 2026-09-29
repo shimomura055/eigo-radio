@@ -1151,3 +1151,161 @@ run_02の手順(本REPORT §E2E再開)と比較した差分は以下のみ、新
 費用: ¥0(mock/regressionのみ、実API呼び出し0件)。STOPなし(新しい
 Product判断・未承認Prompt変更は発生しなかった。Checker再設計自体は
 別途OPEN化し、本委任では着手していない)。
+
+## §E2E run_03(委任_12、2026-09-29、案B有効での実発火・Hormuz STOP)
+
+### 事前確認(¥0)
+
+- `git pull --ff-only origin main`: no-op(既にup to date)。
+- `git stash list`: 空。
+- `grep -n "再び増やさない" er0*.py`: 2件、いずれもテストファイル
+  (`er019_family_x_concreteness_an3_t0_production_wiring_01_test_01.py`
+  `assertNotIn`、`er019_family_x_new_structure_wiring_01_test_01.py`
+  `assertNotIn`)のみでProduction module 0件(既知パターンと一致)。
+- 案B armed化: `er019_output/family_x_refresh_e2e_01/hormuz/run_03/
+  {research_ledger,storyline_b3}`をrun_02から複製(`verified_fact_ledger.
+  txt` sha256=`9bd6834e...ae77ae1a6`、`fact_selection_evidence.json`
+  sha256=`a020add7...8dde8dc98e402`、いずれもrun_02と一致を実測確認)。
+  Meta側は`er019_output/family_x_entertainment_production_runner_01/
+  an3_t0_wiring_regression_01/meta/{research_ledger,storyline_b3}`から
+  同様に複製・sha256一致確認済み(`verified_fact_ledger.txt`=
+  `ea0ce587...5988b7c5f56`、`fact_selection_evidence.json`=
+  `ff787382...053a7858c0a4`)が、下記Hormuz STOPのため**未使用**
+  (1記事ずつ完結原則、run_02と同じ扱い)。
+
+### Hormuz: JA生成(run_03、実測)
+
+- 実行: `er019_family_x_entertainment_production_runner_01.py --theme
+  "ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応"
+  --slug hormuz --out-dir er019_output/family_x_refresh_e2e_01/hormuz/
+  run_03 --budget-jpy 40 --stage writer --stop-after writer`
+  (`TTS_EXECUTION_MODE=STANDARD`環境変数明示)。research_ledger/
+  storyline_b3は上記コピーをreuse(¥0)。
+- 結果: JA Original生成→Fact Check MAJOR 1件検知→must-fix retry 1回
+  (既存仕様)→`final_status="LEDGER_COMPLIANT"`。R1→R2→R2 Fact Check
+  `final_status="LEDGER_COMPLIANT"`(must-fix不要)。
+- 実費用: ¥4.018(`ja_original`¥0.486+`ja_original_check`¥0.986+
+  `ja_original_must_fix`¥0.693+`ja_original_check_retry`¥0.334+
+  `ja_r1`¥0.562+`ja_r2`¥0.598+`ja_r2_check`¥0.358)。
+- `verbatim_shas.concreteness_an3_block_sha256`=
+  `067030ff53ecb76a4d1477a3deace07b3e1fac438a33cb873edbe045cf6927fe`
+  (run_02と完全一致、AN3-T0 Prompt不変の証拠)。
+- 記号正規化違反: 0件(revision2.md実測)。段落数: 13(≥3充足)。
+
+### Hormuz: Writer段(English、run_03)実行と案B発動・再STOP
+
+- ledger段(reuse、¥0増分): `er012_e_family_entertainment_two_level_
+  runner_01.py --ja-article <run_03>/ja_writer/revision2.md --slug
+  hormuz --out-dir <run_03> --ledger-file <run_03>/research_ledger/
+  verified_fact_ledger.txt --source-id FAMILY-X-REFRESH-E2E-PRODUCTION-
+  WIRING-01 --budget-jpy 30 --stage ledger`。
+- writer段: 同コマンドで`--stage writer`。`<run_03>/storyline_b3/
+  fact_selection_evidence.json`が存在するため案Bが自動armed。
+- **1回目**: Advanced(忠実英訳)生成→Deviation Check→**MAJOR 1件、
+  origin=ja_source**(`claim_in_article="That is why the price pulled
+  back only once after the fee proposal was withdrawn, and then
+  returned to a high level."`、`changed_causality=true`、
+  `changed_certainty=true`、`related_fact_id=HF-009`)。
+  `JARecheckRequiredError`検知→**案B発動**: JA Writer Oを
+  `original_must_fix`付きで1回だけ再生成(R2 must-fix→Fact Check
+  `final_status=LEDGER_COMPLIANT`、新JA text sha256=
+  `b03c43474617ac779913bc5ad6e5a1b0cd1936407f5cce8b5a8f069353a965cf`、
+  旧revision2.md sha256=`cdcb57dc033a997f7ba11d7bded644a74f3b1277440b3e
+  10e103779ce491829f`と相違=実際に再生成されたことを確認)。Evidence:
+  `<run_03>/ja_writer/audit/ja_recheck_attempt1.json`
+  (`outcome="REGENERATED"`)。新JA本文: 記号違反0、段落数10。
+- Advanced再実行: 新JA本文でAdvanced再生成→Deviation Check再実行→
+  **`overall_status="LEDGER_COMPLIANT"`(deviations=[])**。
+  `<run_03>/b1b/article.md`・`parts.json`保存(`status="OK"`、
+  `title="The Fee Plan Leaves, High Oil Prices Stay"`、
+  `paragraph_count=9`、`boundary_i/j=4/7`、`in_one_line`非空)。
+- Standard生成: 新JA本文でStandard(A2)生成→Deviation Check実行→
+  **新たな別MAJOR 1件、origin=ja_source**
+  (`claim_in_article="Oil prices did not fall across the whole market
+  after the plan was withdrawn."`、`changed_scope=true`、
+  `related_fact_id=HF-009`、`explanation`="Brent先物の観測が石油市場
+  全体へ拡張され、対象範囲が広がっている(Ledgerによる裏付けなし)")。
+  Evidence: `<run_03>/a2/audit/deviation_checks/standard_attempt1.json`。
+- **案Bの1回上限により2回目のJA再生成は行わず、fail-closedでSTOP**
+  (`委任のSTOP条件「案Bの JA 差し戻し 1 回後も ja_source MAJOR」に
+  該当)。Evidence: `<run_03>/ja_writer/audit/ja_recheck_attempt1_
+  result.json`(`outcome="STILL_MAJOR_AFTER_RECHECK"`、`stage="standard"`)。
+  例外メッセージに`ja_recheck_attempts=1`を明記(2回目のJA Writer O
+  呼び出しは発生していないことをファイル一覧でも確認: `ja_recheck_
+  attempt2*.json`は存在しない)。`_11`委任のテスト
+  `test_ja_source_major_persists_after_recheck_then_stops_no_second_
+  regeneration`が想定した挙動と実運用の結果が一致することを実データで
+  確認した。
+- a2/article.md・parts.jsonは保存されず(STOPのため)、Standard段は
+  未完成のまま。Audio段(scaffold/tts/assemble/player)は未実行(¥0)。
+
+### Gate結果(記事×レベル、run_03時点)
+
+| 記事 | レベル | Writer段Status | Audio段 | Gate結果 |
+|---|---|---|---|---|
+| Hormuz | Advanced | 完成(`LEDGER_COMPLIANT`、案B適用後、article.md/parts.json保存済み) | 未実行(1記事ずつ完結原則によりStandard未完了のため見送り、¥0) | 未到達(Standard未完了) |
+| Hormuz | Standard | STOPPED(案B 1回上限到達後もja_source MAJOR再発、STILL_MAJOR_AFTER_RECHECK) | 未実行 | 未到達 |
+| Meta | Advanced/Standard | 未着手(1記事ずつ完結原則、Hormuz未完了のため) | 未実行 | 未到達 |
+
+Gate 13項目((a)〜(m))・Opus 9項目・ユーザー指定Gate 3確認項目は、音声
+artifactが一切生成されていないため全て「評価不能(未到達)」。
+
+### 試聴ページ
+
+未作成(音声未生成のため)。Pages公開確認7項目は未実施。
+
+### 費用(実測、run_03累計)
+
+- Hormuz JA生成(writer段、original): ¥4.018。
+- Hormuz English writer段(ledger reuse¥0+Advanced初回+案B JA再生成+
+  Advanced再実行+Standard実行+STOPまで): run_03の`raw_usage_log.jsonl`
+  全体を`compute_cost_jpy_so_far()`で実測=**¥10.35**
+  (`by_provider={'openai': 10.35}`)、うちJA生成分¥4.018を除いた
+  English writer+案B再生成分の差分=約¥6.33。
+- Audio段: 未実行、¥0。Meta: 未着手、¥0。
+- **run_03累計: ¥10.35**(前委任までの本管理ID累計¥6.05と合算した
+  本管理ID全体累計: **約¥16.40**、全体上限¥300に対し未使用同然)。
+  記事別Guardrail(JA¥40/EN¥30)超過なし(`assert_budget_ok`による
+  RuntimeError STOPは発生していない。STOPは案B 1回上限のfail-closed
+  仕様によるものであり費用超過ではない)。
+- 費用B(継続コスト差分): 未評価(Audio段未実行のため実測不可)。
+
+### Closeout 10項目充足状況(委任_12時点、SSOT反映は別途)
+
+| # | 項目 | 状況 |
+|---|---|---|
+| 1 | Trial statusが分類済み | 該当なし(本委任はTrialではなくE2E) |
+| 2 | UDRが提示済み | 本報告がUDR相当(下記Next Action参照) |
+| 3 | 正式採用項目が追跡済み | 未到達(Gate未通過、採用判断前) |
+| 4 | APPROVED→PRODUCTION_WIRED完了確認 | 未到達(Gate未通過) |
+| 5 | initial/retry/fallback整合確認 | 確認済み(案B 1回上限・fail-closedが実データで想定どおり動作することを確認) |
+| 6 | runtime evidence取得 | 取得済み(`ja_recheck_attempt1.json`/`ja_recheck_attempt1_result.json`/`standard_attempt1.json`/`b1b/parts.json`/`raw_usage_log.jsonl`) |
+| 7 | SSOT整合 | 未実施(本委任はSSOT編集権なし、文案化は次段階) |
+| 8 | 未報告Trialが無いこと | 該当なし |
+| 9 | 無断deferが無いこと | 無断deferなし(STOPとして即時報告、Meta未着手も1記事ずつ完結原則の明示的帰結) |
+| 10 | 次タスクへの持ち越し事項明示 | 本節「Next Action」参照 |
+
+### Next Action(未回答項目、ユーザー/Fable判断待ち)
+
+1. 案B(JA 1回差し戻し)を適用してもHormuzはStandard段で**別のja_source
+   MAJOR**(HF-009関連、今回はscope拡張)が発生し、fail-closed STOPに
+   至った。これで委任_09(run_01)・委任_10(run_02)・本委任(run_03)の
+   3回とも、Hormuzはja_source起因の判定でAudio段に到達していない
+   (3回とも異なるclaim/異なる機構での検出)。案Bは「1回のJA差し戻しで
+   解消するケース」には有効(Advanced段は今回解消した)が、Standard段で
+   新たな逸脱が生じるケースまではカバーしない設計上の限界が実データで
+   確認された。
+2. 対応方針(いずれもコード・仕様変更を伴うためユーザー承認が必要、
+   本委任では実装しない): (a) 案Bの適用範囲をAdvanced/Standard
+   合計で複数回(例: 記事あたり最大2回)に拡張する/(b) JA Writer Oの
+   Fact CheckとEnglish側Deviation Checkの基準統一(Checker再設計、
+   既存OPEN Item)に本格着手する/(c) Hormuzという特定トピック
+   (ホルムズ海峡・原油価格)自体がscope/causality逸脱を起こしやすい
+   性質を持つ可能性を踏まえ、別トピックで案Bの有効性を検証する
+   (Metaは未着手のため独立データになり得る)/(d) 現状のfail-closed
+   設計を維持し、Hormuzは今回のSTOPのまま次工程へ進まない。
+3. Metaは本STOPと独立の入力であり、1記事ずつ完結原則によりHormuz
+   未完了の間は着手していない(storyline_b3/research_ledgerは
+   run_03向けに複製済み、sha256確認済みで着手可能な状態)。Hormuzの
+   方針決定を待つか、Metaを先に試すか(上記方針(c)の追加evidenceにも
+   なる)の判断を仰ぐ。
