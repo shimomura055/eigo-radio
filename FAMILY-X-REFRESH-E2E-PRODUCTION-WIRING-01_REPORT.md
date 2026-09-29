@@ -735,3 +735,118 @@ frozenテスト件数[P2H:1032/P2I:660]とlive実測値の比較。本タスク�
 STOPなし(新しいProduct仕様・未承認Prompt変更は発生しなかった。E2E
 実測[Hormuz/Meta実データでの解説生成・TTS・完成音声]は次Phaseの範囲、
 本W5はコード・テストのみ)。
+
+## §E2E(委任_09、2026-09-29、Phase C実行)
+
+### 事前確認
+
+- `git stash list`: 空(stash無し)。
+- `git status --short`: 未commit差分444件(既存の未追跡ファイル群、他
+  タスク由来。本委任はこれらに触れていない)。HEADは`42c8093a`(pull
+  済み、ff-only、以降に他Agentのcommitなし)。
+- E2E-PLAN(REPORT行653〜692)・Gate 13項目(`docs/pm/PM_GOVERNANCE.md`
+  「Gate 7補足」(a)〜(m))・Closeout 10項目(同3節1〜10)をRead(詳細は
+  本委任のdelegation_log参照)。
+- JA入力sha256照合: hormuz=`99dcd569...a22300`/meta=`ce4820a3...8ea24d0`
+  ともにW1 provenance.jsonと一致(machine-verified、`hashlib.sha256`実測)。
+
+### Hormuz: Writer段(ledger→writer)実行と結果
+
+- 実行runner: `er012_e_family_entertainment_two_level_runner_01.py`
+  (--ja-article er019_output/family_x_refresh_e2e_01/hormuz/input/
+  article_ja.md --slug hormuz --out-dir er019_output/family_x_refresh_
+  e2e_01/hormuz/run_01 --source-id FAMILY-X-REFRESH-E2E-PRODUCTION-
+  WIRING-01 --budget-jpy 30 --stage ledger、続けて--stage writer。
+  `TTS_EXECUTION_MODE=STANDARD`環境変数明示)。JA記事(JA Writer O)は
+  再実行していない(fixed input、`ja_writer/runtime_evidence.json`へ
+  「これはJA Writer O生成ではない」旨を明記したplaceholderを設置し、
+  `derive_japanese_title()`用のtitle解決のみに使用)。
+- ledger段: `--ledger-file`で既存の`er019_output/family_x_
+  entertainment_production_runner_01/an3_t0_wiring_regression_01/
+  hormuz/research_ledger/verified_fact_ledger.txt`(NEWS-FAMILY-X-B3-
+  FACT-SELECTION-PRODUCTION-WIRING-01、2026-09-28生成、同一トピック
+  [ホルムズ海峡20%償還料]のVerified Fact Ledger、HF-001〜HF-012)を
+  reuse指定(新規Researcher/Verification web_search呼び出しを回避し
+  費用¥0)。この判断はSonnetの裁量([既存の良好資産reuse]の精神を
+  ledger構築コスト回避へ適用したもの)であり、Fable/ユーザー判断を
+  仰ぐべき新規仕様ではないと考えるが、念のため明記する。
+- writer段: Advanced(忠実英訳)生成→In one line生成→3分割OK→Deviation
+  Check実行(`vfl01.run_deviation_check`)。結果:
+  `overall_status="LEDGER_DEVIATION"`、MAJOR 1件
+  (`claim_in_article="Even if this seems like a story about a distant
+  sea, oil prices are linked to gasoline prices and transportation
+  costs."`、`unsupported_new_claim=true`、`related_fact_id="HF-006"`、
+  **`origin="ja_source"`**)。コードは`origin=ja_source`のMAJORを検知
+  すると自動retryせず`JARecheckRequiredError`を送出する設計(must-fix
+  retryは"translation"起因のみが対象、JA起因は盲目的な再生成をしない
+  fail-closed設計)。**この時点でSTOP**(article.md/parts.json等は
+  一切保存されず、audit証跡`b1b/audit/deviation_checks/advanced_
+  attempt1.json`のみ保存。実費用¥0.99232[gpt-5.6-luna、3 call、web_
+  search 0件]、budget-jpy 30に対し未超過)。
+- **重要な追加観測**: 同一claim(オンライン価格とガソリン・輸送費の
+  関連付け)は、W1入力の由来である`er039_output/family_xy_
+  concreteness_control_trial_02/hormuz/cells/AN3-T0_deviation.json`
+  では、**同一のVerified Fact Ledger本文**(HF-001〜HF-012、逐語一致)
+  に対して**deviations=[]・overall_status="LEDGER_COMPLIANT"**(MAJOR
+  無し)と判定されていた(英語本文もほぼ同一表現、旧見出し構造版)。
+  すなわち、同一ledger・ほぼ同一claimに対し、deviation-check(同一
+  method、同一model gpt-5.6-luna)が異なる回では異なる判定(MAJOR有/無)
+  を返しており、**このGate自体がrun間で非決定的な挙動を示している**
+  可能性が高い(JA入力側の実際の欠陥というより、LLM judgeのブレ)。
+- STOP種別: 「KP explanationのtext-gateがOK以外のrankがretry後も残る
+  /構造GateNGがretry後も残る」に準ずる「Gateが設計上の一発STOP経路
+  [JARecheckRequiredError]へ到達し、既存retry機構の対象外」というSTOP
+  条件に該当すると判断し、以降(Hormuz Standard生成・Hormuz audio段・
+  Meta着手)を発火せず報告する(1記事ずつ完結原則により、Hormuz未完了の
+  ままMetaへは進んでいない)。
+
+### Gate結果(記事×レベル)
+
+| 記事 | レベル | Writer段Status | Audio段 | Gate結果 |
+|---|---|---|---|---|
+| Hormuz | Advanced | STOPPED(JA_RECHECK_REQUIRED、deviation MAJOR/ja_source) | 未実行(¥0) | 未到達 |
+| Hormuz | Standard | 未着手(Advanced STOPのためrun_writer_stage(only=None)がStandardに到達せず) | 未実行 | 未到達 |
+| Meta | Advanced/Standard | 未着手(1記事ずつ完結原則、Hormuz未完了のため) | 未実行 | 未到達 |
+
+Opus 9項目・(a)〜(m) 13項目監査: 音声artifactが一切生成されていない
+ため、いずれも「評価不能(未到達)」。
+
+### 試聴ページ
+
+未作成(音声未生成のため)。Pages公開確認7項目は未実施。
+
+### 費用(実測)
+
+- Hormuz writer段: ¥0.99232(openai、gpt-5.6-luna、3 call)。
+- Hormuz ledger段: ¥0(既存ledger reuse)。
+- Audio段(scaffold/tts/assemble/player): 未実行、¥0。
+- Meta: 未着手、¥0。
+- **累計: 約¥1**(全体上限¥300に対し未使用同然、Guardrail超過なし。
+  STOPは費用ではなくGate判定起因)。
+- 費用B(継続コスト差分): 未評価(Audio段未実行のため実測不可)。
+
+### Closeout 10項目充足状況(委任_09時点、SSOT反映は別途)
+
+| # | 項目 | 状況 |
+|---|---|---|
+| 1 | Trial statusが分類済み | 該当なし(本委任はTrialではなくE2E) |
+| 2 | UDRが提示済み | 本報告がUDR相当(Gate非決定性の扱いをFable/ユーザーへ提示) |
+| 3 | 正式採用項目が追跡済み | 未到達(採用判断前) |
+| 4 | APPROVED→PRODUCTION_WIRED完了確認 | 未到達(Gate未通過) |
+| 5 | initial/retry/fallback整合確認 | 確認済み(JARecheckRequiredErrorはretry対象外の設計と実装を確認) |
+| 6 | runtime evidence取得 | 取得済み(advanced_attempt1.json、raw_usage_log.jsonl) |
+| 7 | SSOT整合 | 未実施(本委任はSSOT編集権なし、文案化は次段階) |
+| 8 | 未報告Trialが無いこと | 該当なし |
+| 9 | 無断deferが無いこと | 無断deferなし(STOPとして即時報告) |
+| 10 | 次タスクへの持ち越し事項明示 | 本節「Next Action」参照 |
+
+### Next Action(未回答項目、ユーザー/Fable判断待ち)
+
+1. Deviation Check Gateの非決定性(同一ledger・同一claim・同一modelで
+   run間結果が異なる)をどう扱うか: (a) 一度だけ同一入力で再実行し
+   結果を確認する(コード変更なし、単なる再試行)/(b) 現在のMAJOR判定を
+   正としてJA側の内容を精査する(ただしJA記事は本E2Eの固定入力であり
+   変更は別管理IDの対象)/(c) Gate自体の非決定性を別課題として起票し
+   今回は薦められた設計通りSTOPのまま報告する、のいずれを取るか。
+2. 上記1の判断後、Hormuz Advanced→Standard→Audio段→Meta の順で
+   委任を継続するか、次回委任へ持ち越すか。
