@@ -12675,3 +12675,99 @@ Deviation Check再設計をdeferred non-blocking Open Item化+優先順位①〜
   `LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`。詳細:
   `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-PRODUCTION-
   WIRING-01_11.md`。
+
+## FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01: Fable Gate 3判定
+(PRODUCTION_WIRED 7件、Hormuz deferred、Closeout、2026-09-29、委任_14)
+
+**Fable Gate 3判定(逐語)**: Family X Production経路の配線はGate 3
+PASS(Meta×Standard/Advancedのruntime evidenceに基づく)。以下の承認済み
+仕様を`PRODUCTION_WIRED`へ格上げする。
+
+根拠(Fableがevidenceを直接照合): `er019_output/family_x_audio_
+production_wiring_01/meta__run_03/{a2,b1b}/audit/tts_generation_
+results.json`でreuse21件(a2 10/b1b 11)、Advanced KP全5rankで
+explanation voice=Aoede・Variant B文言(`measured pace, without
+dragging`)・`phrase_repeat`5件・englishと同一master_audio_id、固定
+shellのmaster_audio_id 10件(welcome`aa130472d437ac80b7cdd474`含む)、
+a2のJ3文言(「落ち着いた、自然な話し言葉…」)、`style_version`記録、
+`HEADING_READOUT`/`NG_ACCEPTED_AFTER_RETRY`0件。REPORT§E2E Meta run_03
+のGate表(13+9+ユーザー指定)全PASS、Pages 7項目全PASS、試聴URL
+`https://shimomura055.github.io/eigo-radio/user_test/family_x_
+refresh_e2e_01/index.html`。
+
+**スコープ注記(条件緩和ではない)**: 当初のE2E対象はHormuz+Metaの2記事。
+Hormuzはユーザー指示(2026-09-29)によりdeferred/non-blockingとして保留
+(3 run連続のja_source MAJOR、Checker問題としてOPEN-233へ切り離し)。
+Gate 3は「Production経路全体の完成可否」をMetaで判定し、Hormuz個別未完
+と混同しない(ユーザー指示)。Hormuz未完が抵触する点=「2記事完成」の
+当初スコープのみ。配線側のStandard/Advanced非対称は無い(Hormuzの
+非対称はChecker判定差由来)。
+
+**`PRODUCTION_WIRED`へ格上げする仕様7件(各evidence併記)**:
+1. **AN3-T0具体性制御**(A3+N2、Original側のみ、reminderなし)—
+   `concreteness_an3_block_sha256=067030ff53ecb76a4d1477a3deace07b
+   3e1fac438a33cb873edbe045cf6927fe`がHormuz run_02/03・Meta run_03
+   で一致。OPEN-228の順序条件(見出し廃止+3分割→採用→整理→配線完了)を
+   満たした。
+2. **可変Role Style JA=J3/EN=E2**(Japanese Title・preview・comment・
+   full_story・in_one_line・**KP日本語意味**を含む)+cache version
+   guard(`FAMILY_X_VARIABLE_ROLE_STYLE_VERSION`)+Advanced英語経路
+   runtime evidence。
+3. **固定フレーズChampion 10件**(welcome=A現行、他9件
+   `v3_champion_2026_09_29`)のProduction Master Store reuse(TTS call
+   0)。
+4. **新記事構造**(途中Heading廃止/忠実英訳/段落境界3分割/Comment1→
+   body1→Comment2→body2→Comment3→body3→Comment4→In One Line/
+   Heading Readout撤去/In One Line短文/Deviation MAJOR→must-fix1回)。
+5. **Key Phrase音声構造**(Standard: Phrase→日本語意味[J3]→同一
+   Phrase/Advanced: Phrase→英語解説[text仕様+Variant B、Aoede]→同一
+   Phrase、再掲はreuseでTTS call 0)。
+6. **Opus L2是正5件**(KP解説fail-closed、KP cache text/version
+   guard、Standard構造Gate対称化、TTSバックエンドfail-fast、
+   er012_e非writer stage封鎖)。
+7. **案B**(ja_source MAJOR→JA must-fix差し戻し1回、fail-closed)—
+   runtime evidence: Hormuz run_03で発動・JA再生成1回でAdvanced
+   COMPLIANT(その後Standardで別MAJOR→設計どおりSTOP)、Meta run_03
+   では非発動(Advanced初回COMPLIANTのため)。**暫定retry拡張であり
+   Checker問題の正式解決ではない**旨を維持。
+
+**Hormuz deferredの理由(ユーザー指示)**: Family Xを必要十分に閉じ
+GPT-6 Trialを早く開始するため、Hormuz固有のChecker挙動(ja_source
+MAJORの3 run連続再発)を追い続けない。Metaで証明できたこと=Production
+経路(writer/audio/player全stage)がStandard/Advanced両方とも実データで
+完走することであり、Hormuz個別の未完了はこの経路完成の判定を妨げない
+(ユーザー明示指示)。
+
+**費用A(実測、本管理ID累計)**: 約¥48.08(run_01¥0.99/run_02¥5.07/
+Hormuz run_03¥10.35/Meta run_03¥31.68)。
+
+**費用B(継続コスト差分、記事あたり)**: KP解説(Advanced)+1 LLM call+
+5 TTS call(phrase_repeatはreuseのため+0)。Phrase再掲(Standard)は+0
+(assembly段でenglish wav再利用)。Heading Readout撤去により旧構成比
+−2segment相当。Master reuse(固定shell10件+KP一部)により当該分のTTS
+call 0。Comment 4本化は新構造の既定。案B発動は発生した場合のみ
++¥5〜6(JA再生成1回分)。
+
+**GPT-6 Trial準備**: `docs/pm/gpt6_trial_preparation_01.md`
+(commit`e6475a24`)を参照。
+
+**SSOT反映範囲**: `CURRENT_SPEC.md`(AN3-T0/Family X音声構造[新記事構造
+item追加・案B]/可変Role Style/固定フレーズChampion/Key Phrase音声構造/
+Advanced Key Phrase英語解説の各Status行を`PRODUCTION_WIRED`へ更新、
+運用上の既知制約[OPEN-234]を追記)、`OPEN_ITEMS.md`(OPEN-228
+`CLOSED (SUPERSEDED)`、OPEN-230`CLOSED`、OPEN-233へHormuz run_01〜03/
+Meta run_03のEvidence追記・GPT-6準備ポインタ追加、OPEN-234新設)、
+`REPORT_LEDGER.md`(REPORT登録更新・GPT-6準備資料ポインタ登録)、
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`(§Closeout追加)、
+設計書§10 Closeout。
+
+- **Opus**: 発火なし(本エントリはFable判定の記録・SSOT反映のみ、
+  コード変更なし)。
+- **Status**: 上記7件`PRODUCTION_WIRED`(2026-09-29)。Hormuzは
+  `DEFERRED (non-blocking)`のまま(別Status番号は立てない、OPEN-233
+  内で追跡)。
+- **根拠**: Fable Gate 3判定(2026-09-29、ユーザー承認済み判定基準に
+  基づくFableの独立判定)+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_
+  REPORT.md`§E2E Meta run_03。詳細:
+  `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-PRODUCTION-
+  WIRING-01_14.md`。

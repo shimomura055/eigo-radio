@@ -884,7 +884,13 @@ signal/limitation必須化ルール・Trend成立条件・Evidence Strength分�
 
 ## Family X Writer — Concreteness Control(AN3-T0) — 2026-09-28新設(ユーザー正式決定、`FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01`)
 
-**Status**: 2026-09-28ユーザー正式決定により`APPROVED_FOR_PRODUCTION`
+**Status**: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03、
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03。
+根拠evidence: `er019_output/family_x_refresh_e2e_01/meta/run_03/
+runtime_evidence.json`の`concreteness_an3_block_sha256=
+067030ff53ecb76a4d1477a3deace07b3e1fac438a33cb873edbe045cf6927fe`が
+Hormuz run_02/03・Meta run_03で一致、AN3-T0 Prompt不変を実測確認)。
+2026-09-28ユーザー正式決定により`APPROVED_FOR_PRODUCTION`
 (配線完了・Fable Gate 3判定待ち)。Family X JA Original Writer Prompt
 (`er019_family_x_ja_writer_o_r1_r2_01.py::build_original_prompt()`)へ、
 数字・時刻・固有名詞に関する定性的な抑制指示(AN3=A3+N2、`FAMILY-XY-
@@ -1181,9 +1187,13 @@ Hormuz実測では、分離後の`full_story_part3`が両level(A2/B1B)とも1回
 (全segment OK、`assembled/Family_X_Audio_B1_FAMILY_X_B3_PRODUCTION_
 WIRING_01.wav`・player.html生成済み)を確認した。詳細
 `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01_REPORT.md`Stage 3c/3d。
-ユーザー決定=`APPROVED_FOR_PRODUCTION`、
-`PRODUCTION_WIRED`はStage 3のruntime evidence取得後にFable Gate 3が
-判定する。Family A
+ユーザー決定=`APPROVED_FOR_PRODUCTION`。**Status(2026-09-29、Fable Gate 3
+判定)**: `PRODUCTION_WIRED`(Meta run_03のruntime evidenceに基づく、
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03)。
+ただし下記項目1(見出し独立sub-segment/HEADING_READOUT)は**W1(2026-09-29)
+で撤去済み**であり、現行Production経路は項目6「新記事構造」を参照
+(HEADING_READOUTを使わない構造が現行、本項目1の旧記述は履歴として残す)。
+Family A
 (News Major/Daily/Trend Synthesis)の既存音声仕様(Point One/Two直前
 Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり、
 以下はFamily X固有の差分としてのみ適用する。
@@ -1249,11 +1259,54 @@ Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり
    であり、Checker(Ledger/Deviation Check)自体の再設計は`OPEN_ITEMS.md`
    OPEN-233として`DEFERRED (non-blocking)`(GPT-6 Trial/Production
    Routing判断後に再開)。ユーザー明示決定(2026-09-29)により
-   `APPROVED_FOR_PRODUCTION`、Gate 3(実E2E完走等)を満たすまで
-   `PRODUCTION_WIRED`としない。詳細:
-   `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§W6、
-   `docs/pm/design_family_x_refresh_e2e_production_wiring_01.md`§9-W6、
-   `DECISION_LOG.md`同日エントリ。
+   `APPROVED_FOR_PRODUCTION`。**Status(2026-09-29、Fable Gate 3判定)**:
+   `PRODUCTION_WIRED`(Meta run_03のWriter段runtime evidenceで、
+   Standard段origin=translation MAJOR→must-fix retry1回で解消、
+   Advanced段は初回`LEDGER_COMPLIANT`で案B自体は非発動という実データを
+   確認。Hormuz run_03では発動しAdvanced段でCOMPLIANTへ解消した実績も
+   ある)。**暫定retry拡張であり、Checker(Ledger/Deviation Check)過剰
+   品質問題の正式解決ではない**旨は維持する(OPEN-233参照)。詳細:
+   `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§W6/§E2E Meta
+   run_03、`docs/pm/design_family_x_refresh_e2e_production_wiring_01.md`
+   §9-W6、`DECISION_LOG.md`同日エントリ。
+6. **新記事構造(途中Heading廃止・忠実英訳・段落境界3分割・Comment1→
+   本文1→Comment2→本文2→Comment3→本文3→Comment4→In One Line・
+   Heading Readout撤去・In One Line短文、`APPROVED_FOR_PRODUCTION`→
+   `PRODUCTION_WIRED`、2026-09-29追記、`FAMILY-X-REFRESH-E2E-PRODUCTION-
+   WIRING-01`W1、Fable Gate 3判定)**: `FAMILY-X-TRANSLATION-SEGMENTATION-
+   NO-HEADING-TRIAL-01`(Trial、`er045_*`)で検証した、見出し生成指示を
+   除いた忠実英訳+段落境界のみでの決定論的3分割(`split_family_x_
+   article_text_v2()`)+短いIn One Lineを、`er003_v1_n3_01_advanced_
+   adaptation_generate.py`(`generate_family_x_faithful_translation()`/
+   `generate_family_x_in_one_line()`)・`er003_v1_n3_01_scaffold_
+   generate.py`(`split_family_x_article_text_v2()`)・
+   `er003_v1_n3_01_standard_a2_generate.py`(`generate_family_x_standard_
+   a2_no_heading()`)・`er012_e_family_entertainment_two_level_runner_
+   01.py`(`run_writer_stage()`切替+`_family_x_ensure_split_or_paragraph_
+   retry()`新設)・`er019_family_x_audio_plan_01.py`/`er019_family_x_
+   audio_production_runner_01.py`(v2 split・v2 segment順序、Heading
+   Readout sub-segment撤去)へ配線した。旧`split_article_text()`
+   (Family A本体が現役利用)は無変更のまま残置し、Family X経路からは
+   構造的に到達不能であることをAST解析ベースのテスト(`test_run_writer_
+   stage_family_x_path_never_calls_old_split_article_text`)で確認
+   (OPEN-228の解消根拠)。Advanced/Standard段落数不足時は共通ヘルパーで
+   1回だけmust-fix再生成し、それでも3分割不能ならSTOP(fail-closed、
+   既存retry軸とは独立)。Meta run_03のruntime evidence(`timeline.json`:
+   Comment1→Full Story Part1→Comment2→Part2→Comment3→Part3→Comment4→
+   In One Line、`Heading`ラベル0件、`HEADING_READOUT`/`NG_ACCEPTED_
+   AFTER_RETRY`grep0件)でStandard/Advanced双方の完成を確認。詳細:
+   `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§W1/§E2E Meta
+   run_03、`FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01_
+   REPORT.md`。
+
+**運用上の既知制約(2026-09-29追記、コード未変更、OPEN-234)**: 音声生成
+runner(`er019_family_x_audio_production_runner_01.py`)の`source_dir`は
+`--slug`/`--run`のみから`er019_output/{slug}/{run}`として導出され、
+JA/writer段の`--out-dir`(例: `er019_output/family_x_refresh_e2e_01/
+{slug}/{run}`)と不一致の場合、Audio段実行前に該当ディレクトリ一式を
+`er019_output/{slug}/{run}`へ手動コピーする必要がある(コード変更なし、
+Hormuz/Meta run_03で実施済みの運用)。恒久対応(CLI引数追加等)の要否は
+ユーザー判断(詳細`OPEN_ITEMS.md` OPEN-234)。
 
 根拠: ユーザー決定(2026-09-26、`PM-USER-DECISIONS-SSOT-CONSOLIDATION-04`)。
 2026-09-27追記の配線根拠: `NEWS-FAMILY-X-JA-FACT-CHECK-PRODUCTION-WIRING-01`、
@@ -1261,7 +1314,10 @@ Notification音、Comment役割C1〜C4等)はFamily Aのまま無変更であり
 `NEWS-FAMILY-X-SECTION-SEGMENTATION-PRODUCTION-WIRING-01`、
 `NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01`(Stage 1)。
 2026-09-29追記(5)の根拠: ユーザー明示決定(`FAMILY-X-REFRESH-E2E-
-PRODUCTION-WIRING-01`W6、案B採用)。
+PRODUCTION-WIRING-01`W6、案B採用)。2026-09-29追記(6)の根拠:
+`FAMILY-X-TRANSLATION-SEGMENTATION-NO-HEADING-TRIAL-01`(Trial検証)、
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`W1(Production配線)・
+Fable Gate 3判定(Meta run_03)。
 
 ## Family Z(Fiction)— 2026-09-26新設(ユーザー確定ルールのSSOT記録、`FICTION-FAMILY-Z-PRODUCTION-E2E-01`)
 
@@ -1587,7 +1643,7 @@ speech_metadata_flash_lite`明示時の経路[主記事+Key Phrase音声+共有
 | 日本語表記ゆれ(漢字/かな)のCascade内自動PASS条件 | `ORTHOGRAPHIC_VARIANT_CONFIRMED`: 「ASRが同じ表記を何回書いたか」ではなく、「ASR側の漢字spanが辞書上持ちうる正当な読み候補の中に、canonical側の期待読みが含まれるか」を各ステップ個別に確認し、かつ異なる2エンジン(OpenAI/Azure)以上がその状態に到達した場合のみPASSする。既知の限界: 「頃」のように単漢字として複数の読み(ころ/ごろ等)が辞書上正当とされる文字は、テキストのみからは実際に発話された読みを完全には確定できない(音声を伴わない原理的な限界、OPEN_ITEMS.md参照) | ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 |
 | 英語homophone(同音異義語)のCascade内自動PASS条件 | `HOMOPHONE_EQUIVALENT`: canonical/ASRの単一語置換差について、CMU Pronouncing DictionaryのARPAbet音素列が完全一致する場合のみcascade対象とする(即blind TTS retryしない)。Secondary(または2回目のASR)側の結果が、(a)canonical文字一致、または(b)同じくARPAbet完全一致のいずれかを満たした場合のみPASSする(「他に問題が見つからなかった」という消極的な理由ではPASSしない)。辞書に無い語向けの小さな閉じた補完テーブルを併設(2026-08-28時点で空、必要時に追記) | ER-008-ASR-VARIANT-HARDENING-AND-RETRY-15 |
 
-### 可変segment Role Style(J3/E2)— Status: `APPROVED_FOR_PRODUCTION`(配線完了、`PRODUCTION_WIRED`判定待ち、2026-09-28)
+### 可変segment Role Style(J3/E2)— Status: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03。`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03、runtime evidence: japanese_title/preview/comment/full_story/in_one_lineのstyle_prefixがJ3文言「落ち着いた、自然な話し言葉で…」、full_story/in_one_lineが英語版E2文言で実測一致)
 
 ユーザーが2026-09-28に、`TTS-VARIABLE-SPOKEN-ROLE-STYLE-TRIAL-02`の可変segment
 Role Style比較結果から、日本語=**J3**・英語=**E2**を`APPROVED_FOR_PRODUCTION`と
@@ -1646,7 +1702,7 @@ manifest.json`)は本配線・確認生成の前後でsha256不変(可変segment
 `PM-USER-DECISIONS-2026-09-28-AUDIO-TRIALS-SSOT-01`(DECISION_LOG.md) |
 2026-09-28 |
 
-### 固定フレーズ Champion — Status: `APPROVED_FOR_PRODUCTION`(welcome除く9件はProduction Master Store登録済み・E2E Gate待ち、`PRODUCTION_WIRED`ではない)
+### 固定フレーズ Champion — Status: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03。`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03、runtime evidence: a2 `shared_narration`10件全て`reused=true`、`master_audio_id`が下記対応表と完全一致[welcome `aa130472d437ac80b7cdd474`含む]、TTS call 0)
 
 ユーザーが2026-09-28に、`TTS-FIXED-SHELL-MASTER-CHAMPION-TRIAL-02`の試聴
 結果から固定phrase(全記事共通・文言固定のTTS要素)8件のChampionを正式決定
@@ -1724,7 +1780,7 @@ champion_trial_results.json`を参照。 |
 
 **修正1回目(2026-09-28、ユーザー既決事項+Opus L2所見S1〜S7/N1/N7反映)**: (1)Strategy L経路`_run_key_phrase_selection_strategy_l`の`max_attempts`を`1`固定から`prod.MAX_PRODUCTION_RETRY_ATTEMPTS`(=2)へ変更。2回目到達時は`keywords_runtime_metadata.json`/telemetryへ`strategy_l_attempts`/`retry_reached_second_attempt`を記録しprintでも明示(報告必須)。(2)DB Hybrid経路(Family X Primary)のみ、selector schemaへ`backup_item`(important役割の予備候補1件、必須プロパティ・常に返す)を追加。topicが欠損(0件)または単独で無効(構造・候補ID検証で無効)かつそれ以外は全item健全な場合にのみ、Python側(`er030_key_phrase_db_hybrid_source_reference_contract_01.run_source_reference_contract_gate`内`_identify_topic_backup_substitution_target`)がbackup_itemを5件目として`key_phrase_role="important"`で機械的に置換し(`topic_requirement_satisfied_via_backup=True`で`validate_min_unit_selection`のtopic=1件要求のみをスキップして再検証、他の判定は無変更)、`topic_slot_filled_by_backup`/`backup_substitution_reason`をruntime_metadata/telemetryへ記録。曖昧なケース(topic複数返却・target以外にも問題あり・backup候補ID重複/解決不能)は既存のINVALID→fallback経路へそのまま委ねる(新候補生成ロジックは作らない)。Strategy L側schemaは無変更。(3)DB Hybrid guidance文言(`_FAMILY_X_SOURCE_REFERENCE_SELECTION_GUIDANCE`)へbackup_item指示1段落追加、共有Prompt(`b1_p2_keywords_l_prompt_template.txt`)のTopic段落へ「該当する語・表現が見当たらない場合でもtopicを空にせず最善候補を選ぶ」旨の1文追加(S6により「残り4個は上記の基準に従って選んでください」への参照形へ縮約、候補区分列挙も「候補の種類・区分」へ一般化)。(4)「5個のうち少なくとも1個は重要語区分から」という既存guidance文言(`er030_key_phrase_db_hybrid_source_reference_contract_01.py`)は無変更のまま、topic由来の1件で充足可(ユーザー決定、機械検証は元々存在せずguidanceのみのため実装変更なし)。(5)Strategy L runner_up(5枠外候補)契約は引き続き未実装、OPEN-211を`DEFERRED`(将来のUI設計時に再検討)へ更新。(6)Opus L2所見: S1(Strategy L telemetryがINVALID時に`role_counts: null`になる観測性欠落)是正、S2(evidence実行がProduction telemetryへ`synthetic=false`混入)是正、S3(新規test rename・件数照合meta-test不変条件回復)是正、S4(`er034_..._trial_06_test.py`fixtureへ`key_phrase_role`追加)是正、S5(`er003_key_words_production.py`にtest専用・4+1非対応の1行コメント追加)是正、S6(Prompt再掲の縮約・一般化)是正、S7(REPORT/SPEC記載の既存testファイル数是正)是正、N1(`detail_reason_code`判定が`item_reasons`も参照するよう是正)反映、N7(`PRODUCTION_ITEM_COUNT_UNCHANGED==PRODUCTION_ITEM_COUNT`等価性test追加)反映。検証: 新規test27件+既存test4ファイルfixture更新全PASS(計331件)、`run_project_regression.py`(failed=7・errors=2、委任文の既知baselineと一致、機能regression0件)、実データ(DB Hybrid meta_a2実測¥1.1945・Strategy L melos_a2、いずれも`synthetic=True`、実行時は双方とも1回目でPASSし今回はretry/backup補完は発火せず、双方の機構は単体test[27件中6件が該当]で確認)。詳細: `KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01_REPORT.md`「修正1回目」節。**runtime evidence**(`er035_output/kp_4plus1_evidence_01/`、実測selection cost合計¥4.8383): Family X News(Meta/Hormuz、DB Hybrid)4記事+Family Z Fiction(Melos)・legacy Family C(twins)・legacy Family B(Voices)計4記事(Strategy L)+forced fallback1件の計9件全てが`role_counts`={important:4, topic:1}で`KEY_WORDS_STRUCTURE_PASS`に到達。DB Hybrid 4件全てでTopic該当語がStage1 shortlistの既存候補区分(重要な単語・単語群候補、またはphrase候補)から選ばれ、専用のTopic候補区分は存在しないことを確認(Phase A設計書の予測どおり)。Topic Phraseはいずれも固有名詞ではなかった(固有名詞偏りなし)。Important 4件は同記事の旧Production 5件と概念的に高い重複(3〜5/5)を保ち品質劣化は未観測。melos_a2は評価中に2回失敗(1回は既存source_sentence整合性チェック起因で4+1と無関係、1回は`topic=2件`のrole構成不成立で4+1 validatorが実際に機能した例)、3回目でPASS(Strategy L経路`run_production_selection_gate`の`max_attempts=1`固定[本タスク以前からの既存挙動]により、`run_key_phrases`単位では自動retryされない)。**Fable Gate 3判定: `PRODUCTION_WIRED`(2026-09-28、スコープ: 共通Key Phrase経路[Strategy L/DB Hybrid両経路・全Family]の4+1構成、DB Hybrid backup補完、Strategy L retry 2回+2回目報告、runner-up DEFERRED[OPEN-211]。根拠: commit`0e6744e0`/`0cb59383`、Opus L2[BLOCKER 0、S1〜S7/N1/N7反映]、evidence9記事+差分evidence_02、test27件+regression baseline一致)** | **`PRODUCTION_WIRED`**(2026-09-28、Fable Gate 3判定。共通Key Phrase経路[Strategy L/DB Hybrid・全Family]の4+1構成、runner-upはOPEN-211で`DEFERRED`) | KEY-PHRASE-4PLUS1-TOPIC-PHRASE-PRODUCTION-01(Phase A設計・Fable判断→Phase B最小実装+検証evidence) | 2026-09-28 |
 
-### Key Phrase 音声構造(Standard/Advanced 共通骨格)— Status: `APPROVED_FOR_PRODUCTION`(W4/W5で配線済み、Gate 3判定待ち、2026-09-29 ユーザー正式決定)
+### Key Phrase 音声構造(Standard/Advanced 共通骨格)— Status: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03。`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03、runtime evidence: Advanced KP全5rankで`explanation.voice="Aoede"`・Variant B文言・`phrase_repeat`が`english`と同一sha256、Standard全5rankで`japanese_meaning.style_prefix`=J3文言。W4/W5で配線済み)
 
 ユーザーが2026-09-29に、Key Phraseセクションの音声構造をStandard/
 Advanced共通の骨格として正式決定した(逐語決定文は`DECISION_LOG.md`
@@ -1751,14 +1807,14 @@ Phrase音源のreuseで済むかを配線時(W4)に実測し、reuse可能なら
 Variant B採用のため併せて解消)。**配線**: `FAMILY-X-REFRESH-E2E-
 PRODUCTION-WIRING-01`のW4(Advanced英語解説)・W5(Standard日本語意味へ
 のJ3適用+Opus L2所見是正[KP解説fail-closed、cache text/style_version
-guard])で実施済み。`PRODUCTION_WIRED`化はE2E Gate通過後にFableが判定
-する。 | 出典:
+guard])で実施済み。**`PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta
+run_03のruntime evidence)。** | 出典:
 `DECISION_LOG.md`(2026-09-29エントリ、`FAMILY-X-REFRESH-E2E-PRODUCTION-
 WIRING-01`) | 2026-09-29 |
 
-### Advanced Key Phrase 英語解説(text仕様)— Status: `APPROVED_FOR_PRODUCTION`(2026-09-28 text仕様ユーザー正式決定、2026-09-29 音声Style確定、いずれも配線未実施)
+### Advanced Key Phrase 英語解説(text仕様)— Status: `PRODUCTION_WIRED`(2026-09-29、Fable Gate 3=Meta run_03。text仕様は2026-09-28ユーザー正式決定、音声Style[Variant B]は2026-09-29決定、配線はW4[`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`]、`PRODUCTION_WIRED`化は上記「Key Phrase 音声構造」節と同一のGate 3判定による)
 
-ユーザーが2026-09-28に、Advanced(B1B)Key Phraseの英語解説**text仕様**(KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02のB候補: 同一の英語Key Phrase+平易な英語解説を追加する方式)を`APPROVED_FOR_PRODUCTION`と正式決定した。**要点**: (1) 英語Key Phrase自体は既存選定結果(Strategy L/DB Hybrid、4+1構成含む)を変更せず流用する、(2) 解説文はKEY-PHRASE-LEVEL-SPEC-TRIAL-01で定義した`explanation_en`の仕様文をそのまま逐語再利用する、(3) 語数上限は目安15語、新規Factの追加はしない(記事本文に存在する情報の範囲内で言い換える)、(4) 決定論的チェック3種(語数・新規Fact混入・重複表現)はGate候補として検討中だが未確定。**Role**: `KEY_PHRASE_EXPLANATION_EN`という名称のRoleを想定しているが、**Production未実装**(既存`japanese_gloss`/`japanese_gloss_tts`と並ぶ新フィールド・新TTS呼び出しを追加するProduction wiringは別管理IDでユーザー判断後に実施する)。**現行Productionの挙動は無変更**: 「B-Family」節・上記表の各行が示すとおり、Advanced(B1B)のKey Phraseは引き続き「英語句+日本語意味(`japanese_gloss`/`japanese_gloss_tts`)」のまま生成・TTS化される(この節の追記はtext仕様の採用記録であり、配線済み仕様ではない)。**音声Style**: `KEY_PHRASE_EXPLANATION_EN`の音声Styleは、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03(Before「clear, precise, explanatory」/After「clear, precise, unhurried」比較)→`KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04`(中間3案A/B/C比較、Bは「clear, precise, at a measured pace, without dragging」)を経て、ユーザーが2026-09-29に**Variant B「clear, precise, at a measured pace, without dragging」を正式採用**と決定した(`DECIDED`、`USER_DECISION_REQUIRED`は解消)。上位の音声構造決定(前節「Key Phrase 音声構造(Standard/Advanced 共通骨格)」)と併せて参照し、重複記述はしない。 | 出典: KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02(text仕様B候補・ユーザー正式採用)、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03/`TRIAL-04`(音声Style比較Trial)、`DECISION_LOG.md`2026-09-29エントリ(Variant B正式採用・音声構造決定) | 2026-09-29 |
+ユーザーが2026-09-28に、Advanced(B1B)Key Phraseの英語解説**text仕様**(KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02のB候補: 同一の英語Key Phrase+平易な英語解説を追加する方式)を`APPROVED_FOR_PRODUCTION`と正式決定した。**要点**: (1) 英語Key Phrase自体は既存選定結果(Strategy L/DB Hybrid、4+1構成含む)を変更せず流用する、(2) 解説文はKEY-PHRASE-LEVEL-SPEC-TRIAL-01で定義した`explanation_en`の仕様文をそのまま逐語再利用する、(3) 語数上限は目安15語、新規Factの追加はしない(記事本文に存在する情報の範囲内で言い換える)、(4) 決定論的チェック3種(語数・新規Fact混入・重複表現)はGate候補として検討中だが未確定。**Role**: `KEY_PHRASE_EXPLANATION_EN`という名称のRoleを想定していた。**2026-09-29追記(配線完了、`PRODUCTION_WIRED`)**: Family X(`er019_family_x_audio_production_runner_01.py`)のAdvanced(B1B)経路へ`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`W4/W5で正式配線した(既存`japanese_gloss`/`japanese_gloss_tts`とは別の新フィールドとして追加、Standard[A2]側は引き続き日本語意味のまま無変更)。**「B-Family」節(Family B、Voices)のKey Phraseは対象外・無変更のまま**(旧文中の「B-Family」節参照は別Familyであり本追記の対象ではない、Family XとFamily Bを混同しないこと)。**音声Style**: `KEY_PHRASE_EXPLANATION_EN`の音声Styleは、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03(Before「clear, precise, explanatory」/After「clear, precise, unhurried」比較)→`KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04`(中間3案A/B/C比較、Bは「clear, precise, at a measured pace, without dragging」)を経て、ユーザーが2026-09-29に**Variant B「clear, precise, at a measured pace, without dragging」を正式採用**と決定した(`DECIDED`、`USER_DECISION_REQUIRED`は解消)。上位の音声構造決定(前節「Key Phrase 音声構造(Standard/Advanced 共通骨格)」)と併せて参照し、重複記述はしない。 | 出典: KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02(text仕様B候補・ユーザー正式採用)、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-03/`TRIAL-04`(音声Style比較Trial)、`DECISION_LOG.md`2026-09-29エントリ(Variant B正式採用・音声構造決定) | 2026-09-29 |
 
 ## Preview
 
