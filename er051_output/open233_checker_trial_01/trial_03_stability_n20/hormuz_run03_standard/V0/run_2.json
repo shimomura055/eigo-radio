@@ -1,0 +1,70 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 2,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0b7df42e5a38160b006abbc94a614c87d0b16d968d9bb4d326",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 2454,
+    "reasoning_tokens": 2267
+  },
+  "elapsed_seconds": 24.895,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "The article generalizes the reported price movement from Brent crude futures to oil prices across the market. The Ledger verifies the temporary easing and subsequent recovery for Brent, not a market-wide outcome.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "The scope is broader than the Ledger’s Brent-specific fact. The same broad generalization is already present in the Japanese source.",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "The article generalizes the reported price movement from Brent crude futures to oil prices across the market. The Ledger verifies the temporary easing and subsequent recovery for Brent, not a market-wide outcome.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "The scope is broader than the Ledger’s Brent-specific fact. The same broad generalization is already present in the Japanese source.",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

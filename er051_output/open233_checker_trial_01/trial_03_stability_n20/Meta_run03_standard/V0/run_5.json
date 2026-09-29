@@ -1,0 +1,70 @@
+{
+  "fixture_id": "Meta_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 5,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "dc613efdb92820d42d0c1a9605aad1342f8b4a4b189e274f10891891a4436a4f",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0f6fe23c1cf38a8b006abbceddf8e487d08361fba73b17bd0f",
+  "usage": {
+    "input_tokens": 5411,
+    "cached_input_tokens": 5408,
+    "output_tokens": 3652,
+    "reasoning_tokens": 3401
+  },
+  "elapsed_seconds": 34.176,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "記事は利用者が実際にAIの便利さを享受し、人間が電話していたことに気づかなかったと断定しています。Ledgerが確認しているのはテストで適切な開示がなかったことまでで、利用者の実際の認識や体験は確認されていません。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "利用者の実際の認識・体験を、Ledgerにない事実として断定しています（changed_certainty、unsupported_new_claim）。原文記事にも同様の含意があります。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "記事は利用者が実際にAIの便利さを享受し、人間が電話していたことに気づかなかったと断定しています。Ledgerが確認しているのはテストで適切な開示がなかったことまでで、利用者の実際の認識や体験は確認されていません。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "利用者の実際の認識・体験を、Ledgerにない事実として断定しています（changed_certainty、unsupported_new_claim）。原文記事にも同様の含意があります。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "fixture_id": "Meta_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 14,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "dc613efdb92820d42d0c1a9605aad1342f8b4a4b189e274f10891891a4436a4f",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_035803a95f7aae7a006abbd021a09887d099ee3ab97b85e7f5",
+  "usage": {
+    "input_tokens": 5411,
+    "cached_input_tokens": 5408,
+    "output_tokens": 3798,
+    "reasoning_tokens": 3533
+  },
+  "elapsed_seconds": 34.28,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "News reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.",
+        "issue": "「during calls」「These calls」と複数の電話で不適切発言があったように記述していますが、Ledgerが確認するのはインターネット・ケーブル料金交渉の1件として報道された事例です。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Ledgerの1件の報告を複数の電話に広げており、件数と対象範囲が変わっています。原文の「電話で」はこの複数化をしていないため、翻訳・適応で生じた逸脱です。",
+        "related_fact_id": "MUSE-HC-011",
+        "origin": "translation"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "News reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.",
+        "issue": "「during calls」「These calls」と複数の電話で不適切発言があったように記述していますが、Ledgerが確認するのはインターネット・ケーブル料金交渉の1件として報道された事例です。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Ledgerの1件の報告を複数の電話に広げており、件数と対象範囲が変わっています。原文の「電話で」はこの複数化をしていないため、翻訳・適応で生じた逸脱です。",
+        "related_fact_id": "MUSE-HC-011",
+        "origin": "translation",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

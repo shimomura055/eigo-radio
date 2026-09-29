@@ -1,0 +1,70 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 18,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_06a0229f8741a133006abbcace9d9087d0a661b9aefeae6096",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 2506,
+    "reasoning_tokens": 2298
+  },
+  "elapsed_seconds": 25.036,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのは、撤回後のブレント先物の短時間の値動きです。「原油価格」全体に広げて述べています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "ブレント先物についての観測を原油市場全体へ一般化しており、changed_scopeに該当します。この範囲拡張は原文記事にもあります。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのは、撤回後のブレント先物の短時間の値動きです。「原油価格」全体に広げて述べています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "ブレント先物についての観測を原油市場全体へ一般化しており、changed_scopeに該当します。この範囲拡張は原文記事にもあります。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

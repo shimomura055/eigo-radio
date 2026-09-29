@@ -1,0 +1,70 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 8,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0954747abd323d21006abbc9d8fa2087d0b4ee59e3efb4224e",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 3495,
+    "reasoning_tokens": 3291
+  },
+  "elapsed_seconds": 33.72,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのはBrent原油先物の値動きだが、記事は原油市場全体について述べている。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009の対象であるBrent原油先物から原油市場全体へ対象を広げているため、changed_scopeに該当する。この一般化は原文記事にも存在する。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのはBrent原油先物の値動きだが、記事は原油市場全体について述べている。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009の対象であるBrent原油先物から原油市場全体へ対象を広げているため、changed_scopeに該当する。この一般化は原文記事にも存在する。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

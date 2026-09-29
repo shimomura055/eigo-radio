@@ -120,6 +120,46 @@ hormuz_run03_standard/advanced)はConfirmedとし、Fable/ユーザー確認が
 | B4(Meta一般化3件) | MAJORx2〜3(gold4件中) | **?(要確認)** | **暫定+要確認** | Part B「新設計で緩めた場合に現状より品質が下がる可能性がある」との懸念。既存retry機構で最終的にCOMPLIANTまで解消済みという実績あり(投資REPORT B-4行) |
 | Meta_run03_standard | MAJOR(gold fact_id=MUSE-HC-010)、gpt-6検出はfact_id=MUSE-HC-012 | BLOCKING(いずれのfact_idでも実際の逸脱) | **暫定+要確認(fact_id 010/012のどちらを正とするか)** | V0 Phase B-10 USER_DECISION_REQUIRED候補そのもの。「別のclaimを検出しただけ」か「別の理由でMAJORになった」かは本Trialのデータのみでは切り分け不可 |
 
+### 2-補. claim単位gold候補表(ユーザー確認待ち、委任_04で追加)
+
+**位置づけ**: 上記2章のgold表は**fixture単位**(記事全体でBLOCKING/QUALITY/
+ACCEPTABLEのどれか1つ)だが、Opus L2レビュー#1論点2は「B1/B4は明らかに
+無害なclaimと明らかにmaterialなclaimが同一記事に同居しており、fixture単位
+goldでは表現できない」と指摘し、claim単位で独立評価(Part Bを見ずにraw
+fixture/Ledgerから評価)を行った。以下はその評価結果をそのまま「gold候補表」
+として転記したものであり、**上記のfixture単位gold表を変更するものではない**。
+gold確定・指標定義の変更はいずれもユーザー判断(§8-4参照、
+USER_DECISION_REQUIRED)。
+
+| claim(fixture) | Opus materiality評価 | 理由 |
+|---|---|---|
+| B1-a「ホルムズ海峡は中東から原油を運ぶ船が多く通る重要な海の道だ」 | **ACCEPTABLE** | 地理的一般常識。新しい固有名詞・数値・時期・主体を加えない。HF-001は課金禁止決議の話で、この文と矛盾しない。現行Production Promptの許容規定(L527-528「一般常識レベルの前置き」)に既に該当している。新たな緩和ではなく既存規定の適用漏れ |
+| B1-b「原油価格が高い状態が続けば、ガソリンや輸送費など身近な価格にも影響する」 | **ACCEPTABLE** | 条件付き(「続けば」)の一般経済常識。ニュースの事実関係を変えない。Checker自身も`observation_consistent=true`・`ledger_field_basis="none"`と判定 |
+| B1-c「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは20%案が残るかだけではない」(V4A runで検出) | **BLOCKING寄り(少なくともACCEPTABLEではない)** | 市場参加者の動機と価格回復理由の断定。HF-009の`causal_strength`はCAUSAL_STATED_BY_SOURCE、HF-011のnotesは「これだけから撤回が価格を上昇させた/下落させなかったと因果推論しない」と明示。リスナーの主要Fact理解(なぜ価格が戻ったか)を変える |
+| B2「料金案消滅が大幅な価格下落を招かなかった」「他の要因が残った。So価格は一度反応し高水準へ戻った」 | **QUALITY(通過+表現修正)寄り。ただし境界** | Ledgerが記録した2つの観測(一時縮小→回復、懸念継続)の共起を因果接続詞でつないだもの。Ledgerが別の原因を記録しているわけではない。一方HF-011 notesは明示的にこの推論を禁じている。「主要Fact理解は変わらないが、Ledgerが明文で禁じた書き方」という中間ケース。ユーザー暫定gold=QUALITYは妥当と考える |
+| B3「7月14日に懸念が続いていた、soで20%案が舞台を去った」 | **BLOCKING(gold=BLOCKINGを支持)** | HF-007のconditionsに「トランプ氏は中東指導者との協議に基づく決定だと説明した」と別の原因が明記されている。記事はそれと競合する原因を述べており、政策決定の理由を取り違えさせる。リスナーの主要Fact理解を変える |
+| B4-a「A person can take over when AI alone has trouble」 | **BLOCKING** | MUSE-HC-006が記録するのは「一部の電話を人間契約スタッフが担当したテスト」。記事は「AIが困難な時に人間が引き継ぐフォールバック機構」という製品仕様を新規に述べている。製品の仕組みの誤伝達でmaterial |
+| B4-b「People feel differently when...」「Names, plans, and private matters are easier to share...」 | **ACCEPTABLE〜QUALITY** | 人間心理の一般論。Metaの事実を歪めない。Checkerは「従業員の懸念→一般人への拡張(changed_scope)」としたが、記事文は従業員に帰属させていない。過剰検出寄り |
+| B4-c「useful features make people want to know whether AI or a person is on the other end」 | **ACCEPTABLE〜QUALITY** | 同上 |
+| B4-d「Meta had run a test that produced exactly this kind of surprise」(V4A run) | **QUALITY〜BLOCKING** | 原文「思わせるテスト」→「実際に驚きを生じさせた」への確実性強化。translation段で生じたcertainty変化 |
+
+**「現行fixture単位定義での下限50%」の算術(Opus論点2、再掲)**:
+- 現行の不要BLOCK率の定義は「BLOCKING判定fixture数 ÷ 4(B1/B2/B3/B4)」。
+- しかしB3・B4は、Part B・v0.2§6-1機械適用・本診断の独立評価のいずれでも
+  BLOCKINGが妥当。
+- したがって**完全に正しいCheckerでも必ず2/4=50%**になる。**≤25%は「B3か
+  B4のどちらかを見逃す」ことを要求する指標**であり、現行gold集合のままでは
+  Safetyを犠牲にせずには数学的に到達できない。
+- 分母を「goldが非BLOCKINGのfixture」に厳密化すると分母は{B1, B2}の2件と
+  なり、≤25%は「2件とも通過」を意味する。V4A実測はB2=PASS・B1=BLOCKなので
+  1/2=50%。そしてB1のBLOCK理由(B1-c、市場動機の因果帰属)はOpus評価では
+  materialであり、B1をfixture単位で「通すべき」と定義すること自体が
+  安全でない。
+
+詳細・全論点の逐語は`docs/pm/opus_l2_review_open233_checker_trial_01.md`
+(論点2)を参照。negative claim候補(claim単位、Production COMPLIANT記事から
+抽出、¥0)は`docs/pm/negative_claim_candidates_open233_01.md`を参照。
+
 ---
 
 ## 3. Family X限定variant(Production非接続、`er051_open233_checker_trial_variant_01.py`新規)
@@ -358,6 +398,17 @@ JPY ≈ **¥16.406**。V0/V1は$0(再利用)。
 - この見積は**推定**であり、実際のtoken数(特にschema variant出力の
   実際の増分)は未実測のため保守率を含む。2倍を超過した時点でSTOPし、
   ユーザーへ報告する。
+
+### 5-補. Opus L2レビュー#1ポインタ(委任_04で追加)
+
+OPEN-233のTrial 2完了後、Opus L2レビュー#1(read-only診断)を実施した。
+論点1〜5(構造問題の代替設計/B1〜B4のmateriality一次評価/notes_for_writer
+の扱い/Stability低下の原因/regression fixture戦略)の全文は
+`docs/pm/opus_l2_review_open233_checker_trial_01.md`に逐語保存済み。
+Fable判定(USER_DECISION_REQUIRED該当箇所を含む)はREPORT §11参照。
+Trial 3実行前には、指標定義(不要BLOCK率のclaim単位再定義)とgold
+(B1のclaim分割、B3のBLOCKING確定可否)のユーザー判断が必要
+(論点1〜2、§8-4に準じるUSER_DECISION_REQUIRED)。
 
 ---
 

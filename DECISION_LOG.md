@@ -13179,3 +13179,71 @@ REPORT§10へ記録。
   trial_02/`、`OPEN-233-CHECKER-REDESIGN-TRIAL-01_REPORT.md`§10。詳細:
   `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-REDESIGN-TRIAL-01_
   03.md`。
+
+## OPEN-233-CHECKER-REDESIGN-TRIAL-01: Opus L2レビュー#1逐語保存+
+Stability n=20実測+negative claim候補抽出(2026-09-29、委任_04)
+
+**Fable判定(委任文§1)**: Opus L2レビュー#1(read-only診断)により、不要
+BLOCK率の指標定義(fixture単位、分母B1〜B4の4件では正しいCheckerでも
+下限50%)とgold(B1のclaim分割、B3のBLOCKING確定)の再判断が
+**USER_DECISION_REQUIRED**と判明した。したがって本委任では**C1
+(materiality軸V6)/C2(一般常識許容規定V5-A)/V4-B/V5-C/notes schema分離/
+Family横断変更/gold・指標変更のいずれも実装・実行しない**。
+ユーザー判断に依存しない以下3作業のみ実施した:
+(A) Opus L2レビュー#1全文の逐語保存(`docs/pm/opus_l2_review_open233_
+checker_trial_01.md`、¥0)。
+(B) Stability n=20実測(hormuz_run03_standard/Meta_run03_standard×
+V0/V4A、既存variant無変更で流用、80 call、¥23.5636、error 0)。
+(C) negative claim候補16件の抽出(Production COMPLIANT記事から、¥0)+
+claim単位gold候補表の追加(設計書§2-補、既存gold表は変更せず別表として
+追加)。
+
+**Opus L2レビュー#1の主要所見(逐語は上記ファイル参照)**: (1) 構造的
+原因はpost-hoc層ではなくProduction Promptのseverity定義自体(materiality
+軸が存在しない)。V5-C(schema信号による降格)は実データで既知の
+BLOCKINGを複数見逃すことが実証されており不採用推奨。(2) B1〜B4はclaim
+単位で評価すべきであり、fixture単位定義のままでは正しいCheckerでも
+不要BLOCK率2/4=50%が下限(B3・B4はgold=BLOCKINGが妥当なため)。(3)
+notes_for_writerのschema分離は、B群deviation22件中notes_factual_
+constraint由来が9.1%(2件)のみという実測と矛盾し不採用推奨。(4)
+Stability低下(90%→80%、n=5)は非検出回のreasoning_tokensが検出回より
+むしろ高く、思考量不足では説明できない。n=20実測での再検証を最優先・
+低コストと推奨。(5) negative fixtureが2件(B2_hormuz、hormuz_run03_
+advanced)しかなく不足、Production COMPLIANT記事からの無料抽出を推奨。
+HOOK_CLAUSEとV4-Aはchanged_comparisonで正面衝突(Family X限定の間は
+hook_aware=Falseのため無害)。
+
+**Stability n=20実測結果**: 検出率はhormuz_run03_standard V0=100%
+(20/20)・V4A=85%(17/20)、Meta_run03_standard V0=90%(18/20)・V4A=100%
+(20/20)。Fisher正確検定でV0-V4A間の差はいずれも有意でない(hormuz
+p=0.2308、Meta p=0.4872、2fixture併合p=1.0)。Trial 2(n=5)で観測された
+「90%→80%」の低下は、n=20では統計的有意差を持って再現しなかった
+(hormuzのみ悪化方向・Metaは改善方向で相殺)。非検出回のreasoning_tokens
+は検出回平均より高く、Opus所見(B)を再確認した。
+
+**negative claim候補・claim単位gold候補表**: 既存Production実行
+(`er019_output/`配下、retryを経て最終的にLEDGER_COMPLIANTになった記事
+本文)からclaim単位で16件抽出(¥0、API呼び出しなし)。詳細:
+`docs/pm/negative_claim_candidates_open233_01.md`。Opus論点2のB1-a/b/c・
+B2・B3・B4-a/b/c/d評価表を設計書§2-補へ「gold候補表(ユーザー確認待ち)」
+として追加(既存fixture単位gold表は変更していない)。
+
+- **Opus**: 発火1回(L2レビュー#1、read-only、費用計上なし[Opus利用は
+  別枠管理])。費用: 委任_04合計¥23.5636(80 call、error 0)。累計
+  ¥45.6803(Trial1¥7.2882+委任_03¥14.8285+委任_04¥23.5636)/総枠¥400、
+  残¥354.3197。Production code・共通Checker Prompt・severity・routing・
+  Production schemaの変更なし(`git diff --stat`で確認)、Production配線
+  なし。mock test 37件全件PASS。API key漏洩なし。
+- **Status**: `USER_DECISION_REQUIRED`(指標定義・gold再判断)。
+- **ユーザー判断11該当**: 該当する(不要BLOCK率の指標定義変更とgold
+  [B1分割・B3確定]の再判断)。C1[materiality軸]の事前了承も別途必要。
+  実装・実行はしていない。
+- **根拠**: ユーザー明示決定(委任文§1、2026-09-29)。実施内容の根拠:
+  `docs/pm/opus_l2_review_open233_checker_trial_01.md`、
+  `docs/pm/negative_claim_candidates_open233_01.md`、
+  `docs/pm/design_open233_checker_redesign_trial_01.md`§2-補/§5-補、
+  `er051_open233_checker_trial_03_stability_run.py`(新規)、
+  `er051_output/open233_checker_trial_01/trial_03_stability_n20/`、
+  `OPEN-233-CHECKER-REDESIGN-TRIAL-01_REPORT.md`§11〜§13。詳細:
+  `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-REDESIGN-TRIAL-01_
+  04.md`。

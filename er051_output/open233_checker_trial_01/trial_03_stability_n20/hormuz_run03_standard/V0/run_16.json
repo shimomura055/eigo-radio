@@ -1,0 +1,111 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 16,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_08f6e538462c0b7b006abbca9e57e087d080941de1b085a05d",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 2818,
+    "reasoning_tokens": 2401
+  },
+  "elapsed_seconds": 25.49,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "In other words, no one had actually started collecting the fee.",
+        "issue": "徴収が始まっていなかったという具体的事実はLedgerに明記されていません。提案段階だったことから自然に推測できる内容ではありますが、徴収開始の有無を追加で断定しています。",
+        "severity": "MINOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "HF-003は具体的な制度設計が未提示だったことを確認していますが、実際の徴収開始の有無までは述べていません。提案段階という意味は保たれているためMINORとします。",
+        "related_fact_id": "HF-003",
+        "origin": "ja_source"
+      },
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのは、撤回後のBrent先物の短時間の値動きです。「oil prices」「the whole market」とすることで、対象を原油市場全体に広げています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009の対象はBrent先物ですが、記事は原油価格全体について述べており、確認対象の範囲を拡張しています。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "In other words, no one had actually started collecting the fee.",
+        "issue": "徴収が始まっていなかったという具体的事実はLedgerに明記されていません。提案段階だったことから自然に推測できる内容ではありますが、徴収開始の有無を追加で断定しています。",
+        "severity": "MINOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "HF-003は具体的な制度設計が未提示だったことを確認していますが、実際の徴収開始の有無までは述べていません。提案段階という意味は保たれているためMINORとします。",
+        "related_fact_id": "HF-003",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "QUALITY",
+        "action": "LOG_AND_PASS",
+        "basis": "model_minor_no_schema_signal",
+        "rule_id": "default_quality_v1"
+      },
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのは、撤回後のBrent先物の短時間の値動きです。「oil prices」「the whole market」とすることで、対象を原油市場全体に広げています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009の対象はBrent先物ですが、記事は原油価格全体について述べており、確認対象の範囲を拡張しています。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

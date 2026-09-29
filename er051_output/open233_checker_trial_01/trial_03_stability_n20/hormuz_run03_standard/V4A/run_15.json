@@ -1,0 +1,80 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 15,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0578745b6ad33921006abbcd231d0087d080bca91e70dbadad",
+  "usage": {
+    "input_tokens": 6229,
+    "cached_input_tokens": 6226,
+    "output_tokens": 3003,
+    "reasoning_tokens": 2755
+  },
+  "elapsed_seconds": 35.075,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerの観測対象はBrent先物であり、原油市場全体について同じ結論を一般化する根拠は示されていません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "記事原文にも市場全体への言及があります（origin: ja_source）。Ledgerが確認するBrentの短時間の値動きを原油市場全体へ広げており、changed_scope・changed_fact・unsupported_new_claimに該当します。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerの観測対象はBrent先物であり、原油市場全体について同じ結論を一般化する根拠は示されていません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "記事原文にも市場全体への言及があります（origin: ja_source）。Ledgerが確認するBrentの短時間の値動きを原油市場全体へ広げており、changed_scope・changed_fact・unsupported_new_claimに該当します。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

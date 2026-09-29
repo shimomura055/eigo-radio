@@ -1,0 +1,80 @@
+{
+  "fixture_id": "Meta_run03_standard",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 16,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "d799cc864f69fe7fb47386d2c2138f4069bef2986205dcb1910c81192748edc0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0c08cd0eb8eb33ef006abbd4b9f95c87d08de5c7737e5b94fa",
+  "usage": {
+    "input_tokens": 6262,
+    "cached_input_tokens": 6259,
+    "output_tokens": 7248,
+    "reasoning_tokens": 6933
+  },
+  "elapsed_seconds": 84.62,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "記事は、利用者が人間の担当に気づいていなかったことを事実として述べている。Ledgerは適切な開示なしにテストが始まったことを確認しているが、利用者が実際に気づいていたかどうかまでは示していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "利用者が気づいていなかったという具体的な事実はLedgerに記載されていないため、changed_factとunsupported_new_claimをtrueとした。非開示との整合性はあるが、実際の認識状況は確認されていない。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "直前に “might think” と “If no one explained this clearly” がある。",
+        "ledger_field_basis": "none",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "記事は、利用者が人間の担当に気づいていなかったことを事実として述べている。Ledgerは適切な開示なしにテストが始まったことを確認しているが、利用者が実際に気づいていたかどうかまでは示していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "利用者が気づいていなかったという具体的な事実はLedgerに記載されていないため、changed_factとunsupported_new_claimをtrueとした。非開示との整合性はあるが、実際の認識状況は確認されていない。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "直前に “might think” と “If no one explained this clearly” がある。",
+        "ledger_field_basis": "none",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 6,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0ba44488741240e9006abbc9ab80dc87d0b8b6740d21baefc5",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 2678,
+    "reasoning_tokens": 2454
+  },
+  "elapsed_seconds": 25.733,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“High Oil Prices Stay”; “Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "Brent先物についての値動きを、原油市場全体の値動きとして一般化しています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "根拠となるHF-009はBrent先物の値動きに限られますが、記事は原油市場全体で下落しなかったと範囲を広げています。日本語原文にも同じ一般化があるため、発生源は原文です。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“High Oil Prices Stay”; “Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "Brent先物についての値動きを、原油市場全体の値動きとして一般化しています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "根拠となるHF-009はBrent先物の値動きに限られますが、記事は原油市場全体で下落しなかったと範囲を広げています。日本語原文にも同じ一般化があるため、発生源は原文です。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

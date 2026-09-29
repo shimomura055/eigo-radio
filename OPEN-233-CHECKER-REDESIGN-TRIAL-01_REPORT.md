@@ -284,6 +284,121 @@ Evidence: 設計書§4-補、`er051_open233_checker_trial_02_run.py`(新規)、
 `er051_output/open233_checker_trial_01/trial_01_step2_diag/`、
 `er051_output/open233_checker_trial_01/trial_02/`。
 
+## 11. Opus L2レビュー#1(委任_04で逐語保存)
+
+**Status**: `USER_DECISION_REQUIRED`(指標定義・gold再判断)。詳細は
+Opus L2レビュー#1全文(read-only、診断のみ、実装・実行なし)。
+
+**保存先**: `docs/pm/opus_l2_review_open233_checker_trial_01.md`(委任文に
+含まれていた論点1〜5+総合の全文を一字も変えず保存)。
+
+**Fable判定(委任文§1に基づく)**:
+- 指標定義(不要BLOCK率)・gold(B1のclaim分割、B3のBLOCKING確定)の
+  再判断は**USER_DECISION_REQUIRED**該当。現行fixture単位定義(分母
+  B1〜B4の4件)は、B3・B4がgold=BLOCKING妥当という独立評価(Opus論点2)を
+  前提とすると、正しいCheckerでも不要BLOCK率2/4=50%が下限であり、
+  ≤25%達成には実逸脱の見逃しが必要になるため。
+- C1(materiality軸V6追加)は**事前了承要**(fail-closed撤廃には該当しない
+  というOpus見解だが、「何をBLOCKINGと呼ぶか」の一次基準変更に触れるため
+  Trial 3実行前にFamily X限定・Production非接続の範囲での明示開示・可否
+  取得を推奨)。
+- V5-C(observation_consistent==True かつ ledger_field_basis=="ledger_fact"
+  での降格)は実データで既知のBLOCKINGを複数見逃すことが実証されており、
+  **不採用を推奨**(設計案から削除)。
+- notes_for_writerのschema分離(v0.2案)は、B群deviation 22件中
+  notes_factual_constraint由来はわずか2件(9.1%)という実測と矛盾するため
+  **不採用を推奨**(効果が見込めず、Ledger生成側への波及リスクのみ残る)。
+- HOOK_CLAUSEとV4-Aの文言はchanged_comparisonで正面衝突することが
+  特定された。Family X限定variantの間は無害(hook_aware=Falseのため)だが、
+  **共通Prompt/Family横断展開時は必須確認事項**(Family N3の危険Hook
+  fixture 3種でregressionを回すこと)。
+
+## 12. Stability n=20実測(委任_04)
+
+**Status**: 実測完了(80 call、error 0、¥23.5636)。Opus L2レビュー#1論点4
+推奨1に基づく測定追加。**設計変更・variant実装は行っていない**
+(V0=現行Production Prompt/schemaそのまま、V4A=既存実装済みTrial variant、
+いずれも無変更で流用)。
+
+**実行条件**: `hormuz_run03_standard`(gold=BLOCKING、HF-009 changed_scope)
+と`Meta_run03_standard`(gold=BLOCKING、negative control)の2 fixture ×
+V0/V4A 2variant × n=20 = 80 call。モデルgpt-6-luna、reasoning=high、
+Contract非経由。実行中にシステムのメモリ不足でbackgroundプロセスが1回
+kill されたため(66/80完了時点)、既存成功run(error無し)を再課金せずに
+残り14 callのみ再実行する`--resume`機能を追加して完走した(課金の重複
+なし、既存run_N.jsonの再利用のみ)。harness:
+`er051_open233_checker_trial_03_stability_run.py`(新規)。実測データ:
+`er051_output/open233_checker_trial_01/trial_03_stability_n20/`。
+
+**検出率(gold claim捕捉率、n=20)・95%信頼区間(Wilson)**:
+
+| fixture | variant | 検出 | 検出率 | 95%CI(Wilson) | category/fact_id一致 |
+|---|---|---|---|---|---|
+| hormuz_run03_standard | V0 | 20/20 | **100%** | [83.9%, 100%] | 20/20(changed_scope=true・HF-009、全件一致) |
+| hormuz_run03_standard | V4A | 17/20 | **85%** | [64.0%, 94.8%] | 17/17(検出時は全件changed_scope=true・HF-009で一致) |
+| Meta_run03_standard | V0 | 18/20 | **90%** | [69.9%, 97.2%] | 17/18(1件はrelated_fact_id=MUSE-HC-011で010/012いずれとも不一致) |
+| Meta_run03_standard | V4A | 20/20 | **100%** | [83.9%, 100%] | 20/20(全件010/012のいずれかで一致) |
+
+**V0 vs V4Aの差の検定(Fisher正確検定、両側p値)**:
+- hormuz_run03_standard: V0 20/20 vs V4A 17/20 → **p=0.2308(有意差なし)**。
+  方向としては悪化(100%→85%)だが、n=20でも統計的有意差には至らない。
+- Meta_run03_standard: V0 18/20 vs V4A 20/20 → **p=0.4872(有意差なし)**。
+  方向は改善(90%→100%)。
+- 2fixture併合(V0 38/40 vs V4A 37/40): **p=1.0(有意差なし)**。
+- **結論**: Trial 2(n=5)で観測された「90%→80%」の低下は、n=20でも**統計的
+  有意差を持って再現しなかった**(hormuzのみ悪化方向、Metaは改善方向で
+  相殺)。Opus論点4(C)の「測定不足」という診断が正しかったことを裏付ける。
+
+**非検出回のreasoning_tokens(思考量不足では説明できないというOpus所見の
+再検証)**:
+
+| fixture | variant | 検出時平均reasoning_tokens | 非検出時平均reasoning_tokens |
+|---|---|---|---|
+| hormuz_run03_standard | V0 | 2353.4(n=20、非検出0件) | — |
+| hormuz_run03_standard | V4A | 3072.5(n=17) | **3830.3(n=3)** |
+| Meta_run03_standard | V0 | 3275.9(n=18) | **4116.5(n=2)** |
+| Meta_run03_standard | V4A | 4263.7(n=20、非検出0件) | — |
+
+非検出回のreasoning_tokensは、検出回の平均よりむしろ**高い**(hormuz
+V4A: 3830 vs 3072、Meta V0: 4117 vs 3276)。Opus論点4(B)「思考量不足では
+説明できない」という所見を本実測でも再確認した。
+
+**cost/latency平均(n=20、call単位)**:
+
+| fixture | variant | 平均cost(¥) | 平均elapsed(秒) |
+|---|---|---|---|
+| hormuz_run03_standard | V0 | ¥0.2143 | 24.7秒 |
+| hormuz_run03_standard | V4A | ¥0.2818 | 40.5秒 |
+| Meta_run03_standard | V0 | ¥0.2978 | 35.3秒 |
+| Meta_run03_standard | V4A | ¥0.3843 | 56.3秒 |
+
+**Opus論点4推定(単発recall 60〜85%)との照合**: 実測4セルは85%/90%/100%/
+100%であり、**Opus推定レンジの上限寄り〜上限超**だった。最悪値は
+hormuz_run03_standard/V4Aの85%(Opus推定レンジの上端と一致)で、
+「実運用での見逃し確率が約40%」という論点4のSafetyリスク記述(n=5、
+3/5=60%検出のみに基づく暫定推定)は、n=20実測では**過大評価だったことが
+判明**した(実際は17/20=85%検出、見逃しは15%)。ただし85%はSafety観点で
+依然0%ではなく、実データfixtureでの非ゼロの見逃しリスクは残る
+(V0・V4Aともに100%ではない実測があった)。
+
+## 13. negative claim候補表・claim単位gold候補表(ユーザー確認待ち、委任_04)
+
+**negative claim候補**: 既存Production実行(`er019_output/`配下、retryを
+経て最終的にLEDGER_COMPLIANTになった記事本文、API費用¥0)から16件を
+claim単位で抽出した。詳細・出典・sha256は
+`docs/pm/negative_claim_candidates_open233_01.md`参照。gold確定は行って
+いない(候補表のみ)。特筆事項: 候補1〜3(`family_x_b3_production_wiring_
+01/run_01/a2`のStandard版、LEDGER_COMPLIANT)は、同一runのAdvanced版
+(design書B4 fixture、LEDGER_DEVIATION MAJORx4)とほぼ同内容のclaimを含む
+が、Standard版はヘッジ表現(may/would seem等)のため通過し、Advanced版は
+断定表現のためBLOCKINGされている(表現の断定度による判定差の実例)。
+
+**claim単位gold候補表**: Opus L2レビュー#1論点2のB1-a/b/c・B2・B3・
+B4-a/b/c/d評価表を、設計書§2のgold表の下に別表(§2-補)として追加した
+(既存fixture単位gold表は変更していない)。「現行fixture単位定義での
+下限50%」の算術も設計書§2-補へ再掲した。詳細:
+`docs/pm/design_open233_checker_redesign_trial_01.md`§2-補。
+
 ## Evidence
 
 - 設計書: `docs/pm/design_open233_checker_redesign_trial_01.md`

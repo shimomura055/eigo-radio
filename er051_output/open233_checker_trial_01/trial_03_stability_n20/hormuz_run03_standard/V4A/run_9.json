@@ -1,0 +1,80 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 9,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_09a3e7c16d861889006abbcc52e45087d0b2ddf9a10d50556e",
+  "usage": {
+    "input_tokens": 6229,
+    "cached_input_tokens": 6226,
+    "output_tokens": 1843,
+    "reasoning_tokens": 1552
+  },
+  "elapsed_seconds": 21.286,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "Brentの値動きについての観測を、原油市場全体に広げて述べています。Ledgerが確認しているのはBrent先物の動きです。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "changed_scope: HF-009の対象はBrent先物ですが、記事は原油市場全体について断定しています。原文記事にも同じ範囲の拡張があります。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "直前の文にある “briefly lost some of their gains” の “briefly”。ただし、この限定は値動きの一時性を述べており、市場全体への一般化を限定していません。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "Brentの値動きについての観測を、原油市場全体に広げて述べています。Ledgerが確認しているのはBrent先物の動きです。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "changed_scope: HF-009の対象はBrent先物ですが、記事は原油市場全体について断定しています。原文記事にも同じ範囲の拡張があります。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "直前の文にある “briefly lost some of their gains” の “briefly”。ただし、この限定は値動きの一時性を述べており、市場全体への一般化を限定していません。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

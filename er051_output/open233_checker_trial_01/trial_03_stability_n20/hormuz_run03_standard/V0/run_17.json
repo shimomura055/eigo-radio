@@ -1,0 +1,70 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 17,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0ce9288c88614830006abbcab7d4c887d094dc49a6b357b430",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 2429,
+    "reasoning_tokens": 2204
+  },
+  "elapsed_seconds": 22.797,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのは撤回後のBrent先物の短時間の値動きであり、原油市場全体について下落しなかったとする主張までは確認されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Brent先物についての観測を原油市場全体へ広げているため、changed_scope（およびLedgerにない具体的事実としてchanged_fact）が該当する。この一般化は原文にも存在する。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "issue": "Ledgerが確認しているのは撤回後のBrent先物の短時間の値動きであり、原油市場全体について下落しなかったとする主張までは確認されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Brent先物についての観測を原油市場全体へ広げているため、changed_scope（およびLedgerにない具体的事実としてchanged_fact）が該当する。この一般化は原文にも存在する。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

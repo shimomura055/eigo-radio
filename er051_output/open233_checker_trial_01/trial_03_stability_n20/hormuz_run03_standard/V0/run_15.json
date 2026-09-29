@@ -1,0 +1,70 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 15,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5b81f8ecf04fb74adb662860da8f001c4fd2ed011f2528a32c5432f01d027577",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0c37117aa51276b6006abbca82ac7087d0a7b6458bcd61b746",
+  "usage": {
+    "input_tokens": 5378,
+    "cached_input_tokens": 5375,
+    "output_tokens": 2985,
+    "reasoning_tokens": 2718
+  },
+  "elapsed_seconds": 27.664,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "タイトルの “High Oil Prices Stay”、 “Oil prices did not fall across the whole market after the plan was withdrawn”、 “Oil prices moved briefly, then returned to a high level”、および結びの “oil prices stayed high”",
+        "issue": "ブレント原油先物について確認された動きを、原油価格全般または市場全体の動きとして述べています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009が確認するのはブレント原油先物の値動きです。記事は「原油価格」全般や「市場全体」へ対象を広げており、changed_scopeに該当します。同様の広い表現は日本語原文にもあるため、発生源はja_sourceです。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "タイトルの “High Oil Prices Stay”、 “Oil prices did not fall across the whole market after the plan was withdrawn”、 “Oil prices moved briefly, then returned to a high level”、および結びの “oil prices stayed high”",
+        "issue": "ブレント原油先物について確認された動きを、原油価格全般または市場全体の動きとして述べています。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009が確認するのはブレント原油先物の値動きです。記事は「原油価格」全般や「市場全体」へ対象を広げており、changed_scopeに該当します。同様の広い表現は日本語原文にもあるため、発生源はja_sourceです。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

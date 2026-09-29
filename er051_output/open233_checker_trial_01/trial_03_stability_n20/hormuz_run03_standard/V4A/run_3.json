@@ -1,0 +1,80 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 3,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_08125f222a4529ba006abbcb683e9487d0a08df0bef49089f4",
+  "usage": {
+    "input_tokens": 6229,
+    "cached_input_tokens": 6226,
+    "output_tokens": 3712,
+    "reasoning_tokens": 3411
+  },
+  "elapsed_seconds": 45.048,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "記事はLedgerが観測しているBrent先物の値動きを、原油市場全体の値動きへと広げて述べている。市場全体についてはLedgerで確認できない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerの観測対象はBrent先物だが、記事は市場全体についての具体的主張に拡張しているため、changed_fact・changed_scope・unsupported_new_claimが該当する。Brentが一時的に上げ幅を縮小してから回復したという観測とは矛盾しない。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "直前の文に “briefly lost some of their gains” と “soon returned” がある。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "記事はLedgerが観測しているBrent先物の値動きを、原油市場全体の値動きへと広げて述べている。市場全体についてはLedgerで確認できない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerの観測対象はBrent先物だが、記事は市場全体についての具体的主張に拡張しているため、changed_fact・changed_scope・unsupported_new_claimが該当する。Brentが一時的に上げ幅を縮小してから回復したという観測とは矛盾しない。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "直前の文に “briefly lost some of their gains” と “soon returned” がある。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

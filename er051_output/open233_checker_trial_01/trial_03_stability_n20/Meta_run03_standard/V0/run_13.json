@@ -1,0 +1,111 @@
+{
+  "fixture_id": "Meta_run03_standard",
+  "variant": "V0",
+  "model": "gpt-6-luna",
+  "attempt": 13,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "dc613efdb92820d42d0c1a9605aad1342f8b4a4b189e274f10891891a4436a4f",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0592ab3f443c610f006abbcfff1c9887d08026b475bf0460c8",
+  "usage": {
+    "input_tokens": 5411,
+    "cached_input_tokens": 5408,
+    "output_tokens": 3574,
+    "reasoning_tokens": 3189
+  },
+  "elapsed_seconds": 34.288,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "The article states that users actually enjoyed the service and were unaware a human was handling the call. The Ledger establishes a lack of appropriate disclosure in the test, but does not establish users’ actual reactions or awareness.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "It turns an illustrative possibility about users’ awareness into an asserted outcome not established by the Ledger; this implication is also present in the Japanese source.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source"
+      },
+      {
+        "claim_in_article": "“human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”",
+        "issue": "The Ledger records one reported individual case involving an inappropriate race-related remark during a call. The article’s plural “comments” and “calls” can imply multiple instances, expanding that case.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Pluralizing the reported remark and call broadens the single reported case; the Japanese source refers to a remark and a call, so this expansion arises in translation/adaptation.",
+        "related_fact_id": "MUSE-HC-011",
+        "origin": "translation"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "The article states that users actually enjoyed the service and were unaware a human was handling the call. The Ledger establishes a lack of appropriate disclosure in the test, but does not establish users’ actual reactions or awareness.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "It turns an illustrative possibility about users’ awareness into an asserted outcome not established by the Ledger; this implication is also present in the Japanese source.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      },
+      {
+        "claim_in_article": "“human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”",
+        "issue": "The Ledger records one reported individual case involving an inappropriate race-related remark during a call. The article’s plural “comments” and “calls” can imply multiple instances, expanding that case.",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Pluralizing the reported remark and call broadens the single reported case; the Japanese source refers to a remark and a call, so this expansion arises in translation/adaptation.",
+        "related_fact_id": "MUSE-HC-011",
+        "origin": "translation",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V0"
+  }
+}

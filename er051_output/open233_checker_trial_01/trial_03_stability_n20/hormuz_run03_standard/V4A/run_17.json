@@ -1,0 +1,80 @@
+{
+  "fixture_id": "hormuz_run03_standard",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 17,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_03be72eee2abe7ea006abbcd72798487d0a572eef36adeeb0d",
+  "usage": {
+    "input_tokens": 6229,
+    "cached_input_tokens": 6226,
+    "output_tokens": 3668,
+    "reasoning_tokens": 3398
+  },
+  "elapsed_seconds": 43.037,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "Brent先物について確認された短時間の値動きを、原油価格全体の市場動向に拡張しています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerが確認しているのはBrent先物の一時的な上げ幅縮小と回復であり、市場全体の原油価格についての主張までは裏付けていません。したがって、具体的事実の追加・対象範囲の拡張です。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "“briefly lost some of their gains”; “At the time of reporting”",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+        "issue": "Brent先物について確認された短時間の値動きを、原油価格全体の市場動向に拡張しています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerが確認しているのはBrent先物の一時的な上げ幅縮小と回復であり、市場全体の原油価格についての主張までは裏付けていません。したがって、具体的事実の追加・対象範囲の拡張です。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "“briefly lost some of their gains”; “At the time of reporting”",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

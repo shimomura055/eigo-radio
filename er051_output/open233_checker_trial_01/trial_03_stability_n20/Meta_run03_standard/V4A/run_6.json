@@ -1,0 +1,80 @@
+{
+  "fixture_id": "Meta_run03_standard",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 6,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "d799cc864f69fe7fb47386d2c2138f4069bef2986205dcb1910c81192748edc0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_029e884c373690fb006abbd211f95087d0ace1ff8da69660b0",
+  "usage": {
+    "input_tokens": 6262,
+    "cached_input_tokens": 6259,
+    "output_tokens": 4581,
+    "reasoning_tokens": 4230
+  },
+  "elapsed_seconds": 61.834,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "記事は、利用者が実際にAIの便利さを享受し、人間が応対していると気づかなかったと断定している。原文は「楽しんでいたら」「いつの間にか」という仮定的・情景的な表現で、Ledgerも利用者の実際の認識や体験を確認していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "原文の仮定的な表現を、実際に利用者が気づかなかったという断定に変えている（changed_certainty）。その利用者の認識・体験はLedgerで確認されていない具体的主張である（changed_fact、unsupported_new_claim）。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "直前に “might think” および “If no one explained this clearly” があるが、対象の “They did not realize it” 自体は断定形。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "記事は、利用者が実際にAIの便利さを享受し、人間が応対していると気づかなかったと断定している。原文は「楽しんでいたら」「いつの間にか」という仮定的・情景的な表現で、Ledgerも利用者の実際の認識や体験を確認していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "原文の仮定的な表現を、実際に利用者が気づかなかったという断定に変えている（changed_certainty）。その利用者の認識・体験はLedgerで確認されていない具体的主張である（changed_fact、unsupported_new_claim）。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "直前に “might think” および “If no one explained this clearly” があるが、対象の “They did not realize it” 自体は断定形。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}
