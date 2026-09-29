@@ -6,6 +6,17 @@
 Fable委任: 委任_04(逐語保存指示)
 本文: 以下、Fable委任文に含まれていたOpus L2レビュー#1の全文を一字も変えず保存する。
 
+**注記(2026-09-30追記、`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_02。
+以下本文は一切変更していない)**: Fableが2026-09-30に実施したOpus
+model_id probe(read-only)により、実行時のOpus agentエイリアス
+(`opus-consultant`、`model: opus`)の自己申告モデル名が「Opus 5
+(1M context)」・exact model ID `claude-opus-5[1m]`・knowledge cutoff
+2026-05であることが判明した。本レビュー実行時(2026-09-29)のmodel_id
+は当時記録されておらず確定できないが、同一エイリアス経由であるため
+Opus 5で実行された可能性が高い(Opus 5.5ではない可能性が高い)。詳細:
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§1、`DECISION_LOG.md`
+2026-09-30`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_02エントリ。
+
 ---
 
 # OPEN-233 Opus L2 設計レビュー #1(read-only、診断・助言のみ。編集・実行・API呼び出しなし)

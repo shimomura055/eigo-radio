@@ -6,6 +6,21 @@ REDESIGN-TRIAL-01`から目標を転換した新Phase)。
 ## §1. 設計フェーズ(委任_01、2026-09-30、Production Self-Recovery Flow
 設計書作成)
 
+**注記(委任_02、2026-09-30追記、本文への遡及訂正ではない)**: 本§1が
+参照する`docs/pm/opus_l2_review_open233_checker_trial_01.md`(前Phase
+Opus L2レビュー#1)は、Fableが2026-09-30に実施したOpus model_id probe
+(read-only)により、実行時のOpus agentエイリアス(`opus-consultant`、
+`model: opus`)の自己申告モデル名が「Opus 5 (1M context)」・exact
+model ID `claude-opus-5[1m]`・knowledge cutoff 2026-05であったことが
+判明した。**Opus 5.5ではない**(ユーザーは本Phase開始時、Opus L2
+レビューは実際のmodel_idを確認し利用可能なら最新Opus 5.5を明示使用
+するよう指示、旧Opus固定なら勝手に実行せず報告するよう指示した)。
+前Phase Opus L2レビュー#1も同エイリアス経由で実行されており、当時
+model_idは記録されていないが、Opus 5で実行された可能性が高い。本Phase
+(委任_02時点)のOpus L2レビューは、ユーザーへのmodel_id指定確認が
+得られるまで**未実施**。詳細: `DECISION_LOG.md`2026-09-30`OPEN-233-
+SELF-RECOVERY-TRIAL-01`委任_02エントリ。
+
 **Status**: `DESIGN_READY_FOR_OPUS_L2`。
 
 **背景**: 前Phase(`OPEN-233-CHECKER-REDESIGN-TRIAL-01`)は、Checker
@@ -92,3 +107,73 @@ Evidence: `docs/pm/design_open233_self_recovery_flow_01.md`(新規、
 `er003_v1_en_direct_vfl_01_generate.py`(L490-620、Prompt/HOOK_CLAUSE/
 モデル定数)、`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`
 (Hormuz run_01〜03・Meta run_03のSTOP/通過Evidence)。
+
+## §2. コスト章追加(委任_02、2026-09-30、設計書へCost Cap要件を組み込む
+修正+Opus model_id probe結果の記録)
+
+**Status**: `DESIGN_READY_FOR_OPUS_L2`(model_id確認待ち、変わらず)。
+
+**背景**: ユーザーが2026-09-30、量産時の継続コスト上限を**最大
++¥3/記事**(「使ってよい上限」ではなく「できる限り安く」が大前提)と
+明示し、Stage別計測(発動率・1回コスト・1記事平均・worst case・
+P50/P95、固定費と条件付き費の分離)、Safety/Self-Recovery/Costの同時
+最適化、優先順位①Prompt改善→②BLOCK時のみRe-screen→③必要時のみ
+Rewrite→④限定self-consistency、を追加指示した。あわせてOpus L2
+レビュー投入前に実際のmodel_idを確認するよう指示した。
+
+**Opus model_id probe結果(read-only、API呼び出しなし)**: Fableが
+`opus-consultant`(`.claude/agents/opus-consultant.md`の`model: opus`
+エイリアス)を確認した結果、自己申告モデル名「Opus 5 (1M context)」・
+exact model ID `claude-opus-5[1m]`・knowledge cutoff 2026-05であり、
+**Opus 5.5ではない**。前Phase Opus L2レビュー#1(`docs/pm/opus_l2_
+review_open233_checker_trial_01.md`)も同エイリアス経由であり、当時
+model_id未記録だがOpus 5で実行された可能性が高い。本委任では、この
+事実を本REPORT§1と同レビューファイルの**冒頭ヘッダへ注記として追記**
+した(本文は一字も変更していない)。本Phase(委任_02時点)のOpus L2
+レビューはユーザーのmodel_id指定確認が得られるまで**未実施**のまま。
+
+**設計書への追加内容**: `docs/pm/design_open233_self_recovery_flow_01.
+md`へ以下を追加(既存節は削除せず追記のみ):
+- **新設§13「コストモデルと+¥3/記事 Cap」**: 単価根拠(公式価格
+  一次ソース、GPT6-MODEL-COMPARISON-TRIAL-01実測)、現行Production
+  Checker(Stage 1)の実装確認済みベースライン構成(**Advanced+Standard
+  各1 call/記事、通常ケース≈¥0.98/記事**)、Stage 2入力設計(§4-4)と
+  費用見積り(§9-1)の**不整合発見**(§4-4は記事全文入力、§9-1は
+  楽観的な縮小入力を仮定しており矛盾。本章で保守側へ統一)、Stage別
+  unit cost見積り、3シナリオ(楽観/中央/悲観)での発動率モデルと
+  「純増分=新方式総コスト−現行方式総コスト」という定義に基づく
+  期待値計算(**楽観/中央シナリオでは現行よりむしろ安い[−¥0.47/
+  −¥0.48記事]、悲観シナリオでも+¥0.60/記事**)、worst case分析
+  (**設計§5-3の「同一記事でJA全文Rewrite案Bを2回使わない」制約を
+  守れば純増分worst case≈¥2.88/記事[Cap余裕僅か¥0.12]、守らなければ
+  ¥6.40/記事でCap超過**、この制約がCap遵守に構造的に必須と特定)、
+  段階案α〜δの比較と第一候補(案γ=Stage1不変+BLOCK時のみStage2+
+  必要時のみRewrite、cycle上限2)、Cap内で困難な要素(Stage 2実単価が
+  最大の不確実性要因、worst case余裕が僅少)を中間報告として明記。
+- §8-4(Stage別コスト計測項目の新設)、§9-3(Trial harnessのStage別
+  usage記録要件)、§10リスク#9・#10(コスト肥大、Cap超過時のUSER_
+  DECISION_REQUIRED条件)、§11 Opus論点8(Cap内での最適性・より安い
+  代替の妥当性)、§12-1(Checkpoint A提示項目、ユーザー指定6項目+
+  既存3項目)を追加。
+
+**実測併用**: 本委任は設計書修正のみでAPI呼び出しは行っていないが、
+既存の実Production run(Meta run_03 `raw_usage_log.jsonl`)を独立に
+再計算し、公式単価ベースの合計¥4.13(既存報告¥4.213と概ね一致)を
+確認、call単位で¥0.04〜¥1.29の幅があることを新規に特定した(§13-1)。
+
+**費用**: 今回¥0(API呼び出しなし、既存artifactの再計算のみ)。本Phase
+累計¥0/総枠¥400、残¥400。
+
+**Production/Dangling Reference確認**: `git diff --stat`でProduction
+ファイル(`er003_*`/`er006_*`/`er012_*`/`er019_*`)・`.claude/agents/`
+に差分なし(コード変更・agent定義変更を一切行っていない)。
+
+Evidence: `docs/pm/design_open233_self_recovery_flow_01.md`(§8-4/
+§9-3/§10/§11/§12-1/§13追記)、本REPORT§1冒頭注記、`docs/pm/opus_l2_
+review_open233_checker_trial_01.md`冒頭注記。入力:
+`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§C-2〜C-5、`FAMILY-X-
+REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`(Meta run_03費用実測)、
+`er019_output/family_x_refresh_e2e_01/meta/run_03/raw_usage_log.
+jsonl`(本委任で独立再計算)、`er012_e_family_entertainment_two_level_
+runner_01.py`(L381-388/L477-484、Checker call構成確認)、`.claude/
+agents/opus-consultant.md`(model_id probe対象、変更なし)。

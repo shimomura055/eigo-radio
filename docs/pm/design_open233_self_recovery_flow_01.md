@@ -489,6 +489,26 @@ ACCEPTABLE/QUALITYのclaimがStage 1でBLOCKING判定された率`。目標値�
 False・borderline群をどれだけStage 2で正しく拾えているかの内部指標
 として参照する。
 
+### 8-4. Stage別コスト計測(委任_02追加、2026-09-30ユーザー追加指示)
+
+継続コストCap(§13)判定のため、記事単位ではなくStage単位で以下を
+分離して計測する(全てTrial harnessが`usage`ログへstage識別子付きで
+記録する。§9-3参照)。
+
+| Stage | 発動率(対象母数) | 1回コスト(call単位、$/1M単価から算出) | 1記事平均追加コスト | worst case | P50/P95 |
+|---|---|---|---|---|---|
+| Stage 1 Initial Check | 100%(writer-stage-instance単位、Advanced/Standard別) | ○ | ○(既存ベースライン、Self-Recovery追加費ではない) | ○ | ○ |
+| Stage 2 Re-screening | BLOCKING-candidate発生時のみ | ○ | ○ | ○ | ○ |
+| Stage 3 Rewrite(局所EN/JA全文) | Stage 2でBLOCKING確定時のみ | ○(JA/EN別) | ○ | ○ | ○ |
+| Stage 1 Recheck | Rewrite実行時のみ(cycleごと1回、JA全文Rewrite時はAdvanced+Standard 2回分) | ○ | ○ | ○ | ○ |
+| cycle 2(Stage2+Rewrite+Recheckの再発火) | cycle 1で解消しない場合のみ | ○ | ○ | ○ | ○ |
+
+**固定費(毎記事必ず発生)と条件付き費(BLOCK時だけ発生)の分離**:
+固定費=Stage 1のみ(既存ベースライン、Self-Recovery Flow導入によって
+増減しない)。条件付き費=Stage 2以降の全て(BLOCKING-candidateが
+発生した場合のみ発火し、Stage 1がACCEPTABLEを返した大多数の記事では
+追加費用¥0)。この分離が§13のCap計算の前提。
+
 ## 9. Trial計画
 
 ### 9-1. Phase 1(既存fixture/artifact reuse、次回委任で実施)
@@ -525,6 +545,19 @@ Stage 1の再課金なしで検証する。
 - **Guardrail**: 次回委任で個別設定(委任文の慣例どおり、想定費用の
   1.5〜2倍程度を上限とし、超過見込みでSTOP)。
 
+### 9-3. Stage別usage記録要件(委任_02追加、2026-09-30ユーザー追加指示)
+
+Phase 1 Trial harnessは、全API callのusageログへ以下を必須で付与する
+(§8-4のStage別コスト計測を可能にするため。現行`er051`系harnessの
+usage記録スキーマへstage識別子を追加する形で実装する、次回委任で
+確定): `article_id`/`writer_stage`(advanced/standard)/`recovery_
+stage`(stage1_initial/stage2_second_judge/stage3_rewrite_en_local/
+stage3_rewrite_ja_full/stage1_recheck)/`cycle_number`(1 or 2)/
+`model_id`/`input_tokens`/`cached_tokens`/`output_tokens`(reasoning
+含む)/`cost_jpy`(公式単価+実測為替レートで算出、仮単価流用禁止)。
+これにより「固定費(Stage1)」と「条件付き費(Stage2以降)」を実測ベースで
+事後集計できる。
+
 ### 9-2. Phase 2(Production相当10〜20記事、Checkpoint E前に別途計画)
 
 Phase 1でStage 2/3の基本設計が機能することを確認した後、実際の
@@ -546,6 +579,8 @@ Flow込みで10〜20記事規模実行し、Primary KPI(USER_DECISION_REQUIRED
 | 6 | Stage 1非決定性(recall 85〜100%、n=20実測)がStage 2以降で拡大しないか | Stage 2はStage 1がBLOCKINGと判定した場合にのみ発火するため、Stage 1が見逃した(ACCEPTABLE誤判定)ケースはStage 2の対象外のまま残る。**これはSelf-Recovery Flowでは解決されない既存のrecall問題**であり、本設計のスコープ外として明記する(self-consistency等のrecall改善策は§11でOpusへ問う別論点とする) |
 | 7 | HOOK_CLAUSE衝突(Family横断時) | 前Phase Opus論点5(D)で特定済みの`changed_comparison`正面衝突は、本Flowが現時点でFamily X限定(`hook_aware=False`経路のみ)である間は無害。Stage 2/Stage 3のPrompt文言がHOOK_CLAUSEと将来同一Promptへ統合される際は、前Phase同様Family N3の危険Hook fixture 3種でregressionを回すことを必須とする(本Phaseでは統合しない) |
 | 8 | Production Checkerのモデル差異(gpt-5.6-luna vs Trial gpt-6-luna) | §2/§4-6で明記済み。Phase 1はgpt-6-lunaで統一し前Phase資産と比較可能にするが、Phase 2でProduction実配線を検討する際は、Stage 1(gpt-5.6-luna、既存Production不変)とStage 2/3(Trial用に検証したモデル)のモデル差自体がSafety regressionを生まないかの追加確認が必要になる(Opus論点として§11に計上) |
+| 9(委任_02追加) | コスト肥大(loop×高単価)。特にStage 3 JA全文Rewrite(案B相当、1回¥3.49〜4.02)を2 cycleとも使い、かつAdvanced/Standard両方が同時にBLOCKING確定するworst caseでは、§13の試算上+¥3/記事Capを超過し得る(期待値ベースでは大きく下回るが、稀なworst case記事では超過し得る) | cycle上限(記事あたり最大2、既存設計)を維持しつつ、§13で示す優先順位(局所Rewriteを優先しJA全文Rewriteの発火自体を減らす)で緩和する。それでもP95/worst caseがCapに接近する場合は、次項(#10)のUSER_DECISION_REQUIRED条件に従う |
+| 10(委任_02追加) | Cap超過時のUSER_DECISION_REQUIRED条件 | Phase 1実測で(a)記事あたり期待追加コストの中央値シナリオが+¥3を超える、または(b)worst case/P95が恒常的(稀な例外でなく一定割合)に+¥3を超える、のいずれかが判明した場合、勝手にコストを積み増さず、§13の「+¥3以下で困難な場合の中間報告」項目に従い直ちにUSER_DECISION_REQUIREDとして報告する(委任文2026-09-30ユーザー追加指示) |
 
 ## 11. Opus L2に問う論点(次回Opus発火時)
 
@@ -580,6 +615,12 @@ Flow込みで10〜20記事規模実行し、Primary KPI(USER_DECISION_REQUIRED
    文言を将来共通Promptへ統合する際の優先順位付け(前Phase Opus論点5
    推奨4「HOOK_CLAUSE優先、それ以外は重複true原則」)は、本Flowの
    materiality軸導入とどう組み合わせるべきか。
+8. (委任_02追加)+¥3/記事Cap内で自動完結率(USER_DECISION_REQUIRED
+   実質ゼロ)を最大化する設計として、§13で示した段階案γ(Stage 1不変+
+   BLOCK時のみStage 2+必要時のみ局所/JA Rewrite、cycle上限2)を第一
+   候補としたことは妥当か。より安く同等の自動完結率へ到達できる代替
+   (例: Stage 2の入力をさらに縮小する、JA全文Rewrite[案B]の発火条件を
+   より狭める、cycle 2をJA全文Rewriteには使わない等)はあるか。
 
 ## 12. ユーザー判断11該当有無
 
@@ -603,3 +644,209 @@ Flow込みで10〜20記事規模実行し、Primary KPI(USER_DECISION_REQUIRED
 
 該当なしのため、本書提出をもって次のPhase 1 Trial実行(有料API呼び出し
 を伴う委任)へ進めることをFableへ提案する。
+
+### 12-1. Checkpoint Aで提示する項目一覧(委任_02追加、2026-09-30ユーザー
+追加指示、各Mandatory Checkpointで必須報告)
+
+- best variant(現時点の第一候補=§13-8案γ)の追加コスト/記事(期待値)。
+- 固定追加費(Stage 1のみ、Self-Recovery Flow起因の増分は¥0)。
+- 条件付き追加費(Stage 2以降、BLOCKING-candidate発生時のみ)。
+- BLOCK時のみ発生する平均recovery費用(Stage2+Rewrite+Recheck合計)。
+- P50/P95(記事あたり追加コスト)。
+- +¥3/記事Capまでの余裕(シナリオ別)。
+- 上記に加え、本書§12の既存3項目(materiality軸導入の事前了承、
+  Primary KPI変更確認、gold候補表の位置づけ確認)。
+
+## 13. コストモデルと+¥3/記事 Cap(委任_02新設、2026-09-30ユーザー
+追加指示)
+
+**前提**: ユーザー指示は「+¥3まで使ってよい」ではなく「できる限り安く
+達成する」が大前提であり、同品質・同自動完結率なら安い方式を優先する。
+本章はその判断材料を提供する。全数値は**Phase 1実測前の概算**であり、
+Phase 1実行後に実測値へ更新する(既存章と同じ「概算(要実測)」の
+位置づけ)。
+
+### 13-1. 単価根拠(一次ソース、推測禁止)
+
+| model | Input | Cached input | Output | 出典 |
+|---|---|---|---|---|
+| gpt-5.6-luna(現行Production Stage 1) | $0.20/1M | $0.02/1M | $1.20/1M | `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§C-2(`platform.openai.com/docs/pricing`一次ソース確認済み) |
+| gpt-6-luna(前Phase Trial、Stage 2/3候補) | $0.10/1M | $0.01/1M | $0.50/1M | 同上(gpt-5.6-lunaの正確に半額) |
+
+為替: ¥156.88/USD(Frankfurter API、ECB参照レート、2026-09-28付、同
+レポート§C-4)。
+
+**call単位の実測参考値**: 同レポート§C-3(固定fixture 84 call実測)で
+gpt-5.6-luna 平均¥0.4911/call・中央値¥0.3719/call、gpt-6-luna 平均
+¥0.2043/call・中央値¥0.1818/call。本委任でユーザーが指定した「1 call
+≈ ¥0.49」(gpt-5.6-luna)はこの平均値と一致し、本章の基準単価として
+採用する。
+
+**新規Evidence(本委任で追加実測)**: 実Production run(`FAMILY-X-
+REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`Meta run_03、`er019_output/
+family_x_refresh_e2e_01/meta/run_03/raw_usage_log.jsonl`)のWriter段
+7 call分を、上記単価で本委任にて独立に再計算したところ合計¥4.13
+(レポート記載の実測¥4.213と概ね一致、キャッシュトークン未計上分の
+誤差)。個別call費用は¥0.04(Advanced deviation check、MAJOR無し・
+出力短)〜¥1.29(Standard deviation check、MAJOR検出・reasoning出力
+大)まで幅があり、**harness平均¥0.49は中心値として妥当だが、BLOCKING
+検出時のcallはより高コストになりうる**ことを実データで確認した(本
+発見は§13-4のStage 2単価見積りの保守化根拠として使う)。
+
+### 13-2. 現行Production Checker(Stage 1)の構成とベースライン費用/記事
+
+`er012_e_family_entertainment_two_level_runner_01.py`の実装(L381-388
+Advanced deviation check、L477-484 Standard deviation check)から、
+**通常ケース(いずれもMAJOR無し)の現行Checker構成は2 call/記事**
+(Advanced 1回+Standard 1回)と確定できる。
+
+- ベースラインStage 1費用(通常ケース) = 2 call × ¥0.49 ≈ **¥0.98/記事**。
+- 既存retry込み(BLOCKING発生時、**Self-Recovery Flow導入前から存在
+  する現行Production仕様**であり新規コストではない): EN側must-fix
+  retry1回(全文再生成+再deviation check)、ja_source起因なら既存案B
+  (JA全文差し戻し、実測¥3.487[Meta run_03、must-fix込み]〜¥4.018
+  [Hormuz run_03])。実測: Meta run_03 Writer段合計(Advanced+Standard、
+  must-fix retry込み)¥4.213。
+
+### 13-3. 重要な発見: Stage 2入力設計(§4-4)と§9-1見積りの不整合
+
+§4-4はStage 2の入力に「記事全文」「Ledger全文」を明記しているが、
+§9-1(Phase 1費用見積り)は「入力がclaim単位で短い(Stage 1の1/3〜
+1/2程度)」という楽観的仮定でStage 2単価¥0.10〜0.20と見積もっていた。
+**両者は矛盾する**(§4-4どおりなら入力サイズはStage 1と同程度)。
+本章はこの不整合を保守側(§4-4の全文入力)で解消し、Stage 2単価を
+上方修正する(§13-4)。出力schemaはStage 1(deviation配列)より小さい
+(§4-5、4フィールドのみ)ため、入力コストの増加を出力コストの削減が
+部分的に相殺すると想定する。**Stage 2の真の入力設計(全文渡すか
+truncateするか)自体はPhase 1実装時に確定する未決事項**であり、この
+不整合の解消はOpus論点8(§11)としても計上済み。
+
+### 13-4. Stage別 unit cost見積り(Phase 1実測前、外挿ベース)
+
+| 項目 | 見積り(保守的、§4-4全文入力前提) | 見積り(楽観的、§9-1想定) | 根拠 |
+|---|---|---|---|
+| Stage 2(gpt-6-luna) | ¥0.30〜0.40/call | ¥0.10〜0.20/call | 保守的=Stage 1 gpt-6-luna実測平均(¥0.2043)に近い水準へ、出力schema縮小分を差し引きつつ材質判定reasoningの追加分を加算した外挿。楽観的=§9-1原文 |
+| Stage 2(gpt-5.6-luna) | ¥0.65〜0.85/call | ¥0.35〜0.45/call | gpt-6-luna比、公式単価が正確に2倍のため概ね2倍で換算 |
+| Stage 3局所Rewrite(EN、1〜2文のみ) | ¥0.15〜0.35/call | — | 実測(Meta run_03 Standard must-fix全文regen ¥1.106)の出力トークン規模比から、局所編集は出力トークンが1/5〜1/8程度と推定した外挿。**未実装・未実測(Phase 1で新規測定)** |
+| Stage 3全文Rewrite(EN、既存must-fix retry baseline) | ¥1.1〜1.3/call | — | 実測(Meta run_03 Standard must-fix regen ¥1.106) |
+| Stage 3 JA全文Rewrite(案B) | ¥3.49(Meta run_03実測、must-fix込み)〜¥4.02(Hormuz run_03実測) | — | `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`実測 |
+| Recheck(全文Checker再実行) | Stage 1と同一単価(gpt-5.6-luna ¥0.49、Trial gpt-6-luna ¥0.20) | — | §5-2「全文Checker再実行」 |
+
+以降のCap判定は**保守的見積り+Stage 2はgpt-6-luna**を基準ケースとする
+(Fable第一候補、委任文§2)。gpt-5.6-lunaをStage 2に使う案は§13-7で
+比較のみ行う。
+
+### 13-5. 発動率シナリオと「+¥3/記事」の定義
+
+ユーザー指示の「量産時に増加する継続コスト」は文字どおり**新方式の
+総コスト − 現行方式の総コスト**(純増分)であり、Self-Recovery Flow
+全体の絶対支出額ではない。現行Production は**BLOCKING検出時、Second
+Judgeの判断を待たずに無条件でEN側must-fix retry1回・ja_source起因なら
+案B全文差し戻し1回を実行する**(§13-2)。Self-Recovery FlowはStage 2で
+まずBLOCKING/QUALITY/ACCEPTABLEを判定し、QUALITY/ACCEPTABLEに降格
+できた場合はこの既存retry/案Bの実行を**回避**できる(コスト削減)。
+一方、Stage 2確認後もBLOCKINGが残るケースでは、現行が持たない
+**cycle 2**(2巡目のRewrite+Recheck)を追加実行できる(コスト増、
+ただしUSER_DECISION_REQUIRED回避という便益と表裏)。
+
+BLOCK発生率・Stage 2解消率・cycle 2必要率は**Phase 1未実測**のため、
+既存E2E実測(Hormuz run_01〜03は3回ともja_source起因のBLOCKで最終的に
+Standard段STOP、Meta run_03はStandard 1回のmust-fix retryで解消)と
+前Phase B群診断(不要BLOCK率75%、n小)を参考に、3シナリオで幅を持たせる
+(**いずれも仮置き、Phase 1で実測必須**)。writer-stage-instance
+(Advanced/Standard、記事あたり2件)単位のBLOCK率と条件分岐:
+
+| シナリオ | BLOCK率/instance | Stage2で解消(Rewrite不要)率 | cycle1で解消/cycle2必要/Escalation(Rewrite必要側の内訳) | JA-origin比率(Rewrite必要側) |
+|---|---|---|---|---|
+| 楽観 | 15% | 70% | 90% / 10% / 0% | 40% |
+| 中央 | 35% | 50% | 75% / 20% / 5% | 40% |
+| 悲観 | 60% | 30% | 55% / 30% / 15% | 40% |
+
+**計算式**(Stage2単価=¥0.35/call[gpt-6-luna、保守的]、rewrite+
+recheckの現行実測加重平均=¥2.886/instance[JA 40%×¥4.68(JA rewrite
+¥3.7+2段recheck¥0.98)+EN 60%×¥1.69(全文regen¥1.2+1段recheck¥0.49)]):
+
+`純増分/instance = Stage2単価 − P(Stage2で解消)×既存rewrite+recheck費用
+ + P(cycle2必要)×(Stage2単価+rewrite+recheck費用)`
+
+| シナリオ | 純増分/instance | 純増分/記事(×2 instance×BLOCK率) |
+|---|---|---|
+| 楽観 | −¥1.57(節約) | **−¥0.47/記事(節約)** |
+| 中央 | −¥0.69(節約) | **−¥0.48/記事(節約)** |
+| 悲観 | +¥0.50 | **+¥0.60/記事** |
+
+**結論(期待値ベース)**: 楽観・中央シナリオではSelf-Recovery Flowは
+現行より**むしろ安くなる**(Stage 2が不要retry/案Bを正しく回避する
+効果が、cycle2追加コストを上回る)。悲観シナリオでも+¥0.60/記事で
+Cap(+¥3)に対し余裕が大きい。
+
+### 13-6. Worst case / P95
+
+期待値とは別に、稀な記事でCapを超過しないかを確認する。
+
+**設計上の制約(§5-3)を守った場合**(cycle 1でJA全文Rewriteを使ったら
+cycle 2はEN局所Rewriteのみ、同一記事でJA全文Rewriteを2回使わない):
+worst case = cycle1(Stage2 2call+JA全文Rewrite¥4.02+2段recheck¥0.98
+=¥5.70)+cycle2(Stage2 2call×¥0.35+EN局所Rewrite2件×¥0.35+recheck
+2件×¥0.49=¥2.18)=**¥7.88**。現行が同じ記事に対し1 cycleのみ実行して
+STOPする費用(JA全文Rewrite¥4.02+recheck¥0.98=¥5.00)を差し引くと、
+**純増分worst case ≈ ¥2.88/記事**(+¥3 Capの96%、**余裕は僅か¥0.12**)。
+
+**設計制約を守らない場合(参考、不採用のはずの経路)**: 2 cycleとも
+JA全文Rewriteを使うと純増分は**¥6.40/記事**となりCapを明確に超過する。
+これは§5-3の「同一記事で案Bを2回使わない」制約が**Cap遵守にとって
+構造的に必須**であることを裏付ける(実装時に確実に守るべきguard)。
+
+### 13-7. Cap判定まとめ
+
+| シナリオ/モデル | 期待値(純増分/記事) | worst case(§5-3制約遵守) | +¥3 Cap判定 |
+|---|---|---|---|
+| 楽観、Stage2=gpt-6-luna | −¥0.47(節約) | 未算出(発生率低) | Cap内、余裕大 |
+| 中央、Stage2=gpt-6-luna | −¥0.48(節約) | ¥2.88(余裕¥0.12) | **Cap内だが余裕僅少** |
+| 悲観、Stage2=gpt-6-luna | +¥0.60 | ¥2.88〜(悲観ではworst case発生率自体が上昇) | Cap内、ただし要Phase1実測確認 |
+| 中央、Stage2=gpt-5.6-luna(参考) | 約−¥0.1〜0(Stage2単価2倍のため節約幅縮小) | 約¥3.2〜3.5(Cap超過方向) | **Cap超過リスクあり、gpt-6-luna推奨の根拠** |
+
+Stage 2にgpt-6-lunaを使う案が、gpt-5.6-lunaを使う案よりCap遵守に
+明確に有利(§2でFableが示した第一候補と整合)。
+
+### 13-8. 段階案 α〜δ(優先順位①→④に沿った比較)
+
+| 案 | 内容 | 追加call | 純増分/記事(期待値) | 到達見込み(自動完結率) |
+|---|---|---|---|---|
+| α | Stage 1 Prompt改善のみ(V4-A/C2相当) | 0 | ¥0(固定費0、条件付き費0) | 前Phase実測でchangedカテゴリ検出力は改善するが、不要BLOCK率課題(実測75%)は未解消。USER_DECISION_REQUIRED実質ゼロには届かない見込み(Second Judge層が無いため過剰BLOCKを吸収できない)。Production Prompt変更自体もユーザー承認事項として別途必要 |
+| β | α + BLOCK時のみStage 2 | BLOCK時のみ+1〜2call | ほぼ¥0(Stage2単価分のみ、Rewrite無し) | False・borderline群(B1-a/b、B4-b/c)はStage2で救済見込みだが、Real-but-fixable群(B1-c/B3/B4-a)やHormuz型の複数箇所逸脱はcycle無しでは解消できず、USER_DECISION_REQUIRED残存の可能性が高い |
+| γ | β + 必要時のみ局所/JA Rewrite(cycle上限2) | §13-5参照 | 楽観/中央: 節約、悲観: +¥0.60(§13-7) | Primary KPI(USER_DECISION_REQUIRED実質ゼロ)に最も近づく設計。Hormuz run_03型(複数箇所で別々のBLOCKING)もcycle2で吸収可能 |
+| δ | γ + 限定self-consistency/Second Judge追加 | 常時+複数call | Cap超過確実(self-consistency常時実行はunit cost×複数倍) | ユーザー指示「コストを無視した対策は禁止」に直接抵触するため**不採用**。Stage 1 recall非決定性(§10リスク6)への対処は必要なら別トラックで、BLOCKING確定後のみの限定適用に留める設計が要る(Opus論点4、§11) |
+
+### 13-9. 第一候補
+
+**案γ**(Stage 1不変・固定追加費¥0+BLOCK時のみStage 2+必要時のみ
+局所EN/JA全文Rewrite、cycle上限2)を第一候補とする。理由: (1)優先順位
+①〜④のうち③まで(局所Rewrite優先)で期待値ベースはCap内かつ多くの
+シナリオで現行よりむしろ安く、(2)常時2重Checker・self-consistency
+常時実行(案δ)という「コストを無視した対策」を回避でき、(3)Fableが
+委任文§2で既に示した第一候補と整合する。
+
+### 13-10. Cap内で困難な要素(現時点の中間報告)
+
++¥3 Cap自体は現時点の概算では**達成可能**と判断するが、以下2点は
+Phase 1実測前の**未確定要素**として明記する(勝手に膨らませず先に
+報告):
+
+1. **Stage 2の真の単価が最大の不確実性要因**(§13-3)。§4-4どおり
+   記事全文+Ledger全文を渡す設計のまま実装した場合、本章の保守的
+   見積り(¥0.30〜0.40/call)より実際に高くなる可能性がある(§13-1の
+   実測が示すとおり、BLOCKING関連の判定callはharness平均より
+   ¥1超になることがある)。Stage 2単価が¥0.6/call超になった場合、
+   §13-7の中央シナリオでも節約効果が消え、悲観シナリオ・worst case
+   双方でCap超過の可能性が高まる。**Phase 1の最優先実測項目**とする。
+2. **worst case(§13-6、¥2.88/記事)はCap(+¥3)の96%を占め、余裕が
+   僅か¥0.12しかない**。§5-3の「同一記事でJA全文Rewriteを2回使わない」
+   制約を実装で確実に守ることがCap遵守の前提条件であり、この制約を
+   緩めるいかなる将来変更も、本章のCap判定を無効化する。
+
+Cap超過が実測で確認された場合、想定される代替案(参考、実装せず):
+Stage 2の入力をLedger全文ではなく該当fact_id周辺のみへ縮小する(§4-4の
+設計判断を再検討)、cycle上限を1へ縮小する(自動完結率は低下)、JA全文
+Rewriteの発火条件をさらに狭める。いずれもSafety/自動完結率とのトレード
+オフを伴うため、Phase 1実測後にユーザー判断を仰ぐ。

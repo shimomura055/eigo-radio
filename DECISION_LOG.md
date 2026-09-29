@@ -13321,3 +13321,89 @@ Stage 1再課金なし、概算¥15〜35)・Opus論点案7個を設計した。
   詳細: `docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-
   TRIAL-01_01.md`、`docs/pm/design_open233_self_recovery_flow_01.md`、
   `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§1。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: コストCap要件+Opus model_id probe
+(2026-09-30、委任_02)
+
+**ユーザー追加指示(逐語要旨)**: 量産時に増加するProduction継続コスト
+の上限は**最大+¥3/記事**。ただし「+¥3まで使ってよい」ではなく「できる
+限り安く達成する」が大前提であり、同品質・同自動完結率なら+¥0.5/+¥1/
++¥2/+¥3のうち安い方式を優先する。コストを無視した対策(Checker多重
+追加・Second Judge追加・Rewrite複数回・self-consistency常時・高価
+モデル常時利用)は禁止。Safety/Self-Recovery/Costを同時最適化する。
+Stage別計測(Initial Check/Re-screening/Rewrite/Recheck/追加Judge/
+self-consistency等の発動率・1回コスト・1記事平均追加コスト・worst
+case・P50/P95)を行い、毎記事必ず発生する固定費とBLOCKING時だけ発生
+する条件付き費用を分離する。評価基準はSafety(重大Fact見逃し0)/
+Self-Recovery(10〜20記事TrialでLedger/Deviation Check起因のUSER_
+DECISION_REQUIRED 0)/Cost(追加継続コスト≤¥3/記事、その中で最小化)。
++¥3以下で困難と判断できるEvidenceが出た場合、勝手に膨らませず早期に
+中間報告(USER_DECISION_REQUIRED)する。設計優先順位: ①初回Checker
+精度改善(追加callなし)→②BLOCK時のみRe-screen→③必要時のみRewrite→
+④それでも必要なら限定的self-consistency/Second Judge。Opus L2レビュー
+投入前に実際のmodel_idを確認し、利用可能なら最新Claude Opus 5.5を
+明示使用する。旧Opus固定なら勝手に実行せず報告・更新する。逐語全文は
+委任記録`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-
+TRIAL-01_02.md`参照。
+
+**Opus model_id probe結果(Fable実施、read-only)**: `opus-consultant`
+(`.claude/agents/opus-consultant.md`の`model: opus`エイリアス)の
+自己申告モデル名は「Opus 5 (1M context)」、exact model ID
+`claude-opus-5[1m]`、knowledge cutoff 2026-05。**Opus 5.5ではない**
+ため、本Phase(委任_02時点)のOpus L2レビューは未実行(ユーザーへ
+model_id指定を要請中)。前Phase Opus L2レビュー#1(`docs/pm/opus_l2_
+review_open233_checker_trial_01.md`)も同エイリアス経由であり、当時
+model_id未記録だがOpus 5で実行された可能性が高い。この事実を
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§1と同レビューファイルの
+**冒頭ヘッダへ注記として追記**した(本文は一字も変更していない)。
+`.claude/agents/opus-consultant.md`は本委任では変更していない。
+
+**Fable判定**: 設計の第一候補は「Stage 1は現行call数のまま(固定追加
+費¥0)、BLOCK時のみStage 2(1 call)→必要時のみ局所Rewrite+全文
+Recheck」(§13案γ)。self-consistency常時実行・高価モデル常時利用は
+不採用。
+
+**委任_02の実施内容**: `docs/pm/design_open233_self_recovery_flow_01.
+md`へ新設§13「コストモデルと+¥3/記事 Cap」を追加し、以下を実施した。
+(1) 単価根拠を一次ソース(`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`
+§C-2〜C-5)から確定(gpt-5.6-luna $0.20/$0.02/$1.20、gpt-6-luna
+$0.10/$0.01/$0.50、¥156.88/USD)。(2) 現行Production Checker(Stage 1)
+の構成を`er012_e_family_entertainment_two_level_runner_01.py`実装
+(L381-388/L477-484)から確認し、通常ケース2 call/記事≈¥0.98/記事の
+ベースラインを算出。(3) 設計書§4-4(Stage 2入力=記事全文+Ledger全文)
+と§9-1(Stage 2費用見積りの楽観的縮小入力仮定)の**不整合を発見**し、
+保守側で統一。(4) 実Production run(Meta run_03の`raw_usage_log.
+jsonl`)を本委任で独立に再計算し合計¥4.13(既存報告¥4.213と概ね一致)、
+call単位で¥0.04〜¥1.29の幅があることを確認。(5) 3シナリオ(楽観/中央/
+悲観)で「純増分=新方式総コスト−現行方式総コスト」を計算した結果、
+楽観・中央シナリオでは**現行よりむしろ安い**(−¥0.47/−¥0.48記事)、
+悲観シナリオでも+¥0.60/記事とCapに十分な余裕。(6) worst case分析で、
+設計§5-3の「同一記事でJA全文Rewrite案Bを2回使わない」制約を守れば
+純増分worst case≈¥2.88/記事(Cap余裕僅か¥0.12)、守らなければ¥6.40/
+記事でCap超過することを特定し、この制約がCap遵守に構造的に必須である
+ことを明記。(7) 段階案α(Prompt改善のみ)〜δ(self-consistency常時)を
+比較し、案γを第一候補として確定。(8) Cap内で困難な要素(Stage 2実
+単価の不確実性が最大要因、worst case余裕が僅少)を中間報告として明記。
+あわせて§8-4(Stage別コスト計測項目)・§9-3(Trial harness usage記録
+要件)・§10リスク#9/#10・§11 Opus論点8・§12-1(Checkpoint A提示項目)
+を追加した。既存節は削除せず追記のみ。
+
+- **Opus**: 未発火(model_id probe結果によりOpus 5.5未確認のため、
+  ユーザー確認待ちで本委任ではOpus L2レビューを実行しなかった)。
+- **費用**: ¥0(API呼び出しなし、既存artifact[Meta run_03 raw_usage_
+  log.jsonl]の独立再計算のみ)。本Phase累計¥0/総枠¥400、残¥400。
+- **Status**: `DESIGN_READY_FOR_OPUS_L2`(model_id確認待ち、変わらず)。
+- **ユーザー判断11該当**: 本委任(設計書修正+probe記録)自体はAPI呼び
+  出しなし・実装なし・Production変更なしのため非該当。既存Checkpoint A
+  項目(§12)にコストCap関連6項目(§12-1)を追加した。
+- **根拠**: ユーザー明示決定(委任文2026-09-30)。設計内容の根拠:
+  `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§C-2〜C-5、`FAMILY-X-
+  REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`(Meta run_03費用実測)、
+  `er019_output/family_x_refresh_e2e_01/meta/run_03/raw_usage_log.
+  jsonl`、`er012_e_family_entertainment_two_level_runner_01.py`
+  (L381-388/L477-484)、`.claude/agents/opus-consultant.md`(probe
+  対象、変更なし)。詳細: `docs/pm/delegation_log/2026-09-30_OPEN-233-
+  SELF-RECOVERY-TRIAL-01_02.md`、`docs/pm/design_open233_self_
+  recovery_flow_01.md`§8-4/§9-3/§10/§11/§12-1/§13、`OPEN-233-
+  SELF-RECOVERY-TRIAL-01_REPORT.md`§1/§2、`docs/pm/opus_l2_review_
+  open233_checker_trial_01.md`(冒頭注記)。

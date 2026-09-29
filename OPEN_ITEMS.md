@@ -445,7 +445,19 @@ Evidence付きで分類し、Production Checkerモデル(gpt-5.6-luna)が前Phas
 Trial(gpt-6-luna)と異なる事実を新規確認。Status=`DESIGN_READY_FOR_
 OPUS_L2`。詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§1、
 `DECISION_LOG.md`2026-09-30`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_01
-エントリ。 | `DESIGN_READY_FOR_OPUS_L2`(新Phase設計中、前Phase分は
+エントリ。**2026-09-30追記2(委任_02)**: ユーザーが量産時の継続コスト
+上限を最大+¥3/記事(できる限り安く達成が大前提)と追加指示。設計書へ
+§13「コストモデルと+¥3/記事 Cap」を新設し、現行Checkerベースライン
+(通常ケース2 call/記事≈¥0.98)・Stage別unit cost・3シナリオでの純増分
+試算(楽観/中央=節約、悲観=+¥0.60/記事)・worst case(design§5-3制約
+遵守で¥2.88/記事、Cap余裕僅か¥0.12)を算出し、案γ(Stage1不変+BLOCK時
+のみStage2+必要時のみRewrite)を第一候補とした。あわせてOpus model_id
+probeを実施し、`opus-consultant`エイリアスの実体は「Opus 5」
+(`claude-opus-5[1m]`)でOpus 5.5ではないと判明、Opus L2レビューは
+ユーザーのmodel_id指定確認待ちで未実施のまま。Status変わらず
+`DESIGN_READY_FOR_OPUS_L2`(コストCap+¥3/記事、Opus model_id確認待ち)。
+詳細: `DECISION_LOG.md`2026-09-30`OPEN-233-SELF-RECOVERY-TRIAL-01`
+委任_02エントリ、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§2。 | `DESIGN_READY_FOR_OPUS_L2`(新Phase設計中、前Phase分は
 `USER_DECISION_REQUIRED`のまま保留) | `er003_v1_en_direct_vfl_01_generate.py`(`DEVIATION_PROMPT_TEMPLATE`等、無変更)、`LEDGER-DEVIATION-CHECK-REDESIGN-INVESTIGATION-01_REPORT.md`、`LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`、`docs/pm/design_checker_redesign_v02_01.md` | Blocking(再開)。ja_source MAJOR発生時の暫定「案B」運用は継続するが、Checker本体の過剰品質・非決定性・changed_actor等の検出弱点の再設計は再開されたACTIVEな課題となった | 再設計案(`OPEN-233-CHECKER-REDESIGN-V02-01`)のレビュー・採否をFable/ユーザーが判断する。詳細: `DECISION_LOG.md`2026-09-29`GPT6-MODEL-COMPARISON-TRIAL-01`委任_04エントリ、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
 | OPEN-234 | **Family X音声生成runner(`er019_family_x_audio_production_runner_01.py`)の`source_dir`導出が`--slug`/`--run`のみに依存し、JA/writer段の`--out-dir`(例: `er019_output/family_x_refresh_e2e_01/{slug}/{run}`)と一致しない場合、Audio段(scaffold/tts/assemble/player)が入力を見つけられない(2026-09-29`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`Meta run_03等で発見)**。`source_dir`は`er019_output/{slug}/{run}`固定で導出され、外部pathを直接指定するCLI引数が存在しない。Hormuz(run_01〜03)・Meta run_03いずれも、該当ディレクトリ一式を`er019_output/{slug}/{run}`へ手動コピーすることで回避した(新規APIコール無し、コード変更なし)。**2026-09-29追記(`GPT6-MODEL-COMPARISON-TRIAL-01`委任_01、ユーザー決定)**: 本件の恒久対応(CLI引数追加等)検討はGPT-6 Trial後に対応する(deferred/non-blocking、コード変更なし)。 | `OPEN (non-blocking for wiring / blocking for unattended量産)` | `er019_family_x_audio_production_runner_01.py`(`source_dir`導出箇所) | Non-blocking(手動コピー運用で現状のE2E・Production配線自体はGate 3 PASS済み)だが、無人量産運用(手動コピーを挟まない自動連続実行)を行う場合はblocking(コピー漏れで誤った入力を参照するリスク) | 恒久対応(CLI引数追加等)の要否・実装方針をユーザーが判断する。詳細: `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03(Audio段実行結果)、`CURRENT_SPEC.md`「Family X(Entertainment News)音声構造」節「運用上の既知制約」。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
 
