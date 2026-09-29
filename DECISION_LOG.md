@@ -13484,3 +13484,80 @@ Checkpoint Aで報告予定)。費用¥0(API呼び出しなし)。本Phase累計
 OPEN-233-SELF-RECOVERY-TRIAL-01_03.md`、`docs/pm/design_open233_self_
 recovery_flow_01.md`§3-1/§4-4/§7/§11/§12/§13/§14(新設)、
 `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§3。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Opus L2レビュー#1逐語保存+Phase1前
+設計是正+Phase1計画改訂(委任_04、2026-09-30)
+
+**runtime evidence**: ユーザー指定`claude-opus-5-5`はClaude Code
+2.1.272未対応で400(request id`req_011CfYW9VqvuUcvEUyfZu1Bs`、要
+2.1.280+)。起動時オーバーライドで`claude-opus-5[1m]`(Opus 5、cutoff
+2026-05)にて実行。`.claude/agents/opus-consultant.md`の指定は
+`claude-opus-5-5`のまま維持(クライアント更新後に有効)。
+
+**逐語保存**: Opus L2批判的設計レビュー#1の全文を`docs/pm/opus_l2_
+review_open233_self_recovery_01.md`へ一字も変えず保存(冒頭ヘッダの
+みfableが付与)。
+
+**Fable判定(採用/不採用/ユーザー判断送り)**: 論点1〜8・総合A〜Dの
+指摘を検討し、以下のとおり判定した(詳細は設計書新設§15)。
+
+- **採用(16件、A1〜A16)**: (A1)Recheckに`prior_issues`を渡し継続
+  条件=`LEDGER_COMPLIANT`かつ`all_prior_issues_resolved==True`。
+  (A2)precheck由来検出をfloor扱い(`detected_by`、Stage2降格不可、
+  FP率次第で弱め分岐)。(A3)precheck FP率¥0測定をPhase1最優先へ。
+  (A4)origin別Rewrite mechanism選択、paired local rewrite(JA側局所
+  編集、§5-4新設)をPhase1第一級項目へ繰り上げ、EN局所Rewriteは
+  origin=translation限定。(A5)cycle2発火条件に「cycle1と異なるclaim/
+  fact_id」追加。(A6)§13-6を式化、二重計上精査、JA-origin比率実測
+  80%(n=5)へ改訂、BLOCK率はV4A実測後に置換。(A7)Stage4条件表をコード
+  上の例外型と1対1対応(symbol gate/`all_prior_issues_resolved`/予算
+  abort/Stage1 API失敗等)。(A8)Stage2入力からexplanation/severity/
+  10 flagsを除外(anchoring対策)、ヘッジ語regexで段落範囲を決定論的に
+  拡張。(A9)Stage2をinstance単位batch化(主案)、per-claim比較対照。
+  (A10)ACCEPTABLE定義を「Ledgerに無い新規の」と明文化、
+  changed_certaintyをfloorへ追加。(A11)`rewrite_kind`
+  (delete/replace_with_ledger_value/narrow_scope)追加、機械検証追加、
+  guard抵触時の段階的フォールバック。(A12)prompt caching受理可否・
+  削減率をPhase1で実測。(A13)Escalation0件内訳等の測定項目を必須化。
+  (A14)V4A採用根拠(単一fixture・n=5)が弱いためBLOCK率実測(negative
+  候補7記事)+changed_actor n=15追加実測をPhase1へ追加し、Stage1
+  variant最終確定を実測後に延期(V0+precheckを比較対照として含め、
+  実測前にV0へ戻さない)。(A15)モデル非依存の構造的結論を優先確定する
+  方針を明記(Stage2評価はV4A由来レコードに限定)。(A16)Production化後
+  の継続監視策(shadow sampling等)をPhase2設計項目として記録(採否は
+  ユーザー)。
+- **不採用(3件、理由付き)**: cycle上限を1へ下げる案(実観測パターン
+  [Hormuz run_03型]にcycle2が必要でKPIを確定的に落とすため)。Stage2
+  入力のLedger部分化(B3型の見逃しリスク、fail-closed原則に反する
+  ため)。Stage2/Stage3の統合・3段階化(検証可能性の観点で分離を維持、
+  統合すると期待コストも悪化しうるため)。
+- **ユーザー判断事項として提示(3件、設計書§15-3/§12へ追記)**:
+  (1) KPI判定方法の再定義(記事単位0件→事象単位推定によるEscalation率
+  の信頼区間上限、条件1)。(2) Cap定義の解釈(LLMコストのみかTTS等
+  downstream込みか、条件1)。(3) QUALITY通過(現行STOPしていたB2型を
+  人間を通さず公開すること)がSafety緩和[条件2]に該当するか。**設計書
+  は現行KPI文言のまま進め、事象単位推定・Escalation0件内訳を追加報告
+  項目として併記する(Fable/Claudeが独断でKPIを変更していない)**。
+
+**設計書改訂**: A1〜A16を該当節へ反映(§3-0/§3-1/§3-3/§3-5/§4-2/
+§4-3/§4-4/§4-5/§5-1/§5-2/§5-3/§6-1/§8-1/§9-1/§11-8/§12/§12-1/§13-6/
+§14-3、各所に「[委任_04改訂]」印)。新設§5-4(paired local rewrite
+設計)、§9-0(Phase1実行前チェックリスト)、§15(Opus対応表)。
+
+**Phase1実測項目の順序改訂**: ①precheck FP率実測(¥0)→②hormuz
+n=20見逃し3attempt補完実験(¥0〜¥2)→③V4A BLOCK率増分+
+changed_actor n=15追加実測(¥8〜9、Stage1 variant最終確定はここで
+実施)→④Stage2実単価/batch化/prompt caching実測(数円〜¥10)→
+⑤Stage3型別Rewrite成功率実測(¥8〜22)→⑥統合dry-run。Phase1合計
+概算¥18〜45(個別Guardrail上限合計約¥70)。
+
+**該当有無(委任_04)**: 上記3件をユーザー判断事項として提示(独断で
+決定していない)。それ以外はGuardrail内の設計是正であり非該当。
+
+費用¥0(API呼び出しなし、Opus使用1回のみ)。本Phase累計¥0/総枠¥400、
+残¥400。`git diff --stat`でProductionファイル(`er003_*`/`er006_*`/
+`er012_*`/`er019_*`)・`.claude/agents/`に差分なし。Status=
+`PHASE1_READY`。詳細: `docs/pm/opus_l2_review_open233_self_recovery_
+01.md`(全文)、`docs/pm/design_open233_self_recovery_flow_01.md`§15、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§4、`docs/pm/delegation_
+log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_04.md`。

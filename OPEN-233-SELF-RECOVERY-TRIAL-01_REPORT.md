@@ -254,3 +254,77 @@ opus_l2_review_open233_checker_trial_01.md`(論点1〜5全文)、
 checker_trial_variant_01.py`(V4A Prompt差分ブロック実装確認)、
 `er003_v1_en_direct_vfl_01_generate.py`L495-540(現行Production
 Prompt判定ルール・許容規定確認)。
+
+## §4. Opus L2 #1と設計是正(委任_04、2026-09-30、逐語保存+Phase 1前
+設計是正+Phase 1計画改訂)
+
+**Status**: `PHASE1_READY`(Opus L2レビュー#1完了・所見反映済み)。
+API呼び出しなし・¥0・Production非接続・実装なし。
+
+**runtime evidence**: ユーザー指定`claude-opus-5-5`はClaude Code
+2.1.272未対応で400(request id `req_011CfYW9VqvuUcvEUyfZu1Bs`、model
+sent: `claude-opus-5-5`、要2.1.280+)。起動時オーバーライドで
+`claude-opus-5[1m]`(Opus 5、cutoff 2026-05)にて実行した。
+`.claude/agents/opus-consultant.md`の指定は`claude-opus-5-5`のまま
+維持する(クライアント更新後に有効)。Opus使用1回。
+
+**作業A(逐語保存)**: `docs/pm/opus_l2_review_open233_self_recovery_
+01.md`を新規作成し、Opus L2批判的設計レビュー#1の全文を一字も変えず
+保存(冒頭ヘッダのみ付与)。
+
+**作業B(Fable判定・採否)**: 論点1〜8・総合A〜Dの指摘に対し、採用16件
+(A1〜A16)・不採用3件(cycle上限1化/Stage2入力Ledger部分化/Stage2-3
+統合)・ユーザー判断送り3件(KPI判定方法の再定義/Cap定義解釈/QUALITY
+通過のSafety緩和該当性)に分類した。詳細は設計書新設§15(採否・反映節
+対応表)。
+
+**作業C(設計書改訂)**: A1〜A16を該当節へ反映(§3-0/§3-1/§3-3/§3-5/
+§4-2/§4-3/§4-4/§4-5/§5-1/§5-2/§5-3/§6-1/§8-1/§9-0[新設]/§9-1[実測
+順序改訂]/§11-8/§12/§12-1/§13-6/§14-3、各箇所に「[委任_04改訂]」印)。
+新設§5-4(paired local rewrite設計、JA側)、新設§15(Opus対応表)。
+
+**paired local rewrite設計要点**: `origin=ja_source`のclaimに対し、
+該当JA 1文±1文と対応EN文を同一`rewrite_hint`で局所編集し、JA Fact
+Check 1 call+EN Deviation Check 1 call(既存Recheckに統合)で確認する
+(概算¥1.0〜1.5/cycle、旧案Bの1/3以下)。旧案B(JA全文差し戻し)は
+guard抵触時のフォールバック(記事あたり1回)に格下げ。実装リスク:
+JA本文局所編集関数が新規実装であり、文体・記号・段落数Gateの局所編集
+全文への再適用可否、JA/EN意味整合の機械検証手段の不在が未検証。
+
+**Phase 1実測項目の順序**(§9-1改訂): ①precheck FP率実測(¥0、28件
+regex適用)→②hormuz n=20見逃し3attempt補完実験(¥0〜¥2)→③V4-A
+BLOCK率増分+changed_actor n=15追加実測(¥8〜9、Stage1 variant最終
+確定はここで実施)→④Stage2実単価/batch化/prompt caching実測(数円〜
+¥10)→⑤Stage3型別Rewrite成功率実測(¥8〜22)→⑥統合dry-run。Phase 1
+合計概算¥18〜45(旧見積¥15〜35から、実測項目追加により微増)。個別
+Guardrail上限合計約¥70。
+
+**再計算後のコスト式と暫定値**: §13-6を`worst_case = [n_claim×
+c_stage2 + c_ja_full](cycle1) + [n_claim×c_stage2 + n_claim×c_en_local
++ c_recheck_en](cycle2) + Stage1固定費増分¥0.294 − 現行方式費用`の式へ
+書き換えた。`n_claim=1`で¥3.0〜4.0程度(旧¥3.96はこのレンジ内)、
+`n_claim=4`(B4実例上限)で¥4.4〜5.4程度まで悪化し得る。**単一数値での
+Cap判定はしない**。JA-origin比率は仮置き40%→実測80%(n=5)へ改訂。
+BLOCK率(15/35/60%)はV4A実測(§9-1③)後に置換する。
+
+**USER_DECISION_REQUIRED該当**: 3件をユーザー判断事項として提示(設計
+書§12/§15-3): (1) KPI判定方法の再定義(記事単位0件→事象単位推定に
+よるEscalation率の信頼区間上限、条件1)、(2) Cap定義の解釈(LLMコスト
+のみかdownstream込みか、条件1)、(3) QUALITY通過(現行STOPしていた
+B2型を人間を通さず公開すること)がSafety緩和[条件2]に該当するか。
+**設計書は現行KPI文言のまま進め、事象単位推定・Escalation0件内訳を
+追加報告項目として併記する**(独断で変更していない)。
+
+**費用**: 今回¥0(API呼び出しなし、Opus L2レビュー#1のみ)。本Phase
+累計¥0/総枠¥400、残¥400。
+
+**Production/Dangling Reference確認**: `git diff --stat`でProduction
+ファイル(`er003_*`/`er006_*`/`er012_*`/`er019_*`)に差分なし。
+`.claude/agents/`ディレクトリに差分なし(opus-consultant.mdは委任_03で
+変更済み、本委任では変更していない)。
+
+Evidence: `docs/pm/opus_l2_review_open233_self_recovery_01.md`(新規、
+全文)、`docs/pm/design_open233_self_recovery_flow_01.md`(§3-0/§3-1/
+§3-3/§3-5/§4-2/§4-3/§4-4/§4-5/§5-1/§5-2/§5-3/§5-4[新設]/§6-1/§8-1/
+§9-0[新設]/§9-1/§11-8/§12/§12-1/§13-6/§14-3/§15[新設]追記)。入力:
+委任文全文(2026-09-30)、Opus L2レビュー#1全文。
