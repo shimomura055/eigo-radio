@@ -357,3 +357,27 @@ Checker中央値¥0.9024(§5引用)を基準に、9(ER-009-N1)+9(A/B群、Meta�
 3. `gpt-6-sol`は費用上限の都合上probe未実施(§1-3)。
 
 **Phase B(大量実行)は本Phase Aでは開始していない**(委任範囲外)。
+
+---
+
+## 9. Phase B実行記録(委任_02、2026-09-29)
+
+harness: `er050_gpt6_checker_comparison_trial_01.py`(+mock test
+`er050_gpt6_checker_comparison_trial_01_test_01.py`、11件PASS)。`vfl01.run_
+deviation_check()`をimportし`model`引数のみ差し替え。A/B/Meta群fixtureは既存audit
+json保存済み`prompt`からのテンプレート逆展開方式で入力復元(byte単位一致を全件検証)。
+
+- Sol probe(1 call): SUCCESS、比較対象へは追加せず(詳細REPORT§Phase B-1)。
+- Step1(ER-009-N1 9種+A2A3+A4+A5、新旧各1回、計24 call、累計参考換算¥10.85、
+  error率0%): `er009_changed_actor`でgpt-6-luna・gpt-5.6-luna(baseline)双方が
+  同一n=1実行でMISS(baseline側はseverity=MINORのまま出力、post-hoc validationは
+  MAJOR→MINOR降格のみでMINOR→MAJOR補正はしない設計のため非対称性が可視化)。
+  ユーザー決定の「gpt-6-lunaに重大見逃しがあればSTOP」に該当し、**Step2/Step3は
+  実行せずSTOP**(詳細REPORT§Phase B-3〜B-5)。
+- Trial終了Status候補: `USER_DECISION_REQUIRED`(baseline側も同時MISSのため
+  gpt-6-luna固有の後退か既存Checkerの非決定性かの切り分けができておらず、続行
+  可否はProduct判断が必要)。
+
+詳細な実行データ(fixture別raw_parsed・usage・elapsed_seconds)は
+`er050_output/gpt6_checker_comparison_trial_01/`配下に保存(`summary_step1.json`
+および`step1/<fixture_id>/<model>/run_1.json`)。

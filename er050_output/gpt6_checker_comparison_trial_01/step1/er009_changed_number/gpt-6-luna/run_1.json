@@ -1,0 +1,58 @@
+{
+  "fixture_id": "er009_changed_number",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "error": null,
+  "prompt_sha256": "787007873a6a5e4938c406f4781069be5f459da06e126da9994f86a7bb2e5290",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0ca6b7c6657e0349006abb7a158b6887d08168ba7f0ac1c553",
+  "usage": {
+    "input_tokens": 5020,
+    "cached_input_tokens": 0,
+    "output_tokens": 505,
+    "reasoning_tokens": 328
+  },
+  "elapsed_seconds": 5.879,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis.",
+        "issue": "記事は取引件数を「3,000万件超」としているが、Ledgerが保証するのは「1,300万件超」。件数が変更されている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Ledger記載の取引件数と異なる数値を示しているため、changed_numberに該当する。"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis.",
+        "issue": "記事は取引件数を「3,000万件超」としているが、Ledgerが保証するのは「1,300万件超」。件数が変更されている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Ledger記載の取引件数と異なる数値を示しているため、changed_numberに該当する。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

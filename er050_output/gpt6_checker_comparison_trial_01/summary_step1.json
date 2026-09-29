@@ -1,0 +1,943 @@
+{
+  "step": "step1",
+  "models": [
+    "gpt-5.6-luna",
+    "gpt-6-luna"
+  ],
+  "repeat": 1,
+  "fixtures": [
+    {
+      "id": "er009_changed_number",
+      "gold_note": "expected MAJOR with flag changed_number=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis.",
+                "issue": "Ledgerでは対象取引は「1,300万件を超える」とされており、「3,000万件を超える」という件数はLedgerと異なる。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": true,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "F-002のサンプル数を「1,300万件超」から「3,000万件超」へ変更しているため、changed_numberおよびchanged_factに該当する。後半の「高い推奨チップ率がより多くの金額につながった」はF-004の範囲内。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5020,
+              "cached_input_tokens": 0,
+              "output_tokens": 531,
+              "reasoning_tokens": 307
+            },
+            "ref_cost_jpy": 0.2626,
+            "elapsed_seconds": 6.121
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis.",
+                "issue": "記事は取引件数を「3,000万件超」としているが、Ledgerが保証するのは「1,300万件超」。件数が変更されている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": true,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "Ledger記載の取引件数と異なる数値を示しているため、changed_numberに該当する。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5020,
+              "cached_input_tokens": 0,
+              "output_tokens": 505,
+              "reasoning_tokens": 328
+            },
+            "ref_cost_jpy": 0.2576,
+            "elapsed_seconds": 5.879
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_actor",
+      "gold_note": "expected MAJOR with flag changed_actor=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_COMPLIANT",
+            "deviations": [
+              {
+                "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "issue": "Ledgerは研究結果と対象を支持しているが、研究主体をHarvard Business Schoolのチームとする所属情報は保証していない。",
+                "severity": "MINOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": true,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "13百万件超、ニューヨーク市タクシー、より高い推奨率がより多いチップにつながるという内容はLedgerと整合する。一方、Harvard Business School所属という主体・肩書きがLedgerにないため、未保証の追加主張としてMINOR。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5025,
+              "cached_input_tokens": 0,
+              "output_tokens": 1263,
+              "reasoning_tokens": 1034
+            },
+            "ref_cost_jpy": 0.4033,
+            "elapsed_seconds": 11.088
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_COMPLIANT",
+            "deviations": [
+              {
+                "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "issue": "研究をHarvard Business Schoolのチームに帰属させていますが、Ledgerは研究者としてKareem HaggagとGiovanni Paciを挙げるのみで、Harvard Business Schoolとの所属関係を確認していません。研究件数と結果の主張はLedgerの範囲内です。",
+                "severity": "MINOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Harvard Business Schoolとの所属関係はLedgerにない追加主張です。研究結果自体はLedgerとほぼ同じ意味を保っています。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5025,
+              "cached_input_tokens": 0,
+              "output_tokens": 1470,
+              "reasoning_tokens": 1236
+            },
+            "ref_cost_jpy": 0.443,
+            "elapsed_seconds": 14.863
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_scope",
+      "gold_note": "expected MAJOR with flag changed_scope=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+                "issue": "Ledgerは、ニューヨーク市タクシーでは高い推奨チップ率がより多いチップにつながったとする研究結果を保証しているが、全国のレストランで同じ効果が直接確認されたとは示していない。レストランについては、政策ブリーフによる解釈や記述はあるものの、推奨率の上昇が顧客の支払額を因果的に増やした実証結果はLedgerにない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "タクシー研究の結果を全国のレストランへ拡張し、Ledgerにない直接確認と因果効果を断定しているため。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5030,
+              "cached_input_tokens": 0,
+              "output_tokens": 782,
+              "reasoning_tokens": 498
+            },
+            "ref_cost_jpy": 0.3111,
+            "elapsed_seconds": 7.187
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+                "issue": "タクシー研究の結果が、全国のレストランでも直接確認されたと主張している。Ledgerには、レストランの画面で高い推奨率がチップ額を増やすという因果的な確認はない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "changed_scope・changed_causality・changed_certainty・unsupported_new_claim: NYCタクシーでの研究結果を全国のレストランに広げ、レストラン画面がチップ増加を引き起こすと断定している。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5030,
+              "cached_input_tokens": 0,
+              "output_tokens": 1002,
+              "reasoning_tokens": 755
+            },
+            "ref_cost_jpy": 0.3533,
+            "elapsed_seconds": 10.112
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_causality",
+      "gold_note": "expected MAJOR with flag changed_causality=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+                "issue": "チップ率が1970年代初頭から1990年代後半に上昇したという数値・時期の記述はF-006と一致するが、その上昇がデジタルチップ画面の導入によって直接引き起こされたと因果関係を断定している。Ledgerはこの上昇を記述的傾向として扱い、因果関係を示す証拠を保証していない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "F-006の記述的な歴史的比較を、Ledgerにない『デジタルチップ画面の導入が直接の原因だった』という新たな因果的事実へ変更している。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5033,
+              "cached_input_tokens": 0,
+              "output_tokens": 806,
+              "reasoning_tokens": 516
+            },
+            "ref_cost_jpy": 0.3158,
+            "elapsed_seconds": 7.682
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+                "issue": "Ledgerはチップ慣行の上昇を記述的な歴史的傾向として示し、因果関係を証明するものではないとしている。デジタル画面の導入がその上昇を直接引き起こしたという主張はLedgerにない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "歴史的傾向を「デジタル画面の導入が直接引き起こした」と因果関係として断定しているため、因果性・確実性を変更し、Ledgerにない因果主張を追加している。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5033,
+              "cached_input_tokens": 0,
+              "output_tokens": 1052,
+              "reasoning_tokens": 749
+            },
+            "ref_cost_jpy": 0.363,
+            "elapsed_seconds": 11.026
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_certainty",
+      "gold_note": "expected MAJOR with flag changed_certainty=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+                "issue": "Ledgerは、デジタル画面による社会的圧力を著者が「guilt tipping」と表現して論じていること、また特定条件下で高いデフォルト表示がチップ額やゼロ選択に影響し得ることを示すにとどまる。すべての顧客に生じることや、疑いなく証明済みであることは保証していない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "「every customer」はLedgerの対象範囲を超える一般化であり、「cause」「proven beyond doubt」は著者の議論・限定的な因果結果を全面的かつ確実な因果事実へ強めている。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5010,
+              "cached_input_tokens": 0,
+              "output_tokens": 785,
+              "reasoning_tokens": 516
+            },
+            "ref_cost_jpy": 0.311,
+            "elapsed_seconds": 8.014
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+                "issue": "記事は、チップ画面が罪悪感によるチップを引き起こすことが疑いなく証明され、画面を見た全員に起きると断定している。Ledgerは社会的圧力を著者の議論として記し、調査結果も自己申告であり、因果効果や全員への該当を示していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "F-008の議論とF-012の自己申告を、全顧客に生じるとする普遍的かつ因果的な確定事実に拡張しているため。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5010,
+              "cached_input_tokens": 0,
+              "output_tokens": 767,
+              "reasoning_tokens": 516
+            },
+            "ref_cost_jpy": 0.3076,
+            "elapsed_seconds": 8.368
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_negation",
+      "gold_note": "expected MAJOR with flag changed_negation=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+                "issue": "LedgerのF-004は、より高い推奨チップ率を見た乗客が実際により多くチップを残し、表示割合がアンカーになる因果効果を示したと記載している。記事はこの結果を否定し、効果がないと反転させている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": true,
+                "changed_comparison": true,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "「より多く残した」というLedgerの結果を「より多く残さなかった／効果がなかった」と反転させているため、事実・因果効果・否定・比較方向が変更されている。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5019,
+              "cached_input_tokens": 0,
+              "output_tokens": 598,
+              "reasoning_tokens": 349
+            },
+            "ref_cost_jpy": 0.2754,
+            "elapsed_seconds": 5.966
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+                "issue": "Ledgerでは、より高い推奨チップ率を見た乗客は実際により多くチップを残したと報告されている。記事はその結果を否定し、効果がなかったと述べている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": true,
+                "changed_comparison": true,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "Ledgerが報告する「より多くチップを残した」という結果と、その効果の存在を否定しているため、事実・因果効果・否定・比較の方向が変わっている。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5019,
+              "cached_input_tokens": 0,
+              "output_tokens": 495,
+              "reasoning_tokens": 268
+            },
+            "ref_cost_jpy": 0.2556,
+            "elapsed_seconds": 5.647
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_comparison",
+      "gold_note": "expected MAJOR with flag changed_comparison=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+                "issue": "Ledgerでは、より高い推奨チップ率のメニューを見た乗客のほうが、実際により多くチップを残したとされている。記事は比較の方向を逆転させている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": true,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "F-004と反対の具体的事実を主張しており、より高い率とより低い率の比較方向が反転している。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5017,
+              "cached_input_tokens": 0,
+              "output_tokens": 507,
+              "reasoning_tokens": 297
+            },
+            "ref_cost_jpy": 0.2579,
+            "elapsed_seconds": 5.425
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+                "issue": "記事は、低い推奨率を見た乗客のほうが多くチップを残したと述べていますが、Ledgerの研究結果は逆で、より高い推奨率のメニューを見た乗客がより多く残しました。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": true,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "チップ額の比較方向がLedgerと反対であり、具体的な研究結果を逆転させています。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5017,
+              "cached_input_tokens": 0,
+              "output_tokens": 612,
+              "reasoning_tokens": 405
+            },
+            "ref_cost_jpy": 0.278,
+            "elapsed_seconds": 6.587
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_changed_time",
+      "gold_note": "expected MAJOR with flag changed_time=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+                "issue": "研究の発表年を2019年としているが、Ledgerの出典情報では2014年。さらに、Ledgerはニューヨーク市タクシーのクレジットカード利用者を対象としているのに対し、記事は「taxi passengers」として対象を一般化している。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": true,
+                "unsupported_new_claim": false,
+                "explanation": "2019年という時期はLedgerの2014年と異なる。対象もクレジットカード利用者からタクシー乗客全般へ広がっている。一方、高い推奨チップ率がより多いチップにつながったという因果方向はF-004と整合する。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5024,
+              "cached_input_tokens": 0,
+              "output_tokens": 782,
+              "reasoning_tokens": 516
+            },
+            "ref_cost_jpy": 0.3109,
+            "elapsed_seconds": 7.445
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+                "issue": "研究の発表年がLedgerの2014年と異なり、2019年とされています。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": true,
+                "unsupported_new_claim": false,
+                "explanation": "Ledgerは研究を2014年発表としているため、2019年という記述は時期を変更し、具体的事実とも矛盾します。チップ額が増えたという因果的な主張はLedgerの範囲内です。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5024,
+              "cached_input_tokens": 0,
+              "output_tokens": 468,
+              "reasoning_tokens": 260
+            },
+            "ref_cost_jpy": 0.2506,
+            "elapsed_seconds": 5.181
+          }
+        ]
+      }
+    },
+    {
+      "id": "er009_unsupported_new_claim",
+      "gold_note": "expected MAJOR with flag unsupported_new_claim=true",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "同じニューヨーク市のタクシー研究者は、高い推奨率を表示された場合、男性乗客が女性乗客の2倍のチップを払ったことも発見した。",
+                "issue": "Ledgerには、性別によるチップ額の差や、男性が女性の2倍払ったという結果は記載されていない。高い推奨率でチップ額が増えたという事実はあるが、性別別の差やその数値までは保証されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": true,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerにない性別比較という具体的な新規事実を追加し、「2倍」という数値も未保証である。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5016,
+              "cached_input_tokens": 0,
+              "output_tokens": 1157,
+              "reasoning_tokens": 916
+            },
+            "ref_cost_jpy": 0.3827,
+            "elapsed_seconds": 10.648
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+                "issue": "男性乗客と女性乗客のチップ額の差、および「2倍」という数値はLedgerに記載されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": true,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "性別による比較と「2倍」という数値を新たに主張しており、Ledgerにない具体的事実の追加に当たる。",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5016,
+              "cached_input_tokens": 0,
+              "output_tokens": 703,
+              "reasoning_tokens": 516
+            },
+            "ref_cost_jpy": 0.2955,
+            "elapsed_seconds": 7.205
+          }
+        ]
+      }
+    },
+    {
+      "id": "A2A3",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx3、origin=ja_source中心)。A2/A3は同一fileの1回実行(design書ではA2/A3の2項目表記だが実体は1 article/1 runのため本harnessでは1 fixtureとして扱う)。",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+                "issue": "記事は貨物を運ぶ側を支払義務者として特定しているが、Ledgerでは徴収主体・支払義務者などの制度設計は示されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": true,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "HF-003が未提示としている支払義務者を、貨物運搬者だと具体化している。",
+                "related_fact_id": "HF-003",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "The dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                "issue": "ホルムズ海峡の危険が、原油を通じてガソリン価格や物流費に波及していると述べているが、Ledgerが保証するのはBrent原油先物や海峡の供給懸念までで、これらの下流価格への波及は確認されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerの対象である原油市場からガソリン価格・物流費へ対象範囲を拡張し、因果的な波及を新たに主張している。",
+                "related_fact_id": "HF-006",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5438,
+              "cached_input_tokens": 0,
+              "output_tokens": 3021,
+              "reasoning_tokens": 2588
+            },
+            "ref_cost_jpy": 0.754,
+            "elapsed_seconds": 25.03
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+                "issue": "支払義務者を貨物を運ぶ側と特定していますが、Ledgerでは徴収主体や支払義務者などの制度設計は示されていません。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "HF-003では支払義務者は未提示です。特定の集団に支払いを求める案として断定しており、対象範囲と確実性を強めた未確認の主張です。",
+                "related_fact_id": "HF-003",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+                "issue": "海峡の危険が原油を介してガソリン価格や物流費に波及すると主張していますが、その因果関係はLedgerで確認されていません。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerは海峡の供給懸念と原油価格の動きを扱っていますが、ガソリン価格や物流費への波及までは保証していません。新たな因果関係を加えています。",
+                "related_fact_id": "HF-006",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5438,
+              "cached_input_tokens": 0,
+              "output_tokens": 4047,
+              "reasoning_tokens": 3624
+            },
+            "ref_cost_jpy": 0.951,
+            "elapsed_seconds": 33.941
+          }
+        ]
+      }
+    },
+    {
+      "id": "A4",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、origin=translation、changed_scope)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                "issue": "人間の契約スタッフがやり取りを完了した相手を「users（ユーザー）」としているが、Ledgerが確認しているのはMuse経由で電話を受ける相手、特に米国内の企業・店舗である。Museの利用者と電話の相手を取り違えている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "MUSE-HC-006の人間スタッフによる一部の電話・やり取りという骨格は保っているが、電話の相手の範囲を企業・店舗等からMuseユーザーへ変更しているため、事実と対象範囲が変わっている。原文の「相手」はこの誤りを明示しておらず、英語記事で新たに生じた。",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5318,
+              "cached_input_tokens": 0,
+              "output_tokens": 4438,
+              "reasoning_tokens": 4142
+            },
+            "ref_cost_jpy": 1.0223,
+            "elapsed_seconds": 37.939
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "“People who thought they were speaking with AI were actually speaking with human staff.”",
+                "issue": "The Ledger supports that contract staff handled some calls and that the test lacked appropriate disclosure, but it does not establish that the people on the calls believed they were speaking with AI. That specific belief is asserted as fact.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The recipients’ belief is not established in the Ledger; the unsupported claim is already present in the Japanese source.",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "“One helper meant one more person handling private data.”",
+                "issue": "This presents contract workers handling private information as a definite consequence, whereas the Ledger records a concern that sensitive information might be shared with them.",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "It turns a reported possibility into a definite statement; the same certainty shift appears in the Japanese source.",
+                "related_fact_id": "MUSE-HC-010",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5318,
+              "cached_input_tokens": 0,
+              "output_tokens": 2926,
+              "reasoning_tokens": 2588
+            },
+            "ref_cost_jpy": 0.732,
+            "elapsed_seconds": 23.954
+          }
+        ]
+      }
+    },
+    {
+      "id": "A5",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、changed_fact、related_fact_id=MUSE-HC-012、'put back the feature'のrollback反転。design書記載パスmust_fix_retry_result.jsonはretry後COMPLIANT結果のため代替不可、本ファイルが検出時点の原本)",
+      "runs": {
+        "gpt-5.6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+                "issue": "Ledgerでは、人間コンシェルジュ機能を当面ロールバックしたとされている。記事の “put back the feature” は、人間が電話を担当する機能を再び有効化したという逆の意味に読める。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "人間コンシェルジュ機能のロールバックを、機能の再導入・再有効化に変えている。",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "translation",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5415,
+              "cached_input_tokens": 0,
+              "output_tokens": 4874,
+              "reasoning_tokens": 4660
+            },
+            "ref_cost_jpy": 1.1091,
+            "elapsed_seconds": 42.057
+          }
+        ],
+        "gpt-6-luna": [
+          {
+            "overall_status": "LEDGER_DEVIATION",
+            "deviations": [
+              {
+                "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+                "issue": "「put back」は人間が電話を担当する機能を再び有効にしたという意味になりますが、Ledgerではその機能を当面ロールバックしたとされています。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": true,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "ロールバックを再導入へと逆転させています（changed_fact、changed_negation）。日本語原文の「元に戻しました」はロールバックの意味で、逸脱は翻訳で生じています。",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "translation",
+                "auto_downgraded": false
+              },
+              {
+                "claim_in_article": "Meta executives admitted that starting the test without a proper explanation was a mistake.",
+                "issue": "Ledgerが特定している発言者はMeta Superintelligence Labs部門の副社長ですが、記事は複数形の「Meta executives」としています。",
+                "severity": "MINOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": true,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "発言者の特定が副社長から複数の幹部へ広がっています（changed_actor）。日本語原文も「Metaの幹部」としているため、逸脱は原文にあります。",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              }
+            ],
+            "usage": {
+              "input_tokens": 5415,
+              "cached_input_tokens": 0,
+              "output_tokens": 2455,
+              "reasoning_tokens": 2050
+            },
+            "ref_cost_jpy": 0.6446,
+            "elapsed_seconds": 21.228
+          }
+        ]
+      }
+    }
+  ],
+  "stopped": false,
+  "stop_reason": null,
+  "cumulative_ref_jpy": 10.8482,
+  "cumulative_calls": 24,
+  "cumulative_errors": 0
+}

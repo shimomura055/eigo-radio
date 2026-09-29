@@ -1,0 +1,58 @@
+{
+  "fixture_id": "er009_unsupported_new_claim",
+  "model": "gpt-5.6-luna",
+  "attempt": 1,
+  "error": null,
+  "prompt_sha256": "b441509406a7b9570c9646c2d561fe8a58d14a8ee6c38f2a262e103ba56b27be",
+  "model_returned": "gpt-5.6-luna",
+  "response_id": "resp_0fd955228c7bed7b006abb7a8e24e887d0a7e52c5e115d464d",
+  "usage": {
+    "input_tokens": 5016,
+    "cached_input_tokens": 0,
+    "output_tokens": 1157,
+    "reasoning_tokens": 916
+  },
+  "elapsed_seconds": 10.648,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "同じニューヨーク市のタクシー研究者は、高い推奨率を表示された場合、男性乗客が女性乗客の2倍のチップを払ったことも発見した。",
+        "issue": "Ledgerには、性別によるチップ額の差や、男性が女性の2倍払ったという結果は記載されていない。高い推奨率でチップ額が増えたという事実はあるが、性別別の差やその数値までは保証されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない性別比較という具体的な新規事実を追加し、「2倍」という数値も未保証である。"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "同じニューヨーク市のタクシー研究者は、高い推奨率を表示された場合、男性乗客が女性乗客の2倍のチップを払ったことも発見した。",
+        "issue": "Ledgerには、性別によるチップ額の差や、男性が女性の2倍払ったという結果は記載されていない。高い推奨率でチップ額が増えたという事実はあるが、性別別の差やその数値までは保証されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない性別比較という具体的な新規事実を追加し、「2倍」という数値も未保証である。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

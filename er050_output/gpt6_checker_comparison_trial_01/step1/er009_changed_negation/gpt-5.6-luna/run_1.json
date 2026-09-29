@@ -1,0 +1,58 @@
+{
+  "fixture_id": "er009_changed_negation",
+  "model": "gpt-5.6-luna",
+  "attempt": 1,
+  "error": null,
+  "prompt_sha256": "23e015bd447d873c862a9cefe42128b36544fc478b82ab14891e861089f48893",
+  "model_returned": "gpt-5.6-luna",
+  "response_id": "resp_0e621e45d09767e8006abb7a69da2887d0930d7531a9c70101",
+  "usage": {
+    "input_tokens": 5019,
+    "cached_input_tokens": 0,
+    "output_tokens": 598,
+    "reasoning_tokens": 349
+  },
+  "elapsed_seconds": 5.966,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "LedgerのF-004は、より高い推奨チップ率を見た乗客が実際により多くチップを残し、表示割合がアンカーになる因果効果を示したと記載している。記事はこの結果を否定し、効果がないと反転させている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "「より多く残した」というLedgerの結果を「より多く残さなかった／効果がなかった」と反転させているため、事実・因果効果・否定・比較方向が変更されている。"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "LedgerのF-004は、より高い推奨チップ率を見た乗客が実際により多くチップを残し、表示割合がアンカーになる因果効果を示したと記載している。記事はこの結果を否定し、効果がないと反転させている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "「より多く残した」というLedgerの結果を「より多く残さなかった／効果がなかった」と反転させているため、事実・因果効果・否定・比較方向が変更されている。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

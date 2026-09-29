@@ -1,0 +1,99 @@
+{
+  "fixture_id": "A5",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "error": null,
+  "prompt_sha256": "54a6b97eec6cb4c4d1789e9e8ea939f35065d86287f15e47b23764d51db4284a",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_00df95e9f6f78fe2006abb7b433ba087d0bf4d7d09c7d2a4f9",
+  "usage": {
+    "input_tokens": 5415,
+    "cached_input_tokens": 0,
+    "output_tokens": 2455,
+    "reasoning_tokens": 2050
+  },
+  "elapsed_seconds": 21.228,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "issue": "「put back」は人間が電話を担当する機能を再び有効にしたという意味になりますが、Ledgerではその機能を当面ロールバックしたとされています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "ロールバックを再導入へと逆転させています（changed_fact、changed_negation）。日本語原文の「元に戻しました」はロールバックの意味で、逸脱は翻訳で生じています。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation"
+      },
+      {
+        "claim_in_article": "Meta executives admitted that starting the test without a proper explanation was a mistake.",
+        "issue": "Ledgerが特定している発言者はMeta Superintelligence Labs部門の副社長ですが、記事は複数形の「Meta executives」としています。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "発言者の特定が副社長から複数の幹部へ広がっています（changed_actor）。日本語原文も「Metaの幹部」としているため、逸脱は原文にあります。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "issue": "「put back」は人間が電話を担当する機能を再び有効にしたという意味になりますが、Ledgerではその機能を当面ロールバックしたとされています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "ロールバックを再導入へと逆転させています（changed_fact、changed_negation）。日本語原文の「元に戻しました」はロールバックの意味で、逸脱は翻訳で生じています。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "Meta executives admitted that starting the test without a proper explanation was a mistake.",
+        "issue": "Ledgerが特定している発言者はMeta Superintelligence Labs部門の副社長ですが、記事は複数形の「Meta executives」としています。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "発言者の特定が副社長から複数の幹部へ広がっています（changed_actor）。日本語原文も「Metaの幹部」としているため、逸脱は原文にあります。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

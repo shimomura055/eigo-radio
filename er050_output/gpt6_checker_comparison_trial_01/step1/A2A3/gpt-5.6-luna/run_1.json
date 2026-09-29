@@ -1,0 +1,99 @@
+{
+  "fixture_id": "A2A3",
+  "model": "gpt-5.6-luna",
+  "attempt": 1,
+  "error": null,
+  "prompt_sha256": "4e708ecbdeb74f96d998f2a8788b17cd841765005c48456c0d6800b3979c5804",
+  "model_returned": "gpt-5.6-luna",
+  "response_id": "resp_01634406e2255378006abb7aa015dc87d0bd46f21a39855c2c",
+  "usage": {
+    "input_tokens": 5438,
+    "cached_input_tokens": 0,
+    "output_tokens": 3021,
+    "reasoning_tokens": 2588
+  },
+  "elapsed_seconds": 25.03,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+        "issue": "記事は貨物を運ぶ側を支払義務者として特定しているが、Ledgerでは徴収主体・支払義務者などの制度設計は示されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "HF-003が未提示としている支払義務者を、貨物運搬者だと具体化している。",
+        "related_fact_id": "HF-003",
+        "origin": "ja_source"
+      },
+      {
+        "claim_in_article": "The dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+        "issue": "ホルムズ海峡の危険が、原油を通じてガソリン価格や物流費に波及していると述べているが、Ledgerが保証するのはBrent原油先物や海峡の供給懸念までで、これらの下流価格への波及は確認されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerの対象である原油市場からガソリン価格・物流費へ対象範囲を拡張し、因果的な波及を新たに主張している。",
+        "related_fact_id": "HF-006",
+        "origin": "ja_source"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+        "issue": "記事は貨物を運ぶ側を支払義務者として特定しているが、Ledgerでは徴収主体・支払義務者などの制度設計は示されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "HF-003が未提示としている支払義務者を、貨物運搬者だと具体化している。",
+        "related_fact_id": "HF-003",
+        "origin": "ja_source",
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "The dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+        "issue": "ホルムズ海峡の危険が、原油を通じてガソリン価格や物流費に波及していると述べているが、Ledgerが保証するのはBrent原油先物や海峡の供給懸念までで、これらの下流価格への波及は確認されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerの対象である原油市場からガソリン価格・物流費へ対象範囲を拡張し、因果的な波及を新たに主張している。",
+        "related_fact_id": "HF-006",
+        "origin": "ja_source",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}
