@@ -288,6 +288,21 @@ def step3_fixtures() -> list:
 
 
 # ------------------------------------------------------------
+# 限定実行モード(委任_03): --fixture <id[,id2,...]> で特定fixtureのみに
+# 絞り込む。step1/2の通常フル実行(既存run_1.json等)を上書きしないよう、
+# main()側でstep_name(保存先ディレクトリ)をfixture絞り込み時のみ
+# 別名(例: step1_er009_changed_actor_n5)へ変更する。
+# ------------------------------------------------------------
+def filter_fixtures_by_id(fixtures: list, fixture_ids_csv: str) -> list:
+    want = [x.strip() for x in fixture_ids_csv.split(",") if x.strip()]
+    by_id = {f["id"]: f for f in fixtures}
+    missing = [w for w in want if w not in by_id]
+    if missing:
+        raise ValueError(f"指定fixture idが見つかりません: {missing}(存在するid: {sorted(by_id.keys())})")
+    return [by_id[w] for w in want]
+
+
+# ------------------------------------------------------------
 # 費用Guardrail
 # ------------------------------------------------------------
 class BudgetExceeded(RuntimeError):
@@ -418,6 +433,12 @@ def main():
     parser.add_argument("--models", required=True, help="comma-separated model ids")
     parser.add_argument("--budget-jpy", type=float, default=300.0)
     parser.add_argument("--repeat", type=int, default=1)
+    parser.add_argument(
+        "--fixture", default=None,
+        help="comma-separated fixture id(s) to run in isolation (e.g. er009_changed_actor). "
+             "When given, output is saved under a distinct step-name directory "
+             "(step{N}_{fixture_ids}_n{repeat}) so it never overwrites prior full-step results.",
+    )
     args = parser.parse_args()
 
     verify_fixed_constants()
@@ -425,13 +446,23 @@ def main():
 
     if args.step == "1":
         fixtures = step1_fixtures()
-        summary = execute_step("step1", fixtures, models, args.budget_jpy, repeat=1)
+        default_repeat = 1
     elif args.step == "2":
         fixtures = step2_fixtures()
-        summary = execute_step("step2", fixtures, models, args.budget_jpy, repeat=1)
+        default_repeat = 1
     else:
         fixtures = step3_fixtures()
-        summary = execute_step("step3", fixtures, models, args.budget_jpy, repeat=args.repeat)
+        default_repeat = args.repeat
+
+    step_name = f"step{args.step}"
+    repeat = default_repeat
+    if args.fixture:
+        fixtures = filter_fixtures_by_id(fixtures, args.fixture)
+        slug = "_".join(f["id"] for f in fixtures)
+        step_name = f"step{args.step}_{slug}_n{args.repeat}"
+        repeat = args.repeat
+
+    summary = execute_step(step_name, fixtures, models, args.budget_jpy, repeat=repeat)
 
     print(json.dumps({
         "step": summary["step"], "stopped": summary["stopped"], "stop_reason": summary["stop_reason"],

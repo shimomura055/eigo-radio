@@ -87,6 +87,24 @@ class FixtureExtractionTest(unittest.TestCase):
             self.assertGreater(len(f["article_text"]), 0)
 
 
+class FixtureFilterTest(unittest.TestCase):
+    def test_filter_by_id_returns_only_matching_fixture(self):
+        fx = g6.step1_fixtures()
+        filtered = g6.filter_fixtures_by_id(fx, "er009_changed_actor")
+        self.assertEqual(len(filtered), 1)
+        self.assertEqual(filtered[0]["id"], "er009_changed_actor")
+
+    def test_filter_by_id_unknown_id_raises(self):
+        fx = g6.step1_fixtures()
+        with self.assertRaises(ValueError):
+            g6.filter_fixtures_by_id(fx, "does_not_exist")
+
+    def test_filter_by_id_preserves_multiple_order(self):
+        fx = g6.step1_fixtures()
+        filtered = g6.filter_fixtures_by_id(fx, "er009_changed_scope,er009_changed_actor")
+        self.assertEqual([f["id"] for f in filtered], ["er009_changed_scope", "er009_changed_actor"])
+
+
 def _make_fake_response(model_id, deviations, input_tokens=1000, output_tokens=200, cached=0):
     payload = {"deviations": deviations}
     usage = SimpleNamespace(
