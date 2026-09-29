@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_unsupported_new_claim",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "0b10dabef261d563a02c5784bec80d015eb88ac41ada1e86c6f98b3e574bfe57",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_050d7e4e8c395de6006abbb426c54087d0aab2aea5c7e08f12",
+  "usage": {
+    "input_tokens": 5529,
+    "cached_input_tokens": 0,
+    "output_tokens": 943,
+    "reasoning_tokens": 719
+  },
+  "elapsed_seconds": 9.65,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+        "issue": "男性と女性の乗客のチップ額を比較し、男性が2倍払ったという結果はLedgerにありません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない性別ごとの比較結果を追加しています。「twice as much」は未確認の数値比較でもあるため、changed_fact・changed_number・changed_comparison・unsupported_new_claimをtrueとしました。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+        "issue": "男性と女性の乗客のチップ額を比較し、男性が2倍払ったという結果はLedgerにありません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない性別ごとの比較結果を追加しています。「twice as much」は未確認の数値比較でもあるため、changed_fact・changed_number・changed_comparison・unsupported_new_claimをtrueとしました。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

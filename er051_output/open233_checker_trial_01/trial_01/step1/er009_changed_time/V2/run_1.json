@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_time",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "44dc8936e282a3b770ba018323b363edd3d79b226d711ed278a5b9deed6698d3",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_03d4fa3cc89bb564006abbb41126c887d0ba255dbef99b046a",
+  "usage": {
+    "input_tokens": 5537,
+    "cached_input_tokens": 0,
+    "output_tokens": 969,
+    "reasoning_tokens": 671
+  },
+  "elapsed_seconds": 8.798,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+        "issue": "研究の発表年がLedgerの2014年と異なり、対象をクレジットカード利用者に限定せずニューヨーク市のタクシー乗客全般へ広げています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": true,
+        "unsupported_new_claim": false,
+        "explanation": "Ledgerは2014年の研究として記載し、対象をニューヨーク市タクシーのクレジットカード利用者としています。記事の「2019」は発表年と矛盾し、「taxi passengers」は対象範囲を広げています。一方、より高い推奨率がより多いチップにつながったという因果の方向はLedgerと一致します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+        "issue": "研究の発表年がLedgerの2014年と異なり、対象をクレジットカード利用者に限定せずニューヨーク市のタクシー乗客全般へ広げています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": true,
+        "unsupported_new_claim": false,
+        "explanation": "Ledgerは2014年の研究として記載し、対象をニューヨーク市タクシーのクレジットカード利用者としています。記事の「2019」は発表年と矛盾し、「taxi passengers」は対象範囲を広げています。一方、より高い推奨率がより多いチップにつながったという因果の方向はLedgerと一致します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

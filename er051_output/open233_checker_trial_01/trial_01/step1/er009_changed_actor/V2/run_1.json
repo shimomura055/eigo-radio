@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "c8db322c08a6d6af1b9ef9e4a0374856a0171f74964bb452c0fdf27950a09ec0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0d8220ecbad037f6006abbb38a237887d0a99cd43a2bc7572d",
+  "usage": {
+    "input_tokens": 5538,
+    "cached_input_tokens": 0,
+    "output_tokens": 1505,
+    "reasoning_tokens": 1223
+  },
+  "elapsed_seconds": 16.339,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究を「Harvard Business Schoolのチーム」によるものとしていますが、Ledgerは著者をKareem Haggag and Giovanni Paciと記載しており、その所属は確認していません。研究対象、取引件数、チップへの効果はLedgerの記載とおおむね一致します。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "changed_actorとunsupported_new_claimは、Ledgerにない研究主体・所属を補っているためtrueです。Ledgerが支持する研究結果を変えてはいないため、指定の例外に従いMINORとします。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究を「Harvard Business Schoolのチーム」によるものとしていますが、Ledgerは著者をKareem Haggag and Giovanni Paciと記載しており、その所属は確認していません。研究対象、取引件数、チップへの効果はLedgerの記載とおおむね一致します。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "changed_actorとunsupported_new_claimは、Ledgerにない研究主体・所属を補っているためtrueです。Ledgerが支持する研究結果を変えてはいないため、指定の例外に従いMINORとします。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "deterministic_flag:changed_actor",
+        "rule_id": "promote_deterministic_flag_v1"
+      }
+    ],
+    "overall_status": "LEDGER_COMPLIANT",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

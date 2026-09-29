@@ -1,0 +1,20 @@
+{
+  "trial": "OPEN-233-CHECKER-REDESIGN-TRIAL-01 Trial 1 (delegation_02)",
+  "model": "gpt-6-luna",
+  "price_per_1m_usd": {"input": 0.10, "cached_input": 0.01, "output": 0.50},
+  "usd_jpy": 156.88,
+  "phases_executed": ["step1 (12 fixtures x V2/V3)", "step1_changed_actor_n5 (5 attempts x V2/V3)"],
+  "phases_skipped": {
+    "step2": "Step1 Safety gate (changed_actor n=5, 100% required) not met by V2 or V3; per delegation rule 「Step1でSafety100%未達のvariantはそのvariantに限りStep2/Step3を実行しない」, Step2 not executed for either variant.",
+    "step3": "Not executed for the same reason (no variant qualified as 最良 variant)."
+  },
+  "cumulative_calls": 34,
+  "cumulative_errors": 0,
+  "cumulative_jpy": 7.2882,
+  "by_step_jpy": {"step1": 7.2882},
+  "step_budget_cap_jpy": {"step1": 8.0, "step2": 6.0, "step3": 12.0},
+  "trial1_total_budget_cap_jpy": 50.0,
+  "overall_task_budget_cap_jpy": 400.0,
+  "tokens_total": {"input_tokens": 190392, "cached_input_tokens": 55350, "output_tokens": 64799},
+  "note": "全てgpt-6-luna実測 usage から公式単価で算出。推測値は使用していない。"
+}

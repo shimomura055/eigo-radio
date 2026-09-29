@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 2,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "c8db322c08a6d6af1b9ef9e4a0374856a0171f74964bb452c0fdf27950a09ec0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_06fb9f249456ce27006abbb608d65487d08cc0f5925b373bf5",
+  "usage": {
+    "input_tokens": 5538,
+    "cached_input_tokens": 5535,
+    "output_tokens": 1799,
+    "reasoning_tokens": 1517
+  },
+  "elapsed_seconds": 17.182,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームとする記述はLedgerで確認できません。研究結果、対象、件数についての記述はLedgerと整合します。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "高い推奨率がより多いチップにつながったという結果と、1,300万件超のNY市タクシー取引という記述はLedgerに沿っています。一方、Harvard Business Schoolのチームという主体の帰属はLedgerにありません。出典に肩書き・所属を補う程度の逸脱としてMINORにします。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームとする記述はLedgerで確認できません。研究結果、対象、件数についての記述はLedgerと整合します。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "高い推奨率がより多いチップにつながったという結果と、1,300万件超のNY市タクシー取引という記述はLedgerに沿っています。一方、Harvard Business Schoolのチームという主体の帰属はLedgerにありません。出典に肩書き・所属を補う程度の逸脱としてMINORにします。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "deterministic_flag:changed_actor",
+        "rule_id": "promote_deterministic_flag_v1"
+      }
+    ],
+    "overall_status": "LEDGER_COMPLIANT",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

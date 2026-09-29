@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 4,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "c8db322c08a6d6af1b9ef9e4a0374856a0171f74964bb452c0fdf27950a09ec0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0f03fd8f7c02916e006abbb632602487d0b6dbadbe885c826f",
+  "usage": {
+    "input_tokens": 5538,
+    "cached_input_tokens": 5535,
+    "output_tokens": 1143,
+    "reasoning_tokens": 871
+  },
+  "elapsed_seconds": 10.774,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究チームをHarvard Business School所属と特定していますが、Ledgerはその所属を確認していません。研究対象・件数・結果の方向はLedgerと一致しています。",
+        "severity": "MINOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "F-001〜F-004は研究対象、1,300万件超の取引、高い推奨率とより多いチップの関係を支持します。一方、Harvard Business School所属という具体的な帰属はLedgerにありません。主たる研究結果は変わらないためMINORです。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究チームをHarvard Business School所属と特定していますが、Ledgerはその所属を確認していません。研究対象・件数・結果の方向はLedgerと一致しています。",
+        "severity": "MINOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "F-001〜F-004は研究対象、1,300万件超の取引、高い推奨率とより多いチップの関係を支持します。一方、Harvard Business School所属という具体的な帰属はLedgerにありません。主たる研究結果は変わらないためMINORです。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "deterministic_flag:changed_actor",
+        "rule_id": "promote_deterministic_flag_v1"
+      }
+    ],
+    "overall_status": "LEDGER_COMPLIANT",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

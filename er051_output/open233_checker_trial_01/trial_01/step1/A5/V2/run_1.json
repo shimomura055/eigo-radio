@@ -1,0 +1,80 @@
+{
+  "fixture_id": "A5",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "a1f5c936793c1cae4252218609627d7d6f0a0c0164f819f40c0f9bb35d8e83b0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_095982bf2e36e488006abbb57da55c87d0af315dc455ceb489",
+  "usage": {
+    "input_tokens": 5923,
+    "cached_input_tokens": 0,
+    "output_tokens": 3443,
+    "reasoning_tokens": 3160
+  },
+  "elapsed_seconds": 49.748,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "issue": "人間が電話を担当する機能をロールバックしたというLedgerの説明に対し、記事はその機能を再び有効にしたかのように述べています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "「temporarily」という限定はありますが、「put back the feature」は機能を戻した・再開したという意味で、機能を当面ロールバックしたというMUSE-HC-012の説明と事実が反対になります。日本語原文の「元に戻しました」から英訳で生じた意味の変化です。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "temporarily",
+        "ledger_field_basis": "notes_factual_constraint",
+        "observation_consistent": false,
+        "matched_notes_id": "MUSE-HC-012"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "issue": "人間が電話を担当する機能をロールバックしたというLedgerの説明に対し、記事はその機能を再び有効にしたかのように述べています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "「temporarily」という限定はありますが、「put back the feature」は機能を戻した・再開したという意味で、機能を当面ロールバックしたというMUSE-HC-012の説明と事実が反対になります。日本語原文の「元に戻しました」から英訳で生じた意味の変化です。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "temporarily",
+        "ledger_field_basis": "notes_factual_constraint",
+        "observation_consistent": false,
+        "matched_notes_id": "MUSE-HC-012",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

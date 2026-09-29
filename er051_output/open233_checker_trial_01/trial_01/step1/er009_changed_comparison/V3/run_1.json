@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_comparison",
+  "variant": "V3",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "8bda6b6ac89dcb7fb89410753af6da382786215ca58947175762dbe714b866f7",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_05beab7361aa0d6a006abbb40903c887d091202ae09e514e52",
+  "usage": {
+    "input_tokens": 5530,
+    "cached_input_tokens": 0,
+    "output_tokens": 644,
+    "reasoning_tokens": 440
+  },
+  "elapsed_seconds": 8.133,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+        "issue": "The article reverses the reported comparison: the ledger says passengers who saw higher suggested tip rates tipped more.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004 reports more tipping after exposure to higher recommended rates; the article states the opposite. The comparison is reversed, making the factual claim inconsistent with the ledger.",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+        "issue": "The article reverses the reported comparison: the ledger says passengers who saw higher suggested tip rates tipped more.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004 reports more tipping after exposure to higher recommended rates; the article states the opposite. The comparison is reversed, making the factual claim inconsistent with the ledger.",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V3"
+  }
+}

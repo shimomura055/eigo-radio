@@ -1,0 +1,80 @@
+{
+  "fixture_id": "A5",
+  "variant": "V3",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "a1f5c936793c1cae4252218609627d7d6f0a0c0164f819f40c0f9bb35d8e83b0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_02fe6b0637911bf5006abbb5af6b5487d098fd6e21d4dfd038",
+  "usage": {
+    "input_tokens": 5923,
+    "cached_input_tokens": 0,
+    "output_tokens": 3414,
+    "reasoning_tokens": 3175
+  },
+  "elapsed_seconds": 49.867,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "issue": "This says the human-call feature was restored, whereas the Ledger says Meta rolled back the human-concierge feature. “Temporarily” does not correct the reversal in meaning.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "The feature’s status is reversed: the Ledger records a rollback, but the article says it was put back. This is a changed fact and negation; the temporary qualifier does not make the claim consistent.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "temporarily",
+        "ledger_field_basis": "notes_factual_constraint",
+        "observation_consistent": false,
+        "matched_notes_id": "MUSE-HC-012"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "issue": "This says the human-call feature was restored, whereas the Ledger says Meta rolled back the human-concierge feature. “Temporarily” does not correct the reversal in meaning.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "The feature’s status is reversed: the Ledger records a rollback, but the article says it was put back. This is a changed fact and negation; the temporary qualifier does not make the claim consistent.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "temporarily",
+        "ledger_field_basis": "notes_factual_constraint",
+        "observation_consistent": false,
+        "matched_notes_id": "MUSE-HC-012",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V3"
+  }
+}

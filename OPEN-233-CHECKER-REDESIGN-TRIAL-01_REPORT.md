@@ -1,9 +1,10 @@
-# OPEN-233-CHECKER-REDESIGN-TRIAL-01 REPORT (Phase A)
+# OPEN-233-CHECKER-REDESIGN-TRIAL-01 REPORT (Phase A + Trial 1)
 
-**Status**: Phase A完了(Trial計画確定のみ)。Production code・共通Checker
-Prompt・severity・routing・Production schemaの変更なし。Production配線なし。
-**Trial実行(有料fixture実行)は本委任では行っていない**(API呼び出しなし、
-¥0)。Trial実行前にユーザーへ正式報告してSTOPする(委任ユーザー決定10)。
+**Status**: `TRIAL1_DONE_IMPROVEMENT_PROPOSED`(委任_02、2026-09-29)。
+Phase A(§1〜8)はTrial計画確定、Trial 1(§9)は実行済み(gpt-6-luna実測
+34 call、¥7.2882)。Production code・共通Checker Prompt・severity・
+routing・Production schemaの変更なし。Production配線なし。詳細は§9
+参照。
 
 本REPORTは設計書`docs/pm/design_open233_checker_redesign_trial_01.md`
 (章立て1〜8)の要約であり、詳細根拠(fixture別sha256・gold判定根拠・
@@ -141,6 +142,60 @@ fixtureが多い点。
 5. V2/V3の差が観測されない可能性を踏まえたTrial実行の優先度
    (両方実行するか片方に絞るか)。
 6. Trial実行の正式開始可否(本Phase A完了後、実行前STOP)。
+
+## 9. Trial 1実行(委任_02、2026-09-29)
+
+**Status**: `TRIAL1_DONE_IMPROVEMENT_PROPOSED`。詳細は設計書
+`docs/pm/design_open233_checker_redesign_trial_01.md`§2-補/§3-補。
+
+**ユーザー更新判断1〜15**を反映し(逐語`docs/pm/delegation_log/2026-09-29_
+OPEN-233-CHECKER-REDESIGN-TRIAL-01_02.md`)、Phase Aの★6件をFable判定で
+解決(gold/B2_hormuz/Meta negative control/Guardrail/V2・V3両方実行/実行前
+STOP撤回)。実行前STOPは行わず、Phase A→Trial 1実行→分析→V4設計まで
+本委任で完了した。
+
+**Trial 1実行(新規harness`er051_open233_checker_trial_01_run.py`、
+Production/Model Routing Contract非経由)**: gpt-6-luna、reasoning="high"。
+
+- **Step1(重大群12 fixture、V2/V3各12 call)**: **Safety 100%達成**
+  (両variantとも12 fixture全てBLOCKING維持)。
+- **Step1(changed_actor n=5、V2/V3各5 call)**: **Safety未達**
+  (V2=4/5[80%]、V3=3/5[60%])。3件の未昇格例はいずれもLLMが
+  `changed_actor=false`(誤って`unsupported_new_claim`のみtrue)を返した
+  ケースで、昇格ルール自体(flagが立った7/7では100%機能)ではなく、その
+  手前のLLMカテゴリ判定(Promptのカテゴリ境界曖昧さ)が原因と特定した。
+- **Step2/Step3**: 設計書§4のvariant別打ち切りルールに従い、V2・V3とも
+  changed_actor Safety未達のため**両方とも未実行**(予算温存目的の拡大
+  解釈はせず委任文の明示ルールを厳守)。参考(¥0、V0データreplay): V1を
+  B群4件へ適用しても不要BLOCK率は75%→75%で不変(B群は全件severity=MAJOR
+  のためfail-closed規則でpost-hoc層だけでは改善不可、Productivity改善は
+  V2/V3のPrompt/schemaがLLM一次severityをMAJOR→MINORへ動かすかに懸かる
+  未検証事項)。
+- **原因分類**: (a) Promptの判定基準(changed_actorとunsupported_new_
+  claimのカテゴリ境界がPromptで排他化されていない)。
+- **V4設計案**(実装・実行はしない): V4-A(低リスク、主体差し替え時は
+  unsupported_new_claimと同時にchanged_actorも立てるようPrompt明記)を
+  最優先案とし、V4-B(昇格ルール自体をunsupported_new_claimへ拡張、中
+  リスク・Productivity悪化懸念あり要materiality条件)、V4-C(本Trialの
+  未昇格3件をregression fixtureとしてfreeze)を提示。
+- **Opus L2投入条件**: 明確な該当なし。V4-A/V4-Bの設計判断
+  (Safety/Productivityトレードオフ)がFable裁量判断の候補と報告。
+- **ユーザー判断11該当**: なし(gold変更・BLOCKING緩和・fail-closed撤廃・
+  Production変更のいずれも未実施)。
+- **費用**: Step1(12 fixture)¥5.8145+Step1(changed_actor n=5)¥1.4737=
+  **Trial 1合計¥7.2882**(34 call、error 0)。Step2/Step3¥0。**累計¥7.2882
+  / 総枠¥400**。API keyの漏洩なし(保存jsonは`prompt_sha256`のみ、生
+  promptは非保存、既存er050方式と同一)。
+- **Production/Dangling Reference確認**: `git diff --stat`で
+  `er003_v1_en_direct_vfl_01_generate.py`/`er006_*`/`er012_*`/`er019_*`に
+  差分なしを確認。mock test 29件全件PASS(再確認)。harness実行時も
+  Phase A記録の3定数sha256と毎回突合し(`verify_fixed_constants`相当)、
+  不一致は発生しなかった。
+
+Evidence: `er051_open233_checker_trial_01_run.py`(新規)、
+`er051_output/open233_checker_trial_01/trial_01/`
+(raw response/usage/summary_step1.json/summary_step1_changed_actor_n5.json/
+cost.json)、設計書§2-補/§3-補。
 
 ## Evidence
 

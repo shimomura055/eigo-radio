@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "c8db322c08a6d6af1b9ef9e4a0374856a0171f74964bb452c0fdf27950a09ec0",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_048fb70114f5c41d006abbb5fc26ac87d0b23de0c7f3c04af3",
+  "usage": {
+    "input_tokens": 5538,
+    "cached_input_tokens": 5535,
+    "output_tokens": 1375,
+    "reasoning_tokens": 1123
+  },
+  "elapsed_seconds": 13.289,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究チームをHarvard Business School所属とする記述はLedgerにありません。取引件数とチップへの効果の記述はLedgerと一致します。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Harvard Business Schoolという具体的な所属・調査主体を追加しており、Ledgerにない事実です（changed_fact、changed_actor、unsupported_new_claim）。件数と因果効果の主張はLedgerの範囲内です。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究チームをHarvard Business School所属とする記述はLedgerにありません。取引件数とチップへの効果の記述はLedgerと一致します。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Harvard Business Schoolという具体的な所属・調査主体を追加しており、Ledgerにない事実です（changed_fact、changed_actor、unsupported_new_claim）。件数と因果効果の主張はLedgerの範囲内です。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

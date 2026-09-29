@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_time",
+  "variant": "V3",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "44dc8936e282a3b770ba018323b363edd3d79b226d711ed278a5b9deed6698d3",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_039220302f157634006abbb419f8f087d08bef1a95535267b1",
+  "usage": {
+    "input_tokens": 5537,
+    "cached_input_tokens": 0,
+    "output_tokens": 1026,
+    "reasoning_tokens": 795
+  },
+  "elapsed_seconds": 12.816,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+        "issue": "The article gives the wrong publication year and broadens the study’s population beyond credit-card taxi users.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": true,
+        "unsupported_new_claim": false,
+        "explanation": "The Ledger dates the study to 2014, not 2019 (changed_fact, changed_time). Its reported effect concerns New York City taxi credit-card users; saying taxi passengers generally expands that scope (changed_scope). The causal direction is otherwise consistent with the Ledger.",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+        "issue": "The article gives the wrong publication year and broadens the study’s population beyond credit-card taxi users.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": true,
+        "unsupported_new_claim": false,
+        "explanation": "The Ledger dates the study to 2014, not 2019 (changed_fact, changed_time). Its reported effect concerns New York City taxi credit-card users; saying taxi passengers generally expands that scope (changed_scope). The causal direction is otherwise consistent with the Ledger.",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V3"
+  }
+}

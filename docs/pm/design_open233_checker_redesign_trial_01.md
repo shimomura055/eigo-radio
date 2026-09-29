@@ -459,6 +459,184 @@ vfl01側3定数のsha256が実行前後で不変であることを検証する(�
 
 ---
 
+## 2-補. Phase A要確認事項の解決(Fable判定、委任_02)
+
+2026-09-29ユーザー更新判断1〜15(逐語は`docs/pm/delegation_log/2026-09-29_
+OPEN-233-CHECKER-REDESIGN-TRIAL-01_02.md`参照)を受け、Fableが§8-4の★6件を
+以下のとおり判定した(Claude/Sonnetは独自にgoldを確定しない原則を維持)。
+
+1. **A-1(§1-1)**: 再実行不可のため参考記録のまま維持し、BLOCKING維持率の
+   分母から除外する(REPORTに明示開示)。
+2. **gold(B1/B3/B4/Meta_run03_standard)**: 既存暫定goldを変更しない。
+   不要BLOCK率の定義は本書§1-2の既存定義(B1/B2_hormuz/B3/B4の4件のうち
+   BLOCKING維持数/4、baseline 75%・目標≤25%と同一根拠)を維持する。B3/B4への
+   Part B「BLOCKING妥当」異見はgold変更ではなく**リスク欄**に記録し、Trial結果で
+   「≤25%達成にB3/B4の通過が不可欠」かつ「その通過がSafety上不当」と分析される
+   場合のみ、終了時にgold再判断(ユーザー判断11)として報告する。B1=ACCEPTABLE
+   候補(暫定)。
+3. **B2_hormuz**: QUALITY暫定のまま維持。最終化はTrial後(ユーザー判断6)。
+4. **Meta_run03_standard**: negative control。fact_id 010/012いずれでも
+   「実逸脱をBLOCKINGと判定」すれば検出成功とし、fact_id差異は観測として
+   記録する(gold変更なし)。
+5. **Guardrail**: Trial 1(委任_02)単体¥50、Step別上限はPhase A案
+   (Step1¥8/Step2¥6/Step3¥12)をそのまま採用。総枠¥400(累計管理)。
+6. **V2/V3**: 両方実行する(差が出ない可能性は承知の上で観測データを取る)。
+7. **実行前STOP**: 撤回。承認済み範囲内でPhase A→Trial→分析→改善→再Trialまで
+   進めてよい(ユーザー判断8)。
+
+## 3-補. Trial 1実行結果(委任_02、2026-09-29)
+
+**実行**: `er051_open233_checker_trial_01_run.py`(新規、Trial専用harness、
+Production/Model Routing Contract非経由)。モデル`gpt-6-luna`、
+reasoning="high"。
+
+### Step1(重大群12 fixture、V2/V3各12 call)
+
+**結果: Safety 100%達成(V2/V3とも)**。12 fixture全てで`overall_action_
+trial=="STOP"`、全deviationが`severity_final=="BLOCKING"`(MAJORは
+`existing_major_v2`、changed_actor 1件がMINORで`promote_deterministic_
+flag_v1`により昇格)。費用¥5.8145(24 call)。
+
+### Step1(changed_actor n=5、V2/V3各5 call)
+
+**結果: Safety未達(V2/V3とも)**。
+
+| variant | attempt1 | attempt2 | attempt3 | attempt4 | attempt5 | BLOCKING率 |
+|---|---|---|---|---|---|---|
+| V2 | MAJOR→BLOCKING | MINOR→BLOCKING(昇格) | **MINOR→ACCEPTABLE(未昇格)** | MINOR→BLOCKING(昇格) | MAJOR→BLOCKING | **4/5(80%)** |
+| V3 | MAJOR→BLOCKING | MAJOR→BLOCKING | **MINOR→ACCEPTABLE(未昇格)** | MAJOR→BLOCKING | **MINOR→QUALITY(未昇格)** | **3/5(60%)** |
+
+受入条件(§6)「changed_actorはpost-hoc v2の昇格ルール込みでn=5全件が
+`severity_final=="BLOCKING"`」を**V2・V3とも未達**。費用¥1.4737(10 call)。
+Step1合計費用: ¥7.2882(34 call、0 error)。
+
+### 原因切り分け(未昇格3件の実データ、V2#3/V3#3/V3#5)
+
+3件とも共通パターン: LLMが返した`changed_actor`フラグが**false**(fixtureの
+真の逸脱カテゴリはchanged_actorだが、LLMは`unsupported_new_claim=true`
+[+一部`changed_fact=true`]として分類し、severityもMAJORではなくMINORと
+判定)。
+
+```
+V2#3: severity=MINOR changed_actor=False changed_fact=False unsupported_new_claim=True -> ACCEPTABLE
+V3#3: severity=MINOR changed_actor=False changed_fact=True  unsupported_new_claim=True -> ACCEPTABLE
+V3#5: severity=MINOR changed_actor=False changed_fact=True  unsupported_new_claim=True -> QUALITY
+```
+
+対照的に、成功した7件(V2#1,2,4,5/V3#1,2,4)は全て`changed_actor=True`が
+正しく返っており、昇格ルール(`promote_deterministic_flag_v1`)またはMAJOR
+(`existing_major_v2`)によって確実にBLOCKINGへ到達している。
+
+**原因分類: (a) Promptの判定基準**。決定論的昇格ルール自体は「flagが立てば
+確実にBLOCKING化する」という設計どおり100%機能している(7/7)。問題は
+昇格ルールの**手前**、LLMが実在しない機関名(fixtureでは実在の研究者名
+"Kareem Haggag and Giovanni Paci"をLedgerが保持するのに対し、記事側は
+"A team at Harvard Business School"と主体を差し替えている)を「主体の
+変更(changed_actor)」ではなく「Ledgerに無い新規主張(unsupported_new_
+claim)」として分類する、カテゴリ境界の曖昧さにある。現行
+`DEVIATION_PROMPT_TEMPLATE`の10カテゴリ定義は、changed_actorと
+unsupported_new_claimの重複(「Ledgerに存在しない主体」は両方の定義に
+該当しうる)を明示的に排他化していない。schema自体([10フラグ]は
+Boolean配列として両方trueにできる構造)は情報不足ではなく、Promptが
+「主体の差し替えは常にchanged_actor=trueを立てる(unsupported_new_claim
+と同時にtrueにしてよい)」という優先順位を指示していない点が根本原因。
+
+**(b) 昇格ルールの射程**: 4カテゴリ(changed_actor/changed_number/
+changed_negation/changed_comparison)ベースの昇格ルールは、対象カテゴリの
+flagが正しく立った場合のみ機能する「必要条件は満たすが十分条件ではない」
+設計であることが実データで確認された。flag自体の精度に依存するため、
+flag精度が100%でない限りSafety 100%は保証されない。
+
+### Step2/Step3: 未実行(本委任、理由明記)
+
+設計書§4「Step1でSafety 100%未達のvariantは、そのvariantに限りStep2/
+Step3を実行しない」に従い、V2・V3とも**changed_actor n=5でSafety未達**の
+ため、Step2(境界群5 fixture)・Step3(非決定性群20 call)は**両variantとも
+実行しなかった**(委任文の明示ルールを厳守、予算温存目的の拡大解釈はしない)。
+このため、Trial 1では境界群(B1-B4/Meta_run03_standard)へのV2/V3適用に
+よる不要BLOCK率の実測データは得られていない。
+
+参考(¥0、既存V0データreplay): V1(post-hoc v2のみ、schema/Prompt不変)を
+B1-B4へ適用すると、不要BLOCK率は**75%→75%で変化なし**(B1/B3/B4は全て
+既存severity=MAJORのため、fail-closed規則[ユーザー決定1]によりpost-hoc
+層のどのvariantでもBLOCKING固定であり、post-hoc層だけでは改善不可能。
+Productivity改善の全てはV2/V3のPrompt/schema変化が**LLM自身の一次severity
+判定**をMAJOR→MINORへ動かすかどうかに懸かっている)。この一次severity
+依存性は、Step2実行なしでは検証できない重要な未検証事項として明記する。
+
+### V4設計案(実装・実行はしない、次委任向け)
+
+**V4-A(最優先、低リスク)**: Trial Prompt差分ブロック(`TRIAL_PROMPT_DIFF_
+BLOCK_V01`)へ以下を追加する案:「記事内の主張が、Verified Fact Ledgerの
+`subject`と異なる人物・団体・機関に行為や発見を帰属させている場合は、
+それが新規情報([unsupported_new_claim])に見えても必ず`changed_actor`も
+trueにしてください(両方trueで構いません、主体の差し替えを
+unsupported_new_claimだけに分類しないでください)」。狙い: カテゴリ境界の
+曖昧さを直接解消し、昇格ルールの「射程」問題(上記(b))を、昇格ルール自体を
+変えずにflag精度側で解決する。B群(境界・過剰品質群)は主体差し替え事例を
+含まないため、Productivityへの悪影響は低リスクと想定(ただし未検証、
+Trial 2でB群への副作用有無を確認要)。
+
+**V4-B(要追加検証、中リスク)**: 昇格ルールを
+`unsupported_new_claim==true and severity==MINOR`にも拡張する案。
+V0のB群実データでは`unsupported_new_claim=true`はB1/B4/Meta_run03_standard
+に頻出するが**いずれもseverity=MAJOR**(既にBLOCKING、fail-closedで昇格
+不要)であり、MINORでの出現は本Trialの母集団(V0 B群4件+今回のSafety群)
+では未観測。ただしB群はn=1実測のみで非決定性が高いことが既知(§1-3)の
+ため、`unsupported_new_claim`単独昇格はB群のBLOCKING率をさらに押し上げ
+(既に75%)、Productivity目標(≤25%)の達成を一段と困難にするリスクが
+高い。**materiality条件**(Ledgerのsubjectフィールドと明確に異なる固有
+名詞が含まれる場合のみ昇格、単なる補足情報の追加は対象外とする等)を
+併用しない限り採用しない。
+
+**V4-C(regression fixture案)**: 本Trialで得た3件の未昇格実データ
+(V2#3/V3#3/V3#5、`er051_output/open233_checker_trial_01/trial_01/
+step1_changed_actor_n5/er009_changed_actor/{V2,V3}/run_{3,5}.json`)を
+「既知の未昇格例」としてfreeze保存し、V4-A適用後の再TrialでこれらのLLM
+出力パターン(changed_actor=false+unsupported_new_claim=true+severity=
+MINOR)が実際に解消されたか照合するnegative regression fixtureとして
+再利用する(新規API呼び出しなしで、Prompt改訂の効果を過去の実失敗例に
+対して机上検証できる)。
+
+### Opus L2投入条件(該当有無、投入はしない)
+
+ユーザー決定9の8条件のうち、明確に該当するものはない(deterministic false
+positiveは0件、fail-closed自体は7/7で正しく機能、Family横断影響は未検証
+[Family X限定Trialのため対象外]、同一改善の2回不達には該当しない[今回が
+初回])。**候補として報告するもの**: 「結果解釈が非一意」に近い論点として、
+「昇格ルールを維持したままPrompt側でカテゴリ境界を修正する(V4-A)」か
+「昇格ルールの射程自体をより広いカテゴリ・条件へ拡張する(V4-B)」かの
+設計判断は、Safety(見逃しをゼロにする)とProductivity(過剰BLOCKを増やさ
+ない)のトレードオフに直結し、Fableの裁量判断が必要と考えられる。ただし
+本委任1回のデータのみでは断定できず、Opus L2の必須発火条件(i)〜(iv)に
+機械的に一致するとは判定しない(Fableの最終判断に委ねる)。
+
+### ユーザー判断11該当の有無
+
+**なし**。本委任はgold変更・BLOCKING対象緩和・fail-closed撤廃・Production
+Prompt/schema/Validator変更・GPT-6 Luna routing変更・OPEN-233のProduction
+正式採用のいずれも行っていない(V4はいずれも設計提案のみ、未実装・未実行)。
+
+### 費用(Trial 1、委任_02)
+
+Step1(12 fixture、V2+V3、24 call): ¥5.8145。Step1(changed_actor n=5、
+V2+V3、10 call): ¥1.4737。**Trial 1合計: ¥7.2882(34 call、error 0)**。
+Step2/Step3は未実行のため¥0。Phase A(委任_01)は¥0。**累計: ¥7.2882 /
+総枠¥400**。詳細: `er051_output/open233_checker_trial_01/trial_01/
+cost.json`。
+
+### Status
+
+**TRIAL1_DONE_IMPROVEMENT_PROPOSED**。Safety目標(重大fixture群100%)は
+12-fixture本体では達成したが、changed_actor n=5別枠(V2 80%/V3 60%)で
+未達のため、Step2(Productivity)・Step3(Stability)は実行していない
+(全体のSafety/Productivity/Stability/QCD目標達成には至っていない)。
+原因(LLMのカテゴリ境界曖昧さ)を特定し、低リスクなPrompt修正案(V4-A)を
+設計した。次委任でV4-A実装+Trial 2(Step1 changed_actor n=5再検証、
+成功すればStep2/Step3実行)を提案する。
+
+---
+
 ## 出典一覧
 
 - `docs/pm/design_checker_redesign_v02_01.md`(v0.2、全章)

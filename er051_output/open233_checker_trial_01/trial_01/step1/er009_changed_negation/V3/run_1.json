@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_negation",
+  "variant": "V3",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5c9efed163523015557bc9ebb09c01dc5745a948833881bd7cab9b40fc392db9",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0d7d95270ab6bb85006abbb3fc214c87d0ba0a4fc7ccd45428",
+  "usage": {
+    "input_tokens": 5532,
+    "cached_input_tokens": 0,
+    "output_tokens": 586,
+    "reasoning_tokens": 373
+  },
+  "elapsed_seconds": 7.275,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "The article reverses the study's reported finding: passengers exposed to higher suggested tip rates left more, not no more, and the study reported an effect.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004 reports that passengers who saw higher suggested rates left more; the article negates and reverses that comparison and denies the reported causal effect.",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "The article reverses the study's reported finding: passengers exposed to higher suggested tip rates left more, not no more, and the study reported an effect.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004 reports that passengers who saw higher suggested rates left more; the article negates and reverses that comparison and denies the reported causal effect.",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V3"
+  }
+}

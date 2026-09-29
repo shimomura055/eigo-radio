@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_negation",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "5c9efed163523015557bc9ebb09c01dc5745a948833881bd7cab9b40fc392db9",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0be228c315ed0b52006abbb3f6aaf087d0995e0359414f2061",
+  "usage": {
+    "input_tokens": 5532,
+    "cached_input_tokens": 0,
+    "output_tokens": 529,
+    "reasoning_tokens": 264
+  },
+  "elapsed_seconds": 5.465,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "記事は、推奨チップ率が高いと乗客がより多くチップを残したという研究結果を否定し、効果がなかったと述べている。LedgerのF-004と反対の主張である。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は高い推奨率を見た乗客が実際により多くチップを残したと報告する。記事は否定・比較方向を反転し、効果も否定している。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "F-004"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "記事は、推奨チップ率が高いと乗客がより多くチップを残したという研究結果を否定し、効果がなかったと述べている。LedgerのF-004と反対の主張である。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は高い推奨率を見た乗客が実際により多くチップを残したと報告する。記事は否定・比較方向を反転し、効果も否定している。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "F-004",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}
