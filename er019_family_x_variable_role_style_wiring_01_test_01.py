@@ -209,11 +209,34 @@ class ShellFixedPhraseUnaffectedTests(unittest.TestCase):
 
 
 class KeyPhraseRoleUnchangedTests(unittest.TestCase):
-    """(e) Key Phrase系(A2/B1双方)は本変更の対象外であり、
-    generate_a2_japanese_with_reading_safety呼び出しにstyle_prefix_override
-    を渡さない(=既存JAPANESE_STYLE_PREFIXのまま)ことを確認する。"""
+    """(e) Key Phrase英語Role(english、A2/B1双方)は本変更の対象外であり、
+    英語生成経路にはそもそもJA style自体を渡さない。
 
-    def test_a2_key_phrase_segments_do_not_receive_style_prefix_override(self):
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、2026-09-29ユーザー
+    正式決定APPROVED_FOR_PRODUCTION): Standard(A2)Key Phraseの日本語意味
+    (japanese_meaning)は、本クラスが以前固定していた「Key Phrase系は
+    無変更」という前提から明示的に除外され、japanese_title/preview/
+    comment_1-4と同一のJ3(_role_style_ja())が適用されるようになった
+    (Advancedにはjapanese_meaning segment自体が存在しないため対象外)。
+    旧テスト(style_prefix_overrideを一切渡さないことを確認)は下の
+    KeyPhraseJapaneseMeaningJ3WiringTestsへ置き換える。"""
+
+    def test_a2_key_phrase_english_role_unaffected_by_ja_style(self):
+        kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
+        with mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+                                side_effect=_ok) as en_mock, \
+             mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
+                                side_effect=_ok), \
+             mock.patch.object(runner.n3_tts, "resolve_key_phrase_ja_gloss_tts",
+                                return_value=("みおくる", False)):
+            runner._generate_key_phrase_segments_a2(kp, "dummy_dir", tts_backend="speech_metadata_flash_lite")
+        self.assertNotIn("style_prefix_override", en_mock.call_args_list[0].kwargs)
+
+
+class KeyPhraseJapaneseMeaningJ3WiringTests(unittest.TestCase):
+    """W5: Standard KP日本語意味(japanese_meaning)へのJ3配線(正式決定)。"""
+
+    def test_a2_key_phrase_japanese_meaning_receives_j3_on_flash_lite_backend(self):
         kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
         with mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
                                 side_effect=_ok), \
@@ -222,7 +245,21 @@ class KeyPhraseRoleUnchangedTests(unittest.TestCase):
              mock.patch.object(runner.n3_tts, "resolve_key_phrase_ja_gloss_tts",
                                 return_value=("みおくる", False)):
             runner._generate_key_phrase_segments_a2(kp, "dummy_dir", tts_backend="speech_metadata_flash_lite")
-        self.assertNotIn("style_prefix_override", ja_mock.call_args_list[0].kwargs)
+        self.assertEqual(ja_mock.call_args_list[0].kwargs.get("style_prefix_override"),
+                          fl_styles.FAMILY_X_ROLE_STYLE_JA)
+
+    def test_a2_key_phrase_japanese_meaning_style_none_on_default_backend(self):
+        """既定backendではNone(=既存JAPANESE_STYLE_PREFIXのまま、他Family
+        無影響の既存契約を維持)。"""
+        kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
+        with mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+                                side_effect=_ok), \
+             mock.patch.object(runner.n3_tts, "generate_a2_japanese_with_reading_safety",
+                                side_effect=_ok) as ja_mock, \
+             mock.patch.object(runner.n3_tts, "resolve_key_phrase_ja_gloss_tts",
+                                return_value=("みおくる", False)):
+            runner._generate_key_phrase_segments_a2(kp, "dummy_dir")
+        self.assertIsNone(ja_mock.call_args_list[0].kwargs.get("style_prefix_override"))
 
 
 class FallbackPathUnaffectedTests(unittest.TestCase):

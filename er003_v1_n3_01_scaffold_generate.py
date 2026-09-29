@@ -185,19 +185,34 @@ def _family_x_word_count_en(s: str) -> int:
 def split_family_x_article_text_v2(text: str) -> dict:
     """Family X新構造(# Title -> 本文[段落、見出しなし] ->『## In one
     line』)を、段落境界のみを使った決定論的アルゴリズムでpart1/2/3へ
-    3分割する。『## In one line』が見つからない場合のみRuntimeError
-    (この構造契約自体は新旧共通)。段落数<3はエラーにせず
-    status="TOO_FEW_PARAGRAPHS"を返す。"""
+    3分割する。段落数<3、title行欠落、In one line欠落、本文中への
+    Markdown見出し行混入は、いずれもRuntimeErrorではなくstatus値で返す
+    (呼び出し側`_family_x_ensure_split_or_paragraph_retry()`が既に
+    status!="OK"を共通に1回だけmust-fix retryする設計のため、このGate
+    自体をここへ集約する。OPEN-228のような無retryクラッシュを新経路では
+    起こさない)。
+
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-2
+    是正、2026-09-29): 旧実装はAdvanced側の`_FAMILY_X_TITLE_BODY_RE`
+    (`^#\\s+`必須)と非対称に、title行が無くても`title=""`のままstatus=
+    "OK"を返し、`## In one line`欠落時はRuntimeErrorを直接送出していた
+    (retryされず課金後にクラッシュしていた)。加えて本文中のMarkdown見出し
+    行混入を検査する機械Gateがどこにも無かった。以下の3点をAdvancedと
+    対称のGateとして追加する: (1) `^#\\s+`のtitle行必須、(2)『## In one
+    line』必須、(3) 本文にMarkdown見出し行(`^#{1,6}\\s`)が混入していない
+    こと。"""
     title_match = re.match(r"^#\s+(.+?)\s*\n", text)
-    title = title_match.group(1).strip() if title_match else ""
-    body_start = title_match.end() if title_match else 0
+    if not title_match:
+        return {"status": "NG_MISSING_TITLE", "paragraph_count": None, "title": ""}
+    title = title_match.group(1).strip()
+    body_start = title_match.end()
 
     in_one_line_match = re.search(
         r"^##\s+In [Oo]ne [Ll]ine[…\.]*\s*\n(.+)", text, flags=re.MULTILINE | re.DOTALL)
     if not in_one_line_match:
-        raise RuntimeError("[FAMILY-X-SPLIT-V2] 『## In one line』見出しが見つかりません")
-    if title_match and in_one_line_match.start() < title_match.end():
-        raise RuntimeError("[FAMILY-X-SPLIT-V2] In one lineがTitleより前に出現しています")
+        return {"status": "NG_MISSING_IN_ONE_LINE", "paragraph_count": None, "title": title}
+    if in_one_line_match.start() < title_match.end():
+        return {"status": "NG_IN_ONE_LINE_BEFORE_TITLE", "paragraph_count": None, "title": title}
 
     def strip_markdown_bold(s: str) -> str:
         return re.sub(r"\*\*(.+?)\*\*", r"\1", s)
@@ -205,6 +220,11 @@ def split_family_x_article_text_v2(text: str) -> dict:
     title = strip_markdown_bold(title)
     body_text = strip_markdown_bold(text[body_start:in_one_line_match.start()].strip())
     in_one_line_text = strip_markdown_bold(in_one_line_match.group(1).strip())
+
+    heading_in_body_match = re.search(r"^#{1,6}\s", body_text, flags=re.MULTILINE)
+    if heading_in_body_match:
+        return {"status": "NG_HEADING_IN_BODY", "paragraph_count": None, "title": title,
+                "in_one_line": in_one_line_text}
 
     paragraphs = [p.strip() for p in body_text.split("\n\n") if p.strip()]
     n = len(paragraphs)

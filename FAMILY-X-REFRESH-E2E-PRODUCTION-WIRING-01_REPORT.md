@@ -546,3 +546,192 @@ W1〜W4の中核主張は実機コードで裏が取れました。特に以下�
 - W4論点1(`key_phrase_meanings` の意味的乖離)・論点2(run単位text cacheの粒度)・論点4(Contract 1行追加)は、単体では実害なしと判断します。ただし論点1は MAJOR-1(text/audio drift)と組み合わさると「keyの名前も中身も追跡しづらい」状態になるため、MAJOR-1の是正時に `explanation_text` を canonical text として明示記録することを併せて推奨します。論点2(1件変化で5件再生成、+1 call)はコスト影響が小さく許容可ですが、MAJOR-1の guard が無いと「textだけ更新・音声は旧」という形で害になるため、guard追加が前提です。
 
 Production採用可否(`APPROVED_FOR_PRODUCTION`)および有料E2Eの発火判断は人間ユーザーのみが行うものであり、本レビューは判断材料の提示までです。実装・修正には着手していません。
+
+## W5(2026-09-29、委任`_08`): Opus L2所見是正(BLOCKER-1+MAJOR-1〜4)+Standard KP日本語意味へのJ3配線+E2E前¥0 Gate
+
+ユーザー判断(2026-09-29)により、BLOCKER-1/MAJOR-1〜4は「既承認仕様から
+一意に決まる実装是正」(`USER_DECISION_REQUIRED`ではない)として実装した。
+Standard KP日本語意味へのJ3適用は正式決定`APPROVED_FOR_PRODUCTION`として
+別途配線した。費用¥0(mock/regressionのみ、LLM/TTS/ASR呼び出し0回)。
+
+### A〜G 変更箇所(ファイル:行)
+
+- **A(BLOCKER-1、KP解説fail-closed)**: `er019_family_x_kp_explanation_01.py`
+  (`generate_kp_explanations()`、retry後もNGを`NG_ACCEPTED_AFTER_RETRY`
+  ではなく`"NG"`/`"NG_PHRASE_MISMATCH"`のまま返す)、
+  `er019_family_x_audio_production_runner_01.py::_generate_key_phrase_
+  segments_b1()`(L729以降、`text_gate_status != "OK"`のrankはTTSを呼ばず
+  `status="STOPPED"`+reasonを記録)。
+- **B(MAJOR-1、cache guard)**: `er019_family_x_audio_production_runner_
+  01.py::_generate_or_reuse_kp()`(L429、`expected_text`/
+  `require_style_version`引数追加)。呼び出し元3箇所
+  (`_generate_key_phrase_segments_b1`のenglish/explanation、
+  `_generate_key_phrase_segments_a2`のenglish/japanese_meaning)へ
+  `expected_text`+`canonical_text`記録を追加、explanation/japanese_meaning
+  には`require_style_version=True`も追加。`FAMILY_X_VARIABLE_ROLE_STYLE_
+  VERSION`を`"v2_j3_e2_title"`→`"v3_j3_kp_meaning_and_explanation_guard"`
+  へbump(旧style音声の誤reuse防止)。
+- **C(MAJOR-2、構造Gate対称化)**: `er003_v1_n3_01_scaffold_generate.py::
+  split_family_x_article_text_v2()`(L185、title欠落/`## In one line`
+  欠落/本文見出し混入をstatus値`NG_MISSING_TITLE`/`NG_MISSING_IN_ONE_
+  LINE`/`NG_HEADING_IN_BODY`で返す)、`er003_v1_n3_01_standard_a2_
+  generate.py::generate_family_x_standard_a2_no_heading()`(L545、
+  `_FAMILY_X_STANDARD_A2_TITLE_RE`で`^#\s+`必須化、Advancedの
+  `_FAMILY_X_TITLE_BODY_RE`と対称)、`er012_e_family_entertainment_
+  two_level_runner_01.py::_family_x_ensure_split_or_paragraph_retry()`
+  (status非依存の汎用retryへメッセージ更新、ロジック自体は元々status!=
+  "OK"を汎用的に扱う設計だったため変更不要)。
+- **D(MAJOR-3、backend fail-fast)**: `er019_family_x_audio_production_
+  runner_01.py::assert_production_tts_backend()`(L1823、新設)+
+  `main()`のtts stage開始前呼び出し+`--allow-legacy-backend`フラグ新設。
+  KP解説style: `_generate_key_phrase_segments_b1()`内`_kp_explanation_
+  style()`ローカル関数で`_role_style()`と同一backendゲートに揃えた
+  (従来は無条件でVariant B適用)。
+- **E(MAJOR-4、OPEN-228非writer経路封鎖)**: `er012_e_family_
+  entertainment_two_level_runner_01.py`の`run_scaffold_stage()`(L586)/
+  `run_tts_stage()`(L590)/`run_assemble_stage()`(L594)/
+  `build_player_html()`(L765)を`_FAMILY_X_ER019_MIGRATION_STOP_MESSAGE`
+  でfail-fastするRuntimeErrorへ変更(`build_player_html`は元実装本体を
+  到達不能なまま関数内に残置、`_row_info_b1b`/`_row_info_a2`/
+  `_build_level_table`の追加削除を避けるため)。
+- **F(Standard KP日本語意味へのJ3配線、正式決定)**: `er019_family_x_
+  audio_production_runner_01.py::_generate_key_phrase_segments_a2()`
+  (L1007、`_role_style_ja()`ローカル関数新設+`generate_a2_japanese_
+  with_reading_safety()`呼び出しへ`style_prefix_override=_role_style_
+  ja()`追加)。Advancedには`japanese_meaning`segment自体が無いことを
+  `_generate_key_phrase_segments_b1()`のkp_results構造[english/
+  explanation/phrase_repeat]確認で再検証(該当なし)。
+- **G(MINOR)**: N-7(`er019_family_x_kp_explanation_01.py::_build_
+  explanation_json_schema()`新設、`len(items)`からminItems/maxItems導出、
+  `EXPLANATION_JSON_SCHEMA`本体[5固定、sha256算出基準]は不変)。
+  N-4(`er006_master_audio_store_01.py::get_or_generate()`のreused/
+  generated両分岐へ`result["master_audio_key"] = key.as_dict()`追加、
+  L118-134・L169-172)。N-8a/N-8b(下記補遺)。
+
+### N-8a/N-8b 補遺(REPORT §W2の記述訂正・事実記録)
+
+- **N-8a**: er040/er043(固定shell Champion Trial、一回限りscript)は
+  旧シグネチャ`_make_english_key(text, tts_backend=...)`のまま凍結して
+  おり、W2以降の`_make_english_key(name, text, tts_backend=...)`(name
+  引数追加)とは非互換のため再実行不能である。完了済み一回限りscriptの
+  ため実害なし(意図的に無修正のまま残置、TODOとして扱わない)。
+- **N-8b訂正**: 「shared_narrationを参照するのはFamily Xのみ」という
+  REPORT §W2の記述は不正確だった。実際には47ファイルが`er006_audio_
+  cost_pilot_02_shared_narration`をimportし、`er003_v1_n3_01_tts_
+  generate.py`・`er012_b_family_production_runner_01.py`等の他Family
+  Production runnerも`ensure_all_shared_narration_*`を呼ぶ。ただし
+  `tts_backend`gateによりversionが固定される設計(`_make_english_key`/
+  `_make_japanese_key`が`tts_backend != "speech_metadata_flash_lite"`
+  なら`"v1"`固定)ため、実際の隔離要因は「参照ファイル数が少ないこと」
+  ではなく「backend gateによるversion固定」である。結論(他Family無
+  影響)自体は正しいが、根拠の記述を本節で訂正する。
+
+### H. E2E前¥0 Gate(6項目、evidence付き)
+
+| # | 項目 | Evidence |
+|---|---|---|
+| 1 | BLOCKER解消 | `er019_family_x_opus_l2_fixes_01_test_01.py::KpExplanationFailClosedTests`(5 tests、text-gate NG/NG_PHRASE_MISMATCH/status欠落のいずれもTTS未呼び出し+STOPPED記録+既存Audio Validation Gateがblockすることを実地テストで確認) |
+| 2 | MAJOR-1〜4解消 | `GenerateOrReuseKpGuardTests`(4 tests、text/style_version guard)、`SplitV2StructureGateTests`+`StandardA2TitleGateSymmetryTests`(6 tests)、`ProductionBackendGateTests`(4 tests)、`er012_e_family_entertainment_two_level_runner_test_01.py::TtsStageJapaneseTitleInjectionTests`(4 tests、非writer stage fail-fast) |
+| 3 | J3正式配線確認 | japanese_title(`generate_family_x_a2_segments`内`_role_style_ja()`)/preview・comment_1-4(同左)/KP日本語意味(`_generate_key_phrase_segments_a2`内`_role_style_ja()`、新設)の3箇所すべてが同一関数名`_role_style_ja()`・同一backendゲート(`tts_backend == "speech_metadata_flash_lite"`)を使うことをGrep+テスト(`er019_family_x_variable_role_style_wiring_01_test_01.py::KeyPhraseJapaneseMeaningJ3WiringTests`)で確認 |
+| 4 | dangling referenceなし | `grep -rn "NG_ACCEPTED_AFTER_RETRY" *.py`は説明コメント2件+「廃止した」ことを確認するテストのassertion 2件のみ(稼働コードの分岐・返り値としては0件) |
+| 5 | retry/fallback整合 | 既存`_family_x_ensure_split_or_paragraph_retry()`(status!="OK"を汎用的に1回retry)が新NGステータス(NG_MISSING_TITLE等)をコード変更なしで引き続き処理することをテストで確認(`SplitV2StructureGateTests::test_non_ok_status_is_caught_by_existing_retry_helper`)。KP解説の技術retry(1回)上限は無変更 |
+| 6 | Standard/Advanced非対称なし | 下表参照 |
+
+**Standard/Advanced 対比表(項目6の詳細)**:
+
+| 項目 | Standard(A2) | Advanced(B1B) | 対称性 |
+|---|---|---|---|
+| Title行Gate | `^#\s+`必須(本W5で追加) | `^#\s+`必須(既存) | 対称化済み |
+| In one line Gate | status値で判定 | status値で判定(共通関数) | 同一関数 |
+| 本文見出し混入Gate | status値で判定(共通関数) | status値で判定(共通関数) | 同一関数 |
+| 段落数retry | `_family_x_ensure_split_or_paragraph_retry()` | 同左 | 同一ヘルパー |
+| KP中間segment | 日本語意味(J3、本W5で追加) | 英語解説(Variant B) | 意図的差異(ユーザー決定どおり) |
+| KP中間segment cache guard | text+style_version guard(本W5で追加) | text+style_version guard(W5で追加) | 対称 |
+| KP先頭=末尾 | 既存不変(W4で保証) | 既存不変(W4で保証) | 対称 |
+| TTS backend gate | `assert_production_tts_backend()`共通 | 同左 | 共通 |
+
+### E2E-PLAN(実行手順書)
+
+**実行コマンド**(段階別、`--stage all`禁止):
+```
+.venv\Scripts\python.exe er019_family_x_audio_production_runner_01.py --slug <slug> --run <run> --level both --stage scaffold --tts-backend speech_metadata_flash_lite --budget-jpy 50
+.venv\Scripts\python.exe er019_family_x_audio_production_runner_01.py --slug <slug> --run <run> --level both --stage tts --tts-backend speech_metadata_flash_lite --budget-jpy 150
+.venv\Scripts\python.exe er019_family_x_audio_production_runner_01.py --slug <slug> --run <run> --level both --stage assemble --tts-backend speech_metadata_flash_lite --budget-jpy 10
+.venv\Scripts\python.exe er019_family_x_audio_production_runner_01.py --slug <slug> --run <run> --level both --stage player --tts-backend speech_metadata_flash_lite
+```
+`er012_e_family_entertainment_two_level_runner_01.py`は`--stage writer`
+(必要なら`--stage ledger`も)のみ実行する(scaffold/tts/assemble/player/
+allはW5でfail-fast、実行しても課金前にSTOPする)。`TTS_EXECUTION_MODE=
+STANDARD`(既定、`--tts-mode STANDARD`)を維持する。
+
+**想定segment数・call数・費用**(記事×レベルごと、Hormuz/Meta×Standard/
+Advanced想定):
+- Standard: topic_intro/japanese_title/preview/comment_1-4/full_story_
+  part1-3/in_one_line(11 segment)+KP 5rank×(english+japanese_meaning)
+  =10 call。
+- Advanced: topic_intro/preview/comment_1-4/full_story_part1-3/
+  in_one_line(10 segment)+KP 5rank×(english+explanation)=10 call
+  (explanation textは5rankまとめて1 LLM call)。phrase_repeatはreuseの
+  ためTTS call 0。
+- 想定費用: 段階別`--budget-jpy`(scaffold¥50/tts¥150/assemble¥10)を
+  Guardrailとして使用。技術retry上限1回(段落数/KP explanation)。
+
+**Guardrail**: 記事×レベルごとに上記budget-jpyを厳守し、超過時は
+`assert_budget_ok()`がRuntimeErrorでSTOPする既存機構をそのまま使う。
+
+**Opus「E2Eで実測確認すべき項目」9件(REPORT §3、転記)**: (1)
+`entry_point.json.tts_backend`+audit `style_prefix`実文字列(可変segment
+全件+KP explanation/japanese_meaning全rank)。(2) 各level `parts.json`の
+title非空・見出し混入なし・in_one_line非空。(3) b1b全rank:
+phrase_repeat=english同一path/sha256、TTS呼び出し回数不変。(4) b1b全
+rank: `explanation_status_from_text_gate=="OK"`、1件でも違えばSTOPして
+ユーザー判断。(5) 固定shell10件reuse=True・TTS call 0。(6)
+`tts_generation_results.json`の`style_version`一致・全segment
+model/voice/style_prefix/sha256/canonical_text記録。(7) 通し試聴(JA
+style混在解消の確認含む)。(8) 費用実測(段階別)。(9) 実行規律
+(`--stage all`禁止、段階個別実行)。
+
+### テスト・regression結果
+
+- 新規`er019_family_x_opus_l2_fixes_01_test_01.py`: 24 tests、全PASS。
+- 既存テスト更新: `er019_family_x_kp_structure_wiring_01_test_01.py`
+  (36 tests全PASS、`test_explanation_uses_variant_b_style`を backend
+  gate対応に分割)、`er019_family_x_variable_role_style_wiring_01_test_
+  01.py`(24 tests全PASS、`KeyPhraseRoleUnchangedTests`をJ3配線に合わせ
+  て更新+`KeyPhraseJapaneseMeaningJ3WiringTests`新設)、
+  `er012_e_family_entertainment_two_level_runner_test_01.py`(21 tests
+  全PASS、非writer stage fail-fastテストへ更新)、
+  `er019_family_x_audio_production_runner_01_test_01.py`(49 tests全
+  PASS、DryRunEndToEndTestsのfixtureを新構造[見出しなし]記事へ更新
+  [`SAMPLE_ARTICLE_V2_NO_HEADING`新設]、新Gateが旧構造fixtureを正しく
+  NGにするようになったため)。
+- Regression(`run_project_regression.py`): `er019*_test_*.py`
+  259/259 PASS、`er012*_test_*.py` 222/222 PASS、`er006*_test_*.py`
+  23/23 PASS(パターン自体は`er006_pronunciation_phase4_entity_like_
+  test_01.py`のみ discover、`er006_master_audio_store_01_test.py`は
+  別途直接実行し6/6 PASS)、`er033*_test_*.py` 64/64 PASS、
+  `er045*_test_*.py` 19/19 PASS、`er048*_test_*.py` 11/11 PASS。
+  `er003*_test_*.py`は1553/1557 PASS(4件失敗はいずれも本タスク由来
+  ではない、下記参照)。
+
+**pre-existing失敗4件(非起因根拠)**: `er003_test_bad.py::test_case_0`
+(意図的に壊れたfixtureで回帰harness自体の自己診断用、ファイル名`_bad`
+が示すとおり)、`er003_test_p2j_investigate.py`の3件(過去時点の
+frozenテスト件数[P2H:1032/P2I:660]とlive実測値の比較。本タスクで
+テストを新規追加[24件]・既存ファイルへテスト追加したことでlive件数が
+増え、frozen historical値との厳密一致比較が不一致になる。設計上
+「現在の値へ書き換えることも想定しない」frozen比較であり、新規テスト
+追加のたびに発生しうる既知のtrade-off。`git stash`で本タスクの変更を
+一時退避し同テストを実行した結果、変更前から同一の失敗[665!=660]が
+再現することを確認済み[本タスク由来ではない])。
+
+### 費用
+
+¥0(LLM/TTS/ASR呼び出し0回、実行したのは単体テスト[mock]・regression
+のみ)。
+
+### STOP有無
+
+STOPなし(新しいProduct仕様・未承認Prompt変更は発生しなかった。E2E
+実測[Hormuz/Meta実データでの解説生成・TTS・完成音声]は次Phaseの範囲、
+本W5はコード・テストのみ)。

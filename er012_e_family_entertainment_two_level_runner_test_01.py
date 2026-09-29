@@ -365,13 +365,32 @@ class TtsModeCliTests(unittest.TestCase):
 
 
 class TtsStageJapaneseTitleInjectionTests(unittest.TestCase):
-    def test_run_tts_stage_registers_japanese_title_and_calls_run_theme(self):
+    def test_run_tts_stage_fails_fast_open_228_closure(self):
+        """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見
+        MAJOR-4是正、2026-09-29、OPEN-228封鎖): run_tts_stage()(旧###
+        見出し2つ前提のlegacy経路)は、Family Xのscaffold/tts/assemble/
+        playerが正式にer019_family_x_audio_production_runner_01.pyへ
+        移行したことに伴いfail-fastするようになった(以前はtts_gen.
+        run_theme()を実際に呼んでいたが、新構造[見出しなし]article.mdとは
+        非互換のまま残置されていたため、運用トラップだった)。API呼び出しは
+        一切発生しない(RuntimeErrorが即座に送出される)。"""
         theme = {"theme_id": "injected_slug_test"}
         with mock.patch.object(runner.tts_gen, "run_theme", return_value={"ok": True}) as m_run:
-            result = runner.run_tts_stage(theme, "日本語タイトル")
-        self.assertEqual(runner.tts_gen.JAPANESE_TITLES["injected_slug_test"], "日本語タイトル")
-        m_run.assert_called_once_with(theme)
-        self.assertEqual(result, {"ok": True})
+            with self.assertRaises(RuntimeError):
+                runner.run_tts_stage(theme, "日本語タイトル")
+        m_run.assert_not_called()
+
+    def test_run_scaffold_stage_fails_fast_open_228_closure(self):
+        with self.assertRaises(RuntimeError):
+            runner.run_scaffold_stage(None, {"theme_id": "x"})
+
+    def test_run_assemble_stage_fails_fast_open_228_closure(self):
+        with self.assertRaises(RuntimeError):
+            runner.run_assemble_stage({"theme_id": "x", "out_dir": "dummy"})
+
+    def test_build_player_html_fails_fast_open_228_closure(self):
+        with self.assertRaises(RuntimeError):
+            runner.build_player_html({"theme_id": "x", "out_dir": "dummy"}, "日本語タイトル")
 
 
 if __name__ == "__main__":

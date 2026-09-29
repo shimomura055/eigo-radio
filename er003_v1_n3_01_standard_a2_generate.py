@@ -539,6 +539,9 @@ def build_family_x_no_heading_prompt(advanced_article: str, must_fix: list | Non
     return prompt
 
 
+_FAMILY_X_STANDARD_A2_TITLE_RE = re.compile(r"^#\s+(.+?)\s*\n")
+
+
 def generate_family_x_standard_a2_no_heading(advanced_text: str, *, client=None, model: str | None = None,
                                               max_attempts: int = 2,
                                               must_fix: list | None = None) -> StandardA2Result:
@@ -546,7 +549,18 @@ def generate_family_x_standard_a2_no_heading(advanced_text: str, *, client=None,
     generate_standard_a2()/vfl01.run_writer_with_technical_retry()(h3
     構造Gate専用)は使わない。vfl01.run_writer_no_search()を直接呼び、
     Title+Body形式のパース可否のみをGateにしたretryを独自実装する(h3
-    非依存、既存generate_standard_a2()には一切影響しない)。"""
+    非依存、既存generate_standard_a2()には一切影響しない)。
+
+    FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-2
+    是正、2026-09-29): 旧実装はAdvanced(`_FAMILY_X_TITLE_BODY_RE`、
+    `^#\\s+`必須)と非対称に、`strip_title()`(先頭行が非空かのみ)を
+    Gateに使っており、`# `の無い1行目でもtitleが非空文字列であれば
+    STRUCTURE_PASSのまま通過していた(その結果、以降のsplit_family_x_
+    article_text_v2()がtitle=""のまま素通りし、topic_introが
+    "Today's topic is ."になる実害があった)。Advancedと対称の
+    `^#\\s+`必須Gateに揃える(本文中のMarkdown見出し混入・In one line
+    欠落は、split_family_x_article_text_v2()側[MAJOR-2の別是正]で
+    Standard/Advanced共通にGateする)。"""
     if client is None:
         client = vfl01.get_client()
     requested_model = model or routing.require_model(PROCESS_LABEL, routing.WRITER_MODEL)
@@ -570,20 +584,20 @@ def generate_family_x_standard_a2_no_heading(advanced_text: str, *, client=None,
             raise RuntimeError(
                 f"[FAMILY_X_STANDARD_A2_NO_HEADING] {max_attempts}回試行しても生成に"
                 f"失敗しました: attempts={attempts_detail}")
-        title, _ = strip_title(result["raw_text"])
-        status = "STRUCTURE_PASS" if title else "STRUCTURE_INVALID"
+        title_match = _FAMILY_X_STANDARD_A2_TITLE_RE.match((result["raw_text"] or "").strip())
+        status = "STRUCTURE_PASS" if title_match else "STRUCTURE_INVALID"
         attempts_detail.append({
             "attempt": attempt, "status": status, "model": result["model"],
             "response_id": result["response_id"], "raw_text": result["raw_text"],
         })
-        if title:
-            parsed_title = title
+        if title_match:
+            parsed_title = title_match.group(1).strip()
             break
         if attempt < max_attempts:
             continue
         raise RuntimeError(
-            f"[FAMILY_X_STANDARD_A2_NO_HEADING] {max_attempts}回試行してもTitle行を"
-            f"検出できませんでした(先頭200字): {result['raw_text'][:200]!r}")
+            f"[FAMILY_X_STANDARD_A2_NO_HEADING] {max_attempts}回試行しても『# 』で始まる"
+            f"Title行を検出できませんでした(先頭200字): {result['raw_text'][:200]!r}")
     elapsed = round(time.time() - t0, 3)
 
     text = result["raw_text"]

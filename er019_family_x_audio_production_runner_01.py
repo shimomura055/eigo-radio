@@ -365,10 +365,18 @@ _BODY_SEGMENT_NAMES = ("full_story_part1", "full_story_part2", "full_story_part3
 # japanese_titleへのJ3適用等)を変更するたびに、この値をbumpする。
 # tts_generation_results.jsonのトップレベルへ保存し、_generate_or_reuse
 # がcacheのversionと比較する。値が不一致または欠落(旧run・旧cache)の
-# 場合は可変segmentの再利用を行わない(shell固定phrase・Key Phraseの
-# reuse判定[_generate_or_reuse_kp、shared_narration側]はこの値を参照
-# せず、本変更の影響を受けない)。
-FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v2_j3_e2_title"
+# 場合は可変segmentの再利用を行わない。
+#
+# W5(2026-09-29、Standard KP日本語意味へのJ3配線[正式決定]+Opus L2所見
+# MAJOR-1是正): Key Phrase側の"explanation"(Advanced英語解説)・
+# "japanese_meaning"(Standard日本語意味)roleのreuse判定
+# (`_generate_or_reuse_kp`のrequire_style_version=True)も、この同じ
+# top-level値を参照するようになった(shell固定phrase・KPの"english"
+# role[Master Store経由、別途versioning]は引き続きこの値を参照しない)。
+# 本バージョンをbumpすることで、japanese_meaningへJ3を初適用する前に
+# 生成済みの旧音声(既定JAPANESE_STYLE_PREFIXのまま)が黙ってreuseされる
+# ことを防ぐ。
+FAMILY_X_VARIABLE_ROLE_STYLE_VERSION = "v3_j3_kp_meaning_and_explanation_guard"
 
 
 # ============================================================
@@ -418,10 +426,32 @@ def _generate_or_reuse(cached: dict | None, name: str, wav_path: str, generate_f
     return generate_fn()
 
 
-def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: str, generate_fn):
+def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: str, generate_fn,
+                           expected_text: str | None = None, require_style_version: bool = False):
+    """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-1
+    是正、2026-09-29): 従来はstatus=="OK"+ファイル存在のみでreuseしており、
+    role="explanation"(KP英語解説、LLM生成のため文面が変わりうる)・
+    role="japanese_meaning"(Standard KP日本語意味、W5でJ3 styleを新規
+    適用)のいずれもtext/style_versionの不一致を検知できなかった
+    (`_generate_or_reuse`が可変segmentに対して既に持つガードと同型の
+    穴)。
+
+    expected_text指定時: cachedの"canonical_text"と一致する場合のみ
+    reuse(不一致ならgenerate_fn()で再生成)。
+    require_style_version=True指定時: cached(トップレベルのdict、
+    tts_generation_results.json全体)の"style_version"が現行の
+    FAMILY_X_VARIABLE_ROLE_STYLE_VERSIONと一致する場合のみreuse対象に
+    する(不一致・欠落なら常に再生成)。role="english"(Key Phraseの
+    使用形そのもの、Master Store側のversioningで別途管理)は既定どおり
+    require_style_version=Falseのまま(この引数を渡さない呼び出し元は
+    従来どおりの挙動)。"""
+    if require_style_version and cached is not None and cached.get("style_version") != FAMILY_X_VARIABLE_ROLE_STYLE_VERSION:
+        return generate_fn()
     kp_cache = (cached.get("key_phrases") or {}) if cached else {}
     cached_result = (kp_cache.get(str(rank)) or kp_cache.get(rank) or {}).get(role) if kp_cache else None
     if cached_result and cached_result.get("status") == "OK" and os.path.exists(wav_path):
+        if expected_text is not None and cached_result.get("canonical_text") != expected_text:
+            return generate_fn()
         reused = dict(cached_result)
         reused["reused_from_previous_run"] = True
         return reused
@@ -708,6 +738,16 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
     # `_generate_key_phrase_segments_a2`)。
     import er033_tts_flash_lite_family_x_styles_01 as fl_styles
 
+    # W5(Opus L2所見MAJOR-3是正): KP解説styleも_role_style()と同じbackend
+    # ゲートに揃える(既定backendではNone=下位関数の既定style、
+    # speech_metadata_flash_lite選択時のみVariant Bを適用)。従来は
+    # backendに関わらず無条件でVariant Bを渡しており、legacy backend
+    # (未検証の組み合わせ)にもVariant Bが適用されてしまっていた。
+    def _kp_explanation_style() -> str | None:
+        if tts_backend != "speech_metadata_flash_lite":
+            return None
+        return fl_styles.KEY_PHRASE_EXPLANATION_EN
+
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     explanation_bundle = _resolve_kp_explanations_text(kp_items, cached)
     explanation_by_rank = explanation_bundle["items"]
@@ -720,20 +760,50 @@ def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict 
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
                 lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
-                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend))
+                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend),
+                # W5(Opus L2所見MAJOR-1、english role text guard): used_form
+                # が変わった場合に古い音声を誤ってreuseしないようにする。
+                expected_text=used_form)
+        en_r["canonical_text"] = used_form
 
         explanation_row = explanation_by_rank.get(rank) or explanation_by_rank.get(str(rank)) or {}
         explanation_text = explanation_row.get("english_explanation") or ""
-        with cl.segment_context(f"kp{rank}_explanation_en"):
-            expl_r = _generate_or_reuse_kp(
-                cached, rank, "explanation", f"{narration_dir}/kp{rank}_explanation_en.wav",
-                lambda explanation_text=explanation_text,
-                rank=rank: generate_key_phrase_explanation_en_verified(
-                    explanation_text, f"{narration_dir}/kp{rank}_explanation_en.wav",
-                    style_prefix_override=fl_styles.KEY_PHRASE_EXPLANATION_EN, tts_backend=tts_backend))
+        text_gate_status = explanation_row.get("status")
+        # W5(Opus L2所見BLOCKER-1是正、2026-09-29): text-gate status が
+        # "OK"以外(NG/NG_PHRASE_MISMATCH/parse失敗によるstatus欠落等)の
+        # rankはTTSを一切呼ばず、fail-closedでSTOPPEDにする。空文字/未検証
+        # の英語解説文をTTSへ渡す経路を排除する(既存
+        # verify_episode_audio_validation_gateがkp{rank}_explanation=
+        # STOPPEDでassemblyをblockし、既存record_human_approval()経路で
+        # 人間承認できる)。
+        if text_gate_status != "OK":
+            with cl.segment_context(f"kp{rank}_explanation_en"):
+                expl_r = {
+                    "status": "STOPPED",
+                    "reason": (
+                        f"text-gate status={text_gate_status!r}のためTTSを実行せず"
+                        "STOPしました(BLOCKER-1是正、Human Review承認[record_"
+                        "human_approval()]後に再実行するか、Key Phrase解説textの"
+                        "再生成が必要です)。"
+                    ),
+                    "new_fact_tokens": (explanation_row.get("qa") or {}).get("new_fact_tokens"),
+                }
+        else:
+            with cl.segment_context(f"kp{rank}_explanation_en"):
+                expl_r = _generate_or_reuse_kp(
+                    cached, rank, "explanation", f"{narration_dir}/kp{rank}_explanation_en.wav",
+                    lambda explanation_text=explanation_text,
+                    rank=rank: generate_key_phrase_explanation_en_verified(
+                        explanation_text, f"{narration_dir}/kp{rank}_explanation_en.wav",
+                        style_prefix_override=_kp_explanation_style(), tts_backend=tts_backend),
+                    # W5(Opus L2所見MAJOR-1是正): text一致+style_version一致の
+                    # 両方をreuse条件にする(可変segmentの_generate_or_reuseと
+                    # 同一方針)。
+                    expected_text=explanation_text, require_style_version=True)
         expl_r["explanation_text"] = explanation_text
+        expl_r["canonical_text"] = explanation_text
         expl_r["explanation_qa"] = explanation_row.get("qa")
-        expl_r["explanation_status_from_text_gate"] = explanation_row.get("status")
+        expl_r["explanation_status_from_text_gate"] = text_gate_status
         expl_r["display_gloss"] = item["japanese_gloss"]
 
         # 末尾の英語Phrase再掲: 新規generateはせず、en_rをそのまま複製
@@ -936,6 +1006,19 @@ def generate_family_x_a2_segments(
 
 def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict | None = None,
                                       tts_backend: str = "structured_separation") -> dict:
+    # W5(2026-09-29ユーザー正式決定APPROVED_FOR_PRODUCTION、Standard KP
+    # 日本語意味へのJ3配線): japanese_title/preview/comment_1-4と同一の
+    # _role_style_ja()(同一関数ロジック・同一backendゲート)をStandard KP
+    # 日本語意味(japanese_meaning)へも適用する。既定backendではNoneを
+    # 返し既存挙動(既定JAPANESE_STYLE_PREFIX)のまま(他のJapanese Roleへ
+    # 波及しない、本関数内のみのlocal helper)。
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+
+    def _role_style_ja() -> str | None:
+        if tts_backend != "speech_metadata_flash_lite":
+            return None
+        return fl_styles.FAMILY_X_ROLE_STYLE_JA
+
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
     kp_results = {}
     for i, item in enumerate(kp_items, start=1):
@@ -946,14 +1029,22 @@ def _generate_key_phrase_segments_a2(kp: dict, narration_dir: str, cached: dict 
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
                 lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
-                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend))
+                    n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend),
+                # W5(Opus L2所見MAJOR-1、english role text guard)。
+                expected_text=used_form)
+        en_r["canonical_text"] = used_form
         with cl.segment_context(f"kp{rank}_japanese_meaning"):
             ja_r = _generate_or_reuse_kp(
                 cached, rank, "japanese_meaning", f"{narration_dir}/meaning_{i}.wav",
                 lambda ja_gloss_tts=ja_gloss_tts, used_form=used_form,
                 i=i: n3_tts.generate_a2_japanese_with_reading_safety(
                     ja_gloss_tts, f"{narration_dir}/meaning_{i}.wav", n3_tts.expected_substring_ja(ja_gloss_tts),
-                    max_extra_chars=30, known_key_phrase_terms=[used_form], tts_backend=tts_backend))
+                    max_extra_chars=30, known_key_phrase_terms=[used_form],
+                    style_prefix_override=_role_style_ja(), tts_backend=tts_backend),
+                # W5(J3配線に伴うMAJOR-1系guard、Standard KP日本語意味に
+                # もtext guard+style_version guardを適用する)。
+                expected_text=ja_gloss_tts, require_style_version=True)
+        ja_r["canonical_text"] = ja_gloss_tts
         ja_r["display_gloss"] = item["japanese_gloss"]
         ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
         kp_results[rank] = {"english": en_r, "japanese_meaning": ja_r}
@@ -1711,7 +1802,41 @@ def build_arg_parser() -> argparse.ArgumentParser:
                               "gemini-3.8-flash-lite-ttsのspeech_metadata方式(Family X、"
                               "主記事segment+Key Phrase[共有narration含む]の両方が対象、"
                               "FAMILY-X-02のユーザー確定仕様CでKey Phraseも統一)。")
+    # W5(Opus L2所見MAJOR-3是正、2026-09-29): E2E Production実行は
+    # --tts-backend speech_metadata_flash_lite(承認済み正式backend)が
+    # 必須。CLIフラグ1個の抜けで legacy backend のまま tts stage が
+    # 走ると、¥150〜250を無駄にした上「どの承認仕様にも一致しない
+    # 半新規episode」が全Gateを通過してしまう実害があった。legacy
+    # backendはTrial/regression用途のみ、この明示flagがある場合に限り
+    # 許可する(既存テスト互換のため)。
+    parser.add_argument("--allow-legacy-backend", action="store_true",
+                         help="tts_backend=structured_separation(承認済み正式backend以外)での"
+                              "tts stage実行を明示的に許可する(Trial/regression用途のみ、"
+                              "Production E2Eでは使用しないこと)。")
     return parser
+
+
+# W5(Opus L2所見MAJOR-3是正): tts stage開始前のbackend fail-fast Gate。
+FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND = "speech_metadata_flash_lite"
+
+
+def assert_production_tts_backend(tts_backend: str, allow_legacy_backend: bool) -> None:
+    """tts stage(実際の課金が発生する処理)を開始する前に、承認済み正式
+    backend(speech_metadata_flash_lite)であることを確認する。legacy
+    backend(structured_separation、既定値)はTrial/regression用途の
+    明示opt-in(--allow-legacy-backend)がある場合のみ許可する。これに
+    よりCLIフラグ1個の抜けで「どの承認仕様にも一致しない半新規episode」
+    が全Gateを通過してしまう事故(Opus L2所見MAJOR-3)を防ぐ。"""
+    if tts_backend == FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND:
+        return
+    if allow_legacy_backend:
+        return
+    raise RuntimeError(
+        f"[STOP][MAJOR-3] tts_backend={tts_backend!r}は、Production E2Eの承認済み"
+        f"正式backend({FAMILY_X_APPROVED_PRODUCTION_TTS_BACKEND!r})ではありません。"
+        "legacy backendを意図的に使う場合(Trial/regression用途のみ)は"
+        "--allow-legacy-backendを明示してください。tts stageは実行していません"
+        "(課金前にSTOPしました)。")
 
 
 def main() -> None:
@@ -1744,6 +1869,8 @@ def main() -> None:
         # 「Key PhraseはPhase 1範囲外につき常にstructured_separation」は
         # 過去の一時的な設計判断でありもう成立しない)。
         "tts_backend": args.tts_backend,
+        # W5(MAJOR-3是正): legacy backend実行を明示許可したかどうかの記録。
+        "allow_legacy_backend": args.allow_legacy_backend,
     })
 
     if args.dry_run or args.stage == "plan":
@@ -1779,6 +1906,9 @@ def main() -> None:
             save_json(entry_point_path, entry_point)
 
     if args.stage in ("tts", "all"):
+        # W5(Opus L2所見MAJOR-3是正): 課金が発生するTTS呼び出し(下の
+        # generate_family_x_*_segments())の直前でbackendをfail-fastする。
+        assert_production_tts_backend(args.tts_backend, args.allow_legacy_backend)
         with cl.logging_context(args.slug, "tts"):
             for level in levels:
                 if level == "b1b":

@@ -656,3 +656,47 @@ Guardrail遵守確認(W4):
   "er0*.py"`で本タスク由来の差分ファイル一覧を確認済み、
   `run_project_regression.py --pattern "er019*_test_*.py"`で
   collected=232 passed=232を再確認)。
+
+### 9-W5 Phase B(W5、2026-09-29)実施結果の要約
+
+Opus L2設計レビュー所見(BLOCKER 1件・MAJOR 4件、REPORT行459-548)を
+「既承認仕様から一意に決まる実装是正」として是正し、Standard Key
+Phrase日本語意味へのJ3適用(ユーザー正式決定`APPROVED_FOR_PRODUCTION`)
+を配線した。詳細は`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`
+§W5参照(変更箇所・E2E前¥0 Gate 6項目・Standard/Advanced対比表・
+E2E-PLAN・テスト結果)。
+
+§3(d)/(b)からの主な実装判断:
+- BLOCKER-1是正により、KP英語解説のQA NGは技術retry(1回)後もそのまま
+  採用せず(`NG_ACCEPTED_AFTER_RETRY`廃止)、fail-closedでTTSを呼ばず
+  `status="STOPPED"`にした。既存Audio Validation Gate/
+  `record_human_approval()`経路をそのまま流用し、新しいHuman Review
+  機構は追加していない。
+- MAJOR-1是正の`require_style_version`guardは、既存の可変segment
+  cache version guard(W3で導入した`FAMILY_X_VARIABLE_ROLE_STYLE_
+  VERSION`)をKey Phrase側(`_generate_or_reuse_kp`)へも拡張適用する
+  設計にした(新しい別のversion管理機構は作らない)。Standard KP日本語
+  意味へのJ3適用に伴い同versionをbumpした。
+- MAJOR-2是正は`split_family_x_article_text_v2()`側にGateを集約する
+  設計にした(`generate_family_x_standard_a2_no_heading()`側は`^#\s+`
+  必須化のみ)。既存`_family_x_ensure_split_or_paragraph_retry()`が
+  status非依存の汎用retryとして元々設計されていたため、呼び出し側の
+  ロジック変更は不要だった。
+- MAJOR-4是正は、`er012_e_family_entertainment_two_level_runner_01.py`
+  の非writer stage関数(scaffold/tts/assemble/player)を関数呼び出し
+  レベルでfail-fastする設計にした(CLIの`--stage`choices制限のみでは
+  直接呼び出しからの到達を防げないため)。`build_player_html()`は
+  `_row_info_b1b`/`_row_info_a2`/`_build_level_table`の追加削除を避け
+  るため、元実装本体を到達不能なまま関数内に残置する最小diffを採用
+  した。
+
+Guardrail遵守確認(W5):
+- API支出: ¥0(LLM/TTS/ASR呼び出し0件、単体テスト・regressionは全て
+  mock)。
+- 削除・移動・`rm`・`git clean`・stash/rebase/reset/amend/force push:
+  実施なし(`git stash`/`git stash pop`はpre-existing失敗の非起因確認
+  のためのみ使用し、即座にpopして復元、変更の破棄は発生していない)。
+- W1〜W4の資産(新記事構造・Master Champion・可変Role Style/cache
+  version guard・KP音声構造骨格): 承認済み構造は変更せず、Opus L2所見
+  是正+Standard KP日本語意味へのJ3配線のみ追加した(`git diff --stat
+  HEAD -- "er0*.py"`で本タスク由来の差分ファイル一覧を確認済み)。

@@ -118,6 +118,12 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
         result = {
             "status": "OK", "path": out_path, "reused": True,
             "master_audio_id": master_id, "cache_miss_reason": None,
+            # W5(Opus L2所見N-4是正、2026-09-29): reuse経路の戻り値には
+            # 従来model/voice/style_instruction_id/version/canonical_text
+            # が含まれず、追跡にはmanifest.jsonとのjoinが必要だった
+            # (master_audio_id経由)。key.as_dict()を追加するだけでjoin
+            # 不要になる(既存キーは無変更、追加のみ)。
+            "master_audio_key": key.as_dict(),
         }
         # ER-008-N8-FINAL-QA-HARDENING-21 Item 1/7: 以前はreused=Trueの
         # 場合、statusとpathだけの最小限dictを返しており、生成時に記録した
@@ -163,6 +169,8 @@ def get_or_generate(key: MasterAudioKey, out_path: str,
     r["reused"] = False
     r["master_audio_id"] = master_id
     r["cache_miss_reason"] = cache_miss_reason
+    # W5(N-4是正): 新規生成時もreuse時と同じ形で追跡できるようkeyを含める。
+    r["master_audio_key"] = key.as_dict()
     return r
 
 

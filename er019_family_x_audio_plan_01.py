@@ -146,10 +146,12 @@ def split_family_x_article_text(text: str) -> dict:
 # ============================================================
 def split_family_x_article_text_v2(text: str) -> dict:
     """新構造(# Title -> 本文[段落、見出しなし] ->『## In one line』)を
-    part1/part2/part3+in_one_lineへ分割する。『## In one line』が見つか
-    らない場合のみRuntimeError、paragraph_count<3の場合はstatus=
-    "TOO_FEW_PARAGRAPHS"を返す(旧split_family_x_article_text()の###
-    見出し2つ必須・無retryクラッシュ[OPEN-228]は新経路に存在しない)。"""
+    part1/part2/part3+in_one_lineへ分割する。title行欠落・『## In one
+    line』欠落・段落数<3・本文への見出し混入はいずれもRuntimeErrorでは
+    なくstatus値(NG_MISSING_TITLE/NG_MISSING_IN_ONE_LINE/
+    TOO_FEW_PARAGRAPHS/NG_HEADING_IN_BODY)で返す(W5、Opus L2所見
+    MAJOR-2是正。旧split_family_x_article_text()の###見出し2つ必須・
+    無retryクラッシュ[OPEN-228]は新経路に存在しない)。"""
     return sc.split_family_x_article_text_v2(text)
 
 

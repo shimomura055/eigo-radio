@@ -302,14 +302,23 @@ def _family_x_ensure_split_or_paragraph_retry(article_text: str, regen_fn, label
     split_result = sc.split_family_x_article_text_v2(article_text)
     if split_result["status"] == "OK":
         return {"article_text": article_text, "split": split_result, "paragraph_retried": False}
-    print(f"[E-FAMILY-RUNNER] {label}: paragraph_count={split_result.get('paragraph_count')}<3。"
+    # W5(Opus L2所見MAJOR-2是正、2026-09-29): split_family_x_article_
+    # text_v2()はTOO_FEW_PARAGRAPHSに加えNG_MISSING_TITLE/NG_MISSING_
+    # IN_ONE_LINE/NG_HEADING_IN_BODYもstatus値として返すようになった
+    # (従来は後者2つがRuntimeErrorで直接送出され、このretryを経由せず
+    # 課金後にクラッシュしていた)。status非依存のGate(status!="OK"なら
+    # 1回だけmust-fix retry)として扱うことで、Standard/Advanced対称に
+    # 全NGステータスをここでretryする。
+    print(f"[E-FAMILY-RUNNER] {label}: split status={split_result.get('status')}"
+          f"(paragraph_count={split_result.get('paragraph_count')})。"
           "段落保持を強調したmust-fixで1回だけ再生成します...")
     new_article_text = regen_fn()
     split_result2 = sc.split_family_x_article_text_v2(new_article_text)
     if split_result2["status"] != "OK":
         raise RuntimeError(
-            f"[STOP] Family X {label}: 段落保持retry後もparagraph_count="
-            f"{split_result2.get('paragraph_count')}<3のため3分割できません。"
+            f"[STOP] Family X {label}: must-fix retry後もsplit status="
+            f"{split_result2.get('status')}(paragraph_count="
+            f"{split_result2.get('paragraph_count')})のため3分割できません。"
             "本文を手で直さずSTOPします(設計書§3(b)のcontingency、E2Eで顕在化)。"
         )
     return {"article_text": new_article_text, "split": split_result2, "paragraph_retried": True}
@@ -553,36 +562,43 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
 # ------------------------------------------------------------
 # downstream(delegation D7): 既存A-Family(n3)関数の再利用のみ
 # ------------------------------------------------------------
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W5、Opus L2所見MAJOR-4是正、
+# 2026-09-29、OPEN-228封鎖): scaffold/tts/assemble/player stageは、旧
+# ###見出し2つ前提のgate(sc.split_article_text()、OPEN-228の直接原因)
+# へ到達するlegacy経路である。W1でFamily Xのwriter stage(run_writer_
+# stage())は新経路(split_family_x_article_text_v2())へ切替済みだが、
+# 同一runnerの他stageは新構造(見出しなし)のarticle.mdと非互換のまま
+# 残っていた(--stage all では writer段の課金後にRuntimeErrorでクラッシュ
+# する運用トラップ)。Family Xの音声生成(scaffold/tts/assemble/player)は
+# `er019_family_x_audio_production_runner_01.py`が正式経路であるため、
+# 本runnerの非writer stageはfail-fastで封鎖する(関数呼び出しレベルで
+# 封鎖するため、CLIの--stage引数を経由しない直接呼び出しからも到達
+# 不能になる)。
+_FAMILY_X_ER019_MIGRATION_STOP_MESSAGE = (
+    "[STOP][OPEN-228][MAJOR-4] Family Xのscaffold/tts/assemble/playerは"
+    "er019_family_x_audio_production_runner_01.pyが正式経路です。本runner"
+    "(er012_e_family_entertainment_two_level_runner_01.py)はledger/writer"
+    "stageのみ提供します(旧###見出し2つ前提のgate[sc.split_article_text()]"
+    "は残置していますが、Family Xの新経路からは到達不能に封鎖済みです)。"
+)
+
+
 def run_scaffold_stage(client, theme: dict) -> dict:
-    return sc.run_theme_scaffold(client, theme)
+    raise RuntimeError(_FAMILY_X_ER019_MIGRATION_STOP_MESSAGE)
 
 
 def run_tts_stage(theme: dict, japanese_title: str) -> dict:
-    # generate_a2_segments()はJAPANESE_TITLES[theme_id]を必須で参照する
-    # (既存Production仕様、モジュール自体は無変更)。記事固有のJapanese
-    # titleを、既存の拡張ポイントであるこのdictへ実行時に登録する
-    # (article本文はJA記事のtitleそのまま、新しい命名/翻訳ロジックは
-    # 追加しない)。
-    tts_gen.JAPANESE_TITLES[theme["theme_id"]] = japanese_title
-    return tts_gen.run_theme(theme)
+    raise RuntimeError(_FAMILY_X_ER019_MIGRATION_STOP_MESSAGE)
 
 
 def run_assemble_stage(theme: dict) -> dict:
     """b1b/a2を個別にtry/exceptする(delegation D7: Audio Validation Gate/
     Human Review LockでblockされたらSTOP、上書き禁止。GATE_BLOCKED状態も
     run_summary_assemble.jsonへ永続化し、player.html生成やevidence
-    確認で毎回re-runしなくても状態を読めるようにする)。"""
-    out_dir = theme["out_dir"]
-    results = {}
-    for label, stage_fn in (("b1b", asm.stage_assemble_b1), ("a2", asm.stage_assemble_a2)):
-        try:
-            results[label] = stage_fn(theme)
-        except RuntimeError as e:
-            print(f"[E-FAMILY-RUNNER][assemble/{label}] GATE_BLOCKED(override無し、報告のみ): {e}")
-            summary = {"status": "GATE_BLOCKED", "error": str(e)}
-            save_json(f"{out_dir}/{label}/run_summary_assemble.json", summary)
-            results[label] = summary
-    return results
+    確認で毎回re-runしなくても状態を読めるようにする)。
+
+    W5(MAJOR-4是正、OPEN-228封鎖): 本stageもfail-fastする(上記参照)。"""
+    raise RuntimeError(_FAMILY_X_ER019_MIGRATION_STOP_MESSAGE)
 
 
 # ------------------------------------------------------------
@@ -747,6 +763,13 @@ def _load_assemble_summary(path: str) -> dict:
 
 
 def build_player_html(theme: dict, japanese_title: str) -> str:
+    # W5(MAJOR-4是正、OPEN-228封鎖): assemble stage同様、player生成も
+    # er019_family_x_audio_production_runner_01.py側(build_player_html、
+    # 別実装)が正式経路のため、本runner側はfail-fastする(以下の実装本体は
+    # 到達不能のまま残置。削除すると_row_info_b1b/_row_info_a2/
+    # _build_level_tableも合わせて削除する大きめの変更になるため、
+    # 本委任の最小diff方針[関数呼び出しレベルでの封鎖]を優先した)。
+    raise RuntimeError(_FAMILY_X_ER019_MIGRATION_STOP_MESSAGE)
     out_dir = theme["out_dir"]
     abs_url = player_common.abs_file_url
     b1b_summary = _load_assemble_summary(f"{out_dir}/b1b/run_summary_assemble.json")

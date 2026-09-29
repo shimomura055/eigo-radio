@@ -308,7 +308,25 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
         self.assertEqual(row["phrase_repeat"]["path"], row["english"]["path"])
         self.assertEqual(row["phrase_repeat"]["fallback_used"], True)
 
-    def test_explanation_uses_variant_b_style(self):
+    def test_explanation_uses_variant_b_style_when_flash_lite_backend(self):
+        """W5(Opus L2所見MAJOR-3是正): KP解説styleは_role_style()と同じ
+        backendゲートに揃えたため、speech_metadata_flash_lite明示時のみ
+        Variant Bが適用される(以前は無条件適用だった)。"""
+        with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
+                                return_value=self.explanation_bundle), \
+             mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
+                                side_effect=lambda *_a, **_kw: _fake_en_result(1)), \
+             mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
+                                return_value={"status": "OK", "path": "x", "sha256": "y"}) as expl_mock:
+            runner._generate_key_phrase_segments_b1(self.kp, "narration",
+                                                      tts_backend="speech_metadata_flash_lite")
+        for call in expl_mock.call_args_list:
+            self.assertEqual(call.kwargs.get("style_prefix_override"), fl_styles.KEY_PHRASE_EXPLANATION_EN)
+
+    def test_explanation_style_is_none_on_default_backend(self):
+        """W5(MAJOR-3是正): 既定backend(structured_separation)では
+        style_prefix_override=None(下位関数の既定style、既存挙動)のまま
+        であること(legacy backendへVariant Bを無条件適用しない)。"""
         with mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
                                 return_value=self.explanation_bundle), \
              mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
@@ -317,7 +335,7 @@ class B1bKeyPhraseAssemblyWiringTests(unittest.TestCase):
                                 return_value={"status": "OK", "path": "x", "sha256": "y"}) as expl_mock:
             runner._generate_key_phrase_segments_b1(self.kp, "narration")
         for call in expl_mock.call_args_list:
-            self.assertEqual(call.kwargs.get("style_prefix_override"), fl_styles.KEY_PHRASE_EXPLANATION_EN)
+            self.assertIsNone(call.kwargs.get("style_prefix_override"))
 
     def test_english_phrase_tts_called_exactly_once_per_rank(self):
         """量産コスト(B): Phrase再掲のために追加TTS callは発生しない

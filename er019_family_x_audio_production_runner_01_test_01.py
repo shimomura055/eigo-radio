@@ -48,6 +48,25 @@ A Meta executive admitted that starting the test without clearly telling users w
 Before AI speaks for us, we need to know whether the voice belongs to AI or a person.
 """
 
+# W5(Opus L2所見MAJOR-2是正、2026-09-29): split_family_x_article_text_v2()
+# が本文中のMarkdown見出し混入(NG_HEADING_IN_BODY)を検査するようになった
+# ため、DryRunEndToEndTests(実際にsplit_family_x_article_text_v2()を通す
+# CLI dry-run)には旧構造(###見出し2つ)のSAMPLE_ARTICLE_B1Bではなく、
+# 新構造(見出し廃止・段落3つ以上)の記事を使う。SAMPLE_ARTICLE_B1B自体は
+# 旧split_family_x_article_text()専用テスト(SplitFamilyXArticleTextTests)
+# 向けにそのまま残す(他Family/旧関数は無変更)。
+SAMPLE_ARTICLE_V2_NO_HEADING = """# We Thought It Was AI—But There Was a Person Inside Meta’s Muse
+
+Ring, ring. A call came from an AI agent—or so it seemed. As the conversation went on, the voice on the other end turned out not to be AI at all, but a person.
+
+Meta had run a test that created exactly this kind of surprise. Here was the reveal. The test began without enough clear notice that contract workers would make the calls.
+
+A Meta executive admitted that starting the test without clearly telling users was a mistake. The human concierge feature has been rolled back for now.
+
+## In one line
+Before AI speaks for us, we need to know whether the voice belongs to AI or a person.
+"""
+
 SAMPLE_ARTICLE_MISSING_HEADING = """# Title Only
 
 Paragraph one.
@@ -335,7 +354,7 @@ class DryRunEndToEndTests(unittest.TestCase):
             level_dir = os.path.join(self.source_dir, level)
             os.makedirs(level_dir, exist_ok=True)
             with open(os.path.join(level_dir, "article.md"), "w", encoding="utf-8") as f:
-                f.write(SAMPLE_ARTICLE_B1B)
+                f.write(SAMPLE_ARTICLE_V2_NO_HEADING)
 
     def tearDown(self):
         shutil.rmtree(os.path.join(self.REPO_ROOT, "er019_output", self.slug), ignore_errors=True)
