@@ -700,3 +700,16 @@ Guardrail遵守確認(W5):
   version guard・KP音声構造骨格): 承認済み構造は変更せず、Opus L2所見
   是正+Standard KP日本語意味へのJ3配線のみ追加した(`git diff --stat
   HEAD -- "er0*.py"`で本タスク由来の差分ファイル一覧を確認済み)。
+
+## 9-E2E. Phase C(E2E、委任_09〜_10)実施結果の要約
+
+委任_09でHormuz Advanced writer段がJA_RECHECK_REQUIRED STOP
+(deviation MAJOR、origin=ja_source)。Fable判定によりこれを既存
+fail-closed仕様どおりの動作と確認し、委任_10でJA記事をProduction正式
+JA経路(`er019_family_x_entertainment_production_runner_01.py`→JA
+Writer O)で新規生成し直しrun_02として継続したが、English Advanced
+writer段で**別のclaim**によるja_source MAJORが再発しSTOP(詳細は
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E再開参照)。
+Audio段(scaffold/tts/assemble/player)・Gate 13+9項目・試聴ページは
+Hormuz/Meta双方とも未到達のまま。コード・Prompt変更は本委任では
+実施していない(発見事項はチェッカー間非対称のUDRとして報告のみ)。

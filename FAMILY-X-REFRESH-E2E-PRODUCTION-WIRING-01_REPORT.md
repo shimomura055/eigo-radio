@@ -850,3 +850,173 @@ Opus 9項目・(a)〜(m) 13項目監査: 音声artifactが一切生成されて�
    今回は薦められた設計通りSTOPのまま報告する、のいずれを取るか。
 2. 上記1の判断後、Hormuz Advanced→Standard→Audio段→Meta の順で
    委任を継続するか、次回委任へ持ち越すか。
+
+## §E2E再開(委任_10、2026-09-29、Fable判定=既存fail-closed仕様どおりの
+動作、新Product判断ではない)
+
+### Fable判定の要旨
+
+前委任_09のSTOP(JA_RECHECK_REQUIRED、Advanced deviation MAJOR/
+origin=ja_source)は、`er012_e_family_entertainment_two_level_runner_01.py`
+の既存仕様どおりのfail-closed動作であり新しいProduct判断ではないとFable
+が判定。「JA側の再確認」の正式手段として、前委任run_01が入力に使った
+er039 Trialセル(AN3-T0)をE2E入力から外し、JA記事をProduction正式JA経路
+(`er019_family_x_entertainment_production_runner_01.py`→JA Writer O
+`er019_family_x_ja_writer_o_r1_r2_01.py`)で新規生成し直し、run_02として
+E2Eを継続する指示を受けた。
+
+### 事前確認(¥0)
+
+- `build_original_prompt()`が`CONCRETENESS_CONTROL_AN3_BLOCK`を
+  `prompt += CONCRETENESS_CONTROL_AN3_BLOCK`で追加していることを
+  `er019_family_x_ja_writer_o_r1_r2_01.py:163`で確認。
+- `grep -n "再び増やさない" er0*.py`は2件ヒットしたが、いずれも
+  `er019_family_x_concreteness_an3_t0_production_wiring_01_test_01.py`
+  および`er019_family_x_new_structure_wiring_01_test_01.py`内の
+  `assertNotIn("再び増やさない", ...)`という文字列リテラル(reminderが
+  **存在しないこと**を検証するテストコード)であり、Production側モジュール
+  (`er019_family_x_ja_writer_o_r1_r2_01.py`を含む全er0*.py Production
+  module)には0件(既存`FAMILY-X-CONCRETENESS-AN3-T0-PRODUCTION-WIRING-01_
+  REPORT.md`のcommit `54739a9d`時点の説明と同一パターン)。
+- `verbatim_shas()`(同ファイル121行)に`concreteness_an3_block_sha256`
+  キーが含まれることをコード上確認し、実際の生成結果
+  (`run_02/ja_writer/runtime_evidence.json`)でも
+  `concreteness_an3_block_sha256=067030ff...6927fe`として実測(下記)。
+- 既存Ledger(`NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01`由来、
+  `er019_output/family_x_entertainment_production_runner_01/
+  an3_t0_wiring_regression_01/{hormuz,meta}/research_ledger/
+  verified_fact_ledger.txt`)およびstoryline_b3(fact_selection_evidence.
+  json・selected_brief.md・full_ledger.json)を、`er019_family_x_
+  entertainment_production_runner_01.py`が外部pathを直接参照するCLI引数
+  を持たない構造上の制約のため、コピー(新規APIコール無し、sha256一致を
+  実測確認済み)でrun_02配下へ複製して再利用した(Ledger再生成しない、
+  storyline_b3も同様に既存選定結果を再利用)。
+- 想定call数: JA Writer O(Original+Fact Check+must-fix retry(該当時)+
+  R1+R2+R2 Fact Check)で6〜8 call程度、想定費用¥3〜6程度と記録した上で
+  発火。
+
+### JA生成(run_02、実測)
+
+- 実行: `er019_family_x_entertainment_production_runner_01.py --theme
+  "ホルムズ海峡を通航する船舶への20％通航料をめぐる発言の撤回と市場反応"
+  --slug hormuz --out-dir er019_output/family_x_refresh_e2e_01/hormuz/
+  run_02 --budget-jpy 30 --stage writer --stop-after writer`
+  (`TTS_EXECUTION_MODE=STANDARD`環境変数明示)。
+- 結果: research_ledger/storyline_b3は既存reuse(コスト¥0)。JA
+  Original生成→Fact Check MAJOR 3件検知→must-fix retry 1回(既存仕様
+  どおり)→`final_status="LEDGER_COMPLIANT"`。R1→R2→R2 Fact Check
+  `final_status="LEDGER_COMPLIANT"`(must-fix不要)。
+- 実費用: ¥4.063(`ja_original`¥0.337+`ja_original_check`¥1.188+
+  `ja_original_must_fix`¥0.658+`ja_original_check_retry`¥0.421+
+  `ja_r1`¥0.452+`ja_r2`¥0.506+`ja_r2_check`¥0.5)。
+- `verbatim_shas`: `concreteness_an3_block_sha256=067030ff53ecb76a4d1477a
+  3deace07b3e1fac438a33cb873edbe045cf6927fe`(実測)。
+- 記号正規化違反: 0件(波ダッシュ/三点リーダー/スラッシュ/括弧/コロン/
+  セミコロン、`revision2.md`を機械チェックし0件を確認)。
+- 段落数: 10段落(タイトル除く、≥3を充足)。
+- **前委任run_01のMAJOR claim(HF-006関連、「船が止まれば原油の流れが
+  細り燃料・運送費に影響」)相当の記述は、新JA(`revision2.md`)には
+  含まれていない**(must-fix過程でOriginal draftから当該表現が除去され、
+  最終稿はHF-006を「Brent原油先物は7月13日に…上昇し」という値動きの
+  みで言及し、燃料・輸送費への因果拡張は含まない)。
+
+### Writer段(English、run_02)再実行と新STOP
+
+- 実行: `er012_e_family_entertainment_two_level_runner_01.py --ja-article
+  er019_output/family_x_refresh_e2e_01/hormuz/run_02/ja_writer/
+  revision2.md --slug hormuz --out-dir er019_output/family_x_refresh_
+  e2e_01/hormuz/run_02 --ledger-file er019_output/family_x_refresh_e2e_
+  01/hormuz/run_02/research_ledger/verified_fact_ledger.txt --source-id
+  FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01 --budget-jpy 30 --stage
+  ledger`(reuse、コスト増分¥0)→`--stage writer`。
+- 結果: Advanced(忠実英訳)生成→Deviation Check実行→**新しいMAJOR
+  1件を検知、`origin="ja_source"`**。`claim_in_article="The disappearance
+  of the fee plan did not lead to a large, lasting fall in prices."`、
+  `changed_causality=true`、`related_fact_id="HF-011"`、
+  `explanation="HF-009が保証するのは撤回後の一時的な上げ幅縮小とその後の
+  高水準への回復という観測であり、記事はそれを撤回の非因果的な結果として
+  断定している。"`。コードは前回同様`JARecheckRequiredError`を送出し、
+  以降(Standard生成・Audio段・Meta)を発火せず即STOP。
+  Evidence: `er019_output/family_x_refresh_e2e_01/hormuz/run_02/b1b/
+  audit/deviation_checks/advanced_attempt1.json`。
+- **重要な観測**: 今回のMAJOR claimは前委任run_01のMAJOR claim
+  (HF-006関連、原油価格とガソリン・輸送費の関連付け)とは**別の claim**
+  (HF-011関連、料金撤回と価格下落の因果関係の否定)である。これは
+  「同一入力に対する判定のブレ」ではなく、**新規生成したJA記事(reminder
+  除去後の現行Production経路、fact check must-fixで一度は
+  LEDGER_COMPLIANTと判定された文章)に対して、English Advanced側の
+  Deviation Checkが独立に別のja_source起因MAJORを検出した**という
+  異なる事象である。すなわち、JA側Fact Check(JA本文のみを検証)と
+  English Advanced側Deviation Check(英訳後、JA原文とLedger双方を参照し
+  originを判定)は、それぞれ異なる基準・promptで動作しており、
+  前者を通過した文章が後者でMAJOR/ja_sourceと判定される、という
+  **チェッカー間の非対称**が実際に生じることが今回確認された(前回の
+  「run間の非決定性」仮説とは別の、新しい観測事実)。
+- コード上の該当箇所(`er012_e_family_entertainment_two_level_runner_01.
+  py:266-275,388-398`)はこの状況をも「JA側の再確認が必要」として
+  fail-closedにSTOPさせる設計であり、既存仕様どおりの動作。ただし
+  ユーザー指示「JA生成後も再発した場合は本当にJA/Ledger側の問題であり
+  Product判断に踏み込むためSTOP」に該当するため、本委任ではここで
+  停止し、JA本文の書き換えやprompt変更などのProduct判断には踏み込まない。
+
+### Gate結果(記事×レベル、run_02時点)
+
+| 記事 | レベル | Writer段Status | Audio段 | Gate結果 |
+|---|---|---|---|---|
+| Hormuz | Advanced | STOPPED(JA_RECHECK_REQUIRED、deviation MAJOR/ja_source、run_02で別claim再発) | 未実行(¥0) | 未到達 |
+| Hormuz | Standard | 未着手(Advanced STOPのため到達せず) | 未実行 | 未到達 |
+| Meta | Advanced/Standard | 未着手(1記事ずつ完結原則、Hormuz未完了のため) | 未実行 | 未到達 |
+
+Opus 9項目・(a)〜(m) 13項目監査: run_02でも音声artifactが一切生成
+されていないため、いずれも「評価不能(未到達)」。
+
+### 試聴ページ
+
+未作成(音声未生成のため)。Pages公開確認7項目は未実施。
+
+### 費用(実測、run_02累計)
+
+- Hormuz JA生成(writer段): ¥4.063。
+- Hormuz English writer段(ledger reuse ¥0 + Advanced生成+Deviation
+  Check、STOPまで): ¥1.002(run_02 `raw_usage_log.jsonl`全体
+  `compute_cost_jpy_so_far`実測=¥5.065、うちJA生成分¥4.063を除いた差分)。
+- Audio段: 未実行、¥0。Meta: 未着手、¥0。
+- **run_02累計: ¥5.07**(前委任_09消費¥0.99232と合算した本管理ID全体
+  累計: **約¥6.05**、全体上限¥300に対し未使用同然。Guardrail超過なし。
+  STOPは費用ではなくGate判定起因)。
+- 費用B(継続コスト差分): 未評価(Audio段未実行のため実測不可)。
+
+### Closeout 10項目充足状況(委任_10時点、SSOT反映は別途)
+
+| # | 項目 | 状況 |
+|---|---|---|
+| 1 | Trial statusが分類済み | 該当なし(本委任はTrialではなくE2E) |
+| 2 | UDRが提示済み | 本報告がUDR相当(チェッカー間非対称の扱いをFable/ユーザーへ提示) |
+| 3 | 正式採用項目が追跡済み | 未到達(採用判断前) |
+| 4 | APPROVED→PRODUCTION_WIRED完了確認 | 未到達(Gate未通過) |
+| 5 | initial/retry/fallback整合確認 | 確認済み(JARecheckRequiredErrorはretry対象外の設計と実装を再確認、run_02でも同一挙動) |
+| 6 | runtime evidence取得 | 取得済み(`advanced_attempt1.json`、`ja_writer/runtime_evidence.json`、`raw_usage_log.jsonl`) |
+| 7 | SSOT整合 | 未実施(本委任はSSOT編集権なし、文案化は次段階) |
+| 8 | 未報告Trialが無いこと | 該当なし |
+| 9 | 無断deferが無いこと | 無断deferなし(STOPとして即時報告) |
+| 10 | 次タスクへの持ち越し事項明示 | 本節「Next Action(再開)」参照 |
+
+### Next Action(再開、未回答項目、ユーザー/Fable判断待ち)
+
+1. JA本文の書き換え(Product判断)なしに、この種のja_source起因MAJOR
+   (2回連続、異なるclaim)を解消する正式Production手段は現状ない。
+   JA Writer Oのmust-fix機構はJA側Fact Checkの検出範囲に限られ、
+   English Advanced側Deviation Checkが独自に検出するja_source逸脱は
+   カバーしない。対応方針(a)JA Writer OのFact CheckとAdvanced
+   Deviation Checkの基準を揃える仕様変更を検討/(b)ja_source MAJORの
+   場合もmust-fixで1回だけJA側を自動修正する経路を新設/(c)現状の
+   fail-closed設計を維持し、当該記事(Hormuz)はこのSTOPのまま次工程へ
+   進まない、のいずれを取るか(いずれもコード・仕様変更を伴うため
+   ユーザー承認が必要、本委任では実装しない)。
+2. Meta記事は本STOPと独立の入力であり、同じくer039 Trialセルを
+   使わずProduction正式JA経路で新規生成すれば試行できるが、1記事ずつ
+   完結原則によりHormuz未完了の間は着手していない。Metaを先に試すか
+   (Hormuzの問題が個別記事起因かChecker間非対称起因かの追加evidenceに
+   なる)、Hormuzの方針決定を待つかの判断を仰ぐ。
+3. 上記1の判断後、Hormuz Advanced→Standard→Audio段→Meta の順で
+   委任を継続するか、次回委任へ持ち越すか。
