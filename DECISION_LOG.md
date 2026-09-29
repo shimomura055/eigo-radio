@@ -12771,3 +12771,39 @@ Meta run_03のEvidence追記・GPT-6準備ポインタ追加、OPEN-234新設)�
   REPORT.md`§E2E Meta run_03。詳細:
   `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-PRODUCTION-
   WIRING-01_14.md`。
+
+## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー決定(OPEN-234 deferred・Trial開始許可)
++ Phase A実施記録(2026-09-29、委任_01)
+
+**ユーザー決定(逐語要旨)**: OPEN-234(Family X Audio runnerの`source_dir`導出制約)は
+GPT-6 Trial後に対応(deferred/non-blocking、コード変更なし)。
+`GPT6-MODEL-COMPARISON-TRIAL-01`の開始を許可する(まずPhase A=Trial計画確定のみ、
+Phase Bはユーザー確認後)。**順序**: GPT-6 Checker Trial → Routing判断 → GPT-6採用
+方針確定 → OPEN-233再評価 → 必要ならChecker根本再設計。
+
+**Phase A実施内容(要約)**: `docs/pm/design_gpt6_model_comparison_trial_01.md`
+(新規)を作成した。`GET https://api.openai.com/v1/models`実行(2026-09-29)により
+GPT-6候補3件(`gpt-6-luna`/`gpt-6-sol`/`gpt-6-astra`)の実在をAPI実測で確認(推測では
+ない)。現行baseline`gpt-5.6-luna`と同一形式(Responses API・`reasoning={"effort":
+"high"}`・`text.format.type="json_schema"`+`strict:true`)での最小probeを`gpt-6-luna`/
+`gpt-6-astra`の計2 callで実行し、両方ともSUCCESS(エラーなし)を確認した。単価は
+公式価格ページ取得試行がHTTP 403で失敗したため未確認(ユーザー提示待ち、推測値は
+使用していない)。Checker fixture(ER-009-N1危険fixture9種+調査REPORT A群5件・B群
+4件+Meta run_03 Standard translation MAJOR1件、計15件)の存在確認・sha256実測・
+現行判定(severity/category/origin)の記録を完了した。10category中4種(changed_
+number/actor/negation/time)は実運用incidentデータがなくER-009-N1合成fixtureのみに
+依存する「fixture不足」であることを確認した。比較条件(Prompt/Schema/Validator sha256
+固定・model引数のみ差替え)・評価指標定義・受入条件案(根拠付き、未確定)・想定費用
+(GPT-6単価未確認のため現行単価仮置きの参考値のみ)・Guardrail段階発火案・リスク一覧を
+設計書にまとめた。
+
+- **Opus**: 発火なし。
+- **Status**: OPEN-234は`DEFERRED (non-blocking, GPT-6 Trial後に対応)`(既存Status表記
+  `OPEN (non-blocking for wiring / blocking for unattended量産)`は維持、追記のみ)。
+  `GPT6-MODEL-COMPARISON-TRIAL-01`のPhase Aは終了、Phase A終了時点のStatusは
+  `USER_DECISION_REQUIRED`(GPT-6候補3件のうちどれを比較対象とするか、単価確認が
+  ユーザー判断待ちのため)。**Phase B(大量実行)は未開始**。
+- **根拠**: ユーザー明示決定(2026-09-29)。実施内容の根拠:
+  `docs/pm/design_gpt6_model_comparison_trial_01.md`、
+  `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`。詳細:
+  `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_01.md`。
