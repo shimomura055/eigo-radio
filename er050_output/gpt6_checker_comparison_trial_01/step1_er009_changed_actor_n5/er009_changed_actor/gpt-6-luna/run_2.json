@@ -1,0 +1,58 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "model": "gpt-6-luna",
+  "attempt": 2,
+  "error": null,
+  "prompt_sha256": "c725ab21ffb355125977980e9821fcc781acc43c71657e25c7db465f063ed053",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0da6621f4e5321fc006abb92e021c087d0b2b57d3488d43d1d",
+  "usage": {
+    "input_tokens": 5025,
+    "cached_input_tokens": 5022,
+    "output_tokens": 2395,
+    "reasoning_tokens": 2166
+  },
+  "elapsed_seconds": 21.61,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis",
+        "issue": "研究主体をHarvard Business Schoolのチームとしていますが、Ledgerが示すのは研究者名と掲載誌であり、Harvard Business Schoolとの所属関係は確認できません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "「1,300万件超のNY市タクシーのクレジットカード取引」という規模・対象は一致しますが、Harvard Business Schoolという研究主体の帰属はLedgerにない具体的主張です。研究主体を追加・置換するためchanged_actorとunsupported_new_claimに該当します。"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis",
+        "issue": "研究主体をHarvard Business Schoolのチームとしていますが、Ledgerが示すのは研究者名と掲載誌であり、Harvard Business Schoolとの所属関係は確認できません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "「1,300万件超のNY市タクシーのクレジットカード取引」という規模・対象は一致しますが、Harvard Business Schoolという研究主体の帰属はLedgerにない具体的主張です。研究主体を追加・置換するためchanged_actorとunsupported_new_claimに該当します。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

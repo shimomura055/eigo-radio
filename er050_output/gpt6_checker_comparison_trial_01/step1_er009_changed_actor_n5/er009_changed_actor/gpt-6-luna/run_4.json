@@ -1,0 +1,58 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "model": "gpt-6-luna",
+  "attempt": 4,
+  "error": null,
+  "prompt_sha256": "c725ab21ffb355125977980e9821fcc781acc43c71657e25c7db465f063ed053",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_02ac3265baf5e0f6006abb93024b4487d08379b1159dd7e851",
+  "usage": {
+    "input_tokens": 5025,
+    "cached_input_tokens": 5022,
+    "output_tokens": 1032,
+    "reasoning_tokens": 811
+  },
+  "elapsed_seconds": 9.394,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究をHarvard Business Schoolのチームに帰属させていますが、Ledgerには同校との関係が記載されていません。取引件数とチップへの効果の主張はLedgerの範囲内です。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない研究機関を調査主体として補っています（changed_actor、unsupported_new_claim）。一方、記事の研究結果と件数はLedgerの内容に沿っています。"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究をHarvard Business Schoolのチームに帰属させていますが、Ledgerには同校との関係が記載されていません。取引件数とチップへの効果の主張はLedgerの範囲内です。",
+        "severity": "MINOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない研究機関を調査主体として補っています（changed_actor、unsupported_new_claim）。一方、記事の研究結果と件数はLedgerの内容に沿っています。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_COMPLIANT"
+  }
+}
