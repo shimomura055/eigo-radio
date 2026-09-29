@@ -431,7 +431,22 @@ REPORT.md`§11〜§13、`docs/pm/design_open233_checker_redesign_trial_01.
 md`§2-補/§5-補、`docs/pm/negative_claim_candidates_open233_01.md`。
 累計費用¥45.6803(Trial1¥7.2882+委任_03¥14.8285+委任_04¥23.5636)/
 総枠¥400、残¥354.3197。Status=`USER_DECISION_REQUIRED`(指標定義・gold
-再判断)。 | `USER_DECISION_REQUIRED` | `er003_v1_en_direct_vfl_01_generate.py`(`DEVIATION_PROMPT_TEMPLATE`等、無変更)、`LEDGER-DEVIATION-CHECK-REDESIGN-INVESTIGATION-01_REPORT.md`、`LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`、`docs/pm/design_checker_redesign_v02_01.md` | Blocking(再開)。ja_source MAJOR発生時の暫定「案B」運用は継続するが、Checker本体の過剰品質・非決定性・changed_actor等の検出弱点の再設計は再開されたACTIVEな課題となった | 再設計案(`OPEN-233-CHECKER-REDESIGN-V02-01`)のレビュー・採否をFable/ユーザーが判断する。詳細: `DECISION_LOG.md`2026-09-29`GPT6-MODEL-COMPARISON-TRIAL-01`委任_04エントリ、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
+再判断)。**2026-09-30追記(新Phase`OPEN-233-SELF-RECOVERY-TRIAL-01`
+開始、委任_01)**: ユーザーが目標を「Checker単体の過剰品質改善」から
+「Production運用全体でLedger/Deviation Check起因のUSER_DECISION_
+REQUIREDを実質ゼロにするSelf-Recovery Flow(Stage 1 Initial Check→
+Stage 2 Re-screening→Stage 3 Automatic Rewrite→Stage 4 Final
+Escalation)」へ転換した新Phaseを開始(予算¥400、前Phase¥45.6803とは
+別管理)。委任_01でSelf-Recovery Flow設計書(`docs/pm/design_open233_
+self_recovery_flow_01.md`、API呼び出しなし・¥0・実装なし)を作成、
+現行Production フロー(`er012_e_family_entertainment_two_level_
+runner_01.py`)の実態調査でHormuz run_01〜03/Meta run_03のSTOP/通過を
+Evidence付きで分類し、Production Checkerモデル(gpt-5.6-luna)が前Phase
+Trial(gpt-6-luna)と異なる事実を新規確認。Status=`DESIGN_READY_FOR_
+OPUS_L2`。詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§1、
+`DECISION_LOG.md`2026-09-30`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_01
+エントリ。 | `DESIGN_READY_FOR_OPUS_L2`(新Phase設計中、前Phase分は
+`USER_DECISION_REQUIRED`のまま保留) | `er003_v1_en_direct_vfl_01_generate.py`(`DEVIATION_PROMPT_TEMPLATE`等、無変更)、`LEDGER-DEVIATION-CHECK-REDESIGN-INVESTIGATION-01_REPORT.md`、`LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`、`docs/pm/design_checker_redesign_v02_01.md` | Blocking(再開)。ja_source MAJOR発生時の暫定「案B」運用は継続するが、Checker本体の過剰品質・非決定性・changed_actor等の検出弱点の再設計は再開されたACTIVEな課題となった | 再設計案(`OPEN-233-CHECKER-REDESIGN-V02-01`)のレビュー・採否をFable/ユーザーが判断する。詳細: `DECISION_LOG.md`2026-09-29`GPT6-MODEL-COMPARISON-TRIAL-01`委任_04エントリ、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
 | OPEN-234 | **Family X音声生成runner(`er019_family_x_audio_production_runner_01.py`)の`source_dir`導出が`--slug`/`--run`のみに依存し、JA/writer段の`--out-dir`(例: `er019_output/family_x_refresh_e2e_01/{slug}/{run}`)と一致しない場合、Audio段(scaffold/tts/assemble/player)が入力を見つけられない(2026-09-29`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`Meta run_03等で発見)**。`source_dir`は`er019_output/{slug}/{run}`固定で導出され、外部pathを直接指定するCLI引数が存在しない。Hormuz(run_01〜03)・Meta run_03いずれも、該当ディレクトリ一式を`er019_output/{slug}/{run}`へ手動コピーすることで回避した(新規APIコール無し、コード変更なし)。**2026-09-29追記(`GPT6-MODEL-COMPARISON-TRIAL-01`委任_01、ユーザー決定)**: 本件の恒久対応(CLI引数追加等)検討はGPT-6 Trial後に対応する(deferred/non-blocking、コード変更なし)。 | `OPEN (non-blocking for wiring / blocking for unattended量産)` | `er019_family_x_audio_production_runner_01.py`(`source_dir`導出箇所) | Non-blocking(手動コピー運用で現状のE2E・Production配線自体はGate 3 PASS済み)だが、無人量産運用(手動コピーを挟まない自動連続実行)を行う場合はblocking(コピー漏れで誤った入力を参照するリスク) | 恒久対応(CLI引数追加等)の要否・実装方針をユーザーが判断する。詳細: `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03(Audio段実行結果)、`CURRENT_SPEC.md`「Family X(Entertainment News)音声構造」節「運用上の既知制約」。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
 
 ## 参照元

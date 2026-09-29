@@ -13247,3 +13247,77 @@ B2・B3・B4-a/b/c/d評価表を設計書§2-補へ「gold候補表(ユーザー
   `OPEN-233-CHECKER-REDESIGN-TRIAL-01_REPORT.md`§11〜§13。詳細:
   `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-REDESIGN-TRIAL-01_
   04.md`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: ユーザー意図(新Phase開始)+Fable判定
++Production Self-Recovery Flow設計書作成(2026-09-30、委任_01)
+
+**ユーザー意図(逐語要旨)**: 前Phase`OPEN-233-CHECKER-REDESIGN-
+TRIAL-01`はUSER_DECISION_REQUIRED(指標定義・gold再判断)のままStopして
+いたが、ユーザーは目標そのものを転換する新Phaseを開始した。最終目標=
+「通常のProduction運用中に、Ledger/Deviation Checkを理由にユーザー
+判断を求められる状態を実質ゼロにする」。Checker単体の完璧化ではなく、
+Productionフロー全体として「初回Check→必要なら再スクリーニング→
+必要なら自動Rewrite→再Check→Production継続」までシステム側で安全に
+完結させ、ユーザーへ上げるのは「自動処理では安全に解決できない、本当に
+例外的なケース」だけにする。Safetyは絶対条件(重大fixtureの見逃し0件
+維持)。4段階Self-Recovery Flow(Stage 1 Initial Check→Stage 2
+Re-screening→Stage 3 Automatic Rewrite→Stage 4 Final Escalation)を
+指定。主要受入条件を変更: 「不要BLOCK率≤25%」は主要受入条件から外し
+診断用の中間指標へ格下げ、Primary KPIは「10〜20記事規模のProduction
+相当TrialでLedger/Deviation Check起因のUSER_DECISION_REQUIRED=0件」。
+ゼロSTOPを無制限retryや高コストで実現するのはNG。Trialは既存fixture/
+artifactを最大限reuseするPhase 1から開始し、Production相当記事Trial
+(Phase 2)へ拡大する。予算: 新たに最大¥400(前Phase¥45.6803とは別
+管理)。逐語全文は委任記録
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_01.md`
+参照。
+
+**Fable判定**: 前Phaseの3件のUSER_DECISION_REQUIRED(指標定義/gold/
+materiality軸)を、本Phaseでは(a)不要BLOCK率は診断指標へ格下げ(確定
+済み)、(b)goldは「最終到達状態」ベースへ再構成(候補gold、Checkpoint
+Aでユーザー確認)、(c)materiality軸はStage 2 Second Judgeの判定基準
+として設計する(Stage 1 Production Promptは不変)、の3方針で再構成し、
+Checkpoint Aでユーザー確認を取ることとした(独断確定しない)。Stage 2
+にはdeterministic safety floor(changed_actor/number/negation/
+comparison/timeのいずれかtrueなら降格不可、fail-closed=迷ったら
+Rewriteへ)を設定。既存案B(ja_source MAJOR→JA差し戻し1回)はStage 3
+のJA側Rewriteとして位置づけ直し、局所Rewrite(EN側)を優先候補として
+設計する。loop上限を固定(Stage 2は1回、Stage 3 Rewriteは記事あたり
+最大2回、Recheckは Rewriteごと1回)、無制限retry禁止。
+
+**委任_01の実施内容**: API呼び出しなし・¥0・Production非接続・実装
+なしの設計書`docs/pm/design_open233_self_recovery_flow_01.md`(12節)
+を新規作成。現行Production フロー(`er012_e_family_entertainment_
+two_level_runner_01.py`のJARecheckRequiredError/run_writer_stage/
+_run_writer_stage_once、既存retry機構3axis[段落数retry・deviation
+must-fix retry1回・案B1回])を精読し、Hormuz run_01(HF-006)/run_02
+(HF-011)/run_03(HF-009×2)/Meta run_03のSTOP/通過をEvidence付きで
+分類した。新規発見: Production Checker(`er003_v1_en_direct_vfl_01_
+generate.py::MODEL = "gpt-5.6-luna"`)は前Phase Trial(gpt-6-luna固定)
+とは異なるモデルであり、E2E実測データとTrialデータは直接比較不可。
+Stage 2独立Prompt(materiality: BLOCKING/QUALITY/ACCEPTABLE、Opus
+論点1推奨2のrubric採用)・Stage 3局所Rewrite(設計提案、既存`split_
+family_x_article_text_v2()`のNG guard再利用)・Stage 4 Escalation
+条件・gold候補(最終到達状態ベース4群再編)・測定項目(Self-Recovery
+6項目+QCD 7項目)・Phase 1 Trial計画(既存deviation json再利用、
+Stage 1再課金なし、概算¥15〜35)・Opus論点案7個を設計した。
+
+- **Opus**: 未発火(本委任は設計書作成のみ、Opus L2投入は次回以降)。
+- **費用**: ¥0(API呼び出しなし)。本Phase累計¥0/総枠¥400、残¥400。
+  前Phase累計¥45.6803は別枠(参考記載のみ)。
+- **Status**: `DESIGN_READY_FOR_OPUS_L2`。
+- **ユーザー判断11該当**: 本設計書自体は非該当(文書のみ、実装・実行
+  なし、Production変更なし)。ただしPhase 1 Trial実行(次回委任)着手
+  前に、Stage 2のmateriality軸導入(旧Opus論点1のC1相当、前Phaseで
+  「事前了承要」と指摘済み)をFamily X限定・Production非接続のTrial
+  として進めてよいかのユーザー確認をCheckpoint Aで得ることを提案する。
+- **根拠**: ユーザー明示決定(委任文§1〜§2、2026-09-30)。設計内容の
+  根拠: `docs/pm/opus_l2_review_open233_checker_trial_01.md`、
+  `docs/pm/design_open233_checker_redesign_trial_01.md`§2-補/§4-補、
+  `docs/pm/negative_claim_candidates_open233_01.md`、
+  `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`(Hormuz/Meta
+  run Evidence)、`er012_e_family_entertainment_two_level_runner_01.py`
+  (L260-679)、`er003_v1_en_direct_vfl_01_generate.py`(L490-620)。
+  詳細: `docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-
+  TRIAL-01_01.md`、`docs/pm/design_open233_self_recovery_flow_01.md`、
+  `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§1。
