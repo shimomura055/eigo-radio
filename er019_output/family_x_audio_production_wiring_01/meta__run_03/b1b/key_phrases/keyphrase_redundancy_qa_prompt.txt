@@ -1,0 +1,83 @@
+以下は、同じ記事から選ばれた5件のKey Phrase(英語学習ポッドキャストの
+リスニング教材)です。5件から作れる全てのペア(10組)について、
+それぞれ以下4つの観点で意味重複を判定してください(それぞれPASS=重複なし/
+FAIL=重複あり)。
+
+- meaning_overlap: 2つのkey_phraseが表す意味内容が、実質的に同じか(例:
+  「注意を引く」と「注意の一部を奪う」は表現は違っても同じ「注意を奪われる」
+  という概念を指しており、meaning_overlap=FAILとすべきです)
+- usage_context_overlap: 2つの表現が使われる典型的な場面・文脈が、実質的に
+  同じか
+- grammatical_teaching_value_overlap: 2つの表現が学習者に教える文法・構文上の
+  価値(例: 句動詞の型、比喩の型、コロケーションの型)が、実質的に同じか
+- conceptual_role_overlap: 記事の中でこの2つの表現が担っている概念・役割が、
+  実質的に同じか
+
+is_near_duplicateは、上記4観点のうち2つ以上がFAILの場合、または1つでも
+明確にFAILで「単なる言い換え、または同じ内容を別の比喩・表現で表しただけ」
+と判断できる場合にtrueにしてください。reasoningには判定理由を1〜2文の
+日本語で書いてください。
+
+単に同じ記事・同じ話題について書かれているために表面的な語彙(記事固有の
+固有名詞やトピック語)が共通することは、重複とはみなさないでください。
+判定対象はあくまで、Key Phraseそのものが教える意味・用法・学習価値です。
+
+pairsには、必ず10組全ての組み合わせを含めてください(rank_a < rank_b)。
+
+【記事本文(参考、文脈確認用)】
+# Some AI Phone Calls Had Humans Behind the Scenes
+
+It was a small twist. Behind a service that lets people ask AI to make phone calls, humans were actually making the calls. That kind of test was being carried out.
+
+The main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States to book haircuts, check whether items are in stock, and get price estimates from businesses. If AI can take care of troublesome phone calls, it seems very useful.
+
+However, in some tests of its calling feature, trained human contract workers made the calls instead of AI. They handled the conversations all the way to the end.
+
+The issue was not that humans made the calls themselves. The issue was how to tell users who was speaking.
+
+People who asked Muse to make a call might think that AI was making it. But in some cases, a human was speaking. And if this was not properly explained, users had no way to know whether they were talking to AI or a person. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it. That was what was happening behind the scenes.
+
+Also, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center. Meta employees pointed this out internally as a privacy concern.
+
+News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees. However, this is one report. It would be wrong to apply it to all contract workers.
+
+A Meta executive admitted that starting the test without properly explaining it was a mistake. The company also restored the human concierge feature to the way it had been before, at least for now.
+
+The real challenge for AI phone calls is not just how they talk. It is whether they can honestly tell people who is on the other end of the call. The more useful a service is, the less it should hide the people working behind the scenes. The Muse case showed us this simple but important point.
+
+## In one line
+Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told.
+
+【Key Phrase 5件(JSON)】
+[
+  {
+    "rank": 1,
+    "key_phrase": "behind the scenes",
+    "japanese_gloss": "表に出ないところで",
+    "source_sentence": "Some AI Phone Calls Had Humans Behind the Scenes"
+  },
+  {
+    "rank": 2,
+    "key_phrase": "contract worker",
+    "japanese_gloss": "契約で働く人",
+    "source_sentence": "However, in some tests of its calling feature, trained human contract workers made the calls instead of AI"
+  },
+  {
+    "rank": 3,
+    "key_phrase": "unintentionally",
+    "japanese_gloss": "意図せずに",
+    "source_sentence": "Also, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center"
+  },
+  {
+    "rank": 4,
+    "key_phrase": "call center",
+    "japanese_gloss": "電話で対応する窓口",
+    "source_sentence": "Also, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center"
+  },
+  {
+    "rank": 5,
+    "key_phrase": "concierge",
+    "japanese_gloss": "案内や手配をしてくれる係",
+    "source_sentence": "The company also restored the human concierge feature to the way it had been before, at least for now"
+  }
+]
