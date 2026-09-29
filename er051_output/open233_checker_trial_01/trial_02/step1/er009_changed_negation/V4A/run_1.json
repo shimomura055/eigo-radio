@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_negation",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "8e38454b946d833a3b7abd39dffa0bf91f4acef250943393ebffb3116b33d845",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_098013ad40ad0573006abbbd6cc50887d0b5e2312996311c31",
+  "usage": {
+    "input_tokens": 5875,
+    "cached_input_tokens": 0,
+    "output_tokens": 698,
+    "reasoning_tokens": 428
+  },
+  "elapsed_seconds": 13.547,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "研究が報告した「高い推奨チップ率を見た乗客は実際により多くチップを残した」という結果を否定し、推奨率の効果もなかったとしています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は高い推奨率によって実際のチップ額が増えたと報告しています。記事はその比較と因果効果を否定しており、changed_fact・changed_causality・changed_negation・changed_comparisonに該当します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+        "issue": "研究が報告した「高い推奨チップ率を見た乗客は実際により多くチップを残した」という結果を否定し、推奨率の効果もなかったとしています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": true,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は高い推奨率によって実際のチップ額が増えたと報告しています。記事はその比較と因果効果を否定しており、changed_fact・changed_causality・changed_negation・changed_comparisonに該当します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

@@ -1,0 +1,80 @@
+{
+  "fixture_id": "Meta_run03_standard",
+  "variant": "V3",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "8527b505df7198036dee70e2a85830d31f80f3f6c661a20429fde5419682e48f",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0b7812ca8f1f0d4c006abbbcabab9887d0959433a75b7be37d",
+  "usage": {
+    "input_tokens": 5919,
+    "cached_input_tokens": 0,
+    "output_tokens": 3383,
+    "reasoning_tokens": 3029
+  },
+  "elapsed_seconds": 47.006,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "利用者が実際にAIの便利さを享受し、人間が応対していると気づかなかったという事実として断定している。Ledgerが確認しているのは適切な開示なしにテストが始まったことなどで、利用者の実際の認識までは確認していない。原文の仮定的・情景的な表現を、記事では確定した出来事にしている。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "changed_certainty=true。原文の「楽しんでいたら」「いつの間にか」という表現を、記事では利用者が実際に気づかなかったという断定にしている。他のフラグはfalse。前後の条件表現だけでは、この実際の認識を裏付けない。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "直前に「If no one explained this clearly, users could not know」とある。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+        "issue": "利用者が実際にAIの便利さを享受し、人間が応対していると気づかなかったという事実として断定している。Ledgerが確認しているのは適切な開示なしにテストが始まったことなどで、利用者の実際の認識までは確認していない。原文の仮定的・情景的な表現を、記事では確定した出来事にしている。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "changed_certainty=true。原文の「楽しんでいたら」「いつの間にか」という表現を、記事では利用者が実際に気づかなかったという断定にしている。他のフラグはfalse。前後の条件表現だけでは、この実際の認識を裏付けない。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "直前に「If no one explained this clearly, users could not know」とある。",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V3"
+  }
+}

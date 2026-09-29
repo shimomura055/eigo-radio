@@ -1,0 +1,80 @@
+{
+  "fixture_id": "B2_hormuz",
+  "variant": "V2",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "6e8dcbf57cea568609a5e339cc999bc252153362b06b58ddbd54b3bcb574ebc8",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0ad1ca80f7c7359c006abbbb26260c87d09431611aed6a170b",
+  "usage": {
+    "input_tokens": 5891,
+    "cached_input_tokens": 0,
+    "output_tokens": 3814,
+    "reasoning_tokens": 3532
+  },
+  "elapsed_seconds": 46.828,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Other factors remained on that same stage. So the price reacted once, then returned to a high level.”",
+        "issue": "因果関係の上乗せ",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009は、置換発表後に上げ幅が一時縮小し、その後高い水準へ戻ったことと、他の懸念が続いていたことを記録しています。記事は「So／だから」で、残っていた要因が価格の回復を引き起こしたと結び付けていますが、その因果関係までは確認されていません。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "“Of course, this price movement alone cannot tell us that there was just one reason for the price.”",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“Other factors remained on that same stage. So the price reacted once, then returned to a high level.”",
+        "issue": "因果関係の上乗せ",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "HF-009は、置換発表後に上げ幅が一時縮小し、その後高い水準へ戻ったことと、他の懸念が続いていたことを記録しています。記事は「So／だから」で、残っていた要因が価格の回復を引き起こしたと結び付けていますが、その因果関係までは確認されていません。",
+        "related_fact_id": "HF-009",
+        "origin": "ja_source",
+        "qualifier_present": true,
+        "qualifier_text": "“Of course, this price movement alone cannot tell us that there was just one reason for the price.”",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V2"
+  }
+}

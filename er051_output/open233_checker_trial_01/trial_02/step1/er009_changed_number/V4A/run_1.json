@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_number",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "0b44e035f6f780bacf47725782fb822e6f5ad16dc96373acc293ea203e48d820",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0782e166e1a1626b006abbbd351f9887d0a5479d3ca3c76deb",
+  "usage": {
+    "input_tokens": 5876,
+    "cached_input_tokens": 0,
+    "output_tokens": 1092,
+    "reasoning_tokens": 784
+  },
+  "elapsed_seconds": 17.987,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "F-002"
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": true,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "F-002",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

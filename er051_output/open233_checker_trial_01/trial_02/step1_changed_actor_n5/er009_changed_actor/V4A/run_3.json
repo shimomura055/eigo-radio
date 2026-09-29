@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 3,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "90f140b6825fb184a273faa5b78391ee16d0ff7efdafb42f65f056c2d04e9654",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0de616c4a2550eab006abbbe8c42a887d081a708c7ae1fd31b",
+  "usage": {
+    "input_tokens": 5881,
+    "cached_input_tokens": 5878,
+    "output_tokens": 3323,
+    "reasoning_tokens": 3029
+  },
+  "elapsed_seconds": 29.716,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームとする記述はLedgerで確認できず、研究主体の帰属を追加・変更しています。チップ増加の結果自体はLedgerと一致します。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerは研究と結果を記載していますが、Harvard Business Schoolのチームが研究主体だとは示していません。これは具体的な未確認の主体帰属（changed_actor、unsupported_new_claim）です。一方、1,300万件超と、推奨率が高い場合にチップが増えたという内容はF-002・F-004に沿っています。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームとする記述はLedgerで確認できず、研究主体の帰属を追加・変更しています。チップ増加の結果自体はLedgerと一致します。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerは研究と結果を記載していますが、Harvard Business Schoolのチームが研究主体だとは示していません。これは具体的な未確認の主体帰属（changed_actor、unsupported_new_claim）です。一方、1,300万件超と、推奨率が高い場合にチップが増えたという内容はF-002・F-004に沿っています。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": true,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

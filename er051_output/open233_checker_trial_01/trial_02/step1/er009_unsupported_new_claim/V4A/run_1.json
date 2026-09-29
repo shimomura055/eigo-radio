@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_unsupported_new_claim",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "4a440f6eaf9127936ca69514008fd4343aabf5351f99d8e97bdae717c8645457",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0cc4f5c1e6ec4d2b006abbbd873cb087d0bfc060feddf2e0cd",
+  "usage": {
+    "input_tokens": 5872,
+    "cached_input_tokens": 0,
+    "output_tokens": 1215,
+    "reasoning_tokens": 970
+  },
+  "elapsed_seconds": 12.447,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+        "issue": "Ledgerには、推奨率の高いメニューを見た乗客がより多くチップを残したという結果はあるが、男女間の差や「2倍」という結果は記載されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "男女間のチップ額の差はLedgerにない具体的主張の追加である。Ledgerにある数値を別の値に変更したわけではないためchanged_numberはfalse。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+        "issue": "Ledgerには、推奨率の高いメニューを見た乗客がより多くチップを残したという結果はあるが、男女間の差や「2倍」という結果は記載されていない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "男女間のチップ額の差はLedgerにない具体的主張の追加である。Ledgerにある数値を別の値に変更したわけではないためchanged_numberはfalse。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

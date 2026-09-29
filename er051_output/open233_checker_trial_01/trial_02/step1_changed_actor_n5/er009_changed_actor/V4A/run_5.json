@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 5,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "90f140b6825fb184a273faa5b78391ee16d0ff7efdafb42f65f056c2d04e9654",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_04663e85eaae8c90006abbbebc362c87d0b234190034c3f35c",
+  "usage": {
+    "input_tokens": 5881,
+    "cached_input_tokens": 5878,
+    "output_tokens": 1703,
+    "reasoning_tokens": 1368
+  },
+  "elapsed_seconds": 16.772,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerは研究者をその所属機関と結びつけていません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "LedgerはNYCタクシーの1,300万件超のクレジットカード取引と、より高い推奨メニューを見た乗客がより多くチップを残したという結果を記載しており、この部分は整合します。一方、「Harvard Business Schoolのチーム」という所属・主体の特定はLedgerにありません。したがって、未確認の具体的事実の追加（changed_fact、unsupported_new_claim）と主体の置き換え（changed_actor）に該当します。因果関係の表現はF-004の報告と整合します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerは研究者をその所属機関と結びつけていません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "LedgerはNYCタクシーの1,300万件超のクレジットカード取引と、より高い推奨メニューを見た乗客がより多くチップを残したという結果を記載しており、この部分は整合します。一方、「Harvard Business Schoolのチーム」という所属・主体の特定はLedgerにありません。したがって、未確認の具体的事実の追加（changed_fact、unsupported_new_claim）と主体の置き換え（changed_actor）に該当します。因果関係の表現はF-004の報告と整合します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

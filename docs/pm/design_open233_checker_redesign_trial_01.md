@@ -657,3 +657,235 @@ cost.json`。
   deviation_checks/advanced_attempt1.json`のprompt埋め込みLedgerテキスト)
 - delegation記録: `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-
   REDESIGN-TRIAL-01_01.md`
+
+## 4-補. Step2診断+V4-A/V4-C実装+Trial 2実行結果(委任_03、2026-09-29)
+
+### Fable判定(委任_03、委任文§1(1)〜(5)の反映)
+
+(1) 設計書§4「Step1でSafety 100%未達のvariantはStep2/Step3を実行しない」は
+**受入判定上のルールとしては維持**するが、**診断目的のStep2実行は妨げない**
+と改める。理由: Productivity(ユーザー判断4)が最重要目標であり、post-hoc層
+のみではB群75%が不変と分かった以上、Prompt/schema variantのB群実測なしに
+原因切り分けは不可能。(2) V4-A(Prompt差分ブロックへの境界明確化文)を実装・
+実行する。fixture固有の文言(実在の研究者名等)を含めない一般的なcategory
+境界記述とし、changed_number/negation/comparisonにも同一原則(他category
+との同時true許容)を一文で明記する(§4-補「V4-A実装」参照)。(3) V4-B
+(unsupported_new_claim+MINORの昇格拡張)は本委任では実装・実行しない
+(Safety/Productivityトレードオフ、Step2データが揃った後にFableがOpus L2へ
+回す候補として保留)。(4) V4-C(Trial 1未昇格3件をnegative regression
+fixtureとしてfreeze)を実装する。(5) 本委任Guardrail¥50(総枠¥400、Trial 1
+累計¥7.2882、残¥392.7118)。
+
+### Step2診断実行(V2/V3、境界群5 fixture、各1 call、計10 call)
+
+新規harness`er051_open233_checker_trial_02_run.py`(`--phase diag_step2`)
+で実行。出力先`er051_output/open233_checker_trial_01/trial_01_step2_diag/`。
+費用¥4.1258(10 call、error 0)。
+
+**結果(最重要発見)**: V2・V3とも**B1/B2_hormuz/B3/B4の4件全てでLLM自身の
+一次severity判定がMAJOR**(`rule_id=existing_major_v2`)となり、`classify_
+deviation_trial()`の優先順位1(既存severity=="MAJOR"→BLOCKING、fail-closed
+維持)が常に最初に発火するため、schema variant由来の`qualifier_present`/
+`observation_consistent`に基づくQUALITY/ACCEPTABLE分岐(優先順位3)には
+**一度も到達しなかった**。
+
+不要BLOCK率(B1/B2_hormuz/B3/B4のうちBLOCKING数/4) = **V2: 4/4(100%)、
+V3: 4/4(100%)**。baseline 75%より**悪化**。特にB2_hormuz(gold=QUALITY
+暫定)は、V0(GPT6-MODEL-COMPARISON-TRIAL-01)・Trial 1 Step1では非検出
+(LEDGER_COMPLIANT)だったが、本診断ではV2・V3とも新規にMAJOR検出した
+(Prompt差分ブロックがfactual_constraint整合性の確認を明示的に指示した
+ことで検出感度が上がった可能性、未確定・観測のみ)。
+
+Meta_run03_standard(negative control)はV2・V3とも正しくBLOCKING検出
+(gold=BLOCKINGと一致、成功)。
+
+**原因分類(claim・category flag・origin・severity・LLM理由文・matched_
+notes_id・observation_consistentを1件ずつ確認、下表)**:
+
+| fixture/variant | claim(要旨) | 検出category | origin | severity(final) | LLM理由文(要旨) | matched_notes_id | observation_consistent | 原因分類 |
+|---|---|---|---|---|---|---|---|---|
+| B1/V2 dev1 | ホルムズ海峡は中東原油輸送の重要航路 | unsupported_new_claim | None(JA段) | MAJOR→BLOCKING | 航路利用実態はLedgerにない具体的主張 | HF-001 | True | (a) Prompt判定基準: 「一般常識レベルの経済知識」を許容する具体的規定が§判定ルールに無い |
+| B1/V2 dev2 | 原油高→ガソリン等身近な価格に波及 | unsupported_new_claim | None(JA段) | MAJOR→BLOCKING | 経済波及はLedgerにない、条件表現は矛盾しないが未確認主張 | HF-009 | True | (a) 同上(Part B「一般常識と新規主張の境界基準が素案にも明記されずLLM次第」と一致) |
+| B2_hormuz/V2 | 他の要因が残り、価格が一時反応後に高水準へ戻った | changed_causality(so) | ja_source | MAJOR→BLOCKING | HF-009は値動きと懸念継続を記録するが、両者を結ぶ因果は未確認 | HF-009 | True(claim単体はLedger整合だが因果推論部分は未確認) | (d) context handling/notes_for_writer: HF-009自体は「懸念継続」の記述であり、記事の"So"による因果連結がHF-009の範囲を超える。schema variantは "整合" と判定しているが、severity自体がMAJORのためrule1で即BLOCKING(schema信号が機能する前に短絡) |
+| B2_hormuz/V3 dev1 | 料金案消滅が大幅な価格下落を招かなかった | changed_causality | ja_source | MAJOR→BLOCKING | HF-011のnotesが明示的にこの因果推論を禁止 | HF-011 | True | (d) notes_for_writerの明示禁止パターンと一致(HF-011)。Part B「B-2は分離に失敗するリスクが高い」との事前予測どおり |
+| B3/V2, V3 | "so"による懸念継続→20%案撤退の因果連結 | changed_causality | ja_source | MAJOR→BLOCKING | HF-007はこの因果を保証しない | HF-007 | **False**(両variantともobservation_consistent=Falseと明示判定) | (d) notes_for_writer(HF-007)が明示的に因果推論を禁止、LLM・schema layerとも一貫してBLOCKING側と判定。Part B独立評価・v0.2§6-1機械適用結果(STAY BLOCKING)と一致、**gold=BLOCKINGの根拠が本診断で補強された**((e)gold曖昧性は本件については解消方向) |
+| B4/V2,V3 (計4+3件) | AIの困難時に人間が引き継ぐ/一般利用者の心理・情報共有行動への一般化 | unsupported_new_claim(+changed_fact一部) | ja_source/translation | MAJOR→BLOCKING | MUSE-HC-006「一部の電話・テストと限定」・MUSE-HC-010「懸念の存在≠大規模漏えい断定」に反し、対象を従業員個別懸念から一般利用者へ拡張 | MUSE-HC-006/010/004 | 混在(V2は概ねFalse、V3は一部True) | (d) notes_for_writer(MUSE-HC-006/010)がscope拡張を明示的に禁止、LLMはその制約を正しく適用。Part B「新設計で緩めた場合に現状より品質が下がる可能性がある」との懸念と整合 |
+
+**構造的根本原因(新規発見、原因分類(c) deterministic rule)**: `classify_
+deviation_trial()`の優先順位1(severity=="MAJOR"→BLOCKING、fail-closed
+維持)は、**LLM自身がPrompt本体(vfl01.DEVIATION_PROMPT_TEMPLATE、不変)の
+既存判定ルール「10種類のいずれかが明確にtrueである場合のみseverityを
+MAJORにする」に従って算出した一次severity**をそのまま採用する。B1/B3/B4は
+いずれも10カテゴリのいずれか(unsupported_new_claim/changed_causality)が
+「明確にtrue」と判定される内容であり、この一次severity判定自体はTrial
+Prompt差分ブロック(V01/V4A、いずれもseverity算出ルールそのものは変更
+しない設計)の影響を受けない。結果として、**schema variant(qualifier_
+present/observation_consistent)によるQUALITY/ACCEPTABLE分岐は、LLMの
+一次severityがMINORになる場合にしか機能しない**という設計上の制約が
+本診断で実証された。B1/B3/B4のようにLLM自身がMAJORと判定し続ける限り、
+post-hoc層(V1/V2/V3のいずれも)は原理的に不要BLOCK率を改善できない。
+
+### V4-A実装(Prompt差分ブロック追加)
+
+`er051_open233_checker_trial_variant_01.py`へ`TRIAL_PROMPT_DIFF_BLOCK_
+V4A`定数を追加(`TRIAL_PROMPT_DIFF_BLOCK_V01`の末尾に連結)。sha256
+(V4Aブロック単体、647文字):
+`7d8229090910ec1979ac2dbadd2ada8715c14ea441a4acd6edf5279291efe1ad`。
+V4A用に連結したPrompt全体のsha256:
+`e9c939930496ebed00a198455279bac1d61e6f5a162063f41ef5fde52cf81c97`。
+schema/post-hoc(`classify_deviation_trial`)はV2と完全同一(mock testで
+検証済み、`V4APromptSchemaVariantTest`)。内容は「10カテゴリは互いに排他的
+でない、複数category同時trueを許容する」という一般原則と、changed_actor/
+number/negation/comparisonの4カテゴリについて「該当する変更が生じている
+場合は他カテゴリと重複してでも必ずtrueにする」という一文(fixture固有の
+固有名詞は含めない、mock testで実証)。
+
+### V4-C実装(negative regression fixture)
+
+`er051_open233_checker_trial_variant_01_test_01.py`へ`V4CRegressionFixtureTest`
+(3テスト)を追加。Trial 1未昇格3件(V2#3/V3#3/V3#5、`er051_output/
+open233_checker_trial_01/trial_01/step1_changed_actor_n5/er009_changed_
+actor/{V2,V3}/run_{3,5}.json`)をfreezeし、(a)そのLLM出力パターン
+(changed_actor=false・unsupported_new_claim=true・severity=MINOR)が
+不変であること、(b)V1昇格ルールが現行では昇格しないこと、(c)V2/V4Aの
+post-hoc層単体でも昇格しないこと、をmock testで固定する(gold変更ではなく
+現行ルールの既知挙動を固定するregression fixture)。
+
+### Trial 2実行(V4-A、`--phase trial2_step1`/`trial2_step1_changed_actor_
+n5`/`trial2_step2`/`trial2_step3`、`er051_open233_checker_trial_02_run.py`)
+
+出力先`er051_output/open233_checker_trial_01/trial_02/`。
+
+**Step1(重大群12 fixture、V4A、12 call、¥3.0429)**: **Safety 100%達成**
+(12 fixture全てBLOCKING、`existing_major_v2`または`promote_deterministic_
+flag_v1`)。
+
+**Step1(changed_actor n=5、V4A、5 call、¥0.7746)**: **Safety 100%達成**
+(Trial 1のSafety gapを解消)。5 attemptすべてで`changed_actor=True`が
+正しく返り(4/5は`unsupported_new_claim`と同時true)、全てLLMの一次
+severity判定自体が直接MAJORとなった(post-hoc昇格ルールを経由せずBLOCKING
+に到達)。Prompt本体の既存ルール「10カテゴリのいずれかが明確にtrueなら
+severityをMAJOR」が、V4Aによる`changed_actor`フラグ精度向上と組み合わさり
+自然に機能した結果であり、V4-Aが狙った「カテゴリ境界曖昧さの解消」が
+実証された。
+
+**Step2(境界群5 fixture、V4A、5 call、¥1.9884)**: B1=BLOCKING、
+B2_hormuz=PASS(非検出)、B3=PASS(非検出)、B4=BLOCKING。不要BLOCK率=
+2/4(50%)、直前のV2/V3診断(4/4=100%)より改善したが、**n=1のため
+non-determinism(既知、V0以来繰り返し観測)と区別できない**。V4Aの追加
+文言はchanged_actor/number/negation/comparisonの境界明確化のみでcausality
+判定ロジックには触れていないため、B2/B3の非検出をV4Aの文言効果と断定
+しない(観測のみ、下記分析で明記)。V2/V3診断より悪化した項目は無し
+(副作用なし)。
+
+**Step3(非決定性群、V4A、hormuz_run03_* 4 fixture×n=5、20 call、
+¥4.8968)**: Step1・Step2がV2/V3を下回らなかったため実行(設計書§4条件を
+満たす)。
+
+| fixture | gold | 検出結果(5 run) | gold一致率 | V0(gpt-6-luna)比較 |
+|---|---|---|---|---|
+| hormuz_run03_advanced | COMPLIANT(非BLOCKING) | PASS×5 | **100%**(5/5) | V0は80%(4/5) → 改善 |
+| hormuz_run03_standard | MAJOR→BLOCKING(HF-009) | STOP×3、PASS×2 | **60%**(3/5) | V0は100%(5/5) → **悪化** |
+| hormuz_run03_ja_original | 未固定(gold対象外) | STOP×5 | — | V0は多数決80%(D) |
+| hormuz_run03_ja_r2 | 未固定(gold対象外) | STOP×1、PASS×4 | — | V0は多数決60%(C)=40%検出 |
+
+gold既知2fixture平均一致率 = **(100%+60%)/2 = 80%**。受入条件(V0実測
+90%以上)を**未達**。standardの2件(attempt3/4)はLLMが0件のdeviationを
+返す完全な非検出(schema/post-hoc層の誤降格ではなく、そもそもdeviation
+自体が報告されなかった、`raw_parsed`実測で確認)。n=5の小サンプルのため、
+これが(i)既知の高い非決定性の範囲内の揺れか、(ii)Prompt差分ブロック
+(V01+V4A、計約1.7KB)の追加によりモデルの注意配分が変化した結果かは、
+本委任のデータのみでは切り分けられない(要追加n、本委任のスコープ外)。
+
+**QCD**: 本委任全call(52件、diag 10+Trial2 42)平均cost/call=¥0.2852、
+V4A分(42件)平均=¥0.2548/call、diag(V2/V3、10件)平均=¥0.4126/call。
+境界群5 fixtureのみで比較するとV4A(5call、¥1.9884、平均¥0.3977/call)と
+diag(10call、¥4.1258、平均¥0.4126/call)はほぼ同水準(V4Aが僅かに軽い)。
+V4A全call平均latency=30.78秒(diag平均54.11秒、diagはB4等出力量の多い
+fixtureが直接比較対象に含まれるため単純比較不可)。記事換算(4 call相当)
+概算 = V4A平均cost/call(¥0.2548)×4 ≈ **¥1.019**。V0記事換算実測
+(¥0.8173)の1.5倍(¥1.226)以内であり、**QCD costの受入条件は概ね
+満たす**(ただしPhase B「article-equivalent」算出方法との厳密な同一性は
+未確認、簡易近似である点に留意)。
+
+### 費用(委任_03)
+
+Step2診断(10 call)¥4.1258+Trial2 Step1(12 call)¥3.0429+Trial2 Step1
+changed_actor n5(5 call)¥0.7746+Trial2 Step2(5 call)¥1.9884+Trial2 Step3
+(20 call)¥4.8968 = **委任_03合計¥14.8285(52 call、error 0)**。Guardrail
+¥50以内(29.7%使用)。累計(Trial 1¥7.2882+委任_03¥14.8285)=**¥22.1167 /
+総枠¥400**。残¥377.8833。
+
+### V5案(設計のみ、未実装・未実行)
+
+本診断が明らかにした構造(schema variantはLLM一次severity=MINORの場合
+にしか機能しない)を踏まえ、次の3方向を提案する。
+
+**V5-A(B1限定、低リスク、最有力)**: `DEVIATION_PROMPT_TEMPLATE`の
+「【deviationとして報告しないもの(許容範囲)】」相当の考え方を、Trial
+Prompt差分ブロックへ**一般的な経済波及ブリッジ文の許容規定**として追加し
+(fixture固有ではなく「価格・需給等の一般的な経済知識に基づく、Ledgerが
+確認した事象からの自然な帰結描写であり、Ledgerにない新しい数値・主体・
+時期を伴わないもの」等の一般的基準)、B1(V0以来4回独立発生、JA Writer
+Prompt自身が要求する構造)のみをMAJORからACCEPTABLE/QUALITYへ落とす
+ことを狙う。B2/B3/B4はnotes_for_writerの明示禁止パターン(causality
+推論禁止・scope限定)に該当し続けるため、この方向では**変化しない
+(意図的)**。もしB1のみが解消されれば不要BLOCK率は**1/4=25%**となり、
+Trial受入条件(≤25%)をちょうど満たす計算になる(未実装・未検証の机上
+試算)。リスク: 「一般常識」の境界線がLLM次第という既知の弱点は残る
+(Part B指摘)。
+
+**V5-B(B2/B3/B4は現状維持、gold再確認のみ)**: 本診断のLLM理由文は
+B2/B3/B4についてnotes_for_writerの明示禁止パターンと一致した判定を
+示しており、Part B独立評価・v0.2§6-1機械適用結果と整合する。B3の
+gold=BLOCKINGはこの診断で補強されたと考えられる(★要確認は残すが、
+Fable/ユーザーへ「gold確定の参考材料」として報告)。B2_hormuz(gold=
+QUALITY暫定)は本診断の結果と矛盾するため、最終化の際にこの新しい
+非検出/検出双方のデータを考慮する必要がある。
+
+**V5-C(構造変更、中〜高リスク、Opus L2相当)**: schema variantの
+`observation_consistent`/`ledger_field_basis`を、severity=MAJORの場合にも
+参照できるよう`classify_deviation_trial()`の優先順位を変更する(例:
+`observation_consistent==True`かつ`ledger_field_basis=="ledger_fact"`
+[Ledger本体と矛盾しない]の場合に限りMAJORでもQUALITY相当へ降格する等)。
+これは現行の「BLOCKING=fail-closed、MAJORは常にBLOCKING」原則
+(ユーザー決定1)を部分的に緩和する提案であり、**ユーザー判断11
+(BLOCKING対象の大幅緩和・fail-closed撤廃)に抵触する可能性が高い**ため、
+本委任では設計提案のみに留め、実装・実行しない。
+
+### Opus L2論点案(3〜5個、発火判断はFable)
+
+1. V5-Aの「一般的経済波及ブリッジ文の許容規定」を採用する場合の判定基準
+   文言(「一般常識」と「新規の具体的主張」の境界)をどう設計するか
+   (Part B既述の弱点、Safety/Productivityトレードオフ)。
+2. B2_hormuz(gold=QUALITY暫定)が、V2/V3診断・Trial 2 Step2いずれでも
+   検出/非検出が揺れる(非決定性)状況で、gold最終化をどう進めるか
+   (notes_for_writerの明示禁止パターンとの整合、fail-closed思想との
+   整合)。
+3. B3のgold(BLOCKING寄り暫定)を、本診断のLLM理由文(HF-007明示禁止と
+   一致)を根拠に確定してよいか(gold曖昧性解消の提案)。
+4. Stability低下(gold既知2fixture平均90%→80%)が、Prompt差分ブロックの
+   追加分量(約1.7KB)による注意配分変化か、既知の非決定性の範囲内かを、
+   追加n(本委任スコープ外)で検証する優先度。
+5. V5-C(severity=MAJORでもschema信号次第で降格を許す構造変更)を検討
+   対象に含めるべきか、あるいはfail-closed原則(ユーザー決定1)を維持し
+   V5-A限定のみで進めるべきか(Family横断リスク・fail-closed思想との
+   整合)。
+
+### ユーザー判断11該当の有無
+
+**なし**。本委任はgold変更・BLOCKING対象緩和・fail-closed撤廃・
+Production Prompt/schema/Validator変更・GPT-6 Luna routing変更・OPEN-233
+のProduction正式採用のいずれも行っていない。V5-Cはfail-closed緩和に
+**抵触する可能性がある提案**として明記した上で、実装・実行していない
+(設計のみ)。
+
+### Status(委任_03)
+
+**TRIAL2_DONE_IMPROVEMENT_PROPOSED**。Safety目標は完全達成(12/12+5/5=
+100%)。Productivity目標(≤25%)は未達(診断100%/V4A 50%[n=1]、V5-A
+[未実装]なら理論上25%到達の可能性)。Stability目標(≥90%)は未達(実測
+80%、n=5小サンプル)。QCD cost目標は概ね達成。V2/V3/V4-Aいずれも
+「schema variantはLLM一次severity=MINORの場合のみ機能する」という構造的
+制約により、B群の不要BLOCK改善は本アーキテクチャの延長では頭打りである
+ことが判明した。V5-A(B1限定Prompt拡張)を次委任の最有力候補として提案する。

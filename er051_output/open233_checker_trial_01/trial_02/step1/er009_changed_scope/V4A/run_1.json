@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_scope",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "96f0628e0d5b879ca482b5b3b3655ef7a8b99d94cddfa97982489026ccd1e22f",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_01b48b2cd6aee3c9006abbbd528dc887d0ad36a6cb47db7206",
+  "usage": {
+    "input_tokens": 5886,
+    "cached_input_tokens": 0,
+    "output_tokens": 1215,
+    "reasoning_tokens": 870
+  },
+  "elapsed_seconds": 11.052,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+        "issue": "タクシー研究の結果が全米のレストランでも直接確認され、レストラン画面の高い推奨率が客により多くチップを残させると因果的に断定している。Ledgerはレストランでのそのような因果確認を示していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": true,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "F-004の因果結果はニューヨーク市タクシーのクレジットカード利用者に関するもの。レストラン全国への拡張、レストラン客への主体の置き換え、およびレストラン画面の因果効果の断定はLedgerにない。F-011〜F-017の調査結果も自己申告等の記述的結果であり、直接の因果確認を裏付けない。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+        "issue": "タクシー研究の結果が全米のレストランでも直接確認され、レストラン画面の高い推奨率が客により多くチップを残させると因果的に断定している。Ledgerはレストランでのそのような因果確認を示していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": true,
+        "changed_causality": true,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "F-004の因果結果はニューヨーク市タクシーのクレジットカード利用者に関するもの。レストラン全国への拡張、レストラン客への主体の置き換え、およびレストラン画面の因果効果の断定はLedgerにない。F-011〜F-017の調査結果も自己申告等の記述的結果であり、直接の因果確認を裏付けない。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

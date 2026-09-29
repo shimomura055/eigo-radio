@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_comparison",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 1,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "1c97962415c2ee63f42af54466863cb8dc3b6784cae78faf9e22babe142077dd",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_04ae8f160c15bcb5006abbbd7a4cd887d088d6e039b3dd89ca",
+  "usage": {
+    "input_tokens": 5873,
+    "cached_input_tokens": 0,
+    "output_tokens": 633,
+    "reasoning_tokens": 387
+  },
+  "elapsed_seconds": 6.69,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+        "issue": "記事は、より高い推奨チップ率を見た乗客のほうが実際に多くチップを残したというLedgerの結果と、比較の方向を逆転させています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は高い推奨率を見た乗客がより多くチップを残したとするため、changed_comparisonと、それに矛盾するchanged_factが該当します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+        "issue": "記事は、より高い推奨チップ率を見た乗客のほうが実際に多くチップを残したというLedgerの結果と、比較の方向を逆転させています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": true,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "F-004は高い推奨率を見た乗客がより多くチップを残したとするため、changed_comparisonと、それに矛盾するchanged_factが該当します。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

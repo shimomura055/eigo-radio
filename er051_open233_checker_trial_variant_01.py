@@ -42,7 +42,7 @@ OUT_DIR = "er051_output/open233_checker_trial_variant_01"
 # 昇格する(設計書§3-1)。
 PROMOTABLE_FLAG_KEYS = ["changed_actor", "changed_number", "changed_negation", "changed_comparison"]
 
-VARIANTS = ("V0", "V1", "V2", "V3")
+VARIANTS = ("V0", "V1", "V2", "V3", "V4A")
 
 
 def classify_deviation_trial(deviation: dict, variant: str) -> dict:
@@ -176,12 +176,40 @@ TRIAL_PROMPT_DIFF_BLOCK_V01 = """
   observation_consistent/matched_notes_idを必ず出力してください。"""
 
 
+# ------------------------------------------------------------
+# V4-A差分ブロック(Step2診断の原因分類、委任_03): changed_actorと
+# unsupported_new_claimのカテゴリ境界明確化。Fable判定(2)により、fixture
+# 固有の文言(実在の研究者名・記事の固有名詞等)は含めない一般的な境界記述
+# とする。changed_number/negation/comparisonについても同一原則(他カテゴリと
+# の同時true許容)を一文で明記する。V2のPrompt差分ブロック
+# (TRIAL_PROMPT_DIFF_BLOCK_V01)に追記する形で連結し、schema variant・
+# post-hoc v2(classify_deviation_trial)はV2と同一とする(設計書§1-補(2))。
+# ------------------------------------------------------------
+TRIAL_PROMPT_DIFF_BLOCK_V4A = """
+
+【Family X限定 Trial追加指示(V4-A、OPEN-233-CHECKER-REDESIGN-TRIAL-01、Production非適用)】
+- 上記10種類のカテゴリは互いに排他的ではありません。1つの逸脱の内容が複数カテゴリの定義に
+  同時に該当する場合は、該当するカテゴリを全てtrueにしてください(最も強く該当する1つだけに
+  絞る必要はありません)。
+- 特に、Ledgerが特定している主体(行為者・被行為者・発言者)が、記事では別の主体に置き換わって
+  いる場合は、その置き換えが新規の具体的主張(unsupported_new_claim)を伴っていても、必ず
+  changed_actorもtrueにしてください(changed_actorとunsupported_new_claimは同時にtrueで
+  構いません。主体の置き換えをunsupported_new_claimだけに分類しないでください)。
+- 同じ原則を、changed_number(Ledgerと異なる数値・割合・件数への変更)・changed_negation
+  (肯定・否定の反転)・changed_comparison(比較方向の反転・変更)にも適用してください。これらに
+  明確に該当する変更が生じている場合は、他のカテゴリ(changed_fact/unsupported_new_claim等)と
+  重複してでも、必ず該当カテゴリをtrueにしてください。"""
+
+
 def build_trial_prompt_template(variant: str) -> str:
     """V0/V1はvfl01.DEVIATION_PROMPT_TEMPLATEをそのまま返す(Prompt変更なし)。
     V2/V3は差分ブロックを末尾に連結した文字列を返す(vfl01側の定数自体は
-    書き換えない)。"""
+    書き換えない)。V4AはV2の差分ブロックにさらにカテゴリ境界明確化ブロック
+    (TRIAL_PROMPT_DIFF_BLOCK_V4A)を連結した文字列を返す。"""
     if variant not in VARIANTS:
         raise ValueError(f"unknown variant: {variant}")
+    if variant == "V4A":
+        return vfl01.DEVIATION_PROMPT_TEMPLATE + TRIAL_PROMPT_DIFF_BLOCK_V01 + TRIAL_PROMPT_DIFF_BLOCK_V4A
     if variant in ("V2", "V3"):
         return vfl01.DEVIATION_PROMPT_TEMPLATE + TRIAL_PROMPT_DIFF_BLOCK_V01
     return vfl01.DEVIATION_PROMPT_TEMPLATE
@@ -217,10 +245,11 @@ def build_trial_deviation_item_schema(include_related_fact_id: bool = False, inc
 def build_trial_deviation_schema(variant: str, include_related_fact_id: bool = False,
                                   include_origin: bool = False) -> dict:
     """V0/V1はvfl01の既存schema(必要に応じてrelated_fact_id/origin拡張のみ)
-    をそのまま返す。V2/V3はTrial限定5フィールドを追加したschemaを返す。"""
+    をそのまま返す。V2/V3/V4AはTrial限定5フィールドを追加したschemaを返す
+    (V4AのschemaはV2と同一、設計書§1-補(2))。"""
     if variant not in VARIANTS:
         raise ValueError(f"unknown variant: {variant}")
-    if variant not in ("V2", "V3"):
+    if variant not in ("V2", "V3", "V4A"):
         if include_related_fact_id or include_origin:
             return vfl01._build_extended_deviation_schema(False, include_related_fact_id, include_origin, False)
         return vfl01.DEVIATION_JSON_SCHEMA

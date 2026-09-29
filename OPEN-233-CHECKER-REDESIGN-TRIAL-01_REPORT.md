@@ -1,9 +1,12 @@
-# OPEN-233-CHECKER-REDESIGN-TRIAL-01 REPORT (Phase A + Trial 1)
+# OPEN-233-CHECKER-REDESIGN-TRIAL-01 REPORT (Phase A + Trial 1 + Trial 2)
 
-**Status**: `TRIAL1_DONE_IMPROVEMENT_PROPOSED`(委任_02、2026-09-29)。
-Phase A(§1〜8)はTrial計画確定、Trial 1(§9)は実行済み(gpt-6-luna実測
-34 call、¥7.2882)。Production code・共通Checker Prompt・severity・
-routing・Production schemaの変更なし。Production配線なし。詳細は§9
+**Status**: `TRIAL2_DONE_IMPROVEMENT_PROPOSED`(委任_03、2026-09-29)。
+Phase A(§1〜8)はTrial計画確定、Trial 1(§9)・Step2診断+Trial 2(§10)は
+実行済み(gpt-6-luna累計86 call[Trial1 34+委任_03 52]、¥22.1167/総枠
+¥400)。V4-A(Prompt境界明確化)でSafety 100%達成(changed_actor n=5含む)。
+Productivity(不要BLOCK率≤25%)・Stability(≥90%)は未達、V5-A(B1限定拡張)
+を次委任向けに提案。Production code・共通Checker Prompt・severity・
+routing・Production schemaの変更なし。Production配線なし。詳細は§9〜§10
 参照。
 
 本REPORTは設計書`docs/pm/design_open233_checker_redesign_trial_01.md`
@@ -197,11 +200,96 @@ Evidence: `er051_open233_checker_trial_01_run.py`(新規)、
 (raw response/usage/summary_step1.json/summary_step1_changed_actor_n5.json/
 cost.json)、設計書§2-補/§3-補。
 
+## 10. Step2診断+V4-A/V4-C実装+Trial 2実行(委任_03、2026-09-29)
+
+**Status**: `TRIAL2_DONE_IMPROVEMENT_PROPOSED`。詳細は設計書§4-補。
+
+**Fable判定**: (1) Safety未達variantでも診断目的のStep2実行は妨げない
+(受入判定ルールは維持)。(2) V4-A(Prompt差分ブロックへのcategory境界
+明確化、fixture固有文言なし)を実装・実行。(3) V4-B(昇格ルール拡張)は
+本委任では実装・実行しない。(4) V4-C(Trial 1未昇格3件のnegative
+regression fixture化)を実装。(5) Guardrail¥50。
+
+**Step2診断(V2/V3、境界群5 fixture、10 call、¥4.1258)**: **最重要発見**
+— V2・V3ともB1/B2_hormuz/B3/B4の4件全てでLLM自身の一次severity判定が
+MAJORとなり、`classify_deviation_trial()`の優先順位1(severity=="MAJOR"
+→BLOCKING、fail-closed維持)が常に先着するため、schema variant由来の
+QUALITY/ACCEPTABLE分岐に一度も到達しなかった。不要BLOCK率=V2:4/4
+(100%)・V3:4/4(100%)、baseline 75%より**悪化**(B2_hormuz[gold=
+QUALITY暫定]が新規にMAJOR検出されたため)。Meta_run03_standard
+(negative control)は両variantとも正しくBLOCKING検出(成功)。
+
+**原因分類(1件ずつ確認、詳細は設計書§4-補の表)**: B1=主に(a)Prompt
+判定基準(一般常識ブリッジ文の許容規定が不足)。B2/B3/B4=主に(d)context
+handling/notes_for_writer(HF-007/HF-009/HF-011/MUSE-HC-006/010の明示
+禁止パターンにLLMが正しく従った結果であり、Part B独立評価・v0.2§6-1
+機械適用結果と整合)。**構造的根本原因(c)deterministic rule**: schema
+variantはLLM一次severity=MINORの場合にしか機能しないという設計上の
+制約が実証された(LLM severityはvfl01の既存Prompt判定ルールに従い算出
+されるため、Trial Prompt差分ブロックの影響を受けない)。
+
+**V4-A実装**: category境界明確化ブロック(TRIAL_PROMPT_DIFF_BLOCK_V4A、
+sha256=`7d8229090910ec1979ac2dbadd2ada8715c14ea441a4acd6edf5279291efe1ad`)
+をV2ブロックへ連結。schema/post-hocはV2と同一(mock test検証済み)。
+
+**V4-C実装**: Trial 1未昇格3件(V2#3/V3#3/V3#5)をnegative regression
+fixtureとしてfreeze、mock test 3件追加(`V4CRegressionFixtureTest`)。
+
+**Trial 2(V4-A)**: Step1(重大群12+changed_actor n5、17 call、¥3.8175)
+**Safety 100%達成**(Trial 1のSafety gap解消、changed_actor n=5全件で
+LLM一次severityが直接MAJORへ到達)。Step2(境界群5 fixture、5 call、
+¥1.9884)不要BLOCK率=2/4(50%、V2/V3診断100%より改善だがn=1のため
+non-determinismと区別不可、副作用なし)。Step3(非決定性群4 fixture×n=5、
+20 call、¥4.8968)gold既知2fixture平均一致率=**80%**(advanced100%改善/
+standard60%悪化)、受入条件(V0実測90%以上)**未達**。QCD: 記事換算概算
+¥1.019(V0の1.5倍¥1.226以内、概ね達成)。
+
+**variant別総括表**:
+
+| variant | Safety(重大群) | changed_actor n5 | 不要BLOCK率(B群) | Stability(gold2fixture) | 備考 |
+|---|---|---|---|---|---|
+| V0(実測) | 100% | 50%(3/6見逃し) | 75% | 90% | baseline |
+| V1(post-hoc昇格のみ) | 100%(理論) | 100%(理論、post-hoc) | 75%(不変、replay) | 未測定 | API call不要 |
+| V2(Prompt+schema) | 100% | 80% | **100%**(診断) | 未測定 | Trial 1でchanged_actor未達 |
+| V3(V2+notes絞込) | 100% | 60% | **100%**(診断) | 未測定 | 同上 |
+| V4-A(V2+境界明確化) | **100%** | **100%** | 50%(n=1) | **80%** | Safety達成、Productivity/Stability未達 |
+
+**V5案(設計のみ)**: V5-A(B1限定、一般的経済波及ブリッジ文の許容規定を
+Trial Prompt差分ブロックへ追加、B2/B3/B4は現状維持で不要BLOCK率理論値
+1/4=25%を狙う、最有力・低リスク)。V5-B(B2/B3/B4はgold再確認のみ、
+本診断結果がB3のgold=BLOCKING寄りを補強)。V5-C(severity=MAJORでも
+schema信号次第で降格を許す構造変更、fail-closed部分緩和の可能性があり
+**ユーザー判断11抵触の可能性**、実装・実行しない)。
+
+**Opus L2論点案(5件)**: (1)V5-Aの「一般常識」境界基準文言設計、
+(2)B2_hormuz gold最終化の進め方(非決定性データを踏まえて)、
+(3)B3 goldをBLOCKINGへ確定してよいか、(4)Stability低下(90%→80%)が
+Prompt分量増加の影響か既知の非決定性かの追加検証優先度、(5)V5-Cを検討
+対象に含めるかfail-closed原則維持でV5-A限定に留めるか。
+
+**ユーザー判断11該当**: なし(V5-Cはfail-closed緩和に抵触する可能性がある
+提案として明記のみ、実装・実行せず)。
+
+**費用**: 委任_03合計¥14.8285(52 call、error 0、内訳: 診断¥4.1258+
+Trial2 Step1[12+5]¥3.8175+Step2¥1.9884+Step3¥4.8968)。累計(Trial 1
+¥7.2882+委任_03¥14.8285)=**¥22.1167 / 総枠¥400**。残¥377.8833。
+Guardrail¥50中29.7%使用。
+
+**Production/Dangling Reference確認**: `git diff --stat`でProduction
+ファイル(er003/er006/er012/er019)に差分なし。mock test 37件全件PASS
+(既存29件+新規8件)。harness実行時にPhase A記録の3定数sha256と毎回
+突合し不一致なし。API key漏洩なし。
+
+Evidence: 設計書§4-補、`er051_open233_checker_trial_02_run.py`(新規)、
+`er051_output/open233_checker_trial_01/trial_01_step2_diag/`、
+`er051_output/open233_checker_trial_01/trial_02/`。
+
 ## Evidence
 
 - 設計書: `docs/pm/design_open233_checker_redesign_trial_01.md`
 - 新規実装: `er051_open233_checker_trial_variant_01.py`、
-  `er051_open233_checker_trial_variant_01_test_01.py`
+  `er051_open233_checker_trial_variant_01_test_01.py`、
+  `er051_open233_checker_trial_02_run.py`(委任_03新規、Step2診断+Trial 2)
 - 入力: `docs/pm/design_checker_redesign_v02_01.md`、
   `OPEN-233-CHECKER-REDESIGN-V02-01_REPORT.md`、
   `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`、

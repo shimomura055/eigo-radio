@@ -176,6 +176,52 @@ class PromptSchemaVariantTest(unittest.TestCase):
         self.assertEqual(actual, g6.PHASE_A_SHA256)
 
 
+class V4APromptSchemaVariantTest(unittest.TestCase):
+    """V4A(委任_03): V2のPrompt差分ブロックにカテゴリ境界明確化ブロックを追加。
+    schema/post-hocはV2と同一。"""
+
+    def test_v4a_prompt_appends_v01_then_v4a_block(self):
+        built = trial.build_trial_prompt_template("V4A")
+        expected = vfl01.DEVIATION_PROMPT_TEMPLATE + trial.TRIAL_PROMPT_DIFF_BLOCK_V01 + trial.TRIAL_PROMPT_DIFF_BLOCK_V4A
+        self.assertEqual(built, expected)
+        self.assertTrue(built.startswith(vfl01.DEVIATION_PROMPT_TEMPLATE + trial.TRIAL_PROMPT_DIFF_BLOCK_V01))
+
+    def test_v4a_diff_block_sha256_matches_design_doc(self):
+        expected = "7d8229090910ec1979ac2dbadd2ada8715c14ea441a4acd6edf5279291efe1ad"
+        self.assertEqual(trial.sha256_text(trial.TRIAL_PROMPT_DIFF_BLOCK_V4A), expected)
+
+    def test_v4a_diff_block_has_no_fixture_specific_wording(self):
+        # Fable判定(2): fixture固有の固有名詞(実在の研究者名・記事の固有名詞等)を
+        # 含めない一般的なcategory境界記述であること。
+        forbidden = ["Harvard", "Kareem", "Haggag", "Giovanni", "Paci", "taxi", "tip"]
+        for word in forbidden:
+            self.assertNotIn(word, trial.TRIAL_PROMPT_DIFF_BLOCK_V4A, msg=word)
+
+    def test_v4a_schema_identical_to_v2(self):
+        # schema名(open233_trial_deviation_schema_v2/v4a)はvariant別に異なる
+        # ことを許容し、実質的なitem schema(properties/required/strict)が
+        # 同一であることを検証する(設計書§1-補(2)「schema variant・post-hoc v2
+        # はV2と同一」)。
+        schema_v2 = trial.build_trial_deviation_schema("V2")
+        schema_v4a = trial.build_trial_deviation_schema("V4A")
+        self.assertEqual(schema_v2["schema"], schema_v4a["schema"])
+        self.assertEqual(schema_v2["strict"], schema_v4a["strict"])
+
+    def test_v4a_post_hoc_identical_to_v2_for_various_inputs(self):
+        base = {"claim_in_article": "x", "issue": "y", "explanation": "z"}
+        cases = [
+            {**base, "severity": "MAJOR", **{k: False for k in vfl01.DEVIATION_FLAG_KEYS}},
+            {**base, "severity": "MINOR", **{k: False for k in vfl01.DEVIATION_FLAG_KEYS}, "changed_actor": True},
+            {**base, "severity": "MINOR", **{k: False for k in vfl01.DEVIATION_FLAG_KEYS},
+             "ledger_field_basis": "ledger_fact", "observation_consistent": True},
+        ]
+        for d in cases:
+            out_v2 = trial.classify_deviation_trial(d, "V2")
+            out_v4a = trial.classify_deviation_trial(d, "V4A")
+            for key in ("severity_final", "action", "basis", "rule_id"):
+                self.assertEqual(out_v2[key], out_v4a[key], msg=key)
+
+
 class NotesClassificationTest(unittest.TestCase):
     def test_hormuz_notes_all_factual_constraint(self):
         self.assertEqual(len(trial.HORMUZ_NOTES_CLASSIFICATION), 12)
@@ -285,6 +331,63 @@ class ReplayV0DataTest(unittest.TestCase):
             self.assertNotIn("origin", d)
             out = trial.classify_deviation_trial(d, "V2")
             self.assertEqual(out["severity_final"], "BLOCKING")
+
+
+class V4CRegressionFixtureTest(unittest.TestCase):
+    """V4-C(委任_03、設計書§1-補(4)): OPEN-233-CHECKER-REDESIGN-TRIAL-01
+    Trial 1(委任_02)のStep1 changed_actor n=5で観測された、未昇格3件
+    (V2#3/V3#3/V3#5)をnegative regression fixtureとしてfreezeする。
+
+    fixtureの真の逸脱カテゴリはchanged_actor(gold=BLOCKING)だが、LLMは
+    changed_actor=false(unsupported_new_claimのみtrue)・severity=MINORを
+    返した。本テストは「このLLM出力パターンに対して、現行のV1昇格ルール
+    (promote_deterministic_flag_v1、4カテゴリflagベース)は昇格しない
+    (=severity_final!=BLOCKINGのまま)」という**現行ルールの既知の挙動**を
+    固定するものであり、goldをACCEPTABLE/QUALITYへ変更する提案ではない。
+    将来Prompt/ルールを拡張(例: V4-A)した際、この3件の実際のLLM再出力
+    (別途Trial 2で新規に取得するraw response)がchanged_actor=trueへ変化して
+    昇格するようになったかどうかを、本fixture(冷凍済みの旧LLM出力)と
+    突き合わせて机上検証できるようにする。"""
+
+    V4C_RECORDS = [
+        ("V2#3", "er051_output/open233_checker_trial_01/trial_01/"
+                  "step1_changed_actor_n5/er009_changed_actor/V2/run_3.json"),
+        ("V3#3", "er051_output/open233_checker_trial_01/trial_01/"
+                  "step1_changed_actor_n5/er009_changed_actor/V3/run_3.json"),
+        ("V3#5", "er051_output/open233_checker_trial_01/trial_01/"
+                  "step1_changed_actor_n5/er009_changed_actor/V3/run_5.json"),
+    ]
+
+    def _load_raw_deviation(self, path):
+        with open(path, encoding="utf-8") as f:
+            d = json.load(f)
+        devs = d["raw_parsed"]["deviations"]
+        self.assertEqual(len(devs), 1, msg=path)
+        return devs[0]
+
+    def test_frozen_pattern_is_changed_actor_false_unsupported_new_claim_true_minor(self):
+        for label, path in self.V4C_RECORDS:
+            dev = self._load_raw_deviation(path)
+            self.assertEqual(dev["severity"], "MINOR", msg=label)
+            self.assertFalse(dev["changed_actor"], msg=label)
+            self.assertTrue(dev["unsupported_new_claim"], msg=label)
+
+    def test_v1_rule_does_not_promote_frozen_pattern(self):
+        for label, path in self.V4C_RECORDS:
+            dev = self._load_raw_deviation(path)
+            out = trial.classify_deviation_trial(dev, "V1")
+            self.assertNotEqual(out["severity_final"], "BLOCKING", msg=label)
+            self.assertNotEqual(out["rule_id"], "promote_deterministic_flag_v1", msg=label)
+
+    def test_v2_v4a_post_hoc_layer_alone_also_does_not_promote_frozen_pattern(self):
+        # V4-AはPrompt側の境界明確化であり、post-hoc昇格ルール自体は変更しない
+        # (設計書§1-補(2))。post-hoc層だけをこの冷凍済みパターンへ再適用しても
+        # 昇格しないことを確認する(post-hocだけでは解決しないことの記録)。
+        for label, path in self.V4C_RECORDS:
+            dev = self._load_raw_deviation(path)
+            for variant in ("V2", "V4A"):
+                out = trial.classify_deviation_trial(dev, variant)
+                self.assertNotEqual(out["severity_final"], "BLOCKING", msg=f"{label}/{variant}")
 
 
 if __name__ == "__main__":

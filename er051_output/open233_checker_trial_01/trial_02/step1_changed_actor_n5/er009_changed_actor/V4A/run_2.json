@@ -1,0 +1,76 @@
+{
+  "fixture_id": "er009_changed_actor",
+  "variant": "V4A",
+  "model": "gpt-6-luna",
+  "attempt": 2,
+  "attempts_used": 1,
+  "error": null,
+  "prompt_sha256": "90f140b6825fb184a273faa5b78391ee16d0ff7efdafb42f65f056c2d04e9654",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0c783e0cb440e078006abbbe814e4887d0bd091b209aea9a0e",
+  "usage": {
+    "input_tokens": 5881,
+    "cached_input_tokens": 5878,
+    "output_tokens": 1108,
+    "reasoning_tokens": 855
+  },
+  "elapsed_seconds": 10.908,
+  "raw_parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis”",
+        "issue": "Ledgerでは研究者としてKareem HaggagとGiovanni Paciが記載されていますが、記事は研究主体をHarvard Business Schoolのチームとしています。この所属・主体の情報はLedgerにありません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "研究主体をLedger記載の著者からHarvard Business Schoolのチームに置き換え、Ledgerにない具体的な所属・主体を追加しています。取引件数、対象、結果の記述はLedgerの範囲内です。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": ""
+      }
+    ]
+  },
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis”",
+        "issue": "Ledgerでは研究者としてKareem HaggagとGiovanni Paciが記載されていますが、記事は研究主体をHarvard Business Schoolのチームとしています。この所属・主体の情報はLedgerにありません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "研究主体をLedger記載の著者からHarvard Business Schoolのチームに置き換え、Ledgerにない具体的な所属・主体を追加しています。取引件数、対象、結果の記述はLedgerの範囲内です。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}
