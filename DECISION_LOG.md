@@ -12544,3 +12544,87 @@ PRODUCTION-01を`PRODUCTION_WIRED`へ表記同期
   WIRING-01_05.md`、`TTS-FIXED-SHELL-NUMBER-THREE-FIVE-RETRIAL-01_
   REPORT.md`、`KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-
   TRIAL-04`(`PM-USER-DECISIONS-2026-09-28-CONSOLIDATION-SSOT-02`内(E))。
+
+## FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01: Standard Key Phrase日本語意味へのJ3適用(正式決定)+Opus L2所見是正5件の実装記録(W5、2026-09-29)
+
+- **概要**: ユーザーが2026-09-29に(1)Standard Key Phraseの日本語意味へ
+  もJ3を適用することを`APPROVED_FOR_PRODUCTION`と正式決定し、(2)Opus
+  L2設計レビュー所見(BLOCKER 1件・MAJOR 4件、`FAMILY-X-REFRESH-E2E-
+  PRODUCTION-WIRING-01_REPORT.md`行459-548)は「既承認仕様から一意に
+  決まる実装是正」であり`USER_DECISION_REQUIRED`ではないと判断した。
+  委任`_08`(W5)でSonnetが両方を実装した。
+
+- **(1) Standard KP日本語意味へのJ3適用(ユーザー逐語決定)**: 「Standard
+  Key Phraseの日本語意味にもJ3を適用してください」。**反映**:
+  `CURRENT_SPEC.md`「可変segment Role Style(J3/E2)」節の適用範囲へ
+  Key Phrase日本語意味(`japanese_meaning`)を追加、「Key Phrase 音声
+  構造」節のStandard行へ「日本語意味(J3)」を明記。実装は
+  `er019_family_x_audio_production_runner_01.py::_generate_key_phrase_
+  segments_a2()`内に`_role_style_ja()`(japanese_title/preview/comment
+  と同一関数・同一backendゲート)を新設し、`n3_tts.generate_a2_
+  japanese_with_reading_safety()`呼び出しへ渡す。Advancedには
+  `japanese_meaning`segment自体が存在しないため対象外(確認済み)。
+  cache reuseは(2)のcache guard(text一致+`FAMILY_X_VARIABLE_ROLE_
+  STYLE_VERSION`一致)に含めた(旧style[既定JAPANESE_STYLE_PREFIX]で
+  生成済みの音声が黙ってreuseされないよう、同versionを bump: `"v2_j3_
+  e2_title"`→`"v3_j3_kp_meaning_and_explanation_guard"`)。
+
+- **(2) Opus L2所見の是正(既承認仕様から一意に決まる実装是正、
+  `USER_DECISION_REQUIRED`ではない)**:
+  - **BLOCKER-1(KP英語解説のfail-closed)**: text-gate status(語数上限・
+    新規Fact混入チェック)が`"OK"`以外のrankはTTSを一切呼ばず、
+    `kp_results[rank]["explanation"]`へ`status="STOPPED"`+reasonを記録
+    する。「技術retry(1回)後もQA NGが残る場合はそのまま採用する」旨の
+    `NG_ACCEPTED_AFTER_RETRY`ステータスは廃止した(`er019_family_x_kp_
+    explanation_01.py::generate_kp_explanations()`)。既存
+    `verify_episode_audio_validation_gate()`が`kp{rank}_explanation=
+    STOPPED`でassemblyをblockし、既存`record_human_approval()`経路で
+    人間承認できることをテストで確認した。
+  - **MAJOR-1(KP explanation/japanese_meaning cache guard)**:
+    `_generate_or_reuse_kp()`に`expected_text`(cachedの`canonical_text`
+    との一致)と`require_style_version`(cached top-levelの
+    `style_version`一致)を追加した。role="explanation"(Advanced英語
+    解説)・role="japanese_meaning"(Standard日本語意味、上記(1))の両方
+    にtext+style_version guardを適用し、role="english"(KP使用形)には
+    text guardのみ適用した(Opus推奨どおり)。
+  - **MAJOR-2(Standard構造Gateの対称化)**: `split_family_x_article_
+    text_v2()`(`er003_v1_n3_01_scaffold_generate.py`)を、両レベル共通で
+    (a)`^#\s+`のtitle行必須、(b)『## In one line』必須、(c)本文への
+    Markdown見出し混入禁止、の3点をstatus値(`NG_MISSING_TITLE`/
+    `NG_MISSING_IN_ONE_LINE`/`NG_HEADING_IN_BODY`)で返すよう変更した
+    (従来は(a)がtitle=""のままstatus="OK"を返し、(b)はRuntimeErrorを
+    直接送出しretryされなかった)。既存`_family_x_ensure_split_or_
+    paragraph_retry()`(status!="OK"を汎用的に1回retryする設計)がこれら
+    全NGを引き続き同一経路でretryする。`generate_family_x_standard_a2_
+    no_heading()`(`er003_v1_n3_01_standard_a2_generate.py`)のparse gate
+    も、Advanced(`_FAMILY_X_TITLE_BODY_RE`、`^#\s+`必須)と対称化した
+    (旧gateは先頭行が非空かのみで`# `を必須にしていなかった)。
+  - **MAJOR-3(TTS backend fail-fast)**: `er019_family_x_audio_
+    production_runner_01.py`のtts stage開始前に、`tts_backend ==
+    "speech_metadata_flash_lite"`(承認済み正式backend)でなければ
+    RuntimeErrorでSTOPする`assert_production_tts_backend()`を新設した
+    (legacy backendはTrial/regression用途の明示opt-in`--allow-legacy-
+    backend`がある場合のみ許可)。KP解説style(`KEY_PHRASE_EXPLANATION_
+    EN`)も`_role_style()`と同じbackendゲートに揃えた(従来は無条件
+    適用でlegacy backendにもVariant Bが適用されていた)。
+  - **MAJOR-4(OPEN-228旧gateの非writer到達経路の封鎖)**: `er012_e_
+    family_entertainment_two_level_runner_01.py`の`run_scaffold_stage`/
+    `run_tts_stage`/`run_assemble_stage`/`build_player_html`を、Family
+    Xの音声生成は`er019_family_x_audio_production_runner_01.py`が正式
+    経路である旨のRuntimeErrorでfail-fastするよう変更した(従来は
+    `--stage all`でwriter段の課金後にクラッシュする運用トラップだった)。
+    OPEN-228のCLOSED根拠文言を追記した(下記OPEN_ITEMS反映)。
+
+- **矛盾チェック**: `grep -n "NG_ACCEPTED_AFTER_RETRY" er0*.py`で残存
+  参照が説明コメント・「廃止した」テストのassertion文言のみであること
+  (稼働コード上の分岐・返り値としては0件)を確認済み。
+
+- **Opus**: 発火なし(本Wは既承認仕様[Opus L2所見+ユーザー決定]の実装
+  のみ、API支出¥0、mock/regressionのみ)。
+- **Status**: Standard KP日本語意味へのJ3適用は`APPROVED_FOR_PRODUCTION`
+  (配線済み、Gate 3判定待ち)。Opus L2所見5件の是正は実装完了(コード
+  是正であり別途Status区分を持たない)。
+- **根拠**: ユーザー正式決定(2026-09-29、Fable転記)+Opus L2設計レビュー
+  所見(`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`行459-548)。
+  詳細: `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-
+  PRODUCTION-WIRING-01_08.md`。
