@@ -12958,3 +12958,72 @@ output側に含まれ二重計上不要、cached input/cache writesは排他的�
   `docs/pm/design_gpt6_model_comparison_trial_01.md`§10、
   `er050_output/gpt6_checker_comparison_trial_01/cost_recalc_01.json`。詳細:
   `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_04.md`。
+
+## OPEN-233-CHECKER-REDESIGN-TRIAL-01: Phase A(Trial計画確定、2026-09-29、委任_01)
+
+**ユーザー決定(逐語要旨、10項目)**: 1. QUALITYはProduction通過可(Trial前提
+として承認、Production採用決定ではない): BLOCKING=fail-closed維持/QUALITY=
+通過+log/ACCEPTABLE=通過。2. deterministic昇格Trial: `changed_actor`/
+`changed_number`/`changed_negation`/`changed_comparison`のflag=trueは
+LLM severity=MINORでもBLOCKINGへ昇格させる案を検証。3. 過剰BLOCK側は
+causality緩和単独ではなくfactual_constraint/writer_guidance・qualifier・
+basis・Ledger観測整合等のschema変更候補を含めてTrial(Production schemaは
+不変、Family X限定variant)。4. Hormuz B-2は暫定gold=QUALITY(Trial評価用
+ラベル、最終仕様ではない)。5. 不要BLOCK率baseline 75%→Trial目標25%以下。
+6. Prompt/schema variantはFamily X限定、他Familyへ波及させない、Production
+共通Prompt/schemaは変更しない。7. Trial対象モデルは`gpt-6-luna`のみ
+(gpt-5.6-luna再比較不要、Sol/Astra対象外)。8. QUALITYログ運用・Human
+Review連携設計はTrial後へdefer。9. 最優先評価=Safety(重大fixture BLOCKING
+維持率100%)/Productivity(不要BLOCK率25%以下)/Stability(同一input揺れ
+低減)/QCD(cost・latency・retry・STOP率)、受入目的=「過剰品質によって
+Production生産性を失わない」。10. Phase Aでfixture固定/gold確定/Family X
+限定variant/post-hoc v2/schema variant/Prompt variant/Trial構成/反復回数/
+正式費用見積/Guardrail/受入条件/STOP条件を確定し、**Trial実行前に正式報告
+してSTOPする**。
+
+**Phase A成果物**: `docs/pm/design_open233_checker_redesign_trial_01.md`
+(新規、章立て1〜8)。fixture固定(Safety群12種+changed_actor n=5反復、
+Productivity群5件[不要BLOCK率の定義=B1/B2_hormuz/B3/B4の4件中BLOCKING数、
+baseline 75%の算出根拠と一致させた]、Stability群4件、sha256実測)。
+gold確定(Confirmed 8件+暫定要確認6件[B1/B3/B4/Meta_run03_standard/A-1の
+分母扱い/B2_hormuzの最終化タイミング]、Claudeは独自に確定せず一覧化)。
+Family X限定variant V1(post-hoc v2、昇格ルールのみ)/V2(Prompt variant+
+schema variant[qualifier_present/ledger_field_basis/observation_consistent/
+matched_notes_id]+post-hoc v2、notes全量)/V3(V2+notes factual_constraint
+のみ)を`er051_open233_checker_trial_variant_01.py`(新規、Production
+`er003_v1_en_direct_vfl_01_generate.py`はimportのみ、無変更)として実装。
+**設計上の発見**: V0/V1はPrompt/Schemaが現行と同一のため新規API呼び出しが
+不要(既存`er050_output/`の84 call実測データへ`classify_deviation_trial()`
+を後から適用するだけで計算可能、call数0)。新規callが必要なのはV2/V3のみ
+(最大64 call)。Meta Ledger notes_for_writer 15件(MUSE-HC-001〜015)を
+本Phase Aで新規分類し、Hormuz(12/12、既存Part B分類)と合わせ27/27件が
+factual_constraint(writer_guidance 0件)と判明(V2/V3の差が対象2 Ledgerでは
+観測されない可能性が高いというリスクとして明記)。mock test(`er051_
+open233_checker_trial_variant_01_test_01.py`、29 test、ネットワーク呼び
+出しなし、既存run json実データreplay含む)は全件PASS、Production側3定数
+(`DEVIATION_PROMPT_TEMPLATE`/`DEVIATION_JSON_SCHEMA`/`DEVIATION_DEVELOPER_
+MESSAGE`)のsha256不変も検証済み(Dangling Reference確認)。正式費用見積:
+gpt-6-luna正式単価(Input $0.10/Cached $0.01/Output $0.50 per 1M、
+`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout C-2)×V0実測token
+(fixture別)+Prompt差分ブロック(1017文字、保守的1.5文字/token換算で
+約680 token/call増分)+schema変動出力増分(約150 token/call、保守的概算)
+で、全variant全step実行時の合計概算**¥16.4**(V0/V1は$0)、Guardrail案
+合計上限¥50・Step別上限(Step1¥8/Step2¥6/Step3¥12)・2倍到達でSTOP。
+受入条件(Safety BLOCKING維持率100%/Productivity不要BLOCK率≤25%/
+Stability V0[gold一致率90%]以上/QCD cost V0の1.5倍以内)・STOP条件
+(予算・API error・schema非互換・harness不具合・fixture破損・Production
+影響・Safety未達[当該variantのみ打ち切り]・gold再判断要USER_DECISION_
+REQUIRED)を確定。
+
+- **Opus**: 発火なし。API呼び出し: なし(¥0、Trial実行[有料fixture実行]は
+  本委任では行っていない)。Production code・共通Checker Prompt・severity・
+  routing・Production schemaの変更なし、Production配線なし。
+- **Status**: `READY_FOR_TRIAL_EXECUTION`(Phase A完了、Trial実行前に
+  ユーザーへ正式報告してSTOP。gold未確定fixture[B1/B3/B4/Meta_run03_
+  standard]・A-1分母除外提案・費用/Guardrail案の妥当性はユーザー確認待ち)。
+- **根拠**: ユーザー明示決定(2026-09-29、逐語は委任記録参照)。実施内容の
+  根拠: `docs/pm/design_open233_checker_redesign_trial_01.md`(全章)、
+  `er051_open233_checker_trial_variant_01.py`/`er051_open233_checker_
+  trial_variant_01_test_01.py`、`OPEN-233-CHECKER-REDESIGN-TRIAL-01_
+  REPORT.md`。詳細: `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-
+  REDESIGN-TRIAL-01_01.md`。
