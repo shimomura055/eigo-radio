@@ -381,3 +381,22 @@ json保存済み`prompt`からのテンプレート逆展開方式で入力復�
 詳細な実行データ(fixture別raw_parsed・usage・elapsed_seconds)は
 `er050_output/gpt6_checker_comparison_trial_01/`配下に保存(`summary_step1.json`
 および`step1/<fixture_id>/<model>/run_1.json`)。
+
+### 9-2. Phase B完走(委任_03、2026-09-29)
+
+ユーザー決定「Trialは途中で打ち切らない(モデル品質はSTOP条件にしない)」に基づき、
+委任_02のSTOP地点から再開。harnessへ`--fixture`/`--repeat`限定実行モードを追加
+(fixture定義・比較条件・Prompt/Schema/Validatorは無変更)。`er009_changed_actor`
+n=5限定再実行(10 call)→Step 2(境界・過剰品質群、10 call)→Step 3(非決定性n=5、
+40 call)を完走(STOPなし、累計84 call、参考換算¥41.26/¥300、error率0%)。
+
+主要発見: (1) baselineはchanged_actorを構造的に0/6見逃す一方gpt-6-lunaは3/6
+PASSし明確に検出力が高い、(2) B群不要BLOCK率は新旧同値(75%=75%)でOver-blocking
+改善は確認できなかった、(3) hormuz_run03_standardでgpt-6-lunaが5/5完全一致・
+gold完全一致という高い安定性を示す一方advancedではbaselineの方が安定、
+(4) post-hoc非対称性(MAJOR→MINOR降格のみ)・origin判定の揺れ・severity非決定性は
+新旧共通のChecker設計由来の問題として観測された。
+
+Trial終了Status候補=`USER_DECISION_REQUIRED`(Safety面の明確な改善材料と
+Over-blocking未改善という明確な非改善材料が併存するため、最終分類はFable/
+ユーザー)。詳細は`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Phase B-6〜B-12。
