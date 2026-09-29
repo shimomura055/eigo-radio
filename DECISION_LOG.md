@@ -13027,3 +13027,93 @@ REQUIRED)を確定。
   trial_variant_01_test_01.py`、`OPEN-233-CHECKER-REDESIGN-TRIAL-01_
   REPORT.md`。詳細: `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-
   REDESIGN-TRIAL-01_01.md`。
+
+## OPEN-233-CHECKER-REDESIGN-TRIAL-01: Trial 1実行+分析+V4設計案(2026-09-29、委任_02)
+
+**ユーザー更新判断(逐語要旨、15項目)**: 1. 総予算¥400内でTrial→分析→
+原因切り分け→改善案→再Trialを合理的に改善できるところまで繰り返す(一度
+Trialして結果が悪ければ終了、ではない)。2. QUALITYのProduction通過可は
+Trial検証前提でありProduction APPROVEDではない、QUALITYログのProduction
+運用設計はTrial後へdefer。3. deterministic昇格Trial対象は4カテゴリの
+flag=trueかつLLM severity=MINOR→BLOCKING、false positiveが出たら
+category条件・Ledger一致条件・scope・materialityを再検討し単純ルールを
+押し通さない。4. 過剰BLOCK改善が最重要、不要BLOCK率baseline 75%→目標
+≤25%。5. schema variant(factual_constraint/writer_guidance/qualifier/
+basis/Ledger観測整合等)を含めてTrial可、Production schemaは不変。
+6. Hormuz B-2暫定gold=QUALITY(Trial用、最終仕様ではない)。7. 対象モデル
+gpt-6-lunaのみ。8. 「Phase A終了後Trial実行前にSTOP」は撤回、承認済み
+範囲内ならPhase A→Trial→分析→改善→再Trialまで進めてよい。9. Opus L2は
+Safety/Productivityトレードオフ・不要BLOCKが減らない・deterministic
+false positive・causality/scope/certainty境界不安定・schema抜け・結果
+解釈が非一意・fail-closed思想との競合・Family横断影響・同じ改善2回不達の
+いずれかで投入(Fableが判断、本委任ではOpusを呼ばず該当条件の有無のみ
+報告)。10. Trial専用Prompt/schema variant・post-hoc v2/v3・fixture/
+negative/regression fixture追加・n回反復・結果分析・改善variant再実行は
+都度確認不要(すべてTrial/DEV専用、Production正式pathは変更しない)。
+11. USER_DECISION_REQUIRED(新Product原則追加・未承認Safety/Productivity
+トレードオフ・gold label変更・BLOCKING対象の大幅緩和・fail-closed撤廃・
+Family X以外へのProduction展開・Production Prompt/schema/Validator変更・
+GPT-6 Luna routing変更・OPEN-233のProduction正式採用・Human Review常設)は
+勝手に決めない。12. 予算¥400(GPT-6 Luna Trial+Opus L2+再Trial+追加
+fixture検証を含む)、各iterationで今回/累計/残予算を記録、累計¥400超え
+見込みでSTOP。13. 最終目標: Safety(重大fixture BLOCKING維持率100%)/
+Productivity(不要BLOCK率≤25%)/Stability(同一inputの揺れ低減)/QCD
+(量産可能なcost/latency/retry/STOP率)。14. 終了条件A目標達成→VALIDATED
+候補/B技術的限界→USER_DECISION_REQUIRED/C新Product判断→USER_DECISION_
+REQUIRED/D予算上限→best variant+EvidenceでSTOP。15. 再発防止(Prompt/
+schema/deterministic Validator/regression fixture/QA/SSOT/OPEN_ITEMSの
+どこで防ぐか整理、過剰BLOCKが将来モデル変更・Prompt変更で復活しない
+regression fixtureを残す)。
+
+**Fable判定(Phase A★6件の解決)**: (1) A-1は再実行不可のため参考記録の
+まま維持、BLOCKING維持率の分母から除外。(2) B1/B3/B4/Meta_run03_standard
+の既存暫定goldは変更しない、不要BLOCK率の定義(B1/B2_hormuz/B3/B4の4件中
+BLOCKING数/4、baseline 75%と同一根拠)を維持、B3/B4へのBLOCKING妥当という
+異見はリスク欄に記録するのみ。(3) B2_hormuz=QUALITY暫定のまま維持、最終化
+はTrial後。(4) Meta_run03_standardはfact_id 010/012いずれでも実逸脱を
+BLOCKINGと判定すれば検出成功とするnegative control。(5) Guardrailは
+Phase A案(Trial 1単体¥50、Step別Step1¥8/Step2¥6/Step3¥12)をそのまま採用、
+総枠¥400。(6) V2/V3は両方実行する。(7) 実行前STOPは行わない。
+
+**Trial 1実行結果**: 新規harness`er051_open233_checker_trial_01_run.py`
+(Production/Model Routing Contract非経由)でgpt-6-luna実測34 call
+(¥7.2882、error 0)を実行。Step1(重大群12 fixture、V2/V3各12 call)は
+**Safety 100%達成**(両variantとも12 fixture全てBLOCKING維持)。Step1
+(changed_actor n=5、V2/V3各5 call)は**Safety未達**(V2=4/5[80%]、
+V3=3/5[60%])。未昇格3件は共通してLLMが`changed_actor=false`
+(`unsupported_new_claim`のみtrue)を返すパターンで、決定論的昇格ルール
+自体はflagが立った7/7で100%機能しており、原因はその手前のLLMカテゴリ
+判定(Promptのchanged_actorとunsupported_new_claimのカテゴリ境界が
+排他化されていない、原因分類(a) Promptの判定基準)と特定した。設計書§4の
+variant別打ち切りルールに従い、V2・V3ともchanged_actor Safety未達の
+ため**Step2(境界群5 fixture)・Step3(非決定性群)は両方とも未実行**
+(予算温存目的の拡大解釈はせず委任文の明示ルールを厳守)。参考(¥0、V0
+データreplay): V1をB群4件へ適用しても不要BLOCK率は75%→75%で不変(B群は
+全件severity=MAJORのためfail-closed規則でpost-hoc層だけでは改善不可、
+Productivity改善はV2/V3のPrompt/schemaがLLM一次severityを動かすかに
+懸かる未検証事項)。
+
+**V4設計案(実装・実行はしない)**: V4-A(最優先・低リスク、主体差し替え時
+はunsupported_new_claimと同時にchanged_actorも立てるようPrompt明記)を
+最優先案とし、V4-B(昇格ルール自体をunsupported_new_claimへ拡張、中リスク・
+Productivity悪化懸念ありmateriality条件併用が前提)、V4-C(本Trialの
+未昇格3件をregression fixtureとしてfreeze保存)を提示。Opus L2投入条件は
+明確な該当なし(V4-A/V4-B選択のSafety/Productivityトレードオフ判断が
+Fable裁量の候補)。ユーザー判断11該当は**なし**(gold変更・BLOCKING緩和・
+fail-closed撤廃・Production変更のいずれも未実施)。
+
+- **Opus**: 発火なし。費用: Trial 1合計¥7.2882(34 call、error 0)。
+  累計¥7.2882/総枠¥400。Production code・共通Checker Prompt・severity・
+  routing・Production schemaの変更なし(`git diff --stat`でer003/er006/
+  er012/er019に差分なしを確認)、Production配線なし。mock test 29件全件
+  PASS再確認。API key漏洩なし(保存jsonは`prompt_sha256`のみ)。
+- **Status**: `TRIAL1_DONE_IMPROVEMENT_PROPOSED`(Safety目標は12-fixture
+  本体で達成したがchanged_actor n=5別枠で未達のためProductivity/Stability/
+  QCDは未検証、原因特定とV4設計案[未実装]まで完了)。
+- **根拠**: ユーザー明示決定(2026-09-29、逐語は委任記録参照)。実施内容の
+  根拠: `docs/pm/design_open233_checker_redesign_trial_01.md`§2-補/§3-補、
+  `er051_open233_checker_trial_01_run.py`、`er051_output/open233_checker_
+  trial_01/trial_01/`(summary_step1.json/summary_step1_changed_actor_n5.
+  json/cost.json)、`OPEN-233-CHECKER-REDESIGN-TRIAL-01_REPORT.md`§9。
+  詳細: `docs/pm/delegation_log/2026-09-29_OPEN-233-CHECKER-REDESIGN-
+  TRIAL-01_02.md`。
