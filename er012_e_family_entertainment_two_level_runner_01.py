@@ -59,6 +59,7 @@ import er003_v1_n3_01_scaffold_generate as sc
 import er003_v1_n3_01_standard_a2_generate as std_gen
 import er003_v1_n3_01_tts_generate as tts_gen
 import er005_cost_logger as cl
+import er019_family_x_ja_writer_o_r1_r2_01 as jaw
 
 PRICING_SNAPSHOT_PATH = "er005_output/cost_baseline_01/pricing_snapshot.json"
 USD_JPY = 160.0
@@ -336,8 +337,8 @@ _FAMILY_X_PARAGRAPH_RETRY_MUST_FIX = [{
 }]
 
 
-def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
-                      budget_jpy: float, only: str | None = None) -> dict:
+def _run_writer_stage_once(client, theme: dict, ja_text: str, ledger_text: str,
+                            budget_jpy: float, only: str | None = None) -> dict:
     """only: None(両方)/"advanced"/"standard"(delegation D4の
     --regenerate-stage相当。同じ生成関数をそのまま再呼び出しする)。
 
@@ -557,6 +558,125 @@ def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
     merged_summary = {**existing_summary, **evidence}
     save_json(f"{out_dir}/writer_run_summary.json", merged_summary)
     return evidence
+
+
+# ------------------------------------------------------------
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、2026-09-29、ユーザー
+# 明示決定によりAPPROVED_FOR_PRODUCTION、ただしGate 3までPRODUCTION_WIRED
+# としない)で追加: ja_source MAJOR(JARecheckRequiredError)への暫定対応
+# 「案B」。English側を盲目的に再生成するのではなく、_run_writer_stage_once()が
+# JARecheckRequiredErrorを送出した場合に限り、その具体的な指摘をJA
+# Writer O(er019_family_x_ja_writer_o_r1_r2_01.run_ja_writer_o_r1_r2)
+# のOriginal段へmust-fixとして差し戻し、JAをOriginal→R1→R2→Fact Check
+# の全体で1回だけ再生成し、Advanced/Standardを再実行する。1回上限・
+# fail-closedを維持し(再実行後もJARecheckRequiredErrorなら
+# ja_recheck_attempts=1を付記してそのままSTOP、無限retryはしない)、
+# Checker Prompt本体(vfl01.DEVIATION_PROMPT_TEMPLATE等)・severity判定・
+# Ledger/Deviation設計・JA Writer Prompt本文は一切変更しない(既存の
+# must-fixブロック機構[build_must_fix_block/build_original_prompt]を
+# そのまま再利用するのみ)。storyline_line/selected_fact_brief_textが
+# 渡されない場合(既定None、後方互換)は本機構自体が無効化され、従来通り
+# JARecheckRequiredErrorがそのまま呼び出し元へ伝播する(挙動不変)。
+# ------------------------------------------------------------
+def run_writer_stage(client, theme: dict, ja_text: str, ledger_text: str,
+                      budget_jpy: float, only: str | None = None,
+                      storyline_line: str | None = None,
+                      selected_fact_brief_text: str | None = None,
+                      _ja_recheck_attempted: bool = False) -> dict:
+    """_run_writer_stage_once()の薄いwrapper。storyline_line/selected_
+    fact_brief_textの両方が渡された場合のみ、JARecheckRequiredError
+    (ja_source MAJOR)を捕捉して案B(JA 1回再生成→Advanced/Standard
+    再実行)を行う。呼び出し元契約(戻り値evidence構造)は変更しない
+    (ja_recheck_used/ja_recheck_attemptsキーを追加するのみ)。"""
+    try:
+        result = _run_writer_stage_once(client, theme, ja_text, ledger_text, budget_jpy, only=only)
+        result.setdefault("ja_recheck_used", False)
+        result.setdefault("ja_recheck_attempts", 0)
+        return result
+    except JARecheckRequiredError as exc:
+        if _ja_recheck_attempted or storyline_line is None or selected_fact_brief_text is None:
+            raise
+        out_dir = theme["out_dir"]
+        ja_writer_dir = f"{out_dir}/ja_writer"
+        os.makedirs(f"{ja_writer_dir}/audit", exist_ok=True)
+        ja_sourced = [d for d in exc.major_deviations if d.get("origin") == "ja_source"]
+        must_fix_for_ja = _must_fix_from_deviations(ja_sourced or exc.major_deviations)
+        print(f"[E-FAMILY-RUNNER][writer/{theme['theme_id']}] JA_RECHECK_REQUIRED"
+              f"(stage={exc.stage}、ja_sourced_count={len(ja_sourced)})。"
+              "案B: JA Writer Oへmust-fixを差し戻し、JAを1回だけ再生成します"
+              "(ja_recheck_attempts=1)...")
+        pre_recheck_sha256 = {}
+        for fname in ("original.md", "revision1.md", "revision2.md"):
+            fpath = f"{ja_writer_dir}/{fname}"
+            if os.path.exists(fpath):
+                pre_recheck_sha256[fname] = sha256_file(fpath)
+
+        try:
+            ja_result = jaw.run_ja_writer_o_r1_r2(
+                client, storyline_line, selected_fact_brief_text,
+                full_ledger_text=ledger_text, original_must_fix=must_fix_for_ja)
+        except jaw.JAFactCheckStopError as ja_exc:
+            save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1.json", {
+                "trigger_stage": exc.stage,
+                "major_deviations_ja_sourced": ja_sourced,
+                "must_fix_used": must_fix_for_ja,
+                "pre_recheck_sha256": pre_recheck_sha256,
+                "outcome": "JA_FACT_CHECK_STOP",
+                "ja_fact_check_stage": ja_exc.stage,
+            })
+            save_text(f"{ja_writer_dir}/audit/ja_recheck_rejected_{ja_exc.stage}.md", ja_exc.rejected_text)
+            raise RuntimeError(
+                f"[STOP] JA_RECHECK_REQUIRED(ja_recheck_attempts=1): 案Bによる"
+                f"JA再生成中のFact Check(stage={ja_exc.stage})でMAJORが解消され"
+                f"ませんでした。本文を手で直さずSTOPします。{ja_exc}"
+            ) from ja_exc
+
+        new_ja_text = ja_result["final_text"]
+        for fname, stage_key in (("original.md", "original"), ("revision1.md", "r1"),
+                                  ("revision2.md", "r2")):
+            save_text(f"{ja_writer_dir}/{fname}", ja_result["stages"][stage_key]["text"])
+        fact_checks_summary = {}
+        if "fact_checks" in ja_result:
+            fact_checks_summary = {
+                stage_key: {"must_fix_applied": fc["must_fix_applied"], "final_status": fc["final_status"]}
+                for stage_key, fc in ja_result["fact_checks"].items()
+            }
+        save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1.json", {
+            "trigger_stage": exc.stage,
+            "major_deviations_ja_sourced": ja_sourced,
+            "must_fix_used": must_fix_for_ja,
+            "pre_recheck_sha256": pre_recheck_sha256,
+            "new_ja_text_sha256": sha256_text(new_ja_text),
+            "fact_checks_summary": fact_checks_summary,
+            "outcome": "REGENERATED",
+        })
+
+        try:
+            result = _run_writer_stage_once(client, theme, new_ja_text, ledger_text, budget_jpy, only=None)
+        except JARecheckRequiredError as exc2:
+            save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1_result.json", {
+                "outcome": "STILL_MAJOR_AFTER_RECHECK", "stage": exc2.stage,
+                "major_deviations": exc2.major_deviations,
+            })
+            raise JARecheckRequiredError(
+                stage=exc2.stage,
+                message=f"{exc2} (ja_recheck_attempts=1、案Bで再生成後もMAJORが解消せずSTOP。"
+                        "これ以上JAを自動再生成しません。)",
+                major_deviations=exc2.major_deviations,
+            ) from exc2
+
+        save_json(f"{ja_writer_dir}/audit/ja_recheck_attempt1_result.json", {"outcome": "RESOLVED"})
+        # writer_run_summary.jsonへja_recheck使用実績を記録(_run_writer_stage_once
+        # が保存した後のファイルへ追記マージする)。
+        summary_path = f"{out_dir}/writer_run_summary.json"
+        summary = load_json(summary_path) if os.path.exists(summary_path) else {}
+        summary["ja_recheck_used"] = True
+        summary["ja_recheck_attempts"] = 1
+        summary["ja_recheck_trigger_stage"] = exc.stage
+        save_json(summary_path, summary)
+        result["ja_recheck_used"] = True
+        result["ja_recheck_attempts"] = 1
+        return result
 
 
 # ------------------------------------------------------------
@@ -892,13 +1012,31 @@ def main() -> None:
     else:
         ledger_text = load_text(theme["ledger_path"]) if os.path.exists(theme["ledger_path"]) else ""
 
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、案B): --out-dirに
+    # storyline_b3/fact_selection_evidence.json(er019 production runnerが
+    # 保存するSelected Fact Brief情報)が存在する場合のみ、ja_source MAJOR
+    # (JARecheckRequiredError)発生時のJA 1回再生成(案B)を有効化する。
+    # 存在しない場合(このCLIを単体テスト/他用途で使う既存呼び出し)は
+    # storyline_line/selected_fact_brief_textがNoneのままとなり、
+    # run_writer_stage()は従来通りJARecheckRequiredErrorをそのまま伝播する
+    # (挙動不変、後方互換)。
+    storyline_line = None
+    selected_fact_brief_text = None
+    fact_selection_path = f"{args.out_dir}/storyline_b3/fact_selection_evidence.json"
+    if os.path.exists(fact_selection_path):
+        fact_evidence = load_json(fact_selection_path)
+        storyline_line = fact_evidence.get("selected_storyline")
+        selected_fact_brief_text = fact_evidence.get("selected_fact_brief_text")
+
     if args.regenerate_stage:
-        run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only=args.regenerate_stage)
+        run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only=args.regenerate_stage,
+                          storyline_line=storyline_line, selected_fact_brief_text=selected_fact_brief_text)
         print(f"[E-FAMILY-RUNNER] regenerate-stage={args.regenerate_stage} 完了。")
         return
 
     if args.stage in ("writer", "all"):
-        run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only=None)
+        run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only=None,
+                          storyline_line=storyline_line, selected_fact_brief_text=selected_fact_brief_text)
 
     if args.stage in ("scaffold", "all"):
         run_scaffold_stage(client, theme)

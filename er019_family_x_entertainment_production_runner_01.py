@@ -375,9 +375,17 @@ def main() -> None:
     else:
         ja_text = load_text(f"{ja_writer_dir}/revision2.md") if os.path.exists(f"{ja_writer_dir}/revision2.md") else ""
 
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、案B): storyline_result
+    # (run_storyline_b3()の戻り値、または既存selected_brief.md再利用時の
+    # 同形dict)からstoryline_line/selected_fact_brief_textを渡し、
+    # ja_source MAJOR時のJA 1回再生成(案B)をefam.run_writer_stage()内で
+    # 有効化する。advanced/standardの各stageは常にこの節に到達する前提
+    # (need_storyline計算上、writer.py:335参照)。
     if stage in ("advanced", "all") or args.regenerate_stage == "advanced":
         with cl.logging_context(RUNNER_TAG, "advanced"):
-            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="advanced")
+            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="advanced",
+                                   storyline_line=storyline_result["selected_storyline"],
+                                   selected_fact_brief_text=storyline_result["selected_fact_brief_text"])
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after advanced")
         if stage == "advanced" or args.stop_after == "advanced":
             print("[B3-RUNNER] stage=advancedで停止(--stop-after advanced、Mandatory STOP)。")
@@ -386,7 +394,9 @@ def main() -> None:
 
     if stage in ("standard", "all") or args.regenerate_stage == "standard":
         with cl.logging_context(RUNNER_TAG, "standard"):
-            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="standard")
+            efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="standard",
+                                   storyline_line=storyline_result["selected_storyline"],
+                                   selected_fact_brief_text=storyline_result["selected_fact_brief_text"])
         efam.assert_budget_ok(out_dir, args.budget_jpy, "after standard")
 
     print("[B3-RUNNER] Standardまで完了。Mandatory STOP(ユーザー確認前に後工程[scaffold/tts/"

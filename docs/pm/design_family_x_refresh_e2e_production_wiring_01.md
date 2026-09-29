@@ -713,3 +713,96 @@ writer段で**別のclaim**によるja_source MAJORが再発しSTOP(詳細は
 Audio段(scaffold/tts/assemble/player)・Gate 13+9項目・試聴ページは
 Hormuz/Meta双方とも未到達のまま。コード・Prompt変更は本委任では
 実施していない(発見事項はチェッカー間非対称のUDRとして報告のみ)。
+
+## 9-W6. ja_source MAJOR暫定対応「案B」のProduction配線(委任_11、
+2026-09-29、ユーザー明示決定によりAPPROVED_FOR_PRODUCTION、Gate 3まで
+PRODUCTION_WIREDとしない)
+
+### 配線位置の設計判断
+
+委任_10のE2E実測により、実運用では2つの独立したCLI呼び出しパターンが
+併存することを確認した: (i) `er019_family_x_entertainment_production_
+runner_01.py`が単一プロセス内で`efam.run_writer_stage(only="advanced"
+/"standard")`を順に呼ぶ経路、(ii) `er012_e_family_entertainment_two_
+level_runner_01.py`をJA記事ファイル(`--ja-article`)を指定して**独立
+プロセス**として直接実行する経路(委任_10のWriter段[English、run_02]
+再実行が実際にこの経路を使った)。案Bの候補(i)(er012_eのwriter stage
+がJARecheckRequiredErrorを自ら捕捉)と(ii)(er019 production runnerの
+orchestration層で2 runnerを包む)のうち、**(i)を採用**した。理由:
+候補(ii)はer019の単一プロセス内呼び出し(パターン(i)実測)にしか
+効かず、pattern(ii)実測(独立CLI直接実行)では案Bが発動しない欠陥に
+なるため。`run_writer_stage()`自体にJA再生成能力を持たせれば両パターン
+に等しく効く。
+
+### 実装(最小diff・既存契約維持)
+
+- `er012_e_family_entertainment_two_level_runner_01.py`: 既存の
+  `run_writer_stage()`本体(Advanced/Standard生成+deviation retry+
+  paragraph retryの既存ロジック、無変更)を`_run_writer_stage_once()`
+  へ改名し、新しい薄いwrapper`run_writer_stage(..., storyline_line=None,
+  selected_fact_brief_text=None, _ja_recheck_attempted=False)`を追加
+  した。両方がNone(既定)の場合は`_run_writer_stage_once()`の結果を
+  そのまま返す(ja_recheck_used/ja_recheck_attemptsキーを追加するのみ、
+  既存呼び出し元への影響なし・後方互換)。両方が渡された場合のみ、
+  `JARecheckRequiredError`を捕捉し、
+  `er019_family_x_ja_writer_o_r1_r2_01.run_ja_writer_o_r1_r2()`を
+  `original_must_fix`(新規追加、既定None)付きで1回だけ呼び直し、成功
+  すれば`_run_writer_stage_once(only=None)`でAdvanced/Standardを丸ごと
+  再実行する(Advanced/Standard合計でJA再生成は1回、Standard段での
+  発生も同じ枠を消費)。再実行後も`JARecheckRequiredError`ならreasonへ
+  `ja_recheck_attempts=1`を付記して再送出し、STOPする(2回目のJA再生成
+  は呼ばない=無限retry禁止、`_ja_recheck_attempted`は将来の呼び出し
+  ネスト対策として保持するのみで現設計では再帰しない)。JA
+  Fact Check自体がSTOP(`JAFactCheckStopError`)した場合は
+  `RuntimeError`へ変換しSTOPする(既存`run_ja_writer`[er019]のSTOP方針
+  と同型)。
+- `er019_family_x_ja_writer_o_r1_r2_01.py`: `run_ja_writer_o_r1_r2()`に
+  `original_must_fix: list | None = None`を追加し、Original段の最初の
+  `build_original_prompt()`呼び出しへそのまま渡すのみ(既存の
+  `build_must_fix_block`/`build_original_prompt`のmust_fix機構をそのまま
+  再利用、新しいPrompt文言は追加していない)。Noneの場合(既定)は従来と
+  完全に同じPromptになる(後方互換、既存8テスト全通過で確認)。
+- `er019_family_x_entertainment_production_runner_01.py`: `main()`の
+  advanced/standard呼び出し2箇所に`storyline_line=storyline_result[
+  "selected_storyline"]`/`selected_fact_brief_text=storyline_result[
+  "selected_fact_brief_text"]`(既にin-memoryで保持している値)を追加。
+- `er012_e`のCLI`main()`: `--out-dir`配下に`storyline_b3/
+  fact_selection_evidence.json`が存在する場合のみ自動でstoryline_line/
+  selected_fact_brief_textを読み込み`run_writer_stage()`へ渡す(存在
+  しない場合はNoneのまま=案B無効・従来どおり後方互換)。新しいCLI引数は
+  追加していない(委任の「案B有効化に必要な引数(あれば逐語)」に対する
+  回答は「なし、`--out-dir`配下のstoryline_b3成果物の有無で自動判定」)。
+
+### 副作用として明示すべき挙動(意図的・spec通り)
+
+`only="advanced"`のみを要求した呼び出し(例: er019の
+`--stop-after advanced`)でJA recheckが発動した場合、redoは常に
+`only=None`(Advanced+Standard両方)で行われるため、呼び出し元が
+Standardを意図していなくてもa2/配下が生成される。これは委任「Advanced/
+Standard合計でJA再生成は1回」の逐語指示どおりであり、Advancedの再生成
+結果がStandardの入力(advanced_text)であるため技術的にも必然(Standard
+だけを古いAdvancedのままにはできない)。
+
+### 影響を受けた既存テストの改修(挙動不変・実装位置の追随のみ)
+
+`er019_family_x_new_structure_wiring_01_test_01.py`の2テスト
+(`test_advanced_and_standard_use_identical_retry_helper`、
+`test_run_writer_stage_family_x_path_never_calls_old_split_article_
+text`)は`inspect.getsource(runner.run_writer_stage)`でAdvanced/Standard
+生成本体のソースを検査していたが、本体が`_run_writer_stage_once()`へ
+移設されたため検査対象を追随させた(検証している性質[対称性・旧gate
+不使用]自体は変更していない)。
+
+Guardrail遵守確認(W6):
+- API支出: ¥0(mock/regressionのみ)。
+- Checker Prompt本体(`er003_v1_en_direct_vfl_01_generate.py`の
+  `DEVIATION_PROMPT_TEMPLATE`/`HOOK_AWARE_DEVIATION_PROMPT_TEMPLATE`/
+  `DEVIATION_FLAG_KEYS`)は本委任で一切編集しておらず、sha256を
+  `er019_family_x_ja_recheck_retry_01_test_01.py`で既知値と一致確認
+  (変更前後不変)。
+- JA Writer Prompt本文(`R0_PROMPT`/`DEVELOPER_MESSAGE`/
+  `REVISION_INSTRUCTIONS`/`CONCRETENESS_CONTROL_AN3_BLOCK`)も無変更
+  (`original_must_fix`は既存`build_must_fix_block`機構への引数追加の
+  み)。
+- Ledger/Deviation severity設計・Family A/B/C/Z経路・共有`vfl01`の挙動
+  は無変更。

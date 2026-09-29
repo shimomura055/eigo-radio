@@ -1020,3 +1020,134 @@ Opus 9項目・(a)〜(m) 13項目監査: run_02でも音声artifactが一切生�
    なる)、Hormuzの方針決定を待つかの判断を仰ぐ。
 3. 上記1の判断後、Hormuz Advanced→Standard→Audio段→Meta の順で
    委任を継続するか、次回委任へ持ち越すか。
+
+## §W6(委任_11、2026-09-29、ユーザー明示決定「案B採用・
+APPROVED_FOR_PRODUCTION・Gate 3までPRODUCTION_WIREDとしない」)
+
+上記Next Action項目1の対応方針(b)「ja_source MAJORの場合もmust-fixで
+1回だけJA側を自動修正する経路を新設」を、ユーザー明示決定(2026-09-29)
+に基づき「案B」としてProduction配線した。詳細設計・判断理由は
+`docs/pm/design_family_x_refresh_e2e_production_wiring_01.md` §9-W6参照。
+
+### 変更ファイル
+
+- `er012_e_family_entertainment_two_level_runner_01.py`: 既存
+  `run_writer_stage()`本体を`_run_writer_stage_once()`へ改名し、
+  `JARecheckRequiredError`を捕捉して案B(JA 1回再生成→Advanced/
+  Standard再実行)を行う新しい薄いwrapper`run_writer_stage()`を追加。
+  CLI `main()`は`--out-dir`配下の`storyline_b3/fact_selection_evidence.
+  json`存在時のみ自動でstoryline_line/selected_fact_brief_textを読み
+  込む(新CLI引数なし)。
+- `er019_family_x_ja_writer_o_r1_r2_01.py`: `run_ja_writer_o_r1_r2()`に
+  `original_must_fix: list | None = None`を追加(既存`build_original_
+  prompt`のmust_fix機構への引数追加のみ、新Prompt文言なし)。
+- `er019_family_x_entertainment_production_runner_01.py`: advanced/
+  standard呼び出し2箇所へstoryline_line/selected_fact_brief_textを追加
+  (in-memoryの既存値をそのまま渡すのみ)。
+- `er019_family_x_new_structure_wiring_01_test_01.py`: 2テストの検査
+  対象を`run_writer_stage`→`_run_writer_stage_once`へ追随(検証内容
+  [Advanced/Standard対称性・旧gate不使用]自体は無変更)。
+- 新規`er019_family_x_ja_recheck_retry_01_test_01.py`(9テスト、mock、
+  費用¥0)。
+
+### must-fix受け渡しの形式(新Prompt文言なしの証明)
+
+English側`JARecheckRequiredError.major_deviations`のうち
+`origin=="ja_source"`のものだけを既存`_must_fix_from_deviations()`
+(fact_id/claim_in_article/issue/explanation、既存の汎用構造体)で変換
+し、`run_ja_writer_o_r1_r2(..., original_must_fix=<そのリスト>)`へ渡す。
+JA側は既存`build_original_prompt(storyline_line, selected_fact_brief_
+text, must_fix=original_must_fix, full_ledger_text=full_ledger_text)`
+→既存`build_must_fix_block()`が組み立てる(この2関数は元々JA Original
+自身のFact Check MAJOR時の内部must-fix retryで使われているものと完全に
+同一、1行も追加していない)。
+
+### 1回上限・fail-closedのテスト証拠(`er019_family_x_ja_recheck_retry_
+01_test_01.py`、9/9 pass)
+
+- `test_ja_source_major_then_regenerate_once_then_completes`: JA Writer
+  O(`run_ja_writer_o_r1_r2`)が1回だけ呼ばれ(`m_jaw.assert_called_
+  once()`)、Advanced/Standardとも`LEDGER_COMPLIANT`で完走、
+  `ja_recheck_used=True`・`ja_recheck_attempts=1`、`ja_writer/revision2.
+  md`が再生成後の本文へ上書き、audit(`ja_recheck_attempt1.json`
+  outcome=REGENERATED、`ja_recheck_attempt1_result.json`
+  outcome=RESOLVED、`writer_run_summary.json`にja_recheck_used記録)を
+  確認。
+- `test_ja_source_major_persists_after_recheck_then_stops_no_second_
+  regeneration`: 再実行後もMAJORの場合、`m_jaw.assert_called_once()`
+  (2回目のJA再生成が呼ばれていない=無限retry禁止の直接証拠)、
+  例外メッセージに`ja_recheck_attempts=1`を含む、audit outcome=
+  STILL_MAJOR_AFTER_RECHECKを確認。
+- `test_standard_stage_ja_source_major_shares_same_one_time_budget`:
+  Standard段での発生でも同じ1回枠を消費してAdvanced/Standard両方を
+  再実行すること(`m_jaw.assert_called_once()`、trigger_stage=
+  "standard")を確認。
+- `test_translation_origin_major_retry_unchanged_no_ja_recheck`:
+  translation由来MAJORの既存must-fix retry(1回)は不変、JA Writer O
+  は一切呼ばれないこと(`m_jaw.assert_not_called()`)を確認。
+- `test_ja_fact_check_stop_propagates_as_runtime_error`: JA再生成中に
+  `JAFactCheckStopError`が起きた場合、`RuntimeError`(JARecheckRequired
+  Errorではない)へ変換されSTOPし、rejected本文とaudit記録を保存する
+  ことを確認。
+- `test_no_ja_recheck_when_storyline_not_provided_backward_compat`:
+  storyline_line等を渡さない既存呼び出しは従来どおり
+  `JARecheckRequiredError`がそのまま伝播すること(後方互換)を確認。
+
+### Checker Prompt・severity定数のsha256不変(同テストファイル、3/3
+pass)
+
+`vfl01.DEVIATION_PROMPT_TEMPLATE`/`HOOK_AWARE_DEVIATION_PROMPT_
+TEMPLATE`/`DEVIATION_FLAG_KEYS`のsha256/値を、本委任着手前に独立算出
+した既知値と一致確認(`er003_v1_en_direct_vfl_01_generate.py`は本委任
+で一切編集していない)。
+
+### Regression結果(実測、費用¥0)
+
+| pattern | collected | passed | failed | errors |
+|---|---|---|---|---|
+| `er019*_test_*.py` | 268 | 268 | 0 | 0 |
+| `er012*_test_*.py` | 222 | 222 | 0 | 0 |
+| `er003*_test_*.py` | 1557 | 1553 | 3 | 1 |
+| `er009*_test_*.py` | 26 | 26 | 0 | 0 |
+
+`er003*_test_*.py`の4件(`er003_test_bad.FixtureTests.test_case_0`
+[常時失敗する検証用fixture]、`er003_test_p2j_investigate.py`の3件
+[過去期の報告件数と現在のテスト総数を比較するdrift調査、テスト総数の
+自然増で恒常的に乖離する既知のmeta-test])は本委任が触れたファイル
+(JA/EN writer・deviation check経路)と無関係であり、本委任由来ではない
+(git diffで本委任の変更ファイルにこれらを含まないことを確認済み)。
+
+### E2E run_03の実行手順(run_02との差分)
+
+run_02の手順(本REPORT §E2E再開)と比較した差分は以下のみ、新規引数の
+追加はない:
+
+1. `er019_family_x_entertainment_production_runner_01.py --theme "..."
+   --slug hormuz --out-dir <run_03の out-dir> --budget-jpy 30 --stage
+   writer --stop-after writer`(run_02と同一コマンド。`storyline_b3/
+   fact_selection_evidence.json`をrun_02から複製[既存Ledger/storyline_
+   b3再利用と同じ既存運用]しておけば、この段はJA生成のみで変更なし)。
+2. `er012_e_family_entertainment_two_level_runner_01.py --ja-article
+   <out-dir>/ja_writer/revision2.md --slug hormuz --out-dir <run_03の
+   out-dir> --ledger-file <out-dir>/research_ledger/verified_fact_
+   ledger.txt --source-id FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01
+   --budget-jpy 30 --stage ledger`(reuse)→`--stage writer`(run_02と
+   コマンド文字列は同一)。**差分はコマンドではなくファイル配置**:
+   `<out-dir>/storyline_b3/fact_selection_evidence.json`が存在すれば
+   (手順1で複製済みのため存在する)、案Bが自動的に有効化される。存在
+   しなければ従来どおりja_source MAJORで即STOPする(run_02相当の挙動)。
+3. ja_source MAJORが発生した場合、`<out-dir>/ja_writer/audit/ja_
+   recheck_attempt1.json`(outcome=REGENERATED/JA_FACT_CHECK_STOP/未
+   作成=1回枠未消費)と`ja_recheck_attempt1_result.json`(outcome=
+   RESOLVED/STILL_MAJOR_AFTER_RECHECK)、`<out-dir>/writer_run_summary.
+   json`の`ja_recheck_used`/`ja_recheck_attempts`を確認する。
+
+本委任ではrun_03の実発火(有料API呼び出し)は行っていない(委任範囲は
+コード・テスト・SSOT反映のみ、費用上限¥0)。run_03の実発火可否はユーザー
+判断。
+
+### 費用・STOP
+
+費用: ¥0(mock/regressionのみ、実API呼び出し0件)。STOPなし(新しい
+Product判断・未承認Prompt変更は発生しなかった。Checker再設計自体は
+別途OPEN化し、本委任では着手していない)。

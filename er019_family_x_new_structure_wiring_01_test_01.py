@@ -115,12 +115,16 @@ class Open228GateUnreachableTests(unittest.TestCase):
             sc.split_article_text(text)
 
     def test_run_writer_stage_family_x_path_never_calls_old_split_article_text(self):
-        """run_writer_stage()(Family X唯一のProduction呼び出し元)は
-        sc.split_article_text()(h3見出し2つ前提)を一切呼ばないこと
-        (docstring/comment内の言及は対象外、実コードのみ確認)。"""
+        """run_writer_stage()(Family X唯一のProduction呼び出し元)の実処理
+        本体(_run_writer_stage_once()、FAMILY-X-REFRESH-E2E-PRODUCTION-
+        WIRING-01[W6]でrun_writer_stage()自体はja_source MAJOR時の案B
+        retryを行う薄いwrapperへ変わったため、Advanced/Standard生成本体
+        はこちらへ移設された)は sc.split_article_text()(h3見出し2つ前提)
+        を一切呼ばないこと(docstring/comment内の言及は対象外、実コードの
+        み確認)。"""
         import ast
         import inspect
-        src = inspect.getsource(runner.run_writer_stage)
+        src = inspect.getsource(runner._run_writer_stage_once)
         tree = ast.parse(src)
         calls = [ast.dump(n) for n in ast.walk(tree) if isinstance(n, ast.Call)]
         self.assertFalse(any("split_article_text" in c and "split_family_x_article_text_v2" not in c
@@ -176,9 +180,17 @@ class ParagraphCountRetrySymmetryTests(unittest.TestCase):
 
     def test_advanced_and_standard_use_identical_retry_helper(self):
         """Standard/Advancedの非対称にならないこと(同一ヘルパー関数を
-        run_writer_stage()内の両分岐が呼ぶことをソース上で確認)。"""
+        run_writer_stage()の実処理本体が両分岐で呼ぶことをソース上で確認)。
+
+        FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W6、2026-09-29)で
+        run_writer_stage()はja_source MAJOR時の案B retryを行う薄い
+        wrapperとなり、Advanced/Standard生成本体(このアサーションが検証
+        したい対称性)は_run_writer_stage_once()へ移設された。公開契約
+        (関数名run_writer_stage・戻り値evidence構造)は変更していない
+        (er012_e_family_entertainment_two_level_runner_01.pyの
+        run_writer_stage/_run_writer_stage_once参照)。"""
         import inspect
-        src = inspect.getsource(runner.run_writer_stage)
+        src = inspect.getsource(runner._run_writer_stage_once)
         self.assertEqual(src.count("_family_x_ensure_split_or_paragraph_retry("), 2)
 
 

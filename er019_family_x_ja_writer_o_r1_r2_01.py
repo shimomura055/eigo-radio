@@ -233,7 +233,8 @@ def call_with_previous_response_id(client, user: str, effort: str, previous_resp
 
 
 def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text: str,
-                           full_ledger_text: str | None = None) -> dict:
+                           full_ledger_text: str | None = None,
+                           original_must_fix: list | None = None) -> dict:
     """Original -> r1 -> r2をprevious_response_idで連鎖実行する。
     技術的失敗(previous_response_id不可)時のみ、直前記事全文を貼る
     fallback_full_textへ切替える(trial01/02と同一方針)。
@@ -245,11 +246,23 @@ def run_ja_writer_o_r1_r2(client, storyline_line: str, selected_fact_brief_text:
     送出する(呼び出し側=runnerがrejected_ja_<stage>.md保存等を行い
     STOPする)。Noneの場合はFact Check自体を行わず、従来と完全に同じ
     挙動(後方互換)。
+
+    original_must_fix(FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01[W6]で
+    追加、既定None)は、呼び出し元(English側Deviation Checkがorigin=
+    ja_source MAJORと判定した場合の「案B」再生成)がOriginal段の最初の
+    生成から差し戻したい指摘を渡すための引数。build_original_prompt()の
+    既存must_fixパラメータ(build_must_fix_block、Original自身のFact
+    Check MAJOR時に内部で使うものと同一の組み立て関数)にそのまま渡す
+    だけであり、新しいPrompt文言は一切追加しない。Noneの場合(既定)は
+    従来と完全に同じPromptになる(後方互換)。
+
     戻り値: {"stages": {"original": {...}, "r1": {...}, "r2": {...}},
              "final_text": <r2本文>, "chain_method": ...,
              "fact_checks": {"original": {...}, "r2": {...}} (Fact Check
              実行時のみ)}"""
-    prompt_original = build_original_prompt(storyline_line, selected_fact_brief_text)
+    prompt_original = build_original_prompt(storyline_line, selected_fact_brief_text,
+                                             must_fix=original_must_fix,
+                                             full_ledger_text=full_ledger_text)
     response = call_fresh(client, DEVELOPER_MESSAGE, prompt_original, WRITER_EFFORT, "ja_original")
     original_text = response.output_text.strip()
     stages = {
