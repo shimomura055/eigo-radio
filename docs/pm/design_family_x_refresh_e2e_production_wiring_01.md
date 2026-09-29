@@ -501,6 +501,9 @@ E(1名)、F(1名)の4分割を推奨(衝突しない単位)。
   のみ(`git status --porcelain -- "er0*.py" CURRENT_SPEC.md`は
   Phase A完了時点で空である必要がある、§Git実行時に確認)。
 
+Opus L2 実施済み(1 回、所見は REPORT 参照)、Status:
+USER_DECISION_REQUIRED(E2E 発火前是正の要否)。
+
 ## 9-W3. Phase B(W3)実装完了時点の記録
 
 2026-09-29、委任`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`(_03、W3)。
