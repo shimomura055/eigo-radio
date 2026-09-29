@@ -1504,3 +1504,92 @@ reuse(固定shell10件+KP一部)により当該分のTTS call 0。Comment 4本�
    `PRODUCTION_WIRED`化はFableのGate 3判断次第。Hormuz未完了が
    Gate 3のどの条件に抵触するかはRESULT_PACKETで事実列挙する(条件
    緩和はしていない)。
+
+## §Closeout(委任_14、2026-09-29、Fable Gate 3判定・SSOT反映)
+
+### Fable Gate 3判定(逐語)
+
+**判定: Family X Production経路の配線はGate 3 PASS(Meta×Standard/
+Advancedのruntime evidenceに基づく)。以下の承認済み仕様を
+`PRODUCTION_WIRED`へ格上げする。**
+
+根拠(Fableがevidenceを直接照合): `er019_output/family_x_audio_
+production_wiring_01/meta__run_03/{a2,b1b}/audit/tts_generation_
+results.json`でreuse21件(a2 10/b1b 11)、Advanced KP全5rankで
+explanation voice=Aoede・Variant B文言(`measured pace, without
+dragging`)・`phrase_repeat`5件・englishと同一master_audio_id、固定
+shellのmaster_audio_id 10件(welcome`aa130472d437ac80b7cdd474`含む)、
+a2のJ3文言(「落ち着いた、自然な話し言葉…」)、`style_version`記録、
+`HEADING_READOUT`/`NG_ACCEPTED_AFTER_RETRY`0件。上記「Gate結果」表
+(13+9+ユーザー指定)全PASS、Pages 7項目全PASS、試聴URL
+`https://shimomura055.github.io/eigo-radio/user_test/family_x_
+refresh_e2e_01/index.html`。
+
+**スコープ注記(条件緩和ではない)**: 当初のE2E対象はHormuz+Metaの
+2記事。Hormuzはユーザー指示(2026-09-29)によりdeferred/non-blockingと
+して保留(3 run連続のja_source起因MAJOR、Checker問題としてOPEN-233へ
+切り離し)。Gate 3は「Production経路全体の完成可否」をMetaで判定し、
+Hormuz個別未完了と混同しない(ユーザー指示)。Hormuz未完が抵触する点=
+「2記事完成」の当初スコープのみ。配線側のStandard/Advanced非対称は
+無い(Hormuzの非対称はChecker判定差由来)。
+
+### PRODUCTION_WIRED 7件
+
+| # | 仕様 | evidence |
+|---|---|---|
+| 1 | AN3-T0具体性制御(A3+N2、Original側のみ、reminderなし) | `concreteness_an3_block_sha256=067030ff53ecb76a4d1477a3deace07b3e1fac438a33cb873edbe045cf6927fe`がHormuz run_02/03・Meta run_03で一致。OPEN-228の順序条件を満たした |
+| 2 | 可変Role Style JA=J3/EN=E2(Japanese Title・preview・comment・full_story・in_one_line・KP日本語意味を含む) | cache version guard(`FAMILY_X_VARIABLE_ROLE_STYLE_VERSION`)+Advanced英語経路runtime evidence |
+| 3 | 固定フレーズChampion10件(welcome=A現行、他9件`v3_champion_2026_09_29`) | Production Master Store reuse(TTS call 0) |
+| 4 | 新記事構造(途中Heading廃止/忠実英訳/段落境界3分割/Comment1→body1→Comment2→body2→Comment3→body3→Comment4→In One Line/Heading Readout撤去/In One Line短文/Deviation MAJOR→must-fix1回) | `timeline.json`実測、`HEADING_READOUT`grep0件 |
+| 5 | Key Phrase音声構造(Standard: Phrase→日本語意味[J3]→同一Phrase/Advanced: Phrase→英語解説[text仕様+Variant B、Aoede]→同一Phrase) | 再掲はreuseでTTS call 0、rank1〜5全件確認 |
+| 6 | Opus L2是正5件(KP解説fail-closed、KP cache text/version guard、Standard構造Gate対称化、TTSバックエンドfail-fast、er012_e非writer stage封鎖) | §Opus L2設計レビュー所見+W5実装記録 |
+| 7 | 案B(ja_source MAJOR→JA must-fix差し戻し1回、fail-closed) | Hormuz run_03で発動・JA再生成1回でAdvanced COMPLIANT(その後Standardで別MAJOR→設計どおりSTOP)、Meta run_03では非発動(Advanced初回COMPLIANT)。**暫定retry拡張でありChecker問題の正式解決ではない** |
+
+### Closeout 10項目充足状況(委任_14時点、SSOT反映済み)
+
+| # | 項目 | 状況 |
+|---|---|---|
+| 1 | Trial statusが分類済み | 該当なし(本委任はSSOT反映、Trialではない) |
+| 2 | UDRが提示済み | 該当なし(STOP無し) |
+| 3 | 正式採用項目が追跡済み | 完了(上記7件を`CURRENT_SPEC.md`各節へ`PRODUCTION_WIRED`として反映) |
+| 4 | APPROVED→PRODUCTION_WIRED完了確認 | 完了(本Closeoutで実施) |
+| 5 | initial/retry/fallback整合確認 | 確認済み(既存承認済みretry範囲内のみ使用、Meta run_03/Hormuz run_03実データで確認) |
+| 6 | runtime evidence取得 | 取得済み(§E2E Meta run_03の表・JSON・Pages 7項目) |
+| 7 | SSOT整合 | 完了(`CURRENT_SPEC.md`/`OPEN_ITEMS.md`/`DECISION_LOG.md`/`REPORT_LEDGER.md`反映) |
+| 8 | 未報告Trialが無いこと | 該当なし |
+| 9 | 無断deferが無いこと | Hormuz deferredはユーザー指示によるもの(無断ではない) |
+| 10 | 次タスクへの持ち越し事項明示 | GPT-6 Trial(準備完了、`docs/pm/gpt6_trial_preparation_01.md`)、OPEN-233(Checker再設計、GPT-6 Trial後再開)、OPEN-234(audio runner source_dir、ユーザー判断待ち) |
+
+### 費用A/B確定値
+
+**費用A(実測、本管理ID累計)**: 約¥48.08(run_01¥0.99/run_02¥5.07/
+Hormuz run_03¥10.35/Meta run_03¥31.68)。
+
+**費用B(継続コスト差分、記事あたり)**: KP解説(Advanced)+1 LLM call+
+5 TTS call(phrase_repeatはreuseのため+0)。Phrase再掲(Standard)は+0
+(assembly段でenglish wav再利用)。Heading Readout撤去により旧構成比
+−2segment相当。Master reuse(固定shell10件+KP一部)により当該分のTTS
+call 0。Comment 4本化は新構造の既定。案B発動は発生した場合のみ
++¥5〜6(JA再生成1回分)。
+
+### Hormuz deferred
+
+ユーザー指示(2026-09-29)により`DEFERRED (non-blocking)`。理由: Family
+Xを必要十分に閉じGPT-6 Trialを早く開始するため、Hormuz固有のChecker
+挙動(ja_source MAJORの3 run連続再発、run_03ではAdvanced段=COMPLIANT・
+Standard段=ja_source MAJORという同一JA原文への矛盾判定を含む)を追い
+続けない。詳細はOPEN-233参照。
+
+### OPEN-228/230/233/234 最終Status
+
+| OPEN番号 | 最終Status |
+|---|---|
+| OPEN-228 | `CLOSED (SUPERSEDED)`(新構造で旧gateはFamily X新経路から到達不能、Meta run_03で実runtime確認) |
+| OPEN-230 | `CLOSED`(採用判断・must-fix retry必須要件の実装確認とも完了) |
+| OPEN-233 | `DEFERRED (non-blocking)`(GPT-6 Trial/Production Routing判断後に再開、Hormuz run_01〜03/Meta run_03のEvidence追記済み) |
+| OPEN-234 | `OPEN (non-blocking for wiring / blocking for unattended量産)`(audio runner source_dirとwriter --out-dirの不一致、恒久対応要否はユーザー判断) |
+
+### GPT-6 Trial開始可否
+
+準備完了(`docs/pm/gpt6_trial_preparation_01.md`、commit`e6475a24`)。
+未確認事項: 一部Roleの実測model_id、GPT-6のmodel_id・料金。

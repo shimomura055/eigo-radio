@@ -858,3 +858,18 @@ production_runner_01.py`の`source_dir`は`--slug`/`--run`から
 詳細(Gate表・Pages 7項目・費用A/B・Closeout 10項目)は
 `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03
 参照。試聴URL: https://shimomura055.github.io/eigo-radio/user_test/family_x_refresh_e2e_01/index.html
+
+## 10. Closeout(委任_14、2026-09-29、Fable Gate 3判定・SSOT反映)
+
+Fable Gate 3判定(Meta run_03のruntime evidenceに基づくGate 3 PASS)に
+より、下記7件を`PRODUCTION_WIRED`へ格上げした: (1)AN3-T0具体性制御、
+(2)可変Role Style JA=J3/EN=E2(KP日本語意味含む)、(3)固定フレーズ
+Champion10件、(4)新記事構造(見出し廃止・忠実英訳・段落境界3分割・
+Heading Readout撤去)、(5)Key Phrase音声構造(Standard/Advanced共通
+骨格)、(6)Opus L2是正5件、(7)ja_source MAJOR時の暫定案B。Hormuzは
+ユーザー指示によりdeferred/non-blocking(OPEN-233)。SSOT反映は
+`CURRENT_SPEC.md`(該当各節Status更新)・`OPEN_ITEMS.md`
+(OPEN-228`CLOSED (SUPERSEDED)`、OPEN-230`CLOSED`、OPEN-233追加
+Evidence、OPEN-234新設)・`DECISION_LOG.md`(Fable Gate 3判定エントリ)・
+`REPORT_LEDGER.md`(REPORT登録更新・GPT-6準備資料ポインタ)。詳細は
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§Closeout参照。
