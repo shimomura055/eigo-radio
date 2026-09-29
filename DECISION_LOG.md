@@ -12846,3 +12846,62 @@ LEDGER_COMPLIANTと判定)を起こした。ただし**baseline(`gpt-5.6-luna`)�
   `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Phase B、
   `er050_output/gpt6_checker_comparison_trial_01/summary_step1.json`。詳細:
   `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_02.md`。
+
+## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B完走、2026-09-29、委任_03)
+
+**ユーザー判断(逐語要旨)**: `er009_changed_actor`の限定再実行を許可(`gpt-5.6-luna`
+×5+`gpt-6-luna`×5=10 call、n=1の偶然かモデル差かの切り分け目的)。**Trialは途中で
+打ち切らない**(モデル品質はSTOP条件にしない。GPT-6 Lunaがbaseline以上でも未満
+でも続行、一部fixtureで重大見逃しが出てもその事実を記録して続行。目的=GPT-5.6
+LunaとGPT-6 Lunaの全体的な性格差を把握すること)。Step 1(重大)/Step 2(境界・
+過剰品質、不要BLOCK削減の有無を必ず比較)/Step 3(非決定性n=5、判定一致率)を
+必ず実施。途中STOP条件はモデル品質ではなく累計費用・API error継続・schema
+非互換・harness不具合・fixture破損・Production影響のみ。Guardrail¥300
+(Phase B全体累計)。`gpt-6-sol`は第二候補保持(本Phase Bで大量比較しない)。
+Trial終了StatusはREJECTED/VALIDATED/USER_DECISION_REQUIRED(最終分類はFable、
+VALIDATEDはProduction採用を意味しない)。
+
+**Phase B完走実施内容・結果(要約)**: harness`er050_gpt6_checker_comparison_
+trial_01.py`へ`--fixture`/`--repeat`限定実行モードを追加(fixture定義・比較
+条件・Prompt/Schema/Validatorは無変更、mock test 3件追加、14/14 PASS)。
+STOP発生なし、全84 call成功(error率0%)、累計参考換算¥41.26/¥300
+(13.76%)。
+
+(1) `er009_changed_actor`n=5: baselineは6回中0回PASS(全てraw severity=MINOR、
+post-hoc降格ではなくモデル自身の判定、flag=changed_actor=trueは立つが
+severityが上がらない再現性のある系統的弱点)。gpt-6-lunaは6回中3回PASS
+(50%)で**明確にbaselineより検出力が高い**が、なお50%は見逃す。
+(2) Step 2(B1/B2_hormuz/B3/B4/Meta_run03_standard、新旧各1回): 不要BLOCK率
+(B群4件のMAJOR維持率)は新旧同値(75%=75%)で**Over-blocking改善は確認
+できなかった**。B3は新旧完全一致。Meta_run03_standardはbaselineが完全
+MISS、gpt-6-lunaはMAJOR検出したがgoldと異なるfact_id/origin(claim不一致の
+可能性、USER_DECISION_REQUIRED候補)。notes_for_writerへの明示的言及は
+explanationに0/11件。
+(3) Step 3(Hormuz run_03、4 fixture×n=5×新旧): hormuz_run03_standardは
+gpt-6-lunaが5/5完全一致・gold完全一致(100%)、baselineは2/5(40%)。逆に
+hormuz_run03_advancedはbaselineが5/5完全一致(100%)、gpt-6-lunaは4/5
+(80%)。gold既知2fixture平均gold一致率: baseline70%・gpt-6-luna90%。
+ja_original/ja_r2は両モデルとも高い非決定性(Checker設計自体の特性)。
+(4) 新旧共通のChecker設計問題として、post-hoc非対称性(MAJOR→MINOR降格
+のみ)・origin判定の揺れ・severity非決定性を記録した(Production変更は
+行っていない)。
+
+- **Opus**: 発火なし。
+- **Status**: `GPT6-MODEL-COMPARISON-TRIAL-01`のPhase Bは完走(Step1〜3・
+  actor n=5すべて実行完了、STOPなし)。**Trial終了Status候補=
+  `USER_DECISION_REQUIRED`**(changed_actor検出力改善という明確なプラス
+  材料とOver-blocking未改善という明確な非改善材料が併存するため。
+  最終分類はFable/ユーザー)。USER_DECISION_REQUIRED候補fixture5件
+  (er009_changed_actor/Meta_run03_standard/B4/B2_hormuz/hormuz_run03_
+  advanced・standardの安定性トレードオフ)を記録。gold(既存A/B暫定)は
+  書き換えていない。OPEN-233への追記(post-hoc非対称・重大fixture側の
+  非決定性)およびRouting判断はユーザー/Fable判断待ち。GPT-6単価は
+  引き続き未確認、Production code・Prompt・Checker・Model Routing
+  Contractの変更は行っていない。
+- **根拠**: ユーザー明示決定(2026-09-29)。実施内容の根拠:
+  `docs/pm/design_gpt6_model_comparison_trial_01.md`§9-2、
+  `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Phase B-6〜B-12、
+  `er050_output/gpt6_checker_comparison_trial_01/`(`summary_step1_er009_
+  changed_actor_n5.json`・`summary_step2.json`・`summary_step3.json`・
+  `budget_state.json`)。詳細:
+  `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_03.md`。
