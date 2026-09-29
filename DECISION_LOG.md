@@ -451,6 +451,8 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## NEWS-R2-TO-HOOK-TRIAL-01: 2回目revision完成記事(R2)を入力にしたHook生成のLuna/Terra/Sol比較(3記事)、VALIDATED(Trial)、生成順序「R2完成記事→Hook」の優位を確認
 - [本ファイル内] ## NEWS-HOOK-POLICY-DECISION-01: News正式表示Hook=2回目revision後タイトル(R2 Title)をそのまま使用、R2完成後にLunaで比較観測用Hookを1本Side output生成(正式Hookではない)、Sol/Terra採用はDEFERRED/HOLD(ユーザー正式決定、2026-09-24)
 - [本ファイル内] ## NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01: Storyline決定+B3 Fact選定(LLM 1 call)をProduction配線、日本語Entertainment Writer(Original→R1→R2)自動生成も同時配線、Meta「Muse human concierge」でRuntime evidence取得(2026-09-26)
+- [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー決定(OPEN-234 deferred・Trial開始許可)+ Phase A実施記録(2026-09-29、委任_01)
+- [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B比較条件・費用上限・受入条件、2026-09-29、委任_02)Step 1実行、gpt-6-luna重大見逃し検出によりSTOP、Trial終了Status候補=USER_DECISION_REQUIRED
 
 ---
 
@@ -12807,3 +12809,40 @@ number/actor/negation/time)は実運用incidentデータがなくER-009-N1合成
   `docs/pm/design_gpt6_model_comparison_trial_01.md`、
   `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`。詳細:
   `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_01.md`。
+
+## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B比較条件・費用上限・受入条件、
+2026-09-29、委任_02)
+
+**ユーザー判断(逐語)**: GPT-6 Checker Trial主対象`gpt-6-luna`vs`gpt-5.6-luna`/
+`gpt-6-astra`は対象外(高コスト、Luna/Solで不足時の上位候補)/`gpt-6-sol`は互換性
+probeのみ(第二候補)/Phase B費用上限¥300、段階実行Step 1〜3/受入条件(Safety 100%・
+見逃し0、Over-blocking改善、Stability改善、QCD)/goldは既存A/B暫定、割れたfixtureのみ
+USER_DECISION_REQUIRED/Trial終了StatusはREJECTED・VALIDATED・USER_DECISION_REQUIRED、
+VALIDATEDはProduction採用を意味しない/順序: Luna Trial → Routing判断 → 必要なら
+Sol → OPEN-233 → OPEN-234。
+
+**Phase B実施内容・結果(要約)**: `er050_gpt6_checker_comparison_trial_01.py`
+(Trial harness、`vfl01.run_deviation_check()`をimportしmodel引数のみ差替え、
+Prompt/Developer message/JSON schema/Validatorのsha256をPhase A記録と突合)を
+新規実装した(Production code無変更)。`gpt-6-sol`互換性probe(1 call)はSUCCESS
+(比較対象へは追加せず)。Step 1(ER-009-N1危険fixture9種+調査REPORT A群3件
+[A2A3/A4/A5]、新旧各1回、計24 call、累計参考換算¥10.85、error率0%)を実行した結果、
+`er009_changed_actor`fixtureで`gpt-6-luna`が重大見逃し(gold=MAJOR期待だが
+LEDGER_COMPLIANTと判定)を起こした。ただし**baseline(`gpt-5.6-luna`)も同一n=1実行で
+同時に見逃した**(severity=MINORのまま出力、post-hoc validationがMAJOR→MINOR降格
+のみでMINOR→MAJOR補正を行わない既存設計の非対称性が可視化された)。ユーザー決定の
+「gpt-6-lunaに重大見逃しがあればSTOP」に文字どおり該当したため、**Step 2(境界・
+過剰品質群)・Step 3(非決定性測定)は実行せずここでSTOP**した。
+
+- **Opus**: 発火なし。
+- **Status**: `GPT6-MODEL-COMPARISON-TRIAL-01`のPhase B Step 1は完了、Step 2/Step 3は
+  未実行。**Trial終了Status候補=`USER_DECISION_REQUIRED`**(baseline側も同時に
+  見逃したため、gpt-6-luna固有の検出力後退か既存Checkerの非決定性かの切り分けが
+  できておらず、続行(Step 3非決定性測定の先行実行等)か`REJECTED`打ち切りかは
+  Product判断が必要。最終分類はFable/ユーザー)。OPEN-233/OPEN-234のコード変更は
+  行っていない。
+- **根拠**: ユーザー明示決定(2026-09-29)。実施内容の根拠:
+  `docs/pm/design_gpt6_model_comparison_trial_01.md`§9、
+  `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Phase B、
+  `er050_output/gpt6_checker_comparison_trial_01/summary_step1.json`。詳細:
+  `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_02.md`。
