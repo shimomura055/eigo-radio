@@ -13561,3 +13561,106 @@ changed_actor n=15追加実測(¥8〜9、Stage1 variant最終確定はここで
 01.md`(全文)、`docs/pm/design_open233_self_recovery_flow_01.md`§15、
 `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§4、`docs/pm/delegation_
 log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_04.md`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: 既存Rewrite機構棚卸し統合(§5三分類)+
+deterministic pre-check Trial実装+Phase1 ①②実測(委任_05/_06、2026-09-30)
+
+**ユーザー追加指示(逐語要旨、委任_06冒頭)**: 「既存Rewrite機構は
+『必ず既存実装をそのまま使う』ことが目的ではない。棚卸しの上で
+そのまま再利用できる部分/今回向けに拡張・改善できる部分/今回KPIには
+適さず新方式が合理的な部分を整理する。既存資産を無視したゼロからの
+重複実装は避ける一方、既存方式に縛られる必要もない。KPI
+(USER_DECISION_REQUIRED 0/重大Fact見逃し0/+¥3記事以内)に対し、既存
+方式ベースの改善余地も含め検討し、QCD上より良い方法があればTrialする。
+Production変更なし、Trial範囲内で自律進行」。
+
+**委任_05(棚卸し、¥0)**: `docs/pm/inventory_local_rewrite_mechanisms_
+open233_01.md`を新規作成(read-only調査)。既存Rewrite関連機構18件を
+確認し、EN側`er010_ledger_local_rewrite_09.py`(Family B系でPRODUCTION_
+WIREDだがFamily Xには未配線)を第一候補に、JA側は文単位Local Rewrite
+機構が既存に無いことを確認した。二重実装リスク(Family Xへゼロから
+新規モジュールを作るとer010と機能重複する)と、継承すべきguard/retry/
+再検証(MAJORのみ対象、二軸独立カウンタ、受理直後の差分QA、target-
+sentence-matching、prior_issues個別解消確認)を整理した。
+
+**委任_06 三分類統合**: 委任_05の結果を設計書§5-0(新設)へ統合し、
+既存Rewrite関連機構18件を「(A)そのまま再利用」「(B)拡張して利用」
+「(C)今回KPIに不適→新方式」の三分類表(KPI/QCD理由付き)へ整理した。
+EN局所Rewriteを既存ベース改善案(E-1、er010拡張。差分=rewrite_kind別
+テンプレート・空文字列delete対応・Family X構造Gate再確認ラッパー・
+prior_issues併用recheck)と新方式案(E-2、delete型はLLM非経由の決定論
+削除+後処理・replace/narrow_scope型は最小Prompt)の両論併記へ再構成し
+(§5-2/§5-2-補)、Phase 1⑤で同一fixtureにより比較実測する設計とした。
+JA局所Rewriteを既存ベース案(J-1、er010骨格[文特定+3段階escalation+
+差分QA+cycle制御]の日本語句点分割向け移植)と代替案(J-2、既存JA
+must-fix全文+「対象文のみ修正」局所指示のみ、新規モジュールなし)の
+両論併記へ再構成した(§5-4/§5-4-補)。継承guard/retry/再検証を§5-5へ
+統合し、Family X既存must-fix全文retryとの優先順位(局所Rewrite第一→
+cycle上限到達時のみ全文フォールバック)を維持した。
+
+**deterministic pre-check Trial実装**: 新規`er052_open233_self_
+recovery_precheck_01.py`(+`_test_01.py`、unittest 23件全PASS)。
+Ledger text(vfl01形式)をfact_id/claim/scope/conditions/numeric_value/
+date_or_period等へパースし、記事本文との機械照合でactor_missing/
+number_mismatch/date_mismatch/negation_marker/comparison_markerを
+検出する。FPを出しにくい設計(言い換え[20%↔one-fifth]・日付表記差
+[2026-07-13↔July 13/Monday]・敬称差[Trump↔President Trump]の正規化、
+Ledger内の別Factが持つ数値・日付・固有名詞を誤って「取り違えの証拠」
+にしない除外ロジック)。API呼び出しなし(¥0)。
+
+**Phase 1①(precheck FP率実測、¥0)**: 既存`LEDGER_COMPLIANT`
+(deviations=[])記事28件中20件(残り8件はJA writerのretry後attempt
+[prompt内に`prior_issues`instructionを含む]であり、既存の逆展開
+ユーティリティ`er050_gpt6_checker_comparison_trial_01.extract_inputs_
+from_prompt`が非対応のため対象外、既知の限界として記録)へprecheckを
+適用した。**記事単位FP率=0/20=0%**(finding単位0件)。初回実装では
+小物Ledger記事2件でactor_missing誤検知10件が発生し、原因分析
+(所有格差の非正規化・Markdown見出し内Title Case連続語の誤認・文頭
+大文字化された一般語の誤検出・別Factの数値/固有名詞との混同)の上で
+実装を修正し、再測定で0%を確認した(修正はregression testとして
+`_test_01.py`へ固定)。Safety群(er009 9種+A2A3/A4/A5、計12件)への
+適用では、precheck単独検出率=1/12(8.3%、`er009_changed_number`の
+number_mismatchのみ)。design書§3-1の判断基準(FP率10%超でfloor弱め
+分岐へ切替え)に該当せず、**precheckのfloor扱い(強い分岐、Stage2を
+スキップし直接BLOCKING確定)を維持する**。
+
+**Phase 1②(hormuz n=20見逃し3attempt補完実験)**: trial_03_stability_
+n20のhormuz_run03_standard/V4Aで非検出だった3attempt(8/13/14、
+prompt_sha256同一=同一入力)を特定した。(a) precheck適用は非検出
+(既知の限界どおり、HF-009 changed_scope[Brent先物→石油市場全体]は
+意味的逸脱で機械照合対象外)。(b) Stage 1出力を一切見せない独立
+Stage 2診断Prompt(新規`er052_open233_self_recovery_stage2_01.py`、
+gpt-6-luna、Contract非経由)を3attemptそれぞれに1 call適用した結果、
+**3/3(100%)がHF-009を`materiality=BLOCKING, basis=ledger_scope`として
+独立検出**した(3回とも同一趣旨: 「HF-009はBrent先物のみを確認して
+おり、oil market全体を確認していない」という理由付け)。Stage 1の
+recall欠落(n=20中3件の非検出)を、独立Stage 2診断が3/3で埋められる
+ことを実データで確認した(design書§11-5/§14-4が指摘していた構造的
+限界への実証的な反証材料。ただし本実験はStage 1がBLOCKING判定した
+後にのみStage 2が発火する通常設計[§3-0]の前提を外した診断目的の
+特例であり、そのままProduction設計へ組み込めるとは限らない)。3/3で
+結果が一貫していたためn=2への拡張は行わなかった。
+
+**費用**: Stage 2診断3call合計¥0.6285(単価¥0.185〜0.225/call、
+gpt-6-luna実測、Guardrail¥10のうち)。precheck測定・棚卸しは¥0。
+本委任(委任_05/_06)費用¥0.6285、Phase累計¥0.6285/総枠¥400、
+残¥399.3715。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+E-1/E-2・J-1/J-2は両論併記のみでPhase1⑤実測後に確定、独断でどちらか
+に決定していない。precheckのfloor扱い維持もdesign書既定の判断基準に
+従った機械的判定であり新しいSafety判断ではない)。
+
+**Production安全性**: `er052_open233_self_recovery_precheck_01.py`/
+`er052_open233_self_recovery_stage2_01.py`ともProduction非接続の新規
+Trialファイル(既存`er003_*`/`er006_*`/`er010_*`/`er012_*`/`er019_*`
+は無変更、`git diff --stat`で確認済み)。API keyは環境変数のみ、保存
+jsonにはprompt本体ではなくprompt_sha256のみ記録。
+
+Status=`PHASE1_STEP2_DONE`。詳細: `docs/pm/inventory_local_rewrite_
+mechanisms_open233_01.md`、`docs/pm/design_open233_self_recovery_
+flow_01.md`§5-0/§5-2/§5-2-補/§5-4/§5-4-補/§5-5/§9-1、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§5、`docs/pm/delegation_
+log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_05.md`/
+`_06.md`、`er052_output/open233_self_recovery_precheck_01/`、
+`er052_output/open233_self_recovery_phase1_hormuz_followup_01/`。

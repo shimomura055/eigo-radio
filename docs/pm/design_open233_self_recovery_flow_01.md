@@ -3,7 +3,14 @@
 **Status**: `DESIGN_READY_FOR_OPUS_L2` → **[委任_04更新]**
 `PHASE1_READY`(Opus L2レビュー#1完了・所見反映済み[§15]、Phase 1
 実行前チェックリスト§9-0全項目確認済み。API呼び出し¥0、Production
-非接続、実装なし)。委任_01(2026-09-30)で作成。
+非接続、実装なし)。委任_01(2026-09-30)で作成。→ **[委任_06更新]**
+`PHASE1_STEP2_DONE`(既存Rewrite機構棚卸し[委任_05]を§5-0三分類表へ
+統合、EN/JA局所Rewriteをそれぞれ既存ベース案[E-1/J-1]と新方式案
+[E-2/J-2]の両論併記へ再構成[Phase 1 ⑤で比較実測予定]、deterministic
+pre-check[`er052_open233_self_recovery_precheck_01.py`]をTrial実装、
+Phase 1 ①[precheck FP率0%実測]・②[hormuz見逃し3attempt、Stage 2
+診断3/3検出実測]完了。実測費用¥0.6285[Guardrail¥10、Phase累計]。
+③以降・Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -433,6 +440,44 @@ present`として観測用に残すが、判定ロジックには使わない(Op
 
 ## 5. Stage 3 Automatic Rewrite設計
 
+### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
+
+**参照**: `docs/pm/inventory_local_rewrite_mechanisms_open233_01.md`
+(委任_05、read-only調査、¥0)。既存Rewrite関連機構18件を、KPI
+(Safety/Escalation/Cap)とQCD(cost/latency/実装リスク)の両観点で
+「(A)そのまま再利用」「(B)拡張・改善して利用」「(C)今回KPIには
+不適→新方式」の三分類へ整理する(ユーザー指示: 既存資産の無視も
+既存方式への束縛も避け、QCD上より良い方法があればTrialする)。
+
+| # | 機構 | 分類 | 理由(KPI/QCD) |
+|---|---|---|---|
+| 1 | EN Ledger Deviation Checker本体(`vfl01.run_deviation_check`) | (A)そのまま再利用 | Safety資産(Prompt/schema)を保存する設計原則そのもの。Stage 1/Recheckが直接呼ぶ。変更するとSafety regressionリスクが即座に生じる |
+| 2 | EN 文単位Local Rewrite primitive(`er010`) | (B)拡張して利用 | 文特定・3段階escalation・差分QA・target-sentence-matchingは実装済み・実データ検証済みでQCD上安価(新規実装よりcost/リスクが低い)。rewrite_kind対応等の薄い拡張のみで足りる(§5-2 E-1) |
+| 3 | EN Local Rewrite cycle制御(N3-01直接生成) | (C)新方式 | cycle上限(3回)・呼び出し規約がFamily B系専用の前提であり、Self-Recovery Flowのcycle上限(2、Stage2経由必須)と両立しない。流用すると上限混在のSafetyリスクを生む |
+| 4 | EN Local Rewrite cycle制御(Family B generic writer) | (C)新方式 | 同上(#3と同一理由) |
+| 5 | Family X EN 全文must-fix retry(Standard) | (A)そのまま再利用 | 既にProduction稼働中。局所Rewrite cycle上限到達時のフォールバックとして位置づけを変えず流用(§5-3) |
+| 6 | Family X EN 全文must-fix retry(Advanced) | (A)そのまま再利用 | 同上 |
+| 7 | Family X/E オーケストレーション(`_must_fix_from_deviations`ほか) | (B)拡張して利用 | 既存の呼び出し規約を保った上で、origin別Stage3分岐・cycle上限管理を追加する必要がある箇所 |
+| 8 | JA Original/R2 must-fix全文(段単位)retry | (A)そのまま再利用 | 既にProduction稼働中。paired local rewrite(J-1/J-2)のguard抵触時フォールバックとして流用(§5-4) |
+| 9 | JA→EN不整合時の「案B」(JA全文差し戻し) | (B)拡張して利用 | 発火条件を「Stage 2 BLOCKING確定後」へ限定し直す(既存は無条件発火)以外はProduction codeをそのまま使う |
+| 10 | Family X構造Gate(`split_family_x_article_text_v2`) | (A)そのまま再利用 | 局所Rewrite後の構造検証guardとしてそのまま再実行するだけで足りる(§5-2/§5-4) |
+| 11 | TTS発音NGspan Local Rewrite(`er020`) | (C)新方式(別ドメイン) | 発音・ASR比較が目的でFact逸脱とは無関係。ただしfail-closed設計思想(原文復帰・Human Review Lock)は§5-5で継承する |
+| 12 | TTS Local Rewrite原型(cooldown) | (C)新方式(別ドメイン) | 同上(#11の移設元、参照のみ) |
+| 13 | TTS 7-Gate自然英語QA原型 | (C)新方式(別ドメイン) | 同上 |
+| 14 | Full Story専用TTS Local Rewrite回復 | (C)新方式(別ドメイン) | 同上(#11の呼び出し元の1つ) |
+| 15 | Local Rewrite差分QA(`run_diff_qa_for_accepted_rewrite`) | (A)そのまま再利用 | 受理直後の¥0近い追加安全確認として既に確立済み(§5-5) |
+| 16 | Local Rewrite原型ルール策定Trial(歴史、er009系) | 対象外 | 既に#2へ統合済みの過去Trialであり、再利用対象ではない(参考記録のみ) |
+| 17 | Local Rewrite再利用のEvidence確認Script | 対象外 | #2の検証記録であり機構そのものではない |
+| 18 | En ASR意味的同等性チェッカー | (C)新方式(別軸) | TTS後の発音検証でありLocal Rewriteの入力にならない |
+
+**二重実装リスクへの対処**: 棚卸し§4で指摘された「Family Xに新規
+Local Rewriteモジュールをゼロ設計するとer010と機能重複する」リスクは、
+上表(B)分類(#2/#9)を「拡張」として位置づけることで解消する(新規
+モジュール名を先に確定せず、既存資産への薄い拡張として実装する)。
+優先順位(局所Rewrite第一→cycle上限到達時のみ既存の段単位/全文
+must-fix retryへフォールバック→それでも解消しなければNG_REVIEW_
+REQUIRED)は§5-3で維持する。
+
 ### 5-1. 段階別方針
 
 **JA側(origin=ja_source)**: 既存案B(`er012_e_family_entertainment_
@@ -473,6 +518,13 @@ x_standard_a2_no_heading(..., must_fix=...)`)は**全文再生成**であり、
 を優先候補として設計する**(以下)。
 
 ### 5-2. 局所Rewrite(EN側、設計提案。Phase 1 Trialで新規実装・検証対象)
+
+**[委任_06新設]** 本節はEN局所Rewriteの**既存ベース改善案(E-1)**を
+記述する(以下本文はE-1そのもの、委任_04時点の記述を維持)。これとは
+別に、**新方式案(E-2)**を§5-2-補で提示し、Phase 1 ⑤で同一fixtureに
+対しE-1/E-2を実行し実測比較する(§5-0の棚卸し結論=#2「拡張して利用」
+に対応する具体案がE-1、二重実装を避けつつQCD上より良い可能性を検証
+する対照案がE-2)。
 
 **[委任_04改訂/A4]** 本節のEN局所Rewriteは**`origin=translation`の
 claimにのみ適用する**。`origin=ja_source`のclaimには適用しない(EN側
@@ -518,6 +570,41 @@ mechanismの選択は**cycle indexではなくclaimの`origin`で決める**(§5
   採用しない**(全文Checkerを毎回フルで再実行する。コスト増だが
   Safety最優先)。
 
+### 5-2-補. EN局所Rewrite 新方式案(E-2、[委任_06新設]、Phase 1 ⑤で
+E-1と比較実測対象)
+
+E-1(§5-2、er010拡張)は3種の`rewrite_kind`すべてを同一のLLM局所
+Rewrite callで扱う設計だが、E-2は`rewrite_kind`ごとに手段を分離し、
+「LLMを使う範囲を最小化する」方向でE-1と対照的な設計にする。
+
+- **`delete`型**: LLMを一切経由しない。Stage 2の`rewrite_hint`が指す
+  対象文をプログラム側で直接削除する(該当文をピリオド区切りで特定し、
+  `article_text.replace(target_sentence, "", 1)`相当。E-1もdelete型は
+  既にLLM非経由だが[§4-5]、E-2は「削除後に前後の接続詞・代名詞の
+  不整合[例: 削除した文を受ける"This"が次文に残る]をチェックする」
+  軽量な決定論的後処理[代名詞・接続詞で始まる次文を検出したら該当文も
+  併せて再確認対象にするフラグ立てのみ、書き換えはしない]を追加する
+  点がE-1との差)。
+- **`replace_with_ledger_value`/`narrow_scope`型**: E-1(§5-2)と同じ
+  「文±1文+Ledger全文+rewrite_hint」の入力方針は共有するが、**Prompt
+  自体を最小化**する(E-1はer010の3段階escalation[attempt1→2→3で
+  情報を段階的に追加]をそのまま流用するため、1回で解決しない場合に
+  平均call数が増える設計。E-2は"issue+rewrite_hint+rewrite_kind+
+  Ledger該当箇所"を1回のPromptで全て提示し、escalationという段階構造
+  自体を持たない[1回で解決しなければ即座に既存全文must-fix retryへ
+  フォールバック、cycle消費は据え置き])。
+- **狙い**: (a) delete型の後処理追加でE-1が拾わない「削除後の文脈破綻」
+  を安価に補強できるか、(b) escalationを持たないシンプルなPromptで
+  E-1と同等の解決率を、より少ないcall数(=より低いlatency/cost)で
+  達成できるか、の2点をPhase 1 ⑤で実測する。
+- **リスク**: 段階的escalationを持たないため、1回で解決しない場合の
+  救済手段がE-1より弱い(即フォールバックのみ)。Safety面はE-1と同じ
+  guard(構造Gate再確認・機械検証・全文Recheck)をすべて共有するため、
+  Safety規性には差が生じない設計とする(差が出るのは解決率とcostのみ)。
+- **採否**: Phase 1 ⑤の実測(型別成功率・実単価・guard抵触率・
+  フォールバック発生率)をもってE-1/E-2のどちらを本採用候補とするか
+  確定する(本節時点では両論併記、決定しない)。
+
 ### 5-3. loop上限・順序
 
 - 記事あたり最大2 cycle(§3-5)。**[委任_04改訂/A4]** Rewrite
@@ -540,6 +627,13 @@ mechanismの選択は**cycle indexではなくclaimの`origin`で決める**(§5
 
 ### 5-4. paired local rewrite(JA側、[委任_04新設/A4]、Phase 1で新規
 実装・検証対象)
+
+**[委任_06新設]** 本節は既存に文単位JA Local Rewrite機構が無いことを
+前提に、er010の骨格(文特定+3段階escalation+差分QA+cycle制御)を
+日本語向けに薄く移植する**新設案(J-1)**を記述する(以下本文はJ-1
+そのもの、委任_04時点の記述を維持、§5-0棚卸し結論#9に対応)。これとは
+別に、新規モジュールを増やさない**代替案(J-2)**を§5-4-補で提示し、
+Phase 1 ⑤でJ-1/J-2を同一fixtureに対し実行し実測比較する。
 
 **位置づけ**: `origin=ja_source`のclaimに対する第一候補のRewrite手段
 (§5-3)。既存案B(JA全文差し戻し、¥3.5〜4.0)は「guard抵触時の
@@ -602,6 +696,65 @@ guard抵触(文体/記号/段落数いずれか)時は、§5-2と同じ段階的
 **Phase 1測定項目**: 型別(delete/replace_with_ledger_value/
 narrow_scope)成功率・実単価・guard抵触率・フォールバック発生率
 (§9-1⑤)。
+
+### 5-4-補. JA局所Rewrite 代替案(J-2、[委任_06新設]、Phase 1 ⑤で
+J-1と比較実測対象)
+
+J-1(§5-4)は新規モジュール(日本語文分割+対象文特定)を実装するが、
+J-2は**新規モジュールを一切増やさず**、既存の「JA must-fix(全文、
+`original_must_fix`引数)」に「対象文のみ修正・他は一字も変えない」という
+局所指示を追加するだけで代替できないかを検証する。
+
+- **入力**: 既存のJA Original段`build_must_fix_block`が受け取る
+  `must_fix`引数へ、Stage 2の`rewrite_hint`(対象claim・修正方針)に加え
+  「この指摘に対応する一文だけを修正し、他の文は一字も変更しないこと」
+  という制約文を追加する。Original→R1→R2の既存カスケードはそのまま
+  実行する(J-1と異なり部分スキップという新しい制御構造を導入しない、
+  既存Gateの通過実績をそのまま使える)。
+- **利点**: (a) 新規モジュール(文分割・対象文特定・差分QA)を実装
+  しないため実装リスク・検証コストがJ-1よりはるかに小さい、
+  (b) 既存の文体Gate/記号Gate/段落数Gateを無改造でそのまま通過できる
+  ことが保証されている(J-1は局所編集後の全文に対してこれらGateが
+  正しく再検証できるか自体が未検証、§5-4実装リスク参照)。
+- **欠点**: 出力が全文(Original→R1→R2の再カスケード)であるため、
+  cost自体は旧案B(全文差し戻し)に近い(J-1が狙う¥1.0〜1.5/cycleの
+  コスト削減効果は得られない)。「対象文以外は変えない」という指示が
+  LLMに厳密に遵守される保証はなく、Fact Check/再英訳の再抽選(Advanced/
+  Standardの再生成)は避けられない点もJ-1(該当stageのみの局所編集)に
+  劣る。
+- **狙い**: Phase 1 ⑤で、J-1の実装コスト・guard抵触率と、J-2の
+  cost・「本当に対象文以外が変わらないか」の実測diff率を比較し、
+  QCD上どちらが本Phaseの規模(Family X限定Trial)に見合うかを判断する
+  材料にする。
+- **採否**: 本節時点では両論併記、決定しない(Phase 1 ⑤実測後に確定)。
+
+### 5-5. 継承するguard/retry/再検証(棚卸し§3の統合、[委任_06新設])
+
+E-1/E-2・J-1/J-2いずれの案を採用する場合でも、以下は既存資産からの
+継承として維持する(独自の新しい安全装置を発明しない、
+`docs/pm/inventory_local_rewrite_mechanisms_open233_01.md`§3準拠)。
+
+1. **対象はMAJORのみ**。MINORは記録のみで対象外(er010既存方針)。
+2. **文単位retry上限3回+記事全体cycle上限の二軸独立カウンタ**
+   (E-1/J-1のattempt escalationに適用。ただしSelf-Recovery Flow全体の
+   記事cycle上限は§3-5の2回を優先し、er010固有の`MAX_REWRITE_CYCLES=3`
+   はE-1/J-1内部のattempt軸としてのみ使う。二重の上限概念を混同しない)。
+3. **受理直後の差分QA**(`run_diff_qa_for_accepted_rewrite`/
+   `apply_diff_qa_to_resolved_rewrite`、Fact Checker A' web_search +
+   Ledger再確認)を、E-1のRewrite受理後に適用する(J-1/J-2は同型のJA版
+   差分QAが無いため、Phase 1では全文Recheckの結果とdiffログの事後観測に
+   留める、§5-4実装リスク参照)。
+4. **ambiguous時はwindow全体判定へ安全側フォールバック**
+   (`evaluate_target_sentence_status`のtarget-sentence-matchingロジック、
+   隣接文の逸脱に対象文のRewriteが誤ってblockされないようにする一方、
+   対象文自体の判定が曖昧な場合は安全側[window全体]で判定する)。
+5. **置換失敗時は原文復帰**(TTS Local Rewrite[#11]のfail-closed思想。
+   E-1/E-2のguard抵触時「置換を破棄し元の全文へ戻す」[§5-2 (1)]、
+   J-1/J-2のguard抵触時の段階的フォールバック[§5-4]は、いずれもこの
+   思想を踏襲する。silent failで出荷しない)。
+6. **`prior_issues`による個別解消確認**(既存Family X `must-fix
+   retry`[#2.2、`run_deviation_check(..., prior_issues=...)`]の
+   インターフェースをStage 1 Recheck全体[§3-0 A1]へ統合する)。
 
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
@@ -843,17 +996,62 @@ JA/EN乖離ルール・call数/batch/caching)を、モデル依存の結論(Stag
 variant最終確定)より先に確定させる**(Opus論点8推奨4、A15)。Stage 2
 評価はV4-A由来レコードに限定する(V2/V3混在を排除、Opus論点8(C))。
 
-**① precheck FP率実測(¥0、最優先)**: 既存`LEDGER_COMPLIANT`
-(deviations=[])記事28件全部にdeterministic pre-check(§14-4)のregexを
-適用し、false positive率を測定する。API呼び出しなし。**Guardrail**:
-実行のみ、追加費用なし。
+**① precheck FP率実測(¥0、最優先)** **[委任_06実測完了]**: 既存
+`LEDGER_COMPLIANT`(deviations=[])記事28件のうち、既存の逆展開ユーティリティ
+(`er050_gpt6_checker_comparison_trial_01.extract_inputs_from_prompt`)で
+再構成できた20件(残り8件はJA writerのretry後attempt[`prior_issues`
+instructionを含むprompt]であり、当該ユーティリティが未対応のため対象外、
+既知の限界として記録)にdeterministic pre-check(`er052_open233_self_
+recovery_precheck_01.py`)を適用した。**記事単位FP率=0/20=0%**(finding単位
+0件)。実装は反復修正を経ている(初回実装では小物Ledger[F001-F018]記事2件
+[a2/b1b]でactor_missing誤検知10件が発生。原因は(a)所有格差[`Celine's`
+vs Ledgerの`Celine`]の非正規化、(b)Markdown見出し内のTitle Case連続語を
+複合固有名詞と誤認、(c)文頭大文字化された一般語[`Can`/`Looking`等]の
+誤検出、(d)同一Ledgerの別Factが持つ数値・日付・語彙を「別Factの主体・
+値」と正しく除外できていなかったこと。(a)〜(d)を全て補正するregression
+testを`er052_open233_self_recovery_precheck_01_test_01.py`へ追加した上で
+再測定し0%を確認した)。design書§3-1が定めた判断基準(記事単位FP率が
+10%超なら「Stage 2強制送付[棄却可]」の弱い分岐へ切替え)に照らし、
+**0%(10%を大きく下回る)のため、precheckのfloor扱い(§3-1/§4-3の強い
+分岐、Stage 2をスキップし直接BLOCKING確定)をそのまま維持する**。
+Safety群(er009 9種+A2A3/A4/A5、計12件)への適用では、precheck単独の
+検出率=1/12(8.3%、`er009_changed_number`のみnumber_mismatchで検出)。
+残り11件は非検出(構造的理由: er009系Ledgerの一部[ER-006 pool形式]は
+actor名が`claim`ではなく`source:`引用行にのみ存在し、現行の正規表現は
+`claim`等の主要フィールドのみを走査するため対象外。changed_scope/
+causality/certainty/negation/comparison/time/unsupported_new_claimは
+意味的判断が必要でありdesign書§14-4の既知の限界どおり機械照合不可)。
+これは想定どおりであり、precheckはStage 1 LLMの代替ではなく補完層で
+あることを裏付ける。**費用¥0(API呼び出しなし)**。詳細ログ:
+`er052_output/open233_self_recovery_precheck_01/phase1_step1_fp_rate.json`
+/`phase1_step1_safety_group_detection.json`。
 
-**② hormuz n=20見逃し3 attempt補完実験(¥0〜数円)**: hormuz_run03_
-standardのn=20 stability実測(`er051_output/open233_checker_trial_01/
-trial_03_stability_n20/`)でV4-Aが非検出だった3 attemptのraw出力
-(deviations=[])を特定し、その本文に対しprecheck/Stage 2を独立に
-適用して拾えるかを確認する。Stage 2適用分のみ課金(1〜3 call、
-¥0.3〜0.9)。**Guardrail**: 上限¥2、超過見込みでSTOP。
+**② hormuz n=20見逃し3 attempt補完実験(¥0〜数円)** **[委任_06実測完了]**:
+hormuz_run03_standardのn=20 stability実測(`er051_output/open233_
+checker_trial_01/trial_03_stability_n20/`)でV4-Aが非検出だった3
+attempt(attempt 8/13/14、いずれもprompt_sha256が同一=同一入力に対する
+繰り返し測定)を特定した。(a) precheckを適用した結果、**非検出**
+(0 findings、期待どおり。HF-009 changed_scope[Brent先物→石油市場全体
+への一般化]は意味的逸脱であり機械照合対象外という§14-4の既知の限界を
+裏付ける)。(b) Stage 1出力を一切見せない独立Stage 2診断Prompt
+(`er052_open233_self_recovery_stage2_01.py`、gpt-6-luna、§4のrubricを
+継承しStage 1出力なし版に適合させた新規Trial実装)を、当該記事(全文)+
+Ledger全文+JA原文へ3 call適用した結果、**3/3(100%)がHF-009を
+`materiality=BLOCKING, basis=ledger_scope`として独立に検出**した(3回とも
+"HF-009 establishes the reported movement for Brent[crude futures]
+only... does not establish...oil market[generally]"という同一趣旨の
+理由付け)。**Stage 1のrecall欠落[85%→n=20中3件]を、独立したStage 2
+診断が3/3で埋められることを実データで確認した**(design書§11-5/§14-4
+が示していた「Self-Recovery Flowで解決されない構造的限界」への実証的な
+反証材料。ただし本実験はStage 1がBLOCKINGと判定した後にのみStage 2が
+発火する通常設計[§3-0]の前提を外した診断目的の特例であり、そのまま
+Production設計へ組み込めるわけではない[全記事へ常時2nd Checkerを回す
+運用コストの問題は§14-4「PASS時の限定2nd run」不採用の理由と同じ]。
+Phase 2での扱いは§11-5への追記候補とする)。**費用**: Stage 2診断3call
+合計¥0.6285(単価¥0.185〜0.225/call、gpt-6-luna実測)。3/3で結果が
+一貫していたためn=2への拡張(computed guardrail上限¥2に対し実測は
+その約1/3)は行わなかった。詳細ログ:
+`er052_output/open233_self_recovery_phase1_hormuz_followup_01/summary.json`。
 
 **③ V4-A BLOCK率増分+changed_actor有意性実測(¥1.5〜3+¥6=約¥8〜9)**:
 (a) `docs/pm/negative_claim_candidates_open233_01.md`の出典7記事
@@ -898,6 +1096,11 @@ $0.01/Out $0.50、為替¥156.88/$換算)を基準に、①¥0+②¥0〜¥2+
 程度を上限とする既存慣例と整合)。Phase予算¥400に対する配分は①〜⑥の
 実測(上限合計約¥70)を第一弾とし、残額(約¥330)は⑤⑥の追加実測・
 Phase 2準備に充てる想定とする(次回委任で個別確定)。
+
+**[委任_06実測]** ①=¥0(実測、確定)。②=¥0.6285(実測、確定。
+見積り上限¥2の約31%)。①②実測合計=**¥0.6285**(Phase累計、後述の
+Guardrail上限¥10のうち)。③〜⑥は本委任(委任_06)未実施(次回委任で
+実施)。
 
 - **モデル**: gpt-6-luna(前Phase Trial資産との直接比較のため統一、
   §4-6参照)。Production Stage 1のgpt-5.6-lunaとの差異は既知の

@@ -1,0 +1,143 @@
+{
+  "missed_attempts": [
+    {
+      "path": "er051_output/open233_checker_trial_01/trial_03_stability_n20/hormuz_run03_standard/V4A\\run_13.json",
+      "attempt": 13,
+      "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+      "response_id": "resp_018ae1db7085d706006abbccde261487d092b6244043a1afea"
+    },
+    {
+      "path": "er051_output/open233_checker_trial_01/trial_03_stability_n20/hormuz_run03_standard/V4A\\run_14.json",
+      "attempt": 14,
+      "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+      "response_id": "resp_050b263b92aa3201006abbcd12640887d08e0bfaefd870e200"
+    },
+    {
+      "path": "er051_output/open233_checker_trial_01/trial_03_stability_n20/hormuz_run03_standard/V4A\\run_8.json",
+      "attempt": 8,
+      "prompt_sha256": "aca57041132da12909a134e2adbcbac44fae78030a8e5741e437bfb48694ac5e",
+      "response_id": "resp_09a1ae25aa94b1d3006abbcc18af2487d0b6cabf6dbea2f75c"
+    }
+  ],
+  "n_missed": 3,
+  "precheck_findings": [],
+  "precheck_detected": false,
+  "stage2_runs": [
+    {
+      "call": 1,
+      "prompt_sha256": "5f56867229e518814489110b7d7f4313ee90eee24fcf071af3285a2fb94c95a6",
+      "model": "gpt-6-luna",
+      "response_id": "resp_00663b9bbe111716006abc46d0c7bc87d0a57233d3f7bd466e",
+      "usage": {
+        "input_tokens": 4768,
+        "cached_input_tokens": 0,
+        "output_tokens": 1825,
+        "reasoning_tokens": 1552
+      },
+      "cost_jpy": 0.218,
+      "elapsed_seconds": 19.598,
+      "candidate_deviations": [
+        {
+          "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.” The headline and the “In one line” summary also generalize the result to “oil prices.”",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "reasoning_summary": "HF-009 reports the short-term movement and price snapshot for Brent crude futures only. It does not establish what happened across the whole oil market or to oil prices generally."
+        },
+        {
+          "claim_in_article": "“Prices seemed ready to fall.”",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "reasoning_summary": "The Ledger confirms a temporary narrowing in Brent’s gains followed by a return to a high level, but does not establish that prices appeared poised to fall."
+        },
+        {
+          "claim_in_article": "“One headline alone could not decide how the story would end.”",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "reasoning_summary": "This draws a broader conclusion about what determined the price outcome. The Ledger reports the price movement and continuing market concerns, but does not establish that a headline could or could not determine the outcome."
+        }
+      ],
+      "detected_blocking": true
+    },
+    {
+      "call": 2,
+      "prompt_sha256": "5f56867229e518814489110b7d7f4313ee90eee24fcf071af3285a2fb94c95a6",
+      "model": "gpt-6-luna",
+      "response_id": "resp_044e819b4f6a3942006abc46e2ab0087d090b2db37d6855220",
+      "usage": {
+        "input_tokens": 4768,
+        "cached_input_tokens": 4765,
+        "output_tokens": 2269,
+        "reasoning_tokens": 1991
+      },
+      "cost_jpy": 0.1855,
+      "elapsed_seconds": 20.042,
+      "candidate_deviations": [
+        {
+          "claim_in_article": "“Oil prices did not fall across the whole market after the plan was withdrawn.”",
+          "related_fact_id_guess": "HF-009, HF-012",
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "reasoning_summary": "Ledger reports the post-announcement price movement for Brent, and separately describes short-term movements in WTI. It does not establish that oil prices across the whole market did not fall; the article generalizes beyond the instruments and scope covered."
+        },
+        {
+          "claim_in_article": "“Prices seemed ready to fall.”",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "reasoning_summary": "The ledger supports a brief narrowing of Brent’s gains followed by a recovery, but it does not establish that prices were about to fall. This adds an unsupported interpretation of the observed movement."
+        },
+        {
+          "claim_in_article": "“One headline alone could not decide how the story would end.”",
+          "related_fact_id_guess": "HF-009, HF-011",
+          "materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "reasoning_summary": "The ledger records that Brent briefly narrowed its gains and then recovered while other concerns continued. It does not establish the broader causal conclusion that no single headline could determine the price outcome."
+        }
+      ],
+      "detected_blocking": true
+    },
+    {
+      "call": 3,
+      "prompt_sha256": "5f56867229e518814489110b7d7f4313ee90eee24fcf071af3285a2fb94c95a6",
+      "model": "gpt-6-luna",
+      "response_id": "resp_06aa14b077767897006abc46f6b28087d0b016122522857a33",
+      "usage": {
+        "input_tokens": 4768,
+        "cached_input_tokens": 4765,
+        "output_tokens": 2772,
+        "reasoning_tokens": 2510
+      },
+      "cost_jpy": 0.225,
+      "elapsed_seconds": 24.996,
+      "candidate_deviations": [
+        {
+          "claim_in_article": "Prices seemed ready to fall.",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "reasoning_summary": "HF-009 verifies a brief narrowing of Brent’s gains followed by a recovery, but does not establish that prices appeared likely to fall. This adds an unverified interpretation of the observed movement."
+        },
+        {
+          "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "reasoning_summary": "HF-009 establishes the reported movement for Brent, not for the oil market as a whole. HF-012 separately concerns WTI and explicitly does not establish an equivalent Brent reaction, so the market-wide claim exceeds the verified scope."
+        },
+        {
+          "claim_in_article": "One headline alone could not decide how the story would end.",
+          "related_fact_id_guess": "HF-009",
+          "materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "reasoning_summary": "The Ledger reports Brent’s movement after the announcement and that other concerns continued, but does not establish this broader counterfactual conclusion about what a single headline could determine."
+        }
+      ],
+      "detected_blocking": true
+    }
+  ],
+  "stage2_cumulative_jpy": 0.6285,
+  "stage2_n_detected_blocking": 3
+}

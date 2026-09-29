@@ -1,0 +1,102 @@
+{
+  "n_fixtures": 12,
+  "n_detected_by_precheck_alone": 1,
+  "precheck_detection_rate": 0.0833,
+  "finding_kind_counts": {
+    "number_mismatch": 1
+  },
+  "per_fixture": [
+    {
+      "id": "er009_changed_number",
+      "gold_note": "expected MAJOR with flag changed_number=true",
+      "expected_flag": "changed_number",
+      "precheck_detected": true,
+      "findings": [
+        {
+          "field": "F-002",
+          "ledger_value": "1,300万件超",
+          "article_evidence": "count values found in article not matching any ledger fact: [30000000.0]",
+          "kind": "number_mismatch",
+          "detected_by": "precheck"
+        }
+      ]
+    },
+    {
+      "id": "er009_changed_actor",
+      "gold_note": "expected MAJOR with flag changed_actor=true",
+      "expected_flag": "changed_actor",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_changed_scope",
+      "gold_note": "expected MAJOR with flag changed_scope=true",
+      "expected_flag": "changed_scope",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_changed_causality",
+      "gold_note": "expected MAJOR with flag changed_causality=true",
+      "expected_flag": "changed_causality",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_changed_certainty",
+      "gold_note": "expected MAJOR with flag changed_certainty=true",
+      "expected_flag": "changed_certainty",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_changed_negation",
+      "gold_note": "expected MAJOR with flag changed_negation=true",
+      "expected_flag": "changed_negation",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_changed_comparison",
+      "gold_note": "expected MAJOR with flag changed_comparison=true",
+      "expected_flag": "changed_comparison",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_changed_time",
+      "gold_note": "expected MAJOR with flag changed_time=true",
+      "expected_flag": "changed_time",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "er009_unsupported_new_claim",
+      "gold_note": "expected MAJOR with flag unsupported_new_claim=true",
+      "expected_flag": "unsupported_new_claim",
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "A2A3",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx3、origin=ja_source中心)。A2/A3は同一fileの1回実行(design書ではA2/A3の2項目表記だが実体は1 article/1 runのため本harnessでは1 fixtureとして扱う)。",
+      "expected_flag": null,
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "A4",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、origin=translation、changed_scope)",
+      "expected_flag": null,
+      "precheck_detected": false,
+      "findings": []
+    },
+    {
+      "id": "A5",
+      "gold_note": "gold=LEDGER_DEVIATION(MAJORx1、changed_fact、related_fact_id=MUSE-HC-012、'put back the feature'のrollback反転。design書記載パスmust_fix_retry_result.jsonはretry後COMPLIANT結果のため代替不可、本ファイルが検出時点の原本)",
+      "expected_flag": null,
+      "precheck_detected": false,
+      "findings": []
+    }
+  ]
+}

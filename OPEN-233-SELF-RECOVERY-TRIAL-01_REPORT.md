@@ -328,3 +328,90 @@ Evidence: `docs/pm/opus_l2_review_open233_self_recovery_01.md`(新規、
 §3-3/§3-5/§4-2/§4-3/§4-4/§4-5/§5-1/§5-2/§5-3/§5-4[新設]/§6-1/§8-1/
 §9-0[新設]/§9-1/§11-8/§12/§12-1/§13-6/§14-3/§15[新設]追記)。入力:
 委任文全文(2026-09-30)、Opus L2レビュー#1全文。
+
+## §5. 棚卸し統合・pre-check・Phase 1 ①②(委任_05/_06、2026-09-30、
+既存Rewrite機構棚卸し+§5三分類統合+deterministic pre-check Trial実装+
+Phase 1 ①precheck FP率実測②hormuz見逃し補完実験)
+
+**ユーザー追加指示(逐語要旨)**: 既存Rewrite機構は「必ず既存実装を
+そのまま使う」ことが目的ではない。棚卸しの上でそのまま再利用できる
+部分/拡張・改善できる部分/今回KPIには不適で新方式が合理的な部分を
+整理する。既存資産の無視も既存方式への束縛も避け、QCD上より良い方法が
+あればTrialする。Production変更なし、Trial範囲内で自律進行。
+
+**委任_05(棚卸し、¥0、read-only)**: `docs/pm/inventory_local_rewrite_
+mechanisms_open233_01.md`を新規作成。既存Rewrite関連機構18件を確認し、
+EN側`er010_ledger_local_rewrite_09.py`(Family B系でPRODUCTION_WIREDだが
+Family Xには未配線)を第一候補に、JA側は文単位Local Rewrite機構が既存に
+無いことを確認した。継承すべきguard/retry/再検証と二重実装リスクを整理。
+
+**委任_06 三分類統合(設計書§5-0新設)**: 委任_05の結果を「(A)そのまま
+再利用」「(B)拡張して利用」「(C)今回KPIに不適→新方式」の三分類表
+(KPI/QCD理由付き、18機構)へ整理。EN局所Rewriteを既存ベース改善案
+(E-1、er010拡張)と新方式案(E-2、delete型は決定論処理・replace/
+narrow_scope型は最小Prompt)の両論併記(§5-2/§5-2-補)、JA局所Rewriteを
+既存ベース案(J-1、er010骨格の日本語移植)と代替案(J-2、既存JA
+must-fix全文+局所指示のみ)の両論併記(§5-4/§5-4-補)へ再構成し、
+Phase 1⑤で同一fixtureにより比較実測する設計とした。継承guard/retry/
+再検証を§5-5へ統合。
+
+**deterministic pre-check Trial実装**: 新規`er052_open233_self_
+recovery_precheck_01.py`(+`_test_01.py`、unittest 23件全PASS、
+`python -m unittest er052_open233_self_recovery_precheck_01_test_01`で
+再現可能)。Ledger text(vfl01形式)の構造化フィールド(claim/scope/
+conditions/numeric_value/date_or_period)と記事本文を機械照合し、
+actor_missing/number_mismatch/date_mismatch/negation_marker/
+comparison_markerを検出する。言い換え・日付表記差・敬称差の正規化辞書、
+Ledger内の別Factが持つ値との誤混同を除外するロジックを実装(初回実装
+での実測FP発見→原因特定→修正→再測定というTrialサイクルを経た)。
+
+**Phase 1①(precheck FP率実測、¥0)**: 既存`LEDGER_COMPLIANT`記事28件
+中20件(残り8件はJA writer retry後attempt、既存逆展開ユーティリティ
+非対応のため対象外)へprecheckを適用。**記事単位FP率=0/20=0%**
+(finding単位0件)。Safety群(er009 9種+A2A3/A4/A5、12件)での単独検出率
+=1/12(8.3%、number_mismatchのみ。他は構造的限界[actor名がclaim以外の
+フィールドにのみ存在/意味的逸脱は機械照合不可]で非検出、想定どおり)。
+design書§3-1の判断基準(FP率10%超でfloor弱め分岐へ切替え)に該当せず、
+**precheckのfloor扱い(強い分岐)を維持する**。詳細ログ:
+`er052_output/open233_self_recovery_precheck_01/phase1_step1_fp_
+rate.json`/`phase1_step1_safety_group_detection.json`。
+
+**Phase 1②(hormuz n=20見逃し3attempt補完実験)**: hormuz_run03_
+standard/V4Aで非検出だった3attempt(8/13/14、同一入力)に対し、
+(a) precheck適用は非検出(既知の限界どおり、HF-009 changed_scopeは
+意味的逸脱)。(b) Stage 1出力を一切見せない独立Stage 2診断Prompt
+(新規`er052_open233_self_recovery_stage2_01.py`、gpt-6-luna、Contract
+非経由)を3attemptへ1 callずつ適用した結果、**3/3(100%)がHF-009を
+`materiality=BLOCKING, basis=ledger_scope`として独立検出**した(3回とも
+同一趣旨の理由付け: 「HF-009はBrent先物のみを確認しておりoil market
+全体を確認していない」)。Stage 1のrecall欠落を独立Stage 2診断が3/3で
+埋められることを実データで確認した(design書§11-5/§14-4の構造的限界
+への実証的な反証材料。ただしStage1 BLOCKING判定後にのみStage2が発火
+する通常設計の前提を外した診断目的の特例)。3/3で結果一貫のためn=2
+拡張は不実施。詳細ログ: `er052_output/open233_self_recovery_phase1_
+hormuz_followup_01/summary.json`(+`stage2_call_1〜3.json`)。
+
+**費用**: Stage 2診断3call合計¥0.6285(単価¥0.185〜0.225/call、
+gpt-6-luna実測、Guardrail¥10のうち)。precheck測定・棚卸しは¥0。
+本委任(委任_05/_06)費用¥0.6285、Phase累計¥0.6285/総枠¥400、
+残¥399.3715。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+E-1/E-2・J-1/J-2は両論併記のみでPhase1⑤実測後に確定、precheckのfloor
+扱い維持もdesign書既定の判断基準に従った機械的判定)。
+
+**Production/Dangling Reference確認**: `git diff --stat`でProduction
+ファイル(`er003_*`/`er006_*`/`er010_*`/`er012_*`/`er019_*`)に差分なし
+(新規`er052_*`ファイルのみ追加、Production非接続)。API keyは環境
+変数のみ、保存jsonにはprompt本体ではなくprompt_sha256のみ記録。
+
+Status=`PHASE1_STEP2_DONE`。Evidence: `docs/pm/inventory_local_
+rewrite_mechanisms_open233_01.md`(新規)、`docs/pm/design_open233_
+self_recovery_flow_01.md`(§5-0[新設]/§5-2/§5-2-補[新設]/§5-4/
+§5-4-補[新設]/§5-5[新設]/§9-1①②追記)、`er052_open233_self_recovery_
+precheck_01.py`(+test)、`er052_open233_self_recovery_stage2_01.py`、
+`er052_open233_self_recovery_precheck_phase1_measure_01.py`、
+`er052_open233_self_recovery_phase1_hormuz_followup_01.py`、
+`er052_output/open233_self_recovery_precheck_01/`、`er052_output/
+open233_self_recovery_phase1_hormuz_followup_01/`。入力: 委任文全文
+(2026-09-30、委任_06)。
