@@ -453,6 +453,8 @@ JA ASR表記ゆれ一般化Trial(OPEN-145)+News固有名詞英語表記Trial-15
 - [本ファイル内] ## NEWS-FAMILY-X-B3-FACT-SELECTION-PRODUCTION-WIRING-01: Storyline決定+B3 Fact選定(LLM 1 call)をProduction配線、日本語Entertainment Writer(Original→R1→R2)自動生成も同時配線、Meta「Muse human concierge」でRuntime evidence取得(2026-09-26)
 - [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー決定(OPEN-234 deferred・Trial開始許可)+ Phase A実施記録(2026-09-29、委任_01)
 - [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B比較条件・費用上限・受入条件、2026-09-29、委任_02)Step 1実行、gpt-6-luna重大見逃し検出によりSTOP、Trial終了Status候補=USER_DECISION_REQUIRED
+- [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: ユーザー判断(Phase B完走、2026-09-29、委任_03)、Trial終了Status候補=USER_DECISION_REQUIRED
+- [本ファイル内] ## GPT6-MODEL-COMPARISON-TRIAL-01: Closeout(価格一次確認・Status確定・OPEN-233再開、2026-09-29、委任_04)、Trial終了Status=VALIDATED(採用候補・Production採用ではない)、OPEN-233をREOPENEDへ
 
 ---
 
@@ -12905,3 +12907,54 @@ ja_original/ja_r2は両モデルとも高い非決定性(Checker設計自体の�
   changed_actor_n5.json`・`summary_step2.json`・`summary_step3.json`・
   `budget_state.json`)。詳細:
   `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_03.md`。
+
+## GPT6-MODEL-COMPARISON-TRIAL-01: Closeout(価格一次確認・Status確定・OPEN-233再開、2026-09-29、委任_04)
+
+**ユーザー決定(逐語)**: 「`gpt-6-luna`はCheckerの正式採用候補として次工程へ
+進める。ただしTrial結果を踏まえた有力候補/Production routing変更前であり
+`APPROVED_FOR_PRODUCTION`にはしない」。「`gpt-6-sol`の本比較は保留(probe結果は
+Evidence保持、追加Trial・大量call禁止)。Astra対象外」。「OPEN-233をdeferredから
+再開(REOPENED)。OPEN-234は引き続き後回し」。「単価未確認のままにしない。
+OpenAI公式の最新Pricing/API documentationを確認。第三者情報・推測は禁止」。
+
+**Fable判定(Trial終了Status)**: `VALIDATED`(Checker採用候補として次工程へ
+進めることをユーザーが決定。**`APPROVED_FOR_PRODUCTION`ではない**、Production
+routing未変更)。根拠: 重大検出で優位(changed_actor 50% vs 0%、Meta境界例
+検出)・新規重大見逃し0・gold一致率90% vs 70%・token -7%(reasoning)/-4.8%
+(output)。非改善: 不要BLOCK率75%=75%・latency+34%。単価(本委任で確定):
+`gpt-6-luna`は`gpt-5.6-luna`の正確に半額。
+
+**価格一次確認結果**: `https://platform.openai.com/docs/pricing`
+(2026-09-29T11:43:29Z取得、HTTP 200)+`https://platform.openai.com/docs/
+models/<model_id>`(モデル個別ページ、クロスチェック一致)。3モデルとも
+確認(取得不能なし、推測値なし)。Standard tier/Short context、$/1M tokens:
+`gpt-5.6-luna` Input $0.20/Cached $0.02/Cache writes $0.25/Output $1.20
+(過去の`PROJECT_INTERNAL_RECORD`単価と完全一致)。`gpt-6-luna` $0.10/$0.01/
+$0.125/$0.50。`gpt-6-sol` $2.00/$0.20/$2.50/$10.00。reasoning tokenは
+output側に含まれ二重計上不要、cached input/cache writesは排他的課金
+(加算でない)と公式ツールチップ文言で確認。
+
+**84 call実測コスト再計算**: `gpt-5.6-luna`総$0.13149(¥20.628@¥156.88/USD)、
+`gpt-6-luna`総$0.05470(¥8.582@¥156.88/USD)。差分-58.40%。記事換算(4call)
+差-58.40%(-$0.007313 USD、-¥1.15参考)。為替レートはFrankfurter API
+(ECB参照レート公表値、2026-09-28付、¥156.88/USD)を一次ソースとして採用。
+
+**過去値(¥0.90/call、`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01`n=12)との
+整合**: 単価は完全一致($0.20/$0.02/$1.20)。差の原因は為替レート(旧160.0→
+新156.88、-1.95%)とfixture別token量の違いのみ(単価・レートの誤りではない)。
+
+- **Opus**: 発火なし。API呼び出し: なし(¥0、価格取得はHTTP GET・為替APIのみ)。
+- **Status**: `GPT6-MODEL-COMPARISON-TRIAL-01`はCloseout完了。Trial終了Status
+  =`VALIDATED`(採用候補、Production採用ではない)で確定。**OPEN-233を
+  `REOPENED (ACTIVE)`へ変更**(再設計目的: 「必要なものは確実に止め、不要な
+  ものは止めず、しかも安定して判定するCheckerへ再設計する」「過剰品質によって
+  Productionの生産性が失われることは許容しない」。並行の再設計管理ID
+  `OPEN-233-CHECKER-REDESIGN-V02-01`あり)。**OPEN-234は`DEFERRED`維持**。
+  CURRENT_SPEC(Model Routing Contract節)へ本Trial結果の注記を追加
+  (Contract本体=Approved Modelは無変更)。Production code・Prompt・Checker・
+  routing・schemaの変更は行っていない。
+- **根拠**: ユーザー明示決定(2026-09-29)。実施内容の根拠:
+  `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout(C-1〜C-6)、
+  `docs/pm/design_gpt6_model_comparison_trial_01.md`§10、
+  `er050_output/gpt6_checker_comparison_trial_01/cost_recalc_01.json`。詳細:
+  `docs/pm/delegation_log/2026-09-29_GPT6-MODEL-COMPARISON-TRIAL-01_04.md`。

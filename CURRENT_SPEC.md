@@ -2319,6 +2319,22 @@ Translation pipeline・CEFR/spoken-first系の過去の実験タスク等、こ�
 した箇所は、既存のSol既定値のまま変更していない(該当箇所は
 ER-006-MODEL-ROUTING-CONTRACT-01完了報告のAudit一覧を参照)。
 
+**Ledger Deviation Checker: GPT-6モデルTrial結果(2026-09-29、
+GPT6-MODEL-COMPARISON-TRIAL-01)**: 本Contract表(Model Routing Contract)の
+上記Approved Modelは無変更(`gpt-5.6-luna`のまま、Production routing未変更)。
+Trial(84 call実測、`er050_gpt6_checker_comparison_trial_01.py`、
+`er003_v1_en_direct_vfl_01_generate.py::run_deviation_check()`をContract非経由で
+model引数のみ差し替えて実行)の結果、`gpt-6-luna`はChecker(Ledger Deviation
+Checker)の**採用候補**としてユーザーが次工程(OPEN-233 Checker再設計)へ進める
+ことを決定した(Trial Status=`VALIDATED`。**`APPROVED_FOR_PRODUCTION`ではない**、
+Routing変更は別途ユーザー判断)。単価は`gpt-5.6-luna`の正確に半額
+(Input $0.10/Cached $0.01/Cache writes $0.125/Output $0.50 vs $0.20/$0.02/
+$0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/pricing`
+2026-09-29確認)。`gpt-6-sol`は互換性probe(1 call)SUCCESSだが本比較は保留
+(追加Trial・大量callは行わない)。`gpt-6-astra`は対象外。詳細:
+`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout、
+`docs/pm/design_gpt6_model_comparison_trial_01.md`§10。
+
 ## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
 
 **表示仕様**: Key Phraseハイライトは`user_test/unified.html`の
