@@ -177,3 +177,80 @@ REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`(Meta run_03費用実測)、
 jsonl`(本委任で独立再計算)、`er012_e_family_entertainment_two_level_
 runner_01.py`(L381-388/L477-484、Checker call構成確認)、`.claude/
 agents/opus-consultant.md`(model_id probe対象、変更なし)。
+
+## §3. Stage 1再検証・設計修正(委任_03、2026-09-30、opus-consultant
+model更新+Stage1設計確定+claim単位「Trial上の正解ラベル」確定)
+
+**Status**: `DESIGN_READY_FOR_OPUS_L2`(Stage1構成が確定、Opus L2投入
+待ち)。API呼び出しなし・¥0・Production非接続・実装なし。
+
+**作業A(opus-consultant model更新)**: `.claude/agents/opus-consultant.
+md`のfrontmatter`model: opus`を`model: claude-opus-5-5`へ変更(1行のみ、
+本文不変)。実際の利用可否probeはFableが起動時に実施(本委任では未検証)。
+
+**作業B(Stage 1設計の再検証・結論)**: 真のProduction Checker(V0、
+Prompt無変更)は`er009_changed_actor`をn=6中3回(50%)見逃す実測がある。
+「Stage 1が検出しなければStage 2/3/4は発火しない」という構造的事実
+から、V0のままでは重大Fact見逃し0件というPrimary Safety KPIを満たせ
+ないと判断し、選択肢S1-A(V0)/S1-B(V4A)/S1-C(V4A+C2)/S1-D(Stage1+2
+一体型)を(1)重大Fact見逃し(2)Initial BLOCK率→発動率→条件付きコスト
+(3)非決定性耐性(4)Production採用時の変更範囲の4軸で比較した(設計書
+§14)。**S1-B(V4A)を採用**。理由: changed_actor 5/5(100%)実測・
+Safety群12/12維持・negative control改善(Meta_run03_standard n=20で
+90%→100%)。残存リスク(hormuz_run03_standardがn=20でV0比悪化方向、
+100%→85%、統計的有意差なし)は認識した上で採用。真のProduction Prompt/
+schema/Validator/routing/runnerは無変更のまま(V4AはFamily X限定Trial
+harness内のみ)。**検出漏れ型Safety対策**: deterministic pre-check
+(Ledger構造化フィールドとの機械照合、¥0、fail-closed追加層)を採用、
+「PASS時限定2nd run」は固定費化するため不採用、self-consistencyは
+検出漏れ対策として無効(目的外)のため不採用(設計書§14-4)。
+
+**作業C(claim単位「Trial上の正解ラベル」確定)**: 用語を「gold」から
+「Trial上の正解」「正解ラベル」へ統一(本Phase文書内のみ、前Phase文書
+`design_open233_checker_redesign_trial_01.md`等は不変)。確定ラベル:
+B1-a/b=ACCEPTABLE、B1-c=BLOCKING、B2=QUALITY、B3=BLOCKING、B4-a=
+BLOCKING、B4-b/c=ACCEPTABLE〜QUALITY(Trialでは**QUALITY扱い**)、
+B4-d=QUALITY〜BLOCKING(Trialでは**BLOCKING扱い、fail-closed側**)。
+各群(Safety/QUALITY/ACCEPTABLE/Real-but-fixable/Normal)に期待到達
+経路を新設(設計書§7-0〜§7-6)。KPI/Safetyの意味は変えていない。
+
+**作業D(Self-Recovery案の修正反映)**: §3-1をStage1=V4Aへ更新。§4-4
+(Stage 2入力)を「記事全文」から「対象claimを含む段落±1段落+Ledger
+全文+source context+Stage1 deviation出力」へ縮小確定(Ledgerは
+fail-closed優先で全文維持)。**§13コスト再計算(V4A反映)**: 記事あたり
+純増分(期待値)=楽観**−¥0.15**/中央**−¥0.06**(節約margin縮小)/
+悲観**+¥0.84**(いずれもCap内)。**worst case(tail)はV4A採用前の
+¥2.88[Cap内、余裕¥0.12]から¥3.96[Cap約32%超過]へ悪化**(両段階同時
+BLOCK+JA-origin+cycle2必要という複合稀事象、概算発生率約1%/記事、
+Phase1実測必須)。§11(Opus論点)をユーザー指定8項目(Self-Recovery
+全体/Stage1/Second Judge/Rewrite戦略/Safety/Cost/loop化リスク/
+Escalationゼロの現実性)へ全面再編、各項目に暫定答え+批判してほしい点
+を付与。§12をユーザー指定7項目のUSER_DECISION_REQUIRED条件へ全面
+置換(KPI変更/重大Fact Safety緩和/+¥3 Cap超過が必要/Production正式
+採用配線/Family X以外への正式展開/新Product原則/予算¥400超過)、
+それ以外はGuardrail内自律改善範囲と明記。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし。V4A採用はSafety改善
+(緩和ではない)、真のProduction Prompt無変更、期待値ベースCostはCap内。
+worst case tailのCap超過(¥3.96、概算発生率約1%)は「恒常的な超過」の
+条件には現時点で該当しないと判断するが、Phase 1実測で必ず検証し、
+Checkpoint Aで明示的に報告する。
+
+**費用**: 今回¥0(API呼び出しなし)。本Phase累計¥0/総枠¥400、残¥400。
+
+**Production/Dangling Reference確認**: `git diff --stat`でProduction
+ファイル(`er003_*`/`er006_*`/`er012_*`/`er019_*`)に差分なし。
+`.claude/agents/opus-consultant.md`のmodel行変更のみ(Agent定義、
+Production実行コードではない)。
+
+Evidence: `docs/pm/design_open233_self_recovery_flow_01.md`(§3-1/
+§4-4/§7[全面改訂]/§8-3/§11[全面改訂]/§12[全面改訂]/§13[再計算]/
+§14[新設]追記)、`.claude/agents/opus-consultant.md`(model行)。入力:
+`docs/pm/design_open233_checker_redesign_trial_01.md`(§1-1 fixture単位
+gold表、§2-補claim単位gold候補表、§4-補V4-A実装・Trial2/n=20実測)、
+`OPEN-233-CHECKER-REDESIGN-TRIAL-01_REPORT.md`§9〜§12、`docs/pm/
+opus_l2_review_open233_checker_trial_01.md`(論点1〜5全文)、
+`docs/pm/negative_claim_candidates_open233_01.md`、`er051_open233_
+checker_trial_variant_01.py`(V4A Prompt差分ブロック実装確認)、
+`er003_v1_en_direct_vfl_01_generate.py`L495-540(現行Production
+Prompt判定ルール・許容規定確認)。

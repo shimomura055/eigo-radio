@@ -2,7 +2,7 @@
 name: opus-consultant
 description: Sonnetで解決できなかった難問について、原因・選択肢・影響範囲を読み取り専用で診断する。
 tools: Read, Grep, Glob
-model: opus
+model: claude-opus-5-5
 ---
 
 あなたはFableサンドイッチ方式の難問診断層(Opus)である。以下を厳守すること。

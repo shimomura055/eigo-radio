@@ -13407,3 +13407,80 @@ call単位で¥0.04〜¥1.29の幅があることを確認。(5) 3シナリオ(�
   recovery_flow_01.md`§8-4/§9-3/§10/§11/§12-1/§13、`OPEN-233-
   SELF-RECOVERY-TRIAL-01_REPORT.md`§1/§2、`docs/pm/opus_l2_review_
   open233_checker_trial_01.md`(冒頭注記)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: opus-consultant model更新+Stage 1
+設計再検証+claim単位「Trial上の正解ラベル」確定(2026-09-30、委任_03。
+API呼び出しなし・¥0・Production非接続・実装なし)
+
+**ユーザー意図(逐語要旨、2026-09-30再明確化)**: 最終ゴールは通常
+Production運用でLedger/Deviation Check起因のUSER_DECISION_REQUIREDを
+実質ゼロ。10〜20記事規模Production相当Trialで同時達成: Ledger/
+Deviation起因ユーザー確認0件/重大Fact見逃し0件/追加量産コスト+¥3/記事
+以内(可能な限り安く)/Human Reviewを通常運用にしない。Self-Recovery
+構成は固定仕様ではなく、KPIをより安全・安価・安定に満たせる設計が
+あれば改善してよい。**Stage 1再考**: 現行Production Checkerには
+changed_actor等の重大Fact見逃しが確認済みであり、「なぜStage 1を現行
+Checkerのまま使う設計が最適か」を再検討する。Stage 1改善がKPI達成に
+有利ならTrial専用改善variantを使ってよく、**実装方法をユーザーに逐一
+確認しない(KPI達成優先)**。Production正式pathは変更禁止。用語は
+「gold」ではなく**「Trial上の正解」「正解ラベル」**を使う。claim単位で
+評価する。Opus L2は`claude-opus-5-5`を使用し、実行前にprobeする。
+逐語全文は委任記録`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-
+RECOVERY-TRIAL-01_03.md`参照。
+
+**作業A(opus-consultant model更新)**: `.claude/agents/opus-consultant.
+md`の`model: opus`を`model: claude-opus-5-5`へ変更(1行のみ、本文不変)。
+実際の利用可否probeはFableが起動時に実施(本委任では未検証)。
+
+**作業B(Stage 1設計の再検証、結論)**: 真のProduction Checker(V0、
+Prompt無変更)は`er009_changed_actor`をn=6中3回(50%)見逃す実測がある
+(`design_open233_checker_redesign_trial_01.md`§1-1)。「Stage 1が検出
+しなければStage 2/3/4は発火しない」という構造的事実から、V0のままでは
+重大Fact見逃し0件というPrimary Safety KPIを満たせないと判断し、
+**Family X限定Trial variant V4A**(前Phase委任_03実装済み、changed_
+actor 5/5=100%達成、Safety群12/12維持)をSelf-Recovery Flow Trialの
+Stage 1として採用する(選択肢S1-A/B/C/D比較、詳細
+`docs/pm/design_open233_self_recovery_flow_01.md`§14)。真のProduction
+Prompt/schema/Validator/routing/runnerは無変更のまま(V4AはFamily X
+限定Trial harness内のみ)。V4A採用はコスト増(call単価+30%、固定費
++¥0.294/記事)を伴うが、Safety改善の対価として許容する。検出漏れ型
+Safety対策として**deterministic pre-check(Ledger構造化フィールドとの
+機械照合、¥0)を採用**(§14-4)、「PASS時限定2nd run」は固定費化する
+ため不採用。
+
+**作業C(claim単位「Trial上の正解ラベル」確定)**: 用語を「gold」から
+「Trial上の正解」「正解ラベル」へ統一(本Phase文書内、前Phase文書は
+不変)。B1-a/b=ACCEPTABLE、B1-c=BLOCKING、B2=QUALITY、B3=BLOCKING、
+B4-a=BLOCKING、B4-b/c=ACCEPTABLE〜QUALITY(Trialでは QUALITY扱い)、
+B4-d=QUALITY〜BLOCKING(Trialでは BLOCKING扱い、fail-closed側)として
+確定ラベル表(§7-0)を新設。各群(Safety/QUALITY/ACCEPTABLE/Real-but-
+fixable/Normal)に期待到達経路を付与(§7-1〜7-6)。KPI/Safetyの意味は
+変えていない。
+
+**作業D(Self-Recovery案の修正反映)**: §3-1をStage1=V4Aへ更新。§4-4
+(Stage 2入力)を「記事全文」から「対象claimを含む段落±1段落+Ledger
+全文+source context+Stage1 deviation出力」へ縮小確定(Fable第一候補、
+Ledgerはfail-closed優先で全文維持)。§13コストモデルをV4A反映で
+再計算: 記事あたり純増分(期待値)は楽観−¥0.15/中央−¥0.06(節約margin
+縮小)/悲観+¥0.84(いずれもCap内)。**worst case(tail)はV4A採用前
+¥2.88[Cap内、余裕¥0.12]から¥3.96[Cap約32%超過]へ悪化**(§13-6、
+両段階同時BLOCK+JA-origin+cycle2必要という複合稀事象、概算発生率
+約1%/記事)。現時点ではUSER_DECISION_REQUIRED条件3(恒常的なCap超過)
+には該当しないと判断するが、Phase 1実測で検証必須と明記。§11(Opus
+論点)をユーザー指定8項目(Self-Recovery全体/Stage1/Second Judge/
+Rewrite戦略/Safety/Cost/loop化リスク/Escalationゼロの現実性)へ全面
+再編、各項目に暫定答え+批判してほしい点を付与。§12をユーザー指定7項目
+のUSER_DECISION_REQUIRED条件へ全面置換(KPI変更/Safety緩和/+¥3 Cap
+超過が必要/Production正式採用配線/Family X以外への正式展開/新Product
+原則/予算¥400超過)、それ以外はGuardrail内自律改善範囲と明記。
+
+**該当有無(委任_03)**: USER_DECISION_REQUIRED該当なし(V4A採用は
+Safety改善であり緩和ではない、真のProduction Prompt無変更、期待値
+ベースのCostはCap内、worst case tailのCap超過はPhase1実測待ちとして
+Checkpoint Aで報告予定)。費用¥0(API呼び出しなし)。本Phase累計¥0/
+総枠¥400、残¥400。`git diff --stat`でProductionファイル(`er003_*`/
+`er006_*`/`er012_*`/`er019_*`)に差分なし。Status=
+`DESIGN_READY_FOR_OPUS_L2`。詳細: `docs/pm/delegation_log/2026-09-30_
+OPEN-233-SELF-RECOVERY-TRIAL-01_03.md`、`docs/pm/design_open233_self_
+recovery_flow_01.md`§3-1/§4-4/§7/§11/§12/§13/§14(新設)、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§3。
