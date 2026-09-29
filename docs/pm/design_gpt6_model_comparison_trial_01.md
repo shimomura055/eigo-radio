@@ -400,3 +400,35 @@ gold完全一致という高い安定性を示す一方advancedではbaselineの
 Trial終了Status候補=`USER_DECISION_REQUIRED`(Safety面の明確な改善材料と
 Over-blocking未改善という明確な非改善材料が併存するため、最終分類はFable/
 ユーザー)。詳細は`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Phase B-6〜B-12。
+
+## 10. Closeout(委任_04、2026-09-29)
+
+ユーザー決定により`gpt-6-luna`をCheckerの正式採用候補として次工程へ進める
+(`APPROVED_FOR_PRODUCTION`ではない)、`gpt-6-sol`本比較は保留(Astra対象外)、
+OPEN-233をREOPENEDへ、OPEN-234はdeferred維持、と決定。これを受け本委任では
+(1) `gpt-5.6-luna`/`gpt-6-luna`/`gpt-6-sol`の正式単価を一次ソース
+(`https://platform.openai.com/docs/pricing`+`https://platform.openai.com/
+docs/models/<model_id>`)で確認(3モデルとも取得成功、推測値なし)、
+(2) 84 call実測(`er050_output/gpt6_checker_comparison_trial_01/**/
+run_*.json`)を公式単価で再計算、(3) 過去値`¥0.90/call`
+(`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01_REPORT.md`)との整合確認、
+(4) Trial終了Statusを`VALIDATED`(採用候補、Production採用ではない)へ
+確定した。
+
+**単価確認結果**(Standard tier/Short context、$/1M tokens): `gpt-5.6-luna`
+Input $0.20/Cached $0.02/Cache writes $0.25/Output $1.20(過去値と完全一致)、
+`gpt-6-luna` $0.10/$0.01/$0.125/$0.50(`gpt-5.6-luna`の正確に半額)、
+`gpt-6-sol` $2.00/$0.20/$2.50/$10.00。reasoning tokenはoutput側に含まれ
+二重計上なし、cached input/cache writesは排他的課金であることを公式
+ツールチップ文言で確認(逐語はREPORT§Closeout C-1参照)。
+
+**84 call実測再計算結果**: `gpt-5.6-luna`総$0.13149(¥20.628@156.88)、
+`gpt-6-luna`総$0.05470(¥8.582@156.88)。差分-58.40%(単価が半額かつ
+output/reasoning token量もgpt-6-lunaがやや少ないため)。過去値
+¥0.90/callとの差は単価の違いではなく為替レート(-1.95%)とfixture別の
+token量差のみに起因すると特定(詳細REPORT§Closeout C-3〜C-5)。
+
+**最終Status**: `VALIDATED`(Checker採用候補として次工程[OPEN-233再設計]へ
+進める。Production routing変更なし。根拠はREPORT§Closeout C-6)。
+SSOT反映(CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS/REPORT_LEDGER)は本委任で
+実施済み。

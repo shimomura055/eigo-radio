@@ -411,6 +411,169 @@ Routing判断は別途ユーザー判断)。
 `summary_step1_er009_changed_actor_n5.json`・`summary_step2.json`・
 `summary_step3.json`・`budget_state.json`)に保存済み。
 
+## Closeout(委任_04、2026-09-29)
+
+### C-1. 正式価格の一次ソース確認(取得手順・逐語抜粋)
+
+取得手順: (1) `curl -sL -A "Mozilla/5.0" https://openai.com/api/pricing/` →
+HTTP 403(取得不能、2026-09-29T11:43Z頃)。(2) `curl -sL -A "Mozilla/5.0"
+https://platform.openai.com/docs/pricing` → **HTTP 200**(成功、取得日時
+2026-09-29T11:43:29Z / JST 2026-09-29T20:43:29+09:00)。`gpt-6-luna`・
+`gpt-6-sol`・`gpt-6-astra`はこのページの「Text tokens」表(Standard tier、
+Short context/Long context列)に**レンダリング済みHTML**として存在。
+`gpt-5.6-luna`は同ページのReact hydrationペイロード(JSON、`<script>`内
+埋め込みデータ)には存在するが、静的HTML・headless Chrome
+(`"C:\Program Files\Google\Chrome\Application\chrome.exe" --headless=new
+--dump-dom`、同日同時間帯取得)のいずれでも`<table>`内の可視行としては
+描画されなかった(モデル一覧の折りたたみ/仮想化領域内と推定、クリック
+操作は本委任の範囲外のため未実施)。(4)
+`https://platform.openai.com/docs/models/<model_id>`で3モデルとも個別
+モデルページの「Pricing」セクション(Text tokens、Per 1M tokens要約カード)
+を取得(いずれもHTTP 200、2026-09-29取得)し、`gpt-6-luna`・`gpt-6-sol`は
+(2)の値と完全一致、`gpt-5.6-luna`は(2)のhydration JSON値と一致する値を
+**可視HTML(要約カード)として**取得できた。3モデルいずれも取得不能なし
+(推測値は使用していない)。
+
+**逐語抜粋**:
+- `https://platform.openai.com/docs/pricing`(`gpt-6-luna`行、Standard/
+  Short context、レンダリング済み`<td>`から抽出): `gpt-6-luna` / Input
+  `$0.10` / Cached input `$0.01` / Cache writes `$0.125` / Output `$0.50`
+  (同行Long context: `$0.20` / `$0.02` / `$0.25` / `$0.75`)。
+- 同ページ(`gpt-6-sol`行、Standard/Short context): `gpt-6-sol` / `$2.00`
+  / `$0.20` / `$2.50` / `$10.00`(Long context: `$4.00` / `$0.40` /
+  `$5.00` / `$15.00`)。
+- 同ページ hydrationペイロード(`gpt-5.6-luna`、Standard/Short context、
+  値の並び順は`gpt-6-luna`の同一tierレンダリング値と一致することで検証
+  済み): `[0,&quot;gpt-5.6-luna&quot;],[0,0.2],[0,0.02],[0,0.25],[0,1.2]`
+  = Input $0.20 / Cached input $0.02 / Cache writes $0.25 / Output $1.20。
+- `https://platform.openai.com/docs/models/gpt-5.6-luna`(Pricing
+  セクション、可視要約カード): 「Text tokens / Per 1M tokens」
+  「Input `$0.20`」「Cached input `$0.02`」「Output `$1.20`」
+  (hydration値と完全一致、cache writesはこの要約カードには非表示)。
+- 同`docs/pricing`ページ、Output列ツールチップ(3モデル共通): 「Output
+  prices include visible output tokens and reasoning tokens, even though
+  reasoning tokens are not visible via the API.」(reasoning tokenは
+  output側に含まれ、二重計上不要と一次ソースで確認)。
+- Input/Cached input/Cache writesの関係(同ページツールチップ): 「Input
+  tokens are either Input, Cached Input, or Cache Write and writes are
+  not an additive fee.」(3区分は排他的、加算課金ではない)。
+
+### C-2. 正式価格表(確認結果、Standard tier / Short context、$/1M tokens)
+
+| model | Input | Cached input | Cache writes | Output | reasoning課金 |
+|---|---|---|---|---|---|
+| gpt-5.6-luna | $0.20 | $0.02 | $0.25 | $1.20 | output側に含む(二重計上なし) |
+| gpt-6-luna | $0.10 | $0.01 | $0.125 | $0.50 | output側に含む(二重計上なし) |
+| gpt-6-sol | $2.00 | $0.20 | $2.50 | $10.00 | output側に含む(二重計上なし) |
+
+(参考、Long context tier: `gpt-5.6-luna`はhydration JSONに値なし・別tier
+未確認、`gpt-6-luna` $0.20/$0.02/$0.25/$0.75、`gpt-6-sol` $4.00/$0.40/
+$5.00/$15.00。84 call実測のfixtureは全てShort context相当[harnessの
+input_tokensは最大でも1万token台、Long context閾値未到達と推定]のため
+コスト再計算はStandard/Short contextのみを使用)。
+
+### C-3. 84 call実測コスト再計算
+
+対象: `er050_output/gpt6_checker_comparison_trial_01/**/run_*.json`
+(84件、`step1`/`step1_er009_changed_actor_n5`/`step2`/`step3`、error 0件)。
+集計スクリプトはscratchpad(repo外)、結果は
+`er050_output/gpt6_checker_comparison_trial_01/cost_recalc_01.json`に保存。
+
+| model | call数 | input計 | cached input計 | output計(うちreasoning計) | 総USD | 平均USD/call | 中央値USD/call | 記事換算(4call)USD |
+|---|---|---|---|---|---|---|---|---|
+| gpt-5.6-luna | 42 | 214,432 | 101,436 | 89,050(81,864) | $0.13149 | $0.003131 | $0.002371 | $0.012523 |
+| gpt-6-luna | 42 | 214,432 | 101,436 | 84,778(75,956) | $0.05470 | $0.001302 | $0.001159 | $0.005210 |
+
+(input/cached input計は同一fixtureセットのため両モデルで完全一致。output計は
+gpt-6-lunaが-4.8%、reasoning計は-7.2%で、これはPhase B-9の平均値ベース記載
+「reasoning -7.2%、output -4.8%」と一致する)。
+
+**差分**: 総コスト **-58.40%**(-$0.07678)。1 call平均 **-58.40%**。記事換算
+(4call) **-58.40%**(-$0.007313 USD)。JPY参考換算(本委任取得レート、
+下記C-4、¥156.88/USD): 総コスト差 **-¥12.05**、記事換算差 **-¥1.15**。
+
+JPY換算(新レート¥156.88/USD、2026-09-28付Frankfurter API):
+- `gpt-5.6-luna`: 総¥20.628、平均¥0.4911/call、中央値¥0.3719/call、
+  記事換算¥1.9646
+- `gpt-6-luna`: 総¥8.582、平均¥0.2043/call、中央値¥0.1818/call、
+  記事換算¥0.8173
+
+単価が3モデルとも確認できたため(A参照)、gpt-6-lunaは実単価でのUSD/JPY
+両方を提示できた(token集計のみに留まるモデルはなし)。
+
+### C-4. 為替レート一次ソース
+
+`https://api.frankfurter.app/latest?from=USD&to=JPY`(ECB参照レート公表値、
+公表レートAPI)、取得: 2026-09-29T11:51Z(UTC)頃。応答:
+`{"amount":1.0,"base":"USD","date":"2026-09-28","rates":{"JPY":156.88}}`。
+日本銀行の公示ページ(`https://www.boj.or.jp/en/statistics/market/forex/
+fxdaily/index.htm`)はHTTP 200で取得できたが、レート数値が静的HTML内に
+含まれず(JS/CSV経由配信の可能性、本委任範囲では未取得)。よって
+Frankfurter API(ECB参照レート)を為替一次ソースとして採用
+(¥156.88/USD、2026-09-28付)。
+
+### C-5. 過去値(¥0.90/call)との整合
+
+`NEWS-FAMILY-X-JA-FACT-DOUBLE-CHECK-COST-01_REPORT.md` §1-4: 単価
+`gpt-5.6-luna` input ¥0.20/1M・cached ¥0.02/1M・output ¥1.20/1M
+(`PROJECT_INTERNAL_RECORD`表記、出典`er005_output/cost_baseline_01/
+pricing_snapshot.json`)、`USD_JPY=160.0`
+(`er003_v1_n3_01_advanced_adaptation_generate.py`定数と同一)。
+
+本委任で一次ソース確認した単価は**完全一致**($0.20/$0.02/$1.20、差なし)。
+差分の原因は(1) 為替レート(旧160.0 → 新156.88、-1.95%)、(2) サンプルの
+token量の違い(過去値は既存Production/Trial実測ログn=12[記事本文サイズ・
+Ledgerサイズが今回と別]、今回はer050 harness固定fixture[固定Ledger+固定
+article]の84call)のみ。過去値の中央値¥0.9024/callに対し、今回の
+`gpt-5.6-luna`平均¥0.4911/call・中央値¥0.3719/callは低いが、これは
+fixture側のoutput/reasoning token量が過去実測サンプルより少ないfixtureが
+多いためであり、単価・レートの誤りではない(単価は完全一致、レート差は
+-1.95%のみ)。
+
+harnessの`ref_cost_jpy`計算式(`usage_ref_cost_jpy()`、
+`er050_gpt6_checker_comparison_trial_01.py` L325-331)は`REF_IN=0.20,
+REF_CACHED=0.02, REF_OUT=1.20, USD_JPY=160.0`(L49-50)を使用しており、
+本委任で確認した公式単価と完全一致(レートのみ旧160.0使用、本委任の
+Frankfurter取得値156.88とは-1.95%差)。Phase B-9のQCD表(¥21.04/¥20.22)は
+`gpt-6-luna`にも`gpt-5.6-luna`単価を仮置きした「参考換算」であり、本
+Closeoutで確認した`gpt-6-luna`実単価(正確に半額)を反映すると実コストは
+大幅に低くなる(¥8.58、-58.4%)。
+
+### C-6. Trial Status分類(Fable判定)
+
+**`VALIDATED`**(Checker採用候補として次工程へ進める。
+**`APPROVED_FOR_PRODUCTION`ではない**、Production routing変更なし)。
+
+根拠:
+- 重大検出で`gpt-6-luna`が優位: changed_actor 50%(3/6) vs baseline 0/6、
+  Meta_run03_standard境界例で`gpt-6-luna`のみMAJOR検出(gold不一致だが
+  検出自体はbaseline未検出)。
+- 新規の重大見逃し(`gpt-6-luna`のみが見逃しbaselineが検出、のケース)は
+  0件。
+- gold既知2fixture(hormuz_run03_standard/advanced)平均一致率90%
+  (`gpt-6-luna`) vs 70%(baseline)。
+- token使用量: output -4.8%、reasoning -7.2%(`gpt-6-luna`がやや少ない)。
+- **単価(本委任で確定)**: `gpt-6-luna`は`gpt-5.6-luna`の正確に半額
+  ($0.10/$0.01/$0.125/$0.50 vs $0.20/$0.02/$0.25/$1.20)。実測84call
+  換算で総コスト-58.4%。
+- 非改善点: B群不要BLOCK率75%=75%(過剰品質是正は未確認)、latency中央値
+  +34%(11.93秒→16.00秒)。
+- Quality/Costの両面で明確な改善材料がある一方、Over-blocking改善なし・
+  advancedでの安定性低下・latency増という非改善材料も残るため
+  「Production採用」ではなく「採用候補として次工程(OPEN-233再設計)へ
+  進める」に留める。
+
+Closeout 10項目確認: (1) 正式価格3モデルとも一次ソース確認・推測なし、
+(2) 84call実測再計算完了(`cost_recalc_01.json`保存)、(3) 過去値
+¥0.90/callとの整合(単価一致・レート差-1.95%・token量差のみと特定)、
+(4) reasoning token二重計上なしを一次ソースで確認、(5) cached input/
+cache writesは排他的課金と一次ソースで確認、(6) Trial Status=VALIDATED
+(採用候補、Production採用ではない)に分類、(7) CURRENT_SPEC追記、
+(8) DECISION_LOG新エントリ追記、(9) OPEN_ITEMS: OPEN-233を
+REOPENED (ACTIVE)へ・OPEN-234はdeferred維持、(10) REPORT_LEDGER更新
+(本節)。詳細はSSOT本体(`CURRENT_SPEC.md`/`DECISION_LOG.md`/
+`OPEN_ITEMS.md`/`REPORT_LEDGER.md`)を参照。
+
 ---
 
 ## 1. 対象モデル実確認結果(要約)
