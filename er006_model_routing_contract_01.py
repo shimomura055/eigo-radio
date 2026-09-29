@@ -102,6 +102,11 @@ PROCESS_MODEL_MAP = {
     # make_speech_metadata_call_fn)。Family A/B/C(legacy)はこのキーを
     # 一切参照しない。
     "FAMILY_X_FLASH_LITE_TTS": "gemini-3.8-flash-lite-tts",
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29)で追加。
+    # Advanced(B1B)Key Phrase英語解説(explanation_en)のtext生成工程。
+    # 既存Key Phrase選定(B1_SUPPORT/A2_SUPPORT)と同じSUPPORT_MODELを使う
+    # (新規モデル追加なし)。
+    "KEY_PHRASE_ADVANCED_EXPLANATION": SUPPORT_MODEL,
 }
 PROCESS_PROVIDER_MAP = {
     "EXCEPTION_SEARCH": EXCEPTION_SEARCH_PROVIDER,

@@ -52,6 +52,7 @@ import er005_cost_logger as cl
 import er006_audio_cost_pilot_02_shared_narration as shared_narration
 import er006_model_routing_contract_01 as routing
 import er019_family_x_audio_plan_01 as plan
+import er019_family_x_kp_explanation_01 as kp_explanation_gen
 import er020_tts_retry_local_rewrite_01 as retry_primitive
 
 MANAGEMENT_ID = "NEWS-FAMILY-X-AUDIO-PRODUCTION-WIRING-01"
@@ -427,6 +428,31 @@ def _generate_or_reuse_kp(cached: dict | None, rank: int, role: str, wav_path: s
     return generate_fn()
 
 
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29): Advanced
+# (B1B)Key Phrase英語解説(explanation_en)のTTS生成。KEY-PHRASE-ADVANCED-
+# ENGLISH-EXPLANATION-TRIAL-02/-AUDIO-STYLE-TRIAL-04(er041/er046)で検証
+# 済みの呼び出しパターン(repro01.generate_narration_snippet_verified_
+# strict、短いphrase専用のKEY_PHRASE_MINIMAL系ではなく通常の英語style
+# 経路を使う。解説文はphraseより長い自然文のため、tts_safe_kp_enでは
+# なくn3_tts.tts_safe_enで正規化する)をそのままProduction配線する。
+# Family X runner専用の新関数として本ファイルに置く(共有資産
+# er003_v1_n3_01_tts_generate.pyは無変更のまま維持する、
+# er019_family_x_pointless_01_test_01.FamilyAUnchangedTestが同ファイルの
+# working tree diff=0を機械的に強制しているため)。
+def generate_key_phrase_explanation_en_verified(explanation_text: str, out_path: str,
+                                                 style_prefix_override: str,
+                                                 tts_backend: str = "structured_separation") -> dict:
+    import er003_v1_repro01_main_generate as repro01
+    text = n3_tts.tts_safe_en(explanation_text)
+    return repro01.generate_narration_snippet_verified_strict(
+        text, "en", out_path, text,
+        max_extra_chars=max(20, len(text) // 2), max_attempts=2,
+        safety_margin_seconds=repro01.KEY_PHRASE_TRIM_SAFETY_MARGIN_SECONDS,
+        style_prefix_override=style_prefix_override, disfluency_qa=True,
+        asr_prompt=repro01.KEY_PHRASE_EN_ASR_NO_TRANSLATE_PROMPT,
+        enable_non_latin_cascade=True, tts_backend=tts_backend)
+
+
 # TTS-GEMINI-3.8-FLASH-LITE-PRODUCTION-WIRING-FAMILY-X-02(修正3回目、
 # 2026-09-28、Opus L2所見BL-2是正): shared_narration.ensure_all_shared_
 # narration_b1/a2()の戻り値statusをこれまで呼び出し元(本ファイル)が
@@ -611,16 +637,27 @@ def generate_family_x_b1_segments(
                     tts_backend=tts_backend), expected_text=text)
         results[name]["canonical_text"] = text
 
-    kp_results = _generate_key_phrase_segments_b1(kp, narration_dir, _cached,
-                                                   tts_backend=tts_backend) if kp is not None else {}
+    if kp is not None:
+        kp_results, kp_explanation_text_bundle = _generate_key_phrase_segments_b1(
+            kp, narration_dir, _cached, tts_backend=tts_backend)
+    else:
+        kp_results, kp_explanation_text_bundle = {}, None
     kp_scaffold_status = "OK" if kp is not None else "KP_SCAFFOLD_JSON_MISSING(upstream key phrase Gateで未生成)"
 
     all_status = {k: v.get("status") for k, v in results.items()}
-    kp_status = {r: {"en": v["english"].get("status"), "ja": v["japanese"].get("status")}
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced(b1b)の中間
+    # segmentが日本語意味(旧"japanese"role)から英語解説(新"explanation"
+    # role)へ変わったため、run_summary_tts.jsonのkey_phrase_statusも
+    # 追従する(a2側のkp_status["ja"]表記は無変更、別関数)。
+    kp_status = {r: {"en": v["english"].get("status"), "explanation": v["explanation"].get("status")}
                  for r, v in kp_results.items()}
     save_json(f"{out_dir}/audit/tts_generation_results.json",
               {"segments": results, "key_phrases": kp_results, "shared_narration": shared_narration_status,
                "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend,
+               # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): run単位の
+               # 英語解説text cache(_resolve_kp_explanations_textが次回
+               # runで参照する)。
+               "key_phrase_explanations_text": kp_explanation_text_bundle,
                # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W3、Opus L2所見
                # MAJOR-3是正): 可変segment reuse判定用のcache version guard。
                "style_version": FAMILY_X_VARIABLE_ROLE_STYLE_VERSION})
@@ -635,31 +672,79 @@ def generate_family_x_b1_segments(
             "kp_scaffold_status": kp_scaffold_status, "tts_backend": tts_backend}
 
 
+def _resolve_kp_explanations_text(kp_items: list, cached: dict | None) -> dict:
+    """FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced(b1b)Key
+    Phrase英語解説(explanation_en)のtext生成/reuse。5件まとめて1 callで
+    生成する(er019_family_x_kp_explanation_01)ため、rank単位のcache
+    (_generate_or_reuse_kp、音声segment用)とは別に、run単位のtext cache
+    (cached["key_phrase_explanations_text"])を見る。canonical phrase
+    (display_phrase)の並びが前回runと完全一致する場合のみreuseし、1件
+    でも変化していれば5件まとめて再生成する(部分reuseはしない、5件
+    バッチ生成という性質上)。"""
+    signature = [it["display_phrase"] for it in kp_items]
+    cached_bundle = (cached or {}).get("key_phrase_explanations_text")
+    if cached_bundle and cached_bundle.get("phrases_signature") == signature:
+        reused = dict(cached_bundle)
+        reused["reused_from_previous_run"] = True
+        return reused
+    input_items = [{"rank": it["rank"], "display_phrase": it["display_phrase"],
+                    "source_sentence": it.get("source_sentence", ""),
+                    "japanese_gloss": it.get("japanese_gloss", "")} for it in kp_items]
+    result = kp_explanation_gen.generate_kp_explanations(input_items)
+    result["phrases_signature"] = signature
+    result["reused_from_previous_run"] = False
+    return result
+
+
 def _generate_key_phrase_segments_b1(kp: dict, narration_dir: str, cached: dict | None = None,
                                       tts_backend: str = "structured_separation") -> dict:
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29ユーザー
+    # 正式決定): Advanced(B1B)Key Phraseの中間segmentを、日本語意味
+    # (旧"japanese"role)から英語解説(新"explanation"role、Variant B
+    # style)へ変更する。末尾の英語Phraseは新規segmentを生成せず、常に
+    # 先頭("english"role、en_r)と同一wav path/同一cache entry/同一
+    # Master Audio Storeキーを参照する(下記"phrase_repeat"、reuseで
+    # 追加TTS call 0)。Standard(a2)側は本変更の対象外(無変更、別関数
+    # `_generate_key_phrase_segments_a2`)。
+    import er033_tts_flash_lite_family_x_styles_01 as fl_styles
+
     kp_items = sorted(kp["items"], key=lambda it: it["rank"])
+    explanation_bundle = _resolve_kp_explanations_text(kp_items, cached)
+    explanation_by_rank = explanation_bundle["items"]
+
     kp_results = {}
     for item in kp_items:
         rank = item["rank"]
         used_form = item["used_form"]
-        ja_gloss_tts, ja_gloss_tts_fallback = n3_tts.resolve_key_phrase_ja_gloss_tts(item)
         with cl.segment_context(f"kp{rank}_english"):
             en_r = _generate_or_reuse_kp(
                 cached, rank, "english", f"{narration_dir}/kp{rank}_en.wav",
                 lambda used_form=used_form, rank=rank: shared_narration.ensure_key_phrase_english_component(
                     n3_tts.tts_safe_kp_en(used_form), f"{narration_dir}/kp{rank}_en.wav", tts_backend=tts_backend))
-        with cl.segment_context(f"kp{rank}_japanese"):
-            ja_r = _generate_or_reuse_kp(
-                cached, rank, "japanese", f"{narration_dir}/kp{rank}_ja_charon.wav",
-                lambda ja_gloss_tts=ja_gloss_tts, used_form=used_form,
-                rank=rank: n3_tts.generate_charon_japanese_with_reading_safety(
-                    ja_gloss_tts, f"{narration_dir}/kp{rank}_ja_charon.wav",
-                    n3_tts.expected_substring_ja(ja_gloss_tts), known_key_phrase_terms=[used_form],
-                    tts_backend=tts_backend))
-        ja_r["display_gloss"] = item["japanese_gloss"]
-        ja_r["japanese_gloss_tts_fallback_derived"] = ja_gloss_tts_fallback
-        kp_results[rank] = {"english": en_r, "japanese": ja_r}
-    return kp_results
+
+        explanation_row = explanation_by_rank.get(rank) or explanation_by_rank.get(str(rank)) or {}
+        explanation_text = explanation_row.get("english_explanation") or ""
+        with cl.segment_context(f"kp{rank}_explanation_en"):
+            expl_r = _generate_or_reuse_kp(
+                cached, rank, "explanation", f"{narration_dir}/kp{rank}_explanation_en.wav",
+                lambda explanation_text=explanation_text,
+                rank=rank: generate_key_phrase_explanation_en_verified(
+                    explanation_text, f"{narration_dir}/kp{rank}_explanation_en.wav",
+                    style_prefix_override=fl_styles.KEY_PHRASE_EXPLANATION_EN, tts_backend=tts_backend))
+        expl_r["explanation_text"] = explanation_text
+        expl_r["explanation_qa"] = explanation_row.get("qa")
+        expl_r["explanation_status_from_text_gate"] = explanation_row.get("status")
+        expl_r["display_gloss"] = item["japanese_gloss"]
+
+        # 末尾の英語Phrase再掲: 新規generateはせず、en_rをそのまま複製
+        # する(同一wav path/同一sha256/同一canonical_text/同一status)。
+        # Audio Validation Gate(er003_v1_n3_01_assemble.py、無変更)は
+        # sub_entry単位でstatus/pathを走査するため、この複製entryも
+        # 既存Gateとそのまま整合する。
+        phrase_repeat_r = dict(en_r)
+        phrase_repeat_r["phrase_repeat_source"] = "same_as_first"
+        kp_results[rank] = {"english": en_r, "explanation": expl_r, "phrase_repeat": phrase_repeat_r}
+    return kp_results, explanation_bundle
 
 
 def generate_family_x_a2_segments(
@@ -951,7 +1036,16 @@ def load_family_x_b1_sources(theme_out_dir: str, source_dir: str | None = None) 
         rank = item["rank"]
         mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_en.wav")
         key_phrase_components[rank] = mono
-        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_ja_charon.wav")
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29ユーザー
+        # 正式決定): Advanced(b1b)の中間segmentを日本語意味からEnglish
+        # 解説(explanation_en)へ変更。`key_phrase_meanings`という変数名/
+        # dict keyは、共有Production資産(er003_v1_n3_01_assemble.py::
+        # build_b1_key_phrase_blocks、Family A/B/C/News/Z等が共有する
+        # 既存関数)がこのままの名前でparts["key_phrase_meanings"]を
+        # 参照するため、無変更のまま維持する(共有assemble関数自体は
+        # 一切変更しない)。中身(実際に読み込むwavファイル)だけを
+        # explanation_enへ差し替える(Family X b1bローダーのみの変更)。
+        mono, sr, _, _ = common.read_wav_float(f"{narration_dir}/kp{rank}_explanation_en.wav")
         key_phrase_meanings[rank] = mono
 
     return {"intro": intro, "notification": notification, "outro": outro,
@@ -1001,7 +1095,10 @@ def apply_family_x_b1_gain(sources: dict) -> dict:
         gained = gain_to_rms(mono, target_rms, f"key_phrase_en_{rank}")
         key_phrase_stereo[rank] = p9a.mono_24k_to_stereo_target(gained)
     for rank, mono in sources["key_phrase_meanings"].items():
-        gained = gain_to_rms(mono, target_rms, f"key_phrase_ja_{rank}")
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): b1bはexplanation_en
+        # 音声(旧"key_phrase_ja_{rank}"ラベルは日本語音声時代のもの、
+        # gain_report内の表示ラベルのみ変更、辞書keyの構造は無変更)。
+        gained = gain_to_rms(mono, target_rms, f"key_phrase_explanation_{rank}")
         key_phrase_meaning_stereo[rank] = p9a.mono_24k_to_stereo_target(gained)
     result["key_phrase_components"] = key_phrase_stereo
     result["key_phrase_meanings"] = key_phrase_meaning_stereo
@@ -1401,7 +1498,8 @@ def _load_assemble_summary(path: str) -> dict:
 
 
 def _row_info_family_x(label: str, level: str, parts: dict, support: dict, narration_dir: str,
-                        kp_by_rank: dict, japanese_title: str | None) -> dict:
+                        kp_by_rank: dict, japanese_title: str | None,
+                        kp_explanations_by_rank: dict | None = None) -> dict:
     voice = "Charon" if level == "b1b" else "Aoede"
     if label in ("Intro", "Outro"):
         return {"text": "音楽ジングル/固定音源(読み上げなし)。", "voice": None, "audio": None, "sfx": True}
@@ -1425,10 +1523,19 @@ def _row_info_family_x(label: str, level: str, parts: dict, support: dict, narra
         rank = int(label.split(" ")[-1])
         kp = kp_by_rank[rank]
         idx = sorted(kp_by_rank).index(rank) + 1
-        text = f"EN: {kp['used_form']}<br>JA: {kp['japanese_gloss']}"
         if level == "b1b":
-            audio = (f"{narration_dir}/kp{rank}_en.wav", f"{narration_dir}/kp{rank}_ja_charon.wav")
+            # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced中間は
+            # 英語解説(explanation_en)。末尾のEnglish Phraseは新規生成では
+            # なく先頭(kp{rank}_en.wav)と同一wavを再掲するため、audio
+            # tupleの1件目と3件目に同じpathを渡す(reuseを表示上も明示)。
+            expl_row = (kp_explanations_by_rank or {}).get(rank) or (kp_explanations_by_rank or {}).get(str(rank)) or {}
+            explanation_text = expl_row.get("explanation") or expl_row.get("explanation_text") or "(未取得)"
+            text = (f"EN: {kp['used_form']}<br>EXPLANATION: {explanation_text}"
+                    f"<br>EN (repeat, same audio file as above): {kp['used_form']}")
+            audio = (f"{narration_dir}/kp{rank}_en.wav", f"{narration_dir}/kp{rank}_explanation_en.wav",
+                     f"{narration_dir}/kp{rank}_en.wav")
         else:
+            text = f"EN: {kp['used_form']}<br>JA: {kp['japanese_gloss']}"
             audio = (f"{narration_dir}/kp{rank}_en.wav", f"{narration_dir}/meaning_{idx}.wav")
         return {"text": text, "voice": voice, "audio": audio, "sfx": False}
     if label.startswith("Full story intro"):
@@ -1490,13 +1597,28 @@ def _build_level_table(level_dir: str, level: str, japanese_title: str | None = 
     kp_by_rank = {item["rank"]: item for item in kp["items"]}
     abs_url = player_common.abs_file_url
     support = load_json(f"{level_dir}/{'b1_support_texts.json' if level == 'b1b' else 'a2_support_texts.json'}")
+    # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4): Advanced(b1b)の
+    # player行に英語解説(explanation_en)textを表示するため、
+    # tts_generation_results.jsonのkey_phrases[rank]["explanation"]を読む
+    # (Family X runner自身の出力ファイルのみ、共有KPデータ構造
+    # keywords_canonicalized.jsonへは書き込まない)。
+    kp_explanations_by_rank = None
+    if level == "b1b":
+        tts_results_path = f"{level_dir}/audit/tts_generation_results.json"
+        if os.path.exists(tts_results_path):
+            tts_results = load_json(tts_results_path)
+            kp_explanations_by_rank = {
+                int(r): {"explanation": v.get("explanation", {}).get("explanation_text")}
+                for r, v in (tts_results.get("key_phrases") or {}).items()
+            }
 
     rows = []
     for entry in timeline:
         label = entry["part"]
         if label.startswith("pause_"):
             continue
-        info = _row_info_family_x(label, level, parts, support, narration_dir, kp_by_rank, japanese_title)
+        info = _row_info_family_x(label, level, parts, support, narration_dir, kp_by_rank, japanese_title,
+                                   kp_explanations_by_rank=kp_explanations_by_rank)
         sec = entry["start_seconds"]
         voice_disp = info["voice"] or ("SFX" if info["sfx"] else "—")
         if info["sfx"] or not info["audio"]:

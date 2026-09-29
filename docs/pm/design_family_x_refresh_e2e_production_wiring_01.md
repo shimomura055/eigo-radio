@@ -617,3 +617,39 @@ Guardrail遵守確認(W1):
 - W2/W3で入れた`SHELL_CHAMPION_*`・`FAMILY_X_VARIABLE_ROLE_STYLE_
   VERSION`・style_prefix evidence: 一切編集していない(`git diff --stat
   HEAD -- "er0*.py"`で本タスク由来の差分ファイル一覧を確認済み)。
+
+### 9-W4 Phase B(W4、2026-09-29)実施結果の要約
+
+Key Phrase 音声構造(Standard/Advanced共通骨格、CURRENT_SPEC.md「Key
+Phrase 音声構造」節、2026-09-29ユーザー正式決定)をProduction配線した。
+詳細は`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md` §W4参照
+(現状確認表・変更ファイル・先頭=末尾証明・量産コスト・テスト結果・
+Prompt/Style sha256・Opus L2論点)。
+
+§3(d)からの主な実装判断:
+- 現状確認の結果、末尾Phrase「反復」構造自体は共有`er003_b1_p9a_audio.
+  py::build_key_phrase_block()`が配線前から実装済み(先頭と同一の
+  in-memory配列を末尾へも渡すだけで新規wav生成は元々発生しない)ことが
+  判明した。Standard(a2)はこの事実により無変更、Advancedは中間部分の
+  みを日本語意味→英語解説へ差し替える設計にした。
+- Advanced専用の新関数(`generate_key_phrase_explanation_en_verified`)
+  は共有資産`er003_v1_n3_01_tts_generate.py`ではなくFamily X runner
+  自身(`er019_family_x_audio_production_runner_01.py`)に配置した
+  (`er019_family_x_pointless_01_test_01.py::FamilyAUnchangedTest`が
+  同ファイルのgit working tree diff=0を機械的に強制しているため)。
+- `key_phrase_meanings`という変数名/parts keyは、共有`build_b1_key_
+  phrase_blocks()`がこの名前をハードコード参照するため意味的には
+  「英語解説」を保持しながらも名前は変更しなかった(Opus L2論点1として
+  明記)。
+- text生成(explanation_en)は5件(4+1構成)まとめて1 callとし、run単位の
+  text cache(`key_phrase_explanations_text`)を新設した。
+
+Guardrail遵守確認(W4):
+- API支出: ¥0(LLM/TTS呼び出し0件、単体テストは全てmock)。
+- 削除・移動・`rm`・`git clean`・stash/rebase/reset/amend/force push:
+  実施なし。
+- W1/W2/W3の資産(新記事構造・Master Champion・可変Role Style/cache
+  version guard): 一切編集していない(`git diff --stat HEAD --
+  "er0*.py"`で本タスク由来の差分ファイル一覧を確認済み、
+  `run_project_regression.py --pattern "er019*_test_*.py"`で
+  collected=232 passed=232を再確認)。

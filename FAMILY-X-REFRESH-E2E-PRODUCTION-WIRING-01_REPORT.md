@@ -291,3 +291,167 @@ er003の4件失敗(`er003_test_p2j_investigate.py`3件・`er003_test_bad.py`1件
 
 STOPなし(E2E実発火[Hormuz/Meta完成音声]は次Phaseの範囲、本W1はコード・
 テスト・JA入力検証のみ、費用¥0の制約を遵守)。
+
+## §W4 Key Phrase 音声構造(Standard/Advanced共通骨格)のProduction配線
+
+委任: `docs/pm/delegation_log/2026-09-29_FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_06.md`
+設計根拠: CURRENT_SPEC.md「Key Phrase 音声構造(Standard/Advanced共通骨格)」
+節(2026-09-29 `APPROVED_FOR_PRODUCTION`)・「Advanced Key Phrase 英語解説
+(text仕様)」節
+
+### 1. 現状確認(配線前)
+
+| レベル | segment列(配線前) | 末尾Phrase | 参照wav | 生成関数/cache/Master key |
+|---|---|---|---|---|
+| Standard(a2) | phrase_en → japanese_meaning → phrase_en(反復) | あり | `kp{rank}_en.wav`と同一(in-memory reuse) | `_generate_key_phrase_segments_a2`(role "english"/"japanese_meaning")、共有`p9a.build_key_phrase_block()`が末尾を先頭と同一配列で組立(新規生成なし) |
+| Advanced(b1b、配線前) | phrase_en → japanese_meaning(Charon) → phrase_en(反復) | あり | 同上 | `_generate_key_phrase_segments_b1`(role "english"/"japanese")、同じ共有`p9a.build_key_phrase_block()` |
+
+**判明した事実**: 末尾Phraseの「反復」構造自体は、Standard/Advanced
+いずれも既に共有Production資産`er003_b1_p9a_audio.py::build_key_phrase_block()`
+(Family A/B/C/News/Z等が共有する既存関数、無変更)が実装済みであり、
+`english_component_samples`という同一in-memory配列を先頭・末尾の両方へ
+渡しているだけで、末尾専用の新規wav生成・別TTS callは元々発生していない
+(付帯条件「先頭と末尾が同一canonical text・同一正式音源になること」は
+Standard側では配線前から既に満たされていた)。**Standard(a2)はこの事実
+により無変更**(決定どおり)。Advancedは中間部分(旧: 日本語意味/Charon)
+のみを英語解説へ差し替える。
+
+### 2. 変更ファイル
+
+- `er019_family_x_kp_explanation_01.py`(新規): Advanced Key Phrase英語解説
+  (explanation_en)のtext生成。Prompt/schema/語数上限(15語)は
+  KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-TRIAL-02(er041)の`APPROVED_
+  FOR_PRODUCTION`仕様を逐語転記。QA validator(語数上限・新規Fact混入
+  検知)をNG→技術retry(合計最大1回、parse失敗retryと排他)として実装。
+  Model Routing Contract新規process`KEY_PHRASE_ADVANCED_EXPLANATION`
+  (=既存`SUPPORT_MODEL`と同じ`gpt-5.6-luna`、新規モデル追加なし)。
+- `er006_model_routing_contract_01.py`: 上記processを`PROCESS_MODEL_MAP`
+  へ1行追加(既存process無変更)。
+- `er033_tts_flash_lite_family_x_styles_01.py`: `KEY_PHRASE_EXPLANATION_EN`
+  定数を新設(Variant B「clear, precise, at a measured pace, without
+  dragging」、KEY-PHRASE-ADVANCED-ENGLISH-EXPLANATION-AUDIO-STYLE-
+  TRIAL-04[er046]の逐語転記)。
+- `er019_family_x_audio_production_runner_01.py`:
+  - `generate_key_phrase_explanation_en_verified()`新設(Family X runner
+    専用。共有資産`er003_v1_n3_01_tts_generate.py`は無変更のまま維持
+    ——`er019_family_x_pointless_01_test_01.py::FamilyAUnchangedTest`が
+    同ファイルのgit working tree diff=0を機械的に強制しているため、
+    新関数は本runner自身に配置した)。内部は`repro01.generate_narration_
+    snippet_verified_strict()`(Trial-02/-04で検証済みの呼び出しパターン
+    をそのまま踏襲)。
+  - `_generate_key_phrase_segments_b1()`(Advanced専用、関数名は歴史的経緯
+    により"_b1"のままだが実体はb1bレベル): 中間roleを"japanese"から
+    "explanation"へ変更。末尾Phraseは新規generateせず、`en_r`(先頭の
+    "english"role結果)をそのまま`dict()`複製した`phrase_repeat`role
+    として記録(`phrase_repeat_source="same_as_first"`)。
+  - `_resolve_kp_explanations_text()`新設: 5件(4+1構成)まとめて1 callで
+    解説を生成し、run単位のtext cache(`key_phrase_explanations_text`、
+    canonical phraseの並びが前回runと完全一致する場合のみreuse)を持つ。
+  - `load_family_x_b1_sources()`: `key_phrase_meanings[rank]`の読込元を
+    `kp{rank}_ja_charon.wav`から`kp{rank}_explanation_en.wav`へ変更
+    (dict key名`key_phrase_meanings`自体は、共有`er003_v1_n3_01_
+    assemble.py::build_b1_key_phrase_blocks()`がこの名前をハードコード
+    参照するため無変更のまま維持、共有assemble関数自体は一切変更しない)。
+  - `_row_info_family_x()`/`_build_level_table()`: Advanced(b1b)のKey
+    Phrase行に解説textを表示し、audio tupleを3要素
+    (phrase_en, explanation_en, phrase_en[先頭と同一path])にして反復を
+    明示。Standard(a2)側の行構成は無変更。
+
+### 3. 経路別の先頭=末尾証明
+
+`kp_results[rank]["phrase_repeat"]`は常に`dict(en_r)`(先頭"english"role
+結果の複製)であり、"english"role側がどの経路(cache hit/miss・
+Master Audio Store reuse・fallback[English lock]・解説側のSTOPPED)を
+辿っても、`phrase_repeat.path`/`sha256`/`canonical_text`は必ず`english.path`
+/`sha256`/`canonical_text`と同一になる(生成段で複製するのではなく、
+既存resultをそのまま参照するため、構造的に分岐しようがない)。単体test
+(`test_phrase_repeat_is_same_path_and_sha256_as_first`/
+`test_phrase_repeat_identical_even_when_explanation_stopped`/
+`test_phrase_repeat_identical_when_english_used_fallback_path`)で
+cache hit/miss・fallback・解説側STOPPEDの3経路を実際に再現し確認。
+
+### 4. 量産コスト(B)
+
+Advanced 1記事あたりの追加: LLM解説生成 call = **1回**(4+1構成5件
+まとめて1 callのため、KP件数[5]分の個別callにはならない。parse/QA
+NG時のみ技術retryで最大+1回)。TTS explanation segment = KP件数分
+(例5、rankごとに1回)。**Phrase再掲のTTS callは0**(`en_r`の複製のみ、
+`test_english_phrase_tts_called_exactly_once_per_rank`で
+`ensure_key_phrase_english_component`呼び出し回数がrank数と一致し
+2倍にならないことを実証)。Standard側の追加callは0(無変更)。
+
+### 5. テスト/regression結果(すべてmock、実LLM/TTS呼び出し0回、費用¥0)
+
+- `er019_family_x_kp_structure_wiring_01_test_01.py`(新規、35件): 全PASS
+  (Prompt/Style逐語性sha256照合、QA validator、技術retry[parse/QA、
+  合計上限1回の相互排他を含む]、Model Routing Contract違反時fail-closed、
+  Advanced組立構造[english/explanation/phrase_repeat、旧japaneseなし]、
+  先頭=末尾の3経路確認、TTS/LLM呼び出し回数、text cache reuse、
+  `_generate_or_reuse_kp`のrole="explanation"でのcache hit/miss、
+  player行[Advanced 3-tuple/Standard 2-tuple不変])。
+- 既存`er019_family_x_flash_lite_role_style_wiring_02_test_01.py`の
+  `test_b1_key_phrase_segments_receive_tts_backend`を、Advanced中間role
+  変更(japanese→explanation)に追従させて更新(tts_backend伝播という
+  検証意図は無変更、fixtureへ`display_phrase`/`source_sentence`を追加)。
+- `run_project_regression.py --pattern "er019*_test_*.py"`: collected=232
+  passed=232 failed=0 errors=0(`er019_family_x_pointless_01_test_01.
+  FamilyAUnchangedTest`含め全PASS、Family A/共有資産への意図しない差分
+  なしを再確認)。
+- `--pattern "er030*_test.py"`(実ファイル名が`_test.py`のため実行時に
+  pattern末尾を補正): collected=71 passed=71。
+- `--pattern "er033*_test_*.py"`: collected=64 passed=64。
+- `--pattern "er041*_test_*.py"`: collected=13 passed=13。
+- `--pattern "er042*_test_*.py"`: collected=16 passed=16。
+- `--pattern "er046*_test_*.py"`: collected=21 passed=21。
+- `--pattern "er048*_test_*.py"`: collected=11 passed=11。
+- pre-existing失敗: 0件(全patternでfailed=0 errors=0、W4起因のregression
+  なし)。
+
+### Prompt/Style sha256
+
+- `kp_explanation_gen.PROMPT_SHA256` =
+  `c3d3734b760af258b86020002ef8a1ab63e16633a72bdab45019ca5b7be6fa7e`
+  (DEVELOPER_MESSAGE+USER_TEMPLATE_HEADER+USER_TEMPLATE_FOOTER+JSON
+  Schemaの結合文字列から算出。er041の同一定数から独立に再算出した値と
+  test上で一致することを確認済み[逐語性の機械的証拠])。
+- Variant B style文字列: `clear, precise, at a measured pace, without
+  dragging`(`fl_styles.KEY_PHRASE_EXPLANATION_EN` == er046
+  `VARIANT_STYLES["B"]`、test上で逐語一致確認済み)。
+- 音声voice: Aoede(`shared_narration.ensure_key_phrase_english_component`
+  のMasterAudioKeyが`speaker_voice="Aoede"`固定であることを既存コードで
+  確認。解説音声は`repro01.generate_narration_snippet_verified_strict`
+  経由でlanguage="en"の既定voice[`p9a.VOICE_NAME`]を使い、Trial-02/-04
+  と同じ呼び出しパターンのため同じくAoede)。
+
+### Opus L2論点(レビュー依頼)
+
+1. **`key_phrase_meanings`という変数名/parts keyの意味的乖離**:
+   共有`er003_v1_n3_01_assemble.py::build_b1_key_phrase_blocks()`が
+   このkey名をハードコード参照するため、Advanced(b1b)ではこのkeyの
+   中身が実際には「英語解説(explanation_en)」であり「日本語意味」では
+   ない状態になった(共有関数自体は無変更の代償として生じた意味的
+   乖離)。コード中に理由コメントは付与済みだが、将来の保守者が誤解する
+   リスクをどう評価するか判断を仰ぐ。
+2. **run単位text cache(`key_phrase_explanations_text`)の粒度**:
+   5件バッチ生成という性質上、1件でもcanonical phraseが変われば全件
+   再生成する設計(部分reuse不可)にした。retry/Local Rewriteで一部の
+   Key Phraseだけ差し替わるケースが将来発生した場合、全件再生成
+   (追加LLM call 1回)が許容範囲かどうかの判断を仰ぐ。
+3. **QA NGの扱い(NG_ACCEPTED_AFTER_RETRY)**: 技術retry(1回)後もQA
+   NGが残った場合、Gate/STOPはせずそのまま音声生成へ進める設計にした
+   (既存のKey Phrase Set Redundancy QA等とは異なりHuman Review連携は
+   未実装)。Production初回配線としてこの挙動で妥当か判断を仰ぐ。
+4. **Model Routing Contractへの新規process追加**: 共有SSOT
+   `er006_model_routing_contract_01.py`(全Production工程が参照)へ
+   `KEY_PHRASE_ADVANCED_EXPLANATION`を追加した(既存`SUPPORT_MODEL`と
+   同値、他processは無変更)。additiveな1行追加のみだが、共有Contract
+   ファイルへの変更である点をOpus L2へ確認依頼する。
+
+### 費用
+
+¥0(LLM/TTS呼び出し0回。実行したのは単体テスト[mock]のみ)。
+
+### STOP有無
+
+STOPなし(E2E実測[Hormuz/Meta実データでの解説生成・TTS・完成音声]は
+次Phaseの範囲、本W4はコード・テストのみ)。

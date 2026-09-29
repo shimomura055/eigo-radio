@@ -213,16 +213,25 @@ class KeyPhraseBackendPropagationTests(unittest.TestCase):
     segments_*経由で確認する。"""
 
     def test_b1_key_phrase_segments_receive_tts_backend(self):
-        kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}
+        # FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29): Advanced
+        # (b1b)Key Phraseの中間roleが日本語意味(generate_charon_japanese_
+        # with_reading_safety)から英語解説(generate_key_phrase_explanation_
+        # en_verified)へ変わったため、本testもtts_backend伝播先を追従させる
+        # (tts_backend伝播という検証意図自体は無変更)。
+        kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る",
+                          "display_phrase": "opt out", "source_sentence": "Users can opt out."}]}
+        explanation_bundle = {"items": {1: {"english_explanation": "to choose not to take part",
+                                             "qa": {"passed": True}, "status": "OK"}},
+                               "audit": {}}
         with mock.patch.object(runner.shared_narration, "ensure_key_phrase_english_component",
                                 side_effect=_ok) as en_mock, \
-             mock.patch.object(runner.n3_tts, "generate_charon_japanese_with_reading_safety",
-                                side_effect=_ok) as ja_mock, \
-             mock.patch.object(runner.n3_tts, "resolve_key_phrase_ja_gloss_tts",
-                                return_value=("みおくる", False)):
+             mock.patch.object(runner.kp_explanation_gen, "generate_kp_explanations",
+                                return_value=explanation_bundle), \
+             mock.patch.object(runner, "generate_key_phrase_explanation_en_verified",
+                                side_effect=_ok) as expl_mock:
             runner._generate_key_phrase_segments_b1(kp, "dummy_dir", tts_backend="speech_metadata_flash_lite")
         self.assertEqual(en_mock.call_args_list[0].kwargs.get("tts_backend"), "speech_metadata_flash_lite")
-        self.assertEqual(ja_mock.call_args_list[0].kwargs.get("tts_backend"), "speech_metadata_flash_lite")
+        self.assertEqual(expl_mock.call_args_list[0].kwargs.get("tts_backend"), "speech_metadata_flash_lite")
 
     def test_a2_key_phrase_segments_receive_tts_backend(self):
         kp = {"items": [{"rank": 1, "used_form": "opt out", "japanese_gloss": "見送る"}]}

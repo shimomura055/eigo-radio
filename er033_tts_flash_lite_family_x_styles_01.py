@@ -95,3 +95,20 @@ FAMILY_X_ROLE_STYLE_JA = (
     "落ち着いた、自然な話し言葉で。意味の流れ・強調点・転換に応じて表情豊かに抑揚をつけてください。"
     "演技がかった話し方は避けてください。"
 )
+
+# ------------------------------------------------------------
+# Advanced(B1B)Key Phrase 英語解説(explanation_en)style
+# ------------------------------------------------------------
+# FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01(W4、2026-09-29): Key Phrase
+# 音声構造(Standard/Advanced共通骨格、CURRENT_SPEC.md「Key Phrase 音声
+# 構造」節)のAdvanced中間segment(英語解説)専用style。KEY-PHRASE-ADVANCED-
+# ENGLISH-EXPLANATION-AUDIO-STYLE-TRIAL-04(er046)で比較した中間3案
+# (A/B/C)のうちVariant B「clear, precise, at a measured pace, without
+# dragging」をユーザーが2026-09-29に正式採用(逐語転記、新規style考案
+# なし)。このKey Phrase解説roleは本Wiring以前は存在しなかった全く新しい
+# roleのため(既存の6-role style辞書のような「既定backend=None、
+# flash-lite backendのみ適用」というgatingは適用しない)、tts_backend
+# の値によらず常にこのstyleをstyle_prefix_overrideとして使う
+# (n3_tts.generate_key_phrase_explanation_en_verified経由、Family X
+# runnerのみが参照する)。
+KEY_PHRASE_EXPLANATION_EN = "clear, precise, at a measured pace, without dragging"
