@@ -831,3 +831,30 @@ Audio段・Gate 13+9項目・ユーザー指定Gate 3項目・試聴ページは
 実施していない。詳細ログ・費用実測(run_03累計¥10.35、本管理ID全体
 累計約¥16.40)・Next Actionは`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_
 REPORT.md`§E2E run_03参照。
+
+## 9-E2E-meta-run03. Phase C継続(E2E Meta run_03、委任_13、2026-09-29、
+Hormuz deferred・Metaのみ実発火・Standard/Advanced完成)
+
+ユーザー指示によりHormuz(run_01〜03、3回ともja_source MAJOR起因で
+Standard段STOP)はdeferred/non-blockingとして保留し、Standard側
+must-fixルール新設・JA再生成回数追加・Checker Prompt/severity/origin
+判定変更を一切行わずMetaのみを実行した。JA生成(¥3.487、must-fix
+retry 1回で`LEDGER_COMPLIANT`)→Writer段(Advanced初回`LEDGER_COMPLIANT`、
+案B不要。Standard 1回目MAJOR[origin=translation、ja_source起因ではない]
+→既存must-fix retry 1回で`LEDGER_COMPLIANT`)→Audio段
+(scaffold/tts/assemble/player、¥23.98)まで完走し、Standard/Advanced
+両方の完成podcast(mp3)・Gate 13+9+ユーザー指定Gate 3項目 全PASS・
+試聴ページ(GitHub Pages公開確認7項目PASS)まで到達した。Meta E2E合計
+¥31.68(本管理ID累計約¥48.08)。
+
+**発見事項(コード変更なし、コピーのみで対処)**: `er019_family_x_audio_
+production_runner_01.py`の`source_dir`は`--slug`/`--run`から
+`er019_output/{slug}/{run}`として導出され、JA/writer段の出力先
+(`er019_output/family_x_refresh_e2e_01/{slug}/{run}`)とはパスが異なる。
+本委任ではresearch_ledger/storyline_b3コピー運用と同じ手法(ファイル
+コピーのみ、コード非変更)で対処した。Hormuz再開時にも同じコピー手順が
+必要になる。
+
+詳細(Gate表・Pages 7項目・費用A/B・Closeout 10項目)は
+`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03
+参照。試聴URL: https://shimomura055.github.io/eigo-radio/user_test/family_x_refresh_e2e_01/index.html

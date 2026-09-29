@@ -1309,3 +1309,198 @@ artifactが一切生成されていないため全て「評価不能(未到達)�
    run_03向けに複製済み、sha256確認済みで着手可能な状態)。Hormuzの
    方針決定を待つか、Metaを先に試すか(上記方針(c)の追加evidenceにも
    なる)の判断を仰ぐ。
+
+## §E2E Meta run_03(委任_13、2026-09-29、Meta単独をStandard/Advanced
+両方ともProduction正式経路で完成)
+
+ユーザー指示により、Hormuz(委任_09〜_12、run_01〜03で3回ともja_source
+起因のMAJOR逸脱によりStandard段でSTOP)は**deferred/non-blockingとして
+保留**し、本委任ではMetaのみを実行した。Standard側must-fix追加ルールの
+新設・JA再生成回数の追加・Checker Prompt/severity/origin判定の変更は
+一切行っていない。
+
+### 事前確認(¥0)
+
+- `git pull --ff-only`: no-op(既にup to date)。`git stash list`: 空。
+- `grep -n "再び増やさない" er0*.py`: 2件、いずれもテストファイル
+  (`assertNotIn`)のみでProduction module 0件(既知パターンと一致)。
+- Meta `run_03/research_ledger/verified_fact_ledger.txt` sha256=
+  `ea0ce587e605beeac8f02315ae4520899156393bbba2e059d99f45988b7c5f56`、
+  `storyline_b3/fact_selection_evidence.json` sha256=
+  `ff7873820e22f2d757728193ce97f671c7a192d83afd5f8d59e5053a7858c0a4`
+  (前委任_12で複製済み分と完全一致、実測確認済み)。案B armed(JA writer
+  runner起動ログで`fact_selection_evidence.json`存在を確認)。
+
+### JA生成(run_03、実測)
+
+- 実行: `TTS_EXECUTION_MODE=STANDARD` 環境変数明示、
+  `er019_family_x_entertainment_production_runner_01.py --theme
+  "Metaの音声アシスタントMuseの電話機能で人間契約スタッフが対応していた
+  問題発覚とロールバック" --slug meta --out-dir er019_output/family_x_
+  refresh_e2e_01/meta/run_03 --budget-jpy 40 --stage writer --stop-after
+  writer`。research_ledger/storyline_b3は既存reuse(¥0、themeは
+  research/storyline段が両方reuseのため機能上使われていない)。
+- 結果: JA Original生成→Fact Check MAJOR 1件検知→must-fix retry 1回
+  (既存仕様)→`overall_status="LEDGER_COMPLIANT"`。R1→R2→R2 Fact Check
+  `overall_status="LEDGER_COMPLIANT"`(must-fix不要)。
+- 実費用: ¥3.487(`ja_original`0.223+`ja_original_check`0.532+
+  `ja_original_must_fix`0.636+`ja_original_check_retry`0.909+`ja_r1`
+  0.411+`ja_r2`0.472+`ja_r2_check`0.303)。
+- `verbatim_shas.concreteness_an3_block_sha256`=
+  `067030ff53ecb76a4d1477a3deace07b3e1fac438a33cb873edbe045cf6927fe`
+  (Hormuz run_02/03と完全一致、AN3-T0 Prompt不変の証拠)。
+- 記号正規化違反: 0件(revision2.md実測)。段落数: 10(≥3充足)。
+
+### Writer段(English、run_03)実行結果
+
+- ledger段(reuse、¥0増分): `er012_e_family_entertainment_two_level_
+  runner_01.py --ja-article <run_03>/ja_writer/revision2.md --slug meta
+  --out-dir <run_03> --ledger-file <run_03>/research_ledger/verified_
+  fact_ledger.txt --source-id FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01
+  --budget-jpy 30 --stage ledger`。
+- writer段: 同コマンドで`--stage writer`。
+- **Advanced**: 1回目のDeviation Checkで`overall_status=
+  "LEDGER_COMPLIANT"`(MAJOR無し、**案Bは発動していない**)。
+  `<run_03>/b1b/article.md`・`parts.json`保存(`status="OK"`、
+  `title="Some AI Phone Calls Had Humans Behind the Scenes"`、
+  `paragraph_count=9`、`boundary_i/j=4/6`)。
+- **Standard**: 1回目のDeviation Checkで**MAJOR 1件、origin=
+  translation**(`claim_in_article="Also, some calls needed user
+  information to continue."`)検知→既存must-fix retry 1回(ja_source
+  起因ではないため案B対象外)→2回目`overall_status="LEDGER_COMPLIANT"`。
+  `<run_03>/a2/article.md`・`parts.json`保存(`status="OK"`、
+  `paragraph_count=9`、`boundary_i/j=3/6`)。
+- 累計費用(JA+writer段合計、out-dir単位): ¥7.70。writer段の増分:
+  約¥4.213。**STOPなし、新しいChecker仕様判断・未承認Prompt変更は
+  発生していない**(既存承認済みretry範囲[Advanced 0回・Standard
+  must-fix 1回]で解消)。
+
+### Audio段(run_03)実行結果
+
+構造上の発見(コード変更なし、ファイルコピーのみで対処): `er019_family_x_
+audio_production_runner_01.py`の`source_dir`は`--slug`/`--run`のみから
+`er019_output/{slug}/{run}`として導出され(`--out-dir`はAssembly先のみに
+影響)、JA/writer段で使った`er019_output/family_x_refresh_e2e_01/meta/
+run_03`とは別パスになる。外部pathを直接参照するCLI引数が無い構造上の
+制約は、前委任までのresearch_ledger/storyline_b3コピー運用と同種のため、
+同じ手法(コピーのみ、コード非変更)で対処した:
+`er019_output/family_x_refresh_e2e_01/meta/run_03`の内容一式を
+`er019_output/meta/run_03`へコピー(新規APIコール無し、¥0)。この経路
+依存はHormuz再開時にも同様に発生する(Hormuz評価時の申し送り事項)。
+
+- 実行(4段階、`--stage all`不使用、`TTS_EXECUTION_MODE=STANDARD`、
+  `--tts-backend speech_metadata_flash_lite`、`--allow-legacy-backend`
+  不使用):
+  1. `er019_family_x_audio_production_runner_01.py --slug meta --run
+     run_03 --level both --stage scaffold --tts-backend speech_
+     metadata_flash_lite --budget-jpy 50` → ¥5.01。
+  2. `--stage tts --budget-jpy 150` → 累計¥23.98(内訳
+     `by_provider={'openai': 5.09, 'gemini': 15.58, 'openai_asr':
+     3.31}`)、tts段増分約¥18.97。STOP/エラー/retry行0件(ログ全文で
+     機械確認)。
+  3. `--stage assemble --budget-jpy 10` → 増分¥0(API呼び出し無し)、
+     両levelとも`status="OK"`、clipping無し。
+  4. `--stage player`(`--tts-backend speech_metadata_flash_lite`) →
+     `player.html`生成、増分¥0。
+- Audio段合計: ¥23.98。**Meta E2E合計(JA+writer+Audio): ¥31.68**。
+
+### Gate結果(Meta×Standard/Advanced、run_03、evidence付き)
+
+Gate 13項目((a)〜(m))+Opus 9項目+ユーザー指定Gate 3項目、全てPASS
+(evidenceは`er019_output/family_x_audio_production_wiring_01/
+meta__run_03/{a2,b1b}/audit/tts_generation_results.json`等を実測)。
+
+| Gate項目 | 結果 | evidence |
+|---|---|---|
+| Production wiring | PASS | `entry_point.json`: runner=`er019_family_x_audio_production_runner_01.py`、`tts_backend="speech_metadata_flash_lite"`、`allow_legacy_backend=false`。Trialファイル不使用 |
+| runtime evidence(model/voice/style_prefix全文、reuse時master_audio_key) | PASS | 可変segment全21件(A2 11+B1B 10)で`model="gemini-3.8-flash-lite-tts"`実測、style_prefix全文記録。KP reuse時(b1b rank5)は`master_audio_key`記録あり |
+| Standard/Advanced双方完成 | PASS | `a2/parts.json`・`b1b/parts.json`とも`status="OK"`、assembled mp3/wav生成済み |
+| J3/E2 | PASS | japanese_title/preview/comment/full_story/in_one_lineのstyle_prefixが「落ち着いた、自然な話し言葉で…」(J3)、full_story/in_one_lineが英語版E2文言で実測一致 |
+| Champion(固定shell10件) | PASS | a2 `shared_narration`10件全て`reused=true`、`master_audio_id`がREPORT §W2表と完全一致(welcome/preview_intro/key_phrases_intro/full_story_intro/num_one〜five/point_explanation)、TTS call 0 |
+| 新記事構造(body1/2/3・Comment1〜4・Heading Readout不在・In One Line) | PASS | `timeline.json`実測: Comment1→Full Story Part1→Comment2→Part2→Comment3→Part3→Comment4→In One Line。`Heading`ラベル0件 |
+| KP構造(Advanced: Phrase→英語解説[Variant B、Aoede]→同一Phrase) | PASS | rank1〜5全件で`explanation.voice="Aoede"`、`phrase_repeat.path/sha256`が`english`と完全一致 |
+| KP構造(Standard: Phrase→日本語意味[J3]→同一Phrase) | PASS | rank1〜5全件`japanese_meaning.style_prefix`=J3文言。repeatは`english` wavをassembly段で2回使用(別JSONキー無し、既存設計どおり) |
+| AN3-T0 | PASS | `concreteness_an3_block_sha256`がHormuz run_02/03と完全一致 |
+| retry/fallback/regeneration | PASS(記録) | JA must-fix 1回(Original)、Standard writer must-fix 1回(translation origin)、案B発動0回(Advanced初回LEDGER_COMPLIANTのため不要) |
+| pronunciation resolver | PASS(0トリガー) | 全segmentの`attempts_log[].reading_resolver_info`はnull(本記事では発音補正が必要な語が無かった。スキーマ上は有効のまま) |
+| Audio Validation Gate PASS(ASSET_HASH_MISMATCH 0) | PASS | `run_summary_assemble.json`両level`status="OK"`(mismatch検知時は`BLOCKED_KP_SCAFFOLD_MISSING`等でreturnするが未発生) |
+| player(2 episode行、Style全文) | PASS | `player.html`にa2/b1b各segmentのfile://リンクと ID を実生成確認 |
+| Dangling Reference Check | PASS | `er019_output/family_x_audio_production_wiring_01/meta__run_03/`配下に`HEADING_READOUT`/`NG_ACCEPTED_AFTER_RETRY`の出現0件(grep実測)。旧`split_article_text()`は定義済みだが本runでは不使用(`split_family_x_article_text_v2()`のみ呼び出し) |
+
+### 試聴ページ・Pages公開確認(7項目)
+
+`user_test/family_x_refresh_e2e_01/index.html`(Meta Standard/Advanced
+完成podcast、segment別style_prefix全文表示、KP構造表、Champion 10件表、
+Deviation Check記録、費用表。Hormuzはdeferred/OPEN-233として明記し音声
+非掲載)を作成、mp3 2本(`meta_standard.mp3`=3,528,624 bytes/
+`meta_advanced.mp3`=3,452,760 bytes、`soundfile`によるMP3書き出し、
+duration実測302.695s/283.480sでassembled wavと一致)を同ディレクトリへ
+配置。commit `a6d4c64d`→push。typo(費用上限表記「900円上限」誤記)を
+発見しcommit `44f7cacc`で修正・再push。
+
+Pages公開確認7項目(全PASS):
+1. HTTP 200: `curl -sI`で確認(反映まで約100秒)。
+2. headless Chrome DOM dump: `chrome.exe --headless=new --dump-dom`で
+   158行取得、内容確認。
+3. `(existing 6-role value, unchanged)`: 0件(grep実測)。
+4. Style Prompt全文実表示: 35箇所の`style_prefix`セルに省略・
+   プレースホルダなしの全文確認。
+5. audio player存在: `<audio`タグ2件(Standard/Advanced各1)。
+6. mp3 200+decode: `curl -sI`で両mp3とも200、`soundfile`でdecode成功
+   (duration実測が2つの完成episodeと一致)。
+7. 表示Styleとmetadata一致: index.html生成スクリプトが`tts_generation_
+   results.json`から直接読み込み・転記(手動転記なし)のため構造的に
+   一致。
+
+試聴URL: https://shimomura055.github.io/eigo-radio/user_test/family_x_refresh_e2e_01/index.html
+
+### 費用(実測、Meta run_03累計)
+
+| 段階 | 費用(JPY) |
+|---|---|
+| JA生成 | 3.487 |
+| Writer段(Advanced+Standard、must-fix retry込み) | 4.213 |
+| Audio scaffold | 5.01 |
+| Audio tts | 18.97 |
+| Audio assemble/player | 0.00 |
+| **Meta合計** | **31.68** |
+| 本管理ID累計(前委任までの約¥16.40と合算) | **約¥48.08** |
+
+全体上限¥300に対し余裕あり。記事別Guardrail(JA¥40/EN¥30)・段階別
+budget-jpy(scaffold¥50/tts¥150/assemble¥10)いずれも超過なし
+(`assert_budget_ok`によるRuntimeError STOP発生0件)。
+
+費用B(継続コスト差分、実測call数で裏付け): KP解説(Advanced)
++1 LLM call(rank1〜5まとめて)+5 TTS call(explanation×5、phrase_repeat
+はreuseのため+0)。Phrase再掲(Standard)は+0(assembly段でenglish wavを
+再利用、追加TTS call無し)。Heading Readout撤去により旧構成比−2segment
+相当(本run自体はv2構造のみで生成のため差分は旧run比較の理論値)。Master
+reuse(固定shell10件+KP一部)により当該分のTTS call 0。Comment 4本化は
+新構造の既定(旧Point構成との比較は対象外)。案B発動は本Metaでは無し
+(Advanced初回LEDGER_COMPLIANTのため+¥0)。
+
+### Closeout 10項目充足状況(委任_13時点、SSOT反映は別途)
+
+| # | 項目 | 状況 |
+|---|---|---|
+| 1 | Trial statusが分類済み | 該当なし(本委任はE2E、Trialではない) |
+| 2 | UDRが提示済み | 該当なし(STOP無し、Meta完成) |
+| 3 | 正式採用項目が追跡済み | 未到達(`PRODUCTION_WIRED`判定はFable Gate 3) |
+| 4 | APPROVED→PRODUCTION_WIRED完了確認 | 未到達(Gate 3待ち) |
+| 5 | initial/retry/fallback整合確認 | 確認済み(既存承認済みretry範囲内のみ使用、案B不要ケースも実データで確認) |
+| 6 | runtime evidence取得 | 取得済み(本節の表・JSON・Pages 7項目) |
+| 7 | SSOT整合 | 未実施(本委任はSSOT編集権なし、文案化はRESULT_PACKET側) |
+| 8 | 未報告Trialが無いこと | 該当なし |
+| 9 | 無断deferが無いこと | Hormuz deferredはユーザー指示によるもの(無断ではない)、明記済み |
+| 10 | 次タスクへの持ち越し事項明示 | 下記参照(Hormuz方針、`er019_output/meta/run_03`コピー運用の申し送り、Fable Gate 3判定待ち) |
+
+### 次工程への申し送り
+
+1. Hormuz(run_01〜03のevidence保持、Standard段STOPPEDのまま)は
+   ユーザー指示によりdeferred/non-blocking。再開時は本委任と同じ
+   `er019_output/{slug}/{run}`コピー手順が必要になる(Audio runnerの
+   `source_dir`導出仕様、上記参照)。
+2. Meta単独ではGate 3判定に必要な13+9+ユーザー指定Gate全てPASSしたが、
+   `PRODUCTION_WIRED`化はFableのGate 3判断次第。Hormuz未完了が
+   Gate 3のどの条件に抵触するかはRESULT_PACKETで事実列挙する(条件
+   緩和はしていない)。
