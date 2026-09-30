@@ -1,0 +1,1763 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "n_runs": 2,
+    "n_instances_completed": 4,
+    "n_instances_planned": 4,
+    "cumulative_jpy": 1.7384,
+    "cumulative_calls": 21,
+    "cumulative_errors": 0,
+    "measurements": {
+      "n_instances": 4,
+      "self_recovery_6": {
+        "initial_block_count": 4,
+        "rescreening_auto_resolved_count": 2,
+        "rewrite_progressed_count": 2,
+        "rewrite_auto_resolved_count": 1,
+        "final_stop_count": 1,
+        "user_decision_required_count": 1
+      },
+      "escalation_zero_breakdown": {
+        "true_resolved_all_prior_issues_resolved_true": 0,
+        "quality_pass": 1,
+        "all_prior_issues_resolved_unconfirmed": 1,
+        "silent_pass_candidate": 0
+      },
+      "quality_claims": [
+        {
+          "instance_id": "bgroup_B1",
+          "claim_text": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。"
+        },
+        {
+          "instance_id": "meta_run03_standard",
+          "claim_text": "“They did not realize it.”"
+        }
+      ],
+      "qcd": {
+        "total_calls": 11,
+        "total_cost_jpy": 0.9745,
+        "avg_cost_per_instance_jpy": 0.2436,
+        "latency_p50": 26.808,
+        "latency_p95": 41.993,
+        "completion_rate": 0.75,
+        "retry_rate": 0.5,
+        "loop_rate": 0.25
+      },
+      "final_stop_reasons": [
+        "ja_deviation_unresolved"
+      ],
+      "s1u_variant": {
+        "screen_used_count": 0,
+        "additional_block_count": 0,
+        "additional_block_true_positive_count": 0,
+        "additional_block_false_positive_count": 0,
+        "extra_cost_jpy": 0
+      },
+      "group_escalation_rates": {
+        "b_group": {
+          "n": 2,
+          "escalated": 1,
+          "rate": 0.5
+        },
+        "meta": {
+          "n": 1,
+          "escalated": 0,
+          "rate": 0.0
+        },
+        "negative": {
+          "n": 1,
+          "escalated": 0,
+          "rate": 0.0
+        }
+      },
+      "real_run": {
+        "n": 1,
+        "escalated": 0,
+        "rate": 0.0
+      },
+      "article_level": {
+        "aggregates": {
+          "meta_run03": {
+            "members": [
+              "meta_run03_standard"
+            ],
+            "total_cost_jpy": 0.2477,
+            "escalated": false
+          }
+        },
+        "worst_cost_jpy": 0.2477
+      },
+      "rewrite_deviation_qa": {
+        "rewrite_new_precheck_findings_total": 0,
+        "ja_en_equivalence_calls": 1,
+        "ja_en_equivalence_fail_count": 0,
+        "ja_en_equivalence_review_required_count": 1,
+        "unconfirmed_after_reverify_count": 0
+      },
+      "iter4_additional_measures": {
+        "normal_group_note": "『正常記事』= negative候補7件+Normal群2件(hormuz_run03_advanced/meta_run03_advanced)。§7-0でinstance内claimが全てACCEPTABLEであることが期待される群に限定(B/Safety群はclaim単位でBLOCKING/非BLOCKINGが混在するためinstance単位のこの指標には含めない、限界として明記)。",
+        "unnecessary_rewrite": {
+          "n_normal_group": 1,
+          "count": 0,
+          "rate": 0.0,
+          "instance_ids": []
+        },
+        "natural_interpretation_blocked": {
+          "stage1_false_block_count": 1,
+          "stage1_false_block_instance_ids": [
+            "neg1_meta_b3prod_a2"
+          ],
+          "stage2_false_block_claim_count": 0
+        },
+        "rewrite_quality_degradation_candidates": {
+          "count": 0,
+          "detail": []
+        },
+        "rewrite_operations": {
+          "total": 2,
+          "per_article_avg": 1.0,
+          "by_article": {
+            "meta_run03": 1,
+            "bgroup_B3": 1
+          }
+        },
+        "stage4_reason_breakdown": {
+          "ja_deviation_unresolved": 1
+        }
+      },
+      "iter5_additional_measures": {
+        "unnecessary_rewrite_v2_corrected": {
+          "n_normal_group": 1,
+          "count_v1_uncorrected": 0,
+          "count_v2_corrected": 0,
+          "rate_v2_corrected": 0.0,
+          "instance_ids_v2": [],
+          "excluded_as_duplicate_of_blocking": []
+        },
+        "quality_degradation_v2": {
+          "duplicate_paragraph_detected_count": 0,
+          "orphan_contrastive_detected_count": 0,
+          "vocab_difficulty_increased_count": 0,
+          "needs_regeneration_count": 0,
+          "needs_regeneration_detail": [],
+          "regenerated_count": 0,
+          "regenerated_and_resolved_count": 0
+        },
+        "stage2_two_of_two": {
+          "triggered_claim_count": 1,
+          "downgraded_count": 1,
+          "confirmed_blocking_count": 0
+        },
+        "cite_or_release": {
+          "confirm_calls_with_field": 0,
+          "released_count_total": 0
+        }
+      },
+      "iter6_additional_measures": {
+        "unnecessary_rewrite_v3": {
+          "n_normal_group": 1,
+          "count": 0,
+          "rate": 0.0,
+          "instance_ids": []
+        },
+        "ladder_level_distribution": {
+          "1_word_connective": 2
+        },
+        "section_role_violation": {
+          "count": 0,
+          "detail": []
+        },
+        "hook_aware_downgrade": {
+          "count": 0,
+          "detail": []
+        },
+        "rounding_false_positive_suppressed_count": 0,
+        "floor_variant_comparison": {
+          "false_negative_candidates_all_groups": 0,
+          "false_negative_candidates_safety_group": 0,
+          "safety_group_hard_gate_passed": true,
+          "detail_safety_group": [],
+          "detail_all_groups": []
+        },
+        "cost_breakdown_5way": {
+          "n_instances": 4,
+          "no_rewrite_count": 2,
+          "no_rewrite_avg_cost_jpy": 0.1748,
+          "with_rewrite_count": 2,
+          "with_rewrite_avg_cost_jpy": 0.3125,
+          "rewrite_rate": 0.5,
+          "overall_avg_cost_jpy": 0.2436,
+          "worst_cost_jpy": 0.3773
+        }
+      }
+    },
+    "s1u_counterfactual": {
+      "with_s1u": {
+        "final_stop_count": 1,
+        "real_run_escalation_rate": 0.0,
+        "group_escalation_rates": {
+          "b_group": {
+            "n": 2,
+            "escalated": 1,
+            "rate": 0.5
+          },
+          "meta": {
+            "n": 1,
+            "escalated": 0,
+            "rate": 0.0
+          },
+          "negative": {
+            "n": 1,
+            "escalated": 0,
+            "rate": 0.0
+          }
+        },
+        "total_cost_jpy": 0.9745
+      },
+      "without_s1u_counterfactual": {
+        "final_stop_count": 1,
+        "real_run_escalation_rate": 0.0,
+        "group_escalation_rates": {
+          "b_group": {
+            "n": 2,
+            "escalated": 1,
+            "rate": 0.5
+          },
+          "meta": {
+            "n": 1,
+            "escalated": 0,
+            "rate": 0.0
+          },
+          "negative": {
+            "n": 1,
+            "escalated": 0,
+            "rate": 0.0
+          }
+        },
+        "total_cost_jpy": 0.9745
+      },
+      "instances_removed_by_counterfactual": [],
+      "known_recall_miss_instances_among_removed": []
+    },
+    "n2_combined": {
+      "n_samples": 2,
+      "per_instance_final_state_agreement": {
+        "agreement_count": 4,
+        "n_instances": 4,
+        "rate": 1.0,
+        "disagreements": []
+      },
+      "group_escalation_rates_combined_wilson_ci": {
+        "b_group": {
+          "escalated": 2,
+          "total": 4,
+          "rate": 0.5,
+          "wilson_ci_95": [
+            0.15,
+            0.85
+          ]
+        },
+        "meta": {
+          "escalated": 0,
+          "total": 2,
+          "rate": 0.0,
+          "wilson_ci_95": [
+            0.0,
+            0.6576
+          ]
+        },
+        "negative": {
+          "escalated": 0,
+          "total": 2,
+          "rate": 0.0,
+          "wilson_ci_95": [
+            0.0,
+            0.6576
+          ]
+        }
+      },
+      "real_run_combined": {
+        "escalated": 0,
+        "total": 2,
+        "rate": 0.0,
+        "wilson_ci_95": [
+          0.0,
+          0.6576
+        ]
+      },
+      "article_level_cost_worst_across_samples": {
+        "worst_cost_jpy": 0.3773,
+        "by_article_per_sample": {
+          "meta_run03": [
+            0.2477,
+            0.3239
+          ],
+          "bgroup_B1": [
+            0.1402,
+            0.0304
+          ],
+          "bgroup_B3": [
+            0.3773,
+            0.343
+          ],
+          "neg1_meta_b3prod_a2": [
+            0.2093,
+            0.0666
+          ]
+        }
+      },
+      "iter6_additional_measures_combined": {
+        "unnecessary_rewrite_v3": {
+          "n_normal_group": 2,
+          "count": 0,
+          "rate": 0.0,
+          "instance_ids": []
+        },
+        "ladder_level_distribution": {
+          "1_word_connective": 4
+        },
+        "section_role_violation": {
+          "count": 0,
+          "detail": []
+        },
+        "hook_aware_downgrade": {
+          "count": 0,
+          "detail": []
+        },
+        "rounding_false_positive_suppressed_count": 0,
+        "floor_variant_comparison": {
+          "false_negative_candidates_all_groups": 0,
+          "false_negative_candidates_safety_group": 0,
+          "safety_group_hard_gate_passed": true,
+          "detail_safety_group": [],
+          "detail_all_groups": []
+        },
+        "cost_breakdown_5way": {
+          "n_instances": 8,
+          "no_rewrite_count": 4,
+          "no_rewrite_avg_cost_jpy": 0.1116,
+          "with_rewrite_count": 4,
+          "with_rewrite_avg_cost_jpy": 0.323,
+          "rewrite_rate": 0.5,
+          "overall_avg_cost_jpy": 0.2173,
+          "worst_cost_jpy": 0.3773
+        }
+      }
+    }
+  },
+  "instance_results_sample1": [
+    {
+      "instance_id": "bgroup_B1",
+      "group": "b_group",
+      "expected_group_label": "claim単位混在(§7-0)",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。",
+              "origin": null,
+              "related_fact_id": "HF-009",
+              "dev": {
+                "claim_in_article": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。",
+                "issue": "Ledgerは、撤回発表後にBrentが一時的に上げ幅を縮小し、その後発表前に近い高水準へ戻ったことと、攻撃・封鎖・タンカー安全上の懸念が続いていたことを記録している。一方、市場参加者が政策発言より海上の安全を重視していたことや、それが価格回復の理由だったことまでは確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "市場参加者の注目点と価格回復の因果関係をLedgerにない形で付け加えている。なお、一時的な縮小と回復という観測自体とは矛盾しない。",
+                "related_fact_id": "HF-009",
+                "qualifier_present": true,
+                "qualifier_text": "「20％の料金案が残るかどうかだけではない」",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "撤回しても下がらない原油価格――市場が見ているのは「言葉」より海の安全\n\nこれ、ちょっと面白くない？　トランプ氏が新しい負担を打ち出したのに、取り下げても原油価格がほとんど下がらなかった。\n\n7月13日、トランプ氏は、米国がホルムズ海峡の安全を守る費用として、海峡を通るすべての貨物に20％を求めると発表した。ホルムズ海峡は、中東から原油を運ぶ船が多く通る重要な海の道だ。そこに大きな料金をかける、という案だった。\n\nところが翌14日、トランプ氏はこの20％案をやめると発表した。代わりに、湾岸諸国が米国との貿易や投資を増やす形にするという。中東の指導者たちと「非常に生産的な協議」をしたことが、判断の背景にあると説明した。\n\n普通なら、負担がなくなれば「では原油価格も下がるのでは」と思う。実際、発表の直後には、代表的な原油価格であるBrent先物の上げ幅が少し縮まった。\n\nしかし、その動きは長く続かなかった。Brent先物はすぐに、発表前に近い高い水準へ戻った。報道時点では約2.6％高で、1バレル85ドルを超えていた。\n\nここで大事なのは、市場が見ているものだ。投資家が気にしているのは、20％の料金案が残るかどうかだけではない。米国とイランの間で攻撃が続いていること、海が封鎖される心配があること、タンカーが安全に航行できるか不安が残っていることだ。\n\nつまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+              "fallback_used": true,
+              "section_type": "body",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "QUALITY",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+              "origin": null,
+              "related_fact_id": "HF-009",
+              "dev": {
+                "claim_in_article": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+                "issue": "原油価格の高止まりがガソリンや輸送費などの価格に影響するという具体的な波及効果は、Verified Fact Ledgerに記載されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerにない価格波及の事実を追加している。「高い状態が続けば」という条件付き表現はあるが、影響の主張自体はLedgerで確認されていない。",
+                "related_fact_id": "HF-009",
+                "qualifier_present": true,
+                "qualifier_text": "「原油価格が高い状態が続けば」",
+                "ledger_field_basis": "none",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "つまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "basis": "none",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "ACCEPTABLE",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 2,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.1402,
+      "total_calls": 1,
+      "elapsed_seconds": 7.444
+    },
+    {
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "expected_group_label": "claim単位混在(§7-0)",
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "ja_deviation_unresolved",
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+              "origin": "ja_source",
+              "related_fact_id": "HF-007",
+              "dev": {
+                "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+                "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "同日に生じた政策転換と市場の値動き、および継続する懸念を、接続語「so」により因果関係として結び付けている。",
+                "related_fact_id": "HF-007",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+              "fallback_used": false,
+              "section_type": "in_one_line",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正してください。「so」が懸念の継続を撤回の原因として断定しています。懸念が続いていた事実と、20％案が湾岸諸国との貿易・投資案件に置き換えられた事実を、因果関係を示さずに分けて記述してください（HF-007）。",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:HF-007",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "paired_ja_en(J-1)",
+              "method": "j1_e1_minimal_word",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "in_one_line",
+              "target_not_locatable": false
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 14.91,
+              "difficult_word_ratio": 0.1108,
+              "word_count": 343
+            },
+            "stats_after": {
+              "avg_sentence_len": 14.91,
+              "difficult_word_ratio": 0.1108,
+              "word_count": 343
+            },
+            "sentence_len_increase": 0.0,
+            "difficulty_ratio_increase": 0.0,
+            "fragment_stats_before": {
+              "avg_sentence_len": 21.0,
+              "difficult_word_ratio": 0.1429,
+              "word_count": 21
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 21.0,
+              "difficult_word_ratio": 0.1429,
+              "word_count": 21
+            },
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 28,
+            "hook_word_count_after": 28,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "title_word_count_after": 9,
+            "title_degenerate": false,
+            "hook_degenerate": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 23,
+            "sentence_count_after": 23,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 12,
+            "paragraph_count_after": 12,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 24,
+            "sentence_count_after": 24,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 12,
+            "paragraph_count_after": 12,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "en_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "ja_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "ja_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "ja_fail_open_guard": {
+            "ok": true,
+            "violations": [],
+            "checked": true,
+            "indeterminate": false
+          },
+          "rewrite_new_precheck_findings_count": 0,
+          "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+          "full_recheck_required": true,
+          "full_recheck_required_reasons": [
+            "short_section_no_window(title_hook_in_one_line)",
+            "ja_en_equivalence_not_pass"
+          ],
+          "local_qa_fastpath_attempted": false,
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true,
+          "ja_recheck_overall_status": "LEDGER_COMPLIANT",
+          "ja_ok_blocked_by_equivalence": true
+        },
+        {
+          "cycle": 2,
+          "stage2_results": [],
+          "blocking_count": 0,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": true,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.3773,
+      "total_calls": 5,
+      "elapsed_seconds": 41.993
+    },
+    {
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "expected_group_label": "BLOCKING→Rewrite→PASS(§7-1、現行は既存retry1回で通過)",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "“Some calls needed user information to continue.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-010",
+              "dev": {
+                "claim_in_article": "“Some calls needed user information to continue.”",
+                "issue": "The Ledger describes a conditional concern: user information could be needed to carry out a call. The article turns that condition into an assertion that some calls actually needed it.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The article asserts actual cases where the Ledger only records a condition under which information might be needed; this is an unsupported increase in certainty.",
+                "related_fact_id": "MUSE-HC-010",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "“That information might accidentally be shared”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+              "fallback_used": true,
+              "section_type": "body",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_conditions",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "対象文の引用: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” Ledgerが確認しているのは、電話の遂行にユーザー情報が必要となる場合に情報共有の懸念が示されたことです。「一部の電話で情報が必要だった」と事実として述べず、従業員が情報共有の可能性を懸念したという範囲に狭めてください。参照: MUSE-HC-010。",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "“They did not realize it.”",
+              "origin": "ja_source",
+              "related_fact_id": "MUSE-HC-012",
+              "dev": {
+                "claim_in_article": "“They did not realize it.”",
+                "issue": "The article states that users actually failed to realize a human was speaking. The Ledger records inadequate disclosure, but does not establish users’ actual awareness or lack of awareness.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Actual user awareness is not established by the Ledger. The nearby conditional language does not verify that users in fact failed to realize a human was speaking.",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "ja_source",
+                "qualifier_present": true,
+                "qualifier_text": "“might think AI was calling”; “If no one explained this clearly”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "The problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_claim",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "対象文の引用: “They did not realize it. That was happening behind the scenes.” ユーザーが実際に気づいていなかったという認識を断定せず、Ledgerが確認する「適切な開示なしにテストが行われた」という事実に範囲を狭めてください。参照: MUSE-HC-012。",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "stage2_route": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 1,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:MUSE-HC-010",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "body",
+              "target_not_locatable": false
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 10.17,
+              "difficult_word_ratio": 0.1093,
+              "word_count": 366
+            },
+            "stats_after": {
+              "avg_sentence_len": 10.19,
+              "difficult_word_ratio": 0.109,
+              "word_count": 367
+            },
+            "sentence_len_increase": 0.02,
+            "difficulty_ratio_increase": -0.0003,
+            "fragment_stats_before": {
+              "avg_sentence_len": 10.5,
+              "difficult_word_ratio": 0.1905,
+              "word_count": 21
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 11.0,
+              "difficult_word_ratio": 0.1818,
+              "word_count": 22
+            },
+            "fragment_sentence_len_increase": 0.5,
+            "fragment_difficulty_ratio_increase": -0.0087,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 31,
+            "hook_word_count_after": 31,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "title_word_count_after": 9,
+            "title_degenerate": false,
+            "hook_degenerate": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 36,
+            "sentence_count_after": 36,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 5,
+            "hedge_word_count_after": 6,
+            "hedge_word_increase": 1,
+            "paragraph_count_before": 11,
+            "paragraph_count_after": 11,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 10,
+            "paragraph_count_after": 10,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+          "en_text_after_rewrite": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls might need user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+          "ja_fail_open_guard": {
+            "ok": true,
+            "violations": [],
+            "checked": false,
+            "indeterminate": false
+          },
+          "rewrite_new_precheck_findings_count": 0,
+          "full_recheck_required": false,
+          "full_recheck_required_reasons": [],
+          "local_qa_fastpath_attempted": true,
+          "local_qa_fastpath_results": [
+            {
+              "prior_issue_resolved": true,
+              "new_deviation_in_revised_sentence": false,
+              "new_deviation_explanation": "",
+              "adjacent_sentence_affected": false,
+              "adjacent_sentence_explanation": "",
+              "_api_failure": false,
+              "claim_identity": "fact:MUSE-HC-010"
+            }
+          ],
+          "local_qa_fastpath_success": true
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.2477,
+      "total_calls": 3,
+      "elapsed_seconds": 22.125
+    },
+    {
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+                "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "“seemed to come from an AI agent”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+              "fallback_used": false,
+              "section_type": "hook",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.” Replace this staged recipient-perception and surprise with the ledger-supported fact that trained human contractors handled some calls made through Muse in a test; do not claim that recipients thought the caller was AI or discovered a person during the conversation. Fact: MUSE-HC-006.",
+              "floor_reason": null,
+              "stage2_route": "hook",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null,
+              "two_of_two_downgraded": true,
+              "two_of_two_second_materiality": "ACCEPTABLE",
+              "two_of_two_second_basis": "none"
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 1,
+          "stage2_two_of_two_log": [
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "first_materiality": "BLOCKING",
+              "second_materiality": "ACCEPTABLE",
+              "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+            }
+          ]
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.2093,
+      "total_calls": 2,
+      "elapsed_seconds": 26.808
+    }
+  ],
+  "instance_results_sample2": [
+    {
+      "instance_id": "bgroup_B1",
+      "group": "b_group",
+      "expected_group_label": "claim単位混在(§7-0)",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。",
+              "origin": null,
+              "related_fact_id": "HF-009",
+              "dev": {
+                "claim_in_article": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。",
+                "issue": "Ledgerは、撤回発表後にBrentが一時的に上げ幅を縮小し、その後発表前に近い高水準へ戻ったことと、攻撃・封鎖・タンカー安全上の懸念が続いていたことを記録している。一方、市場参加者が政策発言より海上の安全を重視していたことや、それが価格回復の理由だったことまでは確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "市場参加者の注目点と価格回復の因果関係をLedgerにない形で付け加えている。なお、一時的な縮小と回復という観測自体とは矛盾しない。",
+                "related_fact_id": "HF-009",
+                "qualifier_present": true,
+                "qualifier_text": "「20％の料金案が残るかどうかだけではない」",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "撤回しても下がらない原油価格――市場が見ているのは「言葉」より海の安全\n\nこれ、ちょっと面白くない？　トランプ氏が新しい負担を打ち出したのに、取り下げても原油価格がほとんど下がらなかった。\n\n7月13日、トランプ氏は、米国がホルムズ海峡の安全を守る費用として、海峡を通るすべての貨物に20％を求めると発表した。ホルムズ海峡は、中東から原油を運ぶ船が多く通る重要な海の道だ。そこに大きな料金をかける、という案だった。\n\nところが翌14日、トランプ氏はこの20％案をやめると発表した。代わりに、湾岸諸国が米国との貿易や投資を増やす形にするという。中東の指導者たちと「非常に生産的な協議」をしたことが、判断の背景にあると説明した。\n\n普通なら、負担がなくなれば「では原油価格も下がるのでは」と思う。実際、発表の直後には、代表的な原油価格であるBrent先物の上げ幅が少し縮まった。\n\nしかし、その動きは長く続かなかった。Brent先物はすぐに、発表前に近い高い水準へ戻った。報道時点では約2.6％高で、1バレル85ドルを超えていた。\n\nここで大事なのは、市場が見ているものだ。投資家が気にしているのは、20％の料金案が残るかどうかだけではない。米国とイランの間で攻撃が続いていること、海が封鎖される心配があること、タンカーが安全に航行できるか不安が残っていることだ。\n\nつまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+              "fallback_used": true,
+              "section_type": "body",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "QUALITY",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+              "origin": null,
+              "related_fact_id": "HF-009",
+              "dev": {
+                "claim_in_article": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+                "issue": "原油価格の高止まりがガソリンや輸送費などの価格に影響するという具体的な波及効果は、Verified Fact Ledgerに記載されていない。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Ledgerにない価格波及の事実を追加している。「高い状態が続けば」という条件付き表現はあるが、影響の主張自体はLedgerで確認されていない。",
+                "related_fact_id": "HF-009",
+                "qualifier_present": true,
+                "qualifier_text": "「原油価格が高い状態が続けば」",
+                "ledger_field_basis": "none",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "つまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "basis": "none",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "ACCEPTABLE",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 2,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.0304,
+      "total_calls": 1,
+      "elapsed_seconds": 3.749
+    },
+    {
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "expected_group_label": "claim単位混在(§7-0)",
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "ja_deviation_unresolved",
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+              "origin": "ja_source",
+              "related_fact_id": "HF-007",
+              "dev": {
+                "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+                "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "同日に生じた政策転換と市場の値動き、および継続する懸念を、接続語「so」により因果関係として結び付けている。",
+                "related_fact_id": "HF-007",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+              "fallback_used": false,
+              "section_type": "in_one_line",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” — remove the unsupported causal link between continuing concerns and the plan’s withdrawal; present the concerns and the replacement announcement as separate events, noting that Trump cited discussions with Middle Eastern leaders. Ledger fact: HF-007.",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:HF-007",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "paired_ja_en(J-1)",
+              "method": "j1_e1_minimal_word",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "in_one_line",
+              "target_not_locatable": false
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 14.91,
+              "difficult_word_ratio": 0.1108,
+              "word_count": 343
+            },
+            "stats_after": {
+              "avg_sentence_len": 14.91,
+              "difficult_word_ratio": 0.1108,
+              "word_count": 343
+            },
+            "sentence_len_increase": 0.0,
+            "difficulty_ratio_increase": 0.0,
+            "fragment_stats_before": {
+              "avg_sentence_len": 21.0,
+              "difficult_word_ratio": 0.1429,
+              "word_count": 21
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 21.0,
+              "difficult_word_ratio": 0.1429,
+              "word_count": 21
+            },
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 28,
+            "hook_word_count_after": 28,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "title_word_count_after": 9,
+            "title_degenerate": false,
+            "hook_degenerate": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 23,
+            "sentence_count_after": 23,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 12,
+            "paragraph_count_after": 12,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 24,
+            "sentence_count_after": 24,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 12,
+            "paragraph_count_after": 12,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "en_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "ja_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "ja_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "ja_fail_open_guard": {
+            "ok": true,
+            "violations": [],
+            "checked": true,
+            "indeterminate": false
+          },
+          "rewrite_new_precheck_findings_count": 0,
+          "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+          "full_recheck_required": true,
+          "full_recheck_required_reasons": [
+            "short_section_no_window(title_hook_in_one_line)",
+            "ja_en_equivalence_not_pass"
+          ],
+          "local_qa_fastpath_attempted": false,
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true,
+          "ja_recheck_overall_status": "LEDGER_COMPLIANT",
+          "ja_ok_blocked_by_equivalence": true
+        },
+        {
+          "cycle": 2,
+          "stage2_results": [],
+          "blocking_count": 0,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": true,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.343,
+      "total_calls": 5,
+      "elapsed_seconds": 35.869
+    },
+    {
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "expected_group_label": "BLOCKING→Rewrite→PASS(§7-1、現行は既存retry1回で通過)",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "“Some calls needed user information to continue.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-010",
+              "dev": {
+                "claim_in_article": "“Some calls needed user information to continue.”",
+                "issue": "The Ledger describes a conditional concern: user information could be needed to carry out a call. The article turns that condition into an assertion that some calls actually needed it.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The article asserts actual cases where the Ledger only records a condition under which information might be needed; this is an unsupported increase in certainty.",
+                "related_fact_id": "MUSE-HC-010",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "“That information might accidentally be shared”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+              "fallback_used": true,
+              "section_type": "body",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_conditions",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "引用: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” 実際に一部の通話で情報が必要だったと断定せず、「通話の遂行にユーザー情報が必要となる場合、契約スタッフに共有される可能性があるという懸念が示された」と条件付きにしてください。Ledger fact_id: MUSE-HC-010",
+              "floor_reason": null,
+              "stage2_route": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "“They did not realize it.”",
+              "origin": "ja_source",
+              "related_fact_id": "MUSE-HC-012",
+              "dev": {
+                "claim_in_article": "“They did not realize it.”",
+                "issue": "The article states that users actually failed to realize a human was speaking. The Ledger records inadequate disclosure, but does not establish users’ actual awareness or lack of awareness.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Actual user awareness is not established by the Ledger. The nearby conditional language does not verify that users in fact failed to realize a human was speaking.",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "ja_source",
+                "qualifier_present": true,
+                "qualifier_text": "“might think AI was calling”; “If no one explained this clearly”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "The problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_claim",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "引用: “They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.” 利用者が実際に気づいていなかったと断定せず、「適切な開示なしにテストが始まった」と確認されている範囲にしてください。Ledger fact_id: MUSE-HC-012",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "stage2_route": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 1,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:MUSE-HC-010",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "body",
+              "target_not_locatable": false
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 10.17,
+              "difficult_word_ratio": 0.1093,
+              "word_count": 366
+            },
+            "stats_after": {
+              "avg_sentence_len": 10.19,
+              "difficult_word_ratio": 0.109,
+              "word_count": 367
+            },
+            "sentence_len_increase": 0.02,
+            "difficulty_ratio_increase": -0.0003,
+            "fragment_stats_before": {
+              "avg_sentence_len": 10.5,
+              "difficult_word_ratio": 0.1905,
+              "word_count": 21
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 11.0,
+              "difficult_word_ratio": 0.1818,
+              "word_count": 22
+            },
+            "fragment_sentence_len_increase": 0.5,
+            "fragment_difficulty_ratio_increase": -0.0087,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 31,
+            "hook_word_count_after": 31,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "title_word_count_after": 9,
+            "title_degenerate": false,
+            "hook_degenerate": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 36,
+            "sentence_count_after": 36,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 5,
+            "hedge_word_count_after": 6,
+            "hedge_word_increase": 1,
+            "paragraph_count_before": 11,
+            "paragraph_count_after": 11,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 10,
+            "paragraph_count_after": 10,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+          "en_text_after_rewrite": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls could need user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+          "ja_fail_open_guard": {
+            "ok": true,
+            "violations": [],
+            "checked": false,
+            "indeterminate": false
+          },
+          "rewrite_new_precheck_findings_count": 0,
+          "full_recheck_required": false,
+          "full_recheck_required_reasons": [],
+          "local_qa_fastpath_attempted": true,
+          "local_qa_fastpath_results": [
+            {
+              "prior_issue_resolved": true,
+              "new_deviation_in_revised_sentence": false,
+              "new_deviation_explanation": "",
+              "adjacent_sentence_affected": false,
+              "adjacent_sentence_explanation": "",
+              "_api_failure": false,
+              "claim_identity": "fact:MUSE-HC-010"
+            }
+          ],
+          "local_qa_fastpath_success": true
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.3239,
+      "total_calls": 3,
+      "elapsed_seconds": 32.466
+    },
+    {
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+                "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "“seemed to come from an AI agent”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+              "fallback_used": false,
+              "section_type": "hook",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "basis": "ledger_claim",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "stage2_route": "hook",
+              "floor_cited_materiality": "ACCEPTABLE",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 1,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.0666,
+      "total_calls": 1,
+      "elapsed_seconds": 8.884
+    }
+  ],
+  "measurements_sample2": {
+    "n_instances": 4,
+    "self_recovery_6": {
+      "initial_block_count": 4,
+      "rescreening_auto_resolved_count": 2,
+      "rewrite_progressed_count": 2,
+      "rewrite_auto_resolved_count": 1,
+      "final_stop_count": 1,
+      "user_decision_required_count": 1
+    },
+    "escalation_zero_breakdown": {
+      "true_resolved_all_prior_issues_resolved_true": 0,
+      "quality_pass": 1,
+      "all_prior_issues_resolved_unconfirmed": 1,
+      "silent_pass_candidate": 0
+    },
+    "quality_claims": [
+      {
+        "instance_id": "bgroup_B1",
+        "claim_text": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。"
+      },
+      {
+        "instance_id": "meta_run03_standard",
+        "claim_text": "“They did not realize it.”"
+      }
+    ],
+    "qcd": {
+      "total_calls": 10,
+      "total_cost_jpy": 0.7639,
+      "avg_cost_per_instance_jpy": 0.191,
+      "latency_p50": 32.466,
+      "latency_p95": 35.869,
+      "completion_rate": 0.75,
+      "retry_rate": 0.5,
+      "loop_rate": 0.25
+    },
+    "final_stop_reasons": [
+      "ja_deviation_unresolved"
+    ],
+    "s1u_variant": {
+      "screen_used_count": 0,
+      "additional_block_count": 0,
+      "additional_block_true_positive_count": 0,
+      "additional_block_false_positive_count": 0,
+      "extra_cost_jpy": 0
+    },
+    "group_escalation_rates": {
+      "b_group": {
+        "n": 2,
+        "escalated": 1,
+        "rate": 0.5
+      },
+      "meta": {
+        "n": 1,
+        "escalated": 0,
+        "rate": 0.0
+      },
+      "negative": {
+        "n": 1,
+        "escalated": 0,
+        "rate": 0.0
+      }
+    },
+    "real_run": {
+      "n": 1,
+      "escalated": 0,
+      "rate": 0.0
+    },
+    "article_level": {
+      "aggregates": {
+        "meta_run03": {
+          "members": [
+            "meta_run03_standard"
+          ],
+          "total_cost_jpy": 0.3239,
+          "escalated": false
+        }
+      },
+      "worst_cost_jpy": 0.3239
+    },
+    "rewrite_deviation_qa": {
+      "rewrite_new_precheck_findings_total": 0,
+      "ja_en_equivalence_calls": 1,
+      "ja_en_equivalence_fail_count": 0,
+      "ja_en_equivalence_review_required_count": 1,
+      "unconfirmed_after_reverify_count": 0
+    },
+    "iter4_additional_measures": {
+      "normal_group_note": "『正常記事』= negative候補7件+Normal群2件(hormuz_run03_advanced/meta_run03_advanced)。§7-0でinstance内claimが全てACCEPTABLEであることが期待される群に限定(B/Safety群はclaim単位でBLOCKING/非BLOCKINGが混在するためinstance単位のこの指標には含めない、限界として明記)。",
+      "unnecessary_rewrite": {
+        "n_normal_group": 1,
+        "count": 0,
+        "rate": 0.0,
+        "instance_ids": []
+      },
+      "natural_interpretation_blocked": {
+        "stage1_false_block_count": 1,
+        "stage1_false_block_instance_ids": [
+          "neg1_meta_b3prod_a2"
+        ],
+        "stage2_false_block_claim_count": 0
+      },
+      "rewrite_quality_degradation_candidates": {
+        "count": 0,
+        "detail": []
+      },
+      "rewrite_operations": {
+        "total": 2,
+        "per_article_avg": 1.0,
+        "by_article": {
+          "meta_run03": 1,
+          "bgroup_B3": 1
+        }
+      },
+      "stage4_reason_breakdown": {
+        "ja_deviation_unresolved": 1
+      }
+    },
+    "iter5_additional_measures": {
+      "unnecessary_rewrite_v2_corrected": {
+        "n_normal_group": 1,
+        "count_v1_uncorrected": 0,
+        "count_v2_corrected": 0,
+        "rate_v2_corrected": 0.0,
+        "instance_ids_v2": [],
+        "excluded_as_duplicate_of_blocking": []
+      },
+      "quality_degradation_v2": {
+        "duplicate_paragraph_detected_count": 0,
+        "orphan_contrastive_detected_count": 0,
+        "vocab_difficulty_increased_count": 0,
+        "needs_regeneration_count": 0,
+        "needs_regeneration_detail": [],
+        "regenerated_count": 0,
+        "regenerated_and_resolved_count": 0
+      },
+      "stage2_two_of_two": {
+        "triggered_claim_count": 0,
+        "downgraded_count": 0,
+        "confirmed_blocking_count": 0
+      },
+      "cite_or_release": {
+        "confirm_calls_with_field": 0,
+        "released_count_total": 0
+      }
+    },
+    "iter6_additional_measures": {
+      "unnecessary_rewrite_v3": {
+        "n_normal_group": 1,
+        "count": 0,
+        "rate": 0.0,
+        "instance_ids": []
+      },
+      "ladder_level_distribution": {
+        "1_word_connective": 2
+      },
+      "section_role_violation": {
+        "count": 0,
+        "detail": []
+      },
+      "hook_aware_downgrade": {
+        "count": 0,
+        "detail": []
+      },
+      "rounding_false_positive_suppressed_count": 0,
+      "floor_variant_comparison": {
+        "false_negative_candidates_all_groups": 0,
+        "false_negative_candidates_safety_group": 0,
+        "safety_group_hard_gate_passed": true,
+        "detail_safety_group": [],
+        "detail_all_groups": []
+      },
+      "cost_breakdown_5way": {
+        "n_instances": 4,
+        "no_rewrite_count": 2,
+        "no_rewrite_avg_cost_jpy": 0.0485,
+        "with_rewrite_count": 2,
+        "with_rewrite_avg_cost_jpy": 0.3335,
+        "rewrite_rate": 0.5,
+        "overall_avg_cost_jpy": 0.191,
+        "worst_cost_jpy": 0.343
+      }
+    }
+  }
+}

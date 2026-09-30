@@ -153,9 +153,17 @@ OUT_DIR_REP10 = "er052_output/open233_self_recovery_flow_runner_01_rep10"
 # neg1_meta_b3prod_a2)のみをn=2で再実行する(委任文§3 W4、広いTrialは
 # スコープ外)。出力は新規ディレクトリ(`_rep11`)へ書く。
 OUT_DIR_REP11 = "er052_output/open233_self_recovery_flow_runner_01_rep11"
-OUT_DIR = OUT_DIR_REP11
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233x_20.json"
-TOTAL_BUDGET_JPY = 12.0  # 委任_20 Guardrail(委任文§0「本委任Guardrail¥12」)
+# 委任_21(2026-09-30、rep11で判明した3欠陥の是正+微小Trial rep12): 既存
+# iteration1〜6・rep7〜rep11の出力(OUT_DIR_ITER1〜6/OUT_DIR_REP7〜11)は
+# 変更しない。A-1(JA fail-openガードの言語判定是正)/A-2(局所QA
+# find_sentence_context複数文needle是正)の反映後、`bgroup_B3`/
+# `neg1_meta_b3prod_a2`/`meta_run03_standard`/`hormuz_run02_standard`の
+# 限定4 instanceのみをn=2で再実行する(委任文§2 B、広いTrialはスコープ外)。
+# 出力は新規ディレクトリ(`_rep12`)へ書く。
+OUT_DIR_REP12 = "er052_output/open233_self_recovery_flow_runner_01_rep12"
+OUT_DIR = OUT_DIR_REP12
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233y_21.json"
+TOTAL_BUDGET_JPY = 8.0  # 委任_21 Guardrail(委任文§0「rep12 ≤¥8」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -1839,6 +1847,27 @@ def split_ja_sentences(text: str) -> list:
     return [p.strip() for p in parts if p.strip()]
 
 
+_JA_CHAR_RE = re.compile(r"[぀-ゟ゠-ヿ一-鿿]")
+
+
+def is_predominantly_ja(text: str, threshold: float = 0.15) -> bool:
+    """委任_21 A-1: テキストがJA(ひらがな/カタカナ/漢字)主体かどうかを
+    文字比率で判定する(¥0・決定論)。`ja_fail_open_guard`の分割器選択
+    (JA=`split_ja_sentences`[句点。！？]/非JA=`split_sentences_generic`
+    [.!?を含む汎用分割])に使う。rep11実データ(`bgroup_B3`)で
+    `source_article_text`(本来JAのはずのfixtureフィールド)が実際には
+    英語であり、句点分割が機能せず全文が1文として扱われ「1文丸ごと消失」
+    という粗い誤検知を生んだ(既知の構造的限界)ことへの是正。空白を除いた
+    全文字数に対するJA文字数の比率がthreshold未満なら非JAとみなす。"""
+    if not text:
+        return False
+    ja_chars = len(_JA_CHAR_RE.findall(text))
+    total_chars = len(re.sub(r"\s", "", text))
+    if total_chars == 0:
+        return False
+    return (ja_chars / total_chars) >= threshold
+
+
 def locate_target(claim_text: str, rewrite_hint: str, full_text: str) -> tuple:
     """対象文特定の統合ロケータ(委任_10、§5-4): 第一キー=rewrite_hintの
     引用断片(exact substring)、第二キー=claim_textによるlocate_best_
@@ -2652,34 +2681,52 @@ def ja_fail_open_guard(ja_text_before: str, ja_text_after: str, blocking_claims:
 
     rewrite_hintから引用断片を抽出できないclaim(underspecified rewrite_
     hint)は対象外とする(このガードを理由に既存動作を不必要に広げない、
-    保守側で見送る)。"""
+    保守側で見送る)。
+
+    委任_21 A-1是正(rep11 `bgroup_B3`実データで判明したKPI後退): 従来は
+    無条件で`split_ja_sentences`(句点。！？のみ)を使っていたため、
+    `source_article_text`(本来JAのはずのfixtureフィールド)が実際には
+    英語だった場合に句点分割が機能せず全文が1文として扱われ、些細な変更
+    でも「1文丸ごと消失」という粗い誤検知を生んでいた(rep11で2/8 sample
+    がこの誤発火によりSTAGE4へ回りKPI後退)。`is_predominantly_ja`で
+    ja_text_before/after双方の言語を判定し、JA主体なら`split_ja_
+    sentences`、非JA(英語等)主体なら既存EN分割器`split_sentences_
+    generic`(.!?を含む)を使う。いずれの分割器でも1文以下にしか分割
+    できない場合(句読点が実質存在しない等、判定不能)は、違反判定を行わず
+    `indeterminate=True`を返す(ガード不発火=安全側だが、呼び出し側は
+    これを理由に全文Recheck条件へ倒す。STAGE4への直行はしない)。"""
     if ja_text_before == ja_text_after:
-        return {"ok": True, "violations": [], "checked": False}
+        return {"ok": True, "violations": [], "checked": False, "indeterminate": False}
+    lang_ok = is_predominantly_ja(ja_text_before) and is_predominantly_ja(ja_text_after)
+    splitter = split_ja_sentences if lang_ok else split_sentences_generic
+    sentences_before = splitter(ja_text_before)
+    sentences_after_set = set(splitter(ja_text_after))
+    indeterminate = len(sentences_before) <= 1
     violations = []
-    sentences_before = split_ja_sentences(ja_text_before)
-    sentences_after_set = set(split_ja_sentences(ja_text_after))
     checked_any = False
-    for c in blocking_claims:
-        hint = c.get("rewrite_hint") or ""
-        flagged = extract_quoted_fragment_present_in(hint, ja_text_before)
-        if not flagged:
-            continue
-        checked_any = True
-        fact_id = (c.get("dev", {}) or {}).get("related_fact_id") or c.get("related_fact_id")
-        # (i) 指摘されたJA文がRewrite後も逐語で残っていないか
-        if flagged in ja_text_after:
-            violations.append({"type": "flagged_ja_sentence_unchanged", "sentence": flagged,
-                                "related_fact_id": fact_id})
-        # (ii) 対象段落(既存locate_paragraph_blockで特定)外のJA文が消失していないか
-        block, _ = locate_paragraph_block(flagged, ja_text_before)
-        window = block if block else flagged
-        for s in sentences_before:
-            if s in window:
+    if not indeterminate:
+        for c in blocking_claims:
+            hint = c.get("rewrite_hint") or ""
+            flagged = extract_quoted_fragment_present_in(hint, ja_text_before)
+            if not flagged:
                 continue
-            if s not in sentences_after_set:
-                violations.append({"type": "unexplained_ja_sentence_deletion", "sentence": s,
+            checked_any = True
+            fact_id = (c.get("dev", {}) or {}).get("related_fact_id") or c.get("related_fact_id")
+            # (i) 指摘されたJA文がRewrite後も逐語で残っていないか
+            if flagged in ja_text_after:
+                violations.append({"type": "flagged_ja_sentence_unchanged", "sentence": flagged,
                                     "related_fact_id": fact_id})
-    return {"ok": not violations, "violations": violations, "checked": checked_any}
+            # (ii) 対象段落(既存locate_paragraph_blockで特定)外のJA文が消失していないか
+            block, _ = locate_paragraph_block(flagged, ja_text_before)
+            window = block if block else flagged
+            for s in sentences_before:
+                if s in window:
+                    continue
+                if s not in sentences_after_set:
+                    violations.append({"type": "unexplained_ja_sentence_deletion", "sentence": s,
+                                        "related_fact_id": fact_id})
+    return {"ok": not violations, "violations": violations, "checked": checked_any,
+            "indeterminate": indeterminate}
 
 
 def find_sentence_context(full_text: str, needle: str) -> tuple:
@@ -2699,7 +2746,23 @@ def find_sentence_context(full_text: str, needle: str) -> tuple:
     exact substring不一致時、SequenceMatcher近似(既存`locate_best_sentence`
     と同型、閾値0.85)へfail-closedでfallbackする(十分高い一致度が
     得られない場合は従来どおりNoneのまま、全文Recheckへフォールバックする
-    安全側動作は変えない)。"""
+    安全側動作は変えない)。
+
+    委任_21 A-2是正(rep11実データ`meta_run03_standard` sample1 cycle1で
+    判明した真因): `needle`(after_fragment)は`locate_target`の第一キー
+    (`extract_quoted_fragment`によるrewrite_hint中の引用断片)がそもそも
+    複数文にまたがる場合(実例: rewrite_hintの引用が「Also, some calls
+    needed user information to continue. That information might
+    accidentally be shared...」の2文だった)、Rewrite後のneedleも同じく
+    2文にまたがる。旧実装は`split_sentences_generic`が返す単一文の要素
+    each `s`に対して`needle_s in s`および1文単位のSequenceMatcherしか
+    試みておらず、needleがどの単一文よりも長い(2文分)ため両方とも
+    一致せず`revised_sentence_not_locatable_in_context`で毎回skipして
+    いた(局所QA fastpathがcallに一度も到達しない主因)。本是正は、
+    needle自体を同じ分割器で分割した文数kを求め、k>1の場合は連続する
+    k文の結合ウィンドウに対してexact containment→SequenceMatcherの順で
+    追加照合する(k=1の場合の既存動作は変更しない、fail-closedの閾値
+    0.85も維持)。"""
     if not needle or not needle.strip():
         return None, None, None
     needle_s = needle.strip()
@@ -2709,6 +2772,25 @@ def find_sentence_context(full_text: str, needle: str) -> tuple:
             before_ctx = sentences[i - 1] if i > 0 else ""
             after_ctx = sentences[i + 1] if i + 1 < len(sentences) else ""
             return before_ctx, s, after_ctx
+    needle_sentence_count = len(split_sentences_generic(needle_s)) or 1
+    if needle_sentence_count > 1:
+        k = needle_sentence_count
+        for i in range(0, len(sentences) - k + 1):
+            window = " ".join(sentences[i:i + k])
+            if needle_s in window or window in needle_s:
+                before_ctx = sentences[i - 1] if i > 0 else ""
+                after_ctx = sentences[i + k] if i + k < len(sentences) else ""
+                return before_ctx, window, after_ctx
+        best_i, best_ratio = None, 0.0
+        for i in range(0, len(sentences) - k + 1):
+            window = " ".join(sentences[i:i + k])
+            ratio = difflib.SequenceMatcher(None, needle_s, window).ratio()
+            if ratio > best_ratio:
+                best_ratio, best_i = ratio, i
+        if best_i is not None and best_ratio >= 0.85:
+            before_ctx = sentences[best_i - 1] if best_i > 0 else ""
+            after_ctx = sentences[best_i + k] if best_i + k < len(sentences) else ""
+            return before_ctx, " ".join(sentences[best_i:best_i + k]), after_ctx
     best_i, best_ratio = None, 0.0
     for i, s in enumerate(sentences):
         ratio = difflib.SequenceMatcher(None, needle_s, s).ratio()
@@ -3523,6 +3605,13 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if ja_guard_result is not None and not ja_guard_result["ok"]:
             recheck_required = True
             recheck_required_reasons = recheck_required_reasons + ["ja_fail_open_guard_violation"]
+        # 委任_21 A-1: ガードが「判定不能」(分割器がJA/非JA判定後も1文以下
+        # にしか分割できない)の場合、違反判定は行わない(ok=Trueのまま、
+        # ja_okを強制的にFalseへは倒さない)が、局所QA fastpathは信頼できる
+        # 判断材料を欠くため全文Recheckへ倒す(安全側、STAGE4直行にはしない)。
+        if ja_guard_result is not None and ja_guard_result.get("indeterminate"):
+            recheck_required = True
+            recheck_required_reasons = recheck_required_reasons + ["ja_fail_open_guard_indeterminate"]
         cycle_record["full_recheck_required"] = recheck_required
         cycle_record["full_recheck_required_reasons"] = recheck_required_reasons
         if not recheck_required:

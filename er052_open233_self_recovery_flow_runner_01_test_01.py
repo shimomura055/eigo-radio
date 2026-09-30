@@ -2316,5 +2316,97 @@ class TestJaPendingDeviationSafetyNet(unittest.TestCase):
         self.assertIn('d["origin"] = "ja_source"', src)
 
 
+# ============================================================
+# 委任_21 A-1: JA fail-openガードの言語判定是正(rep11実データを
+# fixtureとして使用、`er052_output/open233_self_recovery_flow_runner_01_
+# rep11/instances_s1/bgroup_B3.json` cycle1のja_text_before_rewrite/
+# ja_text_after_rewrite(実際は英語)・stage2_results[0].rewrite_hintから
+# 逐語で転記)。`bgroup_B3`はrep11で2/2 sampleとも本バグにより誤って
+# STAGE4_ESCALATIONへ回った(KPI後退)。
+# ============================================================
+REP11_B3_SOURCE_ARTICLE_TEXT_BEFORE = '# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.'
+REP11_B3_SOURCE_ARTICLE_TEXT_AFTER = '# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.'
+REP11_B3_REWRITE_HINT = '対象文: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage”。「so」が懸念の継続を20％案の撤回理由として結び付けているため、その因果関係を削除し、懸念の継続と案の置換を別個の事実として記述してください。撤回・置換は中東指導者との協議に基づくとの説明に沿ってください(HF-007)。'
+
+
+class TestJaFailOpenGuardLanguageAware(unittest.TestCase):
+    """委任_21 A-1: rep11実データ(`bgroup_B3`、source_article_textが実際
+    には英語)で、言語判定是正後はガードが誤発火しないことを確認する。
+    比較対象として、rep10 hormuz実データ(真のJA、split_ja_sentences)は
+    既存`TestJaFailOpenGuard`で発火することを既に確認済み(regressionなし)。"""
+
+    def test_no_false_positive_on_english_source_article_text_b3_rep11(self):
+        blocking_claims = [{"rewrite_hint": REP11_B3_REWRITE_HINT, "dev": {"related_fact_id": "HF-007"}}]
+        result = runner.ja_fail_open_guard(
+            REP11_B3_SOURCE_ARTICLE_TEXT_BEFORE, REP11_B3_SOURCE_ARTICLE_TEXT_AFTER, blocking_claims)
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["indeterminate"])
+        self.assertEqual(result["violations"], [])
+
+    def test_still_detects_rep10_hormuz_defect_after_language_switch(self):
+        # regression確認: 既存TestJaFailOpenGuard.test_detects_rep10_
+        # hormuz_cycle2_defectと同一fixtureで、言語判定是正後も真のJA
+        # テキストはsplit_ja_sentencesのまま使われ発火することを確認する。
+        blocking_claims = [{"rewrite_hint": REP10_REWRITE_HINT, "dev": {"related_fact_id": "HF-009"}}]
+        result = runner.ja_fail_open_guard(
+            REP10_JA_TEXT_BEFORE_REWRITE, REP10_JA_TEXT_AFTER_REWRITE, blocking_claims)
+        self.assertFalse(result["ok"])
+        self.assertFalse(result["indeterminate"])
+
+    def test_indeterminate_when_neither_splitter_can_split(self):
+        # 句読点が実質存在しないtext(JA/EN判定を問わず1文以下にしか
+        # 分割できない)の場合、違反判定はせず(ok=True)indeterminate=True
+        # を返す(全文Recheック条件へ倒す、STAGE4直行にはしない)。
+        before = "aaa bbb ccc ddd eee"
+        after = "aaa bbb ccc ddd eee fff"
+        blocking_claims = [{"rewrite_hint": '"aaa bbb ccc ddd eee" を修正してください。',
+                             "dev": {"related_fact_id": "X-1"}}]
+        result = runner.ja_fail_open_guard(before, after, blocking_claims)
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["indeterminate"])
+
+
+# ============================================================
+# 委任_21 A-2: 局所QA locateバグ是正(rep11実データを fixtureとして使用、
+# `er052_output/open233_self_recovery_flow_runner_01_rep11/instances_s1/
+# meta_run03_standard.json` cycle1のen_text_after_rewriteから逐語で転記。
+# after_fragment(needle)はrewrite_hint中の引用断片[2文]がrewrite_hint_
+# quoteとして`target_sentence`に採用され、E1水準のRewrite後も2文のまま
+# 返るため、旧実装ではどの単一文とも一致せず
+# `revised_sentence_not_locatable_in_context`でskipしていた)。
+# ============================================================
+REP11_META_EN_TEXT_AFTER_REWRITE = '# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls might need user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.'
+REP11_META_AFTER_FRAGMENT = 'Also, some calls might need user information to continue. That information might accidentally be shared with contract workers at a call center.'
+
+
+class TestFindSentenceContextMultiSentenceNeedle(unittest.TestCase):
+    """委任_21 A-2: rep11実データ(`meta_run03_standard` sample1 cycle1)で
+    局所QA fastpathが`revised_sentence_not_locatable_in_context`により
+    毎回skipしていた実バグをfind_sentence_contextが是正後は解決すること
+    を確認する。"""
+
+    def test_locates_two_sentence_needle_from_rep11_meta_run03(self):
+        before_ctx, located, after_ctx = runner.find_sentence_context(
+            REP11_META_EN_TEXT_AFTER_REWRITE, REP11_META_AFTER_FRAGMENT)
+        self.assertIsNotNone(located)
+        self.assertEqual(located, REP11_META_AFTER_FRAGMENT)
+        self.assertEqual(before_ctx, "That was happening behind the scenes.")
+        self.assertEqual(after_ctx, "Meta employees pointed this out inside the company as a privacy concern.")
+
+    def test_single_sentence_needle_still_works_unaffected(self):
+        # 既存の単一文needleの経路(regression確認)。
+        full_text = "First sentence here. Second sentence here. Third sentence here."
+        before_ctx, located, after_ctx = runner.find_sentence_context(full_text, "Second sentence here.")
+        self.assertEqual(located, "Second sentence here.")
+        self.assertEqual(before_ctx, "First sentence here.")
+        self.assertEqual(after_ctx, "Third sentence here.")
+
+    def test_returns_none_when_multi_sentence_needle_not_present(self):
+        full_text = "First sentence here. Second sentence here. Third sentence here."
+        before_ctx, located, after_ctx = runner.find_sentence_context(
+            full_text, "A completely different sentence. Another unrelated one.")
+        self.assertIsNone(located)
+
+
 if __name__ == "__main__":
     unittest.main()

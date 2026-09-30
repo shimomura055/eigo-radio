@@ -1,0 +1,280 @@
+{
+  "instance_id": "meta_run03_standard",
+  "group": "meta",
+  "expected_group_label": "BLOCKING→Rewrite→PASS(§7-1、現行は既存retry1回で通過)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Some calls needed user information to continue.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "“Some calls needed user information to continue.”",
+            "issue": "The Ledger describes a conditional concern: user information could be needed to carry out a call. The article turns that condition into an assertion that some calls actually needed it.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The article asserts actual cases where the Ledger only records a condition under which information might be needed; this is an unsupported increase in certainty.",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“That information might accidentally be shared”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+          "fallback_used": true,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” 実際に一部の通話で情報が必要だったと断定せず、「通話の遂行にユーザー情報が必要となる場合、契約スタッフに共有される可能性があるという懸念が示された」と条件付きにしてください。Ledger fact_id: MUSE-HC-010",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“They did not realize it.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“They did not realize it.”",
+            "issue": "The article states that users actually failed to realize a human was speaking. The Ledger records inadequate disclosure, but does not establish users’ actual awareness or lack of awareness.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Actual user awareness is not established by the Ledger. The nearby conditional language does not verify that users in fact failed to realize a human was speaking.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“might think AI was calling”; “If no one explained this clearly”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.” 利用者が実際に気づいていなかったと断定せず、「適切な開示なしにテストが始まった」と確認されている範囲にしてください。Ledger fact_id: MUSE-HC-012",
+          "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-010",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 10.17,
+          "difficult_word_ratio": 0.1093,
+          "word_count": 366
+        },
+        "stats_after": {
+          "avg_sentence_len": 10.19,
+          "difficult_word_ratio": 0.109,
+          "word_count": 367
+        },
+        "sentence_len_increase": 0.02,
+        "difficulty_ratio_increase": -0.0003,
+        "fragment_stats_before": {
+          "avg_sentence_len": 10.5,
+          "difficult_word_ratio": 0.1905,
+          "word_count": 21
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 11.0,
+          "difficult_word_ratio": 0.1818,
+          "word_count": 22
+        },
+        "fragment_sentence_len_increase": 0.5,
+        "fragment_difficulty_ratio_increase": -0.0087,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 31,
+        "hook_word_count_after": 31,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 36,
+        "sentence_count_after": 36,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 5,
+        "hedge_word_count_after": 6,
+        "hedge_word_increase": 1,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 10,
+        "paragraph_count_after": 10,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+      "en_text_after_rewrite": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls could need user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+      "ja_fail_open_guard": {
+        "ok": true,
+        "violations": [],
+        "checked": false,
+        "indeterminate": false
+      },
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": false,
+      "full_recheck_required_reasons": [],
+      "local_qa_fastpath_attempted": true,
+      "local_qa_fastpath_results": [
+        {
+          "prior_issue_resolved": true,
+          "new_deviation_in_revised_sentence": false,
+          "new_deviation_explanation": "",
+          "adjacent_sentence_affected": false,
+          "adjacent_sentence_explanation": "",
+          "_api_failure": false,
+          "claim_identity": "fact:MUSE-HC-010"
+        }
+      ],
+      "local_qa_fastpath_success": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_standard_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1678,
+      "usage": {
+        "input_tokens": 6364,
+        "cached_input_tokens": 6361,
+        "output_tokens": 2011,
+        "reasoning_tokens": 1759
+      },
+      "elapsed_seconds": 20.148,
+      "prompt_sha256": "25db088676b6b5532996a5af239595352ddcf3b86d00ad2c227442028a02513f"
+    },
+    {
+      "label": "meta_run03_standard_c1_fact:MUSE-HC-010_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.121,
+      "usage": {
+        "input_tokens": 3727,
+        "cached_input_tokens": 0,
+        "output_tokens": 797,
+        "reasoning_tokens": 766
+      },
+      "elapsed_seconds": 8.326,
+      "prompt_sha256": "cbc2c348e5dafb530dd0a151c81c8a2a7c58be97471e527e8043e3cd7a886ea7"
+    },
+    {
+      "label": "meta_run03_standard_c1_local_qa_fact:MUSE-HC-010",
+      "recovery_stage": "local_qa",
+      "cost_jpy": 0.0351,
+      "usage": {
+        "input_tokens": 565,
+        "cached_input_tokens": 0,
+        "output_tokens": 335,
+        "reasoning_tokens": 279
+      },
+      "elapsed_seconds": 3.957,
+      "prompt_sha256": "384e163e0682f41f25a0a9bfb72f9841931b24425dc37e2f3d0e619e08b2ecef",
+      "prior_issue_resolved": true,
+      "new_deviation_in_revised_sentence": false,
+      "adjacent_sentence_affected": false
+    }
+  ],
+  "total_cost_jpy": 0.3239,
+  "total_calls": 3,
+  "elapsed_seconds": 32.466
+}

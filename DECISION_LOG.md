@@ -14916,3 +14916,83 @@ recovery_04.md`、`docs/pm/design_open233_self_recovery_flow_01.md`
 §20、`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-
 TRIAL-01_20.md`、`er052_open233_self_recovery_flow_runner_01.py`
 (+test)、`er052_output/open233_self_recovery_flow_runner_01_rep11/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: rep11で判明した3欠陥の是正+限定Trial
+rep12(委任_21、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_21: rep11で判明した3欠陥の
+是正+微小Trial rep12。広いTrialは含めない)。
+
+**背景**: 委任_20のrep11実測が、(1) `bgroup_B3`(2/2)がJA fail-openガード
+(`ja_fail_open_guard`)の誤発火によりSTAGE4_ESCALATIONへ回っていた
+(fixtureの`source_article_text`が実際には英語のため句点分割が機能せず
+「1文丸ごと消失」と粗く誤判定)、(2) 局所QA fastpathが3委任連続で実call
+成功0件、(3) `neg1_meta_b3prod_a2`で新規claim(MUSE-HC-006)のRewriteが
+発生(未分析)、(4) `hormuz_run03_standard`のfresh Stage1がreuse fixtureと
+異なる検出結果(recall miss)になる非決定性、の4点を明らかにしていた。
+
+**A-1是正(JAガード言語判定、¥0)**: `is_predominantly_ja`(新設、¥0決定論、
+JA文字比率[閾値15%])で`ja_fail_open_guard`のJA/非JA分割器を切替(JA=
+`split_ja_sentences`/非JA=既存EN分割器`split_sentences_generic`)。
+いずれの分割器でも1文以下にしか分割できない場合は`indeterminate=True`で
+違反判定を行わず(ガード不発火)、局所QA fastpathは許さず全文Recheckへ
+倒す(STAGE4直行にはしない)。rep11実データ(`bgroup_B3`)を逐語転記した
+unittestで誤検知0件・rep10実データでの検出維持(regressionなし)を確認。
+
+**A-2是正(局所QA locate、¥0)**: `find_sentence_context`の真因を特定
+(rewrite_hintの引用断片が複数文にまたがる場合、Rewrite後のneedleも複数文
+のままだが、旧実装は単一文の要素としか照合しておらず毎回
+`revised_sentence_not_locatable_in_context`でskipしていた)。needleを
+同じ分割器で分割した文数kのウィンドウ照合を追加(k=1の既存経路は無変更)。
+rep11実データ(`meta_run03_standard`)を逐語転記したunittestで是正確認。
+
+**A-3(neg1 MUSE-HC-006、コード変更なし)**: Ledger fact・claim原文・
+floor不該当(既存`disclosure_gap_negative_inference_downgrade`は否定形
+専用で本claimの肯定形物語展開には非該当)を確認し、Hook専用Stage2
+rubricのtie-break境界上にある真のdisputed事例と判定した(rep11 2/2
+BLOCKING vs rep12 2/2非BLOCKINGの非決定性で裏付け)。rubric・floor条件
+は変更しない。tie-break文言明確化の要否はFable/ユーザー判断。
+
+**A-4(Stage1非決定性、記録のみ)**: `hormuz_run03_standard`のfresh Stage1
+(rep11)とreuse fixture(rep9/rep10)で検出結果が異なる(fresh側recall
+miss)ことを事実として記録。是正はPhase 2課題として持ち越す。
+
+**unittest**: 新規6件(`TestJaFailOpenGuardLanguageAware`3件+
+`TestFindSentenceContextMultiSentenceNeedle`3件)+既存196件=**計202件
+全PASS**(regressionなし)。
+
+**rep12実測**(限定4 instance[`bgroup_B3`/`neg1_meta_b3prod_a2`/
+`meta_run03_standard`/`bgroup_B1`、`hormuz_run02_standard`は
+`build_target_instances`に存在しないため代替]×n=2、OUT_DIR/BUDGET_
+STATE_PATHをrep12専用へ明示設定、Guardrail¥8、実測¥1.7384): **8/8
+instance-run完走・API error 0件・false PASS 0/8**(rep11に続き2回連続)。
+`bgroup_B3`の`ja_fail_open_guard`は2/2とも`ok=true`(誤検知0件、A-1是正
+確認)。ただし2/2ともSTAGE4_ESCALATIONへ到達し続けており、これは別の
+既存・正当な条件((g)`short_section_no_window`+(h)`ja_en_equivalence_
+not_pass`[verdict=REVIEW_REQUIRED])によるfail-closedであることを確認
+した(誤検知は解消したが人間確認は別理由で残存、false PASSではない)。
+`meta_run03_standard`の局所QA fastpathは**2/2とも実際にAPI call成功**
+し、全文Recheckを省略した(OPEN-233 Self-Recovery Flow Trial全体
+[委任_09〜_21、rep7〜rep12]を通じて初めての実call成功実例、local_qa
+1 call¥0.0356 vs 同runのstage1_recheck平均¥0.0646/call)。`neg1_meta_
+b3prod_a2`(MUSE-HC-006)は2/2とも`RESOLVED_STAGE2_DOWNGRADE`(Rewrite
+不要)となり、rep11(2/2 BLOCKING)と結果が入れ替わりA-3のdisputed判定を
+裏付けた。
+
+**Gate 9項目**: rep11時点の充足5/部分3/未充足0から、**充足6/部分3/
+未充足0**へ改善(項目1[局所QA基本形]・項目8[全文Check削減]が新たに
+改善)。
+
+**USER_DECISION_REQUIRED非該当**(6条件いずれも、neg1 disputed判定・
+rubric tie-break文言明確化の要否・Stage1非決定性はFable/ユーザーへの
+判断材料として提示)。
+
+費用: 実装A-1/A-2¥0+rep12¥1.7384=本委任合計**¥1.7384**(Guardrail¥10
+内)。Phase累計¥338.5278+¥1.7384=**¥340.2662**/総枠¥500、
+残¥159.7338。Status=`A1_A2_FIXED_A3_ANALYZED_REP12_8_OF_8_COMPLETE_
+FALSE_PASS_ZERO_LOCAL_QA_FIRST_SUCCESS`。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-17/§6-7/§6-10、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§21、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_21.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_output/open233_self_recovery_flow_runner_01_rep12/`。

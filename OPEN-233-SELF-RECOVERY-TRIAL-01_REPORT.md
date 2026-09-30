@@ -1625,3 +1625,86 @@ rep11の全rewrite_records(合計10件)で`ladder_level_used="6_full_article"`�
 **USER_DECISION_REQUIRED 6条件該当有無**: 非該当(neg3両建て[§20-4]・neg1新規observation[§20-4]・局所QA locateバグ未解消[§20-6項目1]はFable/ユーザーへの判断材料として提示するが、いずれもSTOP/UDR条件そのものには該当しない)。
 
 **Status**: `W1_W3_IMPLEMENTED_REP11_8_OF_8_COMPLETE_FALSE_PASS_ZERO`(W1〜W3実装+代表4 instance×n=2 rep11実行、8/8完走・false PASS 0件・Gate項目7[Safety誤通過]解消。局所QA基本形[項目1]・Stage1列挙の実run検証[W2 (ii)]・fastpath実call成功は未達のまま次回委任へ持ち越し。29 instance全量の広いTrial着手はFable/ユーザー判断待ち)。
+
+## §21. rep11で判明した3欠陥の是正+限定Trial rep12(委任_21、2026-10-01)
+
+### 21-0. 対応表(委任文§1〜§4)
+
+| # | 項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| A-1 | JAガード誤発火(`bgroup_B3`) | 言語判定(`is_predominantly_ja`、¥0決定論)でJA/非JA分割器を切替。分割不能時は`indeterminate=True`で不発火+全文Recheckへ(STAGE4直行にはしない) | §21-1、design書§6-7 |
+| A-2 | 局所QA実call成功0件(3委任連続) | `find_sentence_context`が複数文needle(rewrite_hint引用が2文だった場合)を照合できていなかった真因を特定し是正 | §21-2、design書§6-10 |
+| A-3 | neg1 MUSE-HC-006不要Rewrite | Ledger fact・claim原文・floor不該当を確認し、rubric tie-break境界のdisputed事例と判定(コード変更なし) | §21-3、design書§4-17 |
+| A-4 | Stage1非決定性記録 | `hormuz_run03_standard`のfresh vs reuse差異を事実として記録(是正はスコープ外) | §21-4 |
+| B | rep12実測(¥1.7384) | `bgroup_B3`/`neg1_meta_b3prod_a2`/`meta_run03_standard`/`bgroup_B1`(hormuz_run02_standardは存在しないためラダー①〜③候補として代替)×n=2、8/8完走 | §21-5 |
+
+### 21-1. A-1是正(JAガード言語判定、¥0)
+
+design書§6-7追記を参照。rep11実データ(`bgroup_B3`、`source_article_text`が実際には英語)を逐語転記したunittest(`TestJaFailOpenGuardLanguageAware`、3件)で、是正後の誤検知0件・rep10 hormuz実データでの検出維持(regressionなし)を確認した。既存196件+新規6件(A-1+A-2)=**202/202 tests PASS**(`.venv/Scripts/python.exe -m unittest er052_open233_self_recovery_flow_runner_01_test_01`)。
+
+### 21-2. A-2是正(局所QA locate、¥0)
+
+design書§6-10追記を参照。rep11実データ(`meta_run03_standard` sample1 cycle1、claim=MUSE-HC-010)を逐語転記したunittest(`TestFindSentenceContextMultiSentenceNeedle`、3件)で、是正後に正しくlocateされることを確認した。
+
+### 21-3. A-3(neg1 MUSE-HC-006、コード変更なし)
+
+design書§4-17追記を参照。Ledger fact(MUSE-HC-006)・claim原文・Stage1/Stage2判定根拠・floor不該当を確認し、Hook専用Stage2 rubricのtie-break境界上にある真のdisputed事例と判定した(rep11 2/2 BLOCKING vs rep12 2/2非BLOCKINGの非決定性で裏付け)。rubric・floor条件のコード変更は行わない。rubric tie-break文言明確化の要否はFable/ユーザー判断としてOPEN_ITEMSへ記録する。
+
+### 21-4. A-4(Stage1非決定性、記録のみ)
+
+rep11の`hormuz_run03_standard`force fresh Stage1はACCEPTABLE_STAGE1(recall miss)だったのに対し、rep9/rep10のreuse fixture Stage1は同一記事でBLOCKING(HF-009検出)だった。同一入力に対するStage1(V4A)のrun間非決定性(fresh実行のたびに検出結果が変わり得る)を事実として記録する。是正(温度設定・複数run多数決等)は本委任のスコープ外であり、Phase 2課題としてOPEN_ITEMSへ持ち越す。
+
+### 21-5. rep12実測(限定4 instance×n=2、¥1.7384/Guardrail¥8内)
+
+`OUT_DIR_REP12`(`er052_output/open233_self_recovery_flow_runner_01_rep12`)、`BUDGET_STATE_PATH`をrep12専用(`budget_state_c233y_21.json`)へ明示設定、`TOTAL_BUDGET_JPY=8.0`。CLI: `--groups=b_group,meta,negative --instance_ids=bgroup_B3,bgroup_B1,meta_run03_standard,neg1_meta_b3prod_a2 --n_runs=2`(`hormuz_run02_standard`は`build_target_instances`に存在しないため、reuse Stage1・ラダー①〜③候補の代替として`bgroup_B1`を選定)。**8/8 instance-run完走、API error 0件**:
+
+| instance | sample1 | sample2 |
+|---|---|---|
+| `bgroup_B1` | RESOLVED_STAGE2_DOWNGRADE(Rewrite不要) | RESOLVED_STAGE2_DOWNGRADE(Rewrite不要) |
+| `bgroup_B3` | STAGE4_ESCALATION(`ja_deviation_unresolved`、理由=(g)+(h)) | STAGE4_ESCALATION(`ja_deviation_unresolved`、理由=(g)+(h)) |
+| `meta_run03_standard` | RESOLVED_REWRITE(局所QA fastpath成功) | RESOLVED_REWRITE(局所QA fastpath成功) |
+| `neg1_meta_b3prod_a2` | RESOLVED_STAGE2_DOWNGRADE(Rewrite不要) | RESOLVED_STAGE2_DOWNGRADE(Rewrite不要) |
+
+**(i) A-1検証**: `bgroup_B3`の`ja_fail_open_guard`は2/2とも`{"ok": true, "violations": [], "checked": true, "indeterminate": false}`となり、rep11で発生していた誤検知(`unexplained_ja_sentence_deletion`の粗い誤発火)は**0/2で再現しなかった**。ただし`bgroup_B3`は2/2ともSTAGE4_ESCALATIONへ到達しており、これは本ガードとは別の既存・正当な条件((g)`short_section_no_window`[section_type=in_one_line]+(h)`ja_en_equivalence_not_pass`[verdict=REVIEW_REQUIRED]、W1(ii)のgating)によるfail-closedである(全文Recheck自体は`recheck_overall_status`=`ja_recheck_overall_status`=`LEDGER_COMPLIANT`で「解消」を返していたが、equivalence verdictがREVIEW_REQUIREDだったため`ja_ok`がFalseへ倒れ、`ja_pending_deviation`がcycle2でSTAGE4を強制した)。**KPI後退(誤ったSTAGE4)は解消したが、別の正当な理由で人間確認は残存する**(false PASSではない)。
+
+**(ii) A-2検証**: `meta_run03_standard`の局所QA fastpathは**2/2とも実際にAPI callへ到達し成功**した(`local_qa_fastpath_success: true`、`skipped_reason`なし、costは1 call ¥0.0356平均[local_qa合計¥0.0711/2call])。これはOPEN-233 Self-Recovery Flow Trial全体(委任_09〜_21、rep7〜rep12)を通じて**初めて**局所QA fastpathの実call成功による全文Recheck省略を実測した結果である。同cycleでstage1_recheck(全文Recheck)呼び出しは発生しなかった(rep12のstage1_recheck平均コスト¥0.0646/call[4 call合計¥0.2585]との比較で、局所QA1 call[¥0.0356]の方が安価であり、少なくとも同水準以下のコストで全文Recheckを代替できることを確認した。ただし同一claimでの直接的なbefore/after比較[rep12内でboth経路を実行]は行っていないため、正確な削減額の断定はしない)。
+
+**(iii) A-3関連**: `neg1_meta_b3prod_a2`(MUSE-HC-006)は2/2とも`RESOLVED_STAGE2_DOWNGRADE`(Rewrite不要)で完了し、rep11(2/2 BLOCKING→Rewrite)と結果が入れ替わった。§21-3のdisputed判定(非決定性)を実測面からも裏付ける。
+
+**(iv) false PASS確認**: 8 instance-run全て確認した。`RESOLVED_STAGE2_DOWNGRADE`(4件、`bgroup_B1`×2・`neg1`×2)はRewrite自体が発生していないため対象外。`RESOLVED_REWRITE`(2件、`meta_run03_standard`×2)は`mechanism=single_text_local`(JA非変更)でJA fail-open型のリスクなし。`STAGE4_ESCALATION`(2件、`bgroup_B3`×2)は完了扱いではなく人間確認へ回っているため対象外。**false PASS 0/8**(rep11に続き2回連続で0件)。
+
+### 21-6. コスト内訳
+
+| call種別 | 回数 | 合計(¥) |
+|---|---|---|
+| `stage2_second_judge` | 9 | 0.9227 |
+| `stage3_rewrite` | 4 | 0.3541 |
+| `stage1_recheck` | 4 | 0.2585 |
+| `ja_en_equivalence` | 2 | 0.132 |
+| `local_qa` | 2 | 0.0711 |
+
+**rep12合計¥1.7384**(8 instance-run、Guardrail¥8内、実装A-1/A-2は¥0)。本委任合計: **¥1.7384**。Phase累計(前回まで¥338.5278)+本委任¥1.7384=**¥340.2662**。Phase残額(**上限¥500**のうち)=**¥159.7338**。
+
+### 21-7. Gate 9項目充足表(rep11からの変化)
+
+| # | Gate項目 | rep11後 | rep12後 |
+|---|---|---|---|
+| 1 | 局所QA是正 | 部分改善(発火2/8だが実call成功0/8) | **改善**(`meta_run03_standard` 2/2で実call成功、全文Recheck省略を実測) |
+| 2 | 全体Rewrite3件の立証 | 充足を維持 | 充足を維持(⑥ 0/8) |
+| 3 | 不要Rewrite4件の開示 | 充足+neg1新規observation | 充足を維持+neg1をdisputed事例として分析完了(§21-3) |
+| 4 | 解決策 | 部分充足 | 変化なし(neg3両建てのみ、決定はしない) |
+| 5 | 人間確認残存 | 改善(STAGE4 3/8全てfail-closed) | 継続改善(`bgroup_B3` 2/2は誤検知ではなく正当な理由によるfail-closedと確認) |
+| 6 | 代表ケース動作確認 | 充足を維持 | 充足を維持(8/8完走、¥1.7384) |
+| 7 | Safety誤通過なし | 充足 | 充足を維持(false PASS 0/8、2回連続) |
+| 8 | 不要な全文Check・全体Rewriteの削減 | 半分充足 | **改善**(局所QA成功による全文Check省略を初めて実測) |
+| 9 | 平均コスト影響 | 部分充足 | 変化なし(¥0.2173/instance-run、rep12実測) |
+
+**総合**: 充足6/部分充足3/未充足0(rep11時点は充足5/部分3/未充足0)。項目1(局所QA基本形)・項目8(全文Check削減)が新たに改善した。
+
+### 21-8. STOP条件該当確認・USER_DECISION_REQUIRED・Status
+
+**STOP条件**: ¥10超え見込み(該当せず、実測¥1.7384)/API error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、`git diff --stat`でer052本体2ファイルのみ・既存rep7〜11出力は無変更)/6条件該当(該当せず、下記)/開始前チェック未反映(0件)/最小修正1回後もFAIL(該当なし、rep12は1回で8/8完走)/Safety-critical 10claim・Safety 12がBLOCKINGでなくなった(該当せず、対象外instance)/false PASS 1件以上(**該当せず、0/8**)。
+
+**USER_DECISION_REQUIRED 6条件該当有無**: 非該当(neg1のdisputed判定[§21-3]・rubric tie-break文言明確化の要否・Stage1非決定性[§21-4]はFable/ユーザーへの判断材料として提示するが、いずれもSTOP/UDR条件そのものには該当しない)。
+
+**Status**: `A1_A2_FIXED_A3_ANALYZED_REP12_8_OF_8_COMPLETE_FALSE_PASS_ZERO_LOCAL_QA_FIRST_SUCCESS`(rep11で判明した3欠陥のうちA-1[JAガード誤発火]・A-2[局所QA locate]をコード修正、A-3[neg1]をコード変更なしで分析完了。rep12実行で局所QA fastpathの実call成功を初めて実測し全文Recheck省略を確認。false PASS 0/8[rep11から2回連続]。29 instance全量の広いTrial着手はFable/ユーザー判断待ち)。

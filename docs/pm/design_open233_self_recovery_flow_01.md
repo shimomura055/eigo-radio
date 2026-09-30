@@ -1152,6 +1152,81 @@ Stage 1初回・Recheckの出力schemaへ`same_fact_id_locations`を追加し、
 全文Recheck省略条件と一体で設計・実装したため、本節では概要のみを示し
 重複記載を避ける)。
 
+### 4-17. neg1 MUSE-HC-006境界事例の分析(委任_21 A-3)
+
+**注記**: 委任文では本節を「§4-19」と指定していたが、本書§4は§4-16
+までしか存在せず(§4-17/§4-18は未使用)、間に空番を作らないため新規
+追加分は本書の実採番どおり§4-17として追記する(§4-14/§4-16の前例と
+同じ方針)。
+
+**背景**: rep11(委任_20)で`neg1_meta_b3prod_a2`(不要Rewrite0件が
+正解の負例群、§7-0)が2/2 sampleとも新規claim(MUSE-HC-006、hook区分)
+でRewriteが発生した(委任_17で解消した「Ring, ring…」claimとは別文)。
+本節はこれが(a) Hook専用Stage2の対象外だったための誤判定か、(b)
+許容線(自然な解釈 OK/新しい具体的Factの発明 NG)でBLOCKING/QUALITY
+いずれが妥当か、(c) 既存条件(Hook専用rubric/disclosure-gap downgrade/
+丸め)のどれが適用され得るかを分析する。
+
+**claim原文・Ledger fact・Stage判定(rep11実データ、`instances_s1/
+neg1_meta_b3prod_a2.json`より逐語引用)**:
+- claim_in_article: “A call seemed to come from an AI agent. But as
+  the conversation went on, the voice was not AI at all. It was a
+  person. Meta had run a test that caused exactly this surprise.”
+- Ledger fact(MUSE-HC-006、`full_ledger.json`より逐語):「MetaはMuse
+  経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが
+  電話をかけ、相手とのやり取りを完了させる「human concierge」「human
+  agent calls」のテストを実施した。」notes_for_writer:「全ての電話を
+  人間が担当したとは書かない。「一部の電話」「テスト」と限定する。」
+- Stage1 dev.issue: “The article presents a recipient discovering
+  during a call that a person, not AI, was speaking, and says the
+  test caused this surprise. The Ledger verifies that trained
+  contract workers made some Muse calls, but does not establish that
+  recipients experienced this reveal.”
+- section_type/stage2_route: `hook`/`hook`(Hook専用Stage2で判定済み。
+  §4-14のtitle/hook/in_one_line対象範囲に正しく含まれており、**(a)は
+  該当しない**=Hook専用Stage2の対象外だったための誤判定ではない)。
+- floor_reason/floor_cited_reason: いずれも`null`(既存
+  deterministic floor[changed_actor/number/negation/comparison/time]
+  にも、meta_run03_standard MUSE-HC-012で適用された`disclosure_gap_
+  negative_inference_downgrade`[委任_18 2-2]にも該当しない。後者は
+  「〜と気づかなかった」等の**否定形**の論理的帰結を対象とする狭い条件
+  であり、本claimは「AIだと思ったら人だった」という**肯定形の物語的
+  展開**であり形が異なるため、floor_reason=nullは既存条件の適用対象外
+  という意味で妥当)。
+
+**(b)許容線の判定**: Ledger factは「一部のMuse経由電話を人間スタッフが
+担当するテストを実施した」という構造的事実のみを確認しており、「ある
+特定の通話で、会話の途中にAIだと思っていた相手が実は人間だったと気づく
+驚きの瞬間」という**受け手視点の具体的な体験・出来事**までは確認して
+いない。Hook専用Stage2 rubric(§4-14)のBLOCKING条件(a)「新しい具体的な
+人物・数字・出来事・行動・仕組みの発明」に文字どおり当てはめれば、
+「会話中に気づく」という具体的な展開の発明と読める。一方、記事タイトル
+自体が「We Thought It Was AI—But There Was a Person Inside Meta's
+Muse」であり、この一文はHookの核となる同一主題の劇的表現(情景描写に
+近い演出)とも読め、rubricのtie-break規定「迷う場合は発明の有無で判定
+し、発明がなければQUALITYとする」の境界上にある。**本claimは委任文
+基準(a)〜(d)のいずれにも機械的に該当するが、rubric自体が想定する
+「演出として許容すべき誇張のない強調」との境界が曖昧な、真にdisputed
+な事例**と判定する。
+
+**(c)実証(非決定性の直接確認)**: rep11(2/2 sample)は本claimを
+BLOCKINGと判定しRewriteへ進んだが、コード変更なしで再実行したrep12
+(2/2 sample、同一fixture・同一Hook専用Stage2 rubric)は本claimを2/2
+とも`RESOLVED_STAGE2_DOWNGRADE`(Stage2自体が非BLOCKINGへ判定、
+Rewrite不要)で完了した。同一rubric・同一fixtureでBLOCKING/非BLOCKING
+双方が実測されたことは、本claimがLLM判定の閾値付近にある真の境界事例
+であることを裏付ける(rubric自体にバグがあるとは断定できない)。
+
+**結論**: 本claimはコードのバグや既存条件の誤適用ではなく、Hook専用
+Stage2 rubric自体が抱える「物語的な劇的表現」と「具体的な出来事の発明」
+の境界上のdisputed事例と判定する(既存の`neg3_hormuz_prodrunner_b1b`
+と同種の扱い)。**コード変更は行わない**(rubric・floor条件のいずれも
+変更しない)。不要Rewrite率の集計では、rep11実行分について本claimを
+neg3と同様にdisputed注記付きで両建て報告する(REPORT§21参照)。rubric
+tie-break文言の明確化(「会話中の気づき」のような物語的展開を演出側へ
+明示的に含めるか)の要否は、Fable/ユーザー判断としてOPEN_ITEMSへ記録
+する(本委任のスコープ外、コード変更を伴うため)。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -2186,6 +2261,41 @@ rep11実行で`ja_fail_open_guard_violation`が実際に発火し
 `ja_deviation_unresolved`によるSTAGE4_ESCALATIONへ正しく到達した実例
 (`bgroup_B3` sample1)を確認した(詳細はREPORT§20参照)。
 
+**委任_21 A-1是正(rep11で判明したKPI後退の是正)**: rep11実測は同時に、
+`bgroup_B3`(2/2 sample)が本ガードにより**誤って**STAGE4へ回っていた
+ことも明らかにした。原因は`ja_fail_open_guard`が無条件で
+`split_ja_sentences`(句点。！？のみで分割)を使っていたため、`bgroup_
+B3`の`source_article_text`(fixture上は「JA」フィールドだが実際の中身は
+英語)で句点分割が機能せず、全文が1文として扱われ、些細な1文変更でも
+「本文の残り全部が消失した」という粗い誤検知を生んでいたことだった
+(委任_16〜_19時点ではこの経路自体が無かったため、W1導入[委任_20]で
+新たに露呈した回帰)。是正として、`is_predominantly_ja`(新設、¥0・
+決定論、ひらがな/カタカナ/漢字比率[閾値15%]でJA/非JAを判定)を追加し、
+`ja_fail_open_guard`がJA主体なら`split_ja_sentences`、非JA主体(英語等)
+なら既存EN分割器`split_sentences_generic`(.!?を含む)を使うよう切替
+えた。いずれの分割器でも1文以下にしか分割できない場合(句読点が実質
+存在しない等)は`indeterminate=True`を返し、違反判定を行わない(ok=
+True、ガード不発火)が、呼び出し側(`run_instance`)はこれを理由に
+局所QA fastpathを許さず全文Recheckへ倒す(`ja_fail_open_guard_
+indeterminate`理由を追加、STAGE4への直行にはしない、安全側だが
+過剰diagnosisにはしない設計)。
+
+**rep11実データによるunittest(`TestJaFailOpenGuardLanguageAware`、
+3件)**: `bgroup_B3`のja_text_before_rewrite/after(cycle1、`so`→
+`while`の1語変更のみ)とrewrite_hintを逐語転記し、是正後は誤検知
+(violations)が0件になることを確認。既存`TestJaFailOpenGuard`(rep10
+hormuz実データ、真のJA)は既存のまま全PASSを維持し、言語判定を挟んでも
+真のJA fail-open検出能力に regression がないことを確認した(202/202
+tests PASS、既存196件+新規6件)。
+
+**rep12実測での検証**: 本是正後、`bgroup_B3`をn=2で再実行したところ、
+`ja_fail_open_guard`は2/2とも`{"ok": true, "violations": [], "checked":
+true, "indeterminate": false}`となり誤検知が解消したことを確認した。
+ただし`bgroup_B3`は2/2ともSTAGE4_ESCALATIONへ到達しており、これは
+本ガードとは別の既存・正当な機構(§6-9(h)、`ja_en_equivalence_verdict
+= REVIEW_REQUIRED`によるgating、W1(ii))が働いた結果であり、fail-closed
+としては正しい挙動である(詳細REPORT§21)。
+
 ### 6-8. Stage 1同一fact_id列挙(委任_20 W2、Opus L2レビュー#4 Q1(c)推奨)
 
 **背景**: Opus L2レビュー#4は、rep9/rep10で全文Recheckが実際に価値を
@@ -2268,6 +2378,46 @@ Q1推奨4「先にJA fail-openを塞ぎ、その後にのみ(c)を縮小する�
 **rep11実測**: REPORT§20参照(rep9/rep10と同様、§9-1の①〜⑬連番
 リストへは追加せず、本節[§6-7〜§6-9]とREPORTの専用節で記録する、
 §9-1⑬以降の既存踏襲)。
+
+### 6-10. 局所QA fastpath locateバグの是正(委任_21 A-2)
+
+**背景(rep11実データで判明した真因)**: rep9(委任_16)以降、局所QA
+fastpathは代表ケースTrialで繰り返し発火0件、またはlocateバグにより
+API call前にskipし続けており(rep9〜rep11のREPORTで継続報告)、根本
+原因が特定できていなかった。委任_21で`meta_run03_standard` sample1
+cycle1の実データ(claim=MUSE-HC-010)を精査した結果、真因は
+`find_sentence_context`(needle=`after_fragment`)側にあった: `locate_
+target`の第一キー(`extract_quoted_fragment`によるrewrite_hint中の
+引用断片)がそもそも複数文にまたがっていた場合(実例のrewrite_hintの
+引用が「Also, some calls needed user information to continue. That
+information might accidentally be shared...」の2文)、E1(1語・接続詞
+水準)のRewrite後もこの2文が`target_sentence`=`after_fragment`として
+維持される。一方`find_sentence_context`は`split_sentences_generic`が
+返す**単一文**の要素それぞれに対してしか`needle_s in s`および
+SequenceMatcher(閾値0.85)を試みていなかったため、2文分の長さを持つ
+needleはどの単一文とも一致せず、`revised_sentence_not_locatable_in_
+context`で毎回skipしていた。
+
+**是正(¥0、追加API callなし)**: needle自体を同じ分割器
+(`split_sentences_generic`)で分割した文数kを求め、k>1の場合は連続する
+k文の結合ウィンドウ(`" ".join(sentences[i:i+k])`)に対してexact
+containment→SequenceMatcher(既存と同じ閾値0.85)の順で追加照合する
+処理を`find_sentence_context`へ追加した。k=1(単一文needle)の既存経路は
+変更しない(regressionなし)。
+
+**rep11実データによるunittest(`TestFindSentenceContextMultiSentenceNeedle`、
+3件)**: `meta_run03_standard` sample1 cycle1のen_text_after_rewrite全文と
+2文needleを逐語転記し、是正後は正しくlocateされ、before/after context
+(隣接文)も正確に返ることを確認した。既存の単一文needle経路・
+一致しないneedleでNoneを返す経路のregressionテストも追加した
+(202/202 tests PASS)。
+
+**rep12実測での検証**: `meta_run03_standard`をn=2で再実行したところ、
+2/2とも局所QA fastpathが**実際にAPI callへ到達し成功**した
+(`local_qa_fastpath_success: true`、`skipped_reason`なし)。これは
+OPEN-233 Self-Recovery Flow Trial全体(委任_09〜_21、rep7〜rep12)を
+通じて**初めて**局所QA fastpathが実call成功により全文Recheckの省略に
+至った実例である(詳細REPORT§21)。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
