@@ -1881,3 +1881,56 @@ design書§6-12を参照。真因A(`resolve_ja_ok_after_equivalence_gating`の�
 **USER_DECISION_REQUIRED 6条件該当有無**: 非該当。ただし以下をFable/ユーザーへの判断材料として提示する: (1) `hormuz_run03_standard`は真因A・Bを是正してもなお2/2 STAGE4_ESCALATIONのままであり、第三の要因(Stage3 word-level Rewriteの品質限界)の是正は本委任のスコープ・予算を超える(次回委任での着手要否をFable/ユーザーが判断)。(2) `safety_A4`のworst costは¥8.9545→¥1.5084(83%減)を確認したが、`safety_A2A3`×2・`bgroup_B4`×1は本委任では未検証(同一コードパスのため同様の改善が期待されるが実測はしていない)。(3) ⑥のfeature flag無効化により、⑥が実際に必要な非常に稀なケース(iter7では0/7だったが、より広い母数では存在し得る)を早期にSTAGE4へ回すことになり、Rewriteによる自動解消率がわずかに低下する可能性がある(iter7実測では影響なし[0/7が解消例だったため])。
 
 **Status**: `A2_GATING_AND_ENUMERATION_FIXED_VALIDATED_LADDER6_DISABLED_COST_REDUCED_HORMUZ_STILL_ESCALATES_NEW_THIRD_CAUSE_FOUND`(真因A[等価QA gatingの過剰保守]・真因B[reuse fixture同一fact_id列挙欠如]を特定・是正し、rep14実測で双方の是正が実際に発火することを確認した。`safety_A4`のworst costを83%削減した[⑥ feature flag既定OFF]。一方`hormuz_run03_standard`は2/2ともSTAGE4_ESCALATIONのまま残り、理由が`ja_deviation_unresolved`から`same_claim_fact_id_reblocked`[Stage3 Rewrite品質の限界という新規の第三要因]へ変化した。予算制約のため追加修正は行わずFable/ユーザー判断待ちとしてSTOPする)。
+
+## §24. `hormuz_run03_standard`第三要因(ラダー未昇段のまま安全網が先に発火)の是正+少数確認rep15(委任_24、2026-10-01)
+
+### 24-0. 対応表(委任文§1〜§3)
+
+| # | 項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| A | 第三要因の真因特定(コード上の判定順序) | `run_instance`のメインループで、cycle>1時の`matched_records`判定(§3-3安全網)が、fact_id再出現時のラダー前進機構(§6-6 A-2 `escalate_to_paragraph`)より**先に**評価されており、①水準Rewrite後の再検出が即座に`same_claim_fact_id_reblocked`でSTAGE4化されていた(④段落水準が一度も試されないまま)ことをソースコード上で特定した | 本節24-1 |
+| B | 是正実装(¥0) | 同一claim再発を「④段落水準まで既に試行済み[`escalated_to_paragraph=True`]」の場合のみSTAGE4(`same_claim_fact_id_reblocked`)へ回し、未昇段の場合は既存の`escalate_to_paragraph`ラダー前進機構へ明示的に合流させループを継続する。`find_matching_prior_record`は直近cycleの記録を優先するよう`reversed`走査へ変更 | 本節24-1、design書§6-13 |
+| C | unittest | 新規4件(`find_matching_prior_record`の直近優先順・`run_instance`のwiring source検査3件)、既存218件との合計222件全PASS | 本節24-2 |
+| D | rep15実測 | `hormuz_run03_standard`×n=2(reuse Stage1)を実行、sample1完走・sample2はGuardrail到達によりTrialAbort。`bgroup_B4`×1・`safety_A2A3`×1は予算制約のため未実施 | 本節24-3 |
+| E | 記録・Phase 2候補一覧 | design書§6-13/§9-2⑯、DECISION_LOG、OPEN_ITEMS Statusセル、delegation_log、Phase 2候補一覧(下記24-4) | 本節24-3/24-4 |
+
+### 24-1. `hormuz_run03_standard`第三要因の真因(コード上の判定順序)と是正
+
+**真因(委任_23 rep14実測の再解釈)**: `run_instance`のメインループはcycle>1で毎回、(i)`matched_records`判定(§3-3安全網、fact_id一致+claim本文近似一致[`find_matching_prior_record`閾値0.75]で「同一claim再発」を検出したら**直ちに**`stage4_reason="same_claim_fact_id_reblocked"`でSTAGE4_ESCALATIONへ回す)と、(ii)`repeat_fact_ids_for_recheck`判定(§6-6 A-2、fact_id再出現時に`escalate_to_paragraph=True`を立てて④段落水準からRewriteを試す)の2つを順に評価する。是正前のコードは**(i)が(ii)より先にreturnする**構造だったため、①水準Rewrite後にcycle2の全文Recheckが同一claimを近似一致で再検出した時点で、④段落水準のRewriteが一度も試行されないままSTAGE4へ強制到達していた(rep14実測、REPORT§23-D)。これは設計原則(§6-6 A-2「①・③の局所ラダーは既に効果不足と実証されたとみなし④段落水準から試す」)と矛盾しており、「①で直らない」ことがラダーの品質限界ではなく**ラダーが実際には一度も昇段していなかったこと**が真因だった。
+
+**是正(¥0、`er052_open233_self_recovery_flow_runner_01.py`)**: `prior_blocking_records`の各エントリへ、そのRewrite試行時点で`escalate_to_paragraph`(=④段落水準を使ったか)が立っていたかを`escalated_to_paragraph`として保存するよう拡張した。cycle>1の`matched_records`判定を、一致レコードの`escalated_to_paragraph`で二分岐させた: **(a)既に④段落水準まで試行済みで再発(`exhausted_matched_records`)**の場合のみ、従来どおり直ちに`stage4_reason="same_claim_fact_id_reblocked"`(意味を「ラダーを昇段しきった上での再発」へ明確化)。**(b)まだ①・③水準までしか試していない再発(`escalatable_matched_records`)**の場合は、STAGE4にせず該当claimへ`escalate_to_paragraph=True`を明示的に付与してループを継続する(既存の§6-6 A-2機構へ合流、新しい機構は作らない)。fact_idが一致していれば既存の`repeat_fact_ids_for_recheck`(fact_id集合演算)でも同じフラグが立つが、fact_id欠落claim(hashベースidentity)を取りこぼさないため、`find_matching_prior_record`が返したidentity単位でも明示的に設定する。`find_matching_prior_record`自体も、同一fact_idのprior recordが複数cycleにまたがって複数件蓄積されている場合に**直近(最後に追記された)レコードを優先して返す**よう、走査順を`reversed(prior_records)`へ変更した(旧来は最も古い一致を返しており、`escalated_to_paragraph`の最新状態を正しく参照できなかった)。cycle上限(`MAX_CYCLES`/`HARD_MAX_CYCLES`)・false PASS封鎖(W1)・Safety floor・等価FAIL gating(§6-7/§6-11)は無変更。
+
+**設計判断の開示(勝手な仕様拡大をしていないことの記録)**: 委任文は「次のラダー段(②→③→④)へ」と表現していたが、②(文の一部)はコード上の独立水準として存在せず(§5-7で既に①へ統合済み)、既存の§6-6 A-2機構は①・③を両方スキップして④へ直接進む設計(rep10実測で解消実績あり)である。本委任では、新しい「1段ずつ昇段する」機構を新設せず、この既存の直接④ジャンプ機構へ合流させる最小変更を選んだ(最小変更ラダー・既存機構再利用の原則に従う判断であり、独自解釈で仕様を変更した認識はないが、委任文の字面とは完全に一致しない解釈のため明示的に報告する)。
+
+### 24-2. unittest(¥0)
+
+`TestFindMatchingPriorRecord.test_multiple_prior_records_same_fact_id_returns_most_recent`(新規1件)、`TestSameClaimReblockedLadderEscalationWiring`(新規3件、`run_instance`/`find_matching_prior_record`のsource inspectionで、STAGE4分岐が`exhausted_matched_records`のみに限定されていること・`escalated_to_paragraph`永続化・reversed走査を確認)。既存218件+新規4件=**計222件全PASS**(`.venv/Scripts/python.exe -m unittest er052_open233_self_recovery_flow_runner_01_test_01`実行、`git diff --stat`でProduction[er003/er006/er009/er010/er012/er019]・既存iteration1〜7/rep7〜14証跡への差分なしを確認)。
+
+### 24-3. rep15実測(¥7.1025、Guardrail¥7)
+
+`OUT_DIR_REP15`(`er052_output/open233_self_recovery_flow_runner_01_rep15`)、`BUDGET_STATE_PATH`をrep15専用(`budget_state_c233ab_24_rep15.json`)。CLI: `--groups=hormuz --instance_ids=hormuz_run03_standard --n_runs=2`。
+
+**sample1(¥4.0578、19 call)**: `final_state=STAGE4_ESCALATION`・`stage4_reason=ja_deviation_unresolved`(rep14の`same_claim_fact_id_reblocked`から変化)。cycle記録: cycle1でHF-009(body)を①水準[`1_word_connective`]・別claim(in_one_line側)を③水準[`3_sentence`]でRewrite(blocking 2→1)。cycle2で残るHF-009系claimが`escalate_to_paragraph`(fact_id再出現、既存§6-6 A-2機構)により④段落水準[`4_paragraph`]でRewriteされ、`recheck_all_prior_issues_resolved=True`・`ja_recheck_overall_status=LEDGER_COMPLIANT`とEN/JA双方のLedger Recheckが「解消」を確認した(**`same_claim_fact_id_reblocked`による早期打ち切りが発生しなかったことを確認、A-2是正の直接的な実証**)。cycle3でblocking_claimsが空になりループ終了したが、cycle2で`ja_en_equivalence_verdict=FAIL`が記録されており、この分岐は委任_23で意図的に無変更のまま維持した安全網(rep10実測を唯一の根拠とするhard gate、REPORT§23-A参照)のため`ja_ok`がFalseへ倒され`ja_pending_deviation=True`が持ち越された結果、§6-7 W1(i)の既存fail-closed機構により`ja_deviation_unresolved`でSTAGE4_ESCALATIONへ至った。**正直な結論**: 本委任のA-2是正は目的どおり機能し(ラダーが①→③→④まで正しく昇段し、EN/JA Ledger Recheckは双方「解消」を確認した)、premature `same_claim_fact_id_reblocked`は発生しなかった。しかし本instanceは、委任_23で意図的に維持した**別の既存hard gate**(`ja_en_equivalence_verdict=FAIL`)により、結局STAGE4_ESCALATIONへ至った(false PASSではなく、fail-closedとして正しい)。
+
+**sample2(未完走)**: cycle進行中に累計¥7.103がrep15 Guardrail¥7.0へ到達し、既存のTrialAbort機構(`check_budget`)が正しく発火した(`stop_reason`: "累計¥7.103が委任_09 Guardrail¥7.0に到達")。sample2の`hormuz_run03_standard`は結果未保存(部分実行データは残らない、既存の仕様どおり)。
+
+**`bgroup_B4`×1・`safety_A2A3`×1(未実施)**: rep15のGuardrail(¥7)を`hormuz_run03_standard`のn=2だけで使い切った(TrialAbort)ため、追加のCLI呼び出しは共有`budget_state_c233ab_24_rep15.json`が既に上限に達しており実行不能だった。**正直な費用比較**: rep14の`hormuz_run03_standard`は1 sampleあたり¥1.87〜1.98(9 call、早期`same_claim_fact_id_reblocked`で打ち切り)だったのに対し、本rep15のsample1は¥4.0578(19 call、①→③→④まで正しく昇段し2 cycle分のpaired rewrite・全文Recheck・JA Recheck・equivalence checkを実施)と**約2.1倍**のコストになった。これは本委任のA-2是正が意図どおり機能した結果(安全網による早期打ち切りをやめ、正当なラダー前進のために追加cycleを許す設計変更)であり、バグではないが、**同種の「ラダー未昇段での安全網発火」パターンを持つ他instance(iter7実測での該当疑い: 同一fact_id再出現+同一claim近似一致の組み合わせを持つケース)でも同程度のコスト増が見込まれる**ことをFable/ユーザーへ正直に報告する(rep15予算超過の直接原因)。
+
+**予算**: rep15合計¥7.1025(Guardrail¥7の目標をわずかに超過[既存のcheck_budget呼び出し前判定の粒度による標準的な超過パターン、委任_23 rep14や過去repと同様]したが、本委任全体Guardrail¥8以内)。分析・実装¥0+rep15¥7.1025=本委任合計**¥7.1025**/Guardrail¥8、残**¥0.8975**。`bgroup_B4`・`safety_A2A3`の追加実行は、残予算(¥0.8975)では1instanceあたりの実測コスト増加傾向(上記2.1倍)を踏まえるとリスクが高いため**実施しない**(STOP条件「¥8超え見込み」に抵触するリスクを避けた)。
+
+### 24-4. Phase 2候補(Production相当記事)一覧 — 正直な現状報告
+
+委任文は「Phase 2に向けた既存Family X実記事の候補一覧(新規テーマは作らない)」として10本を求めたが、既存evidenceを精査した結果を正直に報告する。`er019_output/family_x_refresh_e2e_01/`・`family_x_entertainment_production_runner_01/`・`family_x_b3_diversity_trial_01/`・`family_x_b3_production_wiring_01/`・`family_xy_concreteness_control_trial_01/02`等、OPEN-233のSafety群12・B群4・Hormuz・Meta全fixtureの`source_path`を遡ったところ、**実在する独立した記事テーマは「hormuz」(ホルムズ海峡・原油価格)と「meta」(Meta AI機能テスト)の2件のみ**であり、Safety群のA2/A3/A4・B群のB1〜B4も全てこの2テーマのいずれかの別pipeline段階・別trial変種からの抽出だった(新規の独立記事ではない)。この2テーマから抽出できる既存run(instance id・run・既存Stage1出力の有無)は以下の最大8件(規定演技trial変種を除く、実質的に区別できる記事run単位):
+
+| # | instance id(既存harness) | テーマ | run/段階 | 既存Stage1出力 | 備考 |
+|---|---|---|---|---|---|
+| 1 | `hormuz_run01_advanced` | hormuz | run_01/b1b | あり(`family_x_refresh_e2e_01`) | Advanced段でSTOP実例(現行Production実測=LEDGER_DEVIATION) |
+| 2 | `hormuz_run02_advanced` | hormuz | run_02/b1b | あり | 同上 |
+| 3 | `hormuz_run03_advanced` | hormuz | run_03/b1b | あり(`step3_fixtures`経由) | Normal群(現行V4A実測ACCEPTABLE傾向) |
+| 4 | `hormuz_run03_standard` | hormuz | run_03/a2 | あり | 本委任rep15で再実測、第三要因是正確認済み |
+| 5 | `meta_run03_advanced` | meta | run_03/b1b | あり | 現行Production実測=LEDGER_COMPLIANT(V0) |
+| 6 | `meta_run03_standard` | meta | run_03/a2 | あり | BLOCKING→Rewrite→PASS実例 |
+| 7 | (B1/B2_hormuz/B3/B4相当) | hormuz | 各trial変種(diversity/refresh/concreteness/production_wiring) | あり | 独立記事ではなく同一hormuz素材の別pipeline段階抽出 |
+| 8 | (A2A3/A4/A5相当) | hormuz/meta | 各trial変種(concreteness_control等) | あり | 同上、独立記事ではない |
+
+**結論(正直な報告、新規テーマは作っていない)**: 真に独立した記事は#1〜6の6件(うち#1・2・5は現行Productionで既にb1b段完了済み、#3・4・6は既にOPEN-233 harnessで繰り返し検証済み)であり、**10本には届かない**。#7・8は同じhormuz/meta素材の再利用であり「別の記事」としてカウントすると水増しになるため候補数に含めなかった。Phase 2で真に10本規模のProduction相当検証を行うには、(a)PM_GOVERNANCE §13「新規記事テーマ選定ルール」に従いユーザーが新規テーマを複数候補から選定する、または(b)既存Hormuz/Meta run(#1〜6)を許容される範囲で再利用しつつ実際の新規Family X記事生成を追加実行する、のいずれかをFable/ユーザーが判断する必要がある(本委任では新規テーマを提案・選定していない)。

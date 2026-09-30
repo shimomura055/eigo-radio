@@ -15157,3 +15157,83 @@ COST_REDUCED_HORMUZ_STILL_ESCALATES_NEW_THIRD_CAUSE_FOUND`。詳細:
 `er052_open233_self_recovery_flow_runner_01.py`(+test)、
 `er052_output/open233_self_recovery_flow_runner_01_rep14/`、
 `OPEN_ITEMS.md`(OPEN-233行是正)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: hormuz第三要因(ラダー未昇段のまま
+安全網が先に発火)の是正+少数確認rep15(委任_24、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_24: `hormuz_run03_standard`
+第三要因の是正+少数確認rep15。Phase 2は含めない)。
+
+**背景**: 委任_23のrep14実測で、真因A・B是正後も`hormuz_run03_standard`
+がSTAGE4_ESCALATIONのまま残り、理由が`same_claim_fact_id_reblocked`
+(「Stage3 Rewrite品質の限界という第三の要因」)と報告されていた。
+
+**真因の再特定(コード上の判定順序)**: 本委任でrep14のcycle記録を精査
+した結果、これはRewrite品質の限界ではなく、`run_instance`のcycle>1時の
+`matched_records`判定(§3-3安全網)が、fact_id再出現時のラダー前進機構
+(§6-6 A-2`escalate_to_paragraph`)より**先に**評価される実装順序の
+問題だったと判明した。①水準Rewrite後の再検出が、④段落水準を一度も
+試さないまま即STAGE4化されていた。
+
+**是正(¥0)**: 同一claim再発を「④段落水準まで既に試行済み
+[`escalated_to_paragraph=True`]」の場合のみ`same_claim_fact_id_
+reblocked`でSTAGE4へ回し、未昇段の場合はSTAGE4にせず既存の
+`escalate_to_paragraph`ラダー前進機構へ明示的に合流させループを継続
+する。`prior_blocking_records`へ`escalated_to_paragraph`を追加保存し、
+`find_matching_prior_record`は直近cycleの一致レコードを優先するよう
+`reversed`走査へ変更した(新しい機構は作らず既存§6-6 A-2へ合流させる
+最小変更。cycle上限・JA fail-open封鎖・等価FAIL gating・Safety
+floor-strictは無変更)。unittest新規4件+既存218件=**計222件全PASS**。
+
+**rep15実測**(`hormuz_run03_standard`×n=2、¥7.1025、Guardrail¥7):
+sample1完走、sample2はGuardrail到達でTrialAbort(既存安全機構が正しく
+発火)。sample1は`same_claim_fact_id_reblocked`が発生せず、①→③→④まで
+正しく昇段しEN/JA Ledger Recheckとも「解消」を確認した(A-2是正の直接
+実証)が、cycle2で`ja_en_equivalence_verdict=FAIL`(委任_23で意図的に
+無変更のまま維持した別のhard gate)が記録され、`ja_deviation_
+unresolved`でSTAGE4_ESCALATIONへ至った(false PASSではない)。**正直な
+コスト報告**: sample1¥4.0578(19 call)はrep14の同fixture(¥1.87〜1.98、
+9 call)の**約2.1倍**であり、これがrep15 Guardrail(¥7)を`hormuz_
+run03_standard`n=2だけで使い切った直接原因。`bgroup_B4`×1・
+`safety_A2A3`×1は予算制約のため**本委任では未実施**。
+
+**Phase 2候補記事一覧(新規テーマは作らず既存evidence精査)**: OPEN-233
+全fixture(Safety群12・B群4・Hormuz・Meta)の`source_path`を遡った結果、
+独立した実在記事テーマは「hormuz」「meta」の2件のみで、10本には届か
+ないことを正直に報告する(詳細REPORT§24-4)。
+
+**STOP条件確認**: ¥8超え見込み(該当せず、実測¥7.1025/Guardrail¥8。
+ただし`bgroup_B4`/`safety_A2A3`追加実行はリスクが高いため見送った)/
+API error 3連続(該当せず、rep15通算0 error)/Production・既存証跡変更
+(該当せず、`git diff --stat`でer052本体2ファイル[flow_runner+test]・
+新規rep15出力・REPORT/design書/DECISION_LOG/OPEN_ITEMS/delegation_log
+のみ、Production[er003/er006/er009/er010/er012/er019]・既存iteration1〜
+7/rep7〜14証跡は無変更)/6条件該当(非該当、判断材料として下記提示)/
+開始前チェック未反映(0件)/最小修正1回後もFAIL(該当せず、本委任の是正
+自体はrep15で意図どおり機能した[premature reblockが解消]ため「最小
+修正後もFAIL」には該当しない)/Safety-critical/Safety 12がBLOCKING
+でなくなった(該当せず)/false PASS 1件以上(該当せず、0/1)。
+
+**USER_DECISION_REQUIRED 6条件該当有無**: 非該当。判断材料: (1) 本委任
+の是正でラダー前進が正しく機能するようになったが、同種パターンを持つ
+他instanceでもコスト約2倍への増加が見込まれ、Production採用時のコスト
+試算へ反映が必要。(2) `hormuz_run03_standard`は第三要因是正後も
+`ja_en_equivalence_verdict=FAIL`という別の既存hard gateによりSTAGE4の
+まま残る(これは委任_23で意図的に維持した安全側の挙動であり、新たな
+バグではない)。(3) `bgroup_B4`・`safety_A2A3`は未検証のまま(同一コード
+パスのため同様の改善が期待されるが実測なし)。(4) Phase 2の10記事規模
+検証には新規テーマ選定(PM_GOVERNANCE§13、ユーザー判断)または既存
+Hormuz/Meta runの再利用方針の決定が必要。
+
+費用: 実装¥0+rep15¥7.1025=本委任合計**¥7.1025**/Guardrail¥8、残
+**¥0.8975**。Phase累計¥386.113+¥7.1025=**¥393.2155**/総枠¥500、残
+**¥106.7845**。
+Status=`LADDER_ESCALATION_ORDER_FIXED_VALIDATED_HORMUZ_NO_LONGER_
+PREMATURE_REBLOCK_BUT_SEPARATE_EQUIVALENCE_GATE_ESCALATES_COST_
+INCREASED_B4_A2A3_UNTESTED_BUDGET_EXHAUSTED`。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§6-13/§9-2⑯、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§24、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-TRIAL-01_24.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_output/open233_self_recovery_flow_runner_01_rep15/`、
+`OPEN_ITEMS.md`(OPEN-233行Statusセル更新)。

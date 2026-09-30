@@ -380,6 +380,26 @@ class TestFindMatchingPriorRecord(unittest.TestCase):
         dev2 = {"related_fact_id": "", "claim_in_article": "Completely different beta claim"}
         self.assertIsNone(runner.find_matching_prior_record(dev2, prior))
 
+    def test_multiple_prior_records_same_fact_id_returns_most_recent(self):
+        # 委任_24 A-2(§6-13): 同一fact_idのprior recordが複数cycleにまたがり
+        # 複数件蓄積されている場合(各cycleごとに1件追記)、呼び出し側が
+        # escalated_to_paragraphで「直近の試行状態」を判定できるよう、
+        # 最も新しく追記された(=リスト末尾の)一致レコードを返す
+        # (reversed走査、旧来のfirst-match=最も古い挙動からの変更)。
+        dev = {"related_fact_id": "HF-009",
+               "claim_in_article": "The fee plan left the stage, but the events quickly returned."}
+        older = {"identity": "fact:HF-009", "fact_id": "HF-009",
+                  "claim_text_norm": runner.normalize_claim_text(
+                      "The fee plan left the stage, but the events quickly returned."),
+                  "escalated_to_paragraph": False}
+        newer = {"identity": "fact:HF-009", "fact_id": "HF-009",
+                  "claim_text_norm": runner.normalize_claim_text(
+                      "The fee plan left the stage, but the events quickly returned."),
+                  "escalated_to_paragraph": True}
+        match = runner.find_matching_prior_record(dev, [older, newer])
+        self.assertIsNotNone(match)
+        self.assertTrue(match["escalated_to_paragraph"])
+
 
 class TestDetectRewriteNewPrecheckFindings(unittest.TestCase):
     """委任_11 作業B-6(§4 Rewrite由来新規逸脱検出)のregression test。"""
@@ -2196,6 +2216,42 @@ class TestRepeatFactIdWiring(unittest.TestCase):
                        "repeat_fact_ids_for_recheck,", src)
         self.assertIn("ja_guard_ok=", src)
         self.assertIn("ja_equivalence_verdict=", src)
+
+
+class TestSameClaimReblockedLadderEscalationWiring(unittest.TestCase):
+    """委任_24 A-2(§6-13): rep14で判明した第三要因(①水準のみのRewrite後の
+    再発が、ラダー前進[§6-6 A-2]より先に§3-3安全網でSTAGE4化される)の
+    是正を、run_instanceのメインループのソース検査で確認する(¥0)。
+    ①・③水準までしか試していない再発はSTAGE4にせずescalate_to_paragraphを
+    付与してループを継続し、④段落水準まで試行済みの再発のみ
+    same_claim_fact_id_reblockedへ回ることを検証する。"""
+
+    def test_run_instance_source_gates_reblock_on_escalated_to_paragraph(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("exhausted_matched_records", src)
+        self.assertIn("escalatable_matched_records", src)
+        self.assertIn('m.get("escalated_to_paragraph")', src)
+        self.assertIn("ladder_exhausted_before_reblock", src)
+        self.assertIn("same_claim_reblocked_escalated_to_paragraph", src)
+        # same_claim_fact_id_reblockedは、exhausted_matched_records(=④段落
+        # 水準まで試行済みの再発)のブロック内でのみSTAGE4理由として使われる
+        # こと(旧来のmatched_records直後の無条件STAGE4ではないこと)を確認。
+        exhausted_idx = src.index("if exhausted_matched_records:")
+        reason_idx = src.index('stage4_reason = "same_claim_fact_id_reblocked"')
+        escalatable_idx = src.index("if escalatable_matched_records:")
+        self.assertLess(exhausted_idx, reason_idx)
+        self.assertLess(reason_idx, escalatable_idx)
+
+    def test_prior_blocking_records_persist_escalated_to_paragraph_flag(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn('"escalated_to_paragraph": bool(c.get("escalate_to_paragraph"))', src)
+
+    def test_find_matching_prior_record_source_uses_reversed_iteration(self):
+        import inspect
+        src = inspect.getsource(runner.find_matching_prior_record)
+        self.assertIn("reversed(prior_records)", src)
 
 
 # ============================================================

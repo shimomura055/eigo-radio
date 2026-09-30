@@ -180,11 +180,21 @@ OUT_DIR_ITER7 = "er052_output/open233_self_recovery_flow_runner_01_iter7"
 # ×n=1の少数ケースを再実行する(委任文§2 D、budget_stateパス明示)。
 # 出力は新規ディレクトリ(`_rep14`)へ書く。
 OUT_DIR_REP14 = "er052_output/open233_self_recovery_flow_runner_01_rep14"
-OUT_DIR = OUT_DIR_REP14
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233aa_23_rep14.json"
-TOTAL_BUDGET_JPY = 6.0  # 委任_23 全体Guardrail(委任文§0「本委任Guardrail¥6」、
-# rep14単体は≤¥5を目標とするが、TrialAbortの技術的上限は全体Guardrailで
-# 設定し、hormuz(¥3.8461)+safety_A4の合計が想定内かは実測後にREPORTへ記録する)
+# 委任_24(2026-10-01、hormuz_run03_standard第三要因[ラダー未昇段のまま
+# §3-3安全網が先に発火]の是正+少数確認): 既存iteration1〜7・rep7〜14の
+# 出力は変更しない。A-2(同一claim再発を、④段落水準まで既に試行済みの
+# 場合[escalated_to_paragraph=True]のみSTAGE4[same_claim_fact_id_
+# reblocked]へ回し、未昇段の場合は§6-6 A-2の既存ラダー前進機構[escalate_
+# to_paragraph]へ合流させループを継続)の反映後、`hormuz_run03_standard`
+# ×n=2(reuse Stage1)+`bgroup_B4`×n=1+`safety_A2A3`×n=1の少数ケースを
+# 再実行する(委任文§2 B、budget_stateパス明示)。出力は新規ディレクトリ
+# (`_rep15`)へ書く。
+OUT_DIR_REP15 = "er052_output/open233_self_recovery_flow_runner_01_rep15"
+OUT_DIR = OUT_DIR_REP15
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ab_24_rep15.json"
+TOTAL_BUDGET_JPY = 7.0  # 委任_24 rep15単体Guardrail(委任文§0「本委任
+# Guardrail¥8(実装¥0、rep15≤¥7)」、TrialAbortの技術的上限をrep15の
+# サブGuardrailで設定する)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -757,7 +767,14 @@ def find_matching_prior_record(dev: dict, prior_records: list, threshold: float 
     fact_id = (dev.get("related_fact_id") or "").strip()
     claim_text_norm = normalize_claim_text(dev.get("claim_in_article") or "")
     ident = claim_identity(dev)
-    for rec in prior_records:
+    # 委任_24 A-2(§6-13): 同一fact_idのprior recordは複数cycleにまたがって
+    # 複数件蓄積され得る(各cycleごとに1件追記)。呼び出し側が本関数の返り値
+    # (escalated_to_paragraph等)で「直近の試行状態」を判定するため、
+    # 最も新しい(最後に追記された)一致レコードを優先して返すよう、
+    # 逆順(直近cycle優先)で走査する(既存呼び出し元はいずれもprior_records
+    # がidentity単位で高々1件しか無い場面で単体テストされており、この
+    # 順序変更で既存の一致/不一致判定結果自体は変わらない)。
+    for rec in reversed(prior_records):
         if fact_id:
             if rec["fact_id"] != fact_id:
                 continue
@@ -3613,17 +3630,51 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # meta_run03_standard/B4等は進捗しているのに打ち切られている」の
         # 是正)。
         matched_records = []
+        matched_claim_by_identity = {}
         if cycle > 1:
             for c in blocking_claims:
                 m = find_matching_prior_record(c["dev"], prior_blocking_records)
                 if m is not None:
                     matched_records.append(m)
-        if matched_records:
+                    matched_claim_by_identity[m["identity"]] = c
+
+        # 委任_24 A-2(§6-13、rep14で判明した第三要因の是正): 同一claim
+        # 再発は「Rewriteが当該claimに効かなかったことの実証」だが、それ
+        # だけで直ちにSTAGE4へ回すのは、まだ最小変更ラダー(①単語・接続詞 ->
+        # ③1文 -> ④段落)を昇段しきっていない場合に、ラダーが昇段して
+        # いないこと自体を「Stage3 Rewrite品質の限界」と誤認し、§3-3安全網
+        # (本判定)を§6-6 A-2のラダー前進機構より先に発火させてしまう
+        # (rep14 hormuz_run03_standard実データ、DECISION_LOG本委任エントリ
+        # 参照)。前回このclaim(identity単位、fact_id一致時はfact_id、
+        # fact_id欠落時はhashベース厳密一致)のRewriteが既に④段落水準まで
+        # 試行済み(`escalated_to_paragraph=True`、prior_blocking_records
+        # へ記録)だった場合のみ、「ラダーを昇段しきった上での再発」として
+        # 従来どおり直ちにSTAGE4(same_claim_fact_id_reblocked)へ回す。まだ
+        # ①・③水準までしか試していない場合はSTAGE4にせず、当該claimへ
+        # `escalate_to_paragraph=True`を明示的に付与したうえでループを継続
+        # する(cycle上限[MAX_CYCLES/HARD_MAX_CYCLES]自体は変更しない)。
+        # これは新しい機構ではなく、既存の§6-6 A-2 fact_id再出現ラダー
+        # 前進機構(下記repeat_fact_ids_for_recheck)へ合流させるものであり、
+        # fact_idが同じであればいずれ自動的にも設定されるが、fact_id欠落
+        # claim(hashベースidentity)を取りこぼさないためidentity単位でも
+        # 明示的に設定する。既存のfact_id単独一致判定・cycle上限・JA fail-
+        # open封鎖・等価FAIL gatingは無変更。
+        exhausted_matched_records = [m for m in matched_records if m.get("escalated_to_paragraph")]
+        escalatable_matched_records = [m for m in matched_records if not m.get("escalated_to_paragraph")]
+        if exhausted_matched_records:
             final_state = "STAGE4_ESCALATION"
             stage4_reason = "same_claim_fact_id_reblocked"
-            cycle_record["repeat_claim_ids"] = sorted({m["identity"] for m in matched_records})
+            cycle_record["repeat_claim_ids"] = sorted({m["identity"] for m in exhausted_matched_records})
+            cycle_record["ladder_exhausted_before_reblock"] = True
             cycles_log.append(cycle_record)
             break
+        if escalatable_matched_records:
+            cycle_record["same_claim_reblocked_escalated_to_paragraph"] = sorted(
+                {m["identity"] for m in escalatable_matched_records})
+            for m in escalatable_matched_records:
+                claim = matched_claim_by_identity.get(m["identity"])
+                if claim is not None:
+                    claim["escalate_to_paragraph"] = True
 
         if cycle > MAX_CYCLES:
             # 委任_18 2-3(b)(meta_run03_standard sample2実測、disclosure
@@ -3687,6 +3738,13 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 "identity": claim_identity(c["dev"]),
                 "fact_id": (c["dev"].get("related_fact_id") or "").strip(),
                 "claim_text_norm": normalize_claim_text(c["dev"].get("claim_in_article") or ""),
+                # 委任_24 A-2(§6-13): このRewrite試行で④段落水準まで既に
+                # 試行済みか(escalate_to_paragraphが今cycleで付与済みか)を
+                # 記録する。次cycleで同一claimが再発した際、matched_records
+                # 判定がこのフラグを見て「ラダー昇段しきった上での再発
+                # (直ちにSTAGE4)」か「まだ昇段の余地がある再発(ループ継続)」
+                # かを区別する。
+                "escalated_to_paragraph": bool(c.get("escalate_to_paragraph")),
             })
         prev_cycle_blocking_count = len(blocking_claims)
 

@@ -2605,6 +2605,22 @@ gatingの過剰保守を解消、A-2はreuse enumeration欠如を解消)こと�
 「¥6超え見込み」「最小修正1回後もFAIL」に該当、Fable/ユーザー判断待ち
 として次回委任へ持ち越す)。
 
+### 6-13. ラダー前進と§3-3安全網の判定順序是正(委任_24 A-2、REPORT§24)
+
+**背景(rep14で判明した第三要因の再解釈)**: §6-12の是正A・Bを反映したrep14実測で、`hormuz_run03_standard`は是正A・Bとも実際に発火したにもかかわらず2/2ともSTAGE4_ESCALATIONのまま残り、理由が`ja_deviation_unresolved`から`same_claim_fact_id_reblocked`へ変化した(「word-level[①]のみのRewriteでは当該claimの実質的問題を解消しきれないというStage3 Rewrite品質の限界」と報告していた)。本委任でrep14の実cycle記録(call_log)を精査した結果、これはRewrite品質の限界ではなく、**§3-3安全網(`matched_records`判定)が§6-6 A-2のラダー前進機構(`escalate_to_paragraph`)より先に評価される実装順序の問題**だったと判明した。①水準Rewrite後のcycle2全文Recheckが同一claimを近似一致(閾値0.75)で再検出した時点で、④段落水準のRewriteが一度も試されないまま`same_claim_fact_id_reblocked`でSTAGE4へ直行していた。
+
+**是正(¥0)**: `run_instance`のcycle>1時の`matched_records`判定を、一致した`prior_blocking_records`エントリが持つ`escalated_to_paragraph`(そのRewrite試行時に④段落水準を使ったか)で二分岐させた。
+- **exhausted_matched_records**(既に④段落水準まで試行済みで再発): 従来どおり直ちに`stage4_reason="same_claim_fact_id_reblocked"`(「ラダーを昇段しきった上での再発」という意味へ変更)。
+- **escalatable_matched_records**(まだ①・③水準までしか試していない再発): STAGE4にせず、該当claimへ`escalate_to_paragraph=True`を明示的に付与してループを継続する(既存の§6-6 A-2機構[fact_id再出現時に④段落水準から試す]へ合流、新しい機構は作らない。fact_idが一致していれば既存の`repeat_fact_ids_for_recheck`でも同じフラグが立つが、fact_id欠落claim[hashベースidentity]を取りこぼさないためidentity単位でも明示的に設定する)。
+
+`prior_blocking_records`の各エントリへ`escalated_to_paragraph`フィールドを追加し、`find_matching_prior_record`はそのclaim identityについて**直近(最後に追記された)一致レコードを優先して返す**よう走査順を`reversed(prior_records)`へ変更した(旧来の先頭[最も古い]一致優先では、同一fact_idが複数cycleにまたがる場合に最新の試行状態[`escalated_to_paragraph`]を正しく参照できなかった)。cycle上限(`MAX_CYCLES`/`HARD_MAX_CYCLES`)・JA fail-open封鎖(§6-7)・等価FAIL gating(§6-11、`FAIL`分岐は委任_23でも無変更)・Safety floor-strictは無変更。
+
+**設計判断の開示**: 委任文は「次のラダー段(②→③→④)へ」と表現していたが、②(文の一部)はコード上の独立水準として存在せず(§5-7で既に①へ統合済み)、既存の§6-6 A-2機構は①・③を両方スキップして④へ直接進む設計(rep10実測で解消実績あり)である。本委任は新しい「1段ずつ昇段する」機構を新設せず、既存のこの直接④ジャンプ機構へ合流させる最小変更を選んだ(最小変更・既存機構再利用の原則に従う判断だが、委任文の字面とは完全には一致しないため明示的に報告する)。
+
+**rep15実測(`hormuz_run03_standard`×n=2、sample1完走・sample2はGuardrail到達でTrialAbort、詳細REPORT§24-3)**: sample1は`stage4_reason`が`same_claim_fact_id_reblocked`から**発生しなくなり**(premature短絡が解消)、cycle1で①・③水準、cycle2で④段落水準(fact_id再出現によるescalate_to_paragraph)へ正しく昇段し、EN/JA双方のLedger Recheckが「解消」を確認した。しかしcycle2で`ja_en_equivalence_verdict=FAIL`(委任_23で意図的に無変更のまま維持したhard gate)が記録されたため、最終的に`ja_deviation_unresolved`でSTAGE4_ESCALATIONへ至った(false PASSではない、別の既存fail-closed機構が正しく発火した結果)。**正直なコスト報告**: sample1は¥4.0578(19 call)で、rep14の同fixture(¥1.87〜1.98、9 call、早期打ち切り)の**約2.1倍**のコストとなった。これは是正が意図どおり追加cycleを許した結果でありバグではないが、同種パターンを持つ他instanceでも同程度のコスト増が見込まれることをFable/ユーザーへ開示する(rep15が¥7 Guardrailに到達し`bgroup_B4`・`safety_A2A3`が未実施に終わった直接原因)。
+
+**unittest**: `TestFindMatchingPriorRecord.test_multiple_prior_records_same_fact_id_returns_most_recent`(新規1件)、`TestSameClaimReblockedLadderEscalationWiring`(新規3件、source inspection)。既存218件+新規4件=**計222件全PASS**。
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず
@@ -3832,6 +3848,29 @@ floor-strictの維持・false PASS 0件・unittest218件全PASS・Production
 無変更を確認した。**Status=`A2_GATING_AND_ENUMERATION_FIXED_VALIDATED_
 LADDER6_DISABLED_COST_REDUCED_HORMUZ_STILL_ESCALATES_NEW_THIRD_CAUSE_
 FOUND`**。詳細REPORT§23。
+
+**⑯ hormuz第三要因(ラダー未昇段のまま§3-3安全網が先に発火)の是正+少数
+確認rep15(委任_24、本書§6-13参照)**: rep14で「Stage3 Rewrite品質の
+限界」と報告していた第三要因を精査した結果、実際は§3-3安全網(`matched_
+records`判定)が§6-6 A-2のラダー前進機構(`escalate_to_paragraph`)より
+先に評価される実装順序の問題だったと判明した。同一claim再発を、④段落
+水準まで既に試行済みの場合のみSTAGE4(`same_claim_fact_id_reblocked`)
+へ回し、未昇段の場合は既存のラダー前進機構へ合流させループを継続する
+是正を実装した(unittest 222件全PASS)。rep15実測(`hormuz_run03_
+standard`×n=2、sample1完走・sample2はGuardrail¥7到達でTrialAbort)で
+sample1は`same_claim_fact_id_reblocked`が発生しなくなり、①→③→④まで
+正しく昇段してEN/JA Ledger Recheckとも「解消」を確認したが、別の既存
+hard gate(`ja_en_equivalence_verdict=FAIL`、委任_23で意図的に無変更の
+まま維持)により`ja_deviation_unresolved`でSTAGE4_ESCALATIONへ至った
+(false PASSではない)。sample1のコストはrep14比**約2.1倍**(¥4.0578 vs
+¥1.87〜1.98)となり、これがrep15予算(¥7)を`hormuz_run03_standard`
+n=2だけで使い切った直接原因のため、`bgroup_B4`×1・`safety_A2A3`×1は
+**本委任では未実施**。Phase 2候補記事一覧(新規テーマは作らず既存evidence
+を精査)は、独立した実在記事テーマが「hormuz」「meta」の2件のみであり
+10本には届かないことを正直に報告した(詳細REPORT§24-4)。**Status=
+`LADDER_ESCALATION_ORDER_FIXED_VALIDATED_HORMUZ_NO_LONGER_PREMATURE_
+REBLOCK_BUT_SEPARATE_EQUIVALENCE_GATE_ESCALATES_COST_INCREASED_B4_
+A2A3_UNTESTED_BUDGET_EXHAUSTED`**。詳細REPORT§24。
 
 ## 10. リスク
 
