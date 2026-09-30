@@ -512,19 +512,28 @@ class TestRubricR3Wiring(unittest.TestCase):
         import inspect
         import er052_open233_self_recovery_stage2_calibration_01 as s2c
         src = inspect.getsource(runner.run_stage2)
-        # 委任_13(iteration5): RUBRIC_R3_PRIME -> RUBRIC_R3_TRIPLE_PRIMEへ切替
-        # (単体較正でB4-d/B1-c QUALITY 2/2+Safety-critical 10claim誤降格0を
-        # 達成、summary_r3tripleprime_calibration.json参照)。
+        # 委任_16作業Cの代表ケースTrialで、RUBRIC_R4_HOOK_AWARE(Title/Hook/
+        # 場面描写の演出許容原則を追記したrubric)がSafety-critical claim
+        # (bgroup_B3)を誤降格させ、最小修正1回でも再現したため(§5 STOP
+        # 条件該当)、実配線はRUBRIC_R3_TRIPLE_PRIMEへ復帰した(詳細は
+        # run_stage2内のコメント・REPORT§17参照)。RUBRIC_R4_HOOK_AWARE
+        # 自体は次回委任向けにコードとして保持する(削除しない)。
         self.assertIn("s2c.RUBRIC_R3_TRIPLE_PRIME", src)
+        self.assertNotIn("s2c.RUBRIC_R4_HOOK_AWARE,", src)
         self.assertNotIn("s2c.RUBRIC_R2,", src)
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_NATURAL_INTERPRETATION"))
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_PRIME"))
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_DOUBLE_PRIME"))
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_TRIPLE_PRIME"))
+        self.assertTrue(hasattr(s2c, "RUBRIC_R4_HOOK_AWARE"))
         self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_NATURAL_INTERPRETATION)
         self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_PRIME)
         self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_DOUBLE_PRIME)
         self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_TRIPLE_PRIME)
+        # R4はR3'''本文を丸ごと内包(既存iteration4/5/6較正の再現性維持)。
+        self.assertIn(s2c.RUBRIC_R3_TRIPLE_PRIME, s2c.RUBRIC_R4_HOOK_AWARE)
+        self.assertIn("Hook-aware原則", s2c.RUBRIC_R4_HOOK_AWARE)
+        self.assertIn("section_type", s2c.RUBRIC_R4_HOOK_AWARE)
 
     def test_only_blocking_claims_dispatched_to_stage3(self):
         import inspect
@@ -1176,6 +1185,154 @@ class TestMinimalChangeLadderOrdering(unittest.TestCase):
                 [], [], "test", fixture, "article_text", claim_rec)
         self.assertEqual(result["ladder_level_used"], "3_sentence")
         self.assertEqual(calls, ["test_e1_minimal_word", "test_e2_rewrite"])
+
+
+class TestJ1MinimalChangeLadderOrdering(unittest.TestCase):
+    """委任_16 B-1(§2原因1是正): paired_rewrite(J-1)がsingle_text_rewriteと
+    同じ①単語・接続詞(J1_MINIMAL_WORD)を先に試し、guardを満たしたら
+    ③1文/④段落へ進まないことを、API呼び出しをmockして確認する(¥0)。"""
+
+    def test_stops_at_level1_when_minimal_edit_resolves_it_both_languages(self):
+        from unittest import mock
+
+        en_full = ("# Title\n\nConcerns continued on July 14. So the flashy 20% plan left "
+                   "the stage.\n\n## In one line\nA plan changed.\n")
+        ja_full = ("# タイトル\n\n懸念は7月14日も続いた。そのため、派手な20%案は表舞台から消えた。"
+                   "\n\n## 一言でまとめると\n案が変わった。\n")
+        claim_rec = {
+            "claim_text": "So the flashy 20% plan left the stage.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            # rewrite_hintへ逐語引用(JA)を含めることで、ja側のlocate_targetを
+            # 第一キー(extract_quoted_fragment)経由で決定論的に一致させる
+            # (実runのrewrite_hint[Stage2出力]の仕様どおり、テストの安定性のため)。
+            "rewrite_hint": '"懸念は7月14日も続いた。そのため、派手な20%案は表舞台から消えた。"',
+            "dev": {"issue": "wrong causal link"}, "origin": "ja_source",
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": en_full,
+                   "source_article_text": ja_full}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_j1_e1_minimal_word"):
+                return ('{"ja_revised": "懸念は7月14日も続いた。一方、派手な20%案は表舞台から消えた。", '
+                        '"en_revised": "While the flashy 20% plan left the stage, concerns lingered."}')
+            raise AssertionError(f"should not escalate past level 1, but called {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.paired_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, claim_rec)
+        self.assertEqual(result["ladder_level_used"], "1_word_connective")
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(result["guard_ok"])
+        self.assertIn("While the flashy 20% plan", result["updated_en_text"])
+
+    def test_escalates_to_level3_when_level1_declines(self):
+        from unittest import mock
+
+        en_full = "# Title\n\nSome sentence with a problem in it.\n\n## In one line\nA plan changed.\n"
+        ja_full = "# タイトル\n\n問題のある文がある。\n\n## 一言でまとめると\n案が変わった。\n"
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            # test1と同じ理由でja側の対象文を逐語引用で決定論的に固定する。
+            "rewrite_hint": '"問題のある文がある。"', "dev": {"issue": "problem"}, "origin": "ja_source",
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": en_full,
+                   "source_article_text": ja_full}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_j1_e1_minimal_word"):
+                return '{"ja_revised": "", "en_revised": ""}'
+            if label.endswith("_j1_paired_rewrite"):
+                return ('{"ja_revised": "問題のない文がある。", '
+                        '"en_revised": "Some sentence without the problem."}')
+            raise AssertionError(f"unexpected escalation to {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.paired_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, claim_rec)
+        self.assertEqual(result["ladder_level_used"], "3_sentence")
+        self.assertEqual(calls, ["test_j1_e1_minimal_word", "test_j1_paired_rewrite"])
+
+
+class TestStage2HookAwareSectionTypeWiring(unittest.TestCase):
+    """委任_16 B-2(§2原因2是正): Stage2入力にsection_typeが付与され、
+    RUBRIC_R4_HOOK_AWAREがTitle/Hook/場面描写の演出許容原則を持つことを
+    確認する(¥0、API呼び出しなし)。Meta hook実例のsection_type判定自体は
+    決定論(detect_claim_section_type)であり、ここでunittest化する。
+    実際にLLMがQUALITY/ACCEPTABLEへ判定するかは代表ケースTrial(委任_16 C)
+    で実測する(このunittestの対象外)。"""
+
+    META_HOOK_TEXT = (
+        "# When a Robot Voice Answered the Phone\n\n"
+        "Ring, ring. A call seemed to come from an AI agent, and the person picking up "
+        "the phone had to guess who was really on the line.\n\n"
+        "## In one line\nMeta ran a test about AI phone calls.\n"
+    )
+
+    def test_meta_hook_claim_classified_as_hook_section(self):
+        claim_text = ("Ring, ring. A call seemed to come from an AI agent, and the person "
+                       "picking up the phone had to guess who was really on the line.")
+        section_type = runner.detect_claim_section_type(claim_text, self.META_HOOK_TEXT)
+        self.assertEqual(section_type, "hook")
+
+    def test_run_stage2_passes_section_type_into_batch_prompt(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        claims = [{"claim_text": "x", "local_context": "y", "origin": None,
+                   "related_fact_id": None, "section_type": "hook"}]
+        blocks = []
+        for i, c in enumerate(claims):
+            blocks.append(
+                f"[claim_index={i}]\nclaim: {c['claim_text']}\n"
+                f"ローカル文脈(段落±1): {c['local_context']}\n"
+                f"origin: {c.get('origin') or '(不明)'}\n"
+                f"related_fact_id: {c.get('related_fact_id') or '(不明)'}\n"
+                f"section_type(title/hook/in_one_line/body): {c.get('section_type') or 'body'}"
+            )
+        self.assertIn("section_type(title/hook/in_one_line/body): hook", "\n\n".join(blocks))
+        # run_stage2自体もsection_typeをclaim_recordsへ付与する(post-hoc
+        # downgrade[§6-4]・測定[§8-7]用に保持、ただしLLMプロンプトへは渡さない
+        # ことを代表ケースTrialの是正として確認する、REPORT§17参照)。
+        import inspect
+        src = inspect.getsource(runner.run_stage2)
+        self.assertIn('"section_type": section_type', src)
+        self.assertIn("claim_records_for_stage2", src)
+        self.assertIn('if k != "section_type"', src)
+        self.assertIn("s2c.RUBRIC_R3_TRIPLE_PRIME", src)
+        self.assertIn("Hook-aware原則", s2c.RUBRIC_R4_HOOK_AWARE)
+
+    def test_rubric_r4_does_not_exempt_body_or_in_one_line_section_from_normal_rules(self):
+        # 委任_16代表ケースTrial実測是正: 当初案(title/hook/in_one_line)は
+        # Safety-critical claim(bgroup_B3、In one line欄)を誤降格させたため、
+        # 適用対象をtitle/hookの2種のみへ限定した(in_one_line/bodyは対象外)。
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertIn("in_one_lineまたはbodyの場合は本項目を適用せず", s2c.RUBRIC_R4_HOOK_AWARE)
+        self.assertIn("section_typeがtitle/hookであることを理由に", s2c.RUBRIC_R4_HOOK_AWARE)
+
+
+class TestInOneLineTooLongDetection(unittest.TestCase):
+    """委任_16 B-4: In one line長文化検出(§5-7/§8-7)のunittest(既存
+    hook_shrinking/numbers_added_to_titleと並ぶ、+30%超の検出のみを
+    直接対象とする追加ケース)。"""
+
+    def test_in_one_line_length_increase_over_30_percent_detected(self):
+        before = "# Title\n\nHook.\n\n## In one line\nA short plan changed today.\n"
+        after = ("# Title\n\nHook.\n\n## In one line\nA short plan changed today after a long "
+                 "series of unexpected concerns and additional background details were added.\n")
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["in_one_line_too_long"])
+        self.assertTrue(result["section_role_violated"])
+
+    def test_in_one_line_small_increase_not_flagged(self):
+        before = "# Title\n\nHook.\n\n## In one line\nA short plan changed today.\n"
+        after = "# Title\n\nHook.\n\n## In one line\nA short plan changed today, mostly.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertFalse(result["in_one_line_too_long"])
 
 
 class TestCostBreakdown5Way(unittest.TestCase):

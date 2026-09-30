@@ -119,7 +119,18 @@ standardがpaired J-1[未ラダー化]の既存挙動で両sample STAGE4)。
 floor-cited variantはSafety群でhard gate通過(false-negative 0)だが
 `related_fact_id`依存の限界を確認、floor-strict維持を推奨。
 USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細§9-1⑪、REPORT§15。
-Production実装は未着手)。
+Production実装は未着手)。→ **[委任_16更新]**
+`ITER7REP_STOPPED_SAFETY_REGRESSION_REVERTED`(J-1最小変更ラダー[§5-8]+
+Hook-aware rubric拡張[§6-4]を実装し、広いiteration7実行前に代表5
+ケースTrialを実施[¥9.386]。**J-1ラダーはPASS**(`bgroup_B3`が
+`ladder_level_used=1_word_connective`[so→while相当]でBLOCKING維持の
+まま解消、item4の目標を達成)。一方**Hook-aware rubricはSafety-critical
+claim[bgroup_B3]の誤降格regressionを起こし、最小修正1回後もFAILが
+再現**(prompt priming疑い)したためSTOP条件に該当し、Stage2実配線を
+安全なRUBRIC_R3_TRIPLE_PRIMEへ復帰(再実測でBLOCKING復帰を確認)。
+広いiteration7 Trialへは進んでいない(Gate判定はiteration6の
+REJECTEDのまま)。USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細
+§9-1⑫、REPORT§16。Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -1459,6 +1470,42 @@ claimであったため、実測(iteration6)では**ラダーの恩恵を受け�
 2回目呼び出し)へ合流させる(新しい再生成機構は作らない、既存機構の
 条件を拡張しただけ)。
 
+### 5-8. J-1(paired JA/EN local rewrite)への最小変更ラダー適用(委任_16
+B-1、2026-09-30ユーザー新方針item4是正)
+
+**背景**: §5-7で導入したsingle_text_rewrite側の最小変更ラダー(①単語・
+接続詞→③1文→④段落)は、`paired_rewrite`(J-1、JA/EN対訳ペア、
+origin=ja_sourceのclaim向け)には未適用のままだった(`ladder_level_used=
+"paired_j1_not_laddered"`固定)。2026-09-30ユーザー新方針item4の
+flagship例(`bgroup_B3`、接続詞"so"の因果claim)自体がorigin=ja_sourceの
+claimであったため、iteration6実測ではラダーの恩恵を受けず、従来どおり
+段落単位(`j1_paired_rewrite_paragraph`)でRewriteされていた(§7-0-iter4の
+「達成できなかった点」として報告済み)。
+
+**実装**: `paired_rewrite`を`single_text_rewrite`と同じ三段ladder
+(①単語・接続詞[新設`J1_MINIMAL_WORD_PROMPT_TEMPLATE`、JA側は
+「〜ので/そのため/だから」→「一方/その間/同じ頃」相当の接続詞置換、
+EN側はso→while/meanwhile相当の接続詞置換・文分割のみを許可]→③1文
+[既存`J1_GENERIC_PROMPT_TEMPLATE`]→④段落[既存`J1_PARAGRAPH_PROMPT_
+TEMPLATE`、対象文を含むブロックが両言語で特定できる場合のみ])へ再設計
+した。guardは`single_text_rewrite`と同型(`ja_revised`/`en_revised`が
+共に非空、両言語のテキストが変化、かつclaim_text原文がEN側から消えて
+いること)を各水準で満たした時点で停止する(既存guardロジックの再利用、
+新しい安全判定は発明しない)。両言語の対象文特定に失敗した場合、または
+全水準がguardを満たせなかった場合は、既存のJA全文フォールバック
++EN局所編集/全文フォールバック(委任_11 作業B-1/B-2是正済み、変更なし)
+を水準⑥として維持し、成功時は`ladder_level_used="6_full_article"`を
+記録する。
+
+**代表ケースTrial実測(委任_16 作業C、`bgroup_B3`)**: 最終的な安全な
+rubric構成(RUBRIC_R3_TRIPLE_PRIME、§6-4参照)のもとで、`bgroup_B3`の
+"so the flashy 20% plan left the stage"claimはBLOCKINGのまま維持され、
+`ladder_level_used="1_word_connective"`(method=`j1_e1_minimal_word`)で
+解消することを実測確認した(n=2、両sample一致)。段落単位Rewriteは発生
+せず、`section_role_violation`も0件(In one line語数不変)。2026-09-30
+ユーザー新方針item4の目標(「まずso→while/meanwhile相当の最小変更で
+解消を試す」)をB3自身の実例で達成した(iteration6の既知の限界を解消)。
+
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
 ### 6-1. Escalation条件
@@ -1578,6 +1625,41 @@ Flow自身のdeterministic floor(`FLOOR_FLAGS`、Safety側の安全装置)に
 claimが実際のfixture setに存在しなかった)。機構自体はunittest 5件で
 独立に動作確認済み。Meta neg1のケースは本統合では解消されない(監査
 文書の結論どおり)。
+
+**Stage2 rubric側Hook-aware原則の試行と撤回(委任_16 B-2、2026-09-30
+ユーザー新方針item2、代表ケースTrial実測に基づく設計判断)**: 上記の
+post-hoc downgrade(changed_scope単独限定)ではneg1のMeta hook実例
+(changed_fact/changed_certainty/unsupported_new_claim)を解消できない
+という監査結論を受け、Stage2のLLM判定自体にsection_type
+(title/hook/in_one_line/body)を入力として渡し、Title/Hook/場面描写/
+attention grabberに対する演出許容原則を追記した新規rubric
+(`RUBRIC_R4_HOOK_AWARE` = `RUBRIC_R3_TRIPLE_PRIME` + Hook-aware追記、
+`er052_open233_self_recovery_stage2_calibration_01.py`)を実装し
+run_stage2の実配線を一時的に切り替えた。代表ケースTrial(委任_16
+作業C)で実行したところ、**Safety-critical 10claimの1つ(`bgroup_B3`、
+`SAFETY_CRITICAL_SUB_IDS`)がQUALITYへ誤降格する**実測結果を得た
+(適用対象がtitle/hook/in_one_line/bodyの4種すべてで、B3のclaimが
+section_type="in_one_line"に分類されたため)。委任文の手順に従い、
+適用対象をtitle/hookの2種のみへ限定する最小修正を1回行い当該ケース
+のみ再実行したが、**in_one_lineを明示的に適用対象外としたにもかかわらず
+同じ誤降格が再現した**(QUALITY 2/2、`er052_output/
+open233_self_recovery_flow_runner_01_rep7/summary_rep7_b3_refix.json`)。
+これはルール条件(section_typeによる適用可否判定)自体のバグではなく、
+Hook-aware原則文がプロンプト中に存在するだけで、条件上は無関係な
+section_typeの判定にも寛容化バイアスが波及した疑いが強い(LLMの
+prompt priming効果、既存rubric較正[R2→R3→R3'→R3''→R3''']が積み上げて
+きた「明確なNG列挙以外はQUALITY側」というtie-breakの効きやすさと、
+新規追記した「演出は許容」という言い回しが、条件を満たさないclaimの
+判定にも波及したと考えられる)。委任文§5のSTOP条件(「代表ケースが
+最小修正1回後もFAIL」)に該当するため、**実配線を安全性が実測済みの
+RUBRIC_R3_TRIPLE_PRIMEへ復帰**し(section_type自体はPython側の計算
+[`detect_claim_section_type`]としてclaim_recordsへ引き続き保持するが、
+**Stage2のLLMプロンプトへは渡さない**よう変更、iteration6と同一の
+プロンプト内容を維持)、復帰後の再実測で`bgroup_B3`がBLOCKING 2/2へ
+復帰することを確認した。`RUBRIC_R4_HOOK_AWARE`自体は削除せず次回委任
+向けにコードとして保持する(Phase2課題、詳細REPORT§16/DECISION_LOG)。
+neg1(Meta hook)自体の未解消は、post-hoc downgrade・rubric側の両approach
+とも根本解消できておらず、Phase2への持ち越し課題として記録する。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
@@ -2707,6 +2789,26 @@ Guardrail到達によるsample2部分完走(26/29)は「予算超過」ではな
 flagship例(`bgroup_B3`)自体もJ-1経由だったため恩恵を受けなかった、
 (c)real_run Escalationはn=2実測でむしろ悪化した。Status=
 `ITER6_DONE_LADDER_IMPROVED_ROOT_CAUSE_REMAINING`。詳細REPORT§15。
+
+**⑫ 代表5ケースTrial(委任_16 作業C、iteration6の未達原因是正+広い
+iteration7実施前の少数ケース確認)**: PM_GOVERNANCE.md新節14の
+Trial開始前チェック(A〜F各項目の反映先確認)通過後、5 instance
+(`neg1_meta_b3prod_a2`/`bgroup_B3`/`hormuz_run03_standard`/
+`safety_er009_changed_actor`/`safety_er009_changed_number`、全てstage1_
+mode=reuse)をn=2で実行した(新規`er052_open233_self_recovery_flow_
+runner_01_rep7_representative_01.py`、Guardrail¥15、OUT_DIR=`er052_
+output/open233_self_recovery_flow_runner_01_rep7`)。J-1ラダー(§5-8)は
+`bgroup_B3`でPASS(BLOCKING維持のままladder_level_used=1_word_
+connectiveで解消)、hormuz_run03_standard/safety_er009系2件もSafety
+維持+minimal resolutionでPASS。一方、Hook-aware rubric(§6-4)は
+Safety-critical claim(`bgroup_B3`)誤降格のregressionを起こし、最小修正
+1回後もFAILが再現したためSTOP条件(委任文§5)に該当し、rubricを安全な
+RUBRIC_R3_TRIPLE_PRIMEへ復帰した(§6-4に詳細)。neg1(Meta hook)は復帰後
+rubricでも未検証(pre-revert configでの実測のみ、BLOCKINGのまま
+Rewriteで解消、hook_shrank違反[28→13語]を検出)。**Status=
+`ITER7REP_STOPPED_SAFETY_REGRESSION_REVERTED`**(広いiteration7 Trialへは
+進んでいない、Gate判定はiteration6のREJECTEDのまま変更なし)。詳細
+REPORT§16(委任_16再発防止ルール明文化)/§17(代表ケースTrial結果)。
 
 ## 10. リスク
 

@@ -14444,3 +14444,118 @@ self_recovery_rewrite_compare_page_iter6_01.py`、`er052_output/
 open233_self_recovery_flow_runner_01_iter6/`、`user_test/open233_
 rewrite_compare_01/index.html`、`user_test/open233_rewrite_compare_01/
 index_iter5.html`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: 再発防止ルール明文化+代表5ケース
+Trial実測(J-1最小変更ラダーPASS・Hook-aware rubric拡張はSafety
+regressionでSTOP、委任_16、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_16)。
+
+**ユーザー指示(逐語要旨)**: 最新のユーザー指示はClaude側の既存計画・
+iteration番号より常に優先する。反映できない状態なら別Trialを進めず
+STOPして報告する。1回未達で終了せず、予算内で原因特定→設計修正→
+少数代表ケースで安価に確認→通ったら広いTrialの順で継続する。同じ
+失敗設計の惰性反復は禁止。総予算上限¥400→**¥500**(目標額ではない、
+¥500超過が必要な時のみUSER_DECISION_REQUIRED)。次の課金Trial前に
+必ず反映(A Hook-aware/B数値丸め/C最小変更第一/D B3型/Eセクション役割
+維持/F Rewrite後QA)。進行順は少数代表ケース(Meta Hook/B3丸め/B3因果/
+Hormuz scope/既知Safety重大)で確認してから広いTrialへ。再発防止を
+PM/運用ルールへ明文化(Trial開始前/終了前チェック・次工程Gate)。
+
+**Fable判定**: iteration6の未達原因は(1)J-1(JA/EN対訳paired rewrite)が
+最小変更ラダー未適用のためbgroup_B3がラダーの恩恵を受けなかった、
+(2)Hook-aware post-hoc downgradeがchanged_scope単独のみ対象でneg1の
+実際のflag(changed_fact/changed_certainty/unsupported_new_claim)を
+カバーしない、(3)Stage2較正セット外claimへの汎化未確認、の3点。J-1へも
+①単語接続詞→③1文→④段落のラダーを適用し、Stage2 rubricへHook/Title
+演出許容原則を追加、代表5ケースで実測確認してから広いiteration7へ
+進む方針とした。
+
+**作業A(¥0)**: `PM_GOVERNANCE.md`22節(委任文指定の11節は既存節が占有
+のため次番号採番、design書§6-3と同一パターン)「ユーザー指示優先と
+Trial開始前/終了前チェック・次工程Gate」を新設(最新指示優先原則・
+Trial開始前チェック[指示全件列挙+反映先対応表+未反映で開始禁止]・
+Trial終了前チェック[各指示の実測確認+KPI全測定+未達時の継続判断]・
+次工程Gate[指示未反映のまま次段階へ進まない]・最小修正1回の上限)。
+`PM_BRIEF.md`固定ヘッダへ参照行追加。委任_15の未commit成果物
+(`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+15.md`、`docs/pm/open233_cost_kpi_reaggregation_iter1to5_01.md`)を
+本委任のcommitへ含めた。`OPEN_ITEMS.md`OPEN-233行のStatusセル
+(第3カラム)を最新(iteration6 REJECTED+本委任STOPPED、累計/上限¥500)
+へ更新。
+
+**作業B(¥0、実装)**: **B-1 J-1最小変更ラダー**(design書§5-8):
+`paired_rewrite`へ①単語・接続詞(新設`J1_MINIMAL_WORD_PROMPT_TEMPLATE`、
+JA「〜ので/そのため/だから」→「一方/その間/同じ頃」相当・EN so→
+while/meanwhile相当)→③1文(既存`J1_GENERIC`)→④段落(既存
+`J1_PARAGRAPH`)のladderを実装(guardはsingle_text_rewriteと同型)。
+**B-2 Hook-aware Stage2 rubric拡張**(design書§6-4): section_type
+(title/hook/in_one_line/body)をStage2入力へ付与し、Title/Hook/場面
+描写の演出許容原則を追記した`RUBRIC_R4_HOOK_AWARE`を実装・一時的に
+実配線したが、代表ケースTrialでregressionを検出し撤回(下記参照)。
+**B-3 Trial開始前チェック表**を`docs/pm/ACTIVE_TASK_C233S.md`に作成、
+未反映0件を確認してから作業Cを開始。**B-4 unittest**: 新規7件追加
+(J-1最小変更ラダー2件・Stage2 Hook-aware section_type配線3件・
+In one line長文化検出2件)、既存120件(iteration6時点)+新規7件=**127件
+全PASS**(`er052_open233_self_recovery_flow_runner_01_test_01.py`)+
+既存23件PASS(precheck、regressionなし、合わせて150件PASS)。
+
+**作業C(¥9.386、代表5ケースTrial、n=2)**: 新規`er052_open233_self_
+recovery_flow_runner_01_rep7_representative_01.py`(Guardrail¥15)で
+5 instance(neg1_meta_b3prod_a2/bgroup_B3/hormuz_run03_standard/
+safety_er009_changed_actor/_changed_number、全てstage1_mode=reuse)を
+実行。**J-1ラダー(B-1)はPASS**: `bgroup_B3`(item4のflagship例)が
+`ladder_level_used=1_word_connective`(so→while相当)でBLOCKING維持の
+まま解消(iteration6の既知の限界を解消)。hormuz_run03_standard/
+safety_er009系2件もSafety維持+minimal resolutionでPASS。**Hook-aware
+rubric拡張(B-2)はFAIL**: 1回目実行でSafety-critical claim
+(`bgroup_B3`、`SAFETY_CRITICAL_SUB_IDS`)がQUALITYへ誤降格するregression
+を検出。委任文の手順どおり最小修正1回(適用対象をtitle/hook/
+in_one_line/bodyの4種からtitle/hookの2種へ限定)を行い当該ケースのみ
+再実行したが、**in_one_lineを明示的に適用対象外としたにもかかわらず
+同じ誤降格(QUALITY 2/2)が再現**(ルール条件のバグではなく、Hook-aware
+原則文がプロンプト中に存在するだけで無関係なsection_typeの判定にも
+寛容化バイアスが波及した疑い、LLM prompt priming効果)。**委任文§5の
+STOP条件(最小修正1回後もFAIL)に該当**するため、Stage2の実配線を
+安全性実測済みのRUBRIC_R3_TRIPLE_PRIMEへ復帰し(section_typeはPython側
+計算として保持するがLLMプロンプトへは渡さない設計へ変更)、再検証で
+`bgroup_B3`がBLOCKING 2/2へ復帰することを確認した(¥1.0703)。
+`RUBRIC_R4_HOOK_AWARE`自体は削除せず次回委任向けにコードとして保持。
+neg1(Meta hook)は1回目実行(pre-revert rubric)でBLOCKING維持のまま
+Rewriteで解消(rubric自身の「新規narrative発明はBLOCKING」除外条件どおり
+の妥当な判定)、ただしhook_shrank(28→13語)のsection_role_violationを
+検出(復帰後rubricでの再検証は未実施、Phase2課題)。
+
+**代表5ケースGate判定**: 5ケース中3ケース(J-1ラダー/Hormuz scope/
+Safety重大)はPASS、1ケース(B3、Safety-critical)は最小修正1回後もFAIL
+再現のためSTOP条件該当。**広いiteration7 Trialへは進んでいない
+(Status=STOPPED)**。iteration6のGate=REJECTED判定自体は変更なし。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(6条件いずれも非該当。
+Safety regressionは検出後ただちに安全側[既存rubric]へ復帰しており、
+「重大Fact Safety基準の緩和」を実施した事実はない)。
+
+**費用**: 作業A/B¥0+作業C¥9.386=**¥9.386**(委任Guardrail¥15内)。
+Phase累計¥283.2016+¥9.386=**¥292.5876**/**総枠¥500**、残¥207.4124。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1〜6証跡に
+差分なし。本委任の出力は新規`er052_output/open233_self_recovery_
+flow_runner_01_rep7/`のみ。変更対象は`er052_open233_self_recovery_
+flow_runner_01.py`(+test)・`er052_open233_self_recovery_stage2_
+calibration_01.py`・新規`er052_open233_self_recovery_flow_runner_01_
+rep7_representative_01.py`・`PM_GOVERNANCE.md`・`PM_BRIEF.md`・
+`OPEN_ITEMS.md`のみ。API keyは環境変数のみ、保存jsonはprompt_sha256の
+み記録。既存unittest全127+23件PASS(regression確認、新規7件追加)。
+
+Status=`ITER7REP_STOPPED_SAFETY_REGRESSION_REVERTED`(iteration6の
+Gate=REJECTEDは変更なし、広いiteration7 Trialは未実施、次回委任で
+Hook-aware rubricの再設計またはpost-hoc限定方式への回帰を検討)。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§5-8/§6-4/§9-1⑫/
+冒頭Status、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§16、
+`docs/pm/PM_GOVERNANCE.md`22節、`docs/pm/PM_BRIEF.md`、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+16.md`、`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_open233_self_recovery_stage2_calibration_01.py`、新規
+`er052_open233_self_recovery_flow_runner_01_rep7_representative_01.py`、
+`er052_output/open233_self_recovery_flow_runner_01_rep7/`。

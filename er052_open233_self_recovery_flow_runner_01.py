@@ -114,9 +114,16 @@ OUT_DIR_ITER5 = "er052_output/open233_self_recovery_flow_runner_01_iter5"
 # 委任文§3-D)。入力deviation集合はiteration3〜5と同一固定(paired比較の
 # ため、Stage1 reuseパス自体はiteration1時点のartifactを参照し続ける、
 # 二重課金防止は変更しない)。
-OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter6"
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233r_d.json"
-TOTAL_BUDGET_JPY = 60.0  # 委任_14 作業D Guardrail(委任文§3-D「有料≤¥60」)
+OUT_DIR_ITER6 = "er052_output/open233_self_recovery_flow_runner_01_iter6"
+# 委任_16(iteration7-rep、2026-09-30): 既存iteration1〜6の出力
+# (OUT_DIR_ITER1〜5/OUT_DIR_ITER6)は変更しない。J-1最小変更ラダー(B-1)+
+# Hook-aware Stage2 rubric拡張(B-2)の反映後、代表5ケースのみをn=2で実行
+# する(委任文§3-C、29 instance全量再実行は本委任スコープ外)。出力は
+# 新規ディレクトリ(`_rep7`)へ書く。
+OUT_DIR_REP7 = "er052_output/open233_self_recovery_flow_runner_01_rep7"
+OUT_DIR = OUT_DIR_REP7
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233s_16.json"
+TOTAL_BUDGET_JPY = 15.0  # 委任_16 Guardrail(委任文§0「本委任Guardrail¥15」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -1205,7 +1212,22 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
     claim_records = []
     for c in claims:
         local_context, fallback = s2p.build_local_context(fixture["article_text"], c["claim_text"])
-        claim_records.append({**c, "local_context": local_context, "fallback_used": fallback})
+        # 委任_16 B-2(§2原因2是正、2026-09-30ユーザー新方針A)で、Stage2の
+        # 判定自体にsection_type(title/hook/in_one_line/body)をLLM入力
+        # として渡すRUBRIC_R4_HOOK_AWAREを一旦導入したが、代表ケースTrial
+        # (作業C)でSafety-critical claim(bgroup_B3)の誤降格が再現し
+        # (run_stage2下部のコメント・REPORT§17参照)、実配線をRUBRIC_R3_
+        # TRIPLE_PRIMEへ復帰した。section_type自体はPython側の計算
+        # (detect_claim_section_type、¥0)として引き続きclaim_recordsへ
+        # 保持する(post-hoc downgrade[§6-4、changed_scope限定、既存の
+        # まま安全に稼働中]・測定[§8-7]で使うため)が、**LLMプロンプトへは
+        # 渡さない**(claim_records_for_stage2で除外、iteration6と同一の
+        # プロンプト内容を維持し、未検証の側作用[prompt priming疑い]の
+        # 混入を避ける)。
+        section_type = detect_claim_section_type(c["claim_text"], fixture["article_text"])
+        claim_records.append({**c, "local_context": local_context, "fallback_used": fallback,
+                               "section_type": section_type})
+    claim_records_for_stage2 = [{k: v for k, v in c.items() if k != "section_type"} for c in claim_records]
     last_err = None
     result = None
     for _ in range(1 + MAX_RETRIES_PER_CALL):
@@ -1226,9 +1248,29 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
             # (R3'の80.43%を上回る)を達成したため採用する(較正実測:
             # er052_output/open233_self_recovery_r3dprime_calibration_01/
             # summary_r3tripleprime_calibration.json)。
+            # 委任_16 B-2で一旦RUBRIC_R3_TRIPLE_PRIME -> RUBRIC_R4_HOOK_AWARE
+            # (Title/Hook/場面描写の演出許容原則を追記した新規rubric)へ
+            # 切替を試みたが、代表ケースTrial(作業C、ケース2/3=bgroup_B3)で
+            # Safety-critical 10claimの1つ(B3、SAFETY_CRITICAL_SUB_IDS)が
+            # QUALITYへ誤降格する実測結果を得た。原因調査のため適用対象を
+            # title/hook/in_one_line/bodyからtitle/hookの2種のみへ限定する
+            # 最小修正(RUBRIC_R4_HOOK_AWARE本体を修正、詳細s2c.py該当コメント
+            # 参照)を1回行い再実行したが、in_one_line/bodyを明示的に適用対象
+            # 外としたにもかかわらず同じ誤降格が再現した(QUALITY 2/2、
+            # `er052_output/open233_self_recovery_flow_runner_01_rep7/
+            # summary_rep7_b3_refix.json`)。これはHook-aware原則文が
+            # プロンプト中に存在するだけで、条件上は無関係なsection_type
+            # (in_one_line)の判定にも寛容化バイアスが波及した疑いが強い
+            # (ルール条件のバグではなくLLMのprompt priming効果の疑い)。
+            # 委任文§5(STOP条件「代表ケースが最小修正1回後もFAIL」)に該当
+            # するため、RUBRIC_R4_HOOK_AWAREは実配線せず、実測で安全性が
+            # 確認されているRUBRIC_R3_TRIPLE_PRIMEへ復帰する(既存iteration
+            # 4/5/6の安全な挙動を維持)。RUBRIC_R4_HOOK_AWARE自体・
+            # section_type入力機構は次回委任向けにコードとして残す(削除
+            # しない、Phase2課題として報告、詳細REPORT§17/DECISION_LOG参照)。
             result = s2c.run_stage2_batch_variant(
                 client, fixture["ledger_text"], fixture.get("source_article_text"),
-                claim_records, s2c.RUBRIC_R3_TRIPLE_PRIME, model=MODEL,
+                claim_records_for_stage2, s2c.RUBRIC_R3_TRIPLE_PRIME, model=MODEL,
             )
             break
         except Exception as e:  # noqa: BLE001
@@ -1278,8 +1320,11 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         # 委任_14 B-5: Hook-aware post-hoc downgrade(floor不発火時のみ、
         # changed_scope単独発火時のみ)。changed_comparisonは既存
         # deterministic floor(Safety側安全装置)の対象のままとし、本委任
-        # では独自判断で緩和しない(監査文書に理由を記録)。
-        section_type = detect_claim_section_type(c["claim_text"], fixture["article_text"])
+        # では独自判断で緩和しない(監査文書に理由を記録)。委任_16 B-2で
+        # section_typeはStage2入力(claim_records)へ既に付与済みのため
+        # ここでは再計算せずc["section_type"]を再利用する(¥0、二重計算回避)。
+        section_type = c.get("section_type") or detect_claim_section_type(
+            c["claim_text"], fixture["article_text"])
         hook_materiality, hook_reason = apply_hook_aware_downgrade(
             final_materiality, dev_for_floor, section_type, floor_reason)
         if hook_reason:
@@ -1674,6 +1719,46 @@ Revise BOTH paragraph blocks (paired, minimal edits). Delete or narrow EVERY sen
 rewrite_hint above. Leave sentences unrelated to this issue unchanged wherever possible. Return strict \
 JSON: {{"ja_revised": "<full revised JA paragraph block>", "en_revised": "<full revised EN paragraph block>"}}"""
 
+# 委任_16 B-1(J-1最小変更ラダー、2026-09-30ユーザー指示§2原因1是正): paired
+# JA/EN rewrite(J-1)もsingle_text_rewriteと同じ①単語・接続詞のみ→③1文
+# (既存J1_GENERIC)→④段落(既存J1_PARAGRAPH、対象文を含むブロックが両言語で
+# 特定できる場合のみ)の順に試すladderへ再設計する(§5-7既知の限界の解消)。
+# 水準①はJA側の接続詞置換(「〜ので/そのため/だから」→「一方/その間/
+# 同じ頃」等)またはEN側のso→while/meanwhile相当の接続詞置換・文分割のみを
+# 許可し、それ以外の書き換えは行わない(既存E1_MINIMAL_WORD_PROMPT_TEMPLATE
+# と同じ最小編集原則をpaired版へ拡張)。
+J1_MINIMAL_WORD_DEVELOPER_MSG = (
+    "You are a bilingual (Japanese/English) editor fixing a Ledger deviation flagged by a Checker, "
+    "using the SMALLEST possible edit to a paired JA/EN sentence: swap a single word or connective in "
+    "BOTH languages (for example JA 　ので/そのため/だから -> "
+    "一方/その間/同じ頃; EN \"so\" -> \"while\"/\"meanwhile\"/\"at the "
+    "same time\"), or split each sentence into two at that connective. Do not change anything else."
+)
+J1_MINIMAL_WORD_PROMPT_TEMPLATE = """[Verified Fact Ledger]
+{ledger_text}
+
+[JA target sentence]
+{ja_target}
+
+[EN target sentence (translation of the same claim)]
+{en_target}
+
+[Checker's issue]
+{issue}
+
+[rewrite_hint]
+{rewrite_hint}
+
+Try to resolve the issue using ONLY a minimal edit to BOTH sentences: swap a single word, swap a \
+causal connective that wrongly implies one thing caused another for a connective that only states \
+they happened together (JA: ので/そのため/だから -> 一方/\
+その間/同じ頃等; EN: "so" -> "while"/"meanwhile"/"at the same time"), remove \
+a single qualifying word or short phrase, or split each sentence into two at that connective (without \
+adding any new fact and without changing any other word). Do NOT rewrite the sentence's content or \
+structure beyond this. Return strict JSON: {{"ja_revised": "...", "en_revised": "..."}}. If this issue \
+genuinely CANNOT be resolved by such a minimal edit, return {{"ja_revised": "", "en_revised": ""}} (do \
+not attempt a larger rewrite)."""
+
 
 def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, fixture, target_text_field,
                          claim_rec: dict) -> dict:
@@ -1859,41 +1944,68 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     updated_en = en_full
     updated_ja = ja_full
 
+    ladder_level_used = None
     if en_located and ja_located:
-        # 委任_11 作業B-4(§5段落単位Rewriteへの拡張): 対象文を含む段落
-        # ブロック(見出し/タイトル/hook行を含み得る)が両言語で特定できれば
-        # 段落単位でpaired rewriteする(兄弟文カスケード対策)。特定できない
-        # 場合は従来の文単位J1 Promptへフォールバックする。
+        # 委任_16 B-1(最小変更ラダー、§2原因1是正): ①単語・接続詞のみ(新設
+        # J1_MINIMAL_WORD)→③1文(既存J1_GENERIC)→④段落(既存J1_PARAGRAPH、
+        # 対象文を含むブロックが両言語で特定できる場合のみ)の順に試し、
+        # guardを満たした最初の水準で止める(single_text_rewriteと同一原則)。
         ja_block, _ = locate_paragraph_block(ja_target, ja_full)
         en_block, _ = locate_paragraph_block(en_target, en_full)
-        use_paragraph = bool(ja_block) and bool(en_block)
-        if use_paragraph:
-            prompt = J1_PARAGRAPH_PROMPT_TEMPLATE.format(
+        has_paragraph_block = bool(ja_block) and bool(en_block)
+        issue = dev.get("issue") or dev.get("explanation") or ""
+
+        levels = []
+        prompt_l1 = J1_MINIMAL_WORD_PROMPT_TEMPLATE.format(
+            ledger_text=fixture["ledger_text"], ja_target=ja_target, en_target=en_target,
+            issue=issue, rewrite_hint=rewrite_hint,
+        )
+        levels.append({"name": "1_word_connective", "prompt": prompt_l1,
+                        "dev_msg": J1_MINIMAL_WORD_DEVELOPER_MSG,
+                        "label": f"{label_prefix}_j1_e1_minimal_word",
+                        "ja_target": ja_target, "en_target": en_target,
+                        "tag": "j1_e1_minimal_word", "use_paragraph": False})
+        prompt_l3 = J1_GENERIC_PROMPT_TEMPLATE.format(
+            ledger_text=fixture["ledger_text"], ja_target=ja_target, en_target=en_target,
+            rewrite_hint=rewrite_hint,
+        )
+        levels.append({"name": "3_sentence", "prompt": prompt_l3, "dev_msg": s3rt.J1_DEVELOPER_MSG,
+                        "label": f"{label_prefix}_j1_paired_rewrite",
+                        "ja_target": ja_target, "en_target": en_target,
+                        "tag": "j1_paired_rewrite", "use_paragraph": False})
+        if has_paragraph_block:
+            prompt_l4 = J1_PARAGRAPH_PROMPT_TEMPLATE.format(
                 ledger_text=fixture["ledger_text"], ja_block=ja_block, en_block=en_block,
                 ja_target=ja_target, en_target=en_target, rewrite_hint=rewrite_hint,
             )
-        else:
-            prompt = J1_GENERIC_PROMPT_TEMPLATE.format(
-                ledger_text=fixture["ledger_text"], ja_target=ja_target, en_target=en_target,
-                rewrite_hint=rewrite_hint,
+            levels.append({"name": "4_paragraph", "prompt": prompt_l4, "dev_msg": s3rt.J1_DEVELOPER_MSG,
+                            "label": f"{label_prefix}_j1_paired_rewrite_paragraph",
+                            "ja_target": ja_block, "en_target": en_block,
+                            "tag": "j1_paired_rewrite_paragraph", "use_paragraph": True})
+
+        for lv in levels:
+            raw = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
+                                        lv["dev_msg"], lv["prompt"], model=MODEL)
+            try:
+                parsed = s3rt.extract_json_obj(raw) if raw else {}
+            except Exception:  # noqa: BLE001
+                parsed = {}
+            ja_revised = parsed.get("ja_revised", "")
+            en_revised = parsed.get("en_revised", "")
+            candidate_ja = ja_full.replace(lv["ja_target"], ja_revised, 1) if ja_revised else ja_full
+            candidate_en = en_full.replace(lv["en_target"], en_revised, 1) if en_revised else en_full
+            level_guard_ok = (
+                bool(ja_revised) and bool(en_revised)
+                and candidate_ja != ja_full and candidate_en != en_full
+                and claim_text.strip() not in candidate_en
             )
-        raw = simple_llm_call(client, state, consecutive_errors, call_log, f"{label_prefix}_j1_paired_rewrite",
-                                    s3rt.J1_DEVELOPER_MSG, prompt, model=MODEL)
-        try:
-            parsed = s3rt.extract_json_obj(raw) if raw else {}
-        except Exception:  # noqa: BLE001
-            parsed = {}
-        ja_revised = parsed.get("ja_revised", "")
-        en_revised = parsed.get("en_revised", "")
-        if use_paragraph:
-            updated_ja = ja_full.replace(ja_block, ja_revised, 1) if ja_revised else ja_full
-            updated_en = en_full.replace(en_block, en_revised, 1) if en_revised else en_full
-        else:
-            updated_ja = ja_full.replace(ja_target, ja_revised, 1) if ja_revised else ja_full
-            updated_en = en_full.replace(en_target, en_revised, 1) if en_revised else en_full
-        guard_ok = bool(ja_revised) and bool(en_revised) and updated_ja != ja_full and updated_en != en_full
-        if guard_ok:
-            method = "j1_paired_rewrite_paragraph" if use_paragraph else "j1_paired_rewrite"
+            if level_guard_ok:
+                updated_ja, updated_en = candidate_ja, candidate_en
+                guard_ok = True
+                use_paragraph = lv["use_paragraph"]
+                method = lv["tag"]
+                ladder_level_used = lv["name"]
+                break
 
     # 委任_13: cite-or-release用のbefore/afterペア(単一文置換時のみ判明。
     # paragraph-level rewriteはtarget_sentence単位のafter断片を一意に
@@ -1958,10 +2070,17 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
             updated_en = en_full
             method = "j1_failed+ja_fulltext_fallback_api_failure"
             guard_ok = False
+        # 委任_16 B-1: ①③④のladderがguardを満たせず(またはそもそも両言語の
+        # 対象文が特定できず)全文フォールバックへ落ちたケースは、水準⑥
+        # (既存FULL_TEXT_FALLBACKに相当)としてladder_level_usedへ記録する
+        # (guard_okがTrueの場合のみ、実際に解消できた水準として記録する)。
+        if guard_ok:
+            ladder_level_used = "6_full_article"
 
     return {"updated_en_text": updated_en, "updated_ja_text": updated_ja, "method": method, "guard_ok": guard_ok,
             "en_target": en_target, "ja_target": ja_target,
-            "before_fragment": en_target, "after_fragment": en_after_fragment}
+            "before_fragment": en_target, "after_fragment": en_after_fragment,
+            "ladder_level_used": ladder_level_used}
 
 
 def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_prefix, fixture,
@@ -1979,13 +2098,15 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
 
     if use_pairing:
         res = paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture, claim_rec)
-        # 委任_14 B-3: paired J-1は既存のペア文単位1-shot Promptのままで、
-        # 最小変更ラダーは未適用(既知の限界、監査文書に記録。JA/EN対訳の
-        # 単語単位ラダー化は新設スコープが大きく本委任では見送る)。
+        # 委任_16 B-1: paired J-1もsingle_text_rewriteと同じ①③④ladderを
+        # 適用するようpaired_rewrite自体を再設計した(§5-7既知の限界を解消、
+        # 詳細design書§5-8)。ladder_level_usedはpaired_rewriteが実際に
+        # 解消できた水準をそのまま返す(Noneの場合は全水準とも解消できず
+        # 未解決、既存集計側のunresolved_or_api_failureへフォールバック)。
         return {"mechanism": "paired_ja_en(J-1)", "en_text": res["updated_en_text"],
                 "ja_text": res["updated_ja_text"], "method": res["method"], "guard_ok": res["guard_ok"],
                 "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
-                "ladder_level_used": "paired_j1_not_laddered"}
+                "ladder_level_used": res.get("ladder_level_used")}
     else:
         res = single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture,
                                    "article_text", claim_rec)

@@ -248,6 +248,54 @@ RUBRIC_R3_TRIPLE_PRIME = RUBRIC_R3_NATURAL_INTERPRETATION + """
 確認してください。"""
 
 
+# ------------------------------------------------------------
+# RUBRIC_R4_HOOK_AWARE(委任_16 B-2、2026-09-30ユーザー新方針A「Hook-aware」
+# §2原因2是正)。委任_14 B-5のHook-aware機構はfloor不発火時のchanged_scope
+# 単独発火のみを対象とするpost-hoc downgradeであり、ユーザーが実例として
+# 指摘したMeta hook("Ring, ring. A call seemed to come from an AI
+# agent...")の実際のflag(changed_fact/changed_certainty/
+# unsupported_new_claim)はこの対象外だった(監査
+# `docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`§A-1・design書
+# §6-4)。本rubricはpost-hoc downgradeを置き換えるのではなく(既存floor・
+# post-hoc機構はそのまま維持)、Stage2のLLM判定自体にsection_type入力
+# (title/hook/in_one_line/body、`detect_claim_section_type`)と、Title/Hook/
+# 場面描写/attention grabberに対する原則文を追加する。RUBRIC_R3_TRIPLE_
+# PRIME本文は変更しない(既存iteration4/5/6証跡の再現性維持、追記のみ)。
+#
+# **委任_16 代表ケースTrial実測での是正(作業C、最小修正1回)**: 当初案は
+# 適用対象をtitle/hook/in_one_lineの3種としていたが、代表ケース2/3
+# (`bgroup_B3`、Safety-critical 10claimの1つ、B3因果"so"claim)を実行した
+# ところ、このclaimがsection_type="in_one_line"(In one line欄に集約された
+# 要約文)に分類され、Hook-aware原則により意図せずQUALITYへ降格した
+# (誤降格、較正済みSafety-critical条件「B3は誤降格0件」に抵触)。
+# In one lineは§5-7の役割定義上「短く圧縮して締める」機能であり、
+# ユーザー指示(§1)が明示した対象は「Title/Hook/場面描写/attention
+# grabber」のみでIn one lineは含まれない。適用対象をtitle/hookの2種のみに
+# 限定する(in_one_line/bodyは通常基準のみで判定、既存HOOK_SECTION_TYPES
+# [post-hoc downgrade用]はtitle/hook/in_one_lineのまま変更しない、
+# post-hoc機構とrubric側の適用範囲は別々に定義されているため相互に影響
+# しない)。再実行結果は
+# `er052_output/open233_self_recovery_flow_runner_01_rep7/summary_rep7_
+# b3_refix.json`参照。
+# ------------------------------------------------------------
+RUBRIC_R4_HOOK_AWARE = RUBRIC_R3_TRIPLE_PRIME + """
+
+【Hook-aware原則(委任_16 B-2、2026-09-30ユーザー新方針A、代表ケースTrial
+実測でtitle/hookの2種のみへ限定[in_one_lineは誤降格の実測により対象外])】
+対象claimのsection_type(title/hook/in_one_line/body)がtitle・hookの
+いずれかの場合、以下を追加で適用してください。Title・Hook(冒頭の呼びかけ・
+情景描写)・attention grabberについては、通常の本文のFact文と同じ基準で
+過剰にBLOCKINGにしないでください。確認済みのFactから人間が自然に導ける
+演出・情景描写・呼びかけ(具体的な新しい人物・数字・出来事・行動・仕組みを
+新たに発明しないもの)は、QUALITYまたはACCEPTABLEとしてください。一方、
+section_typeがtitle/hookであることを理由に、確認済みのFactにない新しい
+具体的な人物・数字・出来事・行動・仕組みの発明を見逃さないでください
+(その場合は通常の本文と同様にBLOCKINGとしてください)。section_typeが
+in_one_lineまたはbodyの場合は本項目を適用せず、上記の通常基準のみで
+判定してください(In one lineは要約を短く圧縮して締める機能であり、
+Hook/Titleの演出許容とは役割が異なります)。"""
+
+
 class TrialAbort(RuntimeError):
     pass
 
@@ -288,7 +336,12 @@ def run_stage2_batch_variant(client, verified_ledger_text: str, source_article_t
             f"[claim_index={i}]\nclaim: {c['claim_text']}\n"
             f"ローカル文脈(段落±1): {c['local_context']}\n"
             f"origin: {c.get('origin') or '(不明)'}\n"
-            f"related_fact_id: {c.get('related_fact_id') or '(不明)'}"
+            f"related_fact_id: {c.get('related_fact_id') or '(不明)'}\n"
+            # 委任_16 B-2: section_type(title/hook/in_one_line/body、
+            # `detect_claim_section_type`、決定論・¥0)をStage2入力へ
+            # 付与する(RUBRIC_R4_HOOK_AWAREのHook-aware原則が参照する)。
+            # section_type未付与(旧callerとの後方互換)の場合は'body'扱い。
+            f"section_type(title/hook/in_one_line/body): {c.get('section_type') or 'body'}"
         )
     claims_block = "\n\n".join(blocks)
     prompt = s2p.BATCH_PROMPT_TEMPLATE.format(

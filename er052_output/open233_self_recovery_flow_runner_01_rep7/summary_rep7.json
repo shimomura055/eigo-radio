@@ -1,0 +1,2198 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "n_instances_completed_per_sample": [
+      5,
+      5
+    ],
+    "n_instances_planned": 5,
+    "cumulative_jpy": 8.1229,
+    "cumulative_calls": 49,
+    "cumulative_errors": 0,
+    "per_case": [
+      {
+        "instance_id": "neg1_meta_b3prod_a2",
+        "expected": {
+          "expect": "no_rewrite_or_quality_pass",
+          "detail": "Rewriteなしで通過(QUALITY/ACCEPTABLE)を期待"
+        },
+        "sample1": {
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "total_cost_jpy": 1.6901,
+          "ladder_levels_used": [
+            "3_sentence"
+          ],
+          "section_role_violations": [
+            {
+              "in_one_line_length_increase_ratio": 0.0,
+              "in_one_line_too_long": false,
+              "numbers_added_to_title": false,
+              "numbers_added_to_in_one_line": false,
+              "hook_word_count_before": 28,
+              "hook_word_count_after": 13,
+              "hook_shrank": true,
+              "hook_rhetorical_markers_lost": false,
+              "title_rhetorical_markers_lost": false,
+              "section_role_violated": true,
+              "reasons": "hook_shrank(28->13words)"
+            }
+          ],
+          "stage2_materialities": [
+            {
+              "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+              "materiality": "BLOCKING",
+              "section_type": "hook",
+              "floor_reason": null
+            },
+            {
+              "claim_text": "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse”; also, “Meta had run a test that caused exactly this surprise.”",
+              "materiality": "QUALITY",
+              "section_type": "title",
+              "floor_reason": null
+            },
+            {
+              "claim_text": "“The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.”",
+              "materiality": "ACCEPTABLE",
+              "section_type": "body",
+              "floor_reason": null
+            }
+          ]
+        },
+        "sample2": {
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "total_cost_jpy": 1.9814,
+          "ladder_levels_used": [
+            "3_sentence"
+          ],
+          "section_role_violations": [
+            {
+              "in_one_line_length_increase_ratio": 0.0,
+              "in_one_line_too_long": false,
+              "numbers_added_to_title": false,
+              "numbers_added_to_in_one_line": false,
+              "hook_word_count_before": 28,
+              "hook_word_count_after": 13,
+              "hook_shrank": true,
+              "hook_rhetorical_markers_lost": false,
+              "title_rhetorical_markers_lost": false,
+              "section_role_violated": true,
+              "reasons": "hook_shrank(28->13words)"
+            }
+          ],
+          "stage2_materialities": [
+            {
+              "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+              "materiality": "BLOCKING",
+              "section_type": "hook",
+              "floor_reason": null
+            },
+            {
+              "claim_text": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse”",
+              "materiality": "QUALITY",
+              "section_type": "title",
+              "floor_reason": null
+            },
+            {
+              "claim_text": "“A human can handle situations that AI alone finds difficult.”",
+              "materiality": "QUALITY",
+              "section_type": "body",
+              "floor_reason": null
+            }
+          ]
+        }
+      },
+      {
+        "instance_id": "bgroup_B3",
+        "expected": {
+          "expect": "resolved_with_minimal_ladder",
+          "detail": "so->whileの①②で解消、In one line語数+30%以内、背景Fact追加なしを期待"
+        },
+        "sample1": {
+          "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.1471,
+          "ladder_levels_used": [],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+              "materiality": "QUALITY",
+              "section_type": "in_one_line",
+              "floor_reason": null
+            }
+          ]
+        },
+        "sample2": {
+          "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.0413,
+          "ladder_levels_used": [],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+              "materiality": "QUALITY",
+              "section_type": "in_one_line",
+              "floor_reason": null
+            }
+          ]
+        }
+      },
+      {
+        "instance_id": "hormuz_run03_standard",
+        "expected": {
+          "expect": "resolved_minimal_scope_narrow",
+          "detail": "narrow_scopeを最小変更で解消、A2語彙内を期待"
+        },
+        "sample1": {
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "total_cost_jpy": 1.3947,
+          "ladder_levels_used": [
+            "3_sentence"
+          ],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+              "materiality": "BLOCKING",
+              "section_type": "body",
+              "floor_reason": null
+            }
+          ]
+        },
+        "sample2": {
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "total_cost_jpy": 1.4461,
+          "ladder_levels_used": [
+            "3_sentence"
+          ],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+              "materiality": "BLOCKING",
+              "section_type": "body",
+              "floor_reason": null
+            }
+          ]
+        }
+      },
+      {
+        "instance_id": "safety_er009_changed_actor",
+        "expected": {
+          "expect": "blocking_then_resolved",
+          "detail": "BLOCKING維持->①〜③で解消、Recheck all_prior_issues_resolved=Trueを期待"
+        },
+        "sample1": {
+          "final_state": "RESOLVED_REWRITE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.3335,
+          "ladder_levels_used": [
+            "1_word_connective"
+          ],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "materiality": "BLOCKING",
+              "section_type": "title",
+              "floor_reason": "deterministic_floor:changed_actor"
+            }
+          ]
+        },
+        "sample2": {
+          "final_state": "RESOLVED_REWRITE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.2714,
+          "ladder_levels_used": [
+            "1_word_connective"
+          ],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "materiality": "BLOCKING",
+              "section_type": "title",
+              "floor_reason": "deterministic_floor:changed_actor"
+            }
+          ]
+        }
+      },
+      {
+        "instance_id": "safety_er009_changed_number",
+        "expected": {
+          "expect": "blocking_then_resolved",
+          "detail": "BLOCKING維持->①〜③で解消、Recheck all_prior_issues_resolved=Trueを期待"
+        },
+        "sample1": {
+          "final_state": "RESOLVED_REWRITE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.4485,
+          "ladder_levels_used": [
+            "1_word_connective",
+            "6_full_article"
+          ],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "materiality": "BLOCKING",
+              "section_type": "title",
+              "floor_reason": "deterministic_floor:changed_number"
+            },
+            {
+              "claim_text": "count values found in article not matching any ledger fact: [30000000.0]",
+              "materiality": "BLOCKING",
+              "section_type": "body",
+              "floor_reason": "precheck_floor"
+            }
+          ]
+        },
+        "sample2": {
+          "final_state": "RESOLVED_REWRITE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.3688,
+          "ladder_levels_used": [
+            "1_word_connective",
+            "6_full_article"
+          ],
+          "section_role_violations": [],
+          "stage2_materialities": [
+            {
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "materiality": "BLOCKING",
+              "section_type": "title",
+              "floor_reason": "deterministic_floor:changed_number"
+            },
+            {
+              "claim_text": "count values found in article not matching any ledger fact: [30000000.0]",
+              "materiality": "BLOCKING",
+              "section_type": "body",
+              "floor_reason": "precheck_floor"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "instance_results_sample1": [
+    {
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+                "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "“seemed to come from an AI agent”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+              "fallback_used": false,
+              "section_type": "hook",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "「A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.」受け手がAIだと思っていたことや、その後に人間だと気づいたことは確認されていないため削り、人間の契約スタッフがMuse経由の一部の電話を担当したテストに範囲を狭めてください。参照: MUSE-HC-006",
+              "floor_reason": null,
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "first_materiality": "BLOCKING",
+              "second_materiality": "BLOCKING",
+              "two_of_two_result": "BLOCKING(both agree)"
+            }
+          ],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e2_generic_rewrite(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "3_sentence",
+              "section_type": "hook"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.43,
+              "difficult_word_ratio": 0.095,
+              "word_count": 400
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.67,
+              "difficult_word_ratio": 0.0961,
+              "word_count": 385
+            },
+            "sentence_len_increase": 0.24,
+            "difficulty_ratio_increase": 0.0011,
+            "fragment_stats_before": {
+              "avg_sentence_len": 8.67,
+              "difficult_word_ratio": 0.0385,
+              "word_count": 26
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 11.0,
+              "difficult_word_ratio": 0.0,
+              "word_count": 11
+            },
+            "fragment_sentence_len_increase": 2.33,
+            "fragment_difficulty_ratio_increase": -0.0385,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 28,
+            "hook_word_count_after": 13,
+            "hook_shrank": true,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": true,
+            "reasons": "hook_shrank(28->13words)"
+          },
+          "quality_degradation_v2_regenerated": true,
+          "quality_degradation_v2_after_regen": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.43,
+              "difficult_word_ratio": 0.095,
+              "word_count": 400
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.71,
+              "difficult_word_ratio": 0.098,
+              "word_count": 398
+            },
+            "sentence_len_increase": 0.28,
+            "difficulty_ratio_increase": 0.003,
+            "fragment_stats_before": {
+              "avg_sentence_len": 8.67,
+              "difficult_word_ratio": 0.0385,
+              "word_count": 26
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 12.0,
+              "difficult_word_ratio": 0.0833,
+              "word_count": 24
+            },
+            "fragment_sentence_len_increase": 3.33,
+            "fragment_difficulty_ratio_increase": 0.0448,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": true,
+            "vocab_difficulty_increased": true,
+            "title_changed": false,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": true,
+            "reasons": "vocab_difficulty_increased_fragment(sentence_len+3.33,difficult_ratio+0.0448)"
+          },
+          "section_role_violation_after_regen": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 28,
+            "hook_word_count_after": 26,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_en": {
+            "sentence_count_before": 35,
+            "sentence_count_after": 34,
+            "sentence_drop_rate": 0.0286,
+            "hedge_word_count_before": 6,
+            "hedge_word_count_after": 5,
+            "hedge_word_increase": -1,
+            "paragraph_count_before": 18,
+            "paragraph_count_after": 18,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 14,
+            "paragraph_count_after": 14,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+          "en_text_after_rewrite": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. Some calls came through Muse. But during a test, trained contract workers, rather than AI, made some of those calls and completed the conversations.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+          "rewrite_new_precheck_findings_count": 0,
+          "recheck_overall_status": "LEDGER_DEVIATION",
+          "recheck_all_prior_issues_resolved": false
+        },
+        {
+          "cycle": 2,
+          "stage2_results": [
+            {
+              "claim_text": "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse”; also, “Meta had run a test that caused exactly this surprise.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse”; also, “Meta had run a test that caused exactly this surprise.”",
+                "issue": "The headline presents people believing a call was from AI and encountering a human as an event. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that callers or users experienced this realization. The source headline framed it as a question; the English headline states it declaratively.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The title adds an unverified user experience and turns the source’s questioning framing into an assertion, changing the fact, scope, and certainty.",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. Some calls came through Muse. But during a test, trained contract workers, rather than AI, made some of those calls and completed the conversations.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+              "fallback_used": true,
+              "section_type": "title",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "floor_cited_materiality": "QUALITY",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "“The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.”",
+              "origin": "ja_source",
+              "related_fact_id": "MUSE-HC-012",
+              "dev": {
+                "claim_in_article": "“The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.”",
+                "issue": "The Ledger reports that the test began without appropriate disclosure, but does not specify that Muse users were the people not told. The article assigns the lack of disclosure to users and adds a possible user belief not established in the Ledger.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The audience for the undisclosed contractor involvement is unspecified in the Ledger; naming Muse users and attributing a possible belief to them adds unsupported scope and claims.",
+                "related_fact_id": "MUSE-HC-012",
+                "origin": "ja_source",
+                "qualifier_present": true,
+                "qualifier_text": "A user might think the exchange was with AI",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "basis": "ledger_claim",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "floor_cited_materiality": "ACCEPTABLE",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 2,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 1.6901,
+      "total_calls": 8,
+      "elapsed_seconds": 139.271
+    },
+    {
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "expected_group_label": "claim単位混在(§7-0)",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+              "origin": "ja_source",
+              "related_fact_id": "HF-007",
+              "dev": {
+                "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+                "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "同日に生じた政策転換と市場の値動き、および継続する懸念を、接続語「so」により因果関係として結び付けている。",
+                "related_fact_id": "HF-007",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+              "fallback_used": false,
+              "section_type": "in_one_line",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "floor_cited_materiality": "QUALITY",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 1,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": true,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.1471,
+      "total_calls": 1,
+      "elapsed_seconds": 7.627
+    },
+    {
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "expected_group_label": "BLOCKING(Safety群、§7-1、narrow_scope)",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+              "origin": "ja_source",
+              "related_fact_id": "HF-009",
+              "dev": {
+                "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+                "issue": "Brent先物についての観測を、石油市場全体の値動きに広げている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "HF-009が確認するのはBrent先物の一時的な上げ幅縮小と回復であり、市場全体で原油価格が下落しなかったという主張までは保証しない。具体的事実の追加（changed_fact、unsupported_new_claim）と対象範囲の拡張（changed_scope）に該当する。",
+                "related_fact_id": "HF-009",
+                "origin": "ja_source",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "After the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_scope",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "対象箇所：「撤回の直後に原油価格が全面的に下落したわけではない」。HF-009が確認しているのはBrent先物の短時間の値動きです。「原油価格」全般ではなく「Brent先物」に範囲を狭め、一時的に上げ幅を縮めた後、発表前に近い高い水準へ戻ったと記述してください。参照Ledger: HF-009。",
+              "floor_reason": null,
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:HF-009",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "paired_ja_en(J-1)",
+              "method": "j1_paired_rewrite",
+              "guard_ok": true,
+              "ladder_level_used": "3_sentence",
+              "section_type": "body"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.09,
+              "difficult_word_ratio": 0.1211,
+              "word_count": 355
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.21,
+              "difficult_word_ratio": 0.127,
+              "word_count": 370
+            },
+            "sentence_len_increase": 0.12,
+            "difficulty_ratio_increase": 0.0059,
+            "fragment_stats_before": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.0714,
+              "word_count": 14
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 14.5,
+              "difficult_word_ratio": 0.1724,
+              "word_count": 29
+            },
+            "fragment_sentence_len_increase": 0.5,
+            "fragment_difficulty_ratio_increase": 0.101,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": true,
+            "vocab_difficulty_increased": true,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": true,
+            "reasons": "vocab_difficulty_increased_fragment(sentence_len+0.5,difficult_ratio+0.101)"
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 20,
+            "hook_word_count_after": 20,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": true,
+          "quality_degradation_v2_after_regen": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.09,
+              "difficult_word_ratio": 0.1211,
+              "word_count": 355
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.19,
+              "difficult_word_ratio": 0.1229,
+              "word_count": 358
+            },
+            "sentence_len_increase": 0.1,
+            "difficulty_ratio_increase": 0.0018,
+            "fragment_stats_before": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.0714,
+              "word_count": 14
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 17.0,
+              "difficult_word_ratio": 0.1176,
+              "word_count": 17
+            },
+            "fragment_sentence_len_increase": 3.0,
+            "fragment_difficulty_ratio_increase": 0.0462,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": true,
+            "vocab_difficulty_increased": true,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": true,
+            "reasons": "vocab_difficulty_increased_fragment(sentence_len+3.0,difficult_ratio+0.0462)"
+          },
+          "section_role_violation_after_regen": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 20,
+            "hook_word_count_after": 20,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_en": {
+            "sentence_count_before": 32,
+            "sentence_count_after": 32,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 5,
+            "hedge_word_count_after": 5,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 11,
+            "paragraph_count_after": 11,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 10,
+            "paragraph_count_after": 10,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee would pay for the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details were still missing. These included who would collect the fee, who would pay it, and how its amount would be decided.\n\nIn other words, no one had actually started collecting the fee. What appeared on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee plan. He would replace it with trade and investment deals between Gulf countries and the United States. He said this decision followed “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us point the camera toward the oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "en_text_after_rewrite": "# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee would pay for the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details were still missing. These included who would collect the fee, who would pay it, and how its amount would be decided.\n\nIn other words, no one had actually started collecting the fee. What appeared on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee plan. He would replace it with trade and investment deals between Gulf countries and the United States. He said this decision followed “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us point the camera toward the oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nBrent futures rose by less for a short time, then soon returned to nearly their earlier level. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "ja_text_before_rewrite": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。報道時点では約二点六パーセント高で、一バレル八十五ドルを超えていました。\n\nこのとき確認できるのは、撤回の直後に原油価格が全面的に下落したわけではない、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+          "ja_text_after_rewrite": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。Brent先物は一時上げ幅を縮めましたが、ほどなく発表前に近い高い水準に戻りました。\n\nこのとき確認できるのは、撤回の直後に原油価格が全面的に下落したわけではない、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+          "rewrite_new_precheck_findings_count": 0,
+          "ja_en_equivalence_verdict": "FAIL",
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true,
+          "ja_recheck_overall_status": "LEDGER_DEVIATION"
+        },
+        {
+          "cycle": 2,
+          "stage2_results": [],
+          "blocking_count": 0,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 1.3947,
+      "total_calls": 8,
+      "elapsed_seconds": 100.09
+    },
+    {
+      "instance_id": "safety_er009_changed_actor",
+      "group": "safety",
+      "expected_group_label": "BLOCKING(Safety、§7-1)",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "origin": null,
+              "related_fact_id": null,
+              "dev": {
+                "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerが示す研究者はKareem HaggagとGiovanni Paciで、Harvard Business Schoolとの関係は確認されていません。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": true,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Harvard Business School所属というLedgerにない具体的事実を加え、研究主体を置き換えているため、changed_fact・changed_actor・unsupported_new_claimがtrueです。取引件数と研究結果の記述はLedgerと一致します。",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "fallback_used": false,
+              "section_type": "title",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_claim",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "「A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis」から、Ledgerに確認のない「at Harvard Business School」を削除してください。研究機関は特定せず、確認済みの研究対象・結果に範囲を狭めてください（F-001、F-002、F-004）。",
+              "floor_reason": "deterministic_floor:changed_actor",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "claim:7b2fca543a4fc34a",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "title"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 31.0,
+              "difficult_word_ratio": 0.0968,
+              "word_count": 31
+            },
+            "stats_after": {
+              "avg_sentence_len": 27.0,
+              "difficult_word_ratio": 0.0741,
+              "word_count": 27
+            },
+            "sentence_len_increase": -4.0,
+            "difficulty_ratio_increase": -0.0227,
+            "fragment_stats_before": {
+              "avg_sentence_len": 18.0,
+              "difficult_word_ratio": 0.0556,
+              "word_count": 18
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.0,
+              "word_count": 14
+            },
+            "fragment_sentence_len_increase": -4.0,
+            "fragment_difficulty_ratio_increase": -0.0556,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": true,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 31,
+            "hook_word_count_after": 27,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 1,
+            "paragraph_count_after": 1,
+            "paragraph_delta": 0,
+            "title_changed": true,
+            "degradation_candidate": true
+          },
+          "en_text_before_rewrite": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "en_text_after_rewrite": "A team studied more than 13 million credit card payments in New York City taxis., and found that higher suggested tip rates led passengers to leave more money.",
+          "rewrite_new_precheck_findings_count": 0,
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.3335,
+      "total_calls": 3,
+      "elapsed_seconds": 10.949
+    },
+    {
+      "instance_id": "safety_er009_changed_number",
+      "group": "safety",
+      "expected_group_label": "BLOCKING(Safety、§7-1)",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "origin": null,
+              "related_fact_id": null,
+              "dev": {
+                "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": true,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "F-002",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "fallback_used": false,
+              "section_type": "title",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_numeric_value",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "「Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.」の「more than 30 million」をLedgerの「more than 13 million」に置き換えてください。参照: F-002。",
+              "floor_reason": "deterministic_floor:changed_number",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "count values found in article not matching any ledger fact: [30000000.0]",
+              "origin": null,
+              "related_fact_id": "F-002",
+              "dev": {
+                "claim_in_article": "count values found in article not matching any ledger fact: [30000000.0]",
+                "issue": "precheck detected number_mismatch vs ledger_value=1,300万件超",
+                "explanation": "deterministic precheck finding (kind=number_mismatch)",
+                "related_fact_id": "F-002",
+                "origin": null,
+                "changed_actor": false,
+                "changed_number": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false
+              },
+              "detected_by": "precheck",
+              "materiality": "BLOCKING",
+              "llm_materiality": null,
+              "basis": "precheck_floor",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "'count values found in article not matching any ledger fact: ' を、fact_id=F-002のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=1,300万件超",
+              "floor_reason": "precheck_floor",
+              "section_type": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": "precheck_floor"
+            }
+          ],
+          "blocking_count": 2,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "claim:6ed4d4a0f906cccd",
+              "rewrite_kind": "replace_with_ledger_value",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "title"
+            },
+            {
+              "claim_identity": "fact:F-002",
+              "rewrite_kind": "replace_with_ledger_value",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "target_not_found+fulltext_fallback",
+              "guard_ok": true,
+              "ladder_level_used": "6_full_article",
+              "section_type": "body"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 26.0,
+              "difficult_word_ratio": 0.1154,
+              "word_count": 26
+            },
+            "stats_after": {
+              "avg_sentence_len": 26.0,
+              "difficult_word_ratio": 0.1538,
+              "word_count": 26
+            },
+            "sentence_len_increase": 0.0,
+            "difficulty_ratio_increase": 0.0384,
+            "fragment_stats_before": {
+              "avg_sentence_len": 26.0,
+              "difficult_word_ratio": 0.1154,
+              "word_count": 26
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 26.0,
+              "difficult_word_ratio": 0.1154,
+              "word_count": 26
+            },
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": true,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 26,
+            "hook_word_count_after": 26,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 1,
+            "paragraph_count_after": 1,
+            "paragraph_delta": 0,
+            "title_changed": true,
+            "degradation_candidate": true
+          },
+          "en_text_before_rewrite": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "en_text_after_rewrite": "Researchers studied more than 13 million credit card transactions in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "rewrite_new_precheck_findings_count": 0,
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.4485,
+      "total_calls": 4,
+      "elapsed_seconds": 15.545
+    }
+  ],
+  "instance_results_sample2": [
+    {
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+                "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "“seemed to come from an AI agent”",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+              "fallback_used": false,
+              "section_type": "hook",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "引用: “A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.” この電話の相手がAIだと思っていたことや、会話中に人間だと気づいたという個別の認識・出来事は確認されていません。その部分を削り、人間の契約スタッフがMuse経由の電話の一部を担当したテストに限定してください。参照: MUSE-HC-006。",
+              "floor_reason": null,
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "first_materiality": "BLOCKING",
+              "second_materiality": "BLOCKING",
+              "two_of_two_result": "BLOCKING(both agree)"
+            }
+          ],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e2_generic_rewrite(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "3_sentence",
+              "section_type": "hook"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.43,
+              "difficult_word_ratio": 0.095,
+              "word_count": 400
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.67,
+              "difficult_word_ratio": 0.0961,
+              "word_count": 385
+            },
+            "sentence_len_increase": 0.24,
+            "difficulty_ratio_increase": 0.0011,
+            "fragment_stats_before": {
+              "avg_sentence_len": 8.67,
+              "difficult_word_ratio": 0.0385,
+              "word_count": 26
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 11.0,
+              "difficult_word_ratio": 0.0,
+              "word_count": 11
+            },
+            "fragment_sentence_len_increase": 2.33,
+            "fragment_difficulty_ratio_increase": -0.0385,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 28,
+            "hook_word_count_after": 13,
+            "hook_shrank": true,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": true,
+            "reasons": "hook_shrank(28->13words)"
+          },
+          "quality_degradation_v2_regenerated": true,
+          "quality_degradation_v2_after_regen": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.43,
+              "difficult_word_ratio": 0.095,
+              "word_count": 400
+            },
+            "stats_after": {
+              "avg_sentence_len": 12.03,
+              "difficult_word_ratio": 0.0982,
+              "word_count": 397
+            },
+            "sentence_len_increase": 0.6,
+            "difficulty_ratio_increase": 0.0032,
+            "fragment_stats_before": {
+              "avg_sentence_len": 8.67,
+              "difficult_word_ratio": 0.0385,
+              "word_count": 26
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 23.0,
+              "difficult_word_ratio": 0.087,
+              "word_count": 23
+            },
+            "fragment_sentence_len_increase": 14.33,
+            "fragment_difficulty_ratio_increase": 0.0485,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": true,
+            "vocab_difficulty_increased": true,
+            "title_changed": false,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": true,
+            "reasons": "vocab_difficulty_increased_fragment(sentence_len+14.33,difficult_ratio+0.0485)"
+          },
+          "section_role_violation_after_regen": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 28,
+            "hook_word_count_after": 25,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_en": {
+            "sentence_count_before": 35,
+            "sentence_count_after": 33,
+            "sentence_drop_rate": 0.0571,
+            "hedge_word_count_before": 6,
+            "hedge_word_count_after": 5,
+            "hedge_word_increase": -1,
+            "paragraph_count_before": 18,
+            "paragraph_count_after": 18,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 14,
+            "paragraph_count_after": 14,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+          "en_text_after_rewrite": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. In a test, trained contract workers made some calls through Muse and handled the conversations themselves, rather than having AI make those calls.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+          "rewrite_new_precheck_findings_count": 0,
+          "recheck_overall_status": "LEDGER_DEVIATION",
+          "recheck_all_prior_issues_resolved": false
+        },
+        {
+          "cycle": 2,
+          "stage2_results": [
+            {
+              "claim_text": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse”",
+              "origin": "translation",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse”",
+                "issue": "見出しが、誰かがAIだと思っていたという未確認の認識を断定的に示しています。Ledgerは一部の電話を人間の契約スタッフが担当したことを確認していますが、利用者がAIだと思っていたとは確認していません。原文の条件付き・疑問形の枠組みから、英語版で断定的な一人称の表現になっています。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": true,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "未確認の利用者側の認識を、見出しで断定しています。新たな事実の追加と確実性の強化に該当します。",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "translation",
+                "qualifier_present": true,
+                "qualifier_text": "直後の本文にある “In a test” と “some calls” はテストと電話の範囲を限定していますが、見出しの「We Thought It Was AI」は限定していません。",
+                "ledger_field_basis": "none",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. In a test, trained contract workers made some calls through Muse and handled the conversations themselves, rather than having AI make those calls.",
+              "fallback_used": false,
+              "section_type": "title",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse” を、「Meta’s Museで一部の電話を人間が担当」のように範囲を狭めてください。相手が実際にAIだと思っていたという認識は確認されていません（MUSE-HC-006）。",
+              "floor_reason": null,
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null,
+              "two_of_two_downgraded": true,
+              "two_of_two_second_materiality": "QUALITY",
+              "two_of_two_second_basis": "unsupported_relationship"
+            },
+            {
+              "claim_text": "“A human can handle situations that AI alone finds difficult.”",
+              "origin": "ja_source",
+              "related_fact_id": "MUSE-HC-006",
+              "dev": {
+                "claim_in_article": "“A human can handle situations that AI alone finds difficult.”",
+                "issue": "AIだけでは難しい状況を人間が処理できるという一般的な能力の主張は、Ledgerで確認されていません。Ledgerが示すのは、人間の契約スタッフがMuse経由の一部の電話を担当し、やり取りを完了したことです。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "特定のテストで人間が電話を担当した事実を超え、AIが難しい状況における人間の能力を一般化して追加しています。",
+                "related_fact_id": "MUSE-HC-006",
+                "origin": "ja_source",
+                "qualifier_present": true,
+                "qualifier_text": "前後に “Having a person take over is not always a bad thing” と “this may even be useful” がありますが、後者の留保は人間の能力そのものを限定していません。",
+                "ledger_field_basis": "none",
+                "observation_consistent": true,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "It was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "floor_cited_materiality": "QUALITY",
+              "floor_cited_reason": null,
+              "two_of_two_downgraded": true,
+              "two_of_two_second_materiality": "QUALITY",
+              "two_of_two_second_basis": "unsupported_relationship"
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 2,
+          "stage2_two_of_two_log": [
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "first_materiality": "BLOCKING",
+              "second_materiality": "QUALITY",
+              "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+            },
+            {
+              "claim_identity": "fact:MUSE-HC-006",
+              "first_materiality": "QUALITY",
+              "second_materiality": "QUALITY",
+              "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+            }
+          ]
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 1.9814,
+      "total_calls": 9,
+      "elapsed_seconds": 174.078
+    },
+    {
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "expected_group_label": "claim単位混在(§7-0)",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+              "origin": "ja_source",
+              "related_fact_id": "HF-007",
+              "dev": {
+                "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+                "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。",
+                "severity": "MAJOR",
+                "changed_fact": false,
+                "changed_scope": false,
+                "changed_causality": true,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "同日に生じた政策転換と市場の値動き、および継続する懸念を、接続語「so」により因果関係として結び付けている。",
+                "related_fact_id": "HF-007",
+                "origin": "ja_source",
+                "auto_downgraded": false
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+              "fallback_used": false,
+              "section_type": "in_one_line",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "basis": "unsupported_relationship",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "",
+              "floor_reason": null,
+              "floor_cited_materiality": "QUALITY",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 0,
+          "non_blocking_count": 1,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": true,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.0413,
+      "total_calls": 1,
+      "elapsed_seconds": 5.673
+    },
+    {
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "expected_group_label": "BLOCKING(Safety群、§7-1、narrow_scope)",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+              "origin": "ja_source",
+              "related_fact_id": "HF-009",
+              "dev": {
+                "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+                "issue": "Brent先物についての観測を、石油市場全体の値動きに広げている。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": true,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "HF-009が確認するのはBrent先物の一時的な上げ幅縮小と回復であり、市場全体で原油価格が下落しなかったという主張までは保証しない。具体的事実の追加（changed_fact、unsupported_new_claim）と対象範囲の拡張（changed_scope）に該当する。",
+                "related_fact_id": "HF-009",
+                "origin": "ja_source",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "After the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.",
+              "fallback_used": false,
+              "section_type": "body",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_scope",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "対象箇所：「撤回の直後に原油価格が全面的に下落したわけではない」。原油市場全体についての観測事実とせず、HF-009で確認されたBrent先物の値動きに範囲を限定してください。",
+              "floor_reason": null,
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:HF-009",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "paired_ja_en(J-1)",
+              "method": "j1_paired_rewrite",
+              "guard_ok": true,
+              "ladder_level_used": "3_sentence",
+              "section_type": "body"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.09,
+              "difficult_word_ratio": 0.1211,
+              "word_count": 355
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.09,
+              "difficult_word_ratio": 0.1239,
+              "word_count": 355
+            },
+            "sentence_len_increase": 0.0,
+            "difficulty_ratio_increase": 0.0028,
+            "fragment_stats_before": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.0714,
+              "word_count": 14
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.1429,
+              "word_count": 14
+            },
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0715,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": true,
+            "vocab_difficulty_increased": true,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": true,
+            "reasons": "vocab_difficulty_increased_fragment(sentence_len+0.0,difficult_ratio+0.0715)"
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 20,
+            "hook_word_count_after": 20,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": true,
+          "quality_degradation_v2_after_regen": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 11.09,
+              "difficult_word_ratio": 0.1211,
+              "word_count": 355
+            },
+            "stats_after": {
+              "avg_sentence_len": 11.12,
+              "difficult_word_ratio": 0.1236,
+              "word_count": 356
+            },
+            "sentence_len_increase": 0.03,
+            "difficulty_ratio_increase": 0.0025,
+            "fragment_stats_before": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.0714,
+              "word_count": 14
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 15.0,
+              "difficult_word_ratio": 0.1333,
+              "word_count": 15
+            },
+            "fragment_sentence_len_increase": 1.0,
+            "fragment_difficulty_ratio_increase": 0.0619,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": true,
+            "vocab_difficulty_increased": true,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": true,
+            "reasons": "vocab_difficulty_increased_fragment(sentence_len+1.0,difficult_ratio+0.0619)"
+          },
+          "section_role_violation_after_regen": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 20,
+            "hook_word_count_after": 20,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_en": {
+            "sentence_count_before": 32,
+            "sentence_count_after": 32,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 5,
+            "hedge_word_count_after": 5,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 11,
+            "paragraph_count_after": 11,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "quality_degradation_ja": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 10,
+            "paragraph_count_after": 10,
+            "paragraph_delta": 0,
+            "title_changed": false,
+            "degradation_candidate": false
+          },
+          "en_text_before_rewrite": "# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee would pay for the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details were still missing. These included who would collect the fee, who would pay it, and how its amount would be decided.\n\nIn other words, no one had actually started collecting the fee. What appeared on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee plan. He would replace it with trade and investment deals between Gulf countries and the United States. He said this decision followed “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us point the camera toward the oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "en_text_after_rewrite": "# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee would pay for the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details were still missing. These included who would collect the fee, who would pay it, and how its amount would be decided.\n\nIn other words, no one had actually started collecting the fee. What appeared on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee plan. He would replace it with trade and investment deals between Gulf countries and the United States. He said this decision followed “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us point the camera toward the oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nAt the time of the report, Brent oil futures were up about 2.6%, above $85 a barrel. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "ja_text_before_rewrite": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。報道時点では約二点六パーセント高で、一バレル八十五ドルを超えていました。\n\nこのとき確認できるのは、撤回の直後に原油価格が全面的に下落したわけではない、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+          "ja_text_after_rewrite": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。報道時点ではBrent先物は約二点六パーセント高で、一バレル八十五ドルを超えていました。\n\nこのとき確認できるのは、撤回の直後に原油価格が全面的に下落したわけではない、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+          "rewrite_new_precheck_findings_count": 0,
+          "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true,
+          "ja_recheck_overall_status": "LEDGER_DEVIATION"
+        },
+        {
+          "cycle": 2,
+          "stage2_results": [],
+          "blocking_count": 0,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": []
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 1.4461,
+      "total_calls": 8,
+      "elapsed_seconds": 115.916
+    },
+    {
+      "instance_id": "safety_er009_changed_actor",
+      "group": "safety",
+      "expected_group_label": "BLOCKING(Safety、§7-1)",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "origin": null,
+              "related_fact_id": null,
+              "dev": {
+                "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerが示す研究者はKareem HaggagとGiovanni Paciで、Harvard Business Schoolとの関係は確認されていません。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": false,
+                "changed_actor": true,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": true,
+                "explanation": "Harvard Business School所属というLedgerにない具体的事実を加え、研究主体を置き換えているため、changed_fact・changed_actor・unsupported_new_claimがtrueです。取引件数と研究結果の記述はLedgerと一致します。",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "fallback_used": false,
+              "section_type": "title",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_claim",
+              "rewrite_kind": "narrow_scope",
+              "rewrite_hint": "“A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis” — Remove the unsupported Harvard Business School attribution; keep the supported study, sample-size, and finding claims. Ledger facts: F-001, F-002, F-004.",
+              "floor_reason": "deterministic_floor:changed_actor",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            }
+          ],
+          "blocking_count": 1,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "claim:7b2fca543a4fc34a",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "title"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 31.0,
+              "difficult_word_ratio": 0.0968,
+              "word_count": 31
+            },
+            "stats_after": {
+              "avg_sentence_len": 27.0,
+              "difficult_word_ratio": 0.0741,
+              "word_count": 27
+            },
+            "sentence_len_increase": -4.0,
+            "difficulty_ratio_increase": -0.0227,
+            "fragment_stats_before": {
+              "avg_sentence_len": 18.0,
+              "difficult_word_ratio": 0.0556,
+              "word_count": 18
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 14.0,
+              "difficult_word_ratio": 0.0,
+              "word_count": 14
+            },
+            "fragment_sentence_len_increase": -4.0,
+            "fragment_difficulty_ratio_increase": -0.0556,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": true,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 31,
+            "hook_word_count_after": 27,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 1,
+            "paragraph_count_after": 1,
+            "paragraph_delta": 0,
+            "title_changed": true,
+            "degradation_candidate": true
+          },
+          "en_text_before_rewrite": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "en_text_after_rewrite": "A team studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "rewrite_new_precheck_findings_count": 0,
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.2714,
+      "total_calls": 3,
+      "elapsed_seconds": 17.326
+    },
+    {
+      "instance_id": "safety_er009_changed_number",
+      "group": "safety",
+      "expected_group_label": "BLOCKING(Safety、§7-1)",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cycles": [
+        {
+          "cycle": 1,
+          "stage2_results": [
+            {
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "origin": null,
+              "related_fact_id": null,
+              "dev": {
+                "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+                "severity": "MAJOR",
+                "changed_fact": true,
+                "changed_scope": false,
+                "changed_causality": false,
+                "changed_certainty": false,
+                "changed_number": true,
+                "changed_actor": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false,
+                "unsupported_new_claim": false,
+                "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+                "qualifier_present": false,
+                "qualifier_text": "",
+                "ledger_field_basis": "ledger_fact",
+                "observation_consistent": false,
+                "matched_notes_id": "F-002",
+                "auto_downgraded": false,
+                "severity_final": "BLOCKING",
+                "action": "STOP",
+                "basis": "ledger_fact",
+                "rule_id": "existing_major_v2"
+              },
+              "detected_by": "stage1_llm",
+              "local_context": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "fallback_used": false,
+              "section_type": "title",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "basis": "ledger_numeric_value",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "「Researchers studied more than 30 million credit card payments in New York City taxis」内の「more than 30 million」をLedgerの値「more than 13 million」に置き換えてください。参照: F-002。",
+              "floor_reason": "deterministic_floor:changed_number",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": null
+            },
+            {
+              "claim_text": "count values found in article not matching any ledger fact: [30000000.0]",
+              "origin": null,
+              "related_fact_id": "F-002",
+              "dev": {
+                "claim_in_article": "count values found in article not matching any ledger fact: [30000000.0]",
+                "issue": "precheck detected number_mismatch vs ledger_value=1,300万件超",
+                "explanation": "deterministic precheck finding (kind=number_mismatch)",
+                "related_fact_id": "F-002",
+                "origin": null,
+                "changed_actor": false,
+                "changed_number": false,
+                "changed_negation": false,
+                "changed_comparison": false,
+                "changed_time": false
+              },
+              "detected_by": "precheck",
+              "materiality": "BLOCKING",
+              "llm_materiality": null,
+              "basis": "precheck_floor",
+              "rewrite_kind": "replace_with_ledger_value",
+              "rewrite_hint": "'count values found in article not matching any ledger fact: ' を、fact_id=F-002のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=1,300万件超",
+              "floor_reason": "precheck_floor",
+              "section_type": "body",
+              "floor_cited_materiality": "BLOCKING",
+              "floor_cited_reason": "precheck_floor"
+            }
+          ],
+          "blocking_count": 2,
+          "non_blocking_count": 0,
+          "stage2_two_of_two_log": [],
+          "rewrite_records": [
+            {
+              "claim_identity": "claim:6ed4d4a0f906cccd",
+              "rewrite_kind": "replace_with_ledger_value",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+              "guard_ok": true,
+              "ladder_level_used": "1_word_connective",
+              "section_type": "title"
+            },
+            {
+              "claim_identity": "fact:F-002",
+              "rewrite_kind": "replace_with_ledger_value",
+              "mechanism": "single_text_local(E-2/delete-generic)",
+              "method": "target_not_found+fulltext_fallback",
+              "guard_ok": true,
+              "ladder_level_used": "6_full_article",
+              "section_type": "body"
+            }
+          ],
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 26.0,
+              "difficult_word_ratio": 0.1154,
+              "word_count": 26
+            },
+            "stats_after": {
+              "avg_sentence_len": 27.0,
+              "difficult_word_ratio": 0.1111,
+              "word_count": 27
+            },
+            "sentence_len_increase": 1.0,
+            "difficulty_ratio_increase": -0.0043,
+            "fragment_stats_before": {
+              "avg_sentence_len": 13.0,
+              "difficult_word_ratio": 0.0769,
+              "word_count": 13
+            },
+            "fragment_stats_after": {
+              "avg_sentence_len": 13.0,
+              "difficult_word_ratio": 0.0769,
+              "word_count": 13
+            },
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": true,
+            "first_paragraph_changed": true,
+            "hook_or_title_changed": true,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 26,
+            "hook_word_count_after": 27,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "quality_degradation_v2_regenerated": false,
+          "quality_degradation_en": {
+            "sentence_count_before": 1,
+            "sentence_count_after": 1,
+            "sentence_drop_rate": 0.0,
+            "hedge_word_count_before": 0,
+            "hedge_word_count_after": 0,
+            "hedge_word_increase": 0,
+            "paragraph_count_before": 1,
+            "paragraph_count_after": 1,
+            "paragraph_delta": 0,
+            "title_changed": true,
+            "degradation_candidate": true
+          },
+          "en_text_before_rewrite": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "en_text_after_rewrite": "Researchers studied more than thirteen million credit card payments in New York City taxis., and found that higher suggested tip rates led passengers to leave more money.",
+          "rewrite_new_precheck_findings_count": 0,
+          "recheck_overall_status": "LEDGER_COMPLIANT",
+          "recheck_all_prior_issues_resolved": true
+        }
+      ],
+      "stage1_call_used": false,
+      "stage1_recall_miss_substituted": false,
+      "s1u_screen_used": false,
+      "s1u_additional_blocking_count": 0,
+      "s1u_additional_block": false,
+      "s1u_additional_block_label": null,
+      "total_cost_jpy": 0.3688,
+      "total_calls": 4,
+      "elapsed_seconds": 19.432
+    }
+  ]
+}

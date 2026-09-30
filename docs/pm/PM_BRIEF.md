@@ -54,6 +54,14 @@ L2 1回+L3 1回/管理ID。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。
 実装を確認しA(既存仕様あり)/B(過去Trialあり・未採用)/C(本当に新規)へ
 分類することを必須Gateとする。詳細は`docs/pm/PM_GOVERNANCE.md`21節参照。
 
+**ユーザー指示優先とTrial開始前/終了前チェック・次工程Gate(2026-09-30
+新設)**: 最新のユーザー指示はClaude側の既存計画・iteration番号より常に
+優先し、反映できなければ別Trialを進めずSTOPして報告する。Trial開始前に
+指示の全件列挙+反映先対応表(未反映が1件でもあれば課金Trial開始禁止)、
+Trial終了前に各指示の実測確認+KPI全測定+未達時の継続判断、次工程Gateで
+指示未反映のまま次iteration/Phaseへ進まないことを必須化する。詳細は
+`docs/pm/PM_GOVERNANCE.md`22節参照。
+
 ## Fableの読み方(コスト抑制)
 
 - Fableは巨大SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`)を全文読まない。

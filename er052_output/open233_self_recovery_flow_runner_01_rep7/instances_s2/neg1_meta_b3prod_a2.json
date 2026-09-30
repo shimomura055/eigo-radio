@@ -1,0 +1,461 @@
+{
+  "instance_id": "neg1_meta_b3prod_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.” この電話の相手がAIだと思っていたことや、会話中に人間だと気づいたという個別の認識・出来事は確認されていません。その部分を削り、人間の契約スタッフがMuse経由の電話の一部を担当したテストに限定してください。参照: MUSE-HC-006。",
+          "floor_reason": null,
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "first_materiality": "BLOCKING",
+          "second_materiality": "BLOCKING",
+          "two_of_two_result": "BLOCKING(both agree)"
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "hook"
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 11.43,
+          "difficult_word_ratio": 0.095,
+          "word_count": 400
+        },
+        "stats_after": {
+          "avg_sentence_len": 11.67,
+          "difficult_word_ratio": 0.0961,
+          "word_count": 385
+        },
+        "sentence_len_increase": 0.24,
+        "difficulty_ratio_increase": 0.0011,
+        "fragment_stats_before": {
+          "avg_sentence_len": 8.67,
+          "difficult_word_ratio": 0.0385,
+          "word_count": 26
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 11.0,
+          "difficult_word_ratio": 0.0,
+          "word_count": 11
+        },
+        "fragment_sentence_len_increase": 2.33,
+        "fragment_difficulty_ratio_increase": -0.0385,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 28,
+        "hook_word_count_after": 13,
+        "hook_shrank": true,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": true,
+        "reasons": "hook_shrank(28->13words)"
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 11.43,
+          "difficult_word_ratio": 0.095,
+          "word_count": 400
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.03,
+          "difficult_word_ratio": 0.0982,
+          "word_count": 397
+        },
+        "sentence_len_increase": 0.6,
+        "difficulty_ratio_increase": 0.0032,
+        "fragment_stats_before": {
+          "avg_sentence_len": 8.67,
+          "difficult_word_ratio": 0.0385,
+          "word_count": 26
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 23.0,
+          "difficult_word_ratio": 0.087,
+          "word_count": 23
+        },
+        "fragment_sentence_len_increase": 14.33,
+        "fragment_difficulty_ratio_increase": 0.0485,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+14.33,difficult_ratio+0.0485)"
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 28,
+        "hook_word_count_after": 25,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 35,
+        "sentence_count_after": 33,
+        "sentence_drop_rate": 0.0571,
+        "hedge_word_count_before": 6,
+        "hedge_word_count_after": 5,
+        "hedge_word_increase": -1,
+        "paragraph_count_before": 18,
+        "paragraph_count_after": 18,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 14,
+        "paragraph_count_after": 14,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+      "en_text_after_rewrite": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. In a test, trained contract workers made some calls through Muse and handled the conversations themselves, rather than having AI make those calls.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse”",
+            "issue": "見出しが、誰かがAIだと思っていたという未確認の認識を断定的に示しています。Ledgerは一部の電話を人間の契約スタッフが担当したことを確認していますが、利用者がAIだと思っていたとは確認していません。原文の条件付き・疑問形の枠組みから、英語版で断定的な一人称の表現になっています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "未確認の利用者側の認識を、見出しで断定しています。新たな事実の追加と確実性の強化に該当します。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "直後の本文にある “In a test” と “some calls” はテストと電話の範囲を限定していますが、見出しの「We Thought It Was AI」は限定していません。",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. In a test, trained contract workers made some calls through Muse and handled the conversations themselves, rather than having AI make those calls.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "QUALITY",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“We Thought It Was AI—But There Was a Person Inside Meta’s Muse” を、「Meta’s Museで一部の電話を人間が担当」のように範囲を狭めてください。相手が実際にAIだと思っていたという認識は確認されていません（MUSE-HC-006）。",
+          "floor_reason": null,
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "two_of_two_downgraded": true,
+          "two_of_two_second_materiality": "QUALITY",
+          "two_of_two_second_basis": "unsupported_relationship"
+        },
+        {
+          "claim_text": "“A human can handle situations that AI alone finds difficult.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“A human can handle situations that AI alone finds difficult.”",
+            "issue": "AIだけでは難しい状況を人間が処理できるという一般的な能力の主張は、Ledgerで確認されていません。Ledgerが示すのは、人間の契約スタッフがMuse経由の一部の電話を担当し、やり取りを完了したことです。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "特定のテストで人間が電話を担当した事実を超え、AIが難しい状況における人間の能力を一般化して追加しています。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "前後に “Having a person take over is not always a bad thing” と “this may even be useful” がありますが、後者の留保は人間の能力そのものを限定していません。",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "two_of_two_downgraded": true,
+          "two_of_two_second_materiality": "QUALITY",
+          "two_of_two_second_basis": "unsupported_relationship"
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "first_materiality": "BLOCKING",
+          "second_materiality": "QUALITY",
+          "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "first_materiality": "QUALITY",
+          "second_materiality": "QUALITY",
+          "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg1_meta_b3prod_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1001,
+      "usage": {
+        "input_tokens": 6186,
+        "cached_input_tokens": 6183,
+        "output_tokens": 1152,
+        "reasoning_tokens": 988
+      },
+      "elapsed_seconds": 15.55,
+      "prompt_sha256": "fc16786903426c197b58b195cffe16b11f68be42e3194a9e71cc2adb0d2ea631"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_2of2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1121,
+      "usage": {
+        "input_tokens": 6186,
+        "cached_input_tokens": 6183,
+        "output_tokens": 1305,
+        "reasoning_tokens": 1134
+      },
+      "elapsed_seconds": 12.177,
+      "prompt_sha256": "fc16786903426c197b58b195cffe16b11f68be42e3194a9e71cc2adb0d2ea631"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_fact:MUSE-HC-006_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1122,
+      "usage": {
+        "input_tokens": 3764,
+        "cached_input_tokens": 0,
+        "output_tokens": 678,
+        "reasoning_tokens": 672
+      },
+      "elapsed_seconds": 7.308,
+      "prompt_sha256": "c986e66711a6cfb270940ce0cbba379b274d3648d206bf3058caa9e7afb38f0c"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_fact:MUSE-HC-006_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.066,
+      "usage": {
+        "input_tokens": 3625,
+        "cached_input_tokens": 0,
+        "output_tokens": 116,
+        "reasoning_tokens": 97
+      },
+      "elapsed_seconds": 2.391,
+      "prompt_sha256": "69a8329f73ec6296715163a5dae4dc77b88533447dca81ab12e6a6cbf0a0b0a2"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_fact:MUSE-HC-006_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1611,
+      "usage": {
+        "input_tokens": 3804,
+        "cached_input_tokens": 0,
+        "output_tokens": 1293,
+        "reasoning_tokens": 1287
+      },
+      "elapsed_seconds": 11.981,
+      "prompt_sha256": "c72045d58ce6b6a27c1beec42b0bcd2658610e05319bd9bffe209f0c323c67bf"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_fact:MUSE-HC-006_regen_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1236,
+      "usage": {
+        "input_tokens": 3665,
+        "cached_input_tokens": 0,
+        "output_tokens": 843,
+        "reasoning_tokens": 811
+      },
+      "elapsed_seconds": 7.224,
+      "prompt_sha256": "358277afe834d3c97f15b5643983a5441226dbc0e0ec3897db83ecf623870693"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.7854,
+      "usage": {
+        "input_tokens": 6626,
+        "cached_input_tokens": 0,
+        "output_tokens": 8688,
+        "reasoning_tokens": 7848
+      },
+      "elapsed_seconds": 77.389,
+      "prompt_sha256": "9bfff8bf28e33430ed2814738154b333f10d739e334f72d99283f9db580ab606",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2988,
+      "usage": {
+        "input_tokens": 6290,
+        "cached_input_tokens": 0,
+        "output_tokens": 2551,
+        "reasoning_tokens": 2401
+      },
+      "elapsed_seconds": 23.466,
+      "prompt_sha256": "9216fd3984ab62b5bcaa2e455851c70883239ce2336c23892e433e4661840c66"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_2of2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2221,
+      "usage": {
+        "input_tokens": 6146,
+        "cached_input_tokens": 0,
+        "output_tokens": 1602,
+        "reasoning_tokens": 1552
+      },
+      "elapsed_seconds": 16.52,
+      "prompt_sha256": "309d9cf23c6cd03b1431e1e0ec400443e129fecd6ef76066d4ef9adf1854b81c"
+    }
+  ],
+  "total_cost_jpy": 1.9814,
+  "total_calls": 9,
+  "elapsed_seconds": 174.078
+}

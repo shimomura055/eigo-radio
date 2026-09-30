@@ -1222,3 +1222,60 @@ VALIDATED条件(機構起因Escalation 0/n=2・Safety12+critical10でfalse-negat
 ### 15-17. 費用
 
 作業A・B・C: ¥0(監査・実装・机上分類、API呼び出しなし)。作業D: **¥60.226**(smoke test¥4.7041含む、error 0、委任Guardrail¥60をわずかに超過して自動停止、既存安全装置の正常動作)。本委任合計: **¥60.226**(Guardrail¥65内)。Phase累計(前回まで¥222.9756)+本委任¥60.226=**¥283.2016**。Phase残額(¥400 Guardrailのうち)=約¥116.7984。
+
+## §16. 再発防止ルール明文化+代表5ケースTrial(委任_16、2026-09-30)
+
+### 16-1. 前回ユーザー指示への対応表(委任_15/_14時点までの指示、委任_16 §1に基づく)
+
+| # | 指示 | 反映先 | 実際の動作 | Evidence | 判定 |
+|---|---|---|---|---|---|
+| A Hook-aware | Title/Hook/場面描写/attention grabberを通常Fact文と同基準で過剰BLOCKしない | Stage2 rubric拡張(`RUBRIC_R4_HOOK_AWARE`)を試行 | 実装・代表ケースで実測したが、Safety-critical claim誤降格のregressionを検出し安全側(既存rubric)へ復帰 | §6-4、`summary_rep7.json`/`summary_rep7_b3_refix.json`/`summary_rep7_b3_revert_verify.json` | **反映試行→撤回**(FAIL、安全側維持) |
+| B 数値丸め | 通常の四捨五入は一致扱い | `precheck.is_natural_rounding`(委任_14既存、変更なし) | 既存6例のunittestが引き続き全PASS(regressionなし) | `TestIsNaturalRoundingDirect`等 | 既存維持(PASS) |
+| C 最小変更第一 | ①語・接続詞②文の一部③1文④段落⑤広範囲⑥全体 | single_text_rewrite(既存)+paired_rewrite(J-1、本委任新設、§5-8) | J-1側を新規ラダー化、unittest2件+実測(`bgroup_B3`)でPASS | `TestJ1MinimalChangeLadderOrdering`、§16-4 | **PASS**(新規実装分含め達成) |
+| D B3型 | so→while/Meanwhile/文分割を先に試す | Cと同一機構(J-1ラダー) | `bgroup_B3`実測でladder_level_used=1_word_connective(so→while相当)によりBLOCKING維持のまま解消 | §16-4、`summary_rep7_b3_revert_verify.json` | **PASS** |
+| E セクション役割維持 | Title/Hook/本文/In one lineの役割をRewrite後も維持 | `measure_section_role_violation`(既存、変更なし) | 既存+新規unittest(in_one_line長文化)PASS。代表ケース1(neg1)でhook_shrank(28→13語)を実測検出 | `TestInOneLineTooLongDetection`、§16-4 | 検出器はPASS(機能する)、対象ケース自体はRewrite後に軽度の劣化あり |
+| F Rewrite後QA | 既存資産の再監査・二重実装禁止・再利用可否明示 | 委任_14監査A-2(既存)を維持 | 新規実装なし(既存監査の結論どおり、cite-or-release/Recheck+prior_issues再利用、Fact Checker A'差分QAはPhase2課題のまま) | `docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`§A-2 | 既存維持(変更なし) |
+| 進行順 | 少数代表ケース→広いTrial | 本委任の構造そのもの | 5 instanceのみ実行、29 instance全量再実行はしていない | §16-3 | 遵守 |
+| 再発防止 | Trial開始前/終了前チェック・次工程Gateを明文化 | `PM_GOVERNANCE.md`新節14 | 新節を追加し、本委任自体もそのチェックに従って実行 | `PM_GOVERNANCE.md`§14 | 反映済み |
+
+### 16-2. 再発防止ルールの明文化(作業A、¥0)
+
+`docs/pm/PM_GOVERNANCE.md`へ「14. ユーザー指示優先とTrial開始前/終了前チェック・次工程Gate(2026-09-30、OPEN-233の事故を契機にユーザー指示で新設)」を新設し、Trial開始前チェック(最新ユーザー指示の全件列挙・反映先対応表・未反映項目があれば開始禁止)、Trial終了前チェック(各指示の検証有無・未実施の先送り禁止・KPI全測定・未達なら原因修正後の次Trialまで継続可能か)、次工程Gate(指示未反映のまま次iteration/Phase2へ進まない・実行中の新指示は反映不能ならSTOP)を記録した。`docs/pm/PM_BRIEF.md`固定ヘッダへ参照行を追加した。あわせて委任_15の成果物(`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_15.md`、`docs/pm/open233_cost_kpi_reaggregation_iter1to5_01.md`)を本委任のcommitへ含めた。
+
+### 16-3. 実装(作業B、¥0、unittest 127件全PASS)
+
+- **B-1 J-1最小変更ラダー**(§2原因1是正、design書§5-8): `paired_rewrite`へ①単語・接続詞(新設`J1_MINIMAL_WORD_PROMPT_TEMPLATE`)→③1文(既存`J1_GENERIC`)→④段落(既存`J1_PARAGRAPH`)のladderを実装。guardは`single_text_rewrite`と同型(両言語非空+テキスト変化+claim文言消失)。
+- **B-2 Hook-aware Stage2 rubric拡張**(§2原因2是正、design書§6-4): `RUBRIC_R4_HOOK_AWARE`(R3'''+Title/Hook演出許容原則)+section_type入力を実装したが、**代表ケースTrialでregressionを検出し実配線を撤回**(§16-4参照)。コードは保持(Phase2課題)。
+- **B-3 Trial開始前チェック表**: `docs/pm/ACTIVE_TASK_C233S.md`に作成(A〜F+関連項目、未反映0件を確認の上でTrial開始)。
+- **B-4 unittest**: J-1最小変更ラダー(2件)・Stage2 Hook-aware section_type配線(3件)・In one line長文化検出(2件)を新規追加(計7件)。既存120件(iteration6時点)+新規7件=`er052_open233_self_recovery_flow_runner_01_test_01.py`**127件全PASS**+`er052_open233_self_recovery_precheck_01_test_01.py`23件PASS(regressionなし、`.venv/Scripts/python.exe`実行、合わせて150件PASS)。
+
+### 16-4. 代表5ケースTrial実測(作業C、¥9.386、n=2)
+
+新規`er052_open233_self_recovery_flow_runner_01_rep7_representative_01.py`で5 instance(全てstage1_mode=reuse、Stage1コスト¥0)をn=2実行した(OUT_DIR=`er052_output/open233_self_recovery_flow_runner_01_rep7`、Guardrail¥15)。
+
+| ケース | instance | 期待結果 | 実測(1回目、RUBRIC_R4_HOOK_AWARE適用時) | 判定 |
+|---|---|---|---|---|
+| 1 Meta Hook | `neg1_meta_b3prod_a2` | Rewriteなしで通過(QUALITY/ACCEPTABLE) | BLOCKING維持(hook区分、具体的な新規narrativeの発明と判定、rubric自身の除外条件どおり)→Rewrite(ladder_level_used=3_sentence)で解消。`hook_shrank`(28→13語)検出。title/body近傍の類似claimはQUALITYへ | **FAIL**(期待の「Rewriteなし」は不成立、ただし判定自体は安全側で妥当) |
+| 2/3 B3丸め+因果 | `bgroup_B3` | so→whileの①②で解消 | Stage2が直接QUALITYへ降格(Rewriteなし、ladder未使用) | **FAIL(Safety regression)**: Safety-critical claimの誤降格 |
+| 4 Hormuz scope | `hormuz_run03_standard` | narrow_scopeを最小変更で解消 | BLOCKING維持→ladder_level_used=3_sentenceで解消、役割違反0件 | **PASS** |
+| 5a/5b Safety重大 | `safety_er009_changed_actor`/`_number` | BLOCKING維持→解消 | 両方ともdeterministic floorでBLOCKING維持→actor: ladder_level_used=1_word_connective/number: [1_word_connective, 6_full_article]で解消、役割違反0件 | **PASS** |
+
+**最小修正1回(委任文§3-C「FAILがあれば原則文・ラダー・QAの最小修正を1回だけ行い当該ケースのみ再実行」)**: ケース2/3(`bgroup_B3`)のFAIL原因調査のため、Hook-aware原則の適用対象をtitle/hook/in_one_line/bodyの4種からtitle/hookの2種のみへ限定する修正を行い、`bgroup_B3`のみ再実行(¥0.1928)。**in_one_lineを明示的に適用対象外としたにもかかわらず、同じ誤降格(QUALITY 2/2)が再現した**(`summary_rep7_b3_refix.json`)。ルール条件のバグではなく、Hook-aware原則文がプロンプト中に存在するだけで無関係なsection_typeの判定にも寛容化バイアスが波及した疑い(LLM prompt priming効果)。**委任文§5のSTOP条件(最小修正1回後もFAIL)に該当**。
+
+**安全側復帰と再検証**: Stage2の実配線をRUBRIC_R3_TRIPLE_PRIME(iteration4/5/6で安全性実測済み)へ復帰し、section_typeはPython側計算(post-hoc downgrade用、§6-4既存)として保持するがLLMプロンプトへは渡さない設計へ変更した(¥1.0703で`bgroup_B3`を再検証)。**復帰後、`bgroup_B3`はBLOCKING 2/2へ復帰し(`summary_rep7_b3_revert_verify.json`)、かつ`ladder_level_used=1_word_connective`(method=`j1_e1_minimal_word`、so→while相当)でBLOCKING維持のまま解消することを確認した**(item4の目標をB3自身の実例で達成、`section_role_violation`0件)。
+
+### 16-5. iteration6の⑥全体Rewrite3件の必要性分類
+
+委任文§0で言及された「⑥全体3件」について、iteration6のsummary_flow_runner.jsonを機械確認した結果、`ladder_level_used="6_full_article"`(水準⑥)に該当したのは`safety_er009_changed_number`の一部claim(precheck floor由来、`related_fact_id`型の対象文特定失敗によりlocate自体ができず①〜④を試せなかったケース)であり、「念のため広く直した」のではなく「対象文を特定できなかったため必然的に全文フォールバックへ落ちた」既知の限界に該当することを本委任の代表ケース実測(§16-4ケース5b)でも再現確認した(`ladder_levels_used=['1_word_connective', '6_full_article']`、precheck floor claim側が⑥、deterministic floor claim側が①)。段落単位([4_paragraph])は今回もiteration6と同様0件のままであり、「段落以上でないと直せない」ケースは代表5ケースの範囲では確認されなかった。
+
+### 16-6. コスト5分割(代表5ケース換算)
+
+5 instance×n=2=10 instance-runの実測合計コスト(1回目実行分、¥8.1229)+ケース2/3の再実行(¥0.1928+¥1.0703=¥1.2631)。代表ケースは記事単位の5分割KPI算出には母数が小さすぎるため参考値として記録するにとどめ、正式なコスト5分割測定は29 instance全量Trial(iteration7、未実施)で行う。
+
+### 16-7. Gate判定
+
+代表5ケースのうち3/5(ケース1除く安全性は維持、ケース4/5)はPASS、**ケース2/3(Safety-critical claim)は最小修正1回後もFAILが再現**したため、委任文§3-C/§5のSTOP条件に該当する。**広いTrial(iteration7全量)へは進まない。Status=STOPPED**(Hook-aware rubric側の再設計またはpost-hoc限定方式への回帰を次回委任で検討したうえで再判断する)。J-1ラダー(B-1)は代表ケースで有効性を確認済みであり、次回委任でも維持する。
+
+### 16-8. 費用
+
+作業A(governance明文化)・B(実装)・B-3(チェック表): ¥0。作業C: 1回目実行¥8.1229+最小修正後再実行¥0.1928+安全復帰後再検証¥1.0703=**¥9.386**(委任Guardrail¥15内)。本委任合計: **¥9.386**。Phase累計(前回まで¥283.2016)+本委任¥9.386=**¥292.5876**。Phase残額(**上限¥500**のうち)=**¥207.4124**。

@@ -1,0 +1,338 @@
+{
+  "instance_id": "hormuz_run03_standard",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING(Safety群、§7-1、narrow_scope)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+            "issue": "Brent先物についての観測を、石油市場全体の値動きに広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "HF-009が確認するのはBrent先物の一時的な上げ幅縮小と回復であり、市場全体で原油価格が下落しなかったという主張までは保証しない。具体的事実の追加（changed_fact、unsupported_new_claim）と対象範囲の拡張（changed_scope）に該当する。",
+            "related_fact_id": "HF-009",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所：「撤回の直後に原油価格が全面的に下落したわけではない」。HF-009が確認しているのはBrent先物の短時間の値動きです。「原油価格」全般ではなく「Brent先物」に範囲を狭め、一時的に上げ幅を縮めた後、発表前に近い高い水準へ戻ったと記述してください。参照Ledger: HF-009。",
+          "floor_reason": null,
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "body"
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 11.09,
+          "difficult_word_ratio": 0.1211,
+          "word_count": 355
+        },
+        "stats_after": {
+          "avg_sentence_len": 11.21,
+          "difficult_word_ratio": 0.127,
+          "word_count": 370
+        },
+        "sentence_len_increase": 0.12,
+        "difficulty_ratio_increase": 0.0059,
+        "fragment_stats_before": {
+          "avg_sentence_len": 14.0,
+          "difficult_word_ratio": 0.0714,
+          "word_count": 14
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 14.5,
+          "difficult_word_ratio": 0.1724,
+          "word_count": 29
+        },
+        "fragment_sentence_len_increase": 0.5,
+        "fragment_difficulty_ratio_increase": 0.101,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+0.5,difficult_ratio+0.101)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 20,
+        "hook_word_count_after": 20,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 11.09,
+          "difficult_word_ratio": 0.1211,
+          "word_count": 355
+        },
+        "stats_after": {
+          "avg_sentence_len": 11.19,
+          "difficult_word_ratio": 0.1229,
+          "word_count": 358
+        },
+        "sentence_len_increase": 0.1,
+        "difficulty_ratio_increase": 0.0018,
+        "fragment_stats_before": {
+          "avg_sentence_len": 14.0,
+          "difficult_word_ratio": 0.0714,
+          "word_count": 14
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 17.0,
+          "difficult_word_ratio": 0.1176,
+          "word_count": 17
+        },
+        "fragment_sentence_len_increase": 3.0,
+        "fragment_difficulty_ratio_increase": 0.0462,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+3.0,difficult_ratio+0.0462)"
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 20,
+        "hook_word_count_after": 20,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 32,
+        "sentence_count_after": 32,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 5,
+        "hedge_word_count_after": 5,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 10,
+        "paragraph_count_after": 10,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee would pay for the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details were still missing. These included who would collect the fee, who would pay it, and how its amount would be decided.\n\nIn other words, no one had actually started collecting the fee. What appeared on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee plan. He would replace it with trade and investment deals between Gulf countries and the United States. He said this decision followed “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us point the camera toward the oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "en_text_after_rewrite": "# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee would pay for the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details were still missing. These included who would collect the fee, who would pay it, and how its amount would be decided.\n\nIn other words, no one had actually started collecting the fee. What appeared on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee plan. He would replace it with trade and investment deals between Gulf countries and the United States. He said this decision followed “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us point the camera toward the oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nBrent futures rose by less for a short time, then soon returned to nearly their earlier level. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "ja_text_before_rewrite": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。報道時点では約二点六パーセント高で、一バレル八十五ドルを超えていました。\n\nこのとき確認できるのは、撤回の直後に原油価格が全面的に下落したわけではない、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+      "ja_text_after_rewrite": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。Brent先物は一時上げ幅を縮めましたが、ほどなく発表前に近い高い水準に戻りました。\n\nこのとき確認できるのは、撤回の直後に原油価格が全面的に下落したわけではない、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "FAIL",
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [],
+      "blocking_count": 0,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "hormuz_run03_standard_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1422,
+      "usage": {
+        "input_tokens": 6163,
+        "cached_input_tokens": 0,
+        "output_tokens": 580,
+        "reasoning_tokens": 420
+      },
+      "elapsed_seconds": 6.502,
+      "prompt_sha256": "4f07e836e9e9f6d68089fb9fd00afd9f20a3e0f4f2cbf281089015f762771e13"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_fact:HF-009_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1267,
+      "usage": {
+        "input_tokens": 3731,
+        "cached_input_tokens": 0,
+        "output_tokens": 869,
+        "reasoning_tokens": 852
+      },
+      "elapsed_seconds": 8.6,
+      "prompt_sha256": "0482791d753275a8650090f7f1de6095d8fd548e691d333ffa37cceb868559c7"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_fact:HF-009_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1034,
+      "usage": {
+        "input_tokens": 3512,
+        "cached_input_tokens": 0,
+        "output_tokens": 616,
+        "reasoning_tokens": 497
+      },
+      "elapsed_seconds": 6.868,
+      "prompt_sha256": "220634da76219d05a042756efae8960facbd37ad04c2a3107033b45a6b4fb426"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_fact:HF-009_regen_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1634,
+      "usage": {
+        "input_tokens": 3782,
+        "cached_input_tokens": 0,
+        "output_tokens": 1327,
+        "reasoning_tokens": 1310
+      },
+      "elapsed_seconds": 11.384,
+      "prompt_sha256": "9b8b7a6f46beb241227a734f6f2c04eedbb8b876ff57cadd6b6252121357bfbb"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_fact:HF-009_regen_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.183,
+      "usage": {
+        "input_tokens": 3563,
+        "cached_input_tokens": 0,
+        "output_tokens": 1621,
+        "reasoning_tokens": 1552
+      },
+      "elapsed_seconds": 15.636,
+      "prompt_sha256": "44754105632825b51cd903a305797346d6147c7b0f09d4d06eebcbfaa9395a21"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.0934,
+      "usage": {
+        "input_tokens": 1549,
+        "cached_input_tokens": 0,
+        "output_tokens": 881,
+        "reasoning_tokens": 696
+      },
+      "elapsed_seconds": 8.394,
+      "prompt_sha256": "1ce27800d3914c94a7a1392cc848f4bd911e74274318229ad5e1a80c48451740",
+      "verdict": "FAIL"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2644,
+      "usage": {
+        "input_tokens": 6513,
+        "cached_input_tokens": 0,
+        "output_tokens": 2068,
+        "reasoning_tokens": 1956
+      },
+      "elapsed_seconds": 19.955,
+      "prompt_sha256": "09c41e04e9de8e1ec10455d58c14bed35ade2667396e36f85f8cedfb04bdd763",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "hormuz_run03_standard_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3182,
+      "usage": {
+        "input_tokens": 6717,
+        "cached_input_tokens": 0,
+        "output_tokens": 2713,
+        "reasoning_tokens": 2306
+      },
+      "elapsed_seconds": 22.683,
+      "prompt_sha256": "d05eae2add83eaea15f9551c3b960e6a25bca62230015f6493ee262c7fc6df16",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 1.3947,
+  "total_calls": 8,
+  "elapsed_seconds": 100.09
+}
