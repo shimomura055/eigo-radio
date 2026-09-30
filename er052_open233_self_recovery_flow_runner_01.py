@@ -99,9 +99,16 @@ OUT_DIR_ITER3 = "er052_output/open233_self_recovery_flow_runner_01_iter3"
 # 再実行、委任文§0/§2/§3)。入力deviation集合はiteration3と同一固定
 # (paired比較のため、Stage1 reuseパス自体はiteration1時点のartifactを
 # 参照し続ける、二重課金防止は変更しない)。
-OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter4"
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233p_c.json"
-TOTAL_BUDGET_JPY = 40.0  # 委任_12 作業C Guardrail
+OUT_DIR_ITER4 = "er052_output/open233_self_recovery_flow_runner_01_iter4"
+# 委任_13(iteration5): 既存iteration1〜4の出力(OUT_DIR_ITER1/ITER2/ITER3/
+# ITER4)は変更しない。iteration5の出力は別ディレクトリへ書く(Opus L2 #3
+# 所見反映=R3''+Stage2 2-of-2+cite-or-release+品質劣化検出v2+Rewrite品質
+# 制約の反映後、29 instance n=2で再実行、委任文§2/§3/§4)。入力deviation
+# 集合はiteration3/4と同一固定(paired比較のため、Stage1 reuseパス自体は
+# iteration1時点のartifactを参照し続ける、二重課金防止は変更しない)。
+OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter5"
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233q_d.json"
+TOTAL_BUDGET_JPY = 65.0  # 委任_13 作業D Guardrail
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -203,6 +210,254 @@ def measure_rewrite_quality_degradation(before_text: str, after_text: str) -> di
         "title_changed": title_changed,
         "degradation_candidate": degradation_candidate,
     }
+
+
+# ------------------------------------------------------------
+# 品質劣化検出v2(委任_13、iteration5、Opus L2レビュー#3論点6-B/総合項目5)。
+# iteration4の`measure_rewrite_quality_degradation`(文数/段落数/hedge語数/
+# タイトル変更)は、実際にiter4で起きた4種類の劣化(hook喪失・重複段落・
+# 接続破断・語彙難化)のうち3種類(neg1 cycle2の重複段落、neg2の接続破断、
+# neg3/neg5/B2の語彙難化)を検出できなかった(Opus L2 #3論点6-B実例)。
+# v2は(a)連続段落の類似度による重複検出、(b)段落先頭の孤立逆接語検出、
+# (c)平均文長・難語率比較、(d)タイトル・第1段落変更の常時フラグ、を追加する
+# (決定論・¥0、既存v1関数は変更せずiter4比較用に残す)。
+# ------------------------------------------------------------
+_PARAGRAPH_STOPWORDS = frozenset({
+    "a", "an", "the", "and", "or", "but", "of", "to", "in", "on", "for", "with",
+    "is", "are", "was", "were", "it", "its", "that", "this", "as", "by", "at",
+    "be", "had", "have", "has", "not", "so", "from", "than", "then",
+})
+_WORD_RE = re.compile(r"[A-Za-z']+")
+_CONTRASTIVE_OPENER_RE = re.compile(r"^(But|However|Yet|Still|Though|Nevertheless)\b", re.IGNORECASE)
+_VOWEL_GROUP_RE = re.compile(r"[aeiouyAEIOUY]+")
+
+
+def _split_paragraphs_nonheading(text: str) -> list:
+    return [p.strip() for p in text.split("\n\n") if p.strip() and not p.strip().startswith("#")]
+
+
+def _normalize_tokens_for_jaccard(text: str) -> set:
+    words = [w.lower() for w in _WORD_RE.findall(text)]
+    return {w for w in words if w not in _PARAGRAPH_STOPWORDS and len(w) > 2}
+
+
+def _jaccard_similarity(a: set, b: set) -> float:
+    if not a or not b:
+        return 0.0
+    union = len(a | b)
+    return len(a & b) / union if union else 0.0
+
+
+def detect_duplicate_paragraphs(after_text: str, threshold: float = 0.4) -> list:
+    """(a) 連続段落の類似度(正規化後token Jaccard >= threshold)による重複検出。
+    neg1 cycle2実例(「Meta tested having trained contract workers...」の直後に
+    「Meta had tested having trained human contractors...」という、ほぼ同一内容の
+    段落が連続した事故)を検出対象とする。閾値は当初案(0.6)ではこの実例
+    (jaccard=0.5)を検出できなかったため0.4へ調整した(同一記事内の他の
+    隣接段落ペア12組の実測ではjaccard最大0.292、次点との差が明確なため
+    過検出リスクは低いと判断、委任_13 iteration5)。"""
+    paragraphs = _split_paragraphs_nonheading(after_text)
+    tokensets = [_normalize_tokens_for_jaccard(p) for p in paragraphs]
+    flagged = []
+    for i in range(len(paragraphs) - 1):
+        sim = _jaccard_similarity(tokensets[i], tokensets[i + 1])
+        if sim >= threshold:
+            flagged.append({"index_a": i, "index_b": i + 1, "jaccard": round(sim, 3),
+                             "paragraph_a": paragraphs[i][:160], "paragraph_b": paragraphs[i + 1][:160]})
+    return flagged
+
+
+def detect_orphan_contrastive_paragraphs(before_text: str, after_text: str) -> list:
+    """(b) 段落先頭の孤立逆接語(But/However/Yet/Still等)検出。neg2実例
+    (「People who asked Muse...」等の対応主張が削られた結果、「But sometimes,
+    a human was speaking instead.」という先行文のない逆接で段落が始まった事故)
+    を検出対象とする。Rewrite前には存在しなかった(=Rewriteで新規に生じた)
+    逆接始まりの段落のみをflagする(誤検出抑制、before_textにも同一段落が
+    既に存在する場合はflagしない)。"""
+    before_paragraphs = {p for p in _split_paragraphs_nonheading(before_text)}
+    after_paragraphs = _split_paragraphs_nonheading(after_text)
+    flagged = []
+    for i, p in enumerate(after_paragraphs):
+        first_line = p.split("\n", 1)[0].strip()
+        first_sentence = re.split(r"(?<=[.!?])\s+", first_line)[0] if first_line else ""
+        if _CONTRASTIVE_OPENER_RE.match(first_sentence) and p not in before_paragraphs:
+            flagged.append({"paragraph_index": i, "opening": first_sentence[:100]})
+    return flagged
+
+
+def _syllable_estimate(word: str) -> int:
+    return max(1, len(_VOWEL_GROUP_RE.findall(word)))
+
+
+def _difficulty_stats(text: str) -> dict:
+    """(c) 平均文長・難語率の算出(音節数[母音塊カウント]>=3、または文字数
+    >=9の語を「難語」とみなす簡易ヒューリスティック、決定論・¥0)。"""
+    words = _WORD_RE.findall(text)
+    sentences = [s for s in re.split(r"(?<=[.!?])\s+", text) if s.strip()]
+    if not words or not sentences:
+        return {"avg_sentence_len": 0.0, "difficult_word_ratio": 0.0, "word_count": len(words)}
+    difficult = sum(1 for w in words if _syllable_estimate(w) >= 3 or len(w) >= 9)
+    return {
+        "avg_sentence_len": round(len(words) / len(sentences), 2),
+        "difficult_word_ratio": round(difficult / len(words), 4),
+        "word_count": len(words),
+    }
+
+
+def _paragraph_title(t: str) -> str:
+    lines = [ln for ln in t.strip().split("\n") if ln.strip()]
+    return lines[0].strip() if lines else ""
+
+
+def _first_body_paragraph(t: str) -> str:
+    paras = _split_paragraphs_nonheading(t)
+    return paras[0] if paras else ""
+
+
+def measure_rewrite_quality_degradation_v2(before_text: str, after_text: str,
+                                            changed_fragments: list | None = None) -> dict:
+    """委任_13(iteration5)品質劣化検出v2。(a)重複段落、(b)孤立逆接語、
+    (c)文長・難語率上昇、(d)タイトル/第1段落(hook)変更、を検出する。
+    (a)(b)(c)のいずれかを検出した場合のみ`needs_regeneration=True`とし、
+    Stage3側で1回だけ再生成する判断材料に使う((d)はhookが正当な理由で
+    変わる場合[BLOCKING claim自体がhookにある場合]があるため、単独では
+    再生成トリガにしない、常時フラグとして報告のみ)。
+    `changed_fragments`(before_fragment/after_fragmentのペアlist、
+    single_text_rewrite/paired_rewriteが返すもの)を渡すと、全文平均
+    (段落・記事丸ごとの変化が薄まる、実測でneg3/B2のような1文だけの局所
+    難語化は全文平均では閾値未満になることを確認)に加え、実際に書き換え
+    られた断片同士でも難語率・文長を比較し、いずれかが閾値を超えれば
+    `vocab_difficulty_increased=True`とする(局所的な語彙難化の検出感度を
+    上げるための追加判定、全文判定を置き換えるものではない)。"""
+    dup = detect_duplicate_paragraphs(after_text)
+    orphan = detect_orphan_contrastive_paragraphs(before_text, after_text)
+    stats_before = _difficulty_stats(before_text)
+    stats_after = _difficulty_stats(after_text)
+    sentence_len_increase = round(stats_after["avg_sentence_len"] - stats_before["avg_sentence_len"], 2)
+    difficulty_ratio_increase = round(stats_after["difficult_word_ratio"] - stats_before["difficult_word_ratio"], 4)
+    vocab_difficulty_increased_wholetext = bool(
+        (stats_before["avg_sentence_len"] and sentence_len_increase >= 3.0) or difficulty_ratio_increase >= 0.05
+    )
+
+    fragment_stats_before = fragment_stats_after = None
+    fragment_sentence_len_increase = fragment_difficulty_ratio_increase = 0.0
+    vocab_difficulty_increased_fragment = False
+    pairs = [(p.get("before"), p.get("after")) for p in (changed_fragments or [])
+             if p.get("before") and p.get("after")]
+    if pairs:
+        before_concat = " ".join(b for b, _ in pairs)
+        after_concat = " ".join(a for _, a in pairs)
+        fragment_stats_before = _difficulty_stats(before_concat)
+        fragment_stats_after = _difficulty_stats(after_concat)
+        fragment_sentence_len_increase = round(
+            fragment_stats_after["avg_sentence_len"] - fragment_stats_before["avg_sentence_len"], 2)
+        fragment_difficulty_ratio_increase = round(
+            fragment_stats_after["difficult_word_ratio"] - fragment_stats_before["difficult_word_ratio"], 4)
+        vocab_difficulty_increased_fragment = bool(
+            (fragment_stats_before["avg_sentence_len"] and fragment_sentence_len_increase >= 3.0)
+            or fragment_difficulty_ratio_increase >= 0.05
+        )
+    vocab_difficulty_increased = vocab_difficulty_increased_wholetext or vocab_difficulty_increased_fragment
+
+    title_changed = _paragraph_title(before_text) != _paragraph_title(after_text)
+    first_paragraph_changed = _first_body_paragraph(before_text) != _first_body_paragraph(after_text)
+
+    reasons = []
+    if dup:
+        reasons.append(f"duplicate_paragraph(jaccard={dup[0]['jaccard']})")
+    if orphan:
+        reasons.append(f"orphan_contrastive_opener({orphan[0]['opening']!r})")
+    if vocab_difficulty_increased_wholetext:
+        reasons.append(
+            f"vocab_difficulty_increased_wholetext(sentence_len+{sentence_len_increase},"
+            f"difficult_ratio+{difficulty_ratio_increase})"
+        )
+    if vocab_difficulty_increased_fragment:
+        reasons.append(
+            f"vocab_difficulty_increased_fragment(sentence_len+{fragment_sentence_len_increase},"
+            f"difficult_ratio+{fragment_difficulty_ratio_increase})"
+        )
+
+    return {
+        "duplicate_paragraphs": dup, "duplicate_paragraph_detected": bool(dup),
+        "orphan_contrastive_paragraphs": orphan, "orphan_contrastive_detected": bool(orphan),
+        "stats_before": stats_before, "stats_after": stats_after,
+        "sentence_len_increase": sentence_len_increase,
+        "difficulty_ratio_increase": difficulty_ratio_increase,
+        "fragment_stats_before": fragment_stats_before, "fragment_stats_after": fragment_stats_after,
+        "fragment_sentence_len_increase": fragment_sentence_len_increase,
+        "fragment_difficulty_ratio_increase": fragment_difficulty_ratio_increase,
+        "vocab_difficulty_increased_wholetext": vocab_difficulty_increased_wholetext,
+        "vocab_difficulty_increased_fragment": vocab_difficulty_increased_fragment,
+        "vocab_difficulty_increased": vocab_difficulty_increased,
+        "title_changed": title_changed, "first_paragraph_changed": first_paragraph_changed,
+        "hook_or_title_changed": title_changed or first_paragraph_changed,
+        "needs_regeneration": bool(dup) or bool(orphan) or vocab_difficulty_increased,
+        "reasons": "; ".join(reasons),
+    }
+
+
+# ------------------------------------------------------------
+# Rewrite品質制約(委任_13、iteration5、Fable追加指示): 対象レベル
+# (Standard=A2、Advanced=B1B)の語彙・文長制約+hook保持+削除優先を、
+# rewrite_hintへ追記する形でStage3 Promptへ注入する(既存テンプレート
+# 自体[E2/J1/FULL_TEXT_FALLBACK]は変更せず、既に{rewrite_hint}を埋め込む
+# 箇所があるため非侵襲)。語彙制約文はProduction Prompt定数
+# (er012_b_family_voices_a2_production_01.A2_TABLE_PRINCIPLES_JA、
+# CURRENT_SPEC.md「B1(独立生成Natural Spoken News English)」節)を読んで
+# 要約引用したもの(Production自体は呼び出さない、read-only参照)。
+# ------------------------------------------------------------
+QUALITY_CONSTRAINT_COMMON = (
+    "\n\n[Quality constraints for this rewrite]\n"
+    "1. Preserve the title and the opening hook/narrative device unless the BLOCKING claim itself is "
+    "located there; if the flagged issue is elsewhere, do not remove or flatten the title/hook.\n"
+    "2. If deleting the unsupported part fully resolves the issue, prefer deletion over rephrasing. "
+    "Do not add new information, new vocabulary, or new claims while rewriting.\n"
+    "3. Do not repeat, in a different paragraph, content that already appears elsewhere in the article."
+)
+LEVEL_CONSTRAINT_A2 = (
+    "\n4. This article targets CEFR-A2 English listeners (Standard level; source: CURRENT_SPEC.md "
+    "\"CEFR-A2 structure/audio spec\", quoted via er012_b_family_voices_a2_production_01."
+    "A2_TABLE_PRINCIPLES_JA). Keep vocabulary plain and everyday; average sentence length about 11 "
+    "words, no sentence longer than about 18 words; one idea per sentence; avoid dense financial or "
+    "technical vocabulary (e.g. prefer \"prices went up a little, then went back down\" over \"prices "
+    "pared gains\")."
+)
+LEVEL_CONSTRAINT_B1B = (
+    "\n4. This article targets B1 (Advanced) English listeners (source: CURRENT_SPEC.md \"B1 "
+    "[independently-generated Natural Spoken News English]\" section). Use natural spoken news "
+    "English, adult tone, not as simplified as A2, but keep Clause Density/Concept Density/"
+    "Long-distance Dependency low: one main idea per sentence, avoid stacking financial jargon where "
+    "a plainer phrase works just as well."
+)
+
+
+def infer_article_level(instance_id: str) -> str | None:
+    """instance_id命名規則("_a2"/"_standard"=Standard/A2、"_b1b"/"_advanced"=
+    Advanced/B1B、既存NEGATIVE_SOURCE_FILES・hormuz/meta run instanceの
+    命名規則[委任文脈で既に確定]に基づく判定。該当しない場合(B1/B2/B3/B4等
+    のJA単体較正fixture)はNoneを返し、レベル別制約を付与しない(既存挙動を
+    変えない安全側デフォルト)。"""
+    s = instance_id.lower()
+    if "b1b" in s or "advanced" in s:
+        return "b1b"
+    if "a2" in s or "standard" in s:
+        return "a2"
+    return None
+
+
+def level_constraint_text(level: str | None) -> str:
+    if level == "a2":
+        return QUALITY_CONSTRAINT_COMMON + LEVEL_CONSTRAINT_A2
+    if level == "b1b":
+        return QUALITY_CONSTRAINT_COMMON + LEVEL_CONSTRAINT_B1B
+    return QUALITY_CONSTRAINT_COMMON
+
+
+REGENERATION_EMPHASIS_TEMPLATE = (
+    "\n\n[Regeneration notice] Your previous attempt at this same fix had a quality problem: {reasons}. "
+    "Resolve the Ledger deviation again, but this time specifically avoid that problem."
+)
 
 
 class TrialAbort(RuntimeError):
@@ -557,6 +812,156 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
 
 
 # ------------------------------------------------------------
+# cite-or-release(委任_13、iteration5、Opus L2レビュー#3論点4推奨1・2)。
+# 確認call(旧`_recheck_confirm`)のschemaへ`remaining_sentence`(未解消と
+# 判断する根拠として、現在の記事本文中に実在する文の逐語引用)を必須化する。
+# vfl01(Production)は変更せず、Trial側でschema/instructionを組み立てる。
+# 引用が本文に実在すればStage4(正しい、fail-closed維持)、実在しなければ
+# resolved扱いへ機械的に上書きする(根拠のない未解消を排除、fail-closedを
+# 緩めない方向の厳格化)。あわせてRewrite前後の対象文ペア(before→after)を
+# instructionへ添える(モデルが消えた文を探し回る必要をなくす)。
+# ------------------------------------------------------------
+CONFIRM_PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "index": {"type": "integer"},
+        "resolved": {"type": "boolean"},
+        "explanation": {"type": "string"},
+        "remaining_sentence": {
+            "type": "string",
+            "description": "resolved=falseの場合のみ: 未解消の根拠として、現在の記事本文中に"
+                            "実在する文をそのまま逐語引用する(要約・言い換え不可)。resolved=true"
+                            "の場合は空文字列にする。",
+        },
+    },
+    "required": ["index", "resolved", "explanation", "remaining_sentence"],
+    "additionalProperties": False,
+}
+
+CITE_OR_RELEASE_INSTRUCTION = (
+    "\n\n【追加指示(委任_13、cite-or-release)】各項目についてresolved=falseと判定する場合、"
+    "その根拠として、現在の記事本文(article_text)に実在する文をそのまま逐語引用して"
+    "remaining_sentenceへ記載してください(要約や言い換えは不可、記事本文に無い文を"
+    "書いてはいけません)。resolved=trueの場合、remaining_sentenceは空文字列(\"\")にしてください。"
+)
+
+
+def build_before_after_instruction(before_after_pairs: list) -> str:
+    """委任_13(iteration5、Opus L2レビュー#3論点4推奨2): Rewrite前後の対象文
+    ペアをinstructionへ添える(single_text_rewrite/paired_rewriteが返す
+    before_fragment/after_fragmentのうち、両方が判明しているものだけを使う。
+    全文フォールバック等でfragmentが特定できない場合は対象から除く)。"""
+    pairs = [p for p in before_after_pairs if p.get("before") and p.get("after") is not None]
+    if not pairs:
+        return ""
+    lines = ["\n\n【追加指示: 今回のRewriteで変更された対象文】",
+             "以下の文は、前回指摘の解消を試みるために変更されました(未解消判定の参考にしてください):"]
+    for pair in pairs:
+        after_display = pair["after"] if pair["after"] else "(削除されました)"
+        lines.append(f"- before: {pair['before']}\n  after: {after_display}")
+    return "\n".join(lines)
+
+
+def build_recheck_schema_confirm(include_related_fact_id: bool, include_origin: bool) -> dict:
+    item_schema = trial.build_trial_deviation_item_schema(include_related_fact_id, include_origin)
+    props = {"deviations": {"type": "array", "items": item_schema},
+              "prior_issues_resolved": {"type": "array", "items": CONFIRM_PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA}}
+    required = ["deviations", "prior_issues_resolved"]
+    return {
+        "name": "open233_self_recovery_recheck_confirm_v4a_prior_cite",
+        "schema": {"type": "object", "properties": props, "required": required, "additionalProperties": False},
+        "strict": True,
+    }
+
+
+def apply_cite_or_release(parsed_confirm: dict, article_text: str) -> dict:
+    """resolved=falseの各項目について、remaining_sentenceが現在の記事本文に
+    実在するかを機械検証する。実在すれば(cite)そのままresolved=false
+    (Stage4行き、正しい)。実在しなければ(根拠なき未解消)resolved=trueへ
+    機械的に上書きする(release)。空白正規化のみ行い、部分一致(strip後の
+    厳密substring)で判定する(fail-closedを緩めない、過剰な緩和防止)。"""
+    resolved_list = parsed_confirm.get("prior_issues_resolved", [])
+    normalized_article = re.sub(r"\s+", " ", article_text)
+    out_list = []
+    released_count = 0
+    for item in resolved_list:
+        orig_resolved = bool(item.get("resolved"))
+        remaining = (item.get("remaining_sentence") or "").strip()
+        final_resolved = orig_resolved
+        overridden = False
+        if not orig_resolved:
+            normalized_remaining = re.sub(r"\s+", " ", remaining).strip()
+            cited_exists = bool(normalized_remaining) and (normalized_remaining in normalized_article)
+            if not cited_exists:
+                final_resolved = True
+                overridden = True
+                released_count += 1
+        out_list.append({**item, "resolved": final_resolved, "cite_or_release_overridden": overridden})
+    all_resolved = len(out_list) > 0 and all(bool(it["resolved"]) for it in out_list)
+    return {"prior_issues_resolved": out_list, "all_prior_issues_resolved": all_resolved,
+            "released_count": released_count}
+
+
+def run_recheck_confirm(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
+                         prior_issues: list, before_after_pairs: list) -> dict:
+    """cite-or-release対応の確認call。run_recheck()とほぼ同一だが、schema・
+    instructionをConfirm専用のものへ差し替え、応答後にapply_cite_or_release
+    で機械検証する。"""
+    check_budget(state)
+    prompt_template = trial.build_trial_prompt_template("V4A")
+    prompt = prompt_template.format(verified_ledger_text=fixture["ledger_text"], article_text=article_text)
+    prompt += vfl01.RELATED_FACT_ID_INSTRUCTION
+    include_origin = fixture.get("source_article_text") is not None
+    if include_origin:
+        prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=fixture["source_article_text"])
+    prompt += vfl01.build_prior_issues_instruction(prior_issues)
+    prompt += CITE_OR_RELEASE_INSTRUCTION
+    prompt += build_before_after_instruction(before_after_pairs)
+    schema = build_recheck_schema_confirm(True, include_origin)
+
+    last_err = None
+    response = None
+    t0 = time.time()
+    for _ in range(1 + MAX_RETRIES_PER_CALL):
+        try:
+            response = client.responses.create(
+                model=MODEL, reasoning={"effort": vfl01.REASONING_EFFORT},
+                text={"format": {"type": "json_schema", **schema}},
+                input=[{"role": "developer", "content": vfl01.DEVIATION_DEVELOPER_MESSAGE},
+                       {"role": "user", "content": prompt}],
+            )
+            break
+        except Exception as e:  # noqa: BLE001
+            last_err = f"{type(e).__name__}: {e}"
+            time.sleep(1.0)
+    elapsed = round(time.time() - t0, 3)
+    if response is None:
+        call_log.append({"label": label, "recovery_stage": "stage1_recheck_confirm", "error": last_err})
+        record_call(state, consecutive_errors, label, 0.0, False, "stage1_recheck_confirm")
+        # fail-closed: API失敗はBLOCKING-candidate扱い(§6-1 A7)
+        return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "all_prior_issues_resolved": False,
+                "_recheck_api_failure": True}
+
+    raw_parsed = json.loads(response.output_text)
+    parsed = vfl01._apply_deviation_post_hoc_validation(raw_parsed)
+    parsed_trial = trial.classify_parsed_result_trial(parsed, "V4A")
+    cite_result = apply_cite_or_release({"prior_issues_resolved": raw_parsed.get("prior_issues_resolved", [])},
+                                         article_text)
+    parsed_trial["prior_issues_resolved"] = cite_result["prior_issues_resolved"]
+    parsed_trial["all_prior_issues_resolved"] = cite_result["all_prior_issues_resolved"]
+    parsed_trial["cite_or_release_released_count"] = cite_result["released_count"]
+    usage = s2p._extract_usage(response)
+    cost = round(s2p.official_cost_jpy(usage), 4)
+    call_log.append({"label": label, "recovery_stage": "stage1_recheck_confirm", "cost_jpy": cost, "usage": usage,
+                      "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt),
+                      "overall_status": parsed_trial["overall_status"],
+                      "all_prior_issues_resolved": parsed_trial["all_prior_issues_resolved"],
+                      "cite_or_release_released_count": cite_result["released_count"]})
+    record_call(state, consecutive_errors, label, cost, True, "stage1_recheck_confirm", usage)
+    return parsed_trial
+
+
+# ------------------------------------------------------------
 # Stage 2: R2 rubric、instance単位batch(§4-8/A9)、floor適用
 # ------------------------------------------------------------
 def apply_floor(materiality: str, dev: dict, detected_by: str) -> tuple:
@@ -580,20 +985,25 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
     result = None
     for _ in range(1 + MAX_RETRIES_PER_CALL):
         try:
-            # 委任_12(iteration4): RUBRIC_R2 -> RUBRIC_R3_PRIME へ切替(§4-8
-            # R2は委任_08採用だったが、委任_12ユーザー指示「許容線の再設計」
-            # によりR3[自然な解釈基準]で置き換える)。作業B単体較正実測
-            # (er052_output/open233_self_recovery_r3_natural_calibration_01/
-            # summary_{r3,r3prime}_natural_calibration.json)で、素のR3は
-            # Safety側誤降格5件(Meta-1/Meta-2/hormuz-HF009/A2A3-1/A4-1)を
-            # 実測したため、fail-closed明確化を追加したR3_PRIMEへ1回だけ
-            # 再較正した(誤降格5件->2件[A2A3-1/A4-2]、うちA4-2は今回の
-            # certainty緩和方針と整合する意図した挙動。残る2件・既知の
-            # B4-dへの副作用[小サンプルで新規に発生]は報告のみ、詳細は
-            # 較正summary参照)。
+            # 委任_13(iteration5): RUBRIC_R3_PRIME -> RUBRIC_R3_TRIPLE_PRIME
+            # へ切替(§4-8)。Opus L2レビュー#3論点1・2により、R3_PRIMEの
+            # 「内心の断定」「scope一般化」の2追記が例示ベースで広すぎ、
+            # B4-d(驚きという一般的反応)・B1-c(市場の見方)を過剰にBLOCKING
+            # へ倒していたことが実測された(委任_12較正較差)。RUBRIC_R3_
+            # DOUBLE_PRIME(R3'')は同じ2項目を「開示・認識の有無そのもの」
+            # 「Ledger観測値そのもののscope」という原則へ限定したが、単体
+            # 較正でB4-dが2/2ともBLOCKINGのまま残った(未達)。RUBRIC_R3_
+            # TRIPLE_PRIME(R3''')は項目1をさらに「特定の個別の事実として
+            # 断定しているか、Ledgerが既に一般的な傾向として記録している
+            # 内容の抽象的な言い換えか」で絞り込み、単体較正でSafety-critical
+            # 10claim(A2A3-0/A4-0/A4-1/A5-0/A5-1/Meta-1/Meta-2/hormuz-HF009/
+            # B3/B4-a)誤降格0・B4-d/B1-c QUALITY 2/2・正解一致率93.48%
+            # (R3'の80.43%を上回る)を達成したため採用する(較正実測:
+            # er052_output/open233_self_recovery_r3dprime_calibration_01/
+            # summary_r3tripleprime_calibration.json)。
             result = s2c.run_stage2_batch_variant(
                 client, fixture["ledger_text"], fixture.get("source_article_text"),
-                claim_records, s2c.RUBRIC_R3_PRIME, model=MODEL,
+                claim_records, s2c.RUBRIC_R3_TRIPLE_PRIME, model=MODEL,
             )
             break
         except Exception as e:  # noqa: BLE001
@@ -631,6 +1041,55 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                     "rewrite_kind": rewrite_kind if rewrite_kind != "none" else "replace_with_ledger_value",
                     "rewrite_hint": rewrite_hint, "floor_reason": floor_reason})
     return out
+
+
+# ------------------------------------------------------------
+# Stage 2の2-of-2安定化(委任_13、iteration5、Opus L2レビュー#3論点3推奨3)。
+# negative/Normal群(NORMAL_GROUP_INSTANCE_IDS、Stage1がV4AでPASS経験のある
+# 記事)かつfloor不発(floor_reason is None、deterministic floor/precheck
+# floorのfail-closedを経由しない)でStage2がBLOCKINGの場合のみ、同一Stage2
+# をもう1回呼び、両方BLOCKINGの場合のみRewriteへ進む(1回でもQUALITY/
+# ACCEPTABLEなら通過+ログ)。Stage2判定はrun間で非決定的(neg2/neg5とも
+# n=3で2:1に割れる実測、Opus L2 #3論点3)であるため、安定化を狙う。
+# 記事あたり+¥0.2程度(トリガしたclaim数×Stage2単価)。
+# ------------------------------------------------------------
+def stage2_two_of_two_eligible(inst: dict, result: dict) -> bool:
+    return (
+        result["materiality"] == "BLOCKING"
+        and result.get("floor_reason") is None
+        and inst["instance_id"] in NORMAL_GROUP_INSTANCE_IDS
+    )
+
+
+def apply_stage2_two_of_two(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                             stage2_results: list, inst: dict) -> tuple:
+    eligible = [r for r in stage2_results if stage2_two_of_two_eligible(inst, r)]
+    if not eligible:
+        return stage2_results, []
+    claims_for_second = [{"claim_text": r["claim_text"], "origin": r.get("origin"),
+                           "related_fact_id": r.get("related_fact_id"), "dev": r["dev"],
+                           "detected_by": r.get("detected_by", "stage1_llm")} for r in eligible]
+    second_results = run_stage2(client, state, consecutive_errors, call_log,
+                                 f"{label_prefix}_2of2", fixture, claims_for_second)
+    second_by_identity = {claim_identity(r["dev"]): r for r in second_results}
+    log_entries = []
+    out = []
+    for r in stage2_results:
+        ident = claim_identity(r["dev"])
+        if ident in second_by_identity:
+            r2 = second_by_identity[ident]
+            both_blocking = r2["materiality"] == "BLOCKING"
+            log_entries.append({
+                "claim_identity": ident, "first_materiality": r["materiality"],
+                "second_materiality": r2["materiality"],
+                "two_of_two_result": "BLOCKING(both agree)" if both_blocking else "DOWNGRADED(1/2 non-blocking)",
+            })
+            if not both_blocking:
+                r = {**r, "materiality": r2["materiality"], "two_of_two_downgraded": True,
+                     "two_of_two_second_materiality": r2["materiality"],
+                     "two_of_two_second_basis": r2.get("basis")}
+        out.append(r)
+    return out, log_entries
 
 
 # ------------------------------------------------------------
@@ -941,17 +1400,23 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
     # 優先して使う。空の場合(schema_index_mismatch等のfail-closed経路)のみ
     # 旧来の合成文字列へfallbackする。
     rewrite_hint = claim_rec.get("rewrite_hint") or f"materiality={claim_rec['materiality']}, basis={claim_rec['basis']}"
+    # 委任_13(iteration5): Rewrite品質制約(レベル別語彙・文長制約+hook保持+
+    # 削除優先、+regeneration時は強調文)をrewrite_hintへ追記する(既存
+    # テンプレートは変更せず、既存の{rewrite_hint}埋め込み箇所を使う非侵襲策)。
+    rewrite_hint = rewrite_hint + claim_rec.get("extra_constraint", "")
 
     target_sentence, locate_method = locate_target(claim_text, rewrite_hint, full_text)
     method_used = None
     updated_text = full_text
     found = target_sentence is not None
+    after_fragment = None  # 委任_13: cite-or-release用のbefore/afterペア(単一文置換時のみ判明)
 
     delete_reoccurrence_detected = False
     if rewrite_kind == "delete":
         if found:
             updated_text = full_text.replace(target_sentence, "", 1)
             method_used = f"deterministic_delete({locate_method})"
+            after_fragment = ""
             # 委任_10: delete型のclaim単位再出現確認(§2-4)。exact substring
             # 一致だけでなく、言い換えによる同一claimの再出現もfuzzy match
             # (locate_best_sentence)で検出し、見つかった場合はguard抵触
@@ -977,6 +1442,9 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                 if revised_block is not None:
                     updated_text = full_text.replace(paragraph_block, revised_block, 1)
                     method_used = f"e2_paragraph_rewrite({locate_method})"
+                    # paragraph-level rewriteはtarget_sentence単位のafter断片を
+                    # 一意に特定できないため(段落内の他文も変わり得る)、
+                    # cite-or-release用のafter_fragmentはNoneのまま(既知の限界)。
                 else:
                     method_used = "e2_paragraph_rewrite_api_failure"
             else:
@@ -990,6 +1458,7 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                 if revised is not None:
                     updated_text = full_text.replace(target_sentence, revised, 1)
                     method_used = f"e2_generic_rewrite({locate_method})"
+                    after_fragment = revised
                 else:
                     method_used = "e2_generic_rewrite_api_failure"
         else:
@@ -998,6 +1467,7 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
     guard_ok = (updated_text != full_text and claim_text.strip() not in updated_text
                 and not delete_reoccurrence_detected) if found else False
     if not guard_ok:
+        after_fragment = None
         # guard抵触(見つからない、または置換後も同じclaim文言が残存) ->
         # 全文最小編集フォールバック(§5-2/§5-4のフォールバック段2に相当)
         prompt = FULL_TEXT_FALLBACK_PROMPT_TEMPLATE.format(
@@ -1016,7 +1486,8 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
 
     return {"updated_text": updated_text, "method": method_used, "guard_ok": guard_ok,
             "target_sentence": target_sentence, "locate_method": locate_method,
-            "delete_reoccurrence_detected": delete_reoccurrence_detected}
+            "delete_reoccurrence_detected": delete_reoccurrence_detected,
+            "before_fragment": target_sentence, "after_fragment": after_fragment}
 
 
 def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fixture, claim_rec: dict) -> dict:
@@ -1035,6 +1506,9 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
         f"materiality={claim_rec['materiality']}, basis={claim_rec['basis']}, "
         f"issue={dev.get('issue') or dev.get('explanation') or ''}"
     )
+    # 委任_13(iteration5): single_text_rewriteと同様、Rewrite品質制約を
+    # rewrite_hintへ追記する(既存テンプレートは変更しない非侵襲策)。
+    rewrite_hint = rewrite_hint + claim_rec.get("extra_constraint", "")
 
     en_target, en_method = locate_target(claim_text, rewrite_hint, en_full)
     # JA側ロケータ改善(委任_10、§5-4): 第一キー=rewrite_hintの引用断片
@@ -1103,6 +1577,11 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
         if guard_ok:
             method = "j1_paired_rewrite_paragraph" if use_paragraph else "j1_paired_rewrite"
 
+    # 委任_13: cite-or-release用のbefore/afterペア(単一文置換時のみ判明。
+    # paragraph-level rewriteはtarget_sentence単位のafter断片を一意に
+    # 特定できないため既知の限界としてNoneのまま)。
+    en_after_fragment = en_revised if (guard_ok and not use_paragraph and en_located and ja_located) else None
+
     if not guard_ok:
         # 委任_11 作業B-1(バグA是正、Opus L2 #2論点1推奨1): 従来はen_target/
         # ja_targetのいずれかが特定できない(j1_pair_not_located)場合、この
@@ -1137,6 +1616,7 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                 if en_revised_fb is not None:
                     updated_en = en_full.replace(en_target, en_revised_fb, 1)
                     method = "j1_failed+ja_fulltext_fallback+en_local_edit"
+                    en_after_fragment = en_revised_fb
                 else:
                     updated_en = en_full
                     method = "j1_failed+ja_fulltext_fallback+en_local_edit_api_failure"
@@ -1162,7 +1642,8 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
             guard_ok = False
 
     return {"updated_en_text": updated_en, "updated_ja_text": updated_ja, "method": method, "guard_ok": guard_ok,
-            "en_target": en_target, "ja_target": ja_target}
+            "en_target": en_target, "ja_target": ja_target,
+            "before_fragment": en_target, "after_fragment": en_after_fragment}
 
 
 def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_prefix, fixture,
@@ -1181,12 +1662,14 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
     if use_pairing:
         res = paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture, claim_rec)
         return {"mechanism": "paired_ja_en(J-1)", "en_text": res["updated_en_text"],
-                "ja_text": res["updated_ja_text"], "method": res["method"], "guard_ok": res["guard_ok"]}
+                "ja_text": res["updated_ja_text"], "method": res["method"], "guard_ok": res["guard_ok"],
+                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment")}
     else:
         res = single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture,
                                    "article_text", claim_rec)
         return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": res["updated_text"],
-                "ja_text": current_ja_text, "method": res["method"], "guard_ok": res["guard_ok"]}
+                "ja_text": current_ja_text, "method": res["method"], "guard_ok": res["guard_ok"],
+                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment")}
 
 
 # ------------------------------------------------------------
@@ -1322,7 +1805,8 @@ def build_precheck_floor_claims(fixture: dict, existing_fact_ids: set) -> list:
 # ------------------------------------------------------------
 # instance単位オーケストレーション(Stage1→2→3→Recheck、cycle上限2)
 # ------------------------------------------------------------
-def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool = False) -> dict:
+def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool = False,
+                  stage1_cache: dict | None = None, instances_subdir: str = "instances") -> dict:
     instance_id = inst["instance_id"]
     fixture = inst["fixture"]
     call_log: list = []
@@ -1332,9 +1816,26 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         stage1_parsed = stage1_reuse(inst["stage1_source"])
         stage1_call_used = False
     else:
-        stage1_parsed = stage1_fresh(client, state, consecutive_errors, call_log,
-                                      f"{instance_id}_stage1", fixture)
-        stage1_call_used = True
+        # 委任_13(iteration5、n=2実行): Stage1(fresh mode)はcycle1の入力
+        # (ledger_text+article_text+source_article_text)が同一である限り、
+        # sha256一致で再利用する(instance_idの末尾サンプル番号[_s1/_s2]を
+        # 除いた基底キーでcache共有、二重課金防止)。stage1_cacheが渡されない
+        # 場合[resume再実行等]は従来どおり毎回新規callする。
+        stage1_call_used = False
+        cache_key = None
+        if stage1_cache is not None:
+            cache_key = hashlib.sha256(
+                (fixture["ledger_text"] + "␟" + fixture["article_text"] + "␟"
+                 + (fixture.get("source_article_text") or "")).encode("utf-8")
+            ).hexdigest()
+        if cache_key is not None and cache_key in stage1_cache:
+            stage1_parsed = stage1_cache[cache_key]
+        else:
+            stage1_parsed = stage1_fresh(client, state, consecutive_errors, call_log,
+                                          f"{instance_id}_stage1", fixture)
+            stage1_call_used = True
+            if cache_key is not None:
+                stage1_cache[cache_key] = stage1_parsed
 
     # S1-U variant(委任_10、§3-1): --s1u有効時、このinstanceがs1u_eligible
     # かつStage1(V4A)がACCEPTABLE(PASS)だった場合のみ、S1-D 1 callを追加して
@@ -1388,7 +1889,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) for c in call_log), 4),
             "total_calls": len(call_log), "elapsed_seconds": elapsed,
         }
-        save_json(f"{OUT_DIR}/instances/{instance_id}.json", result)
+        save_json(f"{OUT_DIR}/{instances_subdir}/{instance_id}.json", result)
         return result
 
     # 委任_11 作業B-3(§3-3停止判定の是正): fact_id一致+claim本文近似一致
@@ -1441,12 +1942,19 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                     "basis": "precheck_floor", "rewrite_kind": "replace_with_ledger_value",
                                     "rewrite_hint": hint, "floor_reason": "precheck_floor"})
 
+        # 委任_13(iteration5、Stage2 2-of-2安定化): precheck floor claim
+        # (floor_reason="precheck_floor")は対象外なので混在させても安全。
+        stage2_results, stage2_two_of_two_log = apply_stage2_two_of_two(
+            client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}", working_fixture,
+            stage2_results, inst)
+
         blocking_claims = [c for c in stage2_results if c["materiality"] == "BLOCKING"]
         non_blocking_claims = [c for c in stage2_results if c["materiality"] != "BLOCKING"]
 
         cycle_record = {
             "cycle": cycle, "stage2_results": stage2_results,
             "blocking_count": len(blocking_claims), "non_blocking_count": len(non_blocking_claims),
+            "stage2_two_of_two_log": stage2_two_of_two_log,
         }
 
         if not blocking_claims:
@@ -1504,18 +2012,60 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         en_text_before_rewrite = current_en_text
         ja_text_before_rewrite = current_ja_text
 
-        # Stage 3: 各BLOCKING claimに対しRewrite dispatch
-        rewrite_records = []
-        for c in blocking_claims:
-            r = run_stage3_for_claim(client, state, consecutive_errors, call_log,
-                                      f"{instance_id}_c{cycle}_{claim_identity(c['dev'])[:20]}",
-                                      working_fixture, current_en_text, current_ja_text, c)
-            current_en_text = r["en_text"]
-            if r["ja_text"] is not None:
-                current_ja_text = r["ja_text"]
-            rewrite_records.append({"claim_identity": claim_identity(c["dev"]), "rewrite_kind": c["rewrite_kind"],
-                                     "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"]})
+        # 委任_13(iteration5、Rewrite品質制約): 対象レベル(Standard=A2、
+        # Advanced=B1B)の語彙・文長制約+hook保持+削除優先をrewrite_hintへ
+        # 追記する(infer_article_level、既知の限界: B1/B2/B3/B4等のJA単体
+        # 較正fixtureはlevel None=共通制約のみ)。
+        article_level = infer_article_level(instance_id)
+        base_constraint = level_constraint_text(article_level)
+
+        def _run_stage3_cycle(claims_list, en_text, ja_text, extra_constraint, label_suffix=""):
+            en_out, ja_out = en_text, ja_text
+            records, pairs = [], []
+            for c in claims_list:
+                c2 = dict(c)
+                c2["extra_constraint"] = extra_constraint
+                r = run_stage3_for_claim(
+                    client, state, consecutive_errors, call_log,
+                    f"{instance_id}_c{cycle}_{claim_identity(c['dev'])[:20]}{label_suffix}",
+                    working_fixture, en_out, ja_out, c2)
+                en_out = r["en_text"]
+                if r["ja_text"] is not None:
+                    ja_out = r["ja_text"]
+                records.append({"claim_identity": claim_identity(c["dev"]), "rewrite_kind": c["rewrite_kind"],
+                                 "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"]})
+                pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
+            return en_out, ja_out, records, pairs
+
+        # Stage 3: 各BLOCKING claimに対しRewrite dispatch(1回目)
+        current_en_text, current_ja_text, rewrite_records, before_after_pairs = _run_stage3_cycle(
+            blocking_claims, current_en_text, current_ja_text, base_constraint)
+
+        # 委任_13(iteration5、品質劣化検出v2+同一cycle内1回だけの再生成):
+        # (a)重複段落/(b)孤立逆接語/(c)語彙難化のいずれかを検出した場合のみ、
+        # 元のen_text_before_rewriteへ戻し、制約を強調して1回だけ再生成する
+        # (d)タイトル/hook変更は正当な理由がある場合もあるため単独では
+        # 再生成トリガにしない(needs_regenerationの定義どおり)。
+        quality_degradation_v2 = measure_rewrite_quality_degradation_v2(
+            en_text_before_rewrite, current_en_text, changed_fragments=before_after_pairs)
+        regenerated = False
+        if quality_degradation_v2["needs_regeneration"]:
+            regenerated = True
+            emphasized_constraint = base_constraint + REGENERATION_EMPHASIS_TEMPLATE.format(
+                reasons=quality_degradation_v2["reasons"])
+            current_en_text, current_ja_text, rewrite_records, before_after_pairs = _run_stage3_cycle(
+                blocking_claims, en_text_before_rewrite, ja_text_before_rewrite, emphasized_constraint,
+                label_suffix="_regen")
+            quality_degradation_v2_after_regen = measure_rewrite_quality_degradation_v2(
+                en_text_before_rewrite, current_en_text, changed_fragments=before_after_pairs)
+        else:
+            quality_degradation_v2_after_regen = None
+
         cycle_record["rewrite_records"] = rewrite_records
+        cycle_record["quality_degradation_v2"] = quality_degradation_v2
+        cycle_record["quality_degradation_v2_regenerated"] = regenerated
+        if quality_degradation_v2_after_regen is not None:
+            cycle_record["quality_degradation_v2_after_regen"] = quality_degradation_v2_after_regen
         cycle_record["quality_degradation_en"] = measure_rewrite_quality_degradation(
             en_text_before_rewrite, current_en_text)
         if ja_text_before_rewrite is not None and current_ja_text is not None:
@@ -1591,12 +2141,20 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         en_ambiguous = (recheck_parsed.get("overall_status") == "LEDGER_COMPLIANT"
                         and not recheck_parsed.get("all_prior_issues_resolved"))
         if en_ambiguous and not en_ok:
-            confirm_parsed = run_recheck(client, state, consecutive_errors, call_log,
-                                          f"{instance_id}_c{cycle}_recheck_confirm", recheck_fixture,
-                                          current_en_text, prior_issues)
+            # 委任_13(iteration5、cite-or-release): run_recheck() ->
+            # run_recheck_confirm()へ切替。remaining_sentence必須化+
+            # Rewrite前後の対象文ペア(before_after_pairs)をinstructionへ
+            # 添え、resolved=falseの根拠が現在の記事本文に実在しない場合は
+            # 機械的にresolved=trueへ上書きする(fail-closedを緩めず、
+            # 根拠なき未解消を排除、Opus L2レビュー#3論点4推奨1・2)。
+            confirm_parsed = run_recheck_confirm(client, state, consecutive_errors, call_log,
+                                                  f"{instance_id}_c{cycle}_recheck_confirm", recheck_fixture,
+                                                  current_en_text, prior_issues, before_after_pairs)
             cycle_record["recheck_confirm_overall_status"] = confirm_parsed.get("overall_status")
             cycle_record["recheck_confirm_all_prior_issues_resolved"] = confirm_parsed.get(
                 "all_prior_issues_resolved")
+            cycle_record["recheck_confirm_cite_or_release_released_count"] = confirm_parsed.get(
+                "cite_or_release_released_count", 0)
             if (confirm_parsed.get("overall_status") == "LEDGER_COMPLIANT"
                     and confirm_parsed.get("all_prior_issues_resolved")):
                 en_ok = True
@@ -1636,7 +2194,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) for c in call_log), 4),
         "total_calls": len(call_log), "elapsed_seconds": elapsed,
     }
-    save_json(f"{OUT_DIR}/instances/{instance_id}.json", result)
+    save_json(f"{OUT_DIR}/{instances_subdir}/{instance_id}.json", result)
     return result
 
 
@@ -1805,6 +2363,7 @@ def aggregate_measurements(instance_results: list) -> dict:
             "unconfirmed_after_reverify_count": unconfirmed_after_reverify_count,
         },
         "iter4_additional_measures": _iter4_additional_measures(instance_results),
+        "iter5_additional_measures": _iter5_additional_measures(instance_results),
     }
 
 
@@ -1888,6 +2447,105 @@ def _iter4_additional_measures(instance_results: list) -> dict:
     }
 
 
+# ------------------------------------------------------------
+# 委任_13(iteration5、追加7項目)。既存iter4_additional_measuresには
+# 影響を与えない追加ブロックとして分離する。
+# ------------------------------------------------------------
+# Opus L2レビュー#3論点3実測: neg5でRewriteされたclaim("Concerns about
+# US-Iran attacks, the sea blockade, and tanker safety continued on July
+# 14. So the flashy 20% plan left the stage.")は、正解BLOCKINGのB3
+# ("...links the continuing concerns causally to the plan's withdrawal.")
+# と同一文であり、「不要Rewrite」に数えるのはプロジェクト自身の再ラベル
+# 表と矛盾する(§7-0是正)。iter4の`unnecessary_rewrite`(v1、分子に
+# neg5を含む)は変更せず残し、本ブロックで是正後の分子(v2、neg5を除外)を
+# 別途報告する。
+UNNECESSARY_REWRITE_V2_EXCLUDE_INSTANCE_IDS = frozenset({"neg5_hormuz_div_a2"})
+
+
+def _iter5_additional_measures(instance_results: list) -> dict:
+    normal_present = [r for r in instance_results if r["instance_id"] in NORMAL_GROUP_INSTANCE_IDS]
+    unnecessary_rewrite_v1 = [r for r in normal_present if any(c.get("rewrite_records") for c in r["cycles"])]
+    unnecessary_rewrite_v2 = [r for r in unnecessary_rewrite_v1
+                               if r["instance_id"] not in UNNECESSARY_REWRITE_V2_EXCLUDE_INSTANCE_IDS]
+
+    qd_v2_dup = qd_v2_orphan = qd_v2_vocab = qd_v2_needs_regen = qd_v2_regenerated = 0
+    qd_v2_regen_resolved = 0
+    qd_v2_detail = []
+    for r in instance_results:
+        for ci, c in enumerate(r["cycles"], start=1):
+            qd = c.get("quality_degradation_v2")
+            if not qd:
+                continue
+            if qd.get("duplicate_paragraph_detected"):
+                qd_v2_dup += 1
+            if qd.get("orphan_contrastive_detected"):
+                qd_v2_orphan += 1
+            if qd.get("vocab_difficulty_increased"):
+                qd_v2_vocab += 1
+            if qd.get("needs_regeneration"):
+                qd_v2_needs_regen += 1
+                qd_v2_detail.append({"instance_id": r["instance_id"], "cycle": ci, "reasons": qd.get("reasons")})
+            if c.get("quality_degradation_v2_regenerated"):
+                qd_v2_regenerated += 1
+                qd_after = c.get("quality_degradation_v2_after_regen") or {}
+                if not qd_after.get("needs_regeneration"):
+                    qd_v2_regen_resolved += 1
+
+    two_of_two_triggered = 0
+    two_of_two_downgraded = 0
+    two_of_two_confirmed_blocking = 0
+    for r in instance_results:
+        for c in r["cycles"]:
+            log = c.get("stage2_two_of_two_log") or []
+            two_of_two_triggered += len(log)
+            for entry in log:
+                if entry["two_of_two_result"].startswith("DOWNGRADED"):
+                    two_of_two_downgraded += 1
+                else:
+                    two_of_two_confirmed_blocking += 1
+
+    cite_or_release_triggered = 0
+    cite_or_release_released_total = 0
+    for r in instance_results:
+        for c in r["cycles"]:
+            released = c.get("recheck_confirm_cite_or_release_released_count")
+            if released is not None:
+                cite_or_release_triggered += 1
+                cite_or_release_released_total += released
+
+    return {
+        "unnecessary_rewrite_v2_corrected": {
+            "n_normal_group": len(normal_present),
+            "count_v1_uncorrected": len(unnecessary_rewrite_v1),
+            "count_v2_corrected": len(unnecessary_rewrite_v2),
+            "rate_v2_corrected": (
+                round(len(unnecessary_rewrite_v2) / len(normal_present), 4) if normal_present else None
+            ),
+            "instance_ids_v2": [r["instance_id"] for r in unnecessary_rewrite_v2],
+            "excluded_as_duplicate_of_blocking": sorted(UNNECESSARY_REWRITE_V2_EXCLUDE_INSTANCE_IDS
+                                                          & {r["instance_id"] for r in unnecessary_rewrite_v1}),
+        },
+        "quality_degradation_v2": {
+            "duplicate_paragraph_detected_count": qd_v2_dup,
+            "orphan_contrastive_detected_count": qd_v2_orphan,
+            "vocab_difficulty_increased_count": qd_v2_vocab,
+            "needs_regeneration_count": qd_v2_needs_regen,
+            "needs_regeneration_detail": qd_v2_detail,
+            "regenerated_count": qd_v2_regenerated,
+            "regenerated_and_resolved_count": qd_v2_regen_resolved,
+        },
+        "stage2_two_of_two": {
+            "triggered_claim_count": two_of_two_triggered,
+            "downgraded_count": two_of_two_downgraded,
+            "confirmed_blocking_count": two_of_two_confirmed_blocking,
+        },
+        "cite_or_release": {
+            "confirm_calls_with_field": cite_or_release_triggered,
+            "released_count_total": cite_or_release_released_total,
+        },
+    }
+
+
 def compute_s1u_counterfactual(instance_results: list) -> dict:
     """委任_12(iteration4、§2項目6): S1-Uが付加したclaimを除外した反実仮想
     を0 callで算出する。S1-Uはstage1_parsedがACCEPTABLE(PASS)の場合のみ
@@ -1932,10 +2590,120 @@ def compute_s1u_counterfactual(instance_results: list) -> dict:
     }
 
 
+# ------------------------------------------------------------
+# 委任_13(iteration5、n=2実測): Opus L2レビュー#3論点6-A(iv)「iter4の
+# フロー実測はn=1に戻っており、real_run Escalation 0%という改善はrun間
+# 分散の範囲内で説明でき、証明になっていない」への対応。29 instanceを
+# sample1/sample2の2回独立実行し(Stage1はsha256一致で再利用、Stage2/
+# Stage3の非決定性のみが両sample間の差を生む)、instance単位final_state
+# 一致率・群別Escalation率のWilson CI・記事単位costのsample間最大値を
+# 算出する。
+# ------------------------------------------------------------
+def wilson_score_interval(successes: int, n: int, z: float = 1.96) -> tuple:
+    if n == 0:
+        return (0.0, 0.0)
+    phat = successes / n
+    denom = 1 + (z ** 2) / n
+    center = phat + (z ** 2) / (2 * n)
+    margin = z * ((phat * (1 - phat) / n + (z ** 2) / (4 * n ** 2)) ** 0.5)
+    lo = max(0.0, (center - margin) / denom)
+    hi = min(1.0, (center + margin) / denom)
+    return (round(lo, 4), round(hi, 4))
+
+
+def combine_n2_measures(sample_results_list: list) -> dict:
+    """sample_results_list: [sample1_instance_results, sample2_instance_results]
+    (各要素は同一29 instanceのunsuffixed instance_idを持つ独立run結果)。"""
+    by_id_per_sample = [{r["instance_id"]: r for r in results} for results in sample_results_list]
+    all_ids = sorted(by_id_per_sample[0].keys())
+
+    per_instance_agreement = []
+    for iid in all_ids:
+        states = [by_id.get(iid, {}).get("final_state") for by_id in by_id_per_sample]
+        per_instance_agreement.append({
+            "instance_id": iid, "final_states_by_sample": states,
+            "agreed": len(set(states)) == 1,
+        })
+    agreement_count = sum(1 for a in per_instance_agreement if a["agreed"])
+    agreement_rate = round(agreement_count / len(all_ids), 4) if all_ids else None
+
+    # 群別Escalation率(sample1+sample2を合算した分母・分子、Wilson CI付き)。
+    group_of: dict = {}
+    for by_id in by_id_per_sample:
+        for iid, r in by_id.items():
+            group_of[iid] = r["group"]
+    group_escalation_combined: dict = {}
+    for group in sorted(set(group_of.values())):
+        escalated = 0
+        total = 0
+        for by_id in by_id_per_sample:
+            for iid, r in by_id.items():
+                if group_of.get(iid) != group:
+                    continue
+                total += 1
+                if r["final_state"] == "STAGE4_ESCALATION":
+                    escalated += 1
+        lo, hi = wilson_score_interval(escalated, total) if total else (0.0, 0.0)
+        group_escalation_combined[group] = {
+            "escalated": escalated, "total": total,
+            "rate": round(escalated / total, 4) if total else None,
+            "wilson_ci_95": [lo, hi],
+        }
+
+    # real_run(6 instance×2 sample=12)のEscalation率(iter3-iv是正対応)。
+    real_run_escalated = sum(
+        1 for by_id in by_id_per_sample for iid, r in by_id.items()
+        if iid in REAL_RUN_INSTANCE_IDS and r["final_state"] == "STAGE4_ESCALATION"
+    )
+    real_run_total = sum(1 for by_id in by_id_per_sample for iid in by_id if iid in REAL_RUN_INSTANCE_IDS)
+    real_run_lo, real_run_hi = wilson_score_interval(real_run_escalated, real_run_total) if real_run_total else (0.0, 0.0)
+
+    # 記事単位cost(worst、2 sample中の最大値)。既存article_level集計を
+    # 各sampleへ適用し、article_idごとの最大costを取る(Cap余裕の保守評価)。
+    per_sample_article_costs: dict = {}
+    for by_id in by_id_per_sample:
+        grouped_members = {m for members in ARTICLE_GROUPS.values() for m in members}
+        for article_id, members in ARTICLE_GROUPS.items():
+            present = [by_id[m] for m in members if m in by_id]
+            if not present:
+                continue
+            cost = round(sum(r["total_cost_jpy"] for r in present), 4)
+            per_sample_article_costs.setdefault(article_id, []).append(cost)
+        for iid, r in by_id.items():
+            if iid in grouped_members:
+                continue
+            per_sample_article_costs.setdefault(iid, []).append(r["total_cost_jpy"])
+    worst_article_cost_across_samples = (
+        max((max(v) for v in per_sample_article_costs.values()), default=0.0)
+    )
+
+    return {
+        "n_samples": len(sample_results_list),
+        "per_instance_final_state_agreement": {
+            "agreement_count": agreement_count, "n_instances": len(all_ids), "rate": agreement_rate,
+            "disagreements": [a for a in per_instance_agreement if not a["agreed"]],
+        },
+        "group_escalation_rates_combined_wilson_ci": group_escalation_combined,
+        "real_run_combined": {
+            "escalated": real_run_escalated, "total": real_run_total,
+            "rate": round(real_run_escalated / real_run_total, 4) if real_run_total else None,
+            "wilson_ci_95": [real_run_lo, real_run_hi],
+        },
+        "article_level_cost_worst_across_samples": {
+            "worst_cost_jpy": worst_article_cost_across_samples,
+            "by_article_per_sample": per_sample_article_costs,
+        },
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--groups", default="safety,b_group,meta,hormuz,negative",
                          help="comma-separated subset of safety,b_group,meta,hormuz,negative")
+    parser.add_argument("--n_runs", type=int, default=1,
+                         help="委任_13(iteration5): 2を指定すると29 instanceをsample1/"
+                              "sample2で独立に2回実行する(Stage1はsha256一致で再利用、"
+                              "instances_s1//instances_s2へ別保存、既定1=iter4互換)")
     parser.add_argument("--resume", action="store_true",
                          help="既に er052_output/.../instances/<id>.json が存在するinstanceは"
                               "再実行せずキャッシュ結果を再利用する(重複課金防止)")
@@ -1951,27 +2719,56 @@ def main():
     consecutive_errors = [0]
 
     instances = [inst for inst in build_target_instances() if inst["group"] in selected_groups]
-    instance_results = []
+    # 委任_13(iteration5): stage1_cacheはsample1/sample2間で共有する
+    # (Stage1[fresh mode]はcycle1入力が同一である限りsha256一致で再利用、
+    # 二重課金防止)。--n_runs=1(既定)ではiter1〜4と同じ挙動(cache自体は
+    # 作るが同一sample内でのみ参照されるため実質無効化)。
+    stage1_cache: dict = {}
     stopped, stop_reason = False, None
+    sample_instance_results: list = []  # [[sample1の29件], [sample2の29件], ...]
 
-    for inst in instances:
-        cache_path = f"{OUT_DIR}/instances/{inst['instance_id']}.json"
-        if args.resume and os.path.exists(cache_path):
-            with open(cache_path, encoding="utf-8") as f:
-                instance_results.append(json.load(f))
-            continue
-        try:
-            result = run_instance(client, state, consecutive_errors, inst, enable_s1u=args.s1u)
-            instance_results.append(result)
-        except TrialAbort as e:
-            stopped = True
-            stop_reason = str(e)
+    for sample_idx in range(1, args.n_runs + 1):
+        subdir = "instances" if args.n_runs == 1 else f"instances_s{sample_idx}"
+        instance_results = []
+        for inst in instances:
+            cache_path = f"{OUT_DIR}/{subdir}/{inst['instance_id']}.json"
+            if args.resume and os.path.exists(cache_path):
+                with open(cache_path, encoding="utf-8") as f:
+                    instance_results.append(json.load(f))
+                continue
+            try:
+                result = run_instance(client, state, consecutive_errors, inst, enable_s1u=args.s1u,
+                                       stage1_cache=stage1_cache, instances_subdir=subdir)
+                instance_results.append(result)
+            except TrialAbort as e:
+                stopped = True
+                stop_reason = str(e)
+                break
+        sample_instance_results.append(instance_results)
+        if stopped:
             break
 
+    # 後方互換: 既存iter1〜4のsummary構造(measurements/s1u_counterfactual)は
+    # sample1の結果に対して算出する(--n_runs=1なら従来と完全に同一)。
+    instance_results = sample_instance_results[0] if sample_instance_results else []
     measurements = aggregate_measurements(instance_results) if instance_results else {}
     s1u_counterfactual = compute_s1u_counterfactual(instance_results) if instance_results else {}
+
+    # 委任_13(iteration5、n=2実測): sample2が完走している場合のみ算出する
+    # (--n_runs=1、またはsample2がTrialAbortで未完走の場合はNone)。
+    n2_combined = None
+    measurements_per_sample = None
+    if len(sample_instance_results) >= 2 and all(
+            len(r) == len(instances) for r in sample_instance_results[:2]):
+        n2_combined = combine_n2_measures(sample_instance_results[:2])
+        measurements_per_sample = [
+            aggregate_measurements(sample_instance_results[0]),
+            aggregate_measurements(sample_instance_results[1]),
+        ]
+
     summary = {
         "stopped": stopped, "stop_reason": stop_reason,
+        "n_runs": args.n_runs,
         "n_instances_completed": len(instance_results),
         "n_instances_planned": len(instances),
         "cumulative_jpy": round(state["cumulative_jpy"], 4),
@@ -1979,12 +2776,18 @@ def main():
         "cumulative_errors": state["cumulative_errors"],
         "measurements": measurements,
         "s1u_counterfactual": s1u_counterfactual,
+        "n2_combined": n2_combined,
     }
     save_json(f"{OUT_DIR}/summary_flow_runner.json", {
         "summary": summary,
-        "instance_results": [
+        "instance_results_sample1": [
             {k: v for k, v in r.items() if k != "call_log"} for r in instance_results
         ],
+        "instance_results_sample2": (
+            [{k: v for k, v in r.items() if k != "call_log"} for r in sample_instance_results[1]]
+            if len(sample_instance_results) >= 2 else None
+        ),
+        "measurements_sample2": measurements_per_sample[1] if measurements_per_sample else None,
     })
     # 委任_12(iteration4で実際に発生・修正): summary_flow_runner.jsonへの
     # 保存(save_json、UTF-8ファイル出力)は完了しているが、Windowsコンソール
@@ -1992,8 +2795,11 @@ def main():
     # UnicodeEncodeErrorを起こし、そこでプロセスが異常終了する実害があった
     # (本委任で実際に発生、証跡ファイル自体は既に保存済みで無事)。
     # コンソール表示のみensure_ascii=Trueへ変更する(保存物には影響しない)。
-    print(json.dumps({k: v for k, v in summary.items() if k != "measurements"}, ensure_ascii=True, indent=2))
+    print(json.dumps({k: v for k, v in summary.items() if k not in ("measurements", "n2_combined")},
+                      ensure_ascii=True, indent=2))
     print(json.dumps(measurements, ensure_ascii=True, indent=2))
+    if n2_combined:
+        print(json.dumps(n2_combined, ensure_ascii=True, indent=2))
 
 
 if __name__ == "__main__":

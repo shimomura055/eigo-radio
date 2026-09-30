@@ -1,0 +1,228 @@
+{
+  "instance_id": "neg6_smallbag_div_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+          "origin": null,
+          "related_fact_id": "F004, F006",
+          "dev": {
+            "claim_in_article": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+            "origin": null,
+            "related_fact_id": "F004, F006",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load\n\nLooking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "“They mainly hold the basics: a phone, wallet, keys, and lip products.”",
+          "origin": null,
+          "related_fact_id": "F007",
+          "dev": {
+            "claim_in_article": "“They mainly hold the basics: a phone, wallet, keys, and lip products.”",
+            "origin": null,
+            "related_fact_id": "F007",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### ELLE’s small-bag examples\n\nELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”\n\nThe season’s picture becomes clearer when we look at what appeared beside them.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "“Bags are no longer in a game where one size alone sits on the throne.”",
+          "origin": null,
+          "related_fact_id": "F002, F003, F004",
+          "dev": {
+            "claim_in_article": "“Bags are no longer in a game where one size alone sits on the throne.”",
+            "origin": null,
+            "related_fact_id": "F002, F003, F004",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Vogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands. This lineup matters: large bags had not vanished. Small and large bags were appearing in the same season.\n\nWhat we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways. Even so, the way trends look has changed. Bags are no longer in a game where one size alone sits on the throne. Large bags are the luggage crew, carrying what we need. Mini bags are the stage crew, drawing the eye and setting the mood. In 2026, the runway is proudly showing this division of labor.\n\n## In one line",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_comparison,changed_time"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F002, F003, F004",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.99))",
+          "guard_ok": true
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 15.48,
+          "difficult_word_ratio": 0.0892,
+          "word_count": 325
+        },
+        "stats_after": {
+          "avg_sentence_len": 15.68,
+          "difficult_word_ratio": 0.0906,
+          "word_count": 298
+        },
+        "sentence_len_increase": 0.2,
+        "difficulty_ratio_increase": 0.0014,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 21,
+        "sentence_count_after": 19,
+        "sentence_drop_rate": 0.0952,
+        "hedge_word_count_before": 3,
+        "hedge_word_count_after": 3,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 9,
+        "paragraph_count_after": 9,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load\n\nLooking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.\n\n### ELLE’s small-bag examples\n\nELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”\n\nThe season’s picture becomes clearer when we look at what appeared beside them.\n\n### Vogue’s wider list of bags\n\nVogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands. This lineup matters: large bags had not vanished. Small and large bags were appearing in the same season.\n\nWhat we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways. Even so, the way trends look has changed. Bags are no longer in a game where one size alone sits on the throne. Large bags are the luggage crew, carrying what we need. Mini bags are the stage crew, drawing the eye and setting the mood. In 2026, the runway is proudly showing this division of labor.\n\n## In one line\n\nIn 2026, large bags carry the load, while mini bags carry the mood.",
+      "en_text_after_rewrite": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load\n\nLooking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.\n\n### ELLE’s small-bag examples\n\nELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”\n\nThe season’s picture becomes clearer when we look at what appeared beside them.\n\n### Vogue’s wider list of bags\n\nVogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands. This lineup matters: large bags had not vanished. Small and large bags were appearing in the same season.\n\nWhat we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways. Large bags are the luggage crew, carrying what we need. Mini bags are the stage crew, drawing the eye and setting the mood. In 2026, the runway is showing both.\n\n## In one line\n\nIn 2026, large bags carry the load, while mini bags carry the mood.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 3,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "false_positive",
+  "call_log": [
+    {
+      "label": "neg6_smallbag_div_b1b_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.4052,
+      "usage": {
+        "input_tokens": 5266,
+        "cached_input_tokens": 0,
+        "output_tokens": 4113,
+        "reasoning_tokens": 3624
+      },
+      "elapsed_seconds": 42.308,
+      "prompt_sha256": "0ea8cb570e55f219d307b3ebcca0cfb31002770e1b32ae13ce815e36ab89abc3"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.3682,
+      "usage": {
+        "input_tokens": 6095,
+        "cached_input_tokens": 0,
+        "output_tokens": 3475,
+        "reasoning_tokens": 3375
+      },
+      "elapsed_seconds": 33.041,
+      "prompt_sha256": "131af8d08f8dabb7641f467bbcf543ac773accec3e52617f85328200b15626f5"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_fact:F002, F003, F00_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1755,
+      "usage": {
+        "input_tokens": 3395,
+        "cached_input_tokens": 0,
+        "output_tokens": 1558,
+        "reasoning_tokens": 1488
+      },
+      "elapsed_seconds": 14.63,
+      "prompt_sha256": "2b5c11b81f3cc85b0110f90a03601b53763b15c02ab8b8f1468bef4977cd55d1"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4241,
+      "usage": {
+        "input_tokens": 6234,
+        "cached_input_tokens": 0,
+        "output_tokens": 4160,
+        "reasoning_tokens": 4040
+      },
+      "elapsed_seconds": 40.816,
+      "prompt_sha256": "850128279cd5a9fc4cc37f4a5ee81d7db51c51ddaa92ed602a5864039bea9186",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.373,
+  "total_calls": 4,
+  "elapsed_seconds": 130.864
+}

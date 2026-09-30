@@ -14242,3 +14242,102 @@ recovery_rewrite_compare_page_01.py`、`er052_output/open233_self_
 recovery_flow_runner_01_iter4/`、`er052_output/open233_self_recovery_
 r3_natural_calibration_01/`、`user_test/open233_rewrite_compare_01/
 index.html`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: iteration 5実測完了(Opus L2 #3
+是正+R3''/R3'''較正+2-of-2+cite-or-release+品質劣化v2+n=2実測、
+委任_13、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_13)。
+
+**ユーザー指示(逐語要旨)**: Opus L2レビュー#3(逐語保存:
+`docs/pm/opus_l2_review_open233_self_recovery_03.md`)の所見に基づき、
+(作業A)レビュー全文の逐語保存、(作業B、¥0・実装のみ)Fable事前承認
+6項目[較正harnessの正解ラベル是正+Safety-critical 10claim名指し化/
+R3''rubric[例示→原則]/Stage2 2-of-2安定化/cite-or-release+Rewrite
+前後文ペア/品質劣化検出v2/Rewrite品質制約]を実装(item7[floor精度]は
+ユーザー判断待ちとして明示的に凍結、item8[fact_id複数箇所Rewrite]は
+Phase2設計課題として凍結)、(作業C、≤¥6目標・超過正当化可)R3''較正+
+未達なら1回限りR3'''、(作業D、≤¥65)29 instance×n=2再実行+n=2版
+測定一式、(作業E、¥0)読み比べページのiteration5更新(iter4版は
+`index_iter4.html`として保持)を委任。
+
+**作業C(R3''/R3'''較正)**: R3''(2追記を例示→原則へ書換)はSafety側
+誤降格0件・B1-c QUALITY 2/2だが**B4-d 2/2 BLOCKING(未達)**、正解
+一致率91.3%(42/46)。委任文が明示した条件付きパスに従い1回限りの
+R3'''(項目1をさらに「個別事実の断定」へ限定、新規例示なし)へ再較正、
+**Safety側誤降格0件・B1-c/B4-dともQUALITY 2/2・正解一致率93.48%
+(43/46、R3'の80.43%を上回る)で全条件達成、採用**。作業Cガイドライン
+¥6を¥2.4443超過(¥8.4443)、委任文が許容した超過。
+
+**作業D(29 instance×n=2、305 call・¥62.3761・error0)**:
+safety_A4(iter3・iter4継続のangle起因STAGE4)が**両sampleとも
+初めて解消**した。一方、**per_instance_final_state_agreement=
+21/29(72.41%)でn=1点推定の非決定性がn=2実測でも再現**、
+**不要Rewrite率(v2訂正、neg5除外)はsample1 77.78%/sample2 66.67%
+でiter4の44.4%より明確に悪化**、**real_run Escalation率(n=2)=
+8.33%(1/12、Wilson95%CI[1.49%,35.39%])でiter4のn=1報告[0%]は
+楽観的すぎたと訂正**、**記事単位worst cost¥5.3592(safety_A4)で
++¥3 Capを超過**(平均コストはCap内でtail riskと判断、
+USER_DECISION_REQUIRED条件3には非該当)。不要Rewrite悪化の原因を
+claim単位で追跡し2系統に分類: (a) deterministic floor起因(item7で
+凍結済み、LLM自体はQUALITY/ACCEPTABLEと正しく判定していたが floor が
+上書き)、(b) Stage2(R3''')自体の安定判定(2-of-2両呼び出しが一貫して
+BLOCKING、較正セット外claimパターン[MUSE-HC-006/012等]への汎化が
+未確認という新規知見)。残るSTAGE4はhormuz_run03_standard(sample2、
+`same_claim_fact_id_reblocked`、委任文item8[fact_id複数箇所Rewrite]
+そのものに該当、意図的に未対応)+bgroup_B4/neg2/neg3(sample1のみ、
+angle起因+機構起因[是正6が意図通り])。
+
+**その他の効果測定**: 品質劣化検出v2(needs_regeneration 3/5件、
+再生成後解消0/2件)、2-of-2(両sample合計13claim中6claim[46%]が
+downgrade、Stage2単発判定の非決定性が不要Rewriteを誘発していたことを
+裏付け)、cite-or-release(release 0件、無根拠なSTAGE4は生成していない
+ことを確認)、JA/EN等価QA(両sampleともFAIL 0件維持)。
+
+読み比べページ更新: `user_test/open233_rewrite_compare_01/index.html`
+(iter4版は`index_iter4.html`として保持、収録4記事[iter4と同一3記事+
+neg2_meta_refresh_a2追加])。GitHub Pages:
+`https://shimomura055.github.io/eigo-radio/user_test/
+open233_rewrite_compare_01/index.html`。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当)。
+floor精度(item7)・fact_id複数箇所Rewrite(item8)はいずれも委任文の
+指示どおり未実装のまま据え置いた。Cap超過(§14-6)はtail riskと判断
+し条件3には非該当だがPhase2検討材料として記録。
+
+**総括**: STAGE4件数・real_run Escalationは「n=1点推定では改善した
+ように見えるが、n=2で見ると非決定性の範囲内であり、safety_A4の
+継続的解消という前進はある一方、不要Rewrite率はむしろ悪化し、記事
+単位worst costもCapを超過するようになった」というのが正直な総括
+である。本委任の当初目的(不要Rewrite削減)は達成できていない。
+
+**費用**: 作業C¥8.4443+作業D¥62.3761=**¥70.8204**(357 call、0
+error)。Phase累計¥152.1552+¥70.8204=**¥222.9756**/総枠¥400、残
+¥177.0244。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1〜4証跡・
+委任_08〜_12証跡に差分なし。iteration5出力は別ディレクトリ
+(`er052_output/open233_self_recovery_flow_runner_01_iter5/`+新規
+`er052_output/open233_self_recovery_r3dprime_calibration_01/`)。
+変更対象は`er052_open233_self_recovery_flow_runner_01.py`(+test)・
+`er052_open233_self_recovery_stage2_calibration_01.py`
+(RUBRIC_R3_DOUBLE_PRIME/RUBRIC_R3_TRIPLE_PRIME追加のみ)・新規
+`er052_open233_self_recovery_r3dprime_calibration_01.py`・新規
+`er052_open233_self_recovery_rewrite_compare_page_iter5_01.py`のみ。
+API keyは環境変数のみ、保存jsonはprompt_sha256のみ記録。既存unittest
+全173件PASS(regression確認、新規25件追加)。
+
+Status=`ITER5_DONE_IMPROVEMENT_NEEDED`。詳細: `docs/pm/design_
+open233_self_recovery_flow_01.md`§4-10/§4-11/§5-6/§6-3/§7-0-iter5/
+§8-6/§9-1⑩/冒頭Status、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`
+§13/§14、`docs/pm/opus_l2_review_open233_self_recovery_03.md`、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+13.md`、`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_open233_self_recovery_stage2_calibration_01.py`、`er052_
+open233_self_recovery_r3dprime_calibration_01.py`、`er052_open233_
+self_recovery_rewrite_compare_page_iter5_01.py`、`er052_output/
+open233_self_recovery_flow_runner_01_iter5/`、`er052_output/open233_
+self_recovery_r3dprime_calibration_01/`、`user_test/open233_rewrite_
+compare_01/index.html`、`user_test/open233_rewrite_compare_01/
+index_iter4.html`。

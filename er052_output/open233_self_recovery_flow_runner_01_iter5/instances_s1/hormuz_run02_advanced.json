@@ -1,0 +1,92 @@
+{
+  "instance_id": "hormuz_run02_advanced",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“It looked like a very large fee would appear every time a ship passed through the strait.”",
+          "origin": null,
+          "related_fact_id": "HF-002, HF-003",
+          "dev": {
+            "claim_in_article": "“It looked like a very large fee would appear every time a ship passed through the strait.”",
+            "origin": null,
+            "related_fact_id": "HF-002, HF-003",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.\n\nIt looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.\n\nThen came the second act, just one day later.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "true_positive",
+  "call_log": [
+    {
+      "label": "hormuz_run02_advanced_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.1799,
+      "usage": {
+        "input_tokens": 6234,
+        "cached_input_tokens": 0,
+        "output_tokens": 1047,
+        "reasoning_tokens": 1024
+      },
+      "elapsed_seconds": 12.763,
+      "prompt_sha256": "870b5a61e34b363297ccabc47f25e0f7d2e8d37fc8aa8104a7f72849b6e32056"
+    },
+    {
+      "label": "hormuz_run02_advanced_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.4312,
+      "usage": {
+        "input_tokens": 5410,
+        "cached_input_tokens": 5407,
+        "output_tokens": 5388,
+        "reasoning_tokens": 5053
+      },
+      "elapsed_seconds": 49.999,
+      "prompt_sha256": "c3ad376c388a4f1214e0d6ba46cfce195da15b302f30c62b714609b008fe5ed1"
+    },
+    {
+      "label": "hormuz_run02_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1373,
+      "usage": {
+        "input_tokens": 5815,
+        "cached_input_tokens": 0,
+        "output_tokens": 587,
+        "reasoning_tokens": 537
+      },
+      "elapsed_seconds": 6.223,
+      "prompt_sha256": "a889abcb1c1a283b9506003182a18e6a7b8b14e58f35de57d3addaf6dbecd0c6"
+    }
+  ],
+  "total_cost_jpy": 0.7484,
+  "total_calls": 3,
+  "elapsed_seconds": 69.017
+}

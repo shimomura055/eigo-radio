@@ -86,7 +86,23 @@ Rewrite解消)。**一方、本委任の主目的だった「正常記事への�
 リスクは残存課題として報告のみ(独断で追加実装せず)。詳細§9-1⑨。
 実測費用¥36.4618[作業B¥7.8974+作業C¥28.5644、Guardrail¥8+¥40の
 うち]。USER_DECISION_REQUIRED非該当[7条件いずれも]。Production
-実装は未着手)。
+実装は未着手)。→ **[委任_13更新]**
+`ITER5_DONE_IMPROVEMENT_NEEDED`(Opus L2レビュー#3[全文`docs/pm/
+opus_l2_review_open233_self_recovery_03.md`]の是正1-6[rubric R3''/
+R3'''・2-of-2安定化・cite-or-release・品質劣化検出v2・Rewrite品質
+制約]を実装、29 instance×n=2実行[357 call・¥70.8204、Guardrail
+¥11+¥65のうち]。safety_A4[iter3・iter4継続のangle起因]が初めて
+両sampleで解消した一方、**per_instance_final_state_agreement=
+21/29(72.41%)でn=1点推定の非決定性がn=2実測でも再現**、**不要
+Rewrite(v2訂正版)はsample1 77.78%/sample2 66.67%でiter4の44.4%より
+悪化**、**real_run Escalation率(n=2)=8.33%[iter4のn=1報告0%は
+楽観的すぎたと訂正]**、**記事単位worst cost¥5.3592[safety_A4]で
++¥3 Capを超過**(ただし平均コストはCap内でtail riskと判断、
+USER_DECISION_REQUIRED条件3には非該当)。不要Rewrite悪化の主因は
+(a)floor精度[item7、ユーザー判断待ちで凍結]起因と(b)Stage2較正
+セット外claimパターン[MUSE-HC-006/012等]への汎化未確認の2系統と
+特定。USER_DECISION_REQUIRED非該当[7条件いずれも]。詳細§9-1⑩。
+Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -788,6 +804,74 @@ negative4[neg1,neg2,neg3,neg5]/A2A3/A4/A5)をn=2で新規call(26 call)。
   calibration_01/summary_r3_natural_calibration.json`・
   `summary_r3prime_natural_calibration.json`。
 
+### 4-10. Stage 2 rubric R3''/R3'''(委任_13、Opus L2レビュー#3所見反映)
+
+**背景**: iteration4実測(§9-1⑨)で、正常記事(negative7+Normal群2=9
+instance)の不要Rewrite率44.4%(4/9)が高水準のまま残存した。Opus L2
+レビュー#3(`docs/pm/opus_l2_review_open233_self_recovery_03.md`論点2・3)
+により、原因の一部がR3'追加明確化2項目(§4-9)の広すぎる適用範囲にある
+ことが指摘された: 項目1(「内心の断定」全般をBLOCKING)がB4-d(「驚き」
+という一般的反応の記述、正解QUALITY)を捕捉してしまい、項目2(「scope
+一般化」全般をBLOCKING)がB1-c(「市場の見方」の記述、ユーザーが許容例と
+明示した型)を不安定化させていた。
+
+**R3''(`RUBRIC_R3_DOUBLE_PRIME`)**: R3'の2追記を、Opus文案どおり
+「例示」から「原則」へ書き換えた。項目1は「開示・認識の有無そのもの
+(知らされていたか/同意していたか/誤認していたか)を事実として述べる
+場合」へ限定し、驚き・関心・安心などの一般的な感情や反応の描写は明示的に
+QUALITYとした。項目2は「Ledgerが特定の指標・銘柄・期間について観測した
+数値や値動き」の一般化に限定し、市場参加者や読者の見方・関心の記述は
+これに当たらないとした。
+
+**R3''単体較正結果**(`er052_open233_self_recovery_r3dprime_
+calibration_01.py`、既存13group・23claimをn=2、26 call、¥4.267):
+是正した正解ラベル(§7-0-iter5、A2A3-1/A4-2をQUALITYへ再ラベル)+
+Safety-critical 10claim名指しリスト(A2A3-0/A4-0/A4-1/A5-0/A5-1/
+Meta-1/Meta-2/hormuz-HF009/B3/B4-a)を用いて判定した結果、Safety側
+誤降格0件・B1-c QUALITY 2/2(是正成功)・**B4-d 2/2 BLOCKING(未達)**・
+正解一致率91.3%(42/46、R3'の80.43%を上回る)。B4-dの実際のrewrite_hint
+を確認すると、モデルは「相手がAIだと思っていた、または人間だと知って
+驚いた」という*個別の具体的な認識*として解釈しており、R3''項目1の
+「認識の有無を事実として述べる場合」に該当すると素直に読める(fail-closed
+としては妥当な解釈だが、受入条件「B4-d/B1-cがQUALITY 2/2」は未達)。
+
+**R3'''(`RUBRIC_R3_TRIPLE_PRIME`、原則文のみの追加是正、新しい例示は
+追加しない)**: 項目1をさらに絞り込み、「特定の個別の事実(誰が・いつ・
+どの状況で実際にそう思った/感じたか)として断定している場合」に限定し、
+「Ledgerが既に一般的な傾向・現象として記録している内容を、個別の新しい
+事実を追加せずに抽象的な言い換え・要約として参照しているだけの場合」を
+明示的に除外した。
+
+**R3'''単体較正結果**(同スクリプト`--rubric r3tripleprime`、26 call、
++¥4.1773、累計¥8.4443): **Safety側誤降格0件・B4-d QUALITY 2/2・B1-c
+QUALITY 2/2・正解一致率93.48%(43/46)**。受入条件(Safety-critical
+10claim誤降格0/B4-d・B1-c QUALITY 2/2/正解一致率≥R3'の80.4%)を
+全て達成したため採用する。iteration5のフロー実行(作業D)では
+`RUBRIC_R3_TRIPLE_PRIME`を使用する。作業C実測費用合計¥8.4443
+(委任文の作業Cガイドライン¥6を超過したが、原因分類の上でR3'''を1回限り
+追加した結果であり、iteration5全体のGuardrail¥75・Phase累計残額
+¥247.84に対しては十分な余裕内。超過はREPORT §14で明示的に報告する)。
+詳細ログ: `er052_output/open233_self_recovery_r3dprime_calibration_01/
+summary_r3dprime_calibration.json`・`summary_r3tripleprime_
+calibration.json`。
+
+### 4-11. Stage 2の2-of-2安定化(委任_13、Opus L2レビュー#3論点3推奨3)
+
+**背景**: Opus L2レビュー#3実測により、較正(作業B)とフロー実測(作業C)は
+同一rubric・同一model・同一入力構造であるにもかかわらず、Stage2判定が
+run間で反転する事例が確認された(neg2/neg5とも較正でACCEPTABLE 2/2、
+フローでBLOCKING)。これはrubric較正の数値がフロー実運用へそのまま
+転移しないことを意味する。
+
+**対策**: negative/Normal群(`NORMAL_GROUP_INSTANCE_IDS`)かつ
+deterministic floorが不発(`floor_reason is None`)でStage2がBLOCKINGと
+判定した場合のみ、同一Stage2をもう1回呼び(`apply_stage2_two_of_two`)、
+両方ともBLOCKINGの場合のみRewriteへ進む(1回でもQUALITY/ACCEPTABLEなら
+その判定へ降格し、ログに記録する)。Safety群・B群・precheck floor
+claim・deterministic floor経由のclaimは対象外(fail-closedを緩めない、
+Safety側の検出力には影響しない)。追加費用はトリガしたclaim数×Stage2
+単価(≈¥0.2/claim)のみ。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -1222,6 +1306,43 @@ E-1/E-2・J-1/J-2いずれの案を採用する場合でも、以下は既存資
    retry`[#2.2、`run_deviation_check(..., prior_issues=...)`]の
    インターフェースをStage 1 Recheck全体[§3-0 A1]へ統合する)。
 
+### 5-6. Rewrite品質制約(委任_13、Fable追加指示、不要Rewrite削減と品質
+維持の両立)
+
+**背景**: Opus L2レビュー#3論点6-Bにより、iteration4の実際のRewrite出力で
+4種類の読み物品質劣化(hook喪失、重複段落、接続破断、語彙難化)が実測され、
+既存の品質劣化検出(v1、文数/段落数/hedge語数/タイトル変更)はそのうち3種を
+検出できていなかったことが判明した(§8-6参照)。検出だけでなく、Rewrite
+自体の生成品質を上げる制約をprompt側へ追加する。
+
+**実装**: Stage 3のRewrite Prompt(E2_GENERIC/E2_PARAGRAPH/J1_GENERIC/
+J1_PARAGRAPH/FULL_TEXT_FALLBACK、いずれも既存テンプレート文字列は変更
+せず、既存の`{rewrite_hint}`埋め込み箇所を使う非侵襲策)へ、以下を
+`rewrite_hint`の末尾へ追記する形で注入する(`level_constraint_text()`):
+1. タイトル・冒頭の物語装置(hook)は、BLOCKING claim自体がそこに含まれ
+   ない限り保持する。
+2. 削除で直る場合は削除を優先し、言い換えで新しい情報・語彙・主張を
+   足さない。
+3. 他の段落に既にある内容を、別の段落で繰り返さない。
+4. 対象レベル(Standard=A2、Advanced=B1B、`infer_article_level()`で
+   instance_id命名規則[`_a2`/`_standard`→A2、`_b1b`/`_advanced`→B1B]
+   から判定、該当しないfixtureは共通制約のみ)の語彙・文長制約。A2側は
+   Production Prompt定数`er012_b_family_voices_a2_production_01.
+   A2_TABLE_PRINCIPLES_JA`(CURRENT_SPEC.md「CEFR-A2構造・音声仕様」節
+   からの引用)を読んで要約引用し、B1B側はCURRENT_SPEC.md「B1(独立生成
+   Natural Spoken News English)」節を読んで要約引用した(いずれも
+   read-only参照、Production自体は呼び出さない)。
+
+**生成後の機械チェック+同一cycle内1回だけの再生成**: Rewrite生成後、
+§8-6の品質劣化検出v2(`measure_rewrite_quality_degradation_v2`)を実行し、
+(a)重複段落・(b)孤立逆接語・(c)語彙難化のいずれかを検出した場合のみ、
+Rewrite前のテキストへ戻し、制約を強調した指示(`REGENERATION_EMPHASIS_
+TEMPLATE`)を追加して同一cycle内で1回だけ再生成する(`_run_stage3_
+cycle`ヘルパーで2回目呼び出しを実装)。(d)タイトル/hook変更は正当な
+理由(BLOCKING claim自体がそこにある)がある場合もあるため、単独では
+再生成トリガにしない(常時フラグとして報告のみ)。追加call数はトリガした
+instanceのみ、対象claim数×1回分(既存Stage3単価と同水準)。
+
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
 ### 6-1. Escalation条件
@@ -1278,6 +1399,36 @@ E-1/E-2・J-1/J-2いずれの案を採用する場合でも、以下は既存資
 - 「人間が確認すべき一意の問い」: 該当claimをどう修正すべきか
   (Ledgerのどのfactに合わせるべきか)、または当該記事全体を作り直す
   べきか、の二択を明示する。
+
+### 6-3. cite-or-release(委任_13、Opus L2レビュー#3論点4推奨1・2、
+`_recheck_confirm`のfail-closed厳格化)
+
+**注記**: 委任文では本節を「§6-2」と指定していたが、§6-2は既存の
+「人間へ渡す情報」節が既に占有しており、既存節番号への言及(他所の
+クロスリファレンス)を破壊しないため、新規追加分は§6-3として追記する。
+
+**背景**: overall_status=LEDGER_COMPLIANTかつall_prior_issues_resolved=
+Falseという自己矛盾する応答が出た場合、追加1 call(旧`_recheck_confirm`)
+で再確認しているが(§3-3是正6)、確認callが「未解消」と判定する根拠が
+記事本文中に実在するかを検証していなかった。neg3の実測(iteration4)では
+実際に別箇所へ主張が残っていた(正しいSTAGE4)一方、根拠のない「未解消」
+判定でSTAGE4になるリスクも理論上残っていた。
+
+**実装**: 確認call(`run_recheck_confirm`)のschemaへ`remaining_sentence`
+(未解消と判断する根拠として、現在の記事本文中に実在する文の逐語引用)を
+必須項目として追加した(`CONFIRM_PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA`、
+vfl01[Production]は変更せずTrial側でschema/instructionを組み立てる)。
+応答後、`apply_cite_or_release()`で機械検証する: resolved=falseの各項目
+について、remaining_sentenceが現在の記事本文に実在すれば(cite)そのまま
+未解消(STAGE4、正しい)、実在しなければ(根拠なき未解消)resolved=true
+へ機械的に上書きする(release)。fail-closedを緩めず、根拠のない未解消を
+機械的に排除する方向の厳格化である。あわせて、Rewrite前後の対象文ペア
+(before→after、`build_before_after_instruction`)をinstructionへ添え、
+モデルが消えた文を探し回る負担を減らした(`single_text_rewrite`/
+`paired_rewrite`が返す`before_fragment`/`after_fragment`のうち、単一文
+置換で判明したものだけを使う。paragraph-level rewriteやfull-text
+fallbackではfragmentを一意に特定できないため対象外、既知の限界)。
+追加call数は0(既存確認callのschemaを差し替えるのみ)。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
@@ -1336,6 +1487,33 @@ Self-Recovery Flow Trial評価における現行の正解ラベルである。
 hormuz-HF009・A4・A5はR3'(採用rubric)でSafety側BLOCKINGとして
 安定することを実測確認した(hormuz-HF009はR3素では1/2 ACCEPTABLEへ
 誤降格したが、R3'で2/2 BLOCKINGへ復帰、§4-9)。
+
+### 7-0-iter5. 委任_13再ラベル是正(Opus L2レビュー#3論点1、正解ラベルの
+循環参照の是正)
+
+**発見された問題**: Opus L2レビュー#3により、A2A3/A4/A5群の正解ラベルが
+「人間がNG(a)〜(e)に照らして付けたもの」ではなく、「Stage 1(V4A)の
+過去出力で`severity_final=="BLOCKING"`だったdeviationを機械的に全部
+BLOCKINGとみなしたもの」(`build_eval_groups()`、循環参照)であることが
+判明した。この結果、較正の受入条件「Safety側誤降格0件」は事実上「Stage
+2はStage 1に一度も反対してはならない」という条件になっており、iteration4
+のユーザー指示(Stage 1の過剰検出を自然な解釈基準で是正する)と矛盾して
+いた。
+
+**是正1(ラベル)**: A2A3-1(HF-006「原油高→ガソリン・輸送費」)は、正解
+ACCEPTABLEとされているB1-bと実質同一内容であり、A4-2(MUSE-HC-010
+certainty強化)は正解QUALITYとされているB4-bと同一factを扱う。いずれも
+NG(a)〜(e)のどれにも該当しないため、QUALITYへ再ラベルする
+(`CORRECT_LABEL_OVERRIDES_R3DPRIME`/`CORRECT_LABEL_OVERRIDES_
+R3TRIPLEPRIME`、既存`build_eval_groups()`の機械コピー由来ラベル自体は
+変更せず、既存r3_natural_calibration_01.pyのCORRECT_LABEL_OVERRIDES_R3
+と同一方式でoverride)。
+
+**是正2(受入条件)**: 「Safety側誤降格0件」を、全group一律ではなく、
+名指しした**Safety-critical claim 10件**(A2A3-0/A4-0/A4-1/A5-0/A5-1/
+Meta-1/Meta-2/hormuz-HF009/B3/B4-a)の降格0件へ限定する
+(`SAFETY_CRITICAL_SUB_IDS`)。A2A3-1/A4-2はQUALITYへ再ラベルされた
+ため、自然にこのリストから除外される。
 
 ### 7-1. Safety群(Stage 1/2で必ずBLOCKING維持、その後Rewrite→PASSが期待到達経路)
 
@@ -1490,6 +1668,30 @@ escalation rateが実測と同一であっても、それは「安全に非該�
 ACCEPTABLE_STAGE1として現れるため)。`known_recall_miss_instances_
 among_removed`(既知recall miss instance IDのうち反実仮想で除外された
 もの)を必ず併記し、rate単体で「S1-U不要」と誤読させない。
+
+### 8-6. 品質劣化検出v2(委任_13、Opus L2レビュー#3論点6-B)
+
+**背景**: iteration4実測で実際に起きた4種類の読み物品質劣化(neg1の
+hook喪失+cycle2の重複段落、neg2の接続破断、neg3/neg5/B2の語彙難化)の
+うち、v1指標(文数/段落数/hedge語数/タイトル変更、§8-5項目5)は3種を
+検出できなかった(hook喪失=タイトル変更としては検出したが、失われたもの
+の本質[物語の入口]を表していない。重複段落・接続破断・語彙難化はいずれも
+検出漏れ)。
+
+**v2検出項目**(`measure_rewrite_quality_degradation_v2`、決定論・¥0、
+v1関数は変更せずiter4比較用に残す):
+| # | 項目 | 定義 |
+|---|---|---|
+| (a) | 連続段落の重複検出 | 正規化後token Jaccard類似度が閾値(0.4、実測でこの値でないとneg1 cycle2の実例[jaccard=0.5]を検出できないため当初案0.6から調整、同一記事内の他の隣接段落ペア12組の実測では最大0.292で次点との差が明確、過検出リスクは低いと判断)以上の隣接段落ペアを検出する |
+| (b) | 孤立逆接語検出 | 段落先頭がBut/However/Yet/Still/Though/Nevertheless等で始まり、かつRewrite前にはその段落が存在しなかった(新規に生じた)場合を検出する |
+| (c) | 文長・難語率比較 | 音節数(母音塊カウント)>=3または文字数>=9の語を「難語」とみなす簡易ヒューリスティックで、平均文長・難語率をRewrite前後で比較する。全文平均では局所的な1文だけの難語化が希釈されて閾値未満になることを実測確認したため(neg3/B2実例)、実際に書き換えられた断片(`changed_fragments`、single_text_rewrite/paired_rewriteが返すbefore_fragment/after_fragment)同士でも比較し、全文判定・断片判定のいずれかが閾値(文長+3語、または難語率+0.05)を超えれば検出する |
+| (d) | タイトル・第1段落(hook)変更 | 常時フラグとして報告する(BLOCKING claim自体がそこにある正当なケースがあるため、単独では再生成トリガにしない) |
+
+(a)(b)(c)のいずれかを検出した場合のみ`needs_regeneration=True`とし、
+§5-6の同一cycle内1回だけの再生成をトリガする。regression test
+(iteration4実測の実テキストをfixtureとして固定、`er052_open233_self_
+recovery_flow_runner_01_test_01.py::TestMeasureRewriteQualityDegradationV2`)
+で(a)(b)(c)を検出できることを固定した。
 
 ## 9. Trial計画
 
@@ -2054,6 +2256,116 @@ instance構成には該当fixtureが無く直接確認できていない(negativ
 記事はOPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md §12参照。本委任
 合計費用Y36.4618(作業B Y7.8974+作業C Y28.5644)。
 
+**⑩ iteration 5実測(委任_13完了)**: Opus L2レビュー#3の是正1-6(rubric
+R3''/R3'''、2-of-2安定化、cite-or-release、品質劣化検出v2、Rewrite品質
+制約)を実装し、29 instance×n=2(sample1/sample2)を実行した(作業C
+[R3''/R3'''較正]52 call・Y8.4443+作業D 305 call・Y62.3761・error0、
+Work D Guardrail Y65内)。regression test 25件追加(既存含め92件+他4
+モジュール81件=計173件PASS)。詳細ログ: `er052_output/open233_self_
+recovery_flow_runner_01_iter5/summary_flow_runner.json`。
+
+**n=2結果(sample1/sample2、個別値を両論併記しn=1点推定を避ける)**:
+Self-Recovery 6指標: initial_block 29/29、rescreening_auto_resolved
+5/4、rewrite_progressed 24/25、rewrite_auto_resolved 21/24、
+final_stop(STAGE4) **3/1**、user_decision_required 3/1。sample1の
+STAGE4はbgroup_B4(`cycle_limit_exhausted`)+neg2_meta_refresh_a2/
+neg3_hormuz_prodrunner_b1b(`unconfirmed_after_reverify`)、sample2の
+STAGE4はhormuz_run03_standard(`same_claim_fact_id_reblocked`)のみ。
+safety_A4(iter3・iter4で継続していたangle起因method-limitation)は
+両sampleとも`RESOLVED_REWRITE_THEN_DOWNGRADE`で解消し、初めてSTAGE4を
+免れた。**per_instance_final_state_agreement(29 instance中の最終状態
+一致率)=21/29(72.41%)**、8 instanceで最終状態が食い違う(bgroup_B2_
+hormuz/bgroup_B4/hormuz_run02_advanced/hormuz_run03_standard/
+meta_run03_advanced/neg2/neg3/safety_er009_changed_time)。**これは
+Opus L2 #3是正4(§13-4)が指摘した「単発runの非決定性」がn=2実測でも
+再現したことの直接証拠であり、iteration4の「STAGE4 5→3、real_run
+Escalation 16.67%→0%」という単発run同士の比較が改善の証明にならない
+という訂正(REPORT§13-4)の裏付けとなる**。
+
+**群別Escalation率(n=2、58 instance-run、Wilson 95% CI)**: safety
+0/24(0%、CI[0%,13.8%])、b_group 1/8(12.5%、CI[2.24%,47.09%])、
+meta 0/4(0%、CI[0%,48.99%])、hormuz 1/8(12.5%、CI[2.24%,47.09%])、
+negative 2/14(14.29%、CI[4.01%,39.94%])。**real_run(現行Production
+実STOP実例6 instance×n=2=12)Escalation率=1/12(8.33%、CI[1.49%,
+35.39%])**。iteration4(n=1、6 instance)は0/6(0%)と報告していたが、
+これは単発runの点推定であり、n=2実測ではhormuz_run03_standardが
+sample2でSTAGE4に至った(sample1は`RESOLVED_REWRITE_THEN_DOWNGRADE`)
+ことでnon-zeroと判明した。**「real_run Escalation 0%」という
+iteration4の報告は、n=2で見ると過度に楽観的だったと訂正する**
+(REPORT§14-2)。
+
+**不要Rewrite(v2訂正版、neg5除外済み)**: 正常記事9 instance中、
+sample1=**7/9(77.78%)**、sample2=**6/9(66.67%)**。**iteration4の
+44.4%(4/9)、Opus独立判定の2〜3件(22〜33%)のいずれよりも悪化している
+ことを正直に報告する**。原因をclaim単位で追跡したところ、2系統に
+分かれることを確認した: (a) **deterministic floor起因**(neg3/neg6/
+hormuz_run03_advancedの一部claim、`floor_reason`に`changed_comparison`
+/`changed_time`/`changed_actor`が記録され、LLM自体は`llm_materiality
+=QUALITY`または`ACCEPTABLE`と正しく判定していたにもかかわらずfloorが
+上書きしてBLOCKINGへ強制した)。floor精度の改善は委任文item7で明示的に
+ユーザー判断待ちとして凍結されており、本委任では意図的に触れていない
+(fail-closed維持)。(b) **Stage2(R3''')自体の安定したBLOCKING判定**
+(neg1/neg2/meta_run03_advanced/hormuz_run03_advancedの一部claim、
+Meta AIコールテスト関連claim[MUSE-HC-006/012]やHormuz HF-009 scope
+関連claimで、2-of-2の両呼び出しが一貫して`BLOCKING(both agree)`と
+判定しており、単発runのノイズではなく再現性のある判定である)。b群は
+較正セット(23claim・13group)に含まれるB4-d/B1-cとは異なるclaim
+パターンであり、**較正の較正セット外汎化が未確認である**ことを示す
+新規の知見として報告する(独断で追加rubric改訂はしない)。
+
+**品質劣化検出v2**: sample1(重複段落0/孤立逆接1/語彙難化2、
+needs_regeneration 3件、再生成3件実施・再生成後も劣化解消0件)、
+sample2(重複段落0/孤立逆接0/語彙難化5、needs_regeneration 5件、
+再生成5件実施・再生成後に劣化解消**2件**)。**再生成の効果は限定的**
+(sample1では0/3、sample2では2/5のみ再生成後に解消)。重複段落検出0件
+(iter4のneg1 cycle2型パターンは本29 instance構成には再現しなかった)。
+
+**2-of-2安定化**: sample1 trigger 8claim(downgraded 3・confirmed_
+blocking 5)、sample2 trigger 5claim(downgraded 3・confirmed_
+blocking 2)。**両sample合計13claim中6claim(46%)がdowngradeされており
+(=1回目BLOCKINGだが2回目でQUALITY/ACCEPTABLEへ反転し、Rewriteを
+回避できた)、Stage2単発判定の非決定性が実際に不要Rewriteを誘発して
+いたことを裏付ける実測**。
+
+**cite-or-release**: sample1 confirm call(remaining_sentence付き)2件・
+release 0件、sample2 confirm call 3件・release 0件。**機械検証で
+「根拠のない未解消」と判定されたケースは本29 instance実行では0件**
+(全てのunresolved判定が記事本文中の実在文を正しく引用できていた)。
+fail-closedを緩めない設計どおり、無根拠なSTAGE4を誤って作り出しては
+いないことを確認した。
+
+**JA/EN等価QA**: sample1 calls 8・FAIL 0・REVIEW_REQUIRED 5、sample2
+calls 6・FAIL 0・REVIEW_REQUIRED 5。両sampleともFAIL 0件を維持
+(iter4から継続)。
+
+**記事単位コスト(worst across samples)**: **safety_A4が¥5.3592
+(sample2)で最悪値、+¥3/記事Capを¥2.36超過**。bgroup_B4も¥4.0387
+(sample1)でCap超過。いずれも2-of-2・品質劣化v2再生成・cycle_limit
+到達が重なった既知の困難instance(safety_A4はangle起因・複数箇所
+出現[MUSE-HC-006/010/012]という既知のmethod-limitation、委任文item8
+「fact_id複数箇所Rewrite」のPhase2設計課題そのもの)。29 instance中
+Cap超過は2件(6.9%)にとどまり、平均記事単位コストはsample1 ¥1.047・
+sample2 ¥1.0617と大きくCap内。**USER_DECISION_REQUIRED条件3(+¥3 Cap
+超過が期待値ベースで必要、または恒常的に避けられない)には該当しない
+と判断する**(平均・大多数のinstanceはCap内であり、超過は既知の
+method-limitation[item8]を持つ少数instanceに限定される tail risk)。
+ただし将来のPhase2設計でitem8(fact_id単位複数箇所Rewrite)を実装する
+際の優先根拠として記録する。
+
+**USER_DECISION_REQUIRED該当有無**: 7条件いずれも非該当と判断する
+(条件2[Safety緩和]非該当: safety群Escalation 0/24、Safety-critical
+10claim誤降格0件を較正・フロー実測双方で確認。条件3[Cap超過]非該当:
+上記のとおりtail risk)。floor精度(item7)・fact_id複数箇所Rewrite
+(item8)はいずれも本委任で意図的に未実装のまま据え置く(委任文の
+指示どおり)。
+
+**総括**: STAGE4件数・real_run Escalationのいずれも「n=1点推定では
+改善したように見えるが、n=2で見ると非決定性の範囲内であり、safety_A4
+の継続的解消という前進はある一方、不要Rewrite率はむしろ悪化し、記事
+単位worst costもCapを超過するようになった」というのが正直な総括である。
+本委任の当初目的(不要Rewrite削減)は**達成できていない**
+(Status=`ITER5_DONE_IMPROVEMENT_NEEDED`)。詳細はREPORT.md §14参照。
+
 ### 9-3. Stage別usage記録要件(委任_02追加、2026-09-30ユーザー追加指示)
 
 Phase 1 Trial harnessは、全API callのusageログへ以下を必須で付与する
@@ -2110,6 +2422,29 @@ Flow込みで10〜20記事規模実行し、Primary KPI(USER_DECISION_REQUIRED
 記事テーマ選定)は本委任では未着手のまま(Phase 2着手時に対応)。
 残る課題は§9-1⑦「残るStage4到達7件の原因分類」「Opus L2 #2論点案」
 を参照。
+
+**[委任_13追記]Phase 2前条件(Opus L2レビュー#3論点6-A)の充足状況と
+iteration5後の再評価**: iteration4時点でOpusが提示した4条件(機構起因
+Escalation 0〜1/29、negative Stage 4=0かつ読み物品質確認、JA/EN乖離
+閉鎖、測定是正[n=2])のうち、iteration4はいずれも未達または境界だった
+(詳細は§9-1⑨参照)。iteration5(§9-1⑩)でR3'''+2-of-2+cite-or-release+
+品質劣化検出v2+Rewrite品質制約+n=2実測を反映した結果は§9-1⑩に記録する。
+
+**[委任_13追記]Phase 2設計課題(実装せず、ユーザー判断待ちとして記録)**:
+1. **fact_id単位マルチ箇所一括Rewrite**: Opus L2レビュー#3論点3・4・6で
+   繰り返し指摘された「1つのclaimが記事の複数箇所(見出し・本文・
+   In one line等)に散らばる」問題(neg3/B1/A4の真因)は、現行の段落単位
+   local Rewrite設計の構造的限界であり、rubric調整では解けない。解決
+   するには「同一fact_idを参照する全箇所を1回のRewrite callで一括修正
+   する」設計拡張が必要だが、これはRewrite範囲を広げる=読み物品質
+   リスクを上げる方向でもあるため、iteration5のスコープには含めず、
+   Phase 2設計課題として提示する(採否・設計方針はユーザー判断)。
+2. **deterministic floorの発火条件精密化**: Opus L2レビュー#3論点3推奨2
+   (floorを「Stage1のフラグが立っている」ではなく「Stage1が矛盾する
+   Ledgerの具体値[numeric_value/date_or_period/明示claim文]を名指し
+   できている場合のみ」へ限定する案)は、既存安全装置(fail-closed floor)
+   の緩和方向の変更に該当するため、7条件④に照らしiteration5では実装
+   せず、ユーザー判断待ちのまま据え置く。
 
 ## 10. リスク
 

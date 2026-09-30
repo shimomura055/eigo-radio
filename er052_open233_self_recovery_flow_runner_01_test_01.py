@@ -512,12 +512,19 @@ class TestRubricR3Wiring(unittest.TestCase):
         import inspect
         import er052_open233_self_recovery_stage2_calibration_01 as s2c
         src = inspect.getsource(runner.run_stage2)
-        self.assertIn("s2c.RUBRIC_R3_PRIME", src)
+        # 委任_13(iteration5): RUBRIC_R3_PRIME -> RUBRIC_R3_TRIPLE_PRIMEへ切替
+        # (単体較正でB4-d/B1-c QUALITY 2/2+Safety-critical 10claim誤降格0を
+        # 達成、summary_r3tripleprime_calibration.json参照)。
+        self.assertIn("s2c.RUBRIC_R3_TRIPLE_PRIME", src)
         self.assertNotIn("s2c.RUBRIC_R2,", src)
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_NATURAL_INTERPRETATION"))
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_PRIME"))
+        self.assertTrue(hasattr(s2c, "RUBRIC_R3_DOUBLE_PRIME"))
+        self.assertTrue(hasattr(s2c, "RUBRIC_R3_TRIPLE_PRIME"))
         self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_NATURAL_INTERPRETATION)
         self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_PRIME)
+        self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_DOUBLE_PRIME)
+        self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_TRIPLE_PRIME)
 
     def test_only_blocking_claims_dispatched_to_stage3(self):
         import inspect
@@ -648,6 +655,260 @@ class TestS1UCounterfactual(unittest.TestCase):
         cf = runner.compute_s1u_counterfactual(results)
         self.assertEqual(cf["with_s1u"]["total_cost_jpy"], cf["without_s1u_counterfactual"]["total_cost_jpy"])
         self.assertEqual(cf["instances_removed_by_counterfactual"], [])
+
+
+# ============================================================
+# 委任_13(iteration5)品質劣化検出v2のregression test。fixtureはiteration4
+# 実測証跡(er052_output/open233_self_recovery_flow_runner_01_iter4/
+# summary_flow_runner.json、neg1_meta_b3prod_a2/neg2_meta_refresh_a2の
+# en_text_before_rewrite/en_text_after_rewrite、および読み比べページで
+# Opusが逐語引用したneg3の「In one line」文)をそのまま埋め込む
+# (Opus L2レビュー#3論点6-B「iter4のv1検出器は4種の劣化のうち3種を
+# 検出できなかった」の再発防止、既存iter4証跡は変更しない)。
+# ============================================================
+NEG1_CYCLE1_BEFORE = (
+    "# We Thought It Was AI—But There Was a Person Inside Meta's Muse\n\n"
+    "Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice "
+    "was not AI at all. It was a person.\n\n"
+    "Meta had run a test that caused exactly this surprise.\n\n"
+    "The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained "
+    "contract workers made the calls, not AI. They carried each conversation through to the end."
+)
+NEG1_CYCLE1_AFTER = (
+    "# Meta Tested Human-Handled Calls Through Muse\n\n"
+    "Meta tested having trained contract workers make some calls through Muse.\n\n"
+    "Meta had run a test that caused exactly this surprise.\n\n"
+    "The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained "
+    "contract workers made the calls, not AI. They carried each conversation through to the end."
+)
+NEG1_CYCLE2_BEFORE = (
+    "# Meta Tested Human-Handled Calls Through Muse\n\n"
+    "Meta tested having trained contract workers make some calls through Muse.\n\n"
+    "Meta had run a test that caused exactly this surprise.\n\n"
+    "The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained "
+    "contract workers made the calls, not AI. They carried each conversation through to the end."
+)
+NEG1_CYCLE2_AFTER = (
+    "# Meta Tested Human-Handled Calls Through Muse\n\n"
+    "Meta tested having trained contract workers make some calls through Muse.\n\n"
+    "Meta had tested having trained human contractors handle some calls made through its AI agent "
+    "Muse.\n\n"
+    "The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained "
+    "contract workers made the calls, not AI. They carried each conversation through to the end."
+)
+NEG2_CYCLE1_BEFORE = (
+    "# Some AI Phone Calls Had Humans Behind the Scenes\n\n"
+    "There was a small twist. A service let people ask AI to make phone calls. But humans were "
+    "making some calls behind the scenes. This was part of a test.\n\n"
+    "People who asked Muse to make a call might think AI was doing it. If this was not explained "
+    "clearly, users could not know if it was AI or a person. They enjoyed the ease of AI. But they "
+    "did not know that a human was on the other end. This was happening behind the scenes."
+)
+NEG2_CYCLE1_AFTER = (
+    "# Some AI Phone Calls Had Humans Behind the Scenes\n\n"
+    "There was a small twist. A service let people ask AI to make phone calls. But humans were "
+    "making some calls behind the scenes. This was part of a test.\n\n"
+    "But sometimes, a human was speaking instead. This was happening behind the scenes."
+)
+NEG3_INLINE_BEFORE = (
+    "The fee plan left the stage, but the events driving oil prices, and the prices themselves, "
+    "quickly returned."
+)
+NEG3_INLINE_AFTER = (
+    "After the announcement replacing the fee plan, Brent futures briefly pared gains before "
+    "returning to near pre-announcement highs; concerns about attacks, the blockade and tanker "
+    "safety continued."
+)
+
+
+class TestMeasureRewriteQualityDegradationV2(unittest.TestCase):
+    def test_neg1_cycle1_hook_and_title_loss_is_flagged_but_does_not_alone_trigger_regeneration(self):
+        qd = runner.measure_rewrite_quality_degradation_v2(NEG1_CYCLE1_BEFORE, NEG1_CYCLE1_AFTER)
+        self.assertTrue(qd["title_changed"])
+        self.assertTrue(qd["first_paragraph_changed"])
+        self.assertTrue(qd["hook_or_title_changed"])
+        # (d)は単独ではneeds_regenerationのトリガにしない(BLOCKING claim
+        # 自体がhookにある正当なケースがあるため、委任文の設計どおり)。
+        self.assertFalse(qd["duplicate_paragraph_detected"])
+        self.assertFalse(qd["orphan_contrastive_detected"])
+
+    def test_neg1_cycle2_duplicate_paragraph_detected_and_triggers_regeneration(self):
+        qd = runner.measure_rewrite_quality_degradation_v2(NEG1_CYCLE2_BEFORE, NEG1_CYCLE2_AFTER)
+        self.assertTrue(qd["duplicate_paragraph_detected"])
+        self.assertGreaterEqual(qd["duplicate_paragraphs"][0]["jaccard"], 0.4)
+        self.assertTrue(qd["needs_regeneration"])
+
+    def test_neg2_orphan_contrastive_opener_detected_and_triggers_regeneration(self):
+        qd = runner.measure_rewrite_quality_degradation_v2(NEG2_CYCLE1_BEFORE, NEG2_CYCLE1_AFTER)
+        self.assertTrue(qd["orphan_contrastive_detected"])
+        self.assertIn("But sometimes, a human was speaking instead.",
+                       qd["orphan_contrastive_paragraphs"][0]["opening"])
+        self.assertTrue(qd["needs_regeneration"])
+
+    def test_neg3_style_localized_vocab_difficulty_increase_detected_via_fragment(self):
+        # 全文平均では希釈されて閾値未満になる(iter4実測: neg3/B2ともwhole
+        # text難語率上昇は0.02未満)ため、changed_fragmentsを渡した場合のみ
+        # 検出できることを固定する(Opus L2レビュー#3論点6-B該当事例)。
+        qd_wholetext_only = runner.measure_rewrite_quality_degradation_v2(
+            NEG3_INLINE_BEFORE, NEG3_INLINE_AFTER)
+        self.assertTrue(qd_wholetext_only["vocab_difficulty_increased"])  # 短文単体では全文判定でも検出可
+        qd_with_fragment = runner.measure_rewrite_quality_degradation_v2(
+            NEG3_INLINE_BEFORE, NEG3_INLINE_AFTER,
+            changed_fragments=[{"before": NEG3_INLINE_BEFORE, "after": NEG3_INLINE_AFTER}])
+        self.assertTrue(qd_with_fragment["vocab_difficulty_increased_fragment"])
+        self.assertTrue(qd_with_fragment["needs_regeneration"])
+
+    def test_no_degradation_when_texts_identical(self):
+        qd = runner.measure_rewrite_quality_degradation_v2(NEG1_CYCLE1_BEFORE, NEG1_CYCLE1_BEFORE)
+        self.assertFalse(qd["needs_regeneration"])
+        self.assertFalse(qd["duplicate_paragraph_detected"])
+        self.assertFalse(qd["orphan_contrastive_detected"])
+        self.assertFalse(qd["vocab_difficulty_increased"])
+
+
+class TestInferArticleLevel(unittest.TestCase):
+    def test_a2_suffix_maps_to_a2(self):
+        self.assertEqual(runner.infer_article_level("neg1_meta_b3prod_a2"), "a2")
+
+    def test_standard_suffix_maps_to_a2(self):
+        self.assertEqual(runner.infer_article_level("hormuz_run03_standard"), "a2")
+
+    def test_b1b_suffix_maps_to_b1b(self):
+        self.assertEqual(runner.infer_article_level("neg3_hormuz_prodrunner_b1b"), "b1b")
+
+    def test_advanced_suffix_maps_to_b1b(self):
+        self.assertEqual(runner.infer_article_level("hormuz_run03_advanced"), "b1b")
+
+    def test_unrecognized_id_returns_none(self):
+        self.assertIsNone(runner.infer_article_level("bgroup_B1"))
+
+    def test_level_constraint_text_includes_level_specific_wording(self):
+        self.assertIn("CEFR-A2", runner.level_constraint_text("a2"))
+        self.assertIn("B1", runner.level_constraint_text("b1b"))
+        self.assertIn("Preserve the title", runner.level_constraint_text(None))
+
+
+class TestStage2TwoOfTwoEligibility(unittest.TestCase):
+    def test_eligible_when_normal_group_blocking_and_floor_not_applied(self):
+        inst = {"instance_id": "neg1_meta_b3prod_a2"}
+        result = {"materiality": "BLOCKING", "floor_reason": None}
+        self.assertTrue(runner.stage2_two_of_two_eligible(inst, result))
+
+    def test_not_eligible_when_floor_applied(self):
+        inst = {"instance_id": "neg1_meta_b3prod_a2"}
+        result = {"materiality": "BLOCKING", "floor_reason": "deterministic_floor:changed_time"}
+        self.assertFalse(runner.stage2_two_of_two_eligible(inst, result))
+
+    def test_not_eligible_when_not_blocking(self):
+        inst = {"instance_id": "neg1_meta_b3prod_a2"}
+        result = {"materiality": "QUALITY", "floor_reason": None}
+        self.assertFalse(runner.stage2_two_of_two_eligible(inst, result))
+
+    def test_not_eligible_when_outside_normal_group(self):
+        inst = {"instance_id": "safety_er009_scenario_a"}
+        result = {"materiality": "BLOCKING", "floor_reason": None}
+        self.assertFalse(runner.stage2_two_of_two_eligible(inst, result))
+
+
+class TestCiteOrRelease(unittest.TestCase):
+    def test_cited_sentence_present_in_article_stays_unresolved(self):
+        article_text = "Meta ran the test. The old claim sentence is still here. Nothing else changed."
+        parsed = {"prior_issues_resolved": [
+            {"index": 0, "resolved": False, "explanation": "still present",
+             "remaining_sentence": "The old claim sentence is still here."},
+        ]}
+        out = runner.apply_cite_or_release(parsed, article_text)
+        self.assertFalse(out["prior_issues_resolved"][0]["resolved"])
+        self.assertFalse(out["prior_issues_resolved"][0]["cite_or_release_overridden"])
+        self.assertFalse(out["all_prior_issues_resolved"])
+        self.assertEqual(out["released_count"], 0)
+
+    def test_unresolved_without_valid_citation_is_released(self):
+        article_text = "Meta ran the test. The claim was removed already. Nothing else changed."
+        parsed = {"prior_issues_resolved": [
+            {"index": 0, "resolved": False, "explanation": "vague",
+             "remaining_sentence": "This sentence does not exist in the article."},
+        ]}
+        out = runner.apply_cite_or_release(parsed, article_text)
+        self.assertTrue(out["prior_issues_resolved"][0]["resolved"])
+        self.assertTrue(out["prior_issues_resolved"][0]["cite_or_release_overridden"])
+        self.assertTrue(out["all_prior_issues_resolved"])
+        self.assertEqual(out["released_count"], 1)
+
+    def test_empty_remaining_sentence_is_released(self):
+        article_text = "Meta ran the test. Nothing else changed."
+        parsed = {"prior_issues_resolved": [
+            {"index": 0, "resolved": False, "explanation": "vague", "remaining_sentence": ""},
+        ]}
+        out = runner.apply_cite_or_release(parsed, article_text)
+        self.assertTrue(out["prior_issues_resolved"][0]["resolved"])
+        self.assertEqual(out["released_count"], 1)
+
+    def test_already_resolved_items_are_not_touched(self):
+        article_text = "Meta ran the test."
+        parsed = {"prior_issues_resolved": [
+            {"index": 0, "resolved": True, "explanation": "fixed", "remaining_sentence": ""},
+        ]}
+        out = runner.apply_cite_or_release(parsed, article_text)
+        self.assertTrue(out["prior_issues_resolved"][0]["resolved"])
+        self.assertFalse(out["prior_issues_resolved"][0]["cite_or_release_overridden"])
+        self.assertEqual(out["released_count"], 0)
+
+
+class TestWilsonScoreInterval(unittest.TestCase):
+    def test_zero_n_returns_zero_interval(self):
+        self.assertEqual(runner.wilson_score_interval(0, 0), (0.0, 0.0))
+
+    def test_zero_successes_lower_bound_is_zero(self):
+        lo, hi = runner.wilson_score_interval(0, 10)
+        self.assertEqual(lo, 0.0)
+        self.assertGreater(hi, 0.0)
+
+    def test_all_successes_upper_bound_is_at_most_one(self):
+        lo, hi = runner.wilson_score_interval(10, 10)
+        self.assertLessEqual(hi, 1.0)
+        self.assertLess(lo, 1.0)
+
+    def test_interval_widens_with_smaller_n(self):
+        lo_small, hi_small = runner.wilson_score_interval(5, 10)
+        lo_large, hi_large = runner.wilson_score_interval(50, 100)
+        self.assertLess(lo_small, lo_large)
+        self.assertGreater(hi_small, hi_large)
+
+
+class TestUnnecessaryRewriteV2Correction(unittest.TestCase):
+    def test_neg5_excluded_from_v2_corrected_numerator(self):
+        self.assertIn("neg5_hormuz_div_a2", runner.UNNECESSARY_REWRITE_V2_EXCLUDE_INSTANCE_IDS)
+
+    def test_iter5_measures_report_both_v1_and_v2_counts(self):
+        base = {
+            "group": "negative", "final_state": "RESOLVED_REWRITE", "stage4_reason": None,
+            "total_cost_jpy": 0.1, "call_log": [], "total_calls": 1, "elapsed_seconds": 0.1,
+        }
+        results = [
+            {**base, "instance_id": "neg5_hormuz_div_a2",
+             "cycles": [{"rewrite_records": [{"claim_identity": "x"}], "stage2_results": []}]},
+            {**base, "instance_id": "neg1_meta_b3prod_a2",
+             "cycles": [{"rewrite_records": [{"claim_identity": "y"}], "stage2_results": []}]},
+            {**base, "instance_id": "neg4_smallbag_div_a2", "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+             "cycles": [{"stage2_results": []}]},
+            {**base, "instance_id": "neg6_smallbag_div_b1b", "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+             "cycles": [{"stage2_results": []}]},
+            {**base, "instance_id": "neg7_meta_prodrunner_b1b", "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+             "cycles": [{"stage2_results": []}]},
+            {**base, "instance_id": "neg3_hormuz_prodrunner_b1b", "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+             "cycles": [{"stage2_results": []}]},
+            {**base, "instance_id": "hormuz_run03_advanced", "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+             "cycles": [{"stage2_results": []}]},
+            {**base, "instance_id": "meta_run03_advanced", "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+             "cycles": [{"stage2_results": []}]},
+        ]
+        out = runner._iter5_additional_measures(results)
+        corrected = out["unnecessary_rewrite_v2_corrected"]
+        self.assertEqual(corrected["count_v1_uncorrected"], 2)
+        self.assertEqual(corrected["count_v2_corrected"], 1)
+        self.assertNotIn("neg5_hormuz_div_a2", corrected["instance_ids_v2"])
+        self.assertIn("neg1_meta_b3prod_a2", corrected["instance_ids_v2"])
 
 
 if __name__ == "__main__":

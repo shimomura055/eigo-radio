@@ -1034,3 +1034,105 @@ detect_rewrite_new_precheck_findingsによるRewrite後precheck再実行(Y0)で�
 ### 12-8. 費用
 
 作業B(R3+R3'較正): ¥7.8974(52 call、Guardrail¥8内)。作業C(29 instance再実行、--s1u有効): ¥28.5644(139 call、Guardrail¥40内)。本委任合計: ¥7.8974+¥28.5644=**¥36.4618**。Phase累計(前回まで¥115.6934)+本委任¥36.4618=**¥152.1552**。Phase残額(¥400 Guardrailのうち)=約¥247.8448。
+
+## §13. Opus L2 #3と報告訂正(委任_13、2026-09-30)
+
+Opus L2レビュー#3(全文逐語保存: `docs/pm/opus_l2_review_open233_self_recovery_03.md`、`claude-opus-5[1m]`で実行、`claude-opus-5-5`はClaude Code 2.1.272未対応のためFable報告どおり利用可能な最新Opusで実行)を受け、§12の記載を以下の4点について訂正する(履歴は改変せず、本節に新規記述として追記する)。
+
+### 13-1. 訂正1: 不要Rewrite率44.4%(4/9)はneg5の誤計上により過大
+
+§12-3の「正常記事の不要Rewrite4件(44.4%)」のうち、neg5_hormuz_div_a2でRewriteされたclaim("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage.")は、§12-2で正解BLOCKING維持と確定したB3のclaim("...links the continuing concerns causally to the plan's withdrawal.")と同一文である。neg5を「不要Rewrite」に数えるのはプロジェクト自身の§12-2再ラベル表と矛盾する。Opus独立判定では9件中2件(neg1/neg2)が明確な不要Rewrite、1件(neg3)が境界事例であり、**実質は2〜3件(22〜33%)**で、報告値44.4%は過大である。この訂正を反映した分子(`unnecessary_rewrite_v2_corrected`、neg5を除外)をiteration5(§14)から採用する。
+
+### 13-2. 訂正2: S1-U追加費¥4.1622は反実仮想の総差額であり、S1-U screen自体の費用は¥2.9661
+
+§12-4の「追加費¥4.1622」は、S1-U発火5 instanceの下流Rewrite費用込みの反実仮想総差額である。S1-D screen call自体の費用は`s1u_variant.extra_cost_jpy = ¥2.9661`(7 screen実行、¥0.424/screen)であり、記事単位では約¥0.18/記事(全29 instance換算)にとどまる。§12-4はこの2つの数値を区別せずに記載していた。
+
+### 13-3. 訂正3: JA/EN等価QAとRewrite由来逸脱QAの改善が§12に未記載だった
+
+iteration4実測では、JA/EN等価QA(`ja_en_equivalence_fail_count`)がFAIL 0件(iter3はFAIL 1件から改善)、REVIEW_REQUIRED 6/9、Rewrite由来の新規precheck finding(`rewrite_new_precheck_findings_total`)が0件(iter3は4件から改善)だった。これらはいずれもiter3からの改善であり、§12にはこの改善が記載されていなかった(報告漏れ)。
+
+### 13-4. 訂正4: §12-3の差分表はn=1同士の比較であり、改善の証明になっていない
+
+§12-3(STAGE4 5→3、real_run Escalation率16.67%→0%、loop_rate 0.31→0.28)の差分表は、iter3・iter4いずれもinstanceあたりn=1の単発run結果同士の比較である。iter3自身の§11-4(fresh-mode 3件すべてでsample1とsample2のfinal_stateが一致しなかった実証)は、単発runのEscalation率・recall率が測定として不十分であることを示している。したがって「real_run Escalation 16.67%→0%」という改善は、run間分散の範囲内で説明できてしまい、単独では改善の証明にならない。この訂正を反映し、iteration5(§14)ではn=2同士の差分表(`n2_combined`)を作成する。
+
+## §14. iteration 5実測(委任_13、2026-09-30)
+
+Opus L2レビュー#3(全文逐語保存: `docs/pm/opus_l2_review_open233_self_recovery_03.md`)の是正1-6(rubric R3''/R3'''、Stage2 2-of-2安定化、cite-or-release、品質劣化検出v2、Rewrite品質制約)を実装し、29 instance×n=2(sample1/sample2)で再実行した。item7(floor精度)・item8(fact_id複数箇所Rewrite)はいずれも委任文の明示的指示により未実装のまま据え置いている。
+
+### 14-1. R3''/R3'''較正結果(作業C、¥8.4443、52 call)
+
+| variant | Safety-critical 10claim誤降格 | B1-c | B4-d | 正解一致率 | 判定 |
+|---|---|---|---|---|---|
+| R3''(2追記を例示→原則へ書換) | 0件 | QUALITY 2/2(是正成功) | **BLOCKING 2/2(未達)** | 91.3%(42/46) | 受入条件未達 |
+| R3'''(項目1をさらに「個別事実の断定」へ限定、新規例示なし) | 0件 | QUALITY 2/2 | **QUALITY 2/2** | **93.48%(43/46、R3'の80.43%を上回る)** | **全条件達成、採用** |
+
+R3''ではB4-dの`rewrite_hint`を確認したところ、モデルが「相手がAIだと思っていた/人間だと知って驚いた」という個別の具体的認識として解釈しており、R3''項目1の「認識の有無を事実として述べる場合」に素直に該当していた(fail-closedとしては妥当だが受入条件未達)。委任文自身が明示した条件付きパス(「未達なら原因分類しR3'''を1回だけ[原則文の修正のみ、例示禁止]」)に従いR3'''へ再較正し、全条件を達成した。作業Cガイドライン¥6を¥2.4443超過したが、これは委任文が明示的に許容した1回限りの追加再較正の結果であり、iteration5全体のGuardrail¥75・Phase累計残額に対しては十分な余裕内。詳細ログ: `er052_output/open233_self_recovery_r3dprime_calibration_01/summary_r3dprime_calibration.json`・`summary_r3tripleprime_calibration.json`。
+
+### 14-2. iteration4→5差分表(n=2実測、n=1点推定との違いを明示)
+
+作業D(29 instance×n=2、R3'''+全新機構、305 call・¥62.3761・error0、Guardrail¥65内)。**iter4はn=1(全29 instance)のみのため、本表はiter4(n=1)対iter5(sample1/sample2の2点+n=2結合値)として提示する(n=1同士の比較には戻さない、§13-4是正の反映)**。
+
+| 指標 | iter4(n=1) | iter5 sample1 | iter5 sample2 | iter5 n=2結合 |
+|---|---|---|---|---|
+| STAGE4件数/29 | 3 | 3(bgroup_B4/neg2/neg3) | 1(hormuz_run03_standard) | ― |
+| real_run(6 instance)Escalation率 | 0%(0/6) | 0/6 | 1/6 | **8.33%(1/12、Wilson95%CI[1.49%,35.39%])** |
+| group Escalation: safety | 8.3%(1/12) | 0/12 | 0/12 | **0%(0/24、CI[0%,13.8%])** |
+| group Escalation: b_group | 0%(0/4) | 25%(1/4) | 0/4 | **12.5%(1/8、CI[2.24%,47.09%])** |
+| group Escalation: hormuz | 0%(0/4) | 0/4 | 25%(1/4) | **12.5%(1/8、CI[2.24%,47.09%])** |
+| group Escalation: negative | 28.6%(2/7) | 28.6%(2/7) | 0/7 | **14.29%(2/14、CI[4.01%,39.94%])** |
+| 不要Rewrite率(正常記事9件、v2訂正=neg5除外) | 44.4%(4/9) | **77.78%(7/9)** | **66.67%(6/9)** | ― |
+| 記事単位worst cost | ¥2.924(meta_run03) | ¥4.0387(bgroup_B4) | **¥5.3592(safety_A4)** | ― |
+
+**per_instance_final_state_agreement(sample1 vs sample2、29 instance中)=21/29(72.41%)**、8 instanceで最終状態が食い違った(bgroup_B2_hormuz/bgroup_B4/hormuz_run02_advanced/hormuz_run03_standard/meta_run03_advanced/neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1b/safety_er009_changed_time)。**これはOpus L2 #3是正4(§13-4)が指摘した単発run非決定性の直接的な再現である。iter4の「real_run Escalation 0%」はn=2で見ると1/12(8.33%)であり、n=1報告は楽観的すぎたと訂正する。**
+
+**safety_A4(iter3・iter4で継続していたangle起因STAGE4)は両sampleとも`RESOLVED_REWRITE_THEN_DOWNGRADE`で解消し、初めてSTAGE4を免れた**(唯一の明確な前進)。一方、**不要Rewrite率はiter4の44.4%より明確に悪化し(77.78%/66.67%)、記事単位worst costも+¥3 Capを超過した(¥5.3592)**。本委任の当初目的(不要Rewrite削減)は達成できていないことを正直に報告する。
+
+### 14-3. 不要Rewrite悪化の原因分類(claim単位で追跡)
+
+sample1の該当7 instanceをclaim単位で追跡し、2系統に分類した(全claim網羅ではなくサンプル抽出による分類)。
+
+| 系統 | 該当例 | 内容 |
+|---|---|---|
+| (a) floor起因 | neg3(`changed_time`)/neg6(`changed_comparison,changed_time`)/hormuz_run03_advancedの一部claim(`changed_actor`) | `floor_reason`が記録されており、LLM自体は`llm_materiality=QUALITY`または`ACCEPTABLE`と正しく判定していたにもかかわらず、deterministic floorが上書きしてBLOCKINGへ強制した。floor精度の改善は委任文item7で明示的にユーザー判断待ちとして凍結されており、本委任では意図的に触れていない(fail-closed維持、Safety側検出力は無変更) |
+| (b) Stage2(R3''')自体の安定判定 | neg1/neg2/meta_run03_advanced/hormuz_run03_advancedの一部claim(MUSE-HC-006/012、HF-009関連) | 2-of-2の両呼び出しが一貫して`BLOCKING(both agree)`と判定しており、単発runのノイズではなく再現性のある判定。これらは較正セット(23claim・13group)に含まれるB4-d/B1-cとは異なるclaimパターンであり、**較正の較正セット外claimへの汎化が未確認である**ことを示す新規知見(独断で追加rubric改訂はしない) |
+
+### 14-4. 品質劣化検出v2・2-of-2・cite-or-release・JA/EN等価QAの効果測定
+
+**品質劣化検出v2**: sample1(重複段落0件/孤立逆接1件/語彙難化2件、needs_regeneration 3件、再生成3件実施・再生成後も劣化解消0件)、sample2(重複段落0件/孤立逆接0件/語彙難化5件、needs_regeneration 5件、再生成5件実施・再生成後に劣化解消2件)。再生成の効果は限定的(sample1で0/3、sample2で2/5のみ解消)。iter4のneg1 cycle2型(重複段落)は本29 instance構成には再現しなかった。
+
+**2-of-2安定化**: sample1 trigger 8claim(downgraded 3・confirmed_blocking 5)、sample2 trigger 5claim(downgraded 3・confirmed_blocking 2)。**両sample合計13claim中6claim(46%)がdowngrade**(1回目BLOCKINGだが2回目でQUALITY/ACCEPTABLEへ反転し、Rewriteを回避)。Stage2単発判定の非決定性が実際に不要Rewriteを誘発していたことを裏付ける実測であり、2-of-2自体はfail-closedを緩めない方向(BLOCKING側の確定にのみ寄与)で機能している。
+
+**cite-or-release**: sample1 confirm call(remaining_sentence付き)2件・release 0件、sample2 confirm call 3件・release 0件。機械検証で「根拠のない未解消」と判定されたケースは0件(全てのunresolved判定が記事本文中の実在文を正しく引用できていた)。fail-closedを緩めない設計どおり、無根拠なSTAGE4を誤って作り出してはいないことを確認した。
+
+**JA/EN等価QA**: sample1 calls 8・FAIL 0・REVIEW_REQUIRED 5、sample2 calls 6・FAIL 0・REVIEW_REQUIRED 5。両sampleともFAIL 0件を維持(iter4から継続する改善)。Rewrite由来の新規precheck finding(`rewrite_new_precheck_findings_total`)も両sample0件。
+
+### 14-5. 残るSTAGE4の原因分類(sample1・sample2合算)
+
+| instance(sample) | 原因分類 | 根拠 |
+|---|---|---|
+| bgroup_B4(sample1のみ) | angle起因(method-limitation) | `cycle_limit_exhausted`。B4群の複数claim(AIコールテスト関連)が記事内複数箇所に跨り、cycle上限内で解消しきれない |
+| neg2_meta_refresh_a2(sample1のみ) | 機構起因(是正6が意図通り動作) | `unconfirmed_after_reverify`。cite-or-releaseで機械検証済みの正当なSTAGE4(根拠文が実在) |
+| neg3_hormuz_prodrunner_b1b(sample1のみ) | 機構起因(同上) | 同上 |
+| hormuz_run03_standard(sample2のみ) | **新規原因: fact_id多重ブロック** | `same_claim_fact_id_reblocked`。同一fact_idのclaimがRewrite後の再検査で再度BLOCKINGと判定される、委任文item8(fact_id複数箇所Rewrite、Phase2設計課題として明示的に凍結)そのものに該当するパターン。本委任では意図的に未対応 |
+
+safety_A4は両sampleとも解消し、iter3から継続していたSTAGE4要因から外れた(§14-2)。
+
+### 14-6. 記事単位コスト(worst across samples)とCap判定
+
+29 instance中2件(6.9%、safety_A4[¥5.3592]・bgroup_B4[¥4.0387])で+¥3/記事Capを超過した。平均記事単位コストはsample1 ¥1.047・sample2 ¥1.0617でCap内。超過2件はいずれも2-of-2・品質劣化v2再生成・cycle上限到達が重なった既知の困難instanceであり、safety_A4は§14-3で述べたangle起因、bgroup_B4も同系統(複数claim・複数箇所)。**USER_DECISION_REQUIRED条件3(+¥3 Cap超過が期待値ベースで必要、または恒常的に避けられない)には該当しないと判断する**(平均・大多数のinstanceはCap内であり、超過は少数instanceに限定されるtail riskのため)。ただしPhase2でitem8(fact_id単位複数箇所Rewrite)を検討する際の優先根拠として記録する。
+
+### 14-7. 読み比べページ
+
+`user_test/open233_rewrite_compare_01/index.html`を新規iteration5版へ更新した(`er052_open233_self_recovery_rewrite_compare_page_iter5_01.py`、API呼び出しなし、`instances_s1`読み直しのみ)。既存iteration4版は`index_iter4.html`として保持し、削除・移動していない。収録4記事: iter4と同一の3記事(`neg1_meta_b3prod_a2`/`hormuz_run02_advanced`/`bgroup_B3`)に加え、`neg2_meta_refresh_a2`(sample1でSTAGE4に至った正常記事の実例)を追加した。GitHub Pages公開URL: `https://shimomura055.github.io/eigo-radio/user_test/open233_rewrite_compare_01/index.html`(commit・push後に公開確認)。iter4版: `https://shimomura055.github.io/eigo-radio/user_test/open233_rewrite_compare_01/index_iter4.html`。
+
+### 14-8. USER_DECISION_REQUIRED該当有無
+
+7条件(ループ上限到達/Production採用判断/仕様拡大/既存安全装置の無効化・変更/Production・既存証跡ファイルの変更/累計予算超過/3連続API error)いずれも非該当。floor精度(item7)・fact_id複数箇所Rewrite(item8)はいずれも委任文の明示的指示により未実装のまま据え置いた(独断でのSafety装置変更は行っていない)。§14-6のCap超過はtail riskと判断し条件3には該当しないが、将来Phase2設計での検討材料として記録する。
+
+### 14-9. 総括とStatus
+
+STAGE4件数・real_run Escalationは「n=1点推定では改善したように見えるが、n=2で見ると非決定性の範囲内であり、safety_A4の継続的解消という前進はある一方、不要Rewrite率はむしろ悪化し、記事単位worst costもCapを超過するようになった」というのが正直な総括である。本委任の当初目的(不要Rewrite削減)は**達成できていない**。Status=`ITER5_DONE_IMPROVEMENT_NEEDED`。
+
+### 14-10. 費用
+
+作業C(R3''/R3'''較正): ¥8.4443(52 call、ガイドライン¥6を超過したが委任文が許容した1回限りの追加再較正、Guardrail¥11内)。作業D(29 instance×n=2実行): ¥62.3761(305 call・error0、Guardrail¥65内)。本委任合計: ¥8.4443+¥62.3761=**¥70.8204**。Phase累計(前回まで¥152.1552)+本委任¥70.8204=**¥222.9756**。Phase残額(¥400 Guardrailのうち)=約¥177.0244。

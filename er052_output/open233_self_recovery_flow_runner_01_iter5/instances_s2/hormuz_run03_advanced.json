@@ -1,0 +1,178 @@
+{
+  "instance_id": "hormuz_run03_advanced",
+  "group": "hormuz",
+  "expected_group_label": "Normal群(§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“attacks by the United States and Iran ... continued”",
+          "origin": null,
+          "related_fact_id": "HF-009 / HF-011",
+          "dev": {
+            "claim_in_article": "“attacks by the United States and Iran ... continued”",
+            "origin": null,
+            "related_fact_id": "HF-009 / HF-011",
+            "severity": "MAJOR",
+            "changed_actor": true,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Leaves, High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee was meant to recover the cost of the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.\n\nIn other words, fee collection had not actually begun. What appeared on stage was not a finished fee system, but a proposal that put forward the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump announced that he would drop the 20 percent fee plan and replace it with trade and investment deals between Gulf countries and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz, and that he did not like the idea of fees itself. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us turn the camera toward the oil market. The next scene begins.\n\nAfter the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "fallback_used": true,
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_actor"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009 / HF-011",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.57))",
+          "guard_ok": true
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 16.61,
+          "difficult_word_ratio": 0.1283,
+          "word_count": 382
+        },
+        "stats_after": {
+          "avg_sentence_len": 16.3,
+          "difficult_word_ratio": 0.128,
+          "word_count": 375
+        },
+        "sentence_len_increase": -0.31,
+        "difficulty_ratio_increase": -0.0003,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 23,
+        "sentence_count_after": 23,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 7,
+        "hedge_word_count_after": 7,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 10,
+        "paragraph_count_after": 10,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The Fee Plan Leaves, High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee was meant to recover the cost of the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.\n\nIn other words, fee collection had not actually begun. What appeared on stage was not a finished fee system, but a proposal that put forward the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump announced that he would drop the 20 percent fee plan and replace it with trade and investment deals between Gulf countries and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz, and that he did not like the idea of fees itself. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us turn the camera toward the oil market. The next scene begins.\n\nAfter the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "en_text_after_rewrite": "# The Fee Plan Leaves, High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee was meant to recover the cost of the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.\n\nIn other words, fee collection had not actually begun. What appeared on stage was not a finished fee system, but a proposal that put forward the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump announced that he would drop the 20 percent fee plan and replace it with trade and investment deals between Gulf countries and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing through the Strait of Hormuz, and that he did not like the idea of fees itself. The 20 percent plan left the stage about one day after it appeared.\n\nNow, let us turn the camera toward the oil market. The next scene begins.\n\nAfter the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, a sea blockade and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "unlabeled",
+  "call_log": [
+    {
+      "label": "hormuz_run03_advanced_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.5628,
+      "usage": {
+        "input_tokens": 5430,
+        "cached_input_tokens": 0,
+        "output_tokens": 6089,
+        "reasoning_tokens": 5857
+      },
+      "elapsed_seconds": 69.637,
+      "prompt_sha256": "5235f64c864d7c1f29aba0c55af5e2bafd0a663fd7d215d4356680802909b38b"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1106,
+      "usage": {
+        "input_tokens": 6167,
+        "cached_input_tokens": 0,
+        "output_tokens": 176,
+        "reasoning_tokens": 124
+      },
+      "elapsed_seconds": 2.979,
+      "prompt_sha256": "90fb369c87ad44f85df4243aabaadf0c6d94e45224b4ff3c23e770215a7269dc"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_fact:HF-009 / HF-011_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0769,
+      "usage": {
+        "input_tokens": 3494,
+        "cached_input_tokens": 0,
+        "output_tokens": 281,
+        "reasoning_tokens": 238
+      },
+      "elapsed_seconds": 3.475,
+      "prompt_sha256": "d0779b7d7193ac48f3b7520dcd52a7393d34df7ebf26a469d0422dee0de6d9e6"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2623,
+      "usage": {
+        "input_tokens": 6412,
+        "cached_input_tokens": 0,
+        "output_tokens": 2061,
+        "reasoning_tokens": 1956
+      },
+      "elapsed_seconds": 24.511,
+      "prompt_sha256": "923ded7ee0d7d5b63947e25b2aa61d7da3dea47cbf6c75de3486089f2893bbb3",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.0126,
+  "total_calls": 4,
+  "elapsed_seconds": 100.662
+}

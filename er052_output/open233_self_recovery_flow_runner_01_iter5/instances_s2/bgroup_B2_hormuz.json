@@ -1,0 +1,203 @@
+{
+  "instance_id": "bgroup_B2_hormuz",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“It looked like a very large fee would appear every time a ship passed through the strait.”",
+          "origin": null,
+          "related_fact_id": "HF-002, HF-003",
+          "dev": {
+            "claim_in_article": "“It looked like a very large fee would appear every time a ship passed through the strait.”",
+            "origin": null,
+            "related_fact_id": "HF-002, HF-003",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.\n\nIt looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.\n\nThen came the second act, just one day later.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "“Trump’s proposed Hormuz fee vanished overnight.”",
+          "origin": null,
+          "related_fact_id": "HF-002, HF-007",
+          "dev": {
+            "claim_in_article": "“Trump’s proposed Hormuz fee vanished overnight.”",
+            "origin": null,
+            "related_fact_id": "HF-002, HF-007",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Of course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.\n\n## In one line\nTrump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_time"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-002, HF-007",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.51))",
+          "guard_ok": true
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 15.04,
+          "difficult_word_ratio": 0.1151,
+          "word_count": 391
+        },
+        "stats_after": {
+          "avg_sentence_len": 14.73,
+          "difficult_word_ratio": 0.1097,
+          "word_count": 383
+        },
+        "sentence_len_increase": -0.31,
+        "difficulty_ratio_increase": -0.0054,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 26,
+        "sentence_count_after": 26,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 3,
+        "hedge_word_count_after": 3,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# A Big Twist in the 20 Percent Fee, But Crude Oil Does Not Leave the Stage\n\nThis news story looks like a short drama if we look only at how it unfolded.\n\nThe first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.\n\nIt looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.\n\nThen came the second act, just one day later.\n\nTrump withdrew the 20 percent fee plan. In its place came trade and investment deals between Gulf countries and the United States. He explained that this followed “very productive talks” with leaders from the Middle East.\n\nA story about charging ships suddenly changed into a story about trade and investment. It was as if the main actor had changed costumes—and roles—in the middle of the play.\n\nNow for the third act: crude oil prices appeared.\n\nWhen the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.\n\n## In one line\nTrump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+      "en_text_after_rewrite": "# A Big Twist in the 20 Percent Fee, But Crude Oil Does Not Leave the Stage\n\nThis news story looks like a short drama if we look only at how it unfolded.\n\nThe first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.\n\nIt looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.\n\nThen came the second act, just one day later.\n\nTrump withdrew the 20 percent fee plan. In its place came trade and investment deals between Gulf countries and the United States. He explained that this followed “very productive talks” with leaders from the Middle East.\n\nA story about charging ships suddenly changed into a story about trade and investment. It was as if the main actor had changed costumes—and roles—in the middle of the play.\n\nNow for the third act: crude oil prices appeared.\n\nWhen the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.\n\n## In one line\nCrude oil prices stayed high as tensions and tanker fears remained.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 2,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "true_positive",
+  "call_log": [
+    {
+      "label": "bgroup_B2_hormuz_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.3906,
+      "usage": {
+        "input_tokens": 5410,
+        "cached_input_tokens": 5407,
+        "output_tokens": 4871,
+        "reasoning_tokens": 4628
+      },
+      "elapsed_seconds": 50.528,
+      "prompt_sha256": "c3ad376c388a4f1214e0d6ba46cfce195da15b302f30c62b714609b008fe5ed1"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2659,
+      "usage": {
+        "input_tokens": 5967,
+        "cached_input_tokens": 0,
+        "output_tokens": 2196,
+        "reasoning_tokens": 2120
+      },
+      "elapsed_seconds": 19.637,
+      "prompt_sha256": "30f9c5676392574b86fd80e37e2893ed4dc0bf3582cf19e487a8ea10800bd1bb"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_fact:HF-002, HF-007_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0682,
+      "usage": {
+        "input_tokens": 3393,
+        "cached_input_tokens": 0,
+        "output_tokens": 191,
+        "reasoning_tokens": 167
+      },
+      "elapsed_seconds": 3.367,
+      "prompt_sha256": "436b7d53e7f8de954f440d954931bc9db568e8749b845ad2086cc166d8bcd2ee"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1802,
+      "usage": {
+        "input_tokens": 6390,
+        "cached_input_tokens": 0,
+        "output_tokens": 1019,
+        "reasoning_tokens": 924
+      },
+      "elapsed_seconds": 10.816,
+      "prompt_sha256": "1375f6c31b5c23926572e1499c2a02e077fbff5811567b470d34b9dfdfc57c05",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.9049,
+  "total_calls": 4,
+  "elapsed_seconds": 84.405
+}

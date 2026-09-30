@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OPEN-233 Self-Recovery Flow iteration4 - Rewrite 修正前後比較</title>
+<style>
+body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+       max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #222; }
+h1 { font-size: 1.5em; }
+h2 { margin-top: 2.5em; border-bottom: 3px solid #444; padding-bottom: 4px; }
+.meta { color: #555; font-size: 0.92em; margin-bottom: 1em; }
+.note { background: #f4f4f4; border-left: 4px solid #888; padding: 8px 12px; margin: 12px 0; }
+table.diff-table { width: 100%; border-collapse: collapse; margin: 12px 0 24px 0; font-size: 0.92em; }
+table.diff-table th, table.diff-table td { border: 1px solid #ccc; padding: 8px; vertical-align: top; width: 50%; }
+table.diff-table th { background: #333; color: #fff; }
+tr.diff-equal td { background: #fff; color: #666; }
+tr.diff-replace td { background: #fff3cd; }
+tr.diff-delete td { background: #f8d7da; }
+tr.diff-insert td { background: #d4edda; }
+.claims-box { background: #eef3fb; border: 1px solid #b6c9e3; padding: 10px 14px; margin: 10px 0; border-radius: 4px; }
+.claims-box .claim { margin-bottom: 10px; }
+.claims-box .label { font-weight: bold; }
+.metrics-table { border-collapse: collapse; margin: 8px 0 16px 0; font-size: 0.9em; }
+.metrics-table td, .metrics-table th { border: 1px solid #ccc; padding: 4px 10px; }
+.checklist label { display: block; margin: 4px 0; }
+.checklist input { margin-right: 8px; }
+.top-note { background: #fff8e1; border: 1px solid #e0c46c; padding: 12px 16px; margin-bottom: 24px; }
+footer { margin-top: 3em; color: #888; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<h1>OPEN-233 Self-Recovery Flow iteration4 - Rewrite 修正前後比較</h1>
+<div class="top-note">
+<p><strong>これは何か</strong>: Eigo Radioの記事生成パイプラインで、AIチェッカー
+(Deviation Check)がLedger(検証済み事実台帳)と矛盾する・根拠のない具体的事実を
+発明していると判定した文章を、AIが自動的に書き直した(Rewrite)実例です。
+書き直し前(Before)と書き直し後(After)を並べて表示しています。</p>
+<p>このページは、OPEN-233-SELF-RECOVERY-TRIAL-01(Self-Recovery Flow Trial)
+iteration4(委任_12)の実測結果からの抜粋です。Production(本番)記事の生成
+経路には未接続のTrial実装であり、この結果を見てユーザーが「この自動修正の
+品質は妥当か」を確認するためのページです。</p>
+</div>
+<h2>neg1_meta_b3prod_a2 &mdash; negative候補7(正常記事、Standardレベル)</h2>
+<div class="meta">レベル: Standard / 最終状態: RESOLVED_REWRITE / 総コスト: ¥1.7296 / 総call数: 6</div>
+<div class="note">本来はACCEPTABLEが期待される正常記事(§7-5 Normal群)。Stage1(V4A)が過剰BLOCKし、Stage2(R3&#x27;)がLedger矛盾ありと判定してRewriteに進んだケース。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (2件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=ledger_claim / rewrite_kind=narrow_scope</div><div>対象claim: 「“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”」</div><div>修正方針(rewrite_hint): 該当箇所：「AIエージェントから電話がかかってきた。そう思って話していたら、電話の向こうにいたのはAIではなく、人間だった――。」実際に相手がAIだと思っていたことや、会話の途中で人間だと判明して驚いたことはLedgerで確認されていません。その印象・展開を削り、「Muse経由の一部の電話を、訓練を受けた人間の契約スタッフが担当するテストをMetaが実施した」と範囲を限定してください。参照：MUSE-HC-006</div></div>
+<div class="claim"><div>cycle2 / basis=unsupported_relationship / rewrite_kind=narrow_scope</div><div>対象claim: 「“Meta had run a test that caused exactly this surprise.”」</div><div>修正方針(rewrite_hint): 「そんな展開を思わせるテストを、Metaが行っていました。舞台は、AIエージェント「Muse」の電話機能です。」実際に利用者が驚いた、または「AIだと思っていた」と断定せず、Muse経由の一部の電話を訓練済みの人間の契約スタッフが担当するテストがあった、という確認済みの範囲に狭めてください。参照: MUSE-HC-006</div></div>
+</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>35</td><td>32</td></tr><tr><td>段落数</td><td>18</td><td>18</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>6</td><td>5</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-replace"><td># We Thought It Was AI—But There Was a Person Inside Meta’s Muse<br><br>Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.<br><br>Meta had run a test that caused exactly this surprise.</td><td># Meta Tested Human-Handled Calls Through Muse<br><br>Meta tested having trained contract workers make some calls through Muse.<br><br>Meta had tested having trained human contractors handle some calls made through its AI agent Muse.</td></tr>
+<tr class="diff-equal"><td>The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.</td><td>The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.</td></tr>
+<tr class="diff-equal"><td>It was like someone took off an AI costume. Then a person stepped out.</td><td>It was like someone took off an AI costume. Then a person stepped out.</td></tr>
+<tr class="diff-equal"><td>Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.</td><td>Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.</td></tr>
+<tr class="diff-equal"><td>But this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.</td><td>But this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.</td></tr>
+<tr class="diff-equal"><td>It is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.</td><td>It is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.</td></tr>
+<tr class="diff-equal"><td>### The hidden person behind the AI sign</td><td>### The hidden person behind the AI sign</td></tr>
+<tr class="diff-equal"><td>Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.</td><td>Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.</td></tr>
+<tr class="diff-equal"><td>AI had not learned to speak like a human. A human stood behind the sign that said AI.</td><td>AI had not learned to speak like a human. A human stood behind the sign that said AI.</td></tr>
+<tr class="diff-equal"><td>It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?</td><td>It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?</td></tr>
+<tr class="diff-equal"><td>As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.</td><td>As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.</td></tr>
+<tr class="diff-equal"><td>### Meta admits a mistake</td><td>### Meta admits a mistake</td></tr>
+<tr class="diff-equal"><td>A Meta executive admitted the mistake. The test had begun without clearly telling users.</td><td>A Meta executive admitted the mistake. The test had begun without clearly telling users.</td></tr>
+<tr class="diff-equal"><td>For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.</td><td>For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.</td></tr>
+<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
+<tr class="diff-equal"><td>Before AI speaks for us, we need to know whether the voice belongs to AI or a person.</td><td>Before AI speaks for us, we need to know whether the voice belongs to AI or a person.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+</div>
+<h2>hormuz_run02_advanced &mdash; 実run(現行Production STOP実例、Advancedレベル)</h2>
+<div class="meta">レベル: Advanced / 最終状態: RESOLVED_REWRITE / 総コスト: ¥1.2393 / 総call数: 5</div>
+<div class="note">現行Productionで実際にJA_RECHECK_REQUIRED STOPとなった記事そのもの。iteration3までStage1が見逃す/検出が不安定だったが、iteration4ではRewriteで解消した。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (1件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=ledger_scope / rewrite_kind=narrow_scope</div><div>対象claim: 「“Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.”」</div><div>修正方針(rewrite_hint): 記事中の「二十パーセント料金の大どんでん返し、でも原油は幕を下ろさない」「料金案が消えたからといって、価格がそのまま大きく下がる展開にはなりませんでした。」に対応する主張です。「crude oil prices」のように原油価格全般を指す表現を避け、Ledgerが確認するBrent先物の値動きに範囲を限定してください（撤回後に一時的に上げ幅を縮小し、その後、発表前に近い高い水準へ戻った）。参照: HF-009。</div></div>
+</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>26</td><td>26</td></tr><tr><td>段落数</td><td>12</td><td>12</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>3</td><td>3</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-equal"><td># A Big Twist in the 20 Percent Fee, But Crude Oil Does Not Leave the Stage</td><td># A Big Twist in the 20 Percent Fee, But Crude Oil Does Not Leave the Stage</td></tr>
+<tr class="diff-equal"><td>This news story looks like a short drama if we look only at how it unfolded.</td><td>This news story looks like a short drama if we look only at how it unfolded.</td></tr>
+<tr class="diff-equal"><td>The first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.</td><td>The first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.</td></tr>
+<tr class="diff-equal"><td>It looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.</td><td>It looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.</td></tr>
+<tr class="diff-equal"><td>Then came the second act, just one day later.</td><td>Then came the second act, just one day later.</td></tr>
+<tr class="diff-equal"><td>Trump withdrew the 20 percent fee plan. In its place came trade and investment deals between Gulf countries and the United States. He explained that this followed “very productive talks” with leaders from the Middle East.</td><td>Trump withdrew the 20 percent fee plan. In its place came trade and investment deals between Gulf countries and the United States. He explained that this followed “very productive talks” with leaders from the Middle East.</td></tr>
+<tr class="diff-equal"><td>A story about charging ships suddenly changed into a story about trade and investment. It was as if the main actor had changed costumes—and roles—in the middle of the play.</td><td>A story about charging ships suddenly changed into a story about trade and investment. It was as if the main actor had changed costumes—and roles—in the middle of the play.</td></tr>
+<tr class="diff-equal"><td>Now for the third act: crude oil prices appeared.</td><td>Now for the third act: crude oil prices appeared.</td></tr>
+<tr class="diff-equal"><td>When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.</td><td>When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.</td></tr>
+<tr class="diff-equal"><td>The disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.</td><td>The disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.</td></tr>
+<tr class="diff-equal"><td>Of course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.</td><td>Of course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.</td></tr>
+<tr class="diff-replace"><td>## In one line<br>Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.</td><td>## In one line<br>Trump’s proposed Hormuz fee was replaced the next day, but Brent futures briefly pared gains after the announcement before returning to near their pre-announcement high as tensions and tanker fears persisted.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+</div>
+<h2>bgroup_B3 &mdash; B群(claim単位に正解ラベルが混在するfixture、政策決定理由の取り違え)</h2>
+<div class="meta">レベル: B3 fixture / 最終状態: RESOLVED_REWRITE / 総コスト: ¥1.3766 / 総call数: 8</div>
+<div class="note">Ledger conditionsが「中東指導者との協議に基づく決定」と明記するのに、記事が「懸念継続so撤回」と逆方向の因果を述べていた、genuine BLOCKING(§7-0-iter4で変更なしを再確認)。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (3件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=unsupported_relationship / rewrite_kind=replace_with_ledger_value</div><div>対象claim: 「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.」</div><div>修正方針(rewrite_hint): 「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、懸念が計画撤回の原因だと結び付けないでください。計画は湾岸諸国との対米貿易・投資案件に置き換えられ、トランプ氏は中東指導者との「非常に生産的な協議」に基づく決定だと説明した、と記述してください（HF-007）。</div></div>
+<div class="claim"><div>cycle1 / basis=precheck_floor / rewrite_kind=replace_with_ledger_value / floor=precheck_floor</div><div>対象claim: 「percent values found in article not matching any ledger fact: [2.0, 3.0]」</div><div>修正方針(rewrite_hint): &#x27;percent values found in article not matching any ledger fact&#x27; を、fact_id=HF-009のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)</div></div>
+<div class="claim"><div>cycle1 / basis=precheck_floor / rewrite_kind=replace_with_ledger_value / floor=precheck_floor</div><div>対象claim: 「percent values found in article not matching any ledger fact: [2.0, 3.0]」</div><div>修正方針(rewrite_hint): &#x27;percent values found in article not matching any ledger fact&#x27; を、fact_id=HF-011のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=$84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)</div></div>
+</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>23</td><td>24</td></tr><tr><td>段落数</td><td>12</td><td>12</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>0</td><td>0</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-equal"><td># 20% Withdrawn—but the Oil Chart Was Not Finished Yet</td><td># 20% Withdrawn—but the Oil Chart Was Not Finished Yet</td></tr>
+<tr class="diff-equal"><td>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.</td><td>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.</td></tr>
+<tr class="diff-equal"><td>The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.</td><td>The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.</td></tr>
+<tr class="diff-equal"><td>But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.</td><td>But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.</td></tr>
+<tr class="diff-equal"><td>The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td>The number stayed at center stage for about a day. Then the story took a sharp turn.</td></tr>
+<tr class="diff-equal"><td>### The 20% plan changes overnight</td><td>### The 20% plan changes overnight</td></tr>
+<tr class="diff-equal"><td>The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.</td><td>The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.</td></tr>
+<tr class="diff-equal"><td>The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</td><td>The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</td></tr>
+<tr class="diff-equal"><td>### The chart refuses to stay down</td><td>### The chart refuses to stay down</td></tr>
+<tr class="diff-replace"><td>On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.</td><td>On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up $1.43, or 1.7%, from the day before.</td></tr>
+<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
+<tr class="diff-replace"><td>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. Trump replaced the flashy 20% plan with Gulf states’ trade and investment deals with the United States, saying the decision followed “very productive discussions” with Middle Eastern leaders; the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+</div>
+<footer>
+生成元: er052_open233_self_recovery_rewrite_compare_page_01.py (API呼び出しなし、
+既存iteration4証跡json[er052_output/open233_self_recovery_flow_runner_01_iter4/
+instances/]の読み直しのみ)。管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_12)。
+</footer>
+</body>
+</html>

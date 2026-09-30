@@ -1,0 +1,195 @@
+{
+  "instance_id": "neg7_meta_prodrunner_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Meta’s AI agent, Muse, really does have phone features like these.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "Meta’s AI agent, Muse, really does have phone features like these.",
+            "origin": null,
+            "related_fact_id": "MUSE-HC-004",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Imagine asking AI to book a haircut. Or asking it to call a store and check whether something is in stock. It could even ask a supplier for a price estimate. In this convenient future, the AI on your screen handles everything for you.\n\nMeta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call. But the picture changed once people looked behind the stage.\n\n### The call that was not made by AI",
+          "fallback_used": false,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "It was that testing began without clearly telling users about it.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "It was that testing began without clearly telling users about it.",
+            "origin": null,
+            "related_fact_id": "MUSE-HC-012",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### Why the hidden role mattered\n\nMeta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.\n\nNo large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.",
+          "fallback_used": false,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“The issue was not that humans handled calls. It was that testing began without clearly telling users about it.”を、Metaが人間コンシェルジュのテストを適切な開示なしに開始したと認めた、というLedgerに沿った表現に狭め、Museユーザーが知らされていなかったと特定しない。参照: MUSE-HC-012。",
+          "floor_reason": null,
+          "two_of_two_downgraded": true,
+          "two_of_two_second_materiality": "ACCEPTABLE",
+          "two_of_two_second_basis": "ledger_conditions"
+        },
+        {
+          "claim_text": "Users could not know who was really doing the work they had asked AI to do.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Users could not know who was really doing the work they had asked AI to do.",
+            "origin": null,
+            "related_fact_id": "MUSE-HC-010",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage\n\nImagine asking AI to book a haircut. Or asking it to call a store and check whether something is in stock. It could even ask a supplier for a price estimate. In this convenient future, the AI on your screen handles everything for you.\n\nMeta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call. But the picture changed once people looked behind the stage.\n\n### The call that was not made by AI\n\nSome calls through Muse were not made by AI at all. Trained human contract workers made them. Muse received the request—that part was AI—but then passed the job to a person. The worker made the call and finished the conversation. It was like an AI-led play with a hidden supporting actor. The system was called “human concierges.”\n\nThe hidden role made the simple picture less simple.\n\n### Why the hidden role mattered\n\nMeta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.\n\nNo large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.\n\nA Meta executive admitted that starting the test without a proper explanation was a mistake. Meta then temporarily put the human-call feature back on hold. The company did not stop Muse itself.\n\nIn the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.\n\nEven in an age when AI does our work, a human may still need to help. But that person should not appear secretly. If they step onto the stage, they should give their name first. This case made that simple rule unusually clear.\n\n## In one line\n\nAI may need human help, but humans must say clearly when they take over.",
+          "fallback_used": true,
+          "materiality": "QUALITY",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“But users could not know who was really doing the work they had asked AI to do”を、Meta従業員が電話に必要な機微情報が契約スタッフに意図せず共有される可能性を懸念した、という記述に置き換え、ユーザーが実際に知らなかったとは断定しない。参照: MUSE-HC-010。",
+          "floor_reason": null,
+          "two_of_two_downgraded": true,
+          "two_of_two_second_materiality": "QUALITY",
+          "two_of_two_second_basis": "unsupported_relationship"
+        },
+        {
+          "claim_text": "Their personal information might reach that person.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Their personal information might reach that person.",
+            "origin": null,
+            "related_fact_id": "MUSE-HC-010",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage\n\nImagine asking AI to book a haircut. Or asking it to call a store and check whether something is in stock. It could even ask a supplier for a price estimate. In this convenient future, the AI on your screen handles everything for you.\n\nMeta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call. But the picture changed once people looked behind the stage.\n\n### The call that was not made by AI\n\nSome calls through Muse were not made by AI at all. Trained human contract workers made them. Muse received the request—that part was AI—but then passed the job to a person. The worker made the call and finished the conversation. It was like an AI-led play with a hidden supporting actor. The system was called “human concierges.”\n\nThe hidden role made the simple picture less simple.\n\n### Why the hidden role mattered\n\nMeta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.\n\nNo large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.\n\nA Meta executive admitted that starting the test without a proper explanation was a mistake. Meta then temporarily put the human-call feature back on hold. The company did not stop Muse itself.\n\nIn the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.\n\nEven in an age when AI does our work, a human may still need to help. But that person should not appear secretly. If they step onto the stage, they should give their name first. This case made that simple rule unusually clear.\n\n## In one line\n\nAI may need human help, but humans must say clearly when they take over.",
+          "fallback_used": true,
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "two_of_two_downgraded": true,
+          "two_of_two_second_materiality": "QUALITY",
+          "two_of_two_second_basis": "unsupported_relationship"
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 4,
+      "stage2_two_of_two_log": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "first_materiality": "BLOCKING",
+          "second_materiality": "ACCEPTABLE",
+          "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-010",
+          "first_materiality": "BLOCKING",
+          "second_materiality": "QUALITY",
+          "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-010",
+          "first_materiality": "ACCEPTABLE",
+          "second_materiality": "QUALITY",
+          "two_of_two_result": "DOWNGRADED(1/2 non-blocking)"
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 4,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "false_positive",
+  "call_log": [
+    {
+      "label": "neg7_meta_prodrunner_b1b_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.369,
+      "usage": {
+        "input_tokens": 5472,
+        "cached_input_tokens": 0,
+        "output_tokens": 3610,
+        "reasoning_tokens": 3173
+      },
+      "elapsed_seconds": 34.217,
+      "prompt_sha256": "027c66780d4cb85148011d0e23295047ffe1412026566cf95b6c3d53dece8812"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.4883,
+      "usage": {
+        "input_tokens": 7009,
+        "cached_input_tokens": 0,
+        "output_tokens": 4823,
+        "reasoning_tokens": 4513
+      },
+      "elapsed_seconds": 41.98,
+      "prompt_sha256": "8ec24171c8b12dd1c8f9924d18829979276a3c47e4efe6f4fec48b17a0337b6f"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_c1_2of2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.3089,
+      "usage": {
+        "input_tokens": 6366,
+        "cached_input_tokens": 0,
+        "output_tokens": 2665,
+        "reasoning_tokens": 2588
+      },
+      "elapsed_seconds": 25.267,
+      "prompt_sha256": "20be0819ea8907d98b6bda523693b8eeaa837f0b3bddba51635ac03f14e675ef"
+    }
+  ],
+  "total_cost_jpy": 1.1662,
+  "total_calls": 3,
+  "elapsed_seconds": 101.484
+}
