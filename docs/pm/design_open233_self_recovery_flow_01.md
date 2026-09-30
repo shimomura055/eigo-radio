@@ -2419,6 +2419,55 @@ OPEN-233 Self-Recovery Flow Trial全体(委任_09〜_21、rep7〜rep12)を
 通じて**初めて**局所QA fastpathが実call成功により全文Recheckの省略に
 至った実例である(詳細REPORT§21)。
 
+### 6-11. JA/EN等価チェックgatingの言語判定是正(委任_22 A-1)
+
+**背景(rep12実データで判明したKPI後退)**: 委任_20 W1(ii)は「`ja_en_
+equivalence_verdict`がFAIL/REVIEW_REQUIREDならja_okを無条件でFalseへ
+倒す」方式だった(§6-7参照)。`bgroup_B3`のfixtureは`source_article_
+text`(「JA」側)が実際には英語であり(§6-7で`ja_fail_open_guard`について
+特定したのと同じ構造的限界)、JA↔EN等価チェック自体が両者を比較できず
+`REVIEW_REQUIRED`を返す。rep12実測では、実際の全文Recheckは英語版・JA
+版とも`LEDGER_COMPLIANT`かつ`all_prior_issues_resolved=True`(=ja_ok
+本来True)だったにも関わらず、無条件gatingがja_okを強制Falseへ倒し続けた
+結果、次cycleでblocking_count=0(新規逸脱なし)でも`ja_pending_
+deviation`が解消されず`STAGE4_ESCALATION(ja_deviation_unresolved)`へ
+2/2到達していた(REPORT§21-5(i))。
+
+**是正(¥0、決定論)**: 新設した`resolve_ja_ok_after_equivalence_gating`
+(既存の巨大なインライン処理を純粋関数として抽出、`er052_open233_self_
+recovery_flow_runner_01.py`)で、gating方式を次のとおり整理した。
+
+- `verdict == "FAIL"`(等価チェックが実際に不一致を検出した場合): 従来
+  どおりja_okをFalseへ倒す(次段のRewriteへ、最終的にSTAGE4)。JA側言語
+  判定は行わない(FAILは言語判定に関わらず信頼する)。
+- `verdict == "REVIEW_REQUIRED"`かつ`is_predominantly_ja`で判定した
+  現在のJA側テキストが非JA(indeterminate、等価チェック自体が判定不能):
+  ja_okを強制せず、全文Recheckの実際の判定(`ja_recheck_parsed`由来の
+  ja_ok)をそのまま使う(STAGE4直行を強制しない)。全文Recheck自体は
+  `full_recheck_required`の(h)条件(無変更)により既に維持されている
+  ため、局所QA fastpathへ抜けることはなく安全側は保たれる。
+- `verdict == "REVIEW_REQUIRED"`かつJA側言語が正常(判定可能): 従来
+  どおりgatingする(理由`ja_ok_blocked_by_equivalence`を記録)。
+
+**unittest**: `TestResolveJaOkAfterEquivalenceGating`(6件)。rep12
+`bgroup_B3`実データ(`ja_text_after_rewrite`、既存`REP11_B3_SOURCE_
+ARTICLE_TEXT_AFTER`定数と逐語一致)を使い、is_predominantly_ja=False
+(indeterminate)の場合にja_okがFalseへ倒されないことを確認、rep10
+hormuz実データ(真のJA)でREVIEW_REQUIREDが従来どおりgatingすることを
+regression確認、FAILは言語判定に関わらず常にja_okをFalseへ倒すことを
+確認した。既存202件+新規6件=**計208件全PASS**。
+
+**rep13実測での検証**(REPORT§22-1参照): `bgroup_B3`のみをn=2で2回
+実行(計4 instance-run、¥0.9448)。1回目(Stage2非決定性でmateriality=
+QUALITY、blocking_count=0)は2/2とも`RESOLVED_STAGE2_DOWNGRADE`。2回目
+(Stage2がHF-007をBLOCKINGと判定)は2/2とも`verdict=REVIEW_REQUIRED`・
+`lang_indeterminate=True`・`not_gated_indeterminate_lang=True`となり、
+全文Recheck(EN/JA双方`LEDGER_COMPLIANT`)の実際の判定がそのまま採用され
+`RESOLVED_REWRITE`(ladder_level_used=`1_word_connective`、最小変更を
+維持)で完了した。**4/4 instance-run全てSTAGE4に至らず**(rep12の2/2
+STAGE4から改善)、false PASSでもない(実際のRecheckが真に解消を確認した
+場合のみ通過させる設計どおり)。
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず
@@ -3608,6 +3657,26 @@ rep7証跡への差分なしを確認済み。**Status=
 `REP8_ALL_5_CASES_PASS_HOOK_SEPARATION_CONFIRMED`**(広いiteration7
 Trialは本委任のスコープ外のため未実施、次回委任でのユーザー判断・
 Fable判定待ち)。詳細REPORT§17。
+
+**⑭ 等価QA gating是正+Gate 9項目確認+広いTrial iteration 7(委任_22、
+本書§6-11参照)**: §6-11で新設した`resolve_ja_ok_after_equivalence_
+gating`により、rep12で判明した`bgroup_B3`のKPI後退(JA↔EN等価チェック
+`REVIEW_REQUIRED`の無条件gatingが、JA側言語が実際には非JAで判定不能な
+場合でも実Recheckの「解消」判定を無視してSTAGE4へ追い込んでいた問題)を
+是正した。rep13実測(限定4 instance-run、¥0.9448)で4/4がSTAGE4に至らず
+解消を確認した後、29 instance全量規模の広いTrial iteration 7(9
+instanceはn=2・20 instanceはn=1、計38 instance-run、¥39.5475、
+Guardrail¥45内)を初めて完走した(38/38完走・API error 0・false PASS
+0)。STAGE4到達7件全てで`ja_equivalence_lang_indeterminate=False`
+(genuineな未解消)を確認し、A-1修正による新規regressionが無いことを
+確認した。不要Rewrite率はiter6(sample1、44.44%)からiteration7
+(21.43%)へ改善した一方、**全量規模で初めて⑥(全体Rewrite/削除)使用
+7件・worst instance cost¥8.9545(`safety_A4`、iter6の¥5.7883から悪化)
+という新たなtail riskが判明した**ことを正直に報告する(⑦は全件
+STAGE4で正しくfail-closedしており、false PASSではない)。**Status=
+`A1_EQUIVALENCE_GATING_FIXED_REP13_4_OF_4_NO_STAGE4_ITER7_38_OF_38_
+COMPLETE_FALSE_PASS_ZERO_WORST_COST_TAIL_RISK_INCREASED`**。詳細
+REPORT§22。
 
 ## 10. リスク
 

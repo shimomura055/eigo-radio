@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>OPEN-233 Self-Recovery Flow iteration6 - Rewrite 修正前後比較</title>
+<style>
+body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+       max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #222; }
+h1 { font-size: 1.5em; }
+h2 { margin-top: 2.5em; border-bottom: 3px solid #444; padding-bottom: 4px; }
+.meta { color: #555; font-size: 0.92em; margin-bottom: 1em; }
+.note { background: #f4f4f4; border-left: 4px solid #888; padding: 8px 12px; margin: 12px 0; }
+table.diff-table { width: 100%; border-collapse: collapse; margin: 12px 0 24px 0; font-size: 0.92em; }
+table.diff-table th, table.diff-table td { border: 1px solid #ccc; padding: 8px; vertical-align: top; width: 50%; }
+table.diff-table th { background: #333; color: #fff; }
+tr.diff-equal td { background: #fff; color: #666; }
+tr.diff-replace td { background: #fff3cd; }
+tr.diff-delete td { background: #f8d7da; }
+tr.diff-insert td { background: #d4edda; }
+.claims-box { background: #eef3fb; border: 1px solid #b6c9e3; padding: 10px 14px; margin: 10px 0; border-radius: 4px; }
+.claims-box .claim { margin-bottom: 10px; }
+.claims-box .label { font-weight: bold; }
+.metrics-table { border-collapse: collapse; margin: 8px 0 16px 0; font-size: 0.9em; }
+.metrics-table td, .metrics-table th { border: 1px solid #ccc; padding: 4px 10px; }
+.checklist label { display: block; margin: 4px 0; }
+.checklist input { margin-right: 8px; }
+.top-note { background: #fff8e1; border: 1px solid #e0c46c; padding: 12px 16px; margin-bottom: 24px; }
+.iter-link { background: #eef; border: 1px solid #99c; padding: 8px 12px; margin-bottom: 12px; }
+footer { margin-top: 3em; color: #888; font-size: 0.85em; }
+</style>
+</head>
+<body>
+<h1>OPEN-233 Self-Recovery Flow iteration6 - Rewrite 修正前後比較</h1>
+<div class="iter-link"><a href="index_iter5.html">iteration5版のページはこちら(旧版、保存のまま残しています)</a>
+/ <a href="index_iter4.html">iteration4版のページはこちら(旧版、保存のまま残しています)</a></div>
+<div class="top-note">
+<p><strong>これは何か</strong>: Eigo Radioの記事生成パイプラインで、AIチェッカー
+(Deviation Check)がLedger(検証済み事実台帳)と矛盾する・根拠のない具体的事実を
+発明していると判定した文章を、AIが自動的に書き直した(Rewrite)実例です。
+書き直し前(Before)と書き直し後(After)を並べて表示しています。</p>
+<p>このページは、OPEN-233-SELF-RECOVERY-TRIAL-01(Self-Recovery Flow Trial)
+iteration6(委任_14、n=2実行のsample1)の実測結果からの抜粋です。Production
+(本番)記事の生成経路には未接続のTrial実装であり、この結果を見てユーザーが
+「この自動修正の品質は妥当か」を確認するためのページです。iteration5からの
+変更点: (1)数値の通常の四捨五入は別数値として扱わない(丸め許容)、
+(2)floor-strict/floor-cited variantの並行測定、(3)最小変更ラダー
+(単語・接続詞→1文→段落→全文の順に試し、前段で直れば後段へ進まない、
+J-1[JA/EN対訳ペア]は既知の限界として未適用)、(4)Title/Hook/In one lineの
+役割維持検出、(5)Hook-aware統合(changed_scope単独発火のみ緩和、
+changed_comparisonはfloor安全装置のため対象外)、(6)記事単位コスト5分割
+計測。</p>
+</div>
+<h2>neg1_meta_b3prod_a2 &mdash; negative候補7(正常記事、Standardレベル、Meta hook実例)</h2>
+<div class="meta">レベル: Standard / 最終状態: STAGE4_ESCALATION / 総コスト: ¥2.6857 / 総call数: 13</div>
+<div class="note">2026-09-30ユーザー新方針item2で「Rewrite不要だった可能性が高い」と指摘されたMeta hook実例(&quot;Ring, ring. A call seemed to come from an AI agent...&quot;)。監査(docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md §A-1-3)の結論どおり、実際のflag(changed_fact/changed_certainty/unsupported_new_claim)はHook-aware緩和対象(changed_scope単独)の範囲外であり、本委任の実装ではBLOCKING判定・Rewrite実施は変わらない(iteration6でも継続してRewriteされている)。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (3件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=unsupported_relationship / rewrite_kind=narrow_scope / section_type=hook / floor_cited=なし</div><div>対象claim: 「“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”」</div><div>修正方針(rewrite_hint): “A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.” Narrow the claim to say that trained human contractors handled some calls made through Muse in a test; do not assert that a recipient thought the call was from AI or was surprised. Ledger fact: MUSE-HC-006.</div></div>
+<div class="claim"><div>cycle2 / basis=ledger_claim / rewrite_kind=narrow_scope / section_type=title / floor_cited=なし</div><div>対象claim: 「“Meta had run a test that caused exactly this surprise,” reinforced by the headline “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”」</div><div>修正方針(rewrite_hint): 引用：「AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開」受け手がAIだと思っていた、または実際に驚いたという認識は確認されていないため、その含意を外し、「Muse経由の一部の電話を人間の契約スタッフが担当したテスト」に範囲を狭めてください。参照: MUSE-HC-006。</div></div>
+<div class="claim"><div>cycle3 / basis=ledger_claim / rewrite_kind=replace_with_ledger_value / section_type=title / floor_cited=なし</div><div>対象claim: 「Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”」</div><div>修正方針(rewrite_hint): 対象文の逐語引用: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.” 実際に利用者がAIだと思っていたという事実はLedgerで確認されていないため、その認識を断定する部分を削り、確認済みの範囲に合わせて「In a test, trained human contractors handled some calls made through Muse.」へ置き換えてください。参照Fact: MUSE-HC-006</div></div>
+</div>
+<div class="note"><strong>最小変更ラダー(委任_14 B-3)の停止水準</strong>: cycle1:3_sentence(single_text_local(E-2/delete-generic)) / cycle2:1_word_connective(single_text_local(E-2/delete-generic))</div>
+<div class="note"><strong>品質劣化検出v2/セクション役割違反の所見</strong>: cycle1品質劣化v2: vocab_difficulty_increased_fragment(sentence_len+3.33,difficult_ratio+0.0448) (再生成実施=True)</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>35</td><td>33</td></tr><tr><td>段落数</td><td>18</td><td>18</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>6</td><td>5</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-equal"><td># We Thought It Was AI—But There Was a Person Inside Meta’s Muse</td><td># We Thought It Was AI—But There Was a Person Inside Meta’s Muse</td></tr>
+<tr class="diff-replace"><td>Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.<br><br>Meta had run a test that caused exactly this surprise.</td><td>Ring, ring. In a test, trained human contractors handled some calls made through Muse.<br><br>Meta had run a test.</td></tr>
+<tr class="diff-equal"><td>The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.</td><td>The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.</td></tr>
+<tr class="diff-equal"><td>It was like someone took off an AI costume. Then a person stepped out.</td><td>It was like someone took off an AI costume. Then a person stepped out.</td></tr>
+<tr class="diff-equal"><td>Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.</td><td>Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.</td></tr>
+<tr class="diff-equal"><td>But this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.</td><td>But this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.</td></tr>
+<tr class="diff-equal"><td>It is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.</td><td>It is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.</td></tr>
+<tr class="diff-equal"><td>### The hidden person behind the AI sign</td><td>### The hidden person behind the AI sign</td></tr>
+<tr class="diff-equal"><td>Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.</td><td>Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.</td></tr>
+<tr class="diff-equal"><td>AI had not learned to speak like a human. A human stood behind the sign that said AI.</td><td>AI had not learned to speak like a human. A human stood behind the sign that said AI.</td></tr>
+<tr class="diff-equal"><td>It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?</td><td>It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?</td></tr>
+<tr class="diff-equal"><td>As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.</td><td>As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.</td></tr>
+<tr class="diff-equal"><td>### Meta admits a mistake</td><td>### Meta admits a mistake</td></tr>
+<tr class="diff-equal"><td>A Meta executive admitted the mistake. The test had begun without clearly telling users.</td><td>A Meta executive admitted the mistake. The test had begun without clearly telling users.</td></tr>
+<tr class="diff-equal"><td>For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.</td><td>For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.</td></tr>
+<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
+<tr class="diff-equal"><td>Before AI speaks for us, we need to know whether the voice belongs to AI or a person.</td><td>Before AI speaks for us, we need to know whether the voice belongs to AI or a person.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
+</div>
+<h2>bgroup_B3 &mdash; B群(政策決定理由の取り違え、2026-09-30ユーザー新方針item4のB3因果実例)</h2>
+<div class="meta">レベル: B3 fixture / 最終状態: RESOLVED_REWRITE / 総コスト: ¥0.6295 / 総call数: 5</div>
+<div class="note">Ledger conditionsが「中東指導者との協議に基づく決定」と明記するのに、記事が「懸念継続so撤回」と逆方向の因果を述べていた、genuine BLOCKING(§7-0-iter5で変更なしを維持)。ユーザー指示item4は「まずso→while/meanwhile相当の最小変更で解消を試す」だったが、本claimはJA→EN対訳ペア(origin=ja_source)のためpaired J-1経路(最小変更ラダー未適用、既知の限界)でRewriteされており、段落単位の書き換えのままとなっている(達成できなかった点として正直に報告)。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (1件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=unsupported_relationship / rewrite_kind=narrow_scope / section_type=in_one_line / floor_cited=なし</div><div>対象claim: 「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.」</div><div>修正方針(rewrite_hint): 引用: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage”。「so」が継続する懸念を20％案の撤回理由として結び付けているため、因果を外して別々の事実として記述してください。撤回・置換について理由に触れる場合は、トランプ氏が中東指導者との「非常に生産的な協議」に基づく決定だと説明した範囲にしてください。参照: HF-007。</div></div>
+</div>
+<div class="note"><strong>最小変更ラダー(委任_14 B-3)の停止水準</strong>: cycle1:paired_j1_not_laddered(paired_ja_en(J-1))</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>23</td><td>23</td></tr><tr><td>段落数</td><td>12</td><td>12</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>0</td><td>0</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-equal"><td># 20% Withdrawn—but the Oil Chart Was Not Finished Yet</td><td># 20% Withdrawn—but the Oil Chart Was Not Finished Yet</td></tr>
+<tr class="diff-equal"><td>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.</td><td>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.</td></tr>
+<tr class="diff-equal"><td>The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.</td><td>The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.</td></tr>
+<tr class="diff-equal"><td>But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.</td><td>But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.</td></tr>
+<tr class="diff-equal"><td>The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td>The number stayed at center stage for about a day. Then the story took a sharp turn.</td></tr>
+<tr class="diff-equal"><td>### The 20% plan changes overnight</td><td>### The 20% plan changes overnight</td></tr>
+<tr class="diff-equal"><td>The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.</td><td>The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.</td></tr>
+<tr class="diff-equal"><td>The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</td><td>The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</td></tr>
+<tr class="diff-equal"><td>### The chart refuses to stay down</td><td>### The chart refuses to stay down</td></tr>
+<tr class="diff-equal"><td>On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.</td><td>On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.</td></tr>
+<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
+<tr class="diff-replace"><td>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
+</div>
+<h2>hormuz_run02_advanced &mdash; 実run(現行Production STOP実例、Advancedレベル)</h2>
+<div class="meta">レベル: Advanced / 最終状態: ACCEPTABLE_STAGE1 / 総コスト: ¥0.22 / 総call数: 1</div>
+<div class="note">現行Productionで実際にJA_RECHECK_REQUIRED STOPとなった記事そのもの。iteration6でもRewrite解消するかを確認する。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (0件)と修正方針</div>
+</div>
+<p>(この instance には保存済みのRewrite前後全文が無い、または前後で変化がなかったため、差分表示を省略します。)</p>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
+</div>
+<h2>neg2_meta_refresh_a2 &mdash; negative候補7(正常記事、Standardレベル)</h2>
+<div class="meta">レベル: Standard / 最終状態: RESOLVED_REWRITE / 総コスト: ¥1.3339 / 総call数: 7</div>
+<div class="note">iteration4/5でRewrite後もSTAGE4(unconfirmed_after_reverify)に至ったことがある実例。iteration6(丸め許容・floor-cited・最小変更ラダー・セクション役割維持・Hook-aware統合)でどう変わったかを確認する。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (1件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=ledger_claim / rewrite_kind=narrow_scope / section_type=body / floor_cited=なし</div><div>対象claim: 「“They enjoyed the ease of AI. But they did not know that a human was on the other end.”」</div><div>修正方針(rewrite_hint): Quote: “They enjoyed the ease of AI. But they did not know that a human was on the other end.” Remove the assertion that users actually did not know; limit the claim to Meta’s acknowledgment that the test began without appropriate disclosure. Ledger fact: MUSE-HC-012.</div></div>
+</div>
+<div class="note"><strong>最小変更ラダー(委任_14 B-3)の停止水準</strong>: cycle1:1_word_connective(single_text_local(E-2/delete-generic))</div>
+<div class="note"><strong>品質劣化検出v2/セクション役割違反の所見</strong>: cycle1品質劣化v2: vocab_difficulty_increased_fragment(sentence_len+3.5,difficult_ratio+0.1538) (再生成実施=True)</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>32</td><td>31</td></tr><tr><td>段落数</td><td>11</td><td>11</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>5</td><td>5</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-equal"><td># Some AI Phone Calls Had Humans Behind the Scenes</td><td># Some AI Phone Calls Had Humans Behind the Scenes</td></tr>
+<tr class="diff-equal"><td>There was a small twist. A service let people ask AI to make phone calls. But humans were making some calls behind the scenes. This was part of a test.</td><td>There was a small twist. A service let people ask AI to make phone calls. But humans were making some calls behind the scenes. This was part of a test.</td></tr>
+<tr class="diff-equal"><td>The main service was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts, check if items are in stock, and ask for price estimates. If AI can handle difficult phone calls, it seems very useful.</td><td>The main service was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts, check if items are in stock, and ask for price estimates. If AI can handle difficult phone calls, it seems very useful.</td></tr>
+<tr class="diff-equal"><td>But in some tests of its calling feature, trained human contract workers made the calls instead of AI. They spoke with people until each conversation ended.</td><td>But in some tests of its calling feature, trained human contract workers made the calls instead of AI. They spoke with people until each conversation ended.</td></tr>
+<tr class="diff-equal"><td>The problem was not that humans made the calls. The problem was how users were told who was speaking.</td><td>The problem was not that humans made the calls. The problem was how users were told who was speaking.</td></tr>
+<tr class="diff-replace"><td>People who asked Muse to make a call might think AI was doing it. But sometimes, a human was speaking instead. If this was not explained clearly, users could not know if it was AI or a person. They enjoyed the ease of AI. But they did not know that a human was on the other end. This was happening behind the scenes.</td><td>People who asked Muse to make a call might think AI was doing it. But sometimes, a human was speaking instead. If this was not explained clearly, users could not know if it was AI or a person. Meta said the test began without proper disclosure. This was happening behind the scenes.</td></tr>
+<tr class="diff-equal"><td>Also, a call might need user information to continue. That information might then be shared by mistake with contract workers at a call center. Meta employees raised this inside the company as a privacy concern.</td><td>Also, a call might need user information to continue. That information might then be shared by mistake with contract workers at a call center. Meta employees raised this inside the company as a privacy concern.</td></tr>
+<tr class="diff-equal"><td>News reports also quoted a report from an employee. It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees. However, this is only one report. It would be wrong to say this about all contract workers.</td><td>News reports also quoted a report from an employee. It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees. However, this is only one report. It would be wrong to say this about all contract workers.</td></tr>
+<tr class="diff-equal"><td>A Meta executive admitted that starting the test without explaining it clearly was a mistake. The company also changed the human concierge feature back to how it was before, at least for now.</td><td>A Meta executive admitted that starting the test without explaining it clearly was a mistake. The company also changed the human concierge feature back to how it was before, at least for now.</td></tr>
+<tr class="diff-equal"><td>The real challenge for AI phone calls is not only how they speak. It is also whether they can honestly tell people who is on the other end. The more useful a service is, the less it should hide the people working behind the scenes. The Muse case showed this simple but important point.</td><td>The real challenge for AI phone calls is not only how they speak. It is also whether they can honestly tell people who is on the other end. The more useful a service is, the less it should hide the people working behind the scenes. The Muse case showed this simple but important point.</td></tr>
+<tr class="diff-equal"><td>## In one line<br>Some calls through Meta’s AI assistant were handled by humans, but users were not properly told.</td><td>## In one line<br>Some calls through Meta’s AI assistant were handled by humans, but users were not properly told.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
+</div>
+<footer>
+生成元: er052_open233_self_recovery_rewrite_compare_page_iter6_01.py (API呼び出し
+なし、既存iteration6証跡json[er052_output/open233_self_recovery_flow_runner_01_
+iter6/instances_s1/]の読み直しのみ)。管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01
+(委任_14)。
+</footer>
+</body>
+</html>

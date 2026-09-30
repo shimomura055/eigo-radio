@@ -2408,5 +2408,71 @@ class TestFindSentenceContextMultiSentenceNeedle(unittest.TestCase):
         self.assertIsNone(located)
 
 
+# ============================================================
+# 委任_22 A-1: JA/EN等価チェックgatingの言語判定是正。`REP11_B3_SOURCE_
+# ARTICLE_TEXT_AFTER`(既存定数、上のTestJaFailOpenGuardLanguageAware
+# セクションで定義済み)はrep12 `bgroup_B3` cycle1の`ja_text_after_rewrite`
+# と逐語一致する(reuse fixtureのため同一instanceはrep11・rep12で同文言)。
+# rep12実データでは、このcycleの全文Recheck・JA Recheckは双方とも
+# `LEDGER_COMPLIANT`かつ`all_prior_issues_resolved=True`(=ja_ok本来True)
+# だったが、`ja_en_equivalence_verdict=REVIEW_REQUIRED`の無条件gatingに
+# より`ja_ok`がFalseへ強制され、次cycle(blocking_count=0)でも
+# `ja_pending_deviation`が残り`STAGE4_ESCALATION(ja_deviation_unresolved)`
+# へ2/2到達していた(`er052_output/open233_self_recovery_flow_runner_01_
+# rep12/instances_s1/bgroup_B3.json`)。
+# ============================================================
+class TestResolveJaOkAfterEquivalenceGating(unittest.TestCase):
+    def test_review_required_with_indeterminate_lang_does_not_block_rep12_b3(self):
+        # rep12 bgroup_B3実データ: ja_ok本来True、verdict=REVIEW_REQUIRED、
+        # JA側フィールドが実際には英語(indeterminate)。gatingで強制的に
+        # Falseへ倒されない(=STAGE4直行を強制しない)ことを確認する。
+        result = runner.resolve_ja_ok_after_equivalence_gating(
+            True, "REVIEW_REQUIRED", REP11_B3_SOURCE_ARTICLE_TEXT_AFTER)
+        self.assertTrue(result["ja_ok"])
+        self.assertTrue(result["lang_indeterminate"])
+        self.assertTrue(result["not_gated_indeterminate_lang"])
+        self.assertFalse(result["blocked_by_equivalence"])
+
+    def test_review_required_with_normal_ja_lang_still_gates(self):
+        # 真のJAテキスト(rep10 hormuz実データ)の場合は、REVIEW_REQUIREDの
+        # 無条件gating(従来どおり)を維持する(regression確認)。
+        result = runner.resolve_ja_ok_after_equivalence_gating(
+            True, "REVIEW_REQUIRED", REP10_JA_TEXT_AFTER_REWRITE)
+        self.assertFalse(result["ja_ok"])
+        self.assertFalse(result["lang_indeterminate"])
+        self.assertTrue(result["blocked_by_equivalence"])
+        self.assertFalse(result["not_gated_indeterminate_lang"])
+
+    def test_fail_verdict_always_blocks_even_with_indeterminate_lang(self):
+        # FAIL(等価チェックが実際に不一致を検出)は、JA側言語判定に関わらず
+        # 従来どおりja_okをFalseへ倒す(次段のRewriteへ、最終的にSTAGE4)。
+        result = runner.resolve_ja_ok_after_equivalence_gating(
+            True, "FAIL", REP11_B3_SOURCE_ARTICLE_TEXT_AFTER)
+        self.assertFalse(result["ja_ok"])
+        self.assertTrue(result["blocked_by_equivalence"])
+        self.assertIsNone(result["lang_indeterminate"])
+
+    def test_pass_verdict_does_not_change_ja_ok(self):
+        result = runner.resolve_ja_ok_after_equivalence_gating(True, "PASS", REP10_JA_TEXT_AFTER_REWRITE)
+        self.assertTrue(result["ja_ok"])
+        self.assertFalse(result["blocked_by_equivalence"])
+        self.assertFalse(result["not_gated_indeterminate_lang"])
+
+    def test_none_verdict_does_not_change_ja_ok(self):
+        result = runner.resolve_ja_ok_after_equivalence_gating(True, None, None)
+        self.assertTrue(result["ja_ok"])
+        self.assertFalse(result["blocked_by_equivalence"])
+
+    def test_already_false_ja_ok_stays_false_and_not_double_flagged(self):
+        # 全文Recheck自体が既にja_ok=Falseと判定していた場合(通常経路)、
+        # gatingは追加で状態を変えない(blocked_by_equivalenceは新規に
+        # このgatingがFalseへ倒した場合のみTrueにする、既に別理由でFalseの
+        # 場合はフラグを立てない)。
+        result = runner.resolve_ja_ok_after_equivalence_gating(
+            False, "REVIEW_REQUIRED", REP10_JA_TEXT_AFTER_REWRITE)
+        self.assertFalse(result["ja_ok"])
+        self.assertFalse(result["blocked_by_equivalence"])
+
+
 if __name__ == "__main__":
     unittest.main()

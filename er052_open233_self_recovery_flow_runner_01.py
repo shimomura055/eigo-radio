@@ -161,9 +161,18 @@ OUT_DIR_REP11 = "er052_output/open233_self_recovery_flow_runner_01_rep11"
 # 限定4 instanceのみをn=2で再実行する(委任文§2 B、広いTrialはスコープ外)。
 # 出力は新規ディレクトリ(`_rep12`)へ書く。
 OUT_DIR_REP12 = "er052_output/open233_self_recovery_flow_runner_01_rep12"
-OUT_DIR = OUT_DIR_REP12
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233y_21.json"
-TOTAL_BUDGET_JPY = 8.0  # 委任_21 Guardrail(委任文§0「rep12 ≤¥8」)
+# 委任_22(2026-10-01、bgroup_B3の等価QA gating是正+Gate 9項目確認+広い
+# Trial iteration 7): 既存iteration1〜6・rep7〜rep12の出力(OUT_DIR_
+# ITER1〜6/OUT_DIR_REP7〜12)は変更しない。Part A(A-1是正、
+# `resolve_ja_ok_after_equivalence_gating`新設)の再確認として`bgroup_B3`
+# のみをn=2で再実行する(委任文§1 A-2、出力は新規ディレクトリ`_rep13`)。
+OUT_DIR_REP13 = "er052_output/open233_self_recovery_flow_runner_01_rep13"
+# Part B(委任文§2、広いTrial iteration 7、29 instance)の出力は別ディレクト
+# リ(`_iter7`)へ書く。
+OUT_DIR_ITER7 = "er052_output/open233_self_recovery_flow_runner_01_iter7"
+OUT_DIR = OUT_DIR_ITER7
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233z_22_repB.json"
+TOTAL_BUDGET_JPY = 45.0  # 委任_22 Guardrail(委任文§0「Part B ≤¥45」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -2664,6 +2673,49 @@ def full_recheck_required(rewrite_records: list, blocking_claims: list, instance
     return bool(reasons), reasons
 
 
+def resolve_ja_ok_after_equivalence_gating(ja_ok: bool, ja_equivalence_verdict: str | None,
+                                            current_ja_text: str | None) -> dict:
+    """委任_22 A-1是正(rep12 `bgroup_B3`実データで判明したKPI後退): 全文
+    Recheckが実際に判定したja_ok(引数、`ja_recheck_parsed`由来)を、JA/EN
+    等価チェックの結果(`ja_en_equivalence_verdict`)でさらにgatingするか
+    どうかを決定する(¥0、決定論)。
+
+    委任_20 W1(ii)は「FAIL/REVIEW_REQUIREDならja_okを無条件でFalseへ倒す」
+    方式だった。`bgroup_B3`のfixtureは`source_article_text`(「JA」側)が
+    実際には英語であり(委任_21 A-1で`ja_fail_open_guard`について特定した
+    のと同じ構造的限界)、JA↔EN等価チェック自体が両者を比較できず
+    `REVIEW_REQUIRED`を返す。実際の全文Recheckは英語版・JA版とも
+    `LEDGER_COMPLIANT`かつ`all_prior_issues_resolved=True`だったにも
+    関わらず、無条件gatingがja_okを強制Falseへ倒し続けた結果、次cycleで
+    blocking_count=0(新規逸脱なし)でも`ja_pending_deviation`が解消されず
+    `STAGE4_ESCALATION(ja_deviation_unresolved)`へ強制到達していた
+    (2/2、rep12)。
+
+    是正後の方式: `FAIL`(等価チェックが実際に不一致を検出した場合)は
+    従来どおりja_okをFalseへ倒す(次段のRewriteへ、最終的にSTAGE4)。
+    `REVIEW_REQUIRED`かつ`is_predominantly_ja`で判定したJA側言語が非JA
+    (indeterminate、等価チェック自体が判定不能)の場合は、ja_okを強制せず
+    全文Recheckの実際の判定をそのまま使う(STAGE4直行を強制しない、
+    `full_recheck_required`の(h)条件により全文Recheck自体は既に維持
+    されているため安全側は保たれる)。`REVIEW_REQUIRED`かつJA側言語が
+    正常(判定可能)の場合は従来どおりgatingする(理由を記録)。"""
+    result = {"ja_ok": ja_ok, "blocked_by_equivalence": False, "lang_indeterminate": None,
+              "not_gated_indeterminate_lang": False}
+    if ja_equivalence_verdict == "FAIL":
+        if ja_ok:
+            result["ja_ok"] = False
+            result["blocked_by_equivalence"] = True
+    elif ja_equivalence_verdict == "REVIEW_REQUIRED":
+        lang_indeterminate = (not is_predominantly_ja(current_ja_text)) if current_ja_text else None
+        result["lang_indeterminate"] = lang_indeterminate
+        if lang_indeterminate:
+            result["not_gated_indeterminate_lang"] = True
+        elif ja_ok:
+            result["ja_ok"] = False
+            result["blocked_by_equivalence"] = True
+    return result
+
+
 def ja_fail_open_guard(ja_text_before: str, ja_text_after: str, blocking_claims: list) -> dict:
     """委任_20 W1(iii)(Opus L2レビュー#4 §0/Q1(b)提案): ¥0・決定論の
     JA fail-openガード。paired rewrite(J-1)でJA本文がこのcycleで変化した
@@ -3668,11 +3720,18 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
         # 委任_20 W1(ii)(Opus L2レビュー#4 §0/Q1(b)推奨): 従来は測定専用
         # だったja_en_equivalence_verdictを、paired rewrite使用cycleに限り
-        # gating化する(FAIL/REVIEW_REQUIREDならja_okをFalseへ倒す)。
+        # gating化する。委任_22 A-1でgating方式を整理した
+        # (`resolve_ja_ok_after_equivalence_gating`、詳細はそちらの
+        # docstring参照)。
         ja_equivalence_verdict = cycle_record.get("ja_en_equivalence_verdict")
-        if ja_ok and ja_equivalence_verdict not in (None, "PASS"):
-            ja_ok = False
+        gating_result = resolve_ja_ok_after_equivalence_gating(ja_ok, ja_equivalence_verdict, current_ja_text)
+        ja_ok = gating_result["ja_ok"]
+        if gating_result["lang_indeterminate"] is not None:
+            cycle_record["ja_equivalence_lang_indeterminate"] = gating_result["lang_indeterminate"]
+        if gating_result["blocked_by_equivalence"]:
             cycle_record["ja_ok_blocked_by_equivalence"] = True
+        if gating_result["not_gated_indeterminate_lang"]:
+            cycle_record["ja_equivalence_review_required_not_gated_indeterminate_lang"] = True
         # 委任_20 W1(iii): JA fail-openガード不通過はja_okをFalseへ倒す
         # (全文Recheckがself-contradictionなく「解消」を返した場合でも、
         # ¥0決定論ガードが指摘JA文の逐語残存/対象段落外JA文消失を検出した

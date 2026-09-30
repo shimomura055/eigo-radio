@@ -14996,3 +14996,79 @@ FALSE_PASS_ZERO_LOCAL_QA_FIRST_SUCCESS`。詳細:
 `docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_21.md`、
 `er052_open233_self_recovery_flow_runner_01.py`(+test)、
 `er052_output/open233_self_recovery_flow_runner_01_rep12/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: bgroup_B3の等価QA gating是正+Gate 9項目
+確認+広いTrial iteration 7(委任_22、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_22: bgroup_B3の等価QA gating
+是正[¥0+再確認≤¥1]→ Gate 9項目確認 → 広いTrial iteration 7。Phase 2は
+含めない)。
+
+**背景**: rep12(委任_21)実測で、`bgroup_B3`が2/2 STAGE4_ESCALATIONへ回って
+いた。調査の結果、fixtureの`source_article_text`(「JA」側)が実際には
+英語であり、JA↔EN等価チェック(`ja_en_equivalence_verdict`)自体が両者を
+比較できず`REVIEW_REQUIRED`を返していた。委任_20 W1(ii)の「FAIL/
+REVIEW_REQUIREDなら無条件でja_okをFalseへ倒す」gating方式は、実際の
+全文Recheckが英語版・JA版とも`LEDGER_COMPLIANT`かつ全解消済みと判定して
+いたにも関わらずja_okを強制Falseへ倒し続け、次cycleでblocking_count=0
+でも`ja_pending_deviation`が解消されず`STAGE4_ESCALATION(ja_deviation_
+unresolved)`へ誤って強制到達させていた。
+
+**A-1是正(¥0)**: `resolve_ja_ok_after_equivalence_gating`(新設、既存の
+巨大なインライン処理を純粋関数として抽出)で、gating方式を整理した:
+`verdict=="FAIL"`(実際に不一致検出)は従来どおりja_okをFalseへ倒す。
+`verdict=="REVIEW_REQUIRED"`かつ`is_predominantly_ja`で判定したJA側
+言語がindeterminate(実際には非JA)の場合は、ja_okを強制せず全文Recheck
+の実際の判定をそのまま使う(STAGE4直行を強制しない、`full_recheck_
+required`条件(h)により全文Recheck自体は既に維持されているため安全側は
+保たれる)。`verdict=="REVIEW_REQUIRED"`かつJA側言語が正常な場合は従来
+どおりgatingする。unittest新規6件(`TestResolveJaOkAfterEquivalenceGating`)
++既存202件=**計208件全PASS**。
+
+**rep13実測**(`bgroup_B3`のみ×n=2を2回、Guardrail¥1、実測¥0.9448):
+1回目(Stage2非決定性でQUALITY判定、等価チェック不発火)は2/2
+RESOLVED_STAGE2_DOWNGRADE。2回目(Stage2がBLOCKING判定)は2/2とも
+`verdict=REVIEW_REQUIRED`・`lang_indeterminate=True`となり、全文Recheck
+の実際の判定(EN/JA双方LEDGER_COMPLIANT)がそのまま採用されRESOLVED_
+REWRITE(ladder=1_word_connective、最小変更)で解消。**4/4 instance-run
+全てSTAGE4に至らず**(rep12の2/2 STAGE4から改善)、false PASSでもない
+(実Recheckが真に解消を確認した場合のみ通過)。
+
+**Gate 9項目充足表**(Evidence列挙、判定はFableへ委ねる): 9項目全てに
+Evidence記載完了(STOP非該当)。項目2(⑥使用)・項目9(平均コスト)は、
+後続の広いTrialで従来の小規模subset時点より悪化した数値が判明した
+(下記)。
+
+**広いTrial iteration 7**(29 instance全量、9 instanceはn=2・20 instance
+はn=1、計38 instance-run、Guardrail¥45、実測¥39.5475、call207、
+error0): **38/38完走・false PASS 0件**。Safety hard gate通過
+(`false_negative_candidates_safety_group=0`)。STAGE4到達7件
+(`ja_deviation_unresolved`6+`cycle_limit_exhausted_after_recheck`1)
+全件で`ja_equivalence_lang_indeterminate=False`(genuineな未解消)を
+確認し、A-1修正による新規regressionが無いことを確認した。不要Rewrite率
+はiter6(sample1、44.44%)から**21.43%(3/14)へ改善**した一方、**全量
+規模で初めて⑥(全体Rewrite/削除)使用7件(`safety_A2A3`×2・`safety_A4`
+×4・`bgroup_B4`×1、iter6は1件)・worst instance cost¥8.9545(`safety_
+A4`、iter6の¥5.7883から悪化)という新たなtail riskが判明した**(⑦は
+全件STAGE4で正しくfail-closedしており、false PASSではない)。
+`meta_run03_advanced`は今回もblocking_count=0でA-1機構の実run検証機会を
+得られなかった。読み比べページ更新(iter6版は`index_iter6.html`として
+保持): `https://shimomura055.github.io/eigo-radio/user_test/
+open233_rewrite_compare_01/index.html`。
+
+**USER_DECISION_REQUIRED非該当**(6条件いずれも該当せず。⑥使用増加・
+worst cost悪化・`safety_A4`の既知ハードケース残存・`meta_run03_advanced`
+未検証・不要Rewrite根本解消未達はFable/ユーザーへの判断材料として提示)。
+
+費用: A-1実装¥0+rep13¥0.9448+iteration7¥39.5475=本委任合計
+**¥40.4923**(Part A Guardrail¥1内・Part B Guardrail¥45内)。Phase累計
+¥340.2662+¥40.4923=**¥380.7585**/総枠¥500、残**¥119.2415**。
+Status=`A1_EQUIVALENCE_GATING_FIXED_REP13_4_OF_4_NO_STAGE4_ITER7_38_OF_
+38_COMPLETE_FALSE_PASS_ZERO_WORST_COST_TAIL_RISK_INCREASED`。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§6-11/§9-1⑭、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§22、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-TRIAL-01_22.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_open233_self_recovery_rewrite_compare_page_iter7_01.py`、
+`er052_output/open233_self_recovery_flow_runner_01_rep13/`、
+`er052_output/open233_self_recovery_flow_runner_01_iter7/`。

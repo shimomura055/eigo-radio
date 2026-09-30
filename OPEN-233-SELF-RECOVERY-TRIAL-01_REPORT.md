@@ -1708,3 +1708,111 @@ rep11の`hormuz_run03_standard`force fresh Stage1はACCEPTABLE_STAGE1(recall mis
 **USER_DECISION_REQUIRED 6条件該当有無**: 非該当(neg1のdisputed判定[§21-3]・rubric tie-break文言明確化の要否・Stage1非決定性[§21-4]はFable/ユーザーへの判断材料として提示するが、いずれもSTOP/UDR条件そのものには該当しない)。
 
 **Status**: `A1_A2_FIXED_A3_ANALYZED_REP12_8_OF_8_COMPLETE_FALSE_PASS_ZERO_LOCAL_QA_FIRST_SUCCESS`(rep11で判明した3欠陥のうちA-1[JAガード誤発火]・A-2[局所QA locate]をコード修正、A-3[neg1]をコード変更なしで分析完了。rep12実行で局所QA fastpathの実call成功を初めて実測し全文Recheck省略を確認。false PASS 0/8[rep11から2回連続]。29 instance全量の広いTrial着手はFable/ユーザー判断待ち)。
+
+## §22. bgroup_B3の等価QA gating是正+Gate 9項目確認+広いTrial iteration 7(委任_22、2026-10-01)
+
+### 22-0. 対応表(委任文§1〜§4)
+
+| # | 項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| A-1 | `bgroup_B3`の等価QA gating誤判定 | `resolve_ja_ok_after_equivalence_gating`(新設、¥0決定論)で、`FAIL`は従来どおりja_okをFalseへ倒し、`REVIEW_REQUIRED`かつJA側言語がindeterminate(`is_predominantly_ja`で判定)の場合はja_okを強制せず全文Recheckの実際の判定を採用、`REVIEW_REQUIRED`かつ言語正常なら従来どおりgatingするよう整理 | §22-1、design書§6-11 |
+| A-2 | rep13実測(限定、bgroup_B3のみ×n=2を2回、Guardrail¥1) | 実測¥0.9448(4 instance-run)、**4/4 STAGE4に至らず**(rep12の2/2 STAGE4から改善) | §22-2 |
+| A-3 | Gate 9項目充足表 | Evidence列挙形式で作成(判定はFableへ委ねる) | §22-3 |
+| B | 広いTrial iteration 7(29 instance全量、9 instanceはn=2/20 instanceはn=1、計38 instance-run) | 実測¥39.5475(Guardrail¥45内)、API error 0件、false PASS 0件 | §22-4〜§22-8 |
+
+### 22-1. A-1是正内容
+
+design書§6-11を参照。既存の巨大なインライン処理(`run_instance`内、委任_20 W1(ii)由来)を純粋関数`resolve_ja_ok_after_equivalence_gating`として抽出し、gating方式を整理した(コード詳細・背景は設計書参照)。**unittest**: `TestResolveJaOkAfterEquivalenceGating`(6件)、rep12 `bgroup_B3`実データ(既存`REP11_B3_SOURCE_ARTICLE_TEXT_AFTER`定数と逐語一致)・rep10 hormuz実データ(真のJA、regression確認)を使用。既存202件+新規6件=**計208件全PASS**(`.venv/Scripts/python.exe -m unittest er052_open233_self_recovery_flow_runner_01_test_01`)。
+
+### 22-2. A-2 rep13実測(¥0.9448、Guardrail¥1内)
+
+`OUT_DIR_REP13`(`er052_output/open233_self_recovery_flow_runner_01_rep13`)、`BUDGET_STATE_PATH`をrep13専用(`budget_state_c233z_22_repA.json`)、`TOTAL_BUDGET_JPY=1.0`へ明示設定。CLI: `--groups=b_group --instance_ids=bgroup_B3 --n_runs=2`を2回実行した(Stage1はreuse fixture、fresh化しない)。
+
+| 実行 | sample1 | sample2 | 備考 |
+|---|---|---|---|
+| 1回目(¥0.1766) | RESOLVED_STAGE2_DOWNGRADE(blocking_count=0) | RESOLVED_STAGE2_DOWNGRADE(blocking_count=0) | Stage2 LLM非決定性でHF-007がQUALITYと判定され、等価チェック自体が発火せず(A-1の対象外ケース) |
+| 2回目(¥0.7682) | RESOLVED_REWRITE(ladder=1_word_connective) | RESOLVED_REWRITE(ladder=1_word_connective) | Stage2がHF-007をBLOCKINGと判定。**verdict=REVIEW_REQUIRED・lang_indeterminate=True・not_gated_indeterminate_lang=True**となり、全文Recheck(EN/JA双方LEDGER_COMPLIANT)の実際の判定がそのまま採用され解消 |
+
+**4/4 instance-run全てSTAGE4に至らず**(rep12の2/2 STAGE4から改善)。`ja_fail_open_guard`は4/4とも`ok=true`(誤検知なし)。false PASS確認: 2回目の2件は`recheck_overall_status=LEDGER_COMPLIANT`・`ja_recheck_overall_status=LEDGER_COMPLIANT`・`ja_fail_open_guard.ok=True`かつ`ladder_level_used=1_word_connective`(最小変更維持)であり、実際の解消を実Recheckが確認した場合のみ通過させる設計どおりで、false PASSではない。累計: 実測¥0.9448(Guardrail¥1内、詳細design書§6-11)。
+
+### 22-3. A-3 Gate 9項目充足表(Fable基準、Evidence列挙。判定はFableへ委ねる)
+
+| # | Gate項目 | Evidence |
+|---|---|---|
+| 1 | 局所QA実run成功 | rep12 `meta_run03_standard` 2/2実call成功(§21-5(ii))。iteration7(§22-5)でも`meta_run03_standard` 2/2実call成功を再確認(局所QA call合計2件、¥0.0356相当×2)。ただしfastpath発火自体は38 instance-run中2件のみ(5.3%)にとどまる |
+| 2 | ⑥(全体Rewrite/削除)使用 | rep12(8 instance-run)・rep13(4 instance-run)では0件だったが、**iteration7(29 instance全量規模)では7件(18.4%)観測**(`safety_A2A3`×2・`safety_A4`×4・`bgroup_B4`×1、ladder_level_distribution参照、§22-5)。3 instance全てが⑥を試みた後も最終的にSTAGE4_ESCALATIONへ到達しており(⑥使用がそのまま「解消」と判定された例は0件)、silent_pass_candidate=0(§22-4)。従来の代表subset(rep7〜13)ではたまたま発生しなかっただけで、全量規模では発生することが新たに判明した点を正直に報告する |
+| 3 | 不要Rewrite4件の開示 | 既存開示(`docs/pm/open233_iter6_rewrite_disclosure_01.md`§1-4-5)+neg1新規observation(MUSE-HC-006)をdisputed事例として分析済み(§21-3)。iteration7では不要Rewrite率が21.43%(3/14、§22-5)へ改善、該当3件(`neg1_meta_b3prod_a2`×1[sample1、STAGE4]・`neg3_hormuz_prodrunner_b1b`×2)を開示 |
+| 4 | 解決策 | neg3両建て(iter6: 4/9=44.4%/3/8=37.5%/3/9=33.3%、決定しない)。**meta_run03_advancedはiteration7で2/2ともblocking_count=0(Rewrite自体が発生せず)となり、等価QA gating機構の実run検証は今回も機会を得られなかった**(未検証のまま、A-1修正がこのinstanceで実際に効くかどうかは確認できていない) |
+| 5 | 人間確認残存 | rep13後: `bgroup_B3`は0/4(rep12の2/2から解消)。iteration7全体: 7/38(18.4%)がSTAGE4(内訳`ja_deviation_unresolved`6件+`cycle_limit_exhausted_after_recheck`1件)。全件を精査し、`lang_indeterminate=True`(A-1の対象パターン)による誤STAGE4は**0件**(全て`lang_indeterminate=False`、genuineな未解消JA逸脱またはEN側自体のLEDGER_DEVIATION、§22-4)。A-1修正が新たなfalse STAGE4を生んでいないことを確認した一方、真の人間確認は7/38で残存している |
+| 6 | 代表ケース動作確認 | rep11(4)+rep12(8)+rep13(4)+iteration7(38、29 instance全量規模)=計54 instance-run完走、API error 0件 |
+| 7 | false PASS 0 | rep11(0/8)・rep12(0/8)・rep13(0/4)・**iteration7(0/38、§22-4)** |
+| 8 | 不要な全文Check・全体Rewriteの削減 | rep12実測(`meta_run03_standard`、局所QA1 call¥0.0356 vs 全文Recheck平均¥0.0646/call)。iteration7でも同instanceで2/2再現。一方、iteration7全体では局所QA fastpath発火率5.3%(2/38)にとどまり、全文Recheck(42 call)が依然大半を占める |
+| 9 | 平均コスト影響 | rep12¥0.2173/instance-run、rep13¥0.2362/instance-run、**iteration7¥1.0407/instance-run(38 instance-run平均)、worst¥8.9545(`safety_A4`、iter6のworst¥5.7883から悪化)** |
+
+**総合**: 9項目全てEvidence記載済み(1項目もEvidence欠落なし、STOP非該当)。ただし項目2(⑥使用)・項目9(worst cost)は広いTrialで従来の小規模subsetより悪化した数値が新たに判明しており、単純な「改善」とは言えない。判定(VALIDATED/REJECTED等)はFableへ委ねる。
+
+### 22-4. Part B構成・実測(29 instance全量、38 instance-run、¥39.5475/Guardrail¥45内)
+
+`OUT_DIR_ITER7`(`er052_output/open233_self_recovery_flow_runner_01_iter7`)、`BUDGET_STATE_PATH`をPart B専用(`budget_state_c233z_22_repB.json`)、`TOTAL_BUDGET_JPY=45.0`へ明示設定。Stage1は既存reuse fixtureを使用(fresh化しない、委任文§2の指示どおり)。
+
+- **n=2実行**(9 instance、非決定性が実測されていたinstance): `--groups=safety,b_group,meta,hormuz,negative --instance_ids=safety_A2A3,bgroup_B3,meta_run03_standard,meta_run03_advanced,hormuz_run03_standard,hormuz_run03_advanced,neg1_meta_b3prod_a2,neg2_meta_refresh_a2,neg3_hormuz_prodrunner_b1b --n_runs=2`(18 instance-run、¥21.4374、call104、error0)。
+- **n=1実行**(残り20 instance): `--groups=safety,b_group,hormuz,negative --instance_ids=<20 instance>`(20 instance-run、¥18.1101、call103、error0)。
+
+**38/38 instance-run完走・API error 0件**。
+
+**false PASS確認(全38件)**: 各RESOLVED_REWRITE/RESOLVED_REWRITE_THEN_DOWNGRADEについて、最終cycleの`recheck_overall_status`/`recheck_all_prior_issues_resolved`(自己矛盾時は`recheck_confirm_*`のcite-or-release結果)・`ja_recheck_overall_status`・`ja_fail_open_guard.ok`を機械的に検証した。**false PASS候補0件**(`escalation_zero_breakdown.silent_pass_candidate=0`とも一致)。
+
+**Safety hard gate**: `floor_variant_comparison.safety_group_hard_gate_passed=true`(n=2実行・n=1実行とも)、`false_negative_candidates_safety_group=0`。Safety群13 instance-run全てでBLOCKING維持または正当な理由によるSTAGE4(fail-closed)を確認、誤降格0件。
+
+**A-1修正のregression確認**: iteration7のSTAGE4到達7件全てについて`ja_equivalence_lang_indeterminate`を確認した結果、**全件`False`(genuineなJA言語、または等価チェック自体が発火していないEN側単独のLEDGER_DEVIATION)**であり、A-1が対象とする「JA側言語が実際には非JAで判定不能」パターンによる誤STAGE4は0件だった(下表)。
+
+| instance | sample | stage4_reason | lang_indeterminate | 備考 |
+|---|---|---|---|---|
+| `hormuz_run03_standard` | s1 | ja_deviation_unresolved | False | cycle1で`ja_en_equivalence_verdict=REVIEW_REQUIRED`(genuine JA)によりja_okをgating、EN/JA Recheckは当該cycleでLEDGER_COMPLIANTだったがcycle2でblocking 0のままja_pending_deviation未解消 |
+| `hormuz_run03_standard` | s2 | ja_deviation_unresolved | False | cycle2でja_recheck=LEDGER_DEVIATION(genuine、gating以前にEN/JA Recheck自体が逸脱を検出) |
+| `neg1_meta_b3prod_a2` | s1 | ja_deviation_unresolved | False | cycle1/2ともrecheck=LEDGER_DEVIATION(genuine) |
+| `safety_A2A3` | s1/s2 | ja_deviation_unresolved | False | 全cycleでrecheck=LEDGER_DEVIATION(genuine、ladder⑥まで試行後も未解消) |
+| `bgroup_B4` | (n=1) | ja_deviation_unresolved | False | cycle1でrecheck=LEDGER_DEVIATION(genuine、EN側自体が未解消) |
+| `safety_A4` | (n=1) | cycle_limit_exhausted_after_recheck | False | 7 rewrite operationsに渡りja_recheck=LEDGER_DEVIATIONが持続(genuine、既知の反復困難ケース) |
+
+### 22-5. iteration7全測定(`aggregate_measurements`を38 instance-run結合データへ適用、既存関数を流用、¥0)
+
+| 指標 | iteration7 | iteration6(n=1、sample1、29 instance) | 備考 |
+|---|---|---|---|
+| STAGE4件数/率 | 7/38=18.42% | 3/29=10.34% | instance-run単位(iter7は一部n=2混在)。単純比較不可、参考値 |
+| real_run Escalation率 | 2/10=20.0%(`hormuz_run03_standard`のみ) | 1/6=16.67% | 同一既知ハードケース(`hormuz_run03_standard`)起因、新規regressionではない |
+| 群別Escalation率 | safety 3/13=23.08%/hormuz 2/6=33.33%/b_group 1/5=20.0%/negative 1/10=10.0%/meta 0/4=0.0% | (iter6は今回未再集計) | |
+| 不要Rewrite率(v3、正常記事=negative7+Normal2) | 3/14=21.43%(`neg1`×1・`neg3`×2) | 4/9=44.44% | **改善**(Hook専用Stage2等、既存の蓄積改善効果。A-1修正自体はこの指標に直接寄与しない) |
+| ⑥(full_article/delete)使用 | 7/38=18.4%(`safety_A2A3`×2・`safety_A4`×4・`bgroup_B4`×1) | 1/29=3.4% | **悪化**(§22-3項目2参照、全量規模で新たに判明) |
+| ladder分布 | 1_word=21/3_sentence=8/6_full_article=7/4_paragraph=3(`paired_j1_not_laddered`は0件) | 1_word=12/3_sentence=6/6_full=1/0_delete=1/`paired_j1_not_laddered`=12 | J-1(JA/EN対訳ペア)が全件ladder経由になった(委任_16以降の既存改善の継続確認) |
+| 局所QA fastpath発火/実call成功 | 2/38発火、2/2実call成功(`meta_run03_standard`のみ) | (iter6は局所QA未実装段階) | |
+| false PASS | 0/38 | (iter6は同手法で未検証) | |
+| JA-EN等価call内訳 | 14 call(FAIL 1/REVIEW_REQUIRED 12/PASS 1) | (iter6は等価チェック測定専用段階) | |
+| Stage4 reason分布 | `ja_deviation_unresolved`6/`cycle_limit_exhausted_after_recheck`1 | `cycle_limit_exhausted_after_recheck`/`same_claim_fact_id_reblocked`/`cycle_limit_exhausted`各1 | |
+| section_role_violation | 3件(`neg1`hook_shrank・`safety_er009_changed_certainty`/`changed_number`numbers_added_to_title) | 3件 | 同水準 |
+| コスト5分割 | no_rewrite 15件平均¥0.1712/with_rewrite 23件平均¥1.6078/rewrite率60.53%/全体平均¥1.0407/worst¥8.9545(`safety_A4`) | no_rewrite 9件平均¥0.1266/with_rewrite 20件平均¥1.4848/rewrite率68.97%/全体平均¥1.0633/worst¥5.7883 | 全体平均はほぼ同水準だが**worst costが悪化**(`safety_A4`が7 rewrite operations・ladder⑥を4回試行し最終的にSTAGE4、+¥2上限を超過する新たなtail risk) |
+
+**call種別内訳**(iteration7、207 call・¥39.5475): 既存call_log集計により、`stage2_second_judge`/`stage3_rewrite`/`stage1_recheck`(42件)/`ja_en_equivalence`(14件)/`local_qa`(2件)/`recheck_confirm`等が含まれる(詳細は`er052_output/open233_self_recovery_flow_runner_01_iter7/*/call_log`参照、個別呼び出し単価の全件表化は本報告では省略し集計値のみ記載する)。
+
+### 22-6. 読み比べページ更新
+
+`user_test/open233_rewrite_compare_01/index.html`をiteration7の実測結果で更新した(iter6版は`index_iter6.html`として保存、削除・移動せず)。3 instance収録: (1)`neg1_meta_b3prod_a2`(sample2、Meta hookの非Rewrite例、Hook専用Stage2がRewrite不要と判定)、(2)`bgroup_B3`(sample1、B3因果のA-1修正例、RESOLVED_REWRITEで解消)、(3)`neg3_hormuz_prodrunner_b1b`(sample1、Hormuz由来記事の局所Rewrite例。`hormuz_run03_standard`自身は今回2/2 STAGE4[genuine]のため代替採用、ページ内に明記)。生成スクリプト: `er052_open233_self_recovery_rewrite_compare_page_iter7_01.py`(API呼び出しなし、¥0)。公開URL: `https://shimomura055.github.io/eigo-radio/user_test/open233_rewrite_compare_01/index.html`(commit・push後に有効)。
+
+### 22-7. コスト
+
+| 区分 | 費用(¥) |
+|---|---|
+| A-1実装 | 0 |
+| A-2 rep13実測 | 0.9448 |
+| Part B iteration7実測 | 39.5475 |
+| **本委任合計** | **40.4923** |
+
+Phase累計¥340.2662+¥40.4923=**¥380.7585**/総枠¥500、残**¥119.2415**。
+
+### 22-8. STOP条件該当確認・USER_DECISION_REQUIRED・Status
+
+**STOP条件**: Part A ¥1超え見込み(該当せず、実測¥0.9448)/Part B ¥45超え見込み(該当せず、実測¥39.5475)/API error 3連続(該当せず、0 error全体)/Production・既存証跡変更(該当せず、`git diff --stat`でer052本体2ファイル[flow_runner+test]・新規iter7出力・新規compare pageスクリプトのみ、既存rep7〜13・iteration1〜6証跡は無変更)/6条件該当(該当せず、下記)/開始前チェック未反映(0件)/最小修正1回後もFAIL(該当なし、A-1・Part Bとも1回で完走)/Safety-critical 10claim・Safety 12がBLOCKINGでなくなった(**該当せず**、Safety hard gate通過・false_negative_candidates_safety_group=0)/false PASS 1件以上(**該当せず、0/54**[rep11〜iteration7通算])。
+
+**USER_DECISION_REQUIRED 6条件該当有無**: 非該当。ただし以下をFable/ユーザーへの判断材料として提示する: (1) ⑥(全体Rewrite/削除)使用が全量規模で7件観測され、従来の「0件」という代表subset時点の評価は成立しないことが判明した(いずれもSTAGE4で正しくfail-closedしており、false PASSではない)。(2) worst instance cost¥8.9545(`safety_A4`)は既存+¥2/記事Cap前提から大きく外れるtail riskであり、iter6のworst¥5.7883からも悪化している。(3) `safety_A4`は過去(iter3・iter4)から繰り返しSTAGE4(`cycle_limit_exhausted_after_recheck`)に至る既知のハードケースであり、根本原因(反復困難パターン)は本委任のスコープ外である。(4) `meta_run03_advanced`は等価QA gating機構(A-1)の実run検証機会を今回も得られなかった(blocking_count=0のまま)。(5) 不要Rewrite率は21.43%(3/14)へ改善したが根本解消(0%)には至っていない。
+
+**Status**: `A1_EQUIVALENCE_GATING_FIXED_REP13_4_OF_4_NO_STAGE4_ITER7_38_OF_38_COMPLETE_FALSE_PASS_ZERO_WORST_COST_TAIL_RISK_INCREASED`(A-1でJA/EN等価チェックgatingを整理し`bgroup_B3`のrep13実測4/4でSTAGE4を解消、Gate 9項目は全項目Evidence記載完了[STOP非該当]。29 instance全量規模の広いTrial iteration 7を初めて完走[38 instance-run・¥39.5475・error 0・false PASS 0]し、不要Rewrite率の改善[44.44%→21.43%]を確認した一方、⑥使用[0→7件]・worst instance cost[¥5.79→¥8.95]という新たなtail riskが全量規模で初めて判明した。Gate判定[VALIDATED/REJECTED]・tail risk対応の要否はFable/ユーザー判断待ち)。
