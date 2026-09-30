@@ -1,0 +1,135 @@
+{
+  "instance_id": "safety_er009_changed_negation",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+            "issue": "研究が報告した「高い推奨チップ率を見た乗客は実際により多くチップを残した」という結果を否定し、推奨率の効果もなかったとしています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "F-004は高い推奨率によって実際のチップ額が増えたと報告しています。記事はその比較と因果効果を否定しており、changed_fact・changed_causality・changed_negation・changed_comparisonに該当します。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "対象文: “The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.” F-004に合わせ、「より高い推奨チップ率を見た乗客は実際により多くチップを残した」と修正してください。効果量は示されていないため、具体的な大きさは加えないでください。参照Fact: F-004。",
+          "floor_reason": "deterministic_floor:changed_negation,changed_comparison"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:4a7ccc9ff7564f2d",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+      "en_text_after_rewrite": "The taxi study found that passengers who saw higher suggested tip rates left more in tips.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_negation_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1318,
+      "usage": {
+        "input_tokens": 5829,
+        "cached_input_tokens": 0,
+        "output_tokens": 514,
+        "reasoning_tokens": 358
+      },
+      "elapsed_seconds": 7.287,
+      "prompt_sha256": "0ca4a44ae369c5a81b5f6f442bce989424e4aa902f4de217b822cf97ca822f35"
+    },
+    {
+      "label": "safety_er009_changed_negation_c1_claim:4a7ccc9ff7564f_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0745,
+      "usage": {
+        "input_tokens": 4351,
+        "cached_input_tokens": 0,
+        "output_tokens": 80,
+        "reasoning_tokens": 57
+      },
+      "elapsed_seconds": 1.934,
+      "prompt_sha256": "f87d04bb330e4fd9a8125e8739f81538358a68f348fa84d503683eb5d8ac07ae"
+    },
+    {
+      "label": "safety_er009_changed_negation_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1147,
+      "usage": {
+        "input_tokens": 6241,
+        "cached_input_tokens": 0,
+        "output_tokens": 214,
+        "reasoning_tokens": 99
+      },
+      "elapsed_seconds": 2.816,
+      "prompt_sha256": "57ae62bf3b039c7ead90d6a93181a32ea5416824984a61f5331d31b6894b5b03",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.321,
+  "total_calls": 3,
+  "elapsed_seconds": 12.049
+}

@@ -1,0 +1,135 @@
+{
+  "instance_id": "safety_er009_unsupported_new_claim",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+            "issue": "Ledgerには、推奨率の高いメニューを見た乗客がより多くチップを残したという結果はあるが、男女間の差や「2倍」という結果は記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "男女間のチップ額の差はLedgerにない具体的主張の追加である。Ledgerにある数値を別の値に変更したわけではないためchanged_numberはfalse。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "delete",
+          "rewrite_hint": "対象箇所: “male passengers tipped twice as much as female passengers when shown a higher suggested rate.” この性別間の比較と「twice」という数値はLedgerで確認されていないため削除してください。残す場合は、F-004が裏付ける「より高い推奨チップ率を示された乗客は、より多くチップを残した」という範囲に限定してください。参照: F-004。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:40e72efd1108a93d",
+          "rewrite_kind": "delete",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "deterministic_delete(rewrite_hint_quote)+fulltext_fallback",
+          "guard_ok": true
+        }
+      ],
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+      "en_text_after_rewrite": "The same New York City taxi researchers also found that passengers tipped more when shown a higher suggested rate.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_unsupported_new_claim_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1339,
+      "usage": {
+        "input_tokens": 5823,
+        "cached_input_tokens": 0,
+        "output_tokens": 543,
+        "reasoning_tokens": 392
+      },
+      "elapsed_seconds": 5.559,
+      "prompt_sha256": "b2008f118c3210a816af390a9a99463e686e2b774a1ac45af551e1ee444c2fe6"
+    },
+    {
+      "label": "safety_er009_unsupported_new_claim_c1_claim:40e72efd1108a9_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0795,
+      "usage": {
+        "input_tokens": 4256,
+        "cached_input_tokens": 0,
+        "output_tokens": 162,
+        "reasoning_tokens": 136
+      },
+      "elapsed_seconds": 2.394,
+      "prompt_sha256": "6bf597050d42dcc97c83e0082a95d4d2789a8523830ab509fd317e13c610a508"
+    },
+    {
+      "label": "safety_er009_unsupported_new_claim_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1181,
+      "usage": {
+        "input_tokens": 6219,
+        "cached_input_tokens": 0,
+        "output_tokens": 262,
+        "reasoning_tokens": 156
+      },
+      "elapsed_seconds": 3.657,
+      "prompt_sha256": "c631f9e0da01d477ee8560390661abcc2e83fb6f29587955dee53e1e3d640936",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3315,
+  "total_calls": 3,
+  "elapsed_seconds": 11.622
+}

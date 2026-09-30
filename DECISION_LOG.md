@@ -14124,3 +14124,121 @@ recovery_s1u_alt_compare_01.py`、`er052_open233_self_recovery_
 flow_runner_01_n2_realrun_01.py`、`er052_output/open233_self_
 recovery_flow_runner_01_iter3/`、`er052_output/open233_self_
 recovery_s1u_alt_compare_01/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: iteration 4実測完了(許容線の再設計
++Stage2 rubric R3+追加測定7項目+読み比べページ、委任_12、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_12)。
+
+**ユーザー指示(§1、逐語要旨)**: 「確認済みの事実同士を、人間が普通に
+読めば自然に導く範囲でつなぐ『解釈』は許容する。Eigo Radioは英語学習用
+コンテンツであり因果を100%立証できない限りNGにはしない。評価基準は
+①元Factと矛盾していないか②新しい具体的Factを発明していないか③人間が
+同じ材料を読んで自然に導ける解釈か④学習者に重大な誤理解を与えるか。
+『市場が海上リスクを重視したから価格が戻った』程度までは今回のProduct
+基準でぎりぎり許容。NG(引き続きBLOCK)は元資料にない人物・数字・出来事
+の追加/確認されていない具体的な売買行動等の追加/根拠のない意図・動機の
+断定/Factと逆方向の因果/actor取り違え/number・negation・comparison・
+time の重大変更/具体的なメカニズムの捏造。判断軸は『完全に証明されて
+いるか』ではなく『確認済みFactから人間が普通に読めば自然に導く範囲か』。
+Rewriteを極力減らす(優先順位: 自然な解釈を正しく通す→本当に問題がある
+場合だけRewrite→最小範囲→必要に応じ大きな範囲/記事全体の自動再生成
+→+¥3/記事Cap)。B1/Hormuz型はUSER_DECISION_REQUIREDへ上げる前提を外し
+新基準で再判定。追加測定7項目(正常記事の不要Rewrite件数・率/自然な
+解釈なのにBLOCKされた件数[Stage1・Stage2別]/Rewrite前後で読み物品質を
+損ねた候補数/Rewrite回数・記事/自動Recovery理由内訳/記事単位コスト)。
+Phase2前にRewriteされた記事2〜3本の修正前後比較ページを用意。KPI
+(Escalation0/重大Fact見逃し0/≤+¥3/記事/Human Review常用なし/不要
+Rewrite極小)は維持、Hormuz型を理由に緩めるのではなくCheckerの
+『何を重大とするか』を英語学習コンテンツとして適切な線へ再設計する」。
+
+**Fable判定(実装方針)**: (1) Stage2 rubric R3(自然な解釈基準)を新設。
+BLOCKING=ユーザーNG5項目((a)Ledger矛盾(b)新規具体的事実追加(c)根拠
+なき意図断定(d)逆方向因果(e)floor5category相当)、QUALITY=確認済み
+Fact同士を自然に繋いだ解釈(断定やや強いものを含む、通過・Rewriteしない)、
+tie-break反転(迷ったらQUALITY、旧R2の「迷ったらBLOCKING」から変更)。
+(2) deterministic floorからchanged_certainty除外(B4-dの再ラベルと
+整合させるため)。(3) QUALITYはRewriteせずStage3へ送らない(Stage2で
+既に実装済みの経路をそのまま維持、追加変更不要と確認)。(4) claim単位
+正解ラベル再整理(§7-0-iter4): B1-c/B4-d BLOCKING→QUALITY、B3/HF-009/
+Safety群は新基準でも明確にNG該当のためBLOCKING維持。(5) 追加測定7項目
+をrunnerへ実装。(6) S1-Uあり/なし反実仮想比較(0 call)を実装。(7)
+読み比べページを新規作成・GitHub Pages公開。
+
+**実測結果**: 作業B(R3/R3'較正、`er052_open233_self_recovery_r3_
+natural_calibration_01.py`、既存13group・23claim評価セット、n=2)=
+52 call・¥7.8974(Guardrail¥8内)。R3(素)は正解ラベル一致率82.61%
+(38/46)だがSafety側誤降格5件(Meta-1/Meta-2/hormuz-HF009/A2A3-1/
+A4-1)を検出し受入条件(誤降格0件)未達。原因分析のうえ1回限りの再較正
+R3'(fail-closed明確化2点追加)を実施し、誤降格5→2件(A2A3-1/A4-2、
+いずれもSafety群fixture[実データ由来]の粗い括りに起因する境界事例と
+判断)へ縮小、Meta-1/Meta-2/hormuz-HF009/A4-1は2/2 BLOCKINGへ復帰。
+新規trade-off(B4-dがn=2較正で2/2誤ってBLOCKINGへ回帰)を発見、報告の
+み(独断で追加rubric改訂はしない)。R3'を29 instance実行の採用rubric
+とした。
+
+作業C(29 instance再実行、--s1u有効)=139 call・¥28.5644(Guardrail
+¥40内)。**STAGE4件数5(iter3)→3件(iter4)**。real_run(実run6
+instance)Escalation率16.67%→**0%**(現行Production STOP実例
+hormuz_run02_advancedがRewriteで解消)。群別Escalation率: safety
+8.3%(不変)、b_group 25%→0%、meta 0%(不変)、hormuz 25%→0%、
+negative 28.6%(不変、iter3と同一2 instance)。残るSTAGE4はsafety_A4
+(angle起因、method-limitation、iter3から継続)+neg2/neg3(機構起因、
+是正6が意図通り動作)。
+
+**追加測定7項目**: 正常記事(negative7+Normal群2=9instance)の不要
+Rewrite率**44.4%(4/9)**、うち2件はRewrite後も解消できずSTAGE4。
+自然な解釈なのにBLOCK: Stage1由来8/9instance(既存の非決定性、想定内)、
+Stage2由来5claim(R3'のtie-break不安定性の実運用再現)。品質劣化候補
+12件(大半はSafety群のfloor経由局所編集、想定内)。Rewrite総回数36
+(記事あたり平均1.5652回)。記事単位worst cost¥2.924(iter3の
+¥3.0853から改善、Cap未超過)。**本委任の主目的(不要Rewrite削減)は
+部分達成にとどまる**ことを正直に報告する。
+
+S1-U反実仮想比較(0 call): escalation件数・rateは不変(final_stop=3、
+real_run rate 0%)だが、これは既知recall miss2件(bgroup_B2_hormuz/
+hormuz_run02_advanced)がS1-U無しなら沈黙裏にACCEPTABLE_STAGE1として
+見逃されていたことを意味する(escalation指標だけでは判断できない
+「見えない見逃し」)。追加コスト¥4.1622(全体の約14.6%)でこの2件を
+確実に検出・解消しており、Trial既定としての維持を推奨する。
+
+読み比べページ(`er052_open233_self_recovery_rewrite_compare_page_01.py`、
+API呼び出しなし)を新規作成し、`user_test/open233_rewrite_compare_01/
+index.html`としてGitHub Pages公開(negative群1本[neg1_meta_b3prod_a2]
++実run1本[hormuz_run02_advanced]+B群1本[bgroup_B3]、Rewrite前後の
+段落対応差分+BLOCKING claim・rewrite_kind・Stage2理由+観点チェック
+リストを掲載)。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当)。
+将来課題として2点を報告のみ記録(実装なし): (a) R3 vs R3'の最終採否
+(B4-dへの退行リスクとA2A3-1/A4-2の残存誤降格のトレードオフ)、(b)
+正常記事の不要Rewrite率44.4%が依然高いこと(Stage2 rubricのさらなる
+較正、またはStage1[V4A]側の過剰検出そのものの改善が必要かの検討)。
+
+**費用**: 作業B¥7.8974+作業C¥28.5644=**¥36.4618**(191 call、0 error)。
+Phase累計¥115.6934+¥36.4618=**¥152.1552**/総枠¥400、残¥247.8448。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1〜3証跡・
+委任_08証跡・S1-U代替比較証跡に差分なし。iteration4出力は別ディレクトリ
+(`er052_output/open233_self_recovery_flow_runner_01_iter4/`+新規
+`er052_output/open233_self_recovery_r3_natural_calibration_01/`)。
+変更対象は`er052_open233_self_recovery_flow_runner_01.py`(+test)・
+`er052_open233_self_recovery_stage2_calibration_01.py`(RUBRIC_R3_
+NATURAL_INTERPRETATION/RUBRIC_R3_PRIME追加のみ)・新規`er052_open233_
+self_recovery_r3_natural_calibration_01.py`・新規`er052_open233_self_
+recovery_rewrite_compare_page_01.py`のみ。API keyは環境変数のみ、
+保存jsonはprompt_sha256のみ記録。既存unittest全67件PASS(regression
+確認、新規12件追加)。
+
+Status=`ITER4_DONE_IMPROVEMENT_NEEDED`。詳細: `docs/pm/design_
+open233_self_recovery_flow_01.md`§4-9/§7-0-iter4/§8-5/§9-1⑨/冒頭
+Status、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§12、`docs/pm/
+delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_12.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、`er052_
+open233_self_recovery_stage2_calibration_01.py`、`er052_open233_
+self_recovery_r3_natural_calibration_01.py`、`er052_open233_self_
+recovery_rewrite_compare_page_01.py`、`er052_output/open233_self_
+recovery_flow_runner_01_iter4/`、`er052_output/open233_self_recovery_
+r3_natural_calibration_01/`、`user_test/open233_rewrite_compare_01/
+index.html`。

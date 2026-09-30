@@ -964,3 +964,73 @@ detect_rewrite_new_precheck_findingsによるRewrite後precheck再実行(Y0)で�
 ### 11-10. 費用
 
 作業C: Y5.136(21 call、Guardrail Y5内)。作業D主run: Y36.9585(178 call)。作業D n=2追加: Y5.8944(23 call、累計Y42.8526、Guardrail Y45内)。本委任合計: Y5.136+Y42.8526=Y47.9886。Phase累計・残額はdocs/pm/RESULT_PACKET_C233O.md参照。
+
+## §12. iteration 4実測(委任_12、2026-09-30)
+
+ユーザー指示(逐語要旨、docs/pm/design_open233_self_recovery_flow_01.md §1)「許容線の再設計: 確認済みの事実同士を、人間が普通に読めば自然に導く範囲でつなぐ解釈は許容する。Eigo Radioは英語学習用コンテンツであり因果を100%立証できない限りNGにはしない。判断軸は『完全に証明されているか』ではなく『確認済みFactから人間が普通に読めば自然に導く範囲か』。Rewriteを極力減らす」に基づき、Stage2 rubric R3(自然な解釈基準)+floor改訂(changed_certainty除外)+追加測定7項目+読み比べページ+29 instance再実行を実施した。
+
+### 12-1. R3較正結果(正解一致率・Safety側誤降格・受入条件)
+
+`er052_open233_self_recovery_r3_natural_calibration_01.py`(既存13group・23claimの評価セットをn=2で再実測、26 call)。
+
+| variant | 正解ラベル一致率 | Safety側誤降格 | 備考 |
+|---|---|---|---|
+| R3(素) | 82.61%(38/46) | 5件(Meta-1/Meta-2/hormuz-HF009/A2A3-1/A4-1) | 受入条件(誤降格0件)未達 |
+| R3'(1回限りの再較正) | 80.43%(37/46) | 2件(A2A3-1/A4-2) | 受入条件未達だが5→2件へ改善して採用 |
+
+原因分類: Meta-1/Meta-2/hormuz-HF009/A4-1はR3'で2/2 BLOCKINGへ復帰(是正成功)。残るA2A3-1(HF-006、「原油高→ガソリン・輸送費」でB1-b[ACCEPTABLE]と酷似する内容)とA4-2(「可能性」を「確定的結果」と述べるcertainty強化型でB4-d[QUALITY]と酷似)は、いずれもSafety群fixtureが実データ由来で複数claimを一括「must-stay-blocking」扱いする較正harness側の粗い括りに起因する境界事例であり、genuine floor(actor/number/negation/comparison/time)崩壊ではないと判断した。**新規に発見したtrade-off**: R3'採用によりB4-d(本委任の主要な再ラベル対象、正解QUALITY)がn=2較正で2/2誤ってBLOCKINGへ回帰する退行が観測された(B1-cも1/2で不安定化)。この点はPhase 2着手前の残存リスクとして報告する(採否はFable/ユーザー判断、独断で追加のrubric改訂はしない)。作業B実測費用¥7.8974(R3¥3.7785+R3'¥4.1189、Guardrail¥8内)。詳細: `er052_output/open233_self_recovery_r3_natural_calibration_01/summary_{r3,r3prime}_natural_calibration.json`。
+
+### 12-2. 再ラベル表(§7-0-iter4、根拠付き)
+
+| claim/fixture | 旧ラベル | 新ラベル | 判定根拠 |
+|---|---|---|---|
+| B1-c(市場動機の断定) | BLOCKING | **QUALITY** | 確認済みFact(海上リスクの存在・価格反発)を人間が自然に読めば導ける解釈。新しい具体的事実の発明なし |
+| B4-d(確実性強化) | QUALITY〜BLOCKING(Trial扱いBLOCKING) | **QUALITY** | certainty変化はユーザーNG5項目に含まれずfloor対象外化。境界未確定時の安全側措置はユーザー指示により解消 |
+| B3(政策決定理由の取り違え) | BLOCKING | **BLOCKING(変更なし)** | Ledger conditionsが具体的な別原因(中東指導者協議)を明記しており、NG(a)矛盾・NG(d)逆方向因果に明確に該当。自然な解釈の範囲外 |
+| hormuz-HF009(Brent先物→市場全体) | BLOCKING | **BLOCKING(変更なし)** | 特定指標のみ確認された観測を、より広い具体的範囲へ一般化する記述はNG(b)に該当。R3'較正で2/2 BLOCKINGと安定確認 |
+| A4/A5/Safety12/negative7 | 各既存ラベル | **変更なし** | いずれもNG(a)〜(e)への該当有無で新基準判定しても既存ラベルと一致 |
+
+### 12-3. iteration3→4差分表
+
+| 指標 | iter3(主run) | iter4 |
+|---|---|---|
+| STAGE4件数/29 | 5 | **3** |
+| real_run(実run6 instance)Escalation率 | 16.67%(1/6) | **0%(0/6)** |
+| escalation_zero_breakdown分母/true_resolved | 21/― | 25/20(quality_pass 5、unconfirmed 0) |
+| avg_cost_jpy/instance | 1.2744 | 0.985 |
+| completion_rate | 0.8276 | 0.8966 |
+| loop_rate | 0.3103 | 0.2759 |
+| 記事単位worst cost | ¥3.0853(meta_run03) | ¥2.924(meta_run03) |
+| instance単位worst cost | ¥6.2445(safety_A4) | ¥4.2956(safety_A4) |
+
+群別Escalation率(iter4): safety 1/12(8.3%、iter3と同数値)、b_group 0/4(iter3 25%から改善、bgroup_B1がRESOLVED_STAGE2_DOWNGRADEへ到達)、meta 0/2(変化なし)、hormuz 0/4(iter3 25%から改善、hormuz_run03_standardがRESOLVED_REWRITEへ到達)、negative 2/7(28.6%、iter3と同一2 instance=neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1b)。
+
+**追加測定7項目**: 正常記事(negative7+Normal群2=9 instance)の不要Rewrite件数**4件(44.4%)**(neg1/neg2/neg3/neg5、うちneg2/neg3はRewrite後も解消できずSTAGE4)。自然な解釈なのにBLOCK: Stage1由来8/9 instance(既存の非決定性、Stage1[V4A]は本委任で無変更のため想定内)、Stage2由来5claim(R3'のtie-break不安定性の実運用再現)。Rewrite品質劣化候補12件(Safety群9件[deterministic floor経由の局所編集、想定内]+bgroup_B4[cycle2]+neg1[cycle1]、詳細=`er052_output/open233_self_recovery_flow_runner_01_iter4/summary_flow_runner.json`の`iter4_additional_measures.rewrite_quality_degradation_candidates`参照)。Rewrite総回数36(記事あたり平均1.5652回)。自動Recovery理由内訳: `cycle_limit_exhausted` 1件、`unconfirmed_after_reverify` 2件。記事単位追加コストは12-3表参照。
+
+**本委任の主目的(不要Rewrite削減)は部分達成にとどまる**。STAGE4件数・real_run Escalation率は大きく改善した一方、正常記事への過剰Rewrite率(44.4%)は高水準のまま残存しており、正直に未達として報告する。
+
+### 12-4. S1-Uあり/なし評価とFableへの採否材料
+
+反実仮想比較(0 call、`compute_s1u_counterfactual`): S1-Uあり(実測)final_stop_count=3・real_run rate=0%・総コスト¥28.5644。S1-Uなし(反実仮想)でも同一final_stop_count=3・real_run rate=0%だが総コスト¥24.4022(差額¥4.1622)。**表面上のescalation指標だけでは「S1-U不要」に見えるが誤読**: 反実仮想が除外した5 instance(`bgroup_B2_hormuz`/`hormuz_run02_advanced`/`neg4_smallbag_div_a2`/`neg6_smallbag_div_b1b`/`neg7_meta_prodrunner_b1b`)のうち、既知recall miss2件(`bgroup_B2_hormuz`/`hormuz_run02_advanced`)はS1Uが無ければ沈黙裏にACCEPTABLE_STAGE1として見逃されていた(escalationとしてカウントされないが安全に解消されたわけでもない「見えない見逃し」)。実際のS1U適用時はこの2件をRewriteで`RESOLVED_REWRITE`まで解消している。false positive3件(`neg4`/`neg6`/`neg7`)はStage2(R3')が`RESOLVED_STAGE2_DOWNGRADE`で安価に是正しており、Rewrite・Escalationへは進んでいない。**Fableへの採否材料**: 追加コスト¥4.1622(全体の約14.6%)で既知recall miss2件を確実に検出・解消しており、QCD負担は小さくSafety向上効果が実測で裏付けられている。Trial既定としての維持を推奨する(最終採否はFable/ユーザー判断)。
+
+### 12-5. 残るStage4 3件の原因分類
+
+| instance | 原因分類 | 根拠 |
+|---|---|---|
+| safety_A4 | angle起因(iter3から継続) | MUSE-HC-006/010/012という3つの兄弟claimが記事内の複数箇所に跨って出現する構造。段落単位Rewriteのcycle上限内では解消しきれない既知のmethod-limitation(コード側のバグではない)。iter3(¥6.2445)からiter4(¥4.2956)でコストは改善 |
+| neg2_meta_refresh_a2 | 機構起因(是正6が意図通り動作) | `_recheck_confirm`で解消確認できずfail-closed、安全側の正しいSTAGE4(iter3と同一instance・同一理由) |
+| neg3_hormuz_prodrunner_b1b | 機構起因(同上) | 同上 |
+
+### 12-6. 読み比べページ
+
+`user_test/open233_rewrite_compare_01/index.html`(`er052_open233_self_recovery_rewrite_compare_page_01.py`、API呼び出しなし・既存iter4証跡jsonの読み直しのみ)。収録3記事: (1) `neg1_meta_b3prod_a2`(negative候補7、Standardレベル、正常記事なのにRewriteされた実例)、(2) `hormuz_run02_advanced`(現行Production STOP実例、Advancedレベル、iteration4で初めてRewrite解消に成功した記事)、(3) `bgroup_B3`(B群、政策決定理由の取り違え、genuine BLOCKING3claim)。各記事にBLOCKING判定されたclaim・rewrite_kind・Stage2理由・Rewrite前後の段落対応差分(ハイライト付き)・決定論的品質指標(文数/段落数/弱め表現数)・観点チェックリスト(読みやすさ/面白さ/ストーリー性/不自然な弱め表現/品質劣化/Fact解消)を掲載。GitHub Pages公開URL: `https://shimomura055.github.io/eigo-radio/user_test/open233_rewrite_compare_01/index.html`(commit・push後に公開確認)。
+
+### 12-7. USER_DECISION_REQUIRED該当有無
+
+7条件(ループ上限到達/Production採用判断/仕様拡大/既存安全装置の無効化・変更/Production・既存証跡ファイルの変更/累計予算超過/3連続API error)いずれも非該当。ただし以下2点は将来課題として報告する(実装はしていない、提案のみ):
+(a) R3 vs R3'の最終採否(B4-dへの退行リスクとA2A3-1/A4-2の残存誤降格のトレードオフ)。
+(b) 正常記事の不要Rewrite率44.4%が依然高いこと。Stage2 rubricのさらなる較正、またはStage1(V4A)側の過剰検出そのものの改善が必要かの検討。
+
+### 12-8. 費用
+
+作業B(R3+R3'較正): ¥7.8974(52 call、Guardrail¥8内)。作業C(29 instance再実行、--s1u有効): ¥28.5644(139 call、Guardrail¥40内)。本委任合計: ¥7.8974+¥28.5644=**¥36.4618**。Phase累計(前回まで¥115.6934)+本委任¥36.4618=**¥152.1552**。Phase残額(¥400 Guardrailのうち)=約¥247.8448。

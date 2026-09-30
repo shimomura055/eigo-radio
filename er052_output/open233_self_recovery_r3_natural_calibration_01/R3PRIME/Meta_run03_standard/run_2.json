@@ -1,0 +1,32 @@
+{
+  "label": "Meta_run03_standard_R3PRIME_run2",
+  "prompt_sha256": "a321f786acc4675185ecb65391dbeacdaea3d3187f1ff37596b680e2da352bc4",
+  "parsed": {
+    "judgments": [
+      {
+        "claim_index": 0,
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "rewrite_kind": "narrow_scope",
+        "rewrite_hint": "「電話を進めるために利用者の情報が必要になる場合、その情報がコールセンターの契約スタッフに意図せず共有される可能性もあります。」この条件付きの記述に狭め、「一部の電話で情報が必要だった」と実際の事例として断定しない。参照: MUSE-HC-010。"
+      },
+      {
+        "claim_index": 1,
+        "materiality": "BLOCKING",
+        "basis": "ledger_claim",
+        "rewrite_kind": "delete",
+        "rewrite_hint": "「電話を進めるために利用者の情報が必要になる場合、その情報がコールセンターの契約スタッフに意図せず共有される可能性もあります。」このclaimは、関連付けられたMUSE-HC-012（人間コンシェルジュ機能のロールバック）では裏付けられないため削除する。参照: MUSE-HC-012。"
+      }
+    ]
+  },
+  "model": "gpt-6-luna",
+  "response_id": "resp_08937d448ab49f6e006abc9c94024c87d087721421d068fd1b",
+  "usage": {
+    "input_tokens": 5903,
+    "cached_input_tokens": 5900,
+    "output_tokens": 2322,
+    "reasoning_tokens": 2070
+  },
+  "cost_jpy": 0.1914,
+  "elapsed_seconds": 18.959
+}

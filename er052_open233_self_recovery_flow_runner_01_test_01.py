@@ -48,11 +48,16 @@ class TestApplyFloor(unittest.TestCase):
         self.assertEqual(materiality, "QUALITY")
         self.assertIsNone(reason)
 
-    def test_certainty_flag_is_in_floor_set(self):
-        self.assertIn("changed_certainty", runner.FLOOR_FLAGS)
+    def test_certainty_flag_is_not_in_floor_set(self):
+        # 委任_12(iteration4、§4-3改訂): changed_certaintyはfloor対象外化
+        # された(B4-dがQUALITYへ再ラベルされたため、§7-0改訂)。floorに
+        # 残っているとStage2 rubric(R3)のQUALITY判定と矛盾するため、
+        # floor単独ではBLOCKINGへ強制せずLLM判定(rubric R3)に委ねる。
+        self.assertNotIn("changed_certainty", runner.FLOOR_FLAGS)
         dev = {"changed_certainty": True}
-        materiality, reason = runner.apply_floor("ACCEPTABLE", dev, "stage1_llm")
-        self.assertEqual(materiality, "BLOCKING")
+        materiality, reason = runner.apply_floor("QUALITY", dev, "stage1_llm")
+        self.assertEqual(materiality, "QUALITY")
+        self.assertIsNone(reason)
 
     def test_causality_not_in_floor_set(self):
         self.assertNotIn("changed_causality", runner.FLOOR_FLAGS)
@@ -496,6 +501,153 @@ class TestJ1BugFixesSourceInspection(unittest.TestCase):
         self.assertIn("en_fulltext_fallback", src)
         # 旧バグ(EN側を無条件でen_fullのまま残す一行)が復活していないことを確認
         self.assertNotIn('updated_en = en_full  # EN側はcycle 2のEN Recheckで再評価に委ねる', src)
+
+
+class TestRubricR3Wiring(unittest.TestCase):
+    """委任_12(iteration4)regression: Stage2がR2ではなくR3(自然な解釈
+    基準)を使うこと、materialityがBLOCKINGのclaimのみがStage3へ渡ること
+    (QUALITYはRewriteされず通過)をソース検査+ロジックで確認する。"""
+
+    def test_run_stage2_uses_r3_prime_not_r2(self):
+        import inspect
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        src = inspect.getsource(runner.run_stage2)
+        self.assertIn("s2c.RUBRIC_R3_PRIME", src)
+        self.assertNotIn("s2c.RUBRIC_R2,", src)
+        self.assertTrue(hasattr(s2c, "RUBRIC_R3_NATURAL_INTERPRETATION"))
+        self.assertTrue(hasattr(s2c, "RUBRIC_R3_PRIME"))
+        self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_NATURAL_INTERPRETATION)
+        self.assertIn("確認済みのFact同士", s2c.RUBRIC_R3_PRIME)
+
+    def test_only_blocking_claims_dispatched_to_stage3(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn('blocking_claims = [c for c in stage2_results if c["materiality"] == "BLOCKING"]', src)
+        # QUALITY/ACCEPTABLEはrewrite_recordsを生成する経路(run_stage3_for_claim)
+        # の入力(blocking_claims)に含まれないことをロジックで確認する。
+        stage2_results = [
+            {"materiality": "QUALITY", "dev": {}, "rewrite_kind": "delete"},
+            {"materiality": "ACCEPTABLE", "dev": {}, "rewrite_kind": "delete"},
+            {"materiality": "BLOCKING", "dev": {}, "rewrite_kind": "delete"},
+        ]
+        blocking_claims = [c for c in stage2_results if c["materiality"] == "BLOCKING"]
+        self.assertEqual(len(blocking_claims), 1)
+
+
+class TestMeasureRewriteQualityDegradation(unittest.TestCase):
+    """委任_12(iteration4、§8追加測定)regression。"""
+
+    def test_no_change_is_not_a_candidate(self):
+        text = "Title line.\n\nParagraph one. It has two sentences.\n\nParagraph two."
+        result = runner.measure_rewrite_quality_degradation(text, text)
+        self.assertFalse(result["degradation_candidate"])
+        self.assertEqual(result["sentence_drop_rate"], 0.0)
+
+    def test_sentence_drop_and_hedge_increase_flag_candidate(self):
+        before = "Title.\n\nOne. Two. Three. Four. Five."
+        after = "Title.\n\nIt may possibly have seemed to be one thing."
+        result = runner.measure_rewrite_quality_degradation(before, after)
+        self.assertTrue(result["degradation_candidate"])
+        self.assertGreater(result["hedge_word_increase"], 0)
+
+    def test_paragraph_count_decrease_flags_candidate(self):
+        before = "Title.\n\nPara one.\n\nPara two."
+        after = "Title.\n\nPara one merged with para two."
+        result = runner.measure_rewrite_quality_degradation(before, after)
+        self.assertTrue(result["paragraph_delta"] < 0)
+        self.assertTrue(result["degradation_candidate"])
+
+
+class TestIter4AdditionalMeasures(unittest.TestCase):
+    """委任_12(iteration4、§8追加測定7項目)regression。"""
+
+    def _instance(self, instance_id, group, final_state, cycles=None):
+        return {
+            "instance_id": instance_id, "group": group, "expected_group_label": "x",
+            "final_state": final_state, "stage4_reason": None, "cycles": cycles or [],
+            "stage1_call_used": False, "total_cost_jpy": 0.1, "total_calls": 1, "elapsed_seconds": 1.0,
+        }
+
+    def test_normal_group_ids_include_all_7_negatives_and_2_normals(self):
+        self.assertEqual(len(runner.NORMAL_GROUP_INSTANCE_IDS), 9)
+        self.assertIn("neg1_meta_b3prod_a2", runner.NORMAL_GROUP_INSTANCE_IDS)
+        self.assertIn("hormuz_run03_advanced", runner.NORMAL_GROUP_INSTANCE_IDS)
+        self.assertIn("meta_run03_advanced", runner.NORMAL_GROUP_INSTANCE_IDS)
+
+    def test_unnecessary_rewrite_counted_for_normal_group_only(self):
+        results = [
+            self._instance("neg1_meta_b3prod_a2", "negative", "RESOLVED_REWRITE",
+                            cycles=[{"rewrite_records": [{"mechanism": "x"}], "stage2_results": []}]),
+            self._instance("bgroup_B1", "b_group", "RESOLVED_REWRITE",
+                            cycles=[{"rewrite_records": [{"mechanism": "x"}], "stage2_results": []}]),
+        ]
+        agg = runner._iter4_additional_measures(results)
+        self.assertEqual(agg["unnecessary_rewrite"]["count"], 1)
+        self.assertEqual(agg["unnecessary_rewrite"]["instance_ids"], ["neg1_meta_b3prod_a2"])
+
+    def test_stage1_false_block_counted_for_normal_group(self):
+        results = [
+            self._instance("neg2_meta_refresh_a2", "negative", "STAGE4_ESCALATION"),
+        ]
+        agg = runner._iter4_additional_measures(results)
+        self.assertEqual(agg["natural_interpretation_blocked"]["stage1_false_block_count"], 1)
+
+    def test_stage2_false_block_claim_counted_for_normal_group(self):
+        results = [
+            self._instance("neg3_hormuz_prodrunner_b1b", "negative", "RESOLVED_REWRITE",
+                            cycles=[{"stage2_results": [{"materiality": "BLOCKING"},
+                                                          {"materiality": "QUALITY"}]}]),
+        ]
+        agg = runner._iter4_additional_measures(results)
+        self.assertEqual(agg["natural_interpretation_blocked"]["stage2_false_block_claim_count"], 1)
+
+    def test_stage4_reason_breakdown(self):
+        results = [
+            self._instance("x1", "test", "STAGE4_ESCALATION"),
+            self._instance("x2", "test", "STAGE4_ESCALATION"),
+        ]
+        results[0]["stage4_reason"] = "cycle_limit_exhausted"
+        results[1]["stage4_reason"] = "same_claim_fact_id_reblocked"
+        agg = runner._iter4_additional_measures(results)
+        self.assertEqual(agg["stage4_reason_breakdown"]["cycle_limit_exhausted"], 1)
+        self.assertEqual(agg["stage4_reason_breakdown"]["same_claim_fact_id_reblocked"], 1)
+
+
+class TestS1UCounterfactual(unittest.TestCase):
+    """委任_12(iteration4、§2項目6)regression: S1-Uが付加したclaimを除外
+    した反実仮想が0 callで(=instance_resultsの再解析のみで)算出できること。"""
+
+    def _instance(self, instance_id, group, final_state, s1u_additional_block=False, cost=1.0):
+        return {
+            "instance_id": instance_id, "group": group, "expected_group_label": "x",
+            "final_state": final_state, "stage4_reason": "x" if final_state == "STAGE4_ESCALATION" else None,
+            "cycles": [{"stage2_results": []}] if final_state != "ACCEPTABLE_STAGE1" else [],
+            "stage1_call_used": False, "s1u_screen_used": s1u_additional_block,
+            "s1u_additional_blocking_count": 1 if s1u_additional_block else 0,
+            "s1u_additional_block": s1u_additional_block,
+            "s1u_additional_block_label": "true_positive" if s1u_additional_block else None,
+            "call_log": [], "total_cost_jpy": cost, "total_calls": 1, "elapsed_seconds": 1.0,
+        }
+
+    def test_s1u_contributed_escalation_removed_in_counterfactual(self):
+        results = [
+            self._instance("hormuz_run02_advanced", "hormuz", "STAGE4_ESCALATION",
+                            s1u_additional_block=True, cost=5.0),
+        ]
+        cf = runner.compute_s1u_counterfactual(results)
+        self.assertEqual(cf["with_s1u"]["final_stop_count"], 1)
+        self.assertEqual(cf["without_s1u_counterfactual"]["final_stop_count"], 0)
+        self.assertEqual(cf["without_s1u_counterfactual"]["total_cost_jpy"], 0.0)
+        self.assertIn("hormuz_run02_advanced", cf["known_recall_miss_instances_among_removed"])
+
+    def test_instance_without_s1u_block_is_unchanged(self):
+        results = [
+            self._instance("neg1_meta_b3prod_a2", "negative", "RESOLVED_STAGE2_DOWNGRADE",
+                            s1u_additional_block=False, cost=0.5),
+        ]
+        cf = runner.compute_s1u_counterfactual(results)
+        self.assertEqual(cf["with_s1u"]["total_cost_jpy"], cf["without_s1u_counterfactual"]["total_cost_jpy"])
+        self.assertEqual(cf["instances_removed_by_counterfactual"], [])
 
 
 if __name__ == "__main__":

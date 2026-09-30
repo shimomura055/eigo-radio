@@ -92,9 +92,16 @@ OUT_DIR_ITER2 = "er052_output/open233_self_recovery_flow_runner_01_iter2"
 # S1-U安価代替の反映後の再実行、委任文§0/§4)。Stage1(V4A)は既存出力を
 # sha256一致で再利用する(build_target_instances()のstage1_source自体は
 # iteration 1時点のartifactを参照し続ける、二重課金防止)。
-OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter3"
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233o_d.json"
-TOTAL_BUDGET_JPY = 45.0  # 委任_11 作業D Guardrail(想定)
+OUT_DIR_ITER3 = "er052_output/open233_self_recovery_flow_runner_01_iter3"
+# 委任_12(iteration4): 既存iteration1/2/3の出力(OUT_DIR_ITER1/ITER2/ITER3)
+# は変更しない。iteration4の出力は別ディレクトリへ書く(Stage2 rubric R3
+# [自然な解釈基準]+floor改訂[changed_certainty除外]+追加測定7項目の反映後の
+# 再実行、委任文§0/§2/§3)。入力deviation集合はiteration3と同一固定
+# (paired比較のため、Stage1 reuseパス自体はiteration1時点のartifactを
+# 参照し続ける、二重課金防止は変更しない)。
+OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter4"
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233p_c.json"
+TOTAL_BUDGET_JPY = 40.0  # 委任_12 作業C Guardrail
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -105,9 +112,17 @@ MAX_CYCLES = 2
 HARD_MAX_CYCLES = MAX_CYCLES + 1
 CLAIM_TEXT_SIMILARITY_THRESHOLD = 0.75
 
+# 委任_12(iteration4、§4-3改訂): changed_certaintyをfloorから除外する。
+# 理由(ユーザー指示・自然な解釈基準への是正): ユーザーNG列挙5項目
+# (actor/number/negation/comparison/time)にchanged_certaintyは含まれず、
+# 「断定がやや強い」はQUALITY側(許容)に整理された。委任_04で追加した
+# changed_certaintyのfloor化はB4-dを安全側(fail-closed)に倒すための
+# 暫定措置だったが、B4-d(確実性強化)は委任_12でQUALITYへ再ラベルされた
+# ため(§7-0改訂)、floorに残すとStage2 rubric(R3)のQUALITY判定と矛盾する。
+# pre-check floor(detected_by=="precheck")は変更なく維持する。
 FLOOR_FLAGS = [
     "changed_actor", "changed_number", "changed_negation",
-    "changed_comparison", "changed_time", "changed_certainty",
+    "changed_comparison", "changed_time",
 ]
 
 # 委任_11 作業B-5(§8測定是正、Opus L2 #2論点5/6): 群別Escalation率算出のため、
@@ -133,6 +148,61 @@ ARTICLE_GROUPS = {
 # 照合用(委任_09/_10で確定した既知のStage1 recall miss実例=真陽性、
 # negative群でのS1-U追加BLOCKは偽陽性、それ以外はラベル無し)。
 KNOWN_RECALL_MISS_INSTANCE_IDS = frozenset({"bgroup_B2_hormuz", "bgroup_B3", "hormuz_run02_advanced"})
+
+# 委任_12(iteration4、§8追加測定7項目): 「正常記事」= §7-0/§7-5で正解
+# ラベルが全claim ACCEPTABLE(=一切のBLOCKING claimを含まないことが期待
+# される)instance群。negative候補7件+Normal群2件(hormuz_run03_advanced/
+# meta_run03_advanced)。この群に限り「Stage1/Stage2でBLOCKされた=自然な
+# 解釈なのに誤ってBLOCKされた」を機械的・一意に定義できる(B/Safety群は
+# instance内にBLOCKINGが混在するclaim単位judgeであり、instance単位では
+# 判定できないため対象外、報告時に限界として明記する)。
+NORMAL_GROUP_INSTANCE_IDS = frozenset(
+    {fid for fid, _ in step3cmp.NEGATIVE_SOURCE_FILES} | {"hormuz_run03_advanced", "meta_run03_advanced"}
+)
+
+_HEDGE_WORD_RE = re.compile(r"\b(may|might|possibly|perhaps|could|seem(?:s|ed)?|appear(?:s|ed)?)\b", re.IGNORECASE)
+
+
+def measure_rewrite_quality_degradation(before_text: str, after_text: str) -> dict:
+    """委任_12(iteration4、§8): Rewrite前後で読み物品質を損ねたか候補判定
+    (決定論、¥0)。観点: 文数減少率・弱め表現[may/might/possibly/seems等]の
+    増加数・段落数変化・タイトル(先頭行)変更。閾値は保守的(過検出よりは
+    見逃し側)に設定し、「候補」であることを明記する(人間の主観評価の
+    代替ではない)。"""
+    def _sentence_count(t: str) -> int:
+        return len([s for s in re.split(r"(?<=[.!?])\s+", t.strip()) if s.strip()])
+
+    def _paragraph_count(t: str) -> int:
+        return len(s2p.split_paragraphs(t))
+
+    def _title(t: str) -> str:
+        lines = [ln for ln in t.strip().split("\n") if ln.strip()]
+        return lines[0].strip() if lines else ""
+
+    sc_before, sc_after = _sentence_count(before_text), _sentence_count(after_text)
+    pc_before, pc_after = _paragraph_count(before_text), _paragraph_count(after_text)
+    hedge_before = len(_HEDGE_WORD_RE.findall(before_text))
+    hedge_after = len(_HEDGE_WORD_RE.findall(after_text))
+    title_before, title_after = _title(before_text), _title(after_text)
+
+    sentence_drop_rate = round((sc_before - sc_after) / sc_before, 4) if sc_before else 0.0
+    hedge_increase = hedge_after - hedge_before
+    paragraph_delta = pc_after - pc_before
+    title_changed = title_before != title_after and bool(title_before) and bool(title_after)
+
+    degradation_candidate = (
+        sentence_drop_rate >= 0.2 or hedge_increase >= 3 or paragraph_delta < 0 or title_changed
+    )
+    return {
+        "sentence_count_before": sc_before, "sentence_count_after": sc_after,
+        "sentence_drop_rate": sentence_drop_rate,
+        "hedge_word_count_before": hedge_before, "hedge_word_count_after": hedge_after,
+        "hedge_word_increase": hedge_increase,
+        "paragraph_count_before": pc_before, "paragraph_count_after": pc_after,
+        "paragraph_delta": paragraph_delta,
+        "title_changed": title_changed,
+        "degradation_candidate": degradation_candidate,
+    }
 
 
 class TrialAbort(RuntimeError):
@@ -510,9 +580,20 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
     result = None
     for _ in range(1 + MAX_RETRIES_PER_CALL):
         try:
+            # 委任_12(iteration4): RUBRIC_R2 -> RUBRIC_R3_PRIME へ切替(§4-8
+            # R2は委任_08採用だったが、委任_12ユーザー指示「許容線の再設計」
+            # によりR3[自然な解釈基準]で置き換える)。作業B単体較正実測
+            # (er052_output/open233_self_recovery_r3_natural_calibration_01/
+            # summary_{r3,r3prime}_natural_calibration.json)で、素のR3は
+            # Safety側誤降格5件(Meta-1/Meta-2/hormuz-HF009/A2A3-1/A4-1)を
+            # 実測したため、fail-closed明確化を追加したR3_PRIMEへ1回だけ
+            # 再較正した(誤降格5件->2件[A2A3-1/A4-2]、うちA4-2は今回の
+            # certainty緩和方針と整合する意図した挙動。残る2件・既知の
+            # B4-dへの副作用[小サンプルで新規に発生]は報告のみ、詳細は
+            # 較正summary参照)。
             result = s2c.run_stage2_batch_variant(
                 client, fixture["ledger_text"], fixture.get("source_article_text"),
-                claim_records, s2c.RUBRIC_R2, model=MODEL,
+                claim_records, s2c.RUBRIC_R3_PRIME, model=MODEL,
             )
             break
         except Exception as e:  # noqa: BLE001
@@ -1418,6 +1499,11 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             })
         prev_cycle_blocking_count = len(blocking_claims)
 
+        # 委任_12(iteration4、§8): Rewrite品質劣化候補判定用にRewrite前
+        # テキストを保持する(¥0、決定論比較)。
+        en_text_before_rewrite = current_en_text
+        ja_text_before_rewrite = current_ja_text
+
         # Stage 3: 各BLOCKING claimに対しRewrite dispatch
         rewrite_records = []
         for c in blocking_claims:
@@ -1430,6 +1516,20 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             rewrite_records.append({"claim_identity": claim_identity(c["dev"]), "rewrite_kind": c["rewrite_kind"],
                                      "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"]})
         cycle_record["rewrite_records"] = rewrite_records
+        cycle_record["quality_degradation_en"] = measure_rewrite_quality_degradation(
+            en_text_before_rewrite, current_en_text)
+        if ja_text_before_rewrite is not None and current_ja_text is not None:
+            cycle_record["quality_degradation_ja"] = measure_rewrite_quality_degradation(
+                ja_text_before_rewrite, current_ja_text)
+        # 委任_12(iteration4、作業D読み比べページ用): Rewrite前後の全文を
+        # cycle_recordへ保存する(サイズ抑制のため、実際にRewriteが発火した
+        # cycleのみ。en_text_before_rewrite==current_en_textなら保存しない)。
+        if current_en_text != en_text_before_rewrite:
+            cycle_record["en_text_before_rewrite"] = en_text_before_rewrite
+            cycle_record["en_text_after_rewrite"] = current_en_text
+        if ja_text_before_rewrite is not None and current_ja_text != ja_text_before_rewrite:
+            cycle_record["ja_text_before_rewrite"] = ja_text_before_rewrite
+            cycle_record["ja_text_after_rewrite"] = current_ja_text
 
         # 委任_11 作業B-6(§4 Rewrite由来新規逸脱検出、Opus L2 #2論点4):
         # (a) 決定論precheckの再実行(¥0、baseline比較で新規finding検出)。
@@ -1704,6 +1804,131 @@ def aggregate_measurements(instance_results: list) -> dict:
             "ja_en_equivalence_review_required_count": ja_en_equivalence_review_required_count,
             "unconfirmed_after_reverify_count": unconfirmed_after_reverify_count,
         },
+        "iter4_additional_measures": _iter4_additional_measures(instance_results),
+    }
+
+
+# ------------------------------------------------------------
+# 委任_12(iteration4、§8追加測定7項目)。既存measurementに影響を与えない
+# 追加ブロックとして分離する(既存key/値は変更しない)。
+# ------------------------------------------------------------
+def _iter4_additional_measures(instance_results: list) -> dict:
+    normal_present = [r for r in instance_results if r["instance_id"] in NORMAL_GROUP_INSTANCE_IDS]
+    unnecessary_rewrite = [r for r in normal_present if any(c.get("rewrite_records") for c in r["cycles"])]
+    stage1_false_block = [r for r in normal_present if r["final_state"] != "ACCEPTABLE_STAGE1"]
+    stage2_false_block_claims = 0
+    for r in normal_present:
+        for c in r["cycles"]:
+            stage2_false_block_claims += sum(
+                1 for sr in c.get("stage2_results", []) if sr["materiality"] == "BLOCKING")
+
+    degradation_candidates = []
+    for r in instance_results:
+        for ci, c in enumerate(r["cycles"], start=1):
+            for lang_key in ("quality_degradation_en", "quality_degradation_ja"):
+                qd = c.get(lang_key)
+                if qd and qd.get("degradation_candidate"):
+                    degradation_candidates.append({
+                        "instance_id": r["instance_id"], "cycle": ci, "lang": lang_key.split("_")[-1],
+                    })
+
+    rewrite_op_total = sum(len(c.get("rewrite_records", [])) for r in instance_results for c in r["cycles"])
+    rewrite_op_by_article: dict = {}
+    by_instance_id = {r["instance_id"]: r for r in instance_results}
+    grouped_members = {m for members in ARTICLE_GROUPS.values() for m in members}
+    for article_id, members in ARTICLE_GROUPS.items():
+        present = [by_instance_id[m] for m in members if m in by_instance_id]
+        if not present:
+            continue
+        rewrite_op_by_article[article_id] = sum(
+            len(c.get("rewrite_records", [])) for r in present for c in r["cycles"])
+    for r in instance_results:
+        if r["instance_id"] in grouped_members:
+            continue
+        cnt = sum(len(c.get("rewrite_records", [])) for c in r["cycles"])
+        if cnt:
+            rewrite_op_by_article[r["instance_id"]] = cnt
+    n_articles = len(rewrite_op_by_article) if rewrite_op_by_article else 0
+    rewrite_op_per_article_avg = (
+        round(sum(rewrite_op_by_article.values()) / n_articles, 4) if n_articles else 0.0
+    )
+
+    stage4_reason_breakdown: dict = {}
+    for r in instance_results:
+        if r.get("stage4_reason"):
+            stage4_reason_breakdown[r["stage4_reason"]] = stage4_reason_breakdown.get(r["stage4_reason"], 0) + 1
+
+    return {
+        "normal_group_note": (
+            "『正常記事』= negative候補7件+Normal群2件(hormuz_run03_advanced/"
+            "meta_run03_advanced)。§7-0でinstance内claimが全てACCEPTABLE"
+            "であることが期待される群に限定(B/Safety群はclaim単位で"
+            "BLOCKING/非BLOCKINGが混在するためinstance単位のこの指標には"
+            "含めない、限界として明記)。"
+        ),
+        "unnecessary_rewrite": {
+            "n_normal_group": len(normal_present),
+            "count": len(unnecessary_rewrite),
+            "rate": round(len(unnecessary_rewrite) / len(normal_present), 4) if normal_present else None,
+            "instance_ids": [r["instance_id"] for r in unnecessary_rewrite],
+        },
+        "natural_interpretation_blocked": {
+            "stage1_false_block_count": len(stage1_false_block),
+            "stage1_false_block_instance_ids": [r["instance_id"] for r in stage1_false_block],
+            "stage2_false_block_claim_count": stage2_false_block_claims,
+        },
+        "rewrite_quality_degradation_candidates": {
+            "count": len(degradation_candidates), "detail": degradation_candidates,
+        },
+        "rewrite_operations": {
+            "total": rewrite_op_total, "per_article_avg": rewrite_op_per_article_avg,
+            "by_article": rewrite_op_by_article,
+        },
+        "stage4_reason_breakdown": stage4_reason_breakdown,
+    }
+
+
+def compute_s1u_counterfactual(instance_results: list) -> dict:
+    """委任_12(iteration4、§2項目6): S1-Uが付加したclaimを除外した反実仮想
+    を0 callで算出する。S1-Uはstage1_parsedがACCEPTABLE(PASS)の場合のみ
+    発火し、s1u_additional_block=Trueのinstanceはs1u_result由来claimのみで
+    以降の全cascadeが発生している(run_instance実装、S1-U発火条件参照)。
+    よって「S1-Uが無かった場合」は当該instanceが丸ごとACCEPTABLE_STAGE1
+    (cost 0、call 0)だったと機械的に置換できる(新規APIコール無し)。"""
+    counterfactual = []
+    for r in instance_results:
+        if r.get("s1u_additional_block"):
+            counterfactual.append({
+                **r, "final_state": "ACCEPTABLE_STAGE1", "stage4_reason": None, "cycles": [],
+                "call_log": [], "total_cost_jpy": 0.0, "total_calls": 0,
+                "s1u_screen_used": False, "s1u_additional_blocking_count": 0,
+                "s1u_additional_block": False, "s1u_additional_block_label": None,
+            })
+        else:
+            counterfactual.append(r)
+    with_s1u = aggregate_measurements(instance_results)
+    without_s1u = aggregate_measurements(counterfactual)
+    return {
+        "with_s1u": {
+            "final_stop_count": with_s1u["self_recovery_6"]["final_stop_count"],
+            "real_run_escalation_rate": with_s1u["real_run"]["rate"],
+            "group_escalation_rates": with_s1u["group_escalation_rates"],
+            "total_cost_jpy": with_s1u["qcd"]["total_cost_jpy"],
+        },
+        "without_s1u_counterfactual": {
+            "final_stop_count": without_s1u["self_recovery_6"]["final_stop_count"],
+            "real_run_escalation_rate": without_s1u["real_run"]["rate"],
+            "group_escalation_rates": without_s1u["group_escalation_rates"],
+            "total_cost_jpy": without_s1u["qcd"]["total_cost_jpy"],
+        },
+        "instances_removed_by_counterfactual": [
+            r["instance_id"] for r in instance_results if r.get("s1u_additional_block")
+        ],
+        "known_recall_miss_instances_among_removed": sorted(
+            KNOWN_RECALL_MISS_INSTANCE_IDS & {
+                r["instance_id"] for r in instance_results if r.get("s1u_additional_block")
+            }
+        ),
     }
 
 
@@ -1744,6 +1969,7 @@ def main():
             break
 
     measurements = aggregate_measurements(instance_results) if instance_results else {}
+    s1u_counterfactual = compute_s1u_counterfactual(instance_results) if instance_results else {}
     summary = {
         "stopped": stopped, "stop_reason": stop_reason,
         "n_instances_completed": len(instance_results),
@@ -1752,6 +1978,7 @@ def main():
         "cumulative_calls": state["cumulative_calls"],
         "cumulative_errors": state["cumulative_errors"],
         "measurements": measurements,
+        "s1u_counterfactual": s1u_counterfactual,
     }
     save_json(f"{OUT_DIR}/summary_flow_runner.json", {
         "summary": summary,
@@ -1759,8 +1986,14 @@ def main():
             {k: v for k, v in r.items() if k != "call_log"} for r in instance_results
         ],
     })
-    print(json.dumps({k: v for k, v in summary.items() if k != "measurements"}, ensure_ascii=False, indent=2))
-    print(json.dumps(measurements, ensure_ascii=False, indent=2))
+    # 委任_12(iteration4で実際に発生・修正): summary_flow_runner.jsonへの
+    # 保存(save_json、UTF-8ファイル出力)は完了しているが、Windowsコンソール
+    # (cp932)への標準出力printがensure_ascii=Falseだと一部の日本語記号で
+    # UnicodeEncodeErrorを起こし、そこでプロセスが異常終了する実害があった
+    # (本委任で実際に発生、証跡ファイル自体は既に保存済みで無事)。
+    # コンソール表示のみensure_ascii=Trueへ変更する(保存物には影響しない)。
+    print(json.dumps({k: v for k, v in summary.items() if k != "measurements"}, ensure_ascii=True, indent=2))
+    print(json.dumps(measurements, ensure_ascii=True, indent=2))
 
 
 if __name__ == "__main__":

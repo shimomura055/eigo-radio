@@ -1,0 +1,135 @@
+{
+  "instance_id": "safety_er009_changed_causality",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+            "issue": "Ledgerが記述的な歴史的傾向としているチップ率の上昇に、デジタル画面の導入が直接の原因だったという因果関係を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-006の数値・時期・対象範囲は保たれているが、因果関係を示さない記述に「directly caused」という新たな因果主張を加え、断定している。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "delete",
+          "rewrite_hint": "「was directly caused by the introduction of digital tip screens」を削除し、F-006に基づく歴史的なチップ率の上昇を記述的な傾向として述べてください。参照Fact: F-006",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:89721925ca5a0c1f",
+          "rewrite_kind": "delete",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "deterministic_delete(rewrite_hint_quote)+fulltext_fallback",
+          "guard_ok": true
+        }
+      ],
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+      "en_text_after_rewrite": "US restaurant tipping rose from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_causality_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.151,
+      "usage": {
+        "input_tokens": 5857,
+        "cached_input_tokens": 0,
+        "output_tokens": 754,
+        "reasoning_tokens": 649
+      },
+      "elapsed_seconds": 7.438,
+      "prompt_sha256": "0e1969521c1ffe80ee7b166124b6e5eac8b79a567b52be06ef3b85200d5e7ff9"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0752,
+      "usage": {
+        "input_tokens": 4220,
+        "cached_input_tokens": 0,
+        "output_tokens": 115,
+        "reasoning_tokens": 78
+      },
+      "elapsed_seconds": 2.717,
+      "prompt_sha256": "055e26fc49ced9b134ee78c08f70703f5a20193ff5f7dc7f27d43458d2d0995a"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1165,
+      "usage": {
+        "input_tokens": 6254,
+        "cached_input_tokens": 0,
+        "output_tokens": 235,
+        "reasoning_tokens": 132
+      },
+      "elapsed_seconds": 2.922,
+      "prompt_sha256": "dc0506b9fe4ba2ab96c362a1dfa97cf2c5cd5871f0ffd5e4e669bc831563ac4d",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3427,
+  "total_calls": 3,
+  "elapsed_seconds": 13.088
+}

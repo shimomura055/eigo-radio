@@ -70,7 +70,23 @@ final_state不一致]。S1-U安価代替3案[2xV4-A union/S1-D effort=medium
 残るSTAGE4は主にangle起因[段落単位Rewriteのmethod-limitation]。
 詳細§9-1⑧・§16。実測費用¥47.9886[作業C¥5.136+作業D¥42.8526、
 Guardrail¥5+¥45のうち]。USER_DECISION_REQUIRED非該当[7条件いずれ
-も]。Production実装は未着手)。
+も]。Production実装は未着手)。→ **[委任_12更新]**
+`ITER4_DONE_IMPROVEMENT_NEEDED`(ユーザー指示「許容線の再設計」
+[自然な解釈はOK/事実の発明はNG]に基づきStage2 rubric R3→R3'[§4-9]+
+floor改訂[changed_certainty除外、§4-3]+追加測定7項目[§8-iter4]を
+実装。R3単体較正でSafety側誤降格5件を検出し1回限りの再較正[R3']で
+2件[bundle粒度起因の境界事例]へ縮小。29 instance再実行[iter4、
+139 call・¥28.5644]でSTAGE4件数5→3件、real_run Escalation率
+16.67%→0%(現行Production STOP実例hormuz_run02_advancedがiter4で
+Rewrite解消)。**一方、本委任の主目的だった「正常記事への不要Rewrite
+削減」は部分達成にとどまる**(negative+Normal群9 instance中4件
+[44.4%]でRewriteが発火、目標未達を正直に報告)。S1-U反実仮想比較
+[0 call]でescalation件数は不変だが、除外すると既知recall miss2件が
+沈黙裏に見逃されることを実測確認、維持を推奨。R3'のB4-d型への退行
+リスクは残存課題として報告のみ(独断で追加実装せず)。詳細§9-1⑨。
+実測費用¥36.4618[作業B¥7.8974+作業C¥28.5644、Guardrail¥8+¥40の
+うち]。USER_DECISION_REQUIRED非該当[7条件いずれも]。Production
+実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -677,6 +693,101 @@ Safety側で**誤降格が1件発生**(`A4-0`が2試行中1回`ACCEPTABLE`へ
 に理由記録)。詳細ログ: `er052_output/open233_self_recovery_r2prime_
 recalibration_01/summary_r2prime_recalibration.json`。
 
+### 4-9. Stage 2 rubric R3(自然な解釈基準、委任_12、2026-09-30ユーザー
+指示「許容線の再設計」)
+
+**位置づけ**: R2(委任_08採用)の較正基準は「Ledgerに存在しない新規の
+具体的主張は最優先でBLOCKING」だったが、実運用でnegative群を含む
+「正常記事」への過剰BLOCK・過剰Rewriteが観測されたため、ユーザーが
+判断軸そのものを再設計した。**注意**: 本節の"R3"(`RUBRIC_R3_NATURAL_
+INTERPRETATION`、`er052_open233_self_recovery_stage2_calibration_01.py`)
+は、§4-8で不採用となった旧"R3"(R2 LLM出力+post-hoc floor combo、
+`apply_r3_floor`)とは名称のみ類似する**別概念**であり、無関係である
+(§4-8参照)。
+
+**最重要原則(ユーザー逐語、§1参照)**: 確認済みのFact同士を、人間が
+普通に読めば自然に導く範囲でつなぐ「解釈」は許容する。判断軸は
+「完全に証明されているか」ではなく「確認済みFactから人間が普通に
+読めば自然に導く範囲か」。評価基準は①元Factと矛盾していないか
+②新しい具体的Factを発明していないか③人間が同じ材料を読んで自然に
+導ける解釈か④学習者に重大な誤理解を与えるか。
+
+**rubric構成(R2からの主要変更点)**:
+1. BLOCKING列挙をユーザーNG5項目((a)Ledger矛盾、(b)Ledgerに無い人物・
+   数字・出来事・具体的行動・仕組みの追加、(c)根拠のない意図・動機の
+   断定、(d)Fact逆方向の因果、(e)floor5category相当の重大変更)へ
+   再構成。
+2. QUALITY(通過・Rewriteしない)を「確認済みFact同士を人間が自然に
+   導く範囲でつないだ解釈、断定がやや強い場合を含む」へ拡大(R2の
+   「関係付け・強調・言い回しに限る」という狭い定義を撤廃)。
+3. **tie-break反転(最重要の設計変更)**: R2は「迷ったらBLOCKING」
+   (fail-closed)だったが、R3は「NG列挙(a)〜(e)に明確に該当しなければ
+   QUALITY」(NG該当が明確な場合のみBLOCKING)。deterministic safety
+   floor(§4-3、changed_actor/number/negation/comparison/time)は
+   本rubric判定と独立してpost-hocでBLOCKING強制するため維持される
+   (LLM側のtie-break反転はfloor非対象カテゴリ[scope/causality/
+   certainty/unsupported_new_claim]の判定にのみ影響する)。
+
+**floor改訂(§4-3、changed_certainty除外)**: ユーザーNG5項目に
+changed_certaintyは含まれず、「断定がやや強い」はQUALITY側(許容)へ
+整理された。委任_04で追加したchanged_certaintyのfloor化(B4-dを
+fail-closedへ倒すための暫定措置)は、B4-dが本委任でQUALITYへ再ラベル
+された(§7-0改訂)ことと矛盾するため、floorから除外する
+(`er052_open233_self_recovery_flow_runner_01.FLOOR_FLAGS`から
+`changed_certainty`を削除)。pre-check floor(§4-3後段、
+`detected_by=="precheck"`)は変更なく維持する。
+
+**単体較正実測(作業B、委任_12)**: `er052_open233_self_recovery_r3_
+natural_calibration_01.py`で、既存評価セット(§4-8と同一13group・
+23claim、B1/B2/B3/B4/Meta_run03_standard/hormuz_run03_standard/
+negative4[neg1,neg2,neg3,neg5]/A2A3/A4/A5)をn=2で新規call(26 call)。
+再ラベル(§7-0改訂): B1-c・B4-dのcorrect_labelをBLOCKING→QUALITYへ
+変更(他は§7-0既存ラベルを維持)。
+
+- **R3(素、初回)**: 正解ラベル一致率82.61%(38/46)。**Safety側誤降格
+  5件**(Meta-1/Meta-2[Meta_run03_standard]、hormuz-HF009[HF-009 scope
+  重大変更、hormuz_run03_standard]、A2A3-1、A4-1、いずれもn=2中1回
+  以上QUALITY/ACCEPTABLEへ誤降格)。受入条件(誤降格0件)未達。
+- **原因分類**: (a) A2A3-1(HF-006、「原油高→ガソリン・輸送費」)は
+  claim内容自体がB1-b(ACCEPTABLE、§7-0)と酷似しており、Safety群
+  「実データfixtureの全BLOCKING devをまとめてmust-stay-blocking扱い
+  する」という既存の較正harness側の粗い括り(claim単位ではなく
+  fixture単位のbundle)に起因する境界事例である可能性が高い。
+  (b) A4-1(「相手が実際にAIと話していると思っていた」という未確認の
+  主観的認識を断定)は、rubric基準(c)「根拠のない意図の断定」に明確に
+  該当する事例だが、tie-break反転後のLLM挙動がこれを安定して捕捉
+  できなかった(較正課題)。(c) Meta-1/Meta-2/hormuz-HF009は、
+  いずれも「特定の確認済み観測を、より広い/より確定的な主張へ一般化」
+  する事例であり、tie-break反転がscope/certainty系の境界判断を
+  不安定にした。
+- **R3'(1回限りの再較正、`RUBRIC_R3_PRIME`)**: 上記(b)(c)に対応する
+  2つの明確化(未確認の主観的認識の断定はBLOCKING/特定指標→市場全体
+  等への一般化はBLOCKING、tie-breakでQUALITYへ倒す前に必ず確認)を
+  追加。結果: 正解ラベル一致率80.43%(37/46、微減)。**Safety側誤降格
+  2件**(A2A3-1[1/2]、A4-2[2/2、新規])。Meta-1/Meta-2/hormuz-HF009/
+  A4-1は2/2 BLOCKINGへ復帰(是正成功)。**新規のtrade-off**: 本委任の
+  主目的だったB4-d(certainty強化、正解QUALITY)がR3では2/2QUALITY
+  (正解)だったのに対し、R3'では2/2BLOCKING(誤り、退行)。B1-cも
+  R3では2/2QUALITY(正解)がR3'では1/2BLOCKING(不安定化)。A4-2
+  (「可能性」を「確定的結果」として述べる、certainty強化型)は
+  R3で2/2BLOCKING(誤り)からR3'で2/2QUALITY(是正、ただしこれは
+  §7-0のcorrect_label=BLOCKING[Safety群bundle由来]と不一致であり、
+  A4-2の実質的内容[B4-d型のcertainty強化]に照らせば妥当な挙動である
+  可能性が高い。これも(a)と同種のbundle粒度起因の境界事例と考えられる)。
+- **採否判断**: Fable判定として`RUBRIC_R3_PRIME`をiteration4の29
+  instance実行(作業C)へ採用する(hormuz-HF009[本Phaseの中心的
+  scope事例]・Meta-1/2・A4-1が安定してBLOCKINGへ復帰することを
+  優先し、genuine floor[actor/number/negation/comparison/time]は
+  本rubricと独立に維持されているため、残る2件の誤降格[A2A3-1/A4-2]
+  はいずれもbundle粒度に起因する境界事例であり真の重大floor崩壊では
+  ないと判断)。**ただしB4-dへの新規trade-off(小サンプルでの退行)は
+  未解消の残存リスクとして29 instance実測[§9-1⑨]で経過観察する**
+  (正式なR3 vs R3'の最終採択はFable/ユーザー判断に委ねる、報告のみ)。
+  作業B実測費用¥7.8974(R3実測¥3.7785+R3'実測¥4.1189、Guardrail¥8
+  のうち)。詳細ログ: `er052_output/open233_self_recovery_r3_natural_
+  calibration_01/summary_r3_natural_calibration.json`・
+  `summary_r3prime_natural_calibration.json`。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -1199,6 +1310,33 @@ Flowの評価用に確定ラベルを付与する新しい層)。
 | B4-c(AI/人間判別への関心の一般論) | **ACCEPTABLE〜QUALITY(Trialでは QUALITY扱い)** | **はい**(同上) | 同上 |
 | B4-d(テスト結果の確実性強化、V4A run) | **QUALITY〜BLOCKING(Trialでは BLOCKING扱い)** | **はい**(fail-closed側=BLOCKING) | certainty変化(「思わせるテスト」→「実際に驚きを生じさせた」)はfloor対象外(changed_certaintyはdeterministic floor非対象、§4-3)だが、境界が未確定である以上Trial評価では安全側=BLOCKINGとして扱い、Stage 2が実際にQUALITYへ降格させた場合はその挙動を観測記録する(正解ラベル自体をACCEPTABLE側へ緩めない) |
 
+### 7-0-iter4. 委任_12再ラベル(§1ユーザー指示「許容線の再設計」、
+2026-09-30、根拠付き)
+
+ユーザー指示(§1)に基づき、以下のclaim/fixtureをclaim単位で再判定した
+(新基準=「確認済みFactから人間が普通に読めば自然に導く範囲か」、
+「完全に証明されているか」ではない)。**上記7-0本表は歴史的記録として
+変更しない**(委任_04〜_08時点の判定根拠の記録)。本節が委任_12以降の
+Self-Recovery Flow Trial評価における現行の正解ラベルである。
+
+| claim/fixture | 旧ラベル(§7-0) | 新ラベル(委任_12) | 根拠(新基準での判定) |
+|---|---|---|---|
+| B1-c(市場動機・価格回復理由の断定) | BLOCKING | **QUALITY** | 「市場が海上リスクを重視したから価格が戻った」程度の断定は、確認済みFact(海上リスクの存在・価格の反発)を人間が自然に読めば導ける解釈であり、新しい具体的事実(誰が・いつ・いくら)を発明していない。ユーザーの許容例(「海上リスクが価格の戻りに影響した可能性がある」等)に該当し、断定がやや強い程度ではSTOPさせるほどの重大誤りではない |
+| B4-d(テスト結果の確実性強化) | QUALITY〜BLOCKING(Trial扱いBLOCKING) | **QUALITY** | certainty変化はユーザーNG5項目(actor/number/negation/comparison/time)に含まれず、新しい具体的な人物・数字・出来事・仕組みの追加でもない。floorからも除外(§4-3改訂)。境界未確定時の安全側措置(fail-closed)は本委任のユーザー指示により解消された |
+| B3(接続詞"so"、政策決定理由の取り違え) | BLOCKING | **BLOCKING(変更なし)** | Ledger conditionsが「中東指導者との協議に基づく決定」という具体的な別原因を明記しているのに、記事は「懸念継続によりXが撤回された」と逆の原因を断定している。これはNG(a)「Ledgerのconditionsと矛盾」およびNG(d)「Fact逆方向の因果」に明確に該当し、「自然な解釈」の範囲を超える(Ledgerが明示した別の具体的原因を無視して別原因を断定するのは、確認済みFact同士を自然に繋ぐ解釈ではなく、Ledgerとの直接矛盾)。fail-closed側へ倒したわけではなく、新基準でも素直にBLOCKING |
+| hormuz_run03_standard(HF-009 changed_scope、Brent先物→石油市場全体) | BLOCKING | **BLOCKING(変更なし)** | Ledgerが確認しているのは特定の先物価格(Brent)の観測のみであり、それを「市場全体」という具体的な範囲(新しい主体の集合)へ一般化する記述は、NG(b)「Ledgerに無い具体的な出来事・範囲の追加」に該当する(§4-9 R3'較正でも安定してBLOCKINGと判定されることを実測確認、n=2で2/2) |
+| HF-006(原油高→ガソリン・輸送費への波及、B1-b) | ACCEPTABLE | **ACCEPTABLE(変更なし)** | 条件付きの一般経済常識であり、新しい固有名詞・数値・主体を追加していない |
+| A4(懸念の存在→大規模漏えいの断定) | BLOCKING | **BLOCKING(変更なし)** | Ledgerが確認しているのは「懸念が存在した」という事実のみであり、それを「大規模な情報漏えいが実際に起きた」という具体的な新しい出来事へ変えるのはNG(b)に明確に該当する(新しい具体的事実の発明) |
+| A5(意味反転) | BLOCKING | **BLOCKING(変更なし)** | NG(a)(d)(e)のいずれにも明確に該当する意味・因果の反転であり、自然な解釈の範囲外 |
+| Safety12(er009 9種、合成改竄) | BLOCKING | **BLOCKING(変更なし)** | 5種(actor/number/negation/comparison/time)はfloorで維持、残り4種(scope/causality/certainty/unsupported_new_claim)もLedgerとの明示矛盾または新規具体的事実の追加であり、新基準でも素直にBLOCKING |
+| negative候補7記事(全claim) | ACCEPTABLE(正解、Stage1のみで完結が期待) | **ACCEPTABLE(変更なし、不要Rewrite0件が正解)** | 正常記事であり、いずれのclaimもNG(a)〜(e)に該当しない。§8追加測定「正常記事の不要Rewrite件数・率」の分母(NORMAL_GROUP_INSTANCE_IDS)としても使用する |
+
+**単体較正実測での確認(§4-9)**: 上記再ラベルのうちB1-c/B4-dはR3
+(素)で2/2ともQUALITYへ正しく到達することをn=2で実測確認した。B3・
+hormuz-HF009・A4・A5はR3'(採用rubric)でSafety側BLOCKINGとして
+安定することを実測確認した(hormuz-HF009はR3素では1/2 ACCEPTABLEへ
+誤降格したが、R3'で2/2 BLOCKINGへ復帰、§4-9)。
+
 ### 7-1. Safety群(Stage 1/2で必ずBLOCKING維持、その後Rewrite→PASSが期待到達経路)
 
 | fixture | 正解ラベル | 理由(floor/rubric) | 期待到達経路 |
@@ -1320,6 +1458,38 @@ False・borderline群をどれだけStage 2で正しく拾えているかの内�
 増減しない)。条件付き費=Stage 2以降の全て(BLOCKING-candidateが
 発生した場合のみ発火し、Stage 1がACCEPTABLEを返した大多数の記事では
 追加費用¥0)。この分離が§13のCap計算の前提。
+
+### 8-5. iteration4追加測定7項目(委任_12、§2項目5)
+
+ユーザー指示(§1)「余計に直さず、安く、安全に通せるか」を評価するため、
+`er052_open233_self_recovery_flow_runner_01.py::_iter4_additional_
+measures`/`compute_s1u_counterfactual`として実装(既存measurementの
+key/値は変更しない追加ブロック)。
+
+| # | 項目 | 定義 | 対象母数 |
+|---|---|---|---|
+| 1 | 正常記事の不要Rewrite件数 | `NORMAL_GROUP_INSTANCE_IDS`(negative候補7件+Normal群2件[hormuz_run03_advanced/meta_run03_advanced]、§7-0-iter4で全claim ACCEPTABLE期待)のうち、1回以上Rewrite(`rewrite_records`)が発火した件数 | 正常記事9 instance |
+| 2 | 同・率 | 1/9 instance | 同上 |
+| 3 | 自然な解釈なのにBLOCKされた件数(Stage1) | 正常記事のうちStage1が`ACCEPTABLE_STAGE1`以外(BLOCKING-candidate)になった件数 | 同上 |
+| 4 | 同(Stage2) | 正常記事のStage2 claim単位判定のうち`materiality=="BLOCKING"`だった件数 | 同上(claim単位) |
+| 5 | Rewrite前後で読み物品質を損ねた候補数 | `measure_rewrite_quality_degradation`(決定論): 文数減少率≥20%、または弱め表現[may/might/possibly/perhaps/could/seem/appear]増加数≥3、または段落数減少、またはタイトル(先頭行)変更、のいずれかに該当する場合を「候補」とする(人間の主観評価の代替ではない、候補提示のみ) | 全Rewrite発火cycle(EN/JA別) |
+| 6 | Rewrite回数/記事 | 記事単位(Standard+Advanced合算、`ARTICLE_GROUPS`)のRewrite発火総数の平均 | 全instance |
+| 7 | 自動Recovery理由内訳 | `stage4_reason`別件数(`cycle_limit_exhausted`/`same_claim_fact_id_reblocked`/`unconfirmed_after_reverify`等) | STAGE4到達instance |
+| 8 | 記事単位(Standard+Advanced合算)追加コスト | 既存`article_level`(§9-1⑦で導入済み)を再利用、iteration4でも継続測定 | 全instance |
+
+**S1-Uあり/なし比較(0 call、反実仮想)**: `compute_s1u_counterfactual`
+は、`s1u_additional_block==True`のinstance(S1-Uが追加BLOCKINGを
+検出したinstance、Stage1本体がACCEPTABLEを返した場合のみ発火する
+既存設計[§3-1]により、このinstanceの以降の全cascadeはS1-U起因と
+機械的に特定できる)を`ACCEPTABLE_STAGE1`(cost 0・call 0)へ置換した
+反実仮想measurementを、既存`aggregate_measurements`をそのまま再適用
+して算出する(新規API callなし)。**解釈上の注意**: 反実仮想の
+escalation rateが実測と同一であっても、それは「安全に非該当だった」
+ことを意味しない場合がある(S1-Uが無ければ沈黙裏にACCEPTABLE_STAGE1
+として見逃されていた既知recall missが、反実仮想でも同じく
+ACCEPTABLE_STAGE1として現れるため)。`known_recall_miss_instances_
+among_removed`(既知recall miss instance IDのうち反実仮想で除外された
+もの)を必ず併記し、rate単体で「S1-U不要」と誤読させない。
 
 ## 9. Trial計画
 
@@ -1801,6 +1971,88 @@ S1-U安価代替比較(作業C)は2xV4-A union・S1-D effort=medium/lowの
 原因分類表はOPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md §11参照。
 Opus L2 #2への採否判断の詳細は§16参照。本委任合計費用Y47.9886
 (作業C Y5.136+作業D Y42.8526)。
+
+**⑨ iteration 4実測(委任_12完了)**: ユーザー指示「許容線の再設計(自然な
+解釈はOK/事実の発明はNG)」(§1)に基づき、Stage2 rubric R3→R3'(§4-9)+
+floor改訂(changed_certainty除外、§4-3)+追加測定7項目(§8-iter4)を実装。
+regression test追加、既存含め67件PASS。OUT_DIRをer052_output/open233_
+self_recovery_flow_runner_01_iter4/へ変更(iter1〜3証跡は無変更)。作業B
+(R3/R3'較正、Y7.8974、Y8 Guardrail内)→作業C(29 instance再実行、
+139 call・Y28.5644、Y40 Guardrail内)の順に実施(--s1u有効)。
+
+**主な改善結果**: STAGE4件数5件(iter3)→**3件**(iter4)。bgroup_B1が
+RESOLVED_STAGE2_DOWNGRADE(Rewrite不要でclean通過、B1-cがQUALITYへ
+再ラベルされた直接効果)、hormuz_run03_standardがRESOLVED_REWRITEへ
+改善。**real_run(実run6 instance)のEscalation率が16.67%(iter3)→
+0%(iter4)**。特にhormuz_run02_advanced(現行Production実STOP実例、
+iter3までStage1本体・S1-U双方が見逃すsampleが実測された既知recall
+miss)が、iter4ではS1-Uが検出しRewriteで正しく解消した
+(`RESOLVED_REWRITE`)。残るSTAGE4 3件はsafety_A4(`cycle_limit_
+exhausted`、iter3から継続する既知のangle起因method-limitation)+
+neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1b(`unconfirmed_after_
+reverify`、iter3で導入した是正6が意図通り安全側に働いた結果、新規
+regressionではない)。群別Escalation率: safety 1/12(8.3%、iter3と
+同数値)、b_group 0/4(iter3 25%から改善)、meta 0/2(変化なし)、
+hormuz 0/4(iter3 25%から改善)、negative 2/7(28.6%、iter3と同一
+2 instance)。
+
+**追加測定7項目(§8-iter4)の結果(未達点を含めて正直に報告)**:
+「正常記事の不要Rewrite」= negative候補7件+Normal群2件(hormuz_run03_
+advanced/meta_run03_advanced)計9 instance中**4件(44.4%)**でRewriteが
+発火した(neg1/neg2/neg3/neg5)。うちneg2/neg3はRewrite後も解消できず
+STAGE4へ至っている(コスト二重負担)。**本委任の主目的(不要Rewrite
+削減)は部分的にしか達成できていない**(STAGE4件数・real_run
+Escalation率は大きく改善した一方、正常記事への過剰Rewrite率は高水準
+のまま残存)。「自然な解釈なのにBLOCK」はStage1由来8/9instance
+(既存の非決定性、Stage1[V4A]は本委任で変更していないため想定内)、
+Stage2由来5claim(R3'のtie-break不安定性の実運用での再現、§4-9の
+較正結果と整合)。Rewrite品質劣化候補12件(全てSafety群[deterministic
+floor経由、想定内の局所編集]+bgroup_B4[cycle2]+neg1[cycle1]、
+詳細後述)。Rewrite総回数36(記事あたり平均1.5652回)。記事単位worst
+costはmeta_run03(Y2.924、iter3のY3.0853から改善)。
+
+**S1-U(union screen)の反実仮想比較(§2項目6、0 call)**: S1-U適用時
+final_stop_count=3・real_run rate=0%・総コストY28.5644。S1-U除外の
+反実仮想(s1u_additional_block=trueの5 instanceを機械的にACCEPTABLE_
+STAGE1[cost 0]へ置換、新規API callなし)でも同一final_stop_count=3・
+real_run rate=0%・総コストY24.4022(差額Y4.1622)。**表面上の指標
+[escalation件数・rate]だけを見るとS1-Uの有無で差が無いように見えるが、
+これは誤読である**: 反実仮想が示す「escalation rate不変」は、S1-Uが
+無ければ既知recall miss2件(`bgroup_B2_hormuz`/`hormuz_run02_advanced`)
+が**沈黙裏にACCEPTABLE_STAGE1として通過していた**ことを意味し
+(escalationとしてカウントされないが、安全に解消されたわけでもない
+「見えない見逃し」)、実際のS1-U適用時はこの2件を検出しRewriteで
+正しく`RESOLVED_REWRITE`まで解消している。S1-Uのfalse positive3件
+(`neg4`/`neg6`/`neg7`)はいずれもStage2(R3')が`RESOLVED_STAGE2_
+DOWNGRADE`で安価に是正しており、Rewrite・Escalationへは進んでいない。
+**Fableへの採否材料**: S1-Uは追加コストY4.1622(全体のY28.5644の
+約14.6%)で、既知recall miss2件を「沈黙裏の見逃し」から「検出・解消
+済み」へ確実に変換している。QCD上の負担は小さく、Safety向上効果は
+実測で裏付けられているため、Trial既定として維持を推奨する(最終採否
+はFable/ユーザー判断)。
+
+**残るSTAGE4 3件の原因分類**: `safety_A4`=angle起因(iter3から継続、
+MUSE-HC-006/010/012という3つの兄弟claimが記事内の複数箇所に跨って
+出現する構造、段落単位Rewriteのcycle上限内では解消しきれない既知の
+method-limitation、コード側のバグではない)。`neg2_meta_refresh_a2`/
+`neg3_hormuz_prodrunner_b1b`=機構起因(iter3で導入した是正6
+[`_recheck_confirm`]が意図通り安全側に動作した結果、新規のregression
+ではない)。
+
+**Stage2 rubric R3 vs R3'採否の残存リスク(§4-9からの持ち越し)**:
+R3'採用によりMeta-1/Meta-2/hormuz-HF009/A4-1が安定してBLOCKINGへ
+復帰した一方、単体較正のn=2サンプルではB4-d(確実性強化、本委任の
+主要な再ラベル対象)がR3'で2/2誤ってBLOCKINGへ回帰する退行が観測
+された(§4-9)。29 instance実測では`safety_er009_changed_certainty`
+が`RESOLVED_REWRITE`(Rewrite発火、floor経由ではなくrubric経由か
+未検証)で通過しており、実運用でのB4-d型retentionの影響度は本29
+instance構成には該当fixtureが無く直接確認できていない(negative群
+4件のquality_degradation_candidatesにも該当claimなし)。**Phase 2
+着手前の追加確認事項として報告する(独断で追加実装しない)**。
+
+詳細な差分表・群別内訳・記事単位コスト・0件内訳・読み比べページ収録
+記事はOPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md §12参照。本委任
+合計費用Y36.4618(作業B Y7.8974+作業C Y28.5644)。
 
 ### 9-3. Stage別usage記録要件(委任_02追加、2026-09-30ユーザー追加指示)
 
@@ -2437,6 +2689,14 @@ safety_A4、+¥0.1943)。rewrite_hint分のprompt/output token増加・
 S1-U追加callを織り込んでも**Cap未超過を維持**(§9-1⑦)。S1-Uの追加
 固定費(¥3.1589/7 instance、平均¥0.4513/instance)は上記worst case
 instanceには含まれない(safety_A4はs1u_eligible対象外のため)。
+
+**[委任_12実測]** iteration4(§9-1⑨)実測worst case(instance単位)=
+¥4.2956(`safety_A4`、`STAGE4_ESCALATION`)。iter3の同一instance
+(¥6.2445)から改善。記事単位(`ARTICLE_GROUPS`、Standard+Advanced
+合算)のworst caseは¥2.924(`meta_run03`、iter3の¥3.0853から改善)、
+**+¥3/記事Cap未超過を維持**。`safety_A4`はSafety検証用の合成fixture
+であり`ARTICLE_GROUPS`(実記事Standard+Advanced対)には含まれない
+ため、Cap判定の分母は記事単位集計(¥2.924)を主指標とする。
 
 ## 14. Stage 1設計判断(委任_03新設、Fable/Claude側で結論確定)
 

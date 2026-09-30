@@ -1,0 +1,78 @@
+{
+  "instance_id": "neg6_smallbag_div_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+          "origin": null,
+          "related_fact_id": "F004, F006",
+          "dev": {
+            "claim_in_article": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+            "origin": null,
+            "related_fact_id": "F004, F006",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load\n\nLooking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "false_positive",
+  "call_log": [
+    {
+      "label": "neg6_smallbag_div_b1b_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.4314,
+      "usage": {
+        "input_tokens": 5266,
+        "cached_input_tokens": 0,
+        "output_tokens": 4446,
+        "reasoning_tokens": 4174
+      },
+      "elapsed_seconds": 39.452,
+      "prompt_sha256": "0ea8cb570e55f219d307b3ebcca0cfb31002770e1b32ae13ce815e36ab89abc3"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1217,
+      "usage": {
+        "input_tokens": 5493,
+        "cached_input_tokens": 0,
+        "output_tokens": 453,
+        "reasoning_tokens": 403
+      },
+      "elapsed_seconds": 6.153,
+      "prompt_sha256": "d85aad85052147feba713db661e653cb19807106253a9574b58ec0bbfa75fa5c"
+    }
+  ],
+  "total_cost_jpy": 0.5531,
+  "total_calls": 2,
+  "elapsed_seconds": 45.639
+}
