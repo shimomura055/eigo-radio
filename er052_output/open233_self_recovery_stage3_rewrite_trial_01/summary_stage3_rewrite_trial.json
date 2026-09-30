@@ -1,0 +1,398 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 3.0363,
+    "cumulative_calls": 18,
+    "cumulative_errors": 0
+  },
+  "results": {
+    "delete_type": [
+      {
+        "sub_id": "B1-c",
+        "lang": "ja",
+        "exact_match_found": true,
+        "ng_sentence_deleted": "投資家が気にしているのは、20％の料金案が残るかどうかだけではない。米国とイランの間で攻撃が続いていること、海が封鎖される心配があること、タンカーが安全に航行できるか不安が残っていることだ。",
+        "recheck_overall_status": "LEDGER_DEVIATION",
+        "resolved": false,
+        "dangling_reference_check": {
+          "checked": true,
+          "starters_found_nearby": [
+            "これ",
+            "その",
+            "この"
+          ]
+        },
+        "call_log": [
+          {
+            "label": "delete_B1-c_check",
+            "cost_jpy": 0.3924,
+            "usage": {
+              "input_tokens": 5451,
+              "cached_input_tokens": 0,
+              "output_tokens": 3912,
+              "reasoning_tokens": 3276
+            },
+            "overall_status": "LEDGER_DEVIATION",
+            "prompt_sha256": "75578dba3404783ac0ef9ff74f2d965f53077de55d3ed69d219828b9351832e5"
+          }
+        ],
+        "total_cost_jpy": 0.3924
+      },
+      {
+        "sub_id": "B3",
+        "lang": "en",
+        "exact_match_found": true,
+        "ng_sentence_deleted": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+        "recheck_overall_status": "LEDGER_COMPLIANT",
+        "resolved": true,
+        "dangling_reference_check": {
+          "checked": true,
+          "starters_found_nearby": [
+            "that",
+            "it",
+            "so"
+          ]
+        },
+        "call_log": [
+          {
+            "label": "delete_B3_check",
+            "cost_jpy": 0.1413,
+            "usage": {
+              "input_tokens": 5312,
+              "cached_input_tokens": 0,
+              "output_tokens": 739,
+              "reasoning_tokens": 716
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "e59cb31e20f7a9881d74c7c98e827368572e4b47e2b3ee6f3bda6458b21ecf0a"
+          }
+        ],
+        "total_cost_jpy": 0.1413
+      },
+      {
+        "sub_id": "B4-a",
+        "lang": "en",
+        "exact_match_found": true,
+        "ng_sentence_deleted": "A person can take over when AI alone has trouble.",
+        "recheck_overall_status": "LEDGER_DEVIATION",
+        "resolved": false,
+        "dangling_reference_check": {
+          "checked": true,
+          "starters_found_nearby": [
+            "this",
+            "that",
+            "it",
+            "so"
+          ]
+        },
+        "call_log": [
+          {
+            "label": "delete_B4-a_check",
+            "cost_jpy": 0.5441,
+            "usage": {
+              "input_tokens": 5332,
+              "cached_input_tokens": 0,
+              "output_tokens": 5870,
+              "reasoning_tokens": 5040
+            },
+            "overall_status": "LEDGER_DEVIATION",
+            "prompt_sha256": "ba71a9d1ed0d02e71b79ffc7193c75d113b389b09980a6629e549c0efed61173"
+          }
+        ],
+        "total_cost_jpy": 0.5441
+      }
+    ],
+    "replace_type": [
+      {
+        "method": "E-1",
+        "sub_id": "er009_changed_actor",
+        "resolved": true,
+        "human_review_required": false,
+        "n_attempts": 1,
+        "final_text": "Kareem Haggag and Giovanni Paci analyzed more than 13 million credit card transactions in New York City taxis and found that passengers who happened to see menus with higher suggested tip rates left more money.",
+        "machine_verified": true,
+        "verify_desc": "'Harvard'が本文から消えていること",
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "Kareem Haggag and Giovanni Paci analyzed more than 13 million credit card transactions in New York City taxis and found that passengers who happened to see menus with higher suggested tip rates left more money.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "elapsed_seconds": 7.952,
+        "call_log": [
+          {
+            "label": "e1_er009_changed_actor_rewrite",
+            "cost_jpy": 0.0833,
+            "usage": {
+              "input_tokens": 4352,
+              "cached_input_tokens": 0,
+              "output_tokens": 191,
+              "reasoning_tokens": 143
+            },
+            "elapsed_seconds": 4.453,
+            "prompt_sha256": "d68d0ef463b7a85f4a9967b87bb91fa9a11edd4083ed3bc9c1e36915468ea4e2"
+          },
+          {
+            "label": "e1_er009_changed_actor_check",
+            "cost_jpy": 0.0995,
+            "usage": {
+              "input_tokens": 5888,
+              "cached_input_tokens": 0,
+              "output_tokens": 91,
+              "reasoning_tokens": 68
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "a8d2c59f92a477f377527c4fa31e5f2785cf6642258a4d189d46d49ec86ed43f"
+          }
+        ],
+        "total_cost_jpy": 0.1828
+      },
+      {
+        "method": "E-2",
+        "sub_id": "er009_changed_actor",
+        "resolved": true,
+        "n_attempts": 1,
+        "final_text": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "machine_verified": true,
+        "verify_desc": "'Harvard'が本文から消えていること",
+        "recheck_overall_status": "LEDGER_COMPLIANT",
+        "elapsed_seconds_generation": 2.319,
+        "call_log": [
+          {
+            "label": "e2_er009_changed_actor_rewrite",
+            "cost_jpy": 0.0721,
+            "usage": {
+              "input_tokens": 4175,
+              "cached_input_tokens": 0,
+              "output_tokens": 84,
+              "reasoning_tokens": 48
+            },
+            "elapsed_seconds": 2.318,
+            "prompt_sha256": "741ec5df72cc20facf017925ea2e0341359f542c0975f7cec35e4c43a1ce0910",
+            "output_text": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+          },
+          {
+            "label": "e2_er009_changed_actor_check",
+            "cost_jpy": 0.1014,
+            "usage": {
+              "input_tokens": 5876,
+              "cached_input_tokens": 0,
+              "output_tokens": 117,
+              "reasoning_tokens": 94
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "b402e2365bde1fa8c2b719fd79a155ae63e797a368b23dd8f68d21e14f595409"
+          }
+        ],
+        "total_cost_jpy": 0.1735
+      },
+      {
+        "method": "E-1",
+        "sub_id": "er009_changed_number",
+        "resolved": true,
+        "human_review_required": false,
+        "n_attempts": 1,
+        "final_text": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "machine_verified": true,
+        "verify_desc": "'13 million'が本文に出現すること",
+        "attempts": [
+          {
+            "attempt": 1,
+            "text": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "ledger_status": "LEDGER_COMPLIANT"
+          }
+        ],
+        "elapsed_seconds": 7.298,
+        "call_log": [
+          {
+            "label": "e1_er009_changed_number_rewrite",
+            "cost_jpy": 0.0742,
+            "usage": {
+              "input_tokens": 4345,
+              "cached_input_tokens": 0,
+              "output_tokens": 77,
+              "reasoning_tokens": 41
+            },
+            "elapsed_seconds": 3.399,
+            "prompt_sha256": "52d68396eea4c383de6f3c96d6680c11a6bcf8fc8c99ca9beda05f1f68112bee"
+          },
+          {
+            "label": "e1_er009_changed_number_check",
+            "cost_jpy": 0.0207,
+            "usage": {
+              "input_tokens": 5876,
+              "cached_input_tokens": 5873,
+              "output_tokens": 146,
+              "reasoning_tokens": 123
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "b402e2365bde1fa8c2b719fd79a155ae63e797a368b23dd8f68d21e14f595409"
+          }
+        ],
+        "total_cost_jpy": 0.0949
+      },
+      {
+        "method": "E-2",
+        "sub_id": "er009_changed_number",
+        "resolved": true,
+        "n_attempts": 1,
+        "final_text": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "machine_verified": true,
+        "verify_desc": "'13 million'が本文に出現すること",
+        "recheck_overall_status": "LEDGER_COMPLIANT",
+        "elapsed_seconds_generation": 1.71,
+        "call_log": [
+          {
+            "label": "e2_er009_changed_number_rewrite",
+            "cost_jpy": 0.0678,
+            "usage": {
+              "input_tokens": 4149,
+              "cached_input_tokens": 0,
+              "output_tokens": 34,
+              "reasoning_tokens": 0
+            },
+            "elapsed_seconds": 1.709,
+            "prompt_sha256": "e9e5b64d8882d43a4a31a2067a11ec9d32d540829b866090c23760bb64f7cc3a",
+            "output_text": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+          },
+          {
+            "label": "e2_er009_changed_number_check",
+            "cost_jpy": 0.0228,
+            "usage": {
+              "input_tokens": 5876,
+              "cached_input_tokens": 5873,
+              "output_tokens": 173,
+              "reasoning_tokens": 150
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "b402e2365bde1fa8c2b719fd79a155ae63e797a368b23dd8f68d21e14f595409"
+          }
+        ],
+        "total_cost_jpy": 0.0906
+      }
+    ],
+    "narrow_scope_type": [
+      {
+        "method": "J-1",
+        "sub_id": "hormuz_HF009_narrow_scope",
+        "ja_found": true,
+        "en_found": true,
+        "ja_revised": "このとき確認できるのは、撤回発表後にBrent原油先物が一時上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったということです。",
+        "en_revised": "What can be observed is that, after the withdrawal announcement, Brent crude futures briefly pared their gains but soon returned to a high level near where they had been before the announcement.",
+        "ja_check_overall_status": "LEDGER_COMPLIANT",
+        "en_check_overall_status": "LEDGER_COMPLIANT",
+        "resolved": true,
+        "outside_target_diff_ja": 0,
+        "call_log": [
+          {
+            "label": "j1_paired_rewrite",
+            "cost_jpy": 0.0759,
+            "usage": {
+              "input_tokens": 3386,
+              "cached_input_tokens": 0,
+              "output_tokens": 291,
+              "reasoning_tokens": 186
+            },
+            "elapsed_seconds": 3.397,
+            "prompt_sha256": "f379b30e3a0988ce4abd67cefa9114b38c94c2257e6dafd5018aa260cc4180fe",
+            "output_text": "{\"ja_revised\":\"このとき確認できるのは、撤回発表後にBrent原油先物が一時上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったということです。\",\"en_revised\":\"What can be observed is that, after the withdrawal announcement, Brent crude futures briefly pared their gains but soon returned to a high level near where they had been before the announcement.\"}"
+          },
+          {
+            "label": "j1_ja_factcheck_check",
+            "cost_jpy": 0.1497,
+            "usage": {
+              "input_tokens": 5576,
+              "cached_input_tokens": 0,
+              "output_tokens": 793,
+              "reasoning_tokens": 770
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "8cea4b5d097bb6bcb8bdb652081b49573192a35113b71a21b21f26f55ea22471"
+          },
+          {
+            "label": "j1_en_recheck_check",
+            "cost_jpy": 0.2313,
+            "usage": {
+              "input_tokens": 5373,
+              "cached_input_tokens": 0,
+              "output_tokens": 1874,
+              "reasoning_tokens": 1851
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "c11a8e429822bdce055685ea82f9a0e29050dc5809ebc3a51016a066764b3c14"
+          }
+        ],
+        "total_cost_jpy": 0.4569
+      },
+      {
+        "method": "J-2",
+        "sub_id": "hormuz_HF009_narrow_scope",
+        "ja_full_revised": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。報道時点では約二点六パーセント高で、一バレル八十五ドルを超えていました。\n\nこのとき確認できるのは、撤回の直後にブレント原油先物が一時的に上げ幅を縮めたあと、発表前に近い高い水準へ戻った、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。",
+        "en_revised_target": "## The Fee Proposal Is Gone, but Oil Prices Remain High\n\nOn July 13, a proposal suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the stated rationale was to recoup the cost of the United States keeping the strait safe. The fee would apply to all cargo passing through the strait. But key details—such as who would collect it, who would pay, and how it would be calculated—were still blank.\n\nIn other words, no fees had actually begun to be collected. What appeared on the scene was not a fully worked-out fee system, but a proposal bearing the figure of 20 percent.\n\nThen, the next day, the story took a sudden turn. Trump announced that he was dropping the 20 percent reimbursement fee proposal and replacing it with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive discussions” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge ships passing through the Strait of Hormuz, and that he did not like the idea of tolls at all. The 20 percent proposal had left the stage about a day after it appeared.\n\nNow the camera turns to the oil market.\n\nAfter the announcement that the fee proposal would be withdrawn and replaced, Brent crude futures temporarily pared their gains. Just as it seemed a price decline might be getting underway, they soon returned to levels close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat can be confirmed is that Brent crude futures temporarily pared their gains immediately after the withdrawal, then returned to levels close to those before the announcement. At the same time, attacks by the United States and Iran, a maritime blockade, and concerns about tanker safety continued.\n\nThe fee proposal disappeared. But news of tensions around the strait remained on the scene. Even as political statements changed dramatically, oil prices wavered briefly and then returned to high levels. What makes this episode interesting is that a single headline seemed unable to determine the story’s ending.",
+        "diff_stats_outside_target": {
+          "n_orig_non_target_sentences": 20,
+          "n_upd_non_target_sentences": 21,
+          "n_non_target_sentences_changed_symmetric_diff": 1
+        },
+        "ja_check_overall_status": "LEDGER_COMPLIANT",
+        "en_check_overall_status": "LEDGER_DEVIATION",
+        "resolved": false,
+        "call_log": [
+          {
+            "label": "j2_ja_full_regen",
+            "cost_jpy": 0.1261,
+            "usage": {
+              "input_tokens": 3876,
+              "cached_input_tokens": 0,
+              "output_tokens": 833,
+              "reasoning_tokens": 174
+            },
+            "elapsed_seconds": 6.052,
+            "prompt_sha256": "4a3be9207183438b4d2008099007164533fe70baaefae32cba7d7fb35e9e230f",
+            "output_text": "料金案は退場、原油高は居残り\n\n七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\nトランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、どう計算するのかといった大事な部分は、まだ空欄でした。\n\nつまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\nそして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\nさらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で舞台を降りたことになります。\n\nここで原油市場にカメラを向けると、次の場面が始まります。\n\n料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、発表前に近い高い水準へ戻りました。報道時点では約二点六パーセント高で、一バレル八十五ドルを超えていました。\n\nこのとき確認できるのは、撤回の直後にブレント原油先物が一時的に上げ幅を縮めたあと、発表前に近い高い水準へ戻った、ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、タンカーの安全への懸念が続いていました。\n\n料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、物語の結末まで決められなかったように見えるところです。"
+          },
+          {
+            "label": "j2_translate_target",
+            "cost_jpy": 0.1432,
+            "usage": {
+              "input_tokens": 765,
+              "cached_input_tokens": 0,
+              "output_tokens": 1673,
+              "reasoning_tokens": 1232
+            },
+            "elapsed_seconds": 16.191,
+            "prompt_sha256": "4eab7d91d3877e9874b9bef6b75ecc1d641ee798477d11f52e1ad80f39f2566d",
+            "output_text": "## The Fee Proposal Is Gone, but Oil Prices Remain High\n\nOn July 13, a proposal suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the stated rationale was to recoup the cost of the United States keeping the strait safe. The fee would apply to all cargo passing through the strait. But key details—such as who would collect it, who would pay, and how it would be calculated—were still blank.\n\nIn other words, no fees had actually begun to be collected. What appeared on the scene was not a fully worked-out fee system, but a proposal bearing the figure of 20 percent.\n\nThen, the next day, the story took a sudden turn. Trump announced that he was dropping the 20 percent reimbursement fee proposal and replacing it with trade and investment deals between Gulf countries and the United States. He said the decision was based on “very productive discussions” with Middle Eastern leaders.\n\nHe also told reporters that no one should charge ships passing through the Strait of Hormuz, and that he did not like the idea of tolls at all. The 20 percent proposal had left the stage about a day after it appeared.\n\nNow the camera turns to the oil market.\n\nAfter the announcement that the fee proposal would be withdrawn and replaced, Brent crude futures temporarily pared their gains. Just as it seemed a price decline might be getting underway, they soon returned to levels close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat can be confirmed is that Brent crude futures temporarily pared their gains immediately after the withdrawal, then returned to levels close to those before the announcement. At the same time, attacks by the United States and Iran, a maritime blockade, and concerns about tanker safety continued.\n\nThe fee proposal disappeared. But news of tensions around the strait remained on the scene. Even as political statements changed dramatically, oil prices wavered briefly and then returned to high levels. What makes this episode interesting is that a single headline seemed unable to determine the story’s ending."
+          },
+          {
+            "label": "j2_ja_factcheck_check",
+            "cost_jpy": 0.1233,
+            "usage": {
+              "input_tokens": 5577,
+              "cached_input_tokens": 0,
+              "output_tokens": 456,
+              "reasoning_tokens": 433
+            },
+            "overall_status": "LEDGER_COMPLIANT",
+            "prompt_sha256": "34b535d423e7fb9cac19e5b39e08c3e7331b756ebe3e8a404e02d19805dba3be"
+          },
+          {
+            "label": "j2_en_recheck_check",
+            "cost_jpy": 0.5672,
+            "usage": {
+              "input_tokens": 5773,
+              "cached_input_tokens": 0,
+              "output_tokens": 6076,
+              "reasoning_tokens": 5359
+            },
+            "overall_status": "LEDGER_DEVIATION",
+            "prompt_sha256": "f51b141c80a657c29e52227408745b1a4670638165063ac346ad66a326b8b4ad"
+          }
+        ],
+        "total_cost_jpy": 0.9598
+      }
+    ]
+  }
+}

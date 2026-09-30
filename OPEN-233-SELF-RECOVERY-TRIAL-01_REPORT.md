@@ -505,3 +505,80 @@ recovery_flow_01.md`(§4-7[新設]/§9-1③④/§13-4追記/§14-5[新設]/
 `er052_output/open233_self_recovery_phase1_step3_stage1_compare_01/`、
 `er052_output/open233_self_recovery_phase1_step4_stage2_unitcost_01/`。
 入力: 委任文全文(2026-09-30、委任_07)。
+
+## §7. Stage 2較正+Phase 1 ⑤(委任_08、2026-09-30、Stage2 rubric較正
+Trial実測+Stage3型別Rewrite成功率実測[E-1 vs E-2、J-1 vs J-2])
+
+**目的**: §6で発見されたStage2較正リスク(Real-but-fixable群B1-c/
+B4-aのQUALITY誤降格)への対応(作業A)と、Phase 1 ⑤(Stage3型別
+Rewrite成功率実測、作業B)を実施する。
+
+**作業A(Stage2 rubric較正Trial)**: Fable判定(Safety方向の較正、
+ユーザー指示の自律範囲)に基づき、新規`er052_open233_self_recovery_
+stage2_calibration_01.py`でR1(現行rubric、既存出力再利用0call)/
+R2(較正rubric、QUALITYを「Ledger記録済み観測同士の関係付け」に限定し
+新規具体的主張は最優先BLOCKING)/R3(R2+post-hoc floor)を13 batch
+call・23claim・n=2(26 call)で実測した。**結果**: Safety群
+(A2A3/A4/A5/Meta/hormuz、14 instance)はR2で100%BLOCKING維持
+(誤降格0件)。§6で発見された誤降格claim(B1-c/B4-a/B4-d、6 instance)
+はR1では0%正解(全てQUALITYへ誤降格)だったが、**R2で100%正解
+(全てBLOCKINGへ復帰)**。ACCEPTABLE群は4/4正解(over-block無し)。
+一方QUALITY群(B2/B4-b/B4-c)はR2で1/6のみ正解(over-block新規発生、
+Productivity低下のトレードオフ)。negative群はR2で7/8(87.5%)が
+非BLOCKINGへ復帰(Stage1単体は0%)。n=2判定一致率91.3%。**R3
+(floor)はSafety面の追加効果が確認されず、Productivity(B1-b・
+negative群)を悪化させたため不採用**。**確定構成: R2 rubric採用、
+R3 floor拡張は不採用**(設計書§4-8)。費用¥3.1717(Guardrail¥12)。
+
+**作業B(Phase 1 ⑤、Stage3型別Rewrite成功率実測)**: 新規
+`er052_open233_self_recovery_stage3_rewrite_trial_01.py`で、
+delete型(B1-c/B3/B4-a、決定論的削除)・replace_with_ledger_value型
+(er009_changed_actor/changed_number、E-1[er010骨格そのまま]vs E-2
+[最小1-shot])・narrow_scope型(hormuz_run03_standard HF-009、J-1
+[新規paired local rewrite]vs J-2[JA全文regen+局所指示])を実測した
+(18 call、¥3.0363、0 error)。**結果**: delete型は単一deviation記事
+(B3)でresolved=True、複数deviation記事(B1-c/B4-a)は他claim残存の
+ため記事全体Recheckは引き続きLEDGER_DEVIATION(claim単位再出現確認は
+次回実装項目)。replace型はE-1/E-2とも4/4(100%)が1 attempt目で解決、
+cost差僅少(escalation未発火のため差が出なかった)。**narrow_scope型
+はJ-1が完全解消(JA Check・EN Recheckとも LEDGER_COMPLIANT、対象文
+以外への影響=0、cost¥0.4569)、J-2は未解消(EN RecheckがLEDGER_
+DEVIATIONのまま残存、非対象文drift 1件検出、cost¥0.9598でJ-1の
+約2.1倍)**。**採用案: narrow_scope=J-1、replace_with_ledger_value=
+E-2第一候補(E-1はfallback)**(設計書§5-4-補2)。
+
+**[重要]hormuz narrow_scopeの解消可否**: **J-1により解消可能で
+あることを実測で確認した**。「両手法とも解消できない」という委任文
+記載の最大リスクシナリオは回避された。
+
+**スコープ上の限界(報告)**: J-1/J-2の「JA Fact Check」「EN
+Recheck」は真のProduction JA Fact Check/JA Writer Oカスケードでは
+なく、既存V4A variant checkerをJA/EN両方へ適用する近似で代用した
+(読み取り専用遵守・予算/時間制約による意図的縮小、Production非接続
+は維持)。§5-4が要求する汎用JA文分割モジュールも簡易実装に留めた
+(er010の`locate_target_sentence`がJA全文を1文と誤認識する不具合を
+実地で確認、既知の課題を実測で裏付け)。
+
+**費用**: 今回¥6.208(44 call、0 error)。Phase累計¥21.4963/総枠
+¥400、残¥378.5037。Guardrail(作業A¥12+作業B¥30=¥45)に対し実測
+¥6.208(約14%)、超過なし。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+Stage2較正はSafety方向の較正でありSafety緩和[条件2]に該当しない。
+Rewrite型別採用案[narrow_scope=J-1、replace=E-2]はTrial実測に基づく
+QCD判断でありProduction採用[条件4]には未到達)。
+
+**Production/API安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`に差分なし(新規`er052_*`
+ファイルのみ追加。`er010.generate_rewrite`のcostログ取得はTrial
+プロセス内のin-memoryモンキーパッチのみでディスク上のファイルは
+無変更)。API keyは環境変数のみ、保存jsonにはprompt本体ではなく
+prompt_sha256のみ記録。既存unittest全42件PASS(regression確認)。
+
+Status=`PHASE1_STEP5_DONE`。Evidence: `docs/pm/design_open233_self_
+recovery_flow_01.md`(§4-8[新設]/§5-4-補2[新設]/§9-1⑤/§13-11[新設]/
+冒頭Status)、`er052_open233_self_recovery_stage2_calibration_01.py`、
+`er052_open233_self_recovery_stage3_rewrite_trial_01.py`、
+`er052_output/open233_self_recovery_stage2_calibration_01/`、
+`er052_output/open233_self_recovery_stage3_rewrite_trial_01/`。
+入力: 委任文全文(2026-09-30、委任_08)。

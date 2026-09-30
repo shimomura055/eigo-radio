@@ -17,7 +17,16 @@ batch化・prompt caching実測、per-claim vs batch判定一致率100%・
 batch化でcost/latency改善、prompt caching費用削減率63〜64%実測、
 Stage2較正リスク[Real-but-fixable群のQUALITY誤降格]を新規発見・
 報告]完了。実測費用¥14.6598[Guardrail¥35のうち、Phase累計
-¥15.2883]。⑤⑥は次回委任予定、Production実装は未着手)。
+¥15.2883]。⑤⑥は次回委任予定、Production実装は未着手)。→
+**[委任_08更新]** `PHASE1_STEP5_DONE`(Stage2 rubric較正Trial実測・
+確定[§4-8、R2採用・R3floor不採用、Safety群14/14維持・既知miscalib
+6/6解消・negative群87.5%改善]、Phase 1 ⑤[Stage3型別Rewrite成功率
+実測、§5-4-補2]完了: delete型baseline測定、replace型はE-1/E-2とも
+100%[n=2]、**narrow_scope型[hormuz HF-009]はJ-1で完全解消・J-2は
+未解消[drift 1件検出]**。採用案: narrow_scope=J-1、
+replace_with_ledger_value=E-2第一候補(E-1はfallback)。実測費用
+¥6.208[Guardrail¥45のうち、Phase累計¥21.4963]。⑥[統合dry-run]は
+次回委任予定、Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -500,6 +509,76 @@ deterministic floorへchanged_scope/causality/unsupported_new_claimの
 一部を追加する等]はUSER_DECISION_REQUIRED相当の設計変更であり、
 Phase 1⑤の追加実測結果を待ってFable/ユーザーへ提示する)。
 
+### 4-8. Stage 2 rubric較正Trial実測・確定構成(委任_08)
+
+**位置づけ**: §4-7で発見されたStage2較正リスク(Real-but-fixable群
+B1-c/B4-aのQUALITY誤降格)への対応。Fable判定(2026-09-30委任文§1)
+「Safety方向の較正であり、Trial専用rubric/rule改善はユーザー指示の
+自律範囲」に基づき、rubric較正Trialを実行し確定した(Production
+Prompt`er003_v1_en_direct_vfl_01_generate.py`は無変更、Trial限定の
+`er052_open233_self_recovery_stage2_calibration_01.py`で完結)。
+
+**variant**: R1=現行rubric(既存出力の再利用、0 call)。R2=較正rubric
+(QUALITYを「Ledgerに記録された観測同士の関係付け・強調・言い回し」に
+限定し、「Ledgerに存在しない新規の具体的主張[製品・仕組み・動機・
+理由・因果・数値・主体・時期]は最優先でBLOCKING」を明文化、batch
+callで新規実測)。R3=R2のLLM出力+post-hoc floor(Stage1の
+`unsupported_new_claim=true`かつR2の`basis`が`ledger_claim`/
+`ledger_scope`/`ledger_conditions`/`notes_for_writer`のいずれでもない
+場合、BLOCKINGへ強制。新規callなし)。
+
+**評価セット**: 13 batch call・23 claim(B1[a/b/c]、B2、B3、
+B4[a/b/c/d]、Meta_run03_standard[2claim]、hormuz_run03_standard、
+negative候補7件中V4A BLOCKした4件、Safety群A2A3/A4/A5)、n=2で
+26 call実測。**実測費用¥3.1717**(Guardrail¥12、0 error)。
+
+**結果(claim単位、correct labelは§7-0確定ラベル)**:
+- **Safety群(A2A3/A4/A5・Meta・hormuz、7claim×2run=14 instance)**:
+  R2で**100%(14/14)BLOCKING維持**(誤降格0件)。
+- **§4-7で発見された誤降格claim(B1-c/B4-a/B4-d、3claim×2run=
+  6 instance)**: R1では6/6ともQUALITYへ誤降格(0%正解)だったが、
+  **R2では6/6ともBLOCKINGへ復帰(100%正解)**。既知の較正課題を解消。
+- **ACCEPTABLE群(B1-a/B1-b、2claim×2run=4 instance)**: R2で
+  4/4正解(over-block無し)。
+- **QUALITY群(B2/B4-b/B4-c、3claim×2run=6 instance)**:
+  R2で1/6のみ正解(B2が2試行中1回のみQUALITY、B4-b/B4-cは6/6とも
+  誤ってBLOCKINGへ)。**新規のover-block(Productivity低下)を確認**
+  (Safety強化の代償としての想定内トレードオフ)。
+- **negative群(4 fixture×2run=8 instance、正解=非BLOCKING)**:
+  R2で7/8(87.5%)が非BLOCKINGへ復帰(Stage1 V4Aは4/4ともBLOCKして
+  いたため、Stage1単体の非BLOCK率0%→R2適用後87.5%)。
+- **n=2判定一致率**: claim単位21/23(91.3%)で2試行とも同一ラベル
+  (不一致はB2・neg3の各1claim)。
+
+**R3(floor)の評価**: floorは**Productivityを大きく悪化させた**
+(B1-b[正解ACCEPTABLE]が2/2ともBLOCKINGへ誤って強制降格、negative
+4 fixtureのうち3件で少なくとも1試行がBLOCKINGへ誤って強制される)。
+一方、floorが無くてもR2単体で本評価セットのSafety群は100%維持できて
+おり、floorを追加する必要性がR2単体の実測で裏付けられなかった。
+**理由**: Stage1(V4A)は誤検出(over-detection)claimに対しても
+`unsupported_new_claim=true`を高頻度で付与するため(B1-b・negative
+候補ともに`unsupported_new_claim=true`)、この生フラグを盲目的な
+floor条件として使うと、Stage1側の誤検出をStage2が正しく訂正した
+結果までも強制的に上書きしてしまう。
+
+**確定構成(委任_08)**: **R2 rubricを採用し、R3 floor拡張[§1で
+Trial対象とした案]は不採用とする**(Safety面でR2単独で本評価セットの
+既知miscalibrationを解消でき、floor追加はPositive Safety効果が実測で
+確認されずProductivity損失のみが観測されたため)。§4-2のrubric本文を
+本節R2の文言へ更新し(`er052_open233_self_recovery_stage2_
+calibration_01.RUBRIC_R2`)、§4-3のdeterministic floorは既存6フラグ
+構成のまま変更しない。B1-c/B4-aをStage2で降格禁止とするregression
+fixtureとして`er052_open233_self_recovery_stage2_calibration_01_
+test_01.py`へ追加することを次回実装項目とする(本委任では実測のみ、
+テスト追加は次回)。**新規の残存課題(報告のみ)**: B4-b/B4-c型
+(Ledgerが確認した事象への一般論だが、Ledgerに無い一般的心理・因果を
+述べる境界事例)のover-block率が高い(0/6)。これはSafety側には
+振れていない(BLOCKINGはRewrite対象になるだけで誤って記事を止める
+わけではないため過剰品質コストの範疇)が、Productivity指標として
+継続観察が必要(Phase 2候補)。詳細ログ:
+`er052_output/open233_self_recovery_stage2_calibration_01/
+summary_stage2_calibration.json`。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -789,6 +868,101 @@ J-2は**新規モジュールを一切増やさず**、既存の「JA must-fix(�
   QCD上どちらが本Phaseの規模(Family X限定Trial)に見合うかを判断する
   材料にする。
 - **採否**: 本節時点では両論併記、決定しない(Phase 1 ⑤実測後に確定)。
+
+### 5-4-補2. Phase 1 ⑤実測: rewrite_kind別成功率(委任_08、E-1/E-2/J-1/J-2)
+
+**スコープ確定(委任_08時点の判断)**: §5-2の「EN局所RewriteはOrigin=
+translationのclaimにのみ適用」・§5-1の「origin=ja_sourceはJA側
+Rewriteを使う」という既存の経路選択ルールに従い、型ごとの担当経路を
+次のとおり確定した(delete型3claimはいずれもorigin=ja_source相当の
+ため決定論的削除の成否のみを共通baselineとして測定し、E-1/E-2の
+機構差はreplace_with_ledger_value型で、J-1/J-2の機構差はnarrow_scope
+型で検証する、これが実際に手法が分岐する型であるため)。
+
+**(a) delete型baseline(B1-c[JA]/B3[EN]/B4-a[EN]、決定論的削除、
+Recheck 1call/claim、計3call・¥1.0778)**: `locate_target_sentence`
+(er010既存、fallback overlap方式)で対象文を特定し文字列削除、
+Recheckで確認。**B3(単一deviation記事)は削除のみでLEDGER_COMPLIANT
+達成(resolved=True)**。**B1-c/B4-a(いずれも同一記事内に他の
+BLOCKING claimが複数存在する記事[B1=2claim、B4=4claim])は記事全体
+Recheckが引き続きLEDGER_DEVIATIONを返した(resolved=False)**が、
+これは対象claim以外の**未処理の別claimが記事に残っているための
+記事レベルの結果**であり、削除自体が対象claimの問題を解消したかは
+本実測の粒度(記事全体Recheckのみ)では独立に確認できていない
+(claim単位の再出現有無を見るには、Recheckのdeviations配列を
+claim単位で照合する追加実装が必要、次回実測項目の候補として記録)。
+E-2の追加後処理(削除箇所付近の代名詞・接続詞検出、¥0)は全3件で
+実行し、B1-c(「これ」「その」「この」)・B3(that/it/so)・B4-a
+(this/that/it/so)いずれも記事全体では該当語が検出された(削除箇所
+直後の文に限定した厳密な照合ではなく記事全体走査のため、削除と無関係な
+箇所の一致を含む可能性が高く、Trial観測値としての精度は限定的)。
+
+**(b) replace_with_ledger_value型(er009_changed_actor/changed_number、
+origin=translation相当、E-1 vs E-2、計4claim実行[各claim×2手法]・
+8call・¥0.4913)**: **両claim・両手法とも1 attempt目でresolved=True・
+machine_verified=True(4/4=100%)**。E-1(er010.rewrite_ng_item、
+既存3段階escalation骨格そのまま呼び出し)はchanged_actorで実在の
+研究者名(Kareem Haggag and Giovanni Paci、Ledgerのsource行から)を
+補って書き換え、E-2(最小1-shot Prompt)は`Researchers`という中立語へ
+置換した。両手法ともescalationは発火せず(1 attemptで解決)、
+**cost差は僅少**(changed_actor: E-1 ¥0.1828 vs E-2 ¥0.1735、
+changed_number: E-1 ¥0.0949 vs E-2 ¥0.0906)。本実測範囲(n=2claim)
+では**E-1の3段階escalation機構は発火せず、E-2の単純1-shotで同等の
+解決率・同等コストを達成**した(escalationの真価はより解決困難な
+claimでのみ発揮される可能性があり、本実測では判別できない)。
+
+**(c) narrow_scope型(hormuz_run03_standard HF-009、origin=ja_source、
+J-1 vs J-2、計7call・¥1.4167)**: **J-1(paired local rewrite、JA文
+±1+EN文±1を1callで同時編集→JA Fact Check[V4A variant代用]1call+
+EN Recheck[同]1call)がJA Check・EN Recheckとも`LEDGER_COMPLIANT`を
+達成し、hormuz narrow_scope claimを完全に解消した(resolved=True、
+対象文以外のJA文への影響=0を機械diffで確認、cost=¥0.4569・3call)**。
+**J-2(既存方式に近い代替、JA全文を「対象文以外は一字も変えない」
+指示付きで全文regen→対象文相当箇所を再翻訳→EN Recheck)は、JA Check
+は`LEDGER_COMPLIANT`だったが、EN Recheckが`LEDGER_DEVIATION`のまま
+残り、resolved=False(cost=¥0.9598・4call、J-1の約2.1倍)**。加えて
+機械diff(非対象文の集合比較)で**非対象文1件の変化を検出**
+(n_orig=20→n_upd=21、symmetric diff=1)。J-2は「対象文以外は一字も
+変えない」と明示指示したにもかかわらず、全文regenという性質上、
+軽微な drift が実際に発生することを実測で確認した。
+
+**結論(採用案)**: **narrow_scope型はJ-1を採用候補とする**(cost・
+解決率・JA/EN整合[drift 0件]のいずれでもJ-2を上回った)。
+**replace_with_ledger_value型はE-1/E-2いずれも同等の性能(本実測範囲
+では差が付かず)であり、実装コスト・保守性(E-2は3段階escalation
+骨格を持たずコードがより単純)を考慮するとE-2を第一候補とし、E-1を
+「E-2で1 attempt目に解決しない場合のfallback」として位置づける
+両論併記を維持する**(n=2という小標本のため、より解決困難なclaimでの
+追加実測[Phase 2候補]でE-1のescalationが真に必要になるケースが
+無いかを確認してから最終確定する)。
+
+**[重要、委任_08の主要な問いへの回答]hormuz narrow_scopeの解消可否**:
+**J-1により解消可能であることを実測で確認した**(§13-10課題2で
+「Cap超過リスク」として記録されていたhormuz型の解決手段が、Phase 1⑤
+実測で実証された)。「どちらの手法でも解消できない」という最大リスク
+シナリオは本実測では回避された。
+
+**実装スコープ上の限界(次回実装時の課題として明記)**:
+- 本実測のJ-1/J-2の「JA Fact Check」「EN Deviation Check(Recheck)」は、
+  真のProduction JA Fact Check(`er002_ja_web_research_r3`系、
+  web_search併用)・真のJA Writer O cascade
+  (`er019_family_x_ja_writer_o_r1_r2_01.py`、Original→R1→R2)は
+  一切呼び出さず、既存V4A variant checker(`er051_open233_checker_
+  trial_variant_01.run_trial_deviation_check`)をJA/EN両方の文面に
+  適用する近似で代用した(読み取り専用の遵守・予算/実装時間制約に
+  よる意図的なスコープ縮小、Production非接続であることは維持)。
+  §5-4が要求する「句点分割移植」相当の汎用JA文分割モジュールも、
+  本Trialでは対象文を直接指定する簡易実装に留めた(delete型B1-cの
+  `locate_target_sentence`[英語文末記号ベースの正規表現]がJA全文を
+  1文として誤認識する不具合を実地で確認、§5-4の課題認識が実測で
+  裏付けられた)。真のJ-1/J-2実装(Production配線候補とする場合)は、
+  上記2点([1]真のJA Fact Check/JA Writer O連携、[2]汎用JA文分割
+  モジュール)を別途実装する必要がある。
+- delete型のclaim単位再出現確認(記事全体Recheckではなく、対象claimの
+  issueが個別に再検出されるかを見る)は本実測で未実装(次回実測項目)。
+
+詳細ログ: `er052_output/open233_self_recovery_stage3_rewrite_trial_01/
+summary_stage3_rewrite_trial.json`。
 
 ### 5-5. 継承するguard/retry/再検証(棚卸し§3の統合、[委任_06新設])
 
@@ -1142,15 +1316,18 @@ stage2_production_01.py`新規実装、§4-4確定入力どおり)を実測し�
 (B1-c/B4-a)がQUALITYへ誤降格される較正リスクを発見(S1-D実測と
 独立に同一方向の誤判定、詳細§4-7)。費用¥1.1364(12 call)。
 
-**⑤ Stage3型別Rewrite成功率実測(約¥8〜22)**: Stage 2でBLOCKING確定
-した候補のうちReal-but-fixable群(B1-c/B3/B4-a/B4-d)+Safety群の代表例
-(hormuz_run03_standard実データ+er009代表3〜4種)を対象に、`rewrite_
-kind`(delete/replace_with_ledger_value/narrow_scope)別に実際の
-Rewrite→機械検証→Recheckサイクルを実行する(Stage 1相当のRecheck
-callが新規発生するため有料)。paired local rewrite(§5-4、ja_source
-claim対象)とEN局所Rewrite(§5-2、translation claim対象)を型ごとに
-分けて実行する。想定件数: 約12〜18 cycle。**Guardrail**: 上限¥35、
-超過見込みでSTOP。
+**⑤ Stage3型別Rewrite成功率実測(約¥8〜22)** **[委任_08実測完了]**:
+delete型(B1-c/B3/B4-a、決定論的削除+Recheck)・replace_with_ledger_
+value型(er009_changed_actor/changed_number、E-1 vs E-2)・narrow_scope
+型(hormuz_run03_standard HF-009、J-1 vs J-2)を実測した。delete型は
+単一deviation記事(B3)でresolved=True、複数deviation記事(B1-c/B4-a)は
+記事全体Recheckが他claim残存のためLEDGER_DEVIATIONのまま(claim単位の
+再出現確認は次回実装項目)。replace型はE-1/E-2とも4/4(100%)が
+1 attempt目で解決、cost差僅少。**narrow_scope型はJ-1が完全解消
+(resolved=True、drift 0件)、J-2は未解消(EN Recheck LEDGER_DEVIATION
+のまま、非対象文drift 1件検出)**。採用案: narrow_scope=J-1、
+replace_with_ledger_value=E-2第一候補(E-1はfallback)。詳細は§5-4-補2。
+費用¥3.0363(18 call、Guardrail¥30のうち)。
 
 **⑥ 統合dry-run(小規模、費用は④⑤に準じる)**: ①〜⑤の結果を踏まえ、
 ①〜⑤の設計変更を反映したStage 1→2→3→Recheckの一連の流れを、
@@ -1176,6 +1353,13 @@ S1-D追加実測分を含むため)。④=¥1.1364(実測、確定。見積り�
 範囲内)。③④実測合計=**¥14.6598**。①〜④累計=**¥15.2883**
 (Phase累計、Guardrail¥400のうち)。⑤⑥は本委任(委任_07)未実施
 (次回委任で実施予定)。
+
+**[委任_08実測]** Stage2 rubric較正Trial(§4-8)=¥3.1717(26 call、
+Guardrail¥12)。⑤=¥3.0363(18 call、Guardrail¥30、見積り¥8〜22の
+下限を下回った。理由: E-1/E-2・J-1とも1 attempt目で解決しescalation
+未発火だったため)。委任_08合計=**¥6.208**。①〜⑤累計=
+**¥21.4963**(Phase累計、Guardrail¥400のうち、残¥378.5037)。
+⑥(統合dry-run)は本委任(委任_08)未実施(次回委任で実施予定)。
 
 - **モデル**: gpt-6-luna(前Phase Trial資産との直接比較のため統一、
   §4-6参照)。Production Stage 1のgpt-5.6-lunaとの差異は既知の
@@ -1754,6 +1938,27 @@ cycle1でJA全文Rewriteを使った場合はcycle2を発動せず直接Stage 4�
 [自動完結率は下がるがworst case費用を抑制できる])。いずれもSafety/
 自動完結率とのトレードオフを伴うため、Phase 1実測後にユーザー判断を
 仰ぐ。
+
+### 13-11. Phase 1⑤実測反映(委任_08、Stage3実単価確定)
+
+**実測値(§5-4-補2)**: `c_en_local`(EN局所Rewrite、replace型)は
+E-1/E-2とも1 attempt解決時¥0.09〜0.18/claim(rewrite1call+recheck
+1call)であり、§13-4の見積り¥0.15〜0.35/callの下限〜やや下回る水準
+(escalation不要のため見積りより安価)。JA側narrow_scope型の採用案
+J-1の実測costは**¥0.4569/cycle(3call: paired rewrite1+JA check1+
+EN recheck1)**であり、§13-9設計時の想定(paired local rewrite
+¥1.0〜1.5/cycle、旧案Bの1/3以下)をさらに下回った(実測は想定の
+約半分弱)。J-2(不採用)は¥0.9598/cycleでJ-1の約2.1倍、かつ
+未解決だったため採用しない。
+
+**Cap判定への示唆**: §13-6のworst case式`c_en_local`
+(¥0.15〜0.35/call)は実測¥0.09〜0.18/claimに、JA側paired local
+rewriteの実測¥0.4569は既存の想定¥1.0〜1.5/cycleより有利な側に
+置換できる見込みが得られた。ただし本実測はn=1〜2の小標本(claim単位
+escalation未発火のケースのみ)であり、§13-6のworst case式全体の
+再計算(cycle 2発火・escalation発火ケースを含む)は次回⑥(統合
+dry-run)実測後に確定する(本委任では実単価の部分置換候補の報告に
+留める)。
 
 ## 14. Stage 1設計判断(委任_03新設、Fable/Claude側で結論確定)
 

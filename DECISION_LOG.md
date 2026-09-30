@@ -13743,3 +13743,90 @@ recovery_flow_01.md`§4-7[新設]/§9-1③④/§13-4追記/§14-5[新設]、
 log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_07.md`、
 `er052_output/open233_self_recovery_phase1_step3_stage1_compare_01/`、
 `er052_output/open233_self_recovery_phase1_step4_stage2_unitcost_01/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Stage 2 rubric較正+Phase 1 ⑤実測
+(Stage3型別Rewrite成功率、E-1/E-2/J-1/J-2、委任_08、2026-09-30)
+
+**Fable判定**: §6で発見されたStage2較正リスク(Real-but-fixable群
+B1-c/B4AのQUALITY誤降格)は**Safety方向の較正**であり、Trial専用
+rubric/rule改善はユーザー指示の自律範囲(Safety緩和ではなく強化)。
+本委任で較正する。
+
+**作業A(Stage2 rubric較正Trial、新規`er052_open233_self_recovery_
+stage2_calibration_01.py`、13 batch call・23claim・n=2=26 call・
+¥3.1717)**: R1(現行rubric、既存出力再利用0call)/R2(較正rubric、
+QUALITYを「Ledger記録済み観測同士の関係付け・強調・言い回し」に限定し
+「Ledgerに無い新規の具体的主張[製品・仕組み・動機・理由・因果・数値・
+主体・時期]は最優先でBLOCKING」を明文化)/R3(R2+post-hoc floor:
+Stage1の`unsupported_new_claim=true`かつR2の`basis`が floor-safe
+[`ledger_claim`/`ledger_scope`/`ledger_conditions`/`notes_for_writer`]
+以外ならBLOCKING強制)を実測。
+
+**結果**: Safety群(A2A3/A4/A5/Meta/hormuz、14 instance)はR2で
+**100%BLOCKING維持**(誤降格0件)。§6発見の誤降格claim(B1-c/B4-a/
+B4-d、6 instance)はR1では0%正解(全てQUALITYへ誤降格)だったが、
+**R2で100%正解(全てBLOCKINGへ復帰)**。ACCEPTABLE群4/4正解。
+QUALITY群(B2/B4-b/B4-c)はR2で1/6のみ正解(**新規over-block、
+Productivity低下のトレードオフ**)。negative群はR2で7/8(87.5%)が
+非BLOCKINGへ復帰(Stage1単体は0%)。n=2判定一致率91.3%。**R3
+floorはSafety面の追加効果が確認されず、Productivity(B1-b・negative
+群の一部)を悪化させたため不採用と判断**。
+
+**確定構成: R2 rubric採用、R3 floor拡張は不採用**(設計書§4-8、
+§4-2のrubric本文をR2文言へ更新予定[次回実装]、§4-3の既存6フラグ
+floorは変更なし)。
+
+**作業B(Phase 1 ⑤、Stage3型別Rewrite成功率実測、新規`er052_
+open233_self_recovery_stage3_rewrite_trial_01.py`、18 call・
+¥3.0363)**: delete型(B1-c/B3/B4-a、決定論的削除)・
+replace_with_ledger_value型(er009_changed_actor/changed_number、
+E-1[er010骨格そのまま]vs E-2[最小1-shot])・narrow_scope型
+(hormuz_run03_standard HF-009、J-1[新規paired local rewrite]vs
+J-2[JA全文regen+局所指示])を実測。
+
+**結果**: delete型は単一deviation記事(B3)でresolved=True、複数
+deviation記事(B1-c/B4-a)は他claim残存のため記事全体Recheckは
+LEDGER_DEVIATIONのまま(claim単位再出現確認は次回実装項目)。
+replace型はE-1/E-2とも4/4(100%)が1 attempt目で解決、cost差僅少
+(escalation未発火のため差が出ず)。**narrow_scope型はJ-1が完全解消
+(JA Check・EN Recheckとも LEDGER_COMPLIANT、対象文以外への影響=0、
+cost¥0.4569)、J-2は未解消(EN RecheckがLEDGER_DEVIATIONのまま残存、
+非対象文drift 1件検出、cost¥0.9598でJ-1の約2.1倍)**。
+
+**採用案**: narrow_scope型=J-1採用。replace_with_ledger_value型=
+E-2第一候補(E-1はfallback、n=2の小標本のためPhase 2で追加実測後に
+最終確定)。**hormuz narrow_scopeの解消可否**: **J-1により解消可能
+であることを実測で確認した**(委任文記載の最大リスクシナリオ
+「どちらの手法でも解消できない」は回避された)。
+
+**スコープ上の限界(報告のみ、次回実装項目)**: J-1/J-2の「JA Fact
+Check」「EN Recheck」は真のProduction JA Fact Check(`er002_ja_web_
+research_r3`系)・真のJA Writer Oカスケード(`er019_family_x_ja_
+writer_o_r1_r2_01.py`)ではなく、既存V4A variant checkerをJA/EN両方の
+文面に適用する近似で代用した(読み取り専用の遵守・予算/実装時間制約に
+よる意図的なスコープ縮小、Production非接続は維持)。§5-4が要求する
+汎用JA文分割モジュールも簡易実装に留めた(er010の`locate_target_
+sentence`がJA全文を1文と誤認識する不具合を実地で確認、既知の課題を
+実測で裏付け)。
+
+**費用**: 今回¥6.208(44 call、0 error)。Phase累計¥21.4963/総枠
+¥400、残¥378.5037。Guardrail(作業A¥12+作業B¥30=¥45)に対し実測
+¥6.208(約14%)、超過なし。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+Stage2較正はSafety強化方向でありSafety緩和[条件2]に該当しない。
+Rewrite型別採用案はTrial実測に基づくQCD判断でありProduction採用
+[条件4]には未到達)。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`に差分なし。`er010.
+generate_rewrite`のcostログ取得はTrialプロセス内のin-memoryモンキー
+パッチのみ(ディスク上のファイルは無変更)。API keyは環境変数のみ、
+保存jsonはprompt_sha256のみ記録。既存unittest全42件PASS。
+
+Status=`PHASE1_STEP5_DONE`。詳細: `docs/pm/design_open233_self_
+recovery_flow_01.md`§4-8[新設]/§5-4-補2[新設]/§9-1⑤/§13-11[新設]/
+冒頭Status、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§7、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+08.md`、`er052_output/open233_self_recovery_stage2_calibration_01/`、
+`er052_output/open233_self_recovery_stage3_rewrite_trial_01/`。
