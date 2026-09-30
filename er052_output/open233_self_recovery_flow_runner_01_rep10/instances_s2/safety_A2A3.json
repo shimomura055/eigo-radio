@@ -1,0 +1,460 @@
+{
+  "instance_id": "safety_A2A3",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+            "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It adds a specific payer and presents that detail as part of the proposal, despite HF-003 stating that the payer was unspecified. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“The idea was that”",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-003",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "該当箇所: “The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” 支払義務者は未提示なので、「米国が海峡の安全確保に要する費用の償還として提案された」と範囲を狭め、貨物を運ぶ側が支払うとの断定を削除してください。参照: HF-003",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+            "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "body",
+          "target_not_locatable": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.8,
+          "difficult_word_ratio": 0.1037,
+          "word_count": 376
+        },
+        "stats_after": {
+          "avg_sentence_len": 18.4,
+          "difficult_word_ratio": 0.1087,
+          "word_count": 368
+        },
+        "sentence_len_increase": -0.4,
+        "difficulty_ratio_increase": 0.005,
+        "fragment_stats_before": {
+          "avg_sentence_len": 21.0,
+          "difficult_word_ratio": 0.0476,
+          "word_count": 21
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 13.0,
+          "difficult_word_ratio": 0.1538,
+          "word_count": 13
+        },
+        "fragment_sentence_len_increase": -8.0,
+        "fragment_difficulty_ratio_increase": 0.1062,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+-8.0,difficult_ratio+0.1062)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 47,
+        "hook_word_count_after": 47,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.8,
+          "difficult_word_ratio": 0.1037,
+          "word_count": 376
+        },
+        "stats_after": {
+          "avg_sentence_len": 18.4,
+          "difficult_word_ratio": 0.1087,
+          "word_count": 368
+        },
+        "sentence_len_increase": -0.4,
+        "difficulty_ratio_increase": 0.005,
+        "fragment_stats_before": {
+          "avg_sentence_len": 21.0,
+          "difficult_word_ratio": 0.0476,
+          "word_count": 21
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 13.0,
+          "difficult_word_ratio": 0.1538,
+          "word_count": 13
+        },
+        "fragment_sentence_len_increase": -8.0,
+        "fragment_difficulty_ratio_increase": 0.1062,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+-8.0,difficult_ratio+0.1062)"
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 47,
+        "hook_word_count_after": 47,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 20,
+        "sentence_count_after": 20,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 3,
+        "hedge_word_count_after": 3,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 9,
+        "paragraph_count_after": 9,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The 20 Percent Charge Left the Stage. Oil Worries Remained.\n\nIn the oil market, the lead role changed in a single day. First came a proposed 20 percent charge on all cargo passing through the Strait of Hormuz. The next day, the proposal disappeared from the stage. Normally, that might have brought some relief to crude oil prices.\n\nBut the market reacted differently. Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level. It was as if the market were saying, “The talk about the charge is over, but the story of the strait is not.” The fee was gone, yet the worry remained. To understand the turn, we need to look at what the charge was meant to do.\n\n### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.\n\n### The charge leaves, but the danger stays\n\nOn July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line\n\nThe fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+      "en_text_after_rewrite": "# The 20 Percent Charge Left the Stage. Oil Worries Remained.\n\nIn the oil market, the lead role changed in a single day. First came a proposed 20 percent charge on all cargo passing through the Strait of Hormuz. The next day, the proposal disappeared from the stage. Normally, that might have brought some relief to crude oil prices.\n\nBut the market reacted differently. Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level. It was as if the market were saying, “The talk about the charge is over, but the story of the strait is not.” The fee was gone, yet the worry remained. To understand the turn, we need to look at what the charge was meant to do.\n\n### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The proposal was to repay the United States for keeping the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.\n\n### The charge leaves, but the danger stays\n\nOn July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line\n\nThe fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+      "ja_text_before_rewrite": "二十パーセントは退場した。それでも原油の不安は残った\n\n原油市場で、主役が一日で交代しました。最初に登場したのは、ホルムズ海峡を通る貨物への二十パーセントの償還料です。ところが翌日、この案は舞台から消えました。普通なら、原油価格もひと安心しそうです。\n\nしかし、原油市場の反応は少し違いました。料金案が消えた直後に、価格は下がりかけました。ところがすぐに、高い水準へ戻ったのです。まるで市場が、「料金の話は終わっても、海峡の話は終わっていません」と見ていたようでした。\n\n始まりは七月十三日です。トランプ氏は、ホルムズ海峡を通るすべての貨物に、二十パーセントを求める案を示しました。アメリカが海峡の安全を守るために使う費用を、貨物を運ぶ側に返してもらうという考えです。\n\n海峡を通る荷物に、大きな料金が突然かかるかもしれない。原油もこの海峡を通るため、輸送に影響が出れば、価格が上がる可能性があります。市場が身構えたのは、このためです。\n\nところが七月十四日、トランプ氏は二十パーセント案を、湾岸諸国がアメリカと進める貿易や投資の案件に置き換えると発表しました。中東の指導者たちとの「非常に生産的な協議」が背景にあると説明しました。\n\nここで料金案は退場です。発表後、ブレント原油先物の上げ幅は一時縮まりました。ところが、ほどなく発表前に近い高い水準へ戻りました。報道時点では、一バレル八十五ドルを超え、約二・六パーセント高でした。\n\nなぜ下がり切らなかったのでしょうか。市場が見ていたのは、料金の有無だけではなかったからです。米国とイランの間では攻撃が続き、海上封鎖の懸念もあります。タンカーが安全に進めるのかという不安も消えていません。\n\nつまり、退場したのは料金案であって、海峡の危険ではありません。発表は一日で変わっても、船が安全に通れるかという現実は変わらない。原油市場の本当の主役は、料金ではなく、危険な航路そのものだったのです。遠い海峡の不安は、原油を通じてガソリンや物流の値段にもつながります。",
+      "ja_text_after_rewrite": "二十パーセントは退場した。それでも原油の不安は残った\n\n原油市場で、主役が一日で交代しました。最初に登場したのは、ホルムズ海峡を通る貨物への二十パーセントの償還料です。ところが翌日、この案は舞台から消えました。普通なら、原油価格もひと安心しそうです。\n\nしかし、原油市場の反応は少し違いました。料金案が消えた直後に、価格は下がりかけました。ところがすぐに、高い水準へ戻ったのです。まるで市場が、「料金の話は終わっても、海峡の話は終わっていません」と見ていたようでした。\n\n始まりは七月十三日です。トランプ氏は、ホルムズ海峡を通るすべての貨物に、二十パーセントを求める案を示しました。アメリカが海峡の安全を守るために使う費用を、貨物を運ぶ側に返してもらうという考えです。\n\n海峡を通る荷物に、大きな料金が突然かかるかもしれない。原油もこの海峡を通るため、輸送に影響が出れば、価格が上がる可能性があります。市場が身構えたのは、このためです。\n\nところが七月十四日、トランプ氏は二十パーセント案を、湾岸諸国がアメリカと進める貿易や投資の案件に置き換えると発表しました。この案は、米国が海峡の安全を守るためにかける費用を償還するものでした。\n\nここで料金案は退場です。発表後、ブレント原油先物の上げ幅は一時縮まりました。ところが、ほどなく発表前に近い高い水準へ戻りました。報道時点では、一バレル八十五ドルを超え、約二・六パーセント高でした。\n\nなぜ下がり切らなかったのでしょうか。市場が見ていたのは、料金の有無だけではなかったからです。米国とイランの間では攻撃が続き、海上封鎖の懸念もあります。タンカーが安全に進めるのかという不安も消えていません。\n\nつまり、退場したのは料金案であって、海峡の危険ではありません。発表は一日で変わっても、船が安全に通れるかという現実は変わらない。原油市場の本当の主役は、料金ではなく、危険な航路そのものだったのです。遠い海峡の不安は、原油を通じてガソリンや物流の値段にもつながります。",
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "both_ja_en_changed(paired_j1)",
+        "safety_fixture"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+            "issue": "The article adds a specific claim that the danger around the Strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not establish that downstream effect.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The claim adds an unverified downstream effect, so changed_fact and unsupported_new_claim are true. This claim also appears in the Japanese source, so the deviation was not introduced in translation.",
+            "related_fact_id": "HF-009",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A2A3_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0898,
+      "usage": {
+        "input_tokens": 6098,
+        "cached_input_tokens": 6095,
+        "output_tokens": 1022,
+        "reasoning_tokens": 849
+      },
+      "elapsed_seconds": 12.278,
+      "prompt_sha256": "5d15cc08ac7b97eae659d37c11c6c293a12565b9fa95695bcf3d0c4a1886a047"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-003_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1295,
+      "usage": {
+        "input_tokens": 3728,
+        "cached_input_tokens": 0,
+        "output_tokens": 905,
+        "reasoning_tokens": 888
+      },
+      "elapsed_seconds": 8.988,
+      "prompt_sha256": "03ad83201cf9d5d0870543d08843ecd564edd0359671ebb0424684c9bf4b7fba"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-003_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1246,
+      "usage": {
+        "input_tokens": 3508,
+        "cached_input_tokens": 0,
+        "output_tokens": 887,
+        "reasoning_tokens": 831
+      },
+      "elapsed_seconds": 10.427,
+      "prompt_sha256": "5d8a2c8751b2b1bf91ffdc3753413a47990e9e5f138eea62a5353f00cf0b1e9a"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-003_regen_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1945,
+      "usage": {
+        "input_tokens": 3780,
+        "cached_input_tokens": 0,
+        "output_tokens": 1724,
+        "reasoning_tokens": 1663
+      },
+      "elapsed_seconds": 14.762,
+      "prompt_sha256": "da747cfce6c35b44e45640897e004345aae84dc1f4e4a1992118e8c1d00b972c"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-003_regen_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1209,
+      "usage": {
+        "input_tokens": 3560,
+        "cached_input_tokens": 0,
+        "output_tokens": 829,
+        "reasoning_tokens": 767
+      },
+      "elapsed_seconds": 11.039,
+      "prompt_sha256": "ba955ac45a949593bd1e69b8e82415ec8e9f7c89232d0ed9234b30cce60064d3"
+    },
+    {
+      "label": "safety_A2A3_c1_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.1158,
+      "usage": {
+        "input_tokens": 1594,
+        "cached_input_tokens": 0,
+        "output_tokens": 1158,
+        "reasoning_tokens": 965
+      },
+      "elapsed_seconds": 11.521,
+      "prompt_sha256": "cfa9356c8f36c8b50c23f9140504772db4b1d1e7fcb1efab77ceb8fb786c0704",
+      "verdict": "REVIEW_REQUIRED"
+    },
+    {
+      "label": "safety_A2A3_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3716,
+      "usage": {
+        "input_tokens": 6519,
+        "cached_input_tokens": 0,
+        "output_tokens": 3433,
+        "reasoning_tokens": 3081
+      },
+      "elapsed_seconds": 34.956,
+      "prompt_sha256": "c19d201d32d51d75a666ef84300ad215a3c01d75145b2d905cd421a1d607fdef",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_A2A3_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.6252,
+      "usage": {
+        "input_tokens": 6724,
+        "cached_input_tokens": 0,
+        "output_tokens": 6625,
+        "reasoning_tokens": 5621
+      },
+      "elapsed_seconds": 65.457,
+      "prompt_sha256": "4a517556480c6651f2507ef95ff663b1581b1c35c66c35e11ca33104c42eba51",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A2A3_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1731,
+      "usage": {
+        "input_tokens": 5941,
+        "cached_input_tokens": 0,
+        "output_tokens": 1019,
+        "reasoning_tokens": 969
+      },
+      "elapsed_seconds": 12.13,
+      "prompt_sha256": "31e88dc77df11bdbf6362fa77c8800abf142d1f86ad2ae4da8e5c42235040e46"
+    }
+  ],
+  "total_cost_jpy": 1.945,
+  "total_calls": 9,
+  "elapsed_seconds": 181.641
+}

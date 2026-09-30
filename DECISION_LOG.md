@@ -14739,3 +14739,92 @@ open233_iter6_rewrite_disclosure_01.md`、`docs/pm/delegation_log/
 `er052_open233_self_recovery_precheck_01.py`、新規`er052_open233_
 self_recovery_flow_runner_01_rep9_representative_01.py`、`er052_output/
 open233_self_recovery_flow_runner_01_rep9/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: 委任_18残課題4点の是正+限定再試行
+rep10(委任_19、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_19: 委任_18の残課題4点の
+是正+限定再試行rep10。広いTrialは含めない)。
+
+**背景**: 委任_18のrep9(12 instance×n=2、Guardrail¥20到達)で新規観測
+された4点(局所QA基本形が未達/`hormuz_run03_standard`新規STAGE4/
+`neg3`両論併記が必要/safety_A2A3・A5のsample2未実行)の是正。
+
+**A-1(全文Recheck条件narrowingの検討→実施しない決定)**: 委任文は
+「paired J-1はラダー①〜③の局所変更なら`full_recheck_required`の条件
+(c)から外す」ことを求めていたが、調査の結果**narrowingを実施しない**
+ことに決定した。根拠: `hormuz_run03_standard`(rep9でcycle_limit_
+exhausted_after_reverifyへ至った新規観測)は、cycle1(初回発生)の
+時点でnarrowingを適用すると局所QA fastpath(対象文±1文のwindowしか
+見ない)が「解消」と誤判定しうる(記事の別箇所[見出し/one-line]に
+同一fact_idの問題が初めて存在することを構造的に検出できないため)。
+これはcycleループ自体を起動させず、本来STAGE4へ正しく到達していた
+はずの経路を消し、サイレントPASSを生む新規リスクである。代わりに
+新設条件(f)(`same_fact_id_reappeared_across_cycles`、mechanism非依存で
+全文Recheckへ回す)を追加したが、cycle1[初回]には無力なため(c)の代替
+にはならない。局所QA fastpath不発火の真因は条件自体ではなく
+`find_sentence_context`のlocateバグ(rep9で3試行中2件が失敗)と判明した
+ため、SequenceMatcher近似fallback(閾値0.85)で是正した。**委任文の
+narrowing指示とは異なる結論に至ったため、Fable/ユーザーへの判断材料
+として正直に報告する(design書§6-6・REPORT§19-1)**。
+
+**A-2(escalate_to_paragraph)**: 同一fact_idが過去cycleで既にBLOCKING
+だった場合、①単語・接続詞/③1文を飛ばし④段落水準から直接試す機構を
+実装した(cycle数の上限自体は変更しない)。rep10実測で`hormuz_run03_
+standard`が2/2 sample(rep9はsample1がSTAGE4)ともRESOLVEDへ改善した。
+ただし同一fact_idが別セクション[見出し/one-line]に分散する場合は
+段落単位のRewriteでは解決しない既知の限界(Phase2課題item8)は未解消
+(design書§6-6に正直に記録)。
+
+**A-3(neg3両論併記+sample2原因特定)**: Stage2のみn=3再現性測定(既存
+Stage1出力再利用、¥0.3096)で3/3 BLOCKING(floor+LLM独立一致、非flaky)
+を確認。claim「events...quickly returned」がLedgerの「continued」と
+矛盾するかについて、統語解釈上の両論(自然な緩い修飾句として読める
+可能性 vs 並置構文の直接的な時制反転)をdesign書§6-6・REPORT§19-3へ
+記録し、**決定はしない**(Fableへの判断材料)。sample2の
+`unconfirmed_after_reverify`は、confirm callが元claimの解消自体は
+認めつつ記事全体の再チェックで別の逸脱を検出したことによる
+fail-closedの正常動作と判明した(局所QA統合では解消しない構造的な
+理由も併記)。rep10のsample2では同一claimのconfirm callが
+`LEDGER_COMPLIANT`を返し解消しており、このconfirm call自体に
+非決定性があることも実測で確認した。
+
+**rep10実測**(限定7 instance[`hormuz_run03_standard`/`neg3_hormuz_
+prodrunner_b1b`/`bgroup_B3`/`hormuz_run02_advanced`/`safety_er009_
+changed_number`/`safety_A2A3`/`safety_A5`]×n=2、Guardrail¥13、実測
+¥12.3479): **14/14 instance-run完走、STAGE4_ESCALATION 0件**(rep9の
+2件[`hormuz_run03_standard`s1・`neg3`s2]から改善)。局所QA fastpath
+発火は0/14(選定7 instanceが全てpaired/floor/safetyのいずれかを含む
+複雑ケースだったため)。Safety側(`safety_A2A3`/`safety_A5`)は全cycle
+で`safety_fixture`条件により全文Recheckが維持され、disclosure §1-4-5
+で確認された新規BLOCKING検出能力を弱めていないことを機械確認した。
+
+**事故と復旧(正直な報告)**: A-3のneg3 n=3測定スクリプト実行時、
+`runner.save_budget_state`がモジュール変数`runner.BUDGET_STATE_PATH`
+(当時rep9用のパス)へ無条件に書き込む実装であることに気づかず、既存
+rep9の`budget_state_c233v_18.json`を一時的に上書きしてしまった。
+`git status`で検出し、`git checkout --`で即座に復旧・確認済み(rep9の
+証跡自体には影響なし、他の既存追跡ファイルへの意図しない書き込みが
+ないことも`git status`で確認済み)。再発防止のため当該スクリプトへ
+注意コメントを追記した。
+
+**unittest**: 新規14件(`TestFullRecheckRequiredRepeatFactId`/
+`TestFindSentenceContextFuzzyFallback`/`TestEscalateToParagraphLadder
+Skip`/`TestRepeatFactIdWiring`)+既存214件=**計224件全PASS**
+(regressionなし)。design書§6-6新設。
+
+**Gate判定**: 限定7 instance×n=2であり29 instance全量のGate判定に
+必要な母数を満たしておらず**広いTrialのGateは判定保留**(委任_18から
+変わらず)。USER_DECISION_REQUIRED非該当(6条件いずれも、A-1の
+narrowing非実施判断・A-3の両論併記はFable/ユーザーへの判断材料として
+提示)。費用: 作業A¥0.3096+作業B¥12.3479=本委任合計¥12.6575
+(Guardrail¥16内)。Phase累計¥317.8415+¥12.6575=**¥330.499**/
+総枠¥500、残¥169.501。Status=`REP10_ALL_7_INSTANCES_COMPLETE_
+STAGE4_ZERO`。詳細: `docs/pm/design_open233_self_recovery_flow_01.md`
+§6-6、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§19、`docs/pm/
+delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_19.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、新規
+`er052_open233_self_recovery_neg3_stage2_n3_01.py`/`er052_open233_
+self_recovery_flow_runner_01_rep10_representative_01.py`、
+`er052_output/open233_self_recovery_flow_runner_01_rep10/`、
+`er052_output/open233_self_recovery_neg3_stage2_n3_01/`。

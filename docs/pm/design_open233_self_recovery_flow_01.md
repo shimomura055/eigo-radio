@@ -1986,6 +1986,137 @@ DowngradeWiredIntoStage2`/`TestFullRecheckRequired`/`TestFindSentence
 Context`/`TestLocalQaFastpathWiring`/`TestBuildLedgerExcerpt`)**:
 既存154件(er052系4ファイル合計)+新規24件、全件PASS(詳細REPORT§18)。
 
+### 6-6. 全文Recheck条件の最小化調査(委任_19 A-1)+同一fact_id再出現時の
+ラダー前進(委任_19 A-2)+neg3両論併記(委任_19 A-3)
+
+**背景**: 委任文は「paired J-1は①〜③(語/一部/1文)の局所変更なら
+`full_recheck_required`の条件から外す」ことを求めていた。本節は、この
+narrowingを検討した結果、**実装せず条件(c)を維持する**という決定に
+至った経緯と根拠を記録する(disclosure §1-4-5の4件[safety_A2A3×2/
+safety_A5×1/meta_run03_standard s2×1]を取りこぼさないことに加え、
+本委任のrep9再調査で判明した5件目[`hormuz_run03_standard`sample1]を
+新たな反証として重視した)。
+
+**A-1捕捉表(disclosure 4件+新規1件が、narrowing後もどの条件で捕捉
+されるか)**:
+
+| # | instance/run | 元の捕捉条件 | narrowing(c)実装時の捕捉条件 | 結論 |
+|---|---|---|---|---|
+| 1 | `safety_A2A3` s1/s2 | (e)safety_fixture | (e)で維持(mechanism非依存) | 取りこぼしなし |
+| 2 | `safety_A5` s1 | (e)safety_fixture | (e)で維持 | 取りこぼしなし |
+| 3 | `meta_run03_standard` s2 | (d)floor claim(実測はfloor経由) | (d)で維持 | 取りこぼしなし |
+| 4(新規) | `hormuz_run03_standard` s1(cycle1、初回発生) | (c)blanket paired | **narrowing後は無条件放出**(cycle1は`repeat_fact_ids`が空のため新設(f)も不発火、ladder level=3_sentenceのため(a)も不発火) | **取りこぼす**(局所QAは対象文±1文しか見ないため、記事の別箇所[見出し/one-line]に同一fact_idの問題が初めて存在することを構造的に検出できない。fastpathがEN側だけを見て「解消」と誤判定し、cycleループ自体が起動せずSTAGE4_ESCALATIONに正しく到達していたはずの経路が消える=サイレントPASSの新規リスク) |
+
+**判断**: 4件目(新規)が「取りこぼす」ため、委任文§4のSTOP条件
+(「全文Recheck条件最小化で開示分析の4件のいずれかを取りこぼす」)の
+文言上は4件[disclosure記載分]のみが対象だが、**同じ性質のリスクが
+5件目として現に実測されたため、安全側にnarrowingを見送った**
+(`full_recheck_required`の条件(c)「`both_ja_en_changed(paired_j1)`」は
+ラダー水準に関わらず維持、コード上変更なし)。
+
+**新設(f)による多層防御**: 過去cycleで一度でもBLOCKINGだったfact_idが
+このcycleにも含まれる場合(`same_fact_id_reappeared_across_cycles`)、
+mechanism(single_text/paired問わず)を問わず全文Recheckへ回す条件を
+新設した。cycle1(初回発生)には効かない(4件目のケースはcycle1で
+発生するため(f)だけでは救えない、これが(c)を維持した理由)が、
+cycle2以降の同種再発(disclosure §1-4-5の55 instance-run中9件の
+「既出claimの再検出のみ」パターン)に対する追加の安全網として機能する。
+
+**locateバグの是正(fastpath不発火の真因)**: rep9実測(REPORT§18-4)で
+局所QA fastpathが3試行中2件失敗した原因を調査した結果、条件(a)〜(e)
+自体の問題ではなく、`find_sentence_context`(局所QA用)が使う文分割
+(`split_sentences_generic`)と`locate_target`が使う文分割
+(`locate_best_sentence`内の別regex)の方式不一致により、Rewrite後の
+`after_fragment`がexact substringとして再発見できないケースがあったことが
+濃厚と判明した(完全な再現はできなかったが、代替のSequenceMatcher近似
+[閾値0.85]をfail-closedで追加し、exact不一致時のみfallbackする)。
+
+**A-2: `escalate_to_paragraph`(同一fact_id再出現時のラダー前進)**:
+`hormuz_run03_standard`sample1でcycle2以降にfact_id=HF-009が別文言で
+再検出された際、①単語・接続詞/③1文の局所ラダーは既に効果不足と実証
+されたとみなし、④段落水準から直接試す(cycle数の上限[MAX_CYCLES/
+HARD_MAX_CYCLES]自体は変更しない、狭いラダー選択のみの変更)。
+
+**既知の限界(正直に記録)**: `hormuz_run03_standard`の実例は、cycle1〜2が
+本文(body)、cycle3が見出し/one-line要約という**別セクション**への
+分散であり、対象claimを含む段落単位のRewriteでは他セクションまでは
+直せない(Phase2課題item8、複数箇所分散Rewriteの根本解決ではない)。
+
+**rep10実測(REPORT§19)**: `hormuz_run03_standard`sample1がcycle2で
+`escalate_to_paragraph`発火(`full_recheck_required_reasons`に
+`same_fact_id_reappeared_across_cycles`を確認)、`ladder_level_used=
+"4_paragraph"`で解消し**STAGE4_ESCALATIONに至らなかった**(rep9では
+`cycle_limit_exhausted_after_recheck`でSTAGE4だった同一instanceが
+今回2/2 sampleとも解消)。段落単位のRewriteが結果的にcycle1で書き換えた
+文を含む段落全体を書き直したことで、cycle3で問題になっていた見出し/
+one-line要約側の言及とは別に、body側の言い換え耐性が上がったと推定
+されるが、これは`hormuz_run03_standard`のこの実行回でのみ確認された
+実測であり(non-determinism下での1回のn=2実測)、「別セクション分散は
+段落単位では解決しない」という上記の限界の論理自体を覆すものではない
+(次にこの限界が顕在化するfixtureが出た場合は同じ問題が起き得る)。
+
+**局所QA fastpath発火0件(rep9に続き未実証のまま)**: rep10で選定した
+7 instance(hormuz_run03_standard/neg3/bgroup_B3/hormuz_run02_advanced/
+safety_er009_changed_number/safety_A2A3/safety_A5)は、**全cycleで
+条件(a)〜(e)のいずれかが該当し、`local_qa_fastpath_attempted`は
+14 instance-run全てで`False`**(`find_sentence_context`のlocateバグ
+是正は単体テストでのみ検証済みで、実runでの効果測定機会は今回も
+得られなかった)。7 instanceがいずれも(paired J-1/floor/safety
+fixtureのいずれかを含む)複雑ケースとして選ばれたことが理由であり、
+Normal群の単純ケース(non-safety・non-floor・non-paired・単一claim)を
+含めれば発火する可能性はあるが、本委任の限定Trialでは未実測。
+
+**A-3: neg3(`neg3_hormuz_prodrunner_b1b`)のStage2 n=3再現性測定+両論
+併記**: HF-009のclaim「The fee plan left the stage, but the events
+driving oil prices—and the prices themselves—quickly returned.」に
+ついて、既存Stage1出力を再利用しStage2のみ3回実行した結果、**3/3が
+BLOCKING**(`llm_materiality`3/3ともBLOCKING、`floor_reason`3/3とも
+`deterministic_floor:changed_time`、費用¥0.3096)。floor起因ではあるが
+LLM自身も独立に3/3でBLOCKINGと判定しており、iteration4/5(QUALITY)との
+非決定性は本測定では再現しなかった(n=3という小標本のため、より広い
+非決定性が存在しない証明にはならない)。
+
+Ledger HF-009原文の確認(`er019_output/family_x_entertainment_
+production_runner_01/an3_t0_wiring_regression_01/hormuz/b1b/audit/
+deviation_checks/advanced_attempt2.json`由来のfixture): 「Brent先物が
+一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った」
+(価格は「戻った」と明記)、conditions:「撤回発表以外にも、米・イラン間の
+攻撃、海上封鎖、タンカー安全上の懸念が**継続していた**」。
+
+**両論併記(決定しない、Fableへの判断材料)**:
+- **QUALITY側の見方**: claim中の「the prices themselves...quickly
+  returned」はLedgerの「戻った」と直接整合する(Ledger支持あり)。
+  「the events driving oil prices ... quickly returned」の部分は、
+  並置構文("X, and Y, quickly returned")の一般的な英語読解として
+  「価格の背景にあった出来事(=材料そのもの)」を指すゆるい修飾句として
+  読める余地があり、「確認済みFact同士を自然につなぐ解釈」の範囲内という
+  見方も成立し得る。
+- **BLOCKING側の見方**: 最も自然な統語解釈では、並置された2つの主語
+  (events/prices)が同一動詞句(quickly returned)を共有し、**events
+  (=攻撃・海上封鎖・タンカー安全懸念)自体が「戻った(終息した)」と
+  明確に主張している**。Ledgerのconditionsは明示的に「継続していた」
+  (=終息していない)と記録しており、これは時制/status(継続 vs 終息)の
+  直接的な反転であり、スタイル上の曖昧さではなく事実の反転に該当する。
+  `changed_time`は決定論floorのNG5項目の1つであり、n=3全てでLLM自身も
+  独立に同意している。
+
+**sample2の`unconfirmed_after_reverify`分析**: `instances_s2/
+neg3_hormuz_prodrunner_b1b.json`のconfirm call(`recheck_confirm`)は
+`overall_status: LEDGER_DEVIATION`・`all_prior_issues_resolved: true`・
+`cite_or_release_released_count: 0`を返した。これは「元のBLOCKING claim
+(HF-009)自体はRewrite後に解消したとconfirm callが判定した」が「confirm
+call自身が記事全文を再チェックした結果、**別の**逸脱を検出した」ことを
+意味する(`en_ok`判定は`overall_status==LEDGER_COMPLIANT`も要求するため、
+別逸脱の存在だけでSTAGE4へ回る、fail-closedとして正しい動作)。生の
+`prior_issues_resolved`/`deviations`配列自体はinstance jsonに保存されて
+いないため、検出された「別の逸脱」の内容そのものは本委任では特定できて
+いない(再実行すれば特定できるが追加課金が必要なため見送った)。
+**この事例は局所QA統合では解消しない**: 局所QAは対象文±1文の
+windowしか見ないため、「元の対象claimとは別の、記事全体のどこかにある
+逸脱」を発見する手段を構造的に持たない。むしろこの事例は、全文Recheck
+(および今回のconfirm call)が持つ「記事全体を見る」という価値を裏付ける
+追加のEvidenceである。
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず

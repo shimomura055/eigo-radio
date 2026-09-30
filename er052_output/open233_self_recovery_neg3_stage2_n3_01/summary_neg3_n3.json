@@ -1,0 +1,91 @@
+{
+  "instance_id": "neg3_hormuz_prodrunner_b1b",
+  "fact_id": "HF-009",
+  "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+  "n_completed": 3,
+  "materialities": [
+    "BLOCKING",
+    "BLOCKING",
+    "BLOCKING"
+  ],
+  "blocking_count": 3,
+  "quality_or_acceptable_count": 0,
+  "runs": [
+    {
+      "run": 1,
+      "materiality": "BLOCKING",
+      "llm_materiality": "BLOCKING",
+      "basis": "ledger_conditions",
+      "floor_reason": "deterministic_floor:changed_time",
+      "rewrite_kind": "narrow_scope",
+      "cost_jpy": 0.1461,
+      "cumulative_jpy_after": 0.1461
+    },
+    {
+      "run": 2,
+      "materiality": "BLOCKING",
+      "llm_materiality": "BLOCKING",
+      "basis": "ledger_scope",
+      "floor_reason": "deterministic_floor:changed_time",
+      "rewrite_kind": "narrow_scope",
+      "cost_jpy": 0.0864,
+      "cumulative_jpy_after": 0.2325
+    },
+    {
+      "run": 3,
+      "materiality": "BLOCKING",
+      "llm_materiality": "BLOCKING",
+      "basis": "ledger_conditions",
+      "floor_reason": "deterministic_floor:changed_time",
+      "rewrite_kind": "narrow_scope",
+      "cost_jpy": 0.0771,
+      "cumulative_jpy_after": 0.3096
+    }
+  ],
+  "total_cost_jpy": 0.3096,
+  "guardrail_jpy": 0.5,
+  "call_log": [
+    {
+      "label": "neg3_n3_run1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1461,
+      "usage": {
+        "input_tokens": 6025,
+        "cached_input_tokens": 0,
+        "output_tokens": 657,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 9.854,
+      "prompt_sha256": "4140dbf819af600a43edd7d75c4c2ed8d54afcd3213b3cea01c86cdced2c9471"
+    },
+    {
+      "label": "neg3_n3_run2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0864,
+      "usage": {
+        "input_tokens": 6025,
+        "cached_input_tokens": 6022,
+        "output_tokens": 981,
+        "reasoning_tokens": 822
+      },
+      "elapsed_seconds": 12.598,
+      "prompt_sha256": "4140dbf819af600a43edd7d75c4c2ed8d54afcd3213b3cea01c86cdced2c9471"
+    },
+    {
+      "label": "neg3_n3_run3_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0771,
+      "usage": {
+        "input_tokens": 6025,
+        "cached_input_tokens": 6022,
+        "output_tokens": 862,
+        "reasoning_tokens": 704
+      },
+      "elapsed_seconds": 10.416,
+      "prompt_sha256": "4140dbf819af600a43edd7d75c4c2ed8d54afcd3213b3cea01c86cdced2c9471"
+    }
+  ]
+}

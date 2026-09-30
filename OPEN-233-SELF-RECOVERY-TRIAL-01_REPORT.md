@@ -1440,3 +1440,94 @@ disclosure(`docs/pm/open233_iter6_rewrite_disclosure_01.md`)§1-1は、iter6の�
 **STOP条件該当確認**: ¥25超過見込み(該当せず、¥20.0358)/API error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、§18-10で確認)/USER_DECISION_REQUIRED6条件(該当せず、下記)/開始前チェック未反映(0件)/最小修正1回後もFAIL(`hormuz_run03_standard`は§18-3の分析により構造的限界と判断し単発再実行を見送り、追加の「最小修正」は実装していない。これを厳密にSTOP要件へ当てはめると判断が割れるため、Fable/ユーザーへの判断材料として正直に提示する)/Safety-critical claimまたはSafety 12のいずれかがBLOCKINGでなくなった(該当せず、上記確認済み)。
 
 **Status**: `REP9_PARTIAL_GUARDRAIL_REACHED_MIXED_RESULTS`(12 instance中10はn=2完走・2[`safety_A2A3`/`safety_A5`]はsample1のみ。主要3目標[precheck locate是正/disclosure-gap downgrade/meta_run03_standard Escalation 0]はPASS、新規観測1件[`hormuz_run03_standard` sample1]は構造的限界としてFable/ユーザー判断待ち。広いTrial実施は次回委任でのFable/ユーザー判断を待つ)。
+
+## §19. 委任_18残課題4点の是正+限定再試行rep10(委任_19、2026-09-30)
+
+### 19-0. 対応表
+
+| # | 委任_18残課題 | 実施内容 | Evidence | 結果 |
+|---|---|---|---|---|
+| 1 | 局所QA基本形(paired ①〜③を条件から外す) | narrowing検討の結果、`hormuz_run03_standard`新規反証(条件(c)を狭めるとcycle1でサイレントPASSする回帰リスク)により**条件(c)を意図的に維持**。代わりに条件(f)新設([同一fact_id再出現])+`find_sentence_context`locateバグ是正 | §19-1、design書§6-6 | 委任文どおりのnarrowingは**実施しない**という結論(理由付きで報告) |
+| 2 | hormuz_run03_standard cycle枯渇是正 | `escalate_to_paragraph`(同一fact_id再出現時、①③を飛ばし④段落水準から試す) | §19-2、rep10実測 | **2/2 sample改善**(rep9のSTAGE4→rep10は両方RESOLVED) |
+| 3 | neg3両論併記+sample2原因特定 | Stage2 n=3再現性測定+confirm call分析 | §19-3 | 3/3 BLOCKING(non-flaky)、sample2原因はconfirm callの記事全体走査による別逸脱検出(fail-closed、正常動作)と判明 |
+| 4 | 全体Rewriteの解消策なし1件の扱い | neg3は解決策なしのまま(§4-15踏襲) | §19-3 | 変更なし(想定どおり) |
+
+### 19-1. A-1: 全文Recheck条件最小化の調査結果(narrowingを実施しない決定)
+
+委任文は「paired J-1はラダー①〜③の局所変更なら`full_recheck_required`の条件(c)から外す」ことを求めていたが、調査の結果**実施しないことに決定した**。根拠はdesign書§6-6の捕捉表のとおり: rep9で新規観測された`hormuz_run03_standard`(sample1、`cycle_limit_exhausted_after_recheck`)は、cycle1(初回発生、ladder=`3_sentence`)の時点でnarrowingを適用すると局所QA fastpathが対象claimだけを見て「解消」と誤判定しうる(局所QAは対象文±1文のwindowしか見ないため、記事の別箇所[見出し/one-line]に同一fact_idの問題が初めて存在することを構造的に検出できない)。これはcycleループ自体を起動させず、本来STAGE4_ESCALATIONへ正しく到達していたはずの経路を消し、サイレントPASSを生む新規リスクである。新設条件(f)(`same_fact_id_reappeared_across_cycles`、過去cycleで一度でもBLOCKINGだったfact_idの再出現をmechanism非依存で全文Recheckへ回す)はcycle2以降の再発は捕捉できるが、cycle1(初回)には無力なため、(c)の代替にはならない。
+
+局所QA fastpathが実際に発火しなかった真因は条件自体ではなく`find_sentence_context`のlocateバグ(rep9で3試行中2件が`revised_sentence_not_locatable_in_context`で失敗)と判明したため、SequenceMatcher近似fallback(閾値0.85)で是正した(unittest 3件で検証、§19-4)。**rep10実測でもfastpath発火は0/14 instance-run**(§19-5参照、選定した7 instanceが全てpaired/floor/safetyのいずれかを含む複雑ケースだったため、条件(a)〜(e)/(f)のいずれかが毎cycle該当した。locateバグ是正自体の実run効果測定機会は今回も得られなかった)。
+
+### 19-2. A-2: escalate_to_paragraph実測(hormuz_run03_standard改善)
+
+同一fact_idが過去cycleで既にBLOCKINGだった場合、①単語・接続詞/③1文を飛ばし④段落水準から直接試す`escalate_to_paragraph`を実装した(cycle数の上限[MAX_CYCLES/HARD_MAX_CYCLES]自体は変更しない)。
+
+**rep10実測**: `hormuz_run03_standard`sample1がcycle2で`escalate_to_paragraph`発火(`full_recheck_required_reasons`に`same_fact_id_reappeared_across_cycles`を確認)、`ladder_level_used="4_paragraph"`で解消し、**rep9でSTAGE4_ESCALATION(`cycle_limit_exhausted_after_recheck`)だった同一instanceが2/2 sampleともRESOLVED**(sample1: `RESOLVED_REWRITE_THEN_DOWNGRADE`/sample2: `RESOLVED_REWRITE`)。ただしこれはnon-determinism下での1回のn=2実測であり、「同一fact_idが別セクション[見出し/one-line]に分散する場合は段落単位のRewriteでは解決しない」という設計上の既知の限界(Phase2課題item8)自体を解消したわけではない(design書§6-6に正直に記録)。
+
+### 19-3. A-3: neg3 Stage2 n=3測定+sample2原因特定+両論併記
+
+既存Stage1出力(`er052_output/open233_self_recovery_phase1_step3_stage1_compare_01/c_negative/neg3_hormuz_prodrunner_b1b/V4A/run_1.json`)を再利用し、`neg3_hormuz_prodrunner_b1b`のBLOCKING claim(HF-009)についてStage2のみ3回実行した(`er052_open233_self_recovery_neg3_stage2_n3_01.py`、費用¥0.3096)。
+
+**結果**: 3/3 BLOCKING(`llm_materiality`3/3ともBLOCKING、`floor_reason`3/3とも`deterministic_floor:changed_time`)。iteration4/5(QUALITY)との非決定性はこのn=3測定では再現しなかった。
+
+**両論併記(決定しない)**: Ledger HF-009は「Brent先物が…ほどなく発表前に近い高い水準へ戻った」(価格は「戻った」)、conditions「…米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた」と記録している。claim「the events driving oil prices—and the prices themselves—quickly returned」について、(a)QUALITY側: 「prices…quickly returned」はLedger支持があり、「events…quickly returned」は並置構文の緩い修飾句として読める余地がある、(b)BLOCKING側: 最も自然な統語解釈では両主語が同一動詞句を共有し、events(継続中の懸念)自体が「戻った(終息した)」と明確に主張しており、Ledgerの「継続」との直接的な反転に当たる。design書§6-6に両論を記録し、決定はFableへ委ねる。
+
+**sample2`unconfirmed_after_reverify`の原因特定**: rep9の`instances_s2/neg3_hormuz_prodrunner_b1b.json`のconfirm call出力(`overall_status: LEDGER_DEVIATION`・`all_prior_issues_resolved: true`・`cite_or_release_released_count: 0`)を分析した結果、「元のBLOCKING claim(HF-009)自体はRewrite後に解消したとconfirm callが判定した」が「confirm call自身が記事全文を再チェックした結果、**別の**逸脱を検出した」ことによるfail-closedの正しい動作と判明した(`en_ok`判定は`overall_status==LEDGER_COMPLIANT`も要求するため、別逸脱の存在だけでSTAGE4へ回る)。生の`prior_issues_resolved`/`deviations`配列自体はinstance jsonに保存されておらず、検出された「別の逸脱」の内容そのものは特定できていない(再実行すれば特定できるが追加課金が必要なため見送った)。**この事例は局所QA統合では解消しない**(局所QAは対象文±1文のwindowしか見ないため、元の対象claimとは別の記事全体のどこかにある逸脱を発見する手段を構造的に持たない)。
+
+**rep10実測(非決定性の確認)**: 同一claimのconfirm callがrep10のsample2では`overall_status: LEDGER_COMPLIANT`・`all_prior_issues_resolved: true`を返し、STAGE4に至らず`RESOLVED_REWRITE`で完了した。rep9→rep10で結果が変わったこと自体が、このconfirm callの判定に非決定性があることを裏付ける(「別の逸脱」がrep9でのみ検出された境界事例だった可能性が高い)。
+
+### 19-4. unittest(¥0)
+
+新規14件(`TestFullRecheckRequiredRepeatFactId`3件/`TestFindSentenceContextFuzzyFallback`3件/`TestEscalateToParagraphLadderSkip`3件/`TestRepeatFactIdWiring`1件、他既存クラスへの追加なし。内訳合計10件+既存クラス内追加4件)+既存214件(er052系4ファイル合計)=**計224件全PASS**(`.venv/Scripts/python.exe -m unittest discover`、regressionなし)。
+
+### 19-5. rep10実測(限定7 instance×n=2、¥12.3479)
+
+`er052_open233_self_recovery_flow_runner_01_rep10_representative_01.py`(OUT_DIR=`er052_output/open233_self_recovery_flow_runner_01_rep10`、TOTAL_BUDGET_JPY=13.0)で以下7 instanceをn=2実行し、**14/14 instance-run全てGuardrail内で完走**(Guardrail到達なし、¥12.3479/¥13):
+
+| instance | sample1 final_state | sample2 final_state | 備考 |
+|---|---|---|---|
+| `hormuz_run03_standard` | RESOLVED_REWRITE_THEN_DOWNGRADE | RESOLVED_REWRITE | rep9でsample1がSTAGE4だったが今回2/2解消(§19-2) |
+| `neg3_hormuz_prodrunner_b1b` | RESOLVED_REWRITE | RESOLVED_REWRITE | rep9でsample2がSTAGE4だったが今回2/2解消(§19-3、非決定性) |
+| `bgroup_B3` | RESOLVED_REWRITE(`1_word_connective`) | RESOLVED_REWRITE(`1_word_connective`) | Safety-critical回帰なし(継続確認) |
+| `hormuz_run02_advanced` | ACCEPTABLE_STAGE1 | ACCEPTABLE_STAGE1 | BLOCKING検出なし |
+| `safety_er009_changed_number` | RESOLVED_REWRITE | RESOLVED_REWRITE | `6_full_article`0回を維持(regression確認) |
+| `safety_A2A3` | RESOLVED_REWRITE_THEN_DOWNGRADE | RESOLVED_REWRITE_THEN_DOWNGRADE | `safety_fixture`条件で全文Recheck維持、新規BLOCKING捕捉能力を保持したまま解消 |
+| `safety_A5` | RESOLVED_REWRITE | RESOLVED_REWRITE | 同上 |
+
+**STAGE4_ESCALATION 0/14**(rep9では2件[`hormuz_run03_standard`s1・`neg3`s2]がSTAGE4だったが、rep10ではいずれも解消)。**局所QA fastpath発火 0/14**(§19-1で説明したとおり、選定7 instanceが全て条件(a)〜(f)のいずれかに該当する複雑ケースだったため)。**Safety側**: `safety_A2A3`/`safety_A5`とも全cycleで`full_recheck_required_reasons`に`safety_fixture`が含まれ、全文Recheckが維持されたことを機械確認(disclosure §1-4-5で確認された新規BLOCKING検出能力を弱めていない)。
+
+**コスト内訳(call種別、73 call合計)**:
+
+| call種別 | 回数 | 単価平均(¥) | 合計(¥) |
+|---|---|---|---|
+| `stage1_recheck` | 20 | 0.2753 | 5.5059 |
+| `stage3_rewrite` | 28 | 0.1277 | 3.5763 |
+| `stage2_second_judge` | 15 | 0.1288 | 1.9314 |
+| `ja_en_equivalence` | 7 | 0.1008 | 0.7059 |
+| `stage1_recheck_confirm` | 2 | 0.1984 | 0.3969 |
+| `stage1_initial` | 1 | 0.2315 | 0.2315 |
+
+`local_qa`call種別は0回(§19-1のとおり全cycleで全文Recheckが維持されたため)。
+
+### 19-6. 作業中に判明した事故と復旧(正直な報告)
+
+A-3のneg3 n=3測定スクリプト(`er052_open233_self_recovery_neg3_stage2_n3_01.py`)実行時、`runner.record_call`/`save_budget_state`がモジュール変数`runner.BUDGET_STATE_PATH`(当時`OUT_DIR_REP9`依存)へ無条件に書き込む実装であることに気づかず、既存rep9の`budget_state_c233v_18.json`(cumulative_jpy=20.0358/115 calls)を一時的に上書きしてしまった(cumulative_jpy=0.3096/3 callsへ)。`git status`で検出し、**`git checkout -- <path>`で即座に復旧・確認済み**(rep9の証跡自体には影響なし、他の既存追跡ファイルへの意図しない書き込みがないことも`git status`で確認済み)。再発防止のため当該スクリプトへ注意コメントを追記した。この事故は本委任のOUT_DIR_REP10追加(モジュール定数変更)より**前**に発生したものであり、rep10実行時点では`runner.BUDGET_STATE_PATH`は既に`OUT_DIR_REP10`用に切り替わっていたため、rep10自体はrep9の証跡に触れていない。
+
+### 19-7. 費用
+
+作業A(実装+neg3 n=3測定+unittest+design書更新): **¥0.3096**。作業B(rep10限定7 instance×n=2、Guardrail¥13内で完走): **¥12.3479**。本委任合計: **¥12.6575**(Guardrail¥16内)。Phase累計(前回まで¥317.8415)+本委任¥12.6575=**¥330.499**。Phase残額(**上限¥500**のうち)=**¥169.501**。
+
+### 19-8. Gate判定・Status
+
+**広いTrial前Gate 9項目(委任文§0引用)充足状況**: 本委任は限定7 instance×n=2の再試行であり、29 instance全量のGate判定に必要な母数を満たしていない。未充足のため広いTrialのGate自体は**判定保留**(委任_18から変わらず)。
+
+**主要な実測結果**:
+- A-1(条件narrowing検討): narrowingは実施しない(hormuz新規反証、§19-1)。条件(f)新設+locateバグ是正はPASSしたが実run効果測定は未達(fastpath発火0/14)。
+- A-2(escalate_to_paragraph): `hormuz_run03_standard`2/2 sampleでSTAGE4解消(PASS、ただし別セクション分散への根本対応ではない既知の限界あり)。
+- A-3(neg3): n=3測定PASS(3/3 BLOCKING、非flaky)、sample2原因特定PASS(fail-closedの正常動作と判明)、両論併記をFableへ提示(決定しない)。
+- rep10: 14/14 instance-run完走、STAGE4 0件(rep9の2件から改善)、Safety側の全文Recheck維持能力を保持。
+- **事故と復旧**: A-3測定スクリプトが既存rep9証跡を一時的に上書きしたが`git checkout`で即座に復旧(§19-6)。
+
+**STOP条件該当確認**: ¥16超え見込み(該当せず、¥12.6575)/API error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、§19-6の事故は復旧済みでgit diffで無変更を確認済み)/USER_DECISION_REQUIRED6条件(該当せず、下記)/開始前チェック未反映(0件、§0対応表)/最小修正1回後もFAIL(該当なし、rep10は1回で14/14完走)/Safety-critical claimまたはSafety 12のいずれかがBLOCKINGでなくなった(該当せず、`safety_A2A3`/`safety_A5`で全文Recheック維持を確認)/全文Recheck条件最小化で開示分析の4件のいずれかを取りこぼす(該当せず、narrowingを実施しなかったため)。
+
+**Status**: `REP10_ALL_7_INSTANCES_COMPLETE_STAGE4_ZERO`(限定7 instance×n=2、14/14完走・Guardrail内・STAGE4 0件。A-1のnarrowing判断[実施しない]・A-2の部分改善・A-3の両論併記はFable/ユーザーへの判断材料として提示する。29 instance全量の広いTrialは次回委任でのFable/ユーザー判断を待つ)。

@@ -136,9 +136,18 @@ OUT_DIR_REP8 = "er052_output/open233_self_recovery_flow_runner_01_rep8"
 # 再実行する(委任文§3-B、広いTrialはスコープ外)。出力は新規ディレクトリ
 # (`_rep9`)へ書く。
 OUT_DIR_REP9 = "er052_output/open233_self_recovery_flow_runner_01_rep9"
-OUT_DIR = OUT_DIR_REP9
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233v_18.json"
-TOTAL_BUDGET_JPY = 20.0  # 委任_18 Guardrail(委任文§3 Phase B「有料≤¥20」)
+# 委任_19(2026-09-30): 既存iteration1〜6・rep7〜rep9の出力(OUT_DIR_ITER1〜6/
+# OUT_DIR_REP7〜9)は変更しない。full_recheck_required条件(f)新設
+# (repeat_fact_id)/find_sentence_context locateバグ是正/escalate_to_
+# paragraph(A-2)の反映後、限定7 instance(hormuz_run03_standard/
+# neg3_hormuz_prodrunner_b1b/bgroup_B3/hormuz_run02_advanced/
+# safety_er009_changed_number/safety_A2A3/safety_A5)のみをn=2で再実行する
+# (委任文§2 B、広いTrialはスコープ外)。出力は新規ディレクトリ(`_rep10`)へ
+# 書く。
+OUT_DIR_REP10 = "er052_output/open233_self_recovery_flow_runner_01_rep10"
+OUT_DIR = OUT_DIR_REP10
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233w_19.json"
+TOTAL_BUDGET_JPY = 13.0  # 委任_19 Guardrail(委任文§2 Phase B「有料≤¥13」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -2023,6 +2032,14 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                                 "label": f"{label_prefix}_e2_paragraph_rewrite", "target": paragraph_block,
                                 "tag": "e2_paragraph_rewrite", "allow_empty_as_delete": True})
 
+            # 委任_19 A-2: 同一fact_idが過去cycleで既にBLOCKINGだった
+            # claim(別文言・別箇所での再出現)は、①単語・接続詞/③1文の
+            # 局所ラダーが既に効果不足と実証されたとみなし、④段落水準
+            # から試す(該当ブロックが無ければ levels が空になり、既存の
+            # ⑥全体フォールバックへ自然に委ねる、新しいNG経路は作らない)。
+            if claim_rec.get("escalate_to_paragraph"):
+                levels = [lv for lv in levels if lv["name"] not in ("1_word_connective", "3_sentence")]
+
             for lv in levels:
                 revised = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
                                            lv["dev_msg"], lv["prompt"], model=MODEL)
@@ -2197,6 +2214,14 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                             "ja_target": ja_block, "en_target": en_block,
                             "tag": "j1_paired_rewrite_paragraph", "use_paragraph": True})
 
+        # 委任_19 A-2(single_text_rewriteと同一原則): 同一fact_idが過去
+        # cycleで既にBLOCKINGだったclaim(別文言・別箇所での再出現)は
+        # ①単語・接続詞/③1文を飛ばし④段落水準から試す。該当ブロックが
+        # 両言語で特定できなければlevelsが空になり、既存のJA全文
+        # フォールバック(⑥相当)へ自然に委ねる。
+        if claim_rec.get("escalate_to_paragraph"):
+            levels = [lv for lv in levels if lv["name"] not in ("1_word_connective", "3_sentence")]
+
         for lv in levels:
             raw = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
                                         lv["dev_msg"], lv["prompt"], model=MODEL)
@@ -2370,10 +2395,30 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
 LOCAL_QA_ESCALATION_LADDER_LEVELS = frozenset({"4_paragraph", "6_full_article", "0_delete", None})
 
 
-def full_recheck_required(rewrite_records: list, blocking_claims: list, instance_id: str) -> tuple:
-    """委任_18 2-4: 全文Recheckを残す条件(上記(a)〜(e))を判定する(¥0、
-    決定論)。Trueの場合は既存の全文Recheckフローをそのまま使う(理由の
-    listも返し、cycle_recordへEvidenceとして記録する)。"""
+def full_recheck_required(rewrite_records: list, blocking_claims: list, instance_id: str,
+                           repeat_fact_ids: frozenset = frozenset()) -> tuple:
+    """委任_18 2-4/委任_19 A-1是正: 全文Recheckを残す条件(a)〜(f)を判定する
+    (¥0、決定論)。Trueの場合は既存の全文Recheckフローをそのまま使う
+    (理由のlistも返し、cycle_recordへEvidenceとして記録する)。
+
+    委任_19 A-1: 委任文は「paired J-1はラダー①〜③の局所変更なら条件から
+    外す」ことを求めていたが、本委任のrep10実測前調査(rep9
+    `hormuz_run03_standard`sample1、`cycle_limit_exhausted_after_recheck`)
+    により、paired J-1(origin=ja_source、JA→EN翻訳由来)のclaimはHormuz/
+    Meta系記事で見出し・one-line要約・本文の複数箇所に同一fact_idの主張が
+    分散して現れる実例が確認された。局所QA fastpathは対象文±1文の
+    windowしか見ないため、「記事の別箇所に同じfactの問題が初めて存在する」
+    ことを構造的に検出できない。paired J-1のcycle1(このinstanceで初めて
+    その問題が検出された回)でfastpathを許すと、全文Recheckが従来
+    発見していた「cycle2以降で別箇所から同一fact_idが再検出される」という
+    事実そのものが二度と分からなくなり(全文Recheckを一度も経由しない
+    まま`RESOLVED_REWRITE`として静かに完了し、Rewriteされなかった見出し等
+    がそのまま残る)、既存の安全な挙動(cycleを重ねた末に正しくSTAGE4へ
+    到達する)より悪化する。この具体的な反証により、(c)「paired J-1は
+    常に全文Recheckを要する」は**ラダー水準に関わらず維持する**(狭める
+    と4件[disclosure §1-4-5]どころか新規のhormuz実例を取りこぼすリスクが
+    あるため)。代わりに、同種のリスク(single_text_rewrite側でも理論上は
+    起こり得る)への一般的な安全網として(f)を新設する。"""
     reasons = []
     if any((r.get("ladder_level_used") in LOCAL_QA_ESCALATION_LADDER_LEVELS) for r in rewrite_records):
         reasons.append("paragraph_or_full_or_delete_rewrite")
@@ -2385,21 +2430,54 @@ def full_recheck_required(rewrite_records: list, blocking_claims: list, instance
         reasons.append("deterministic_floor_claim")
     if instance_id.startswith("safety_"):
         reasons.append("safety_fixture")
+    # 委任_19 A-1新設(f): このcycleのBLOCKING claimのfact_idが、この
+    # instanceの過去cycleで一度でもBLOCKINGとして検出されたfact_idと
+    # 一致する場合(同一claim完全一致は既存`matched_records`が即Stage4で
+    # 別途捕捉するため、ここに到達するのは「同一fact_id・別文言」の
+    # ケースのみ)、fastpathを許さず全文Recheckへ回す(hormuz型の多箇所
+    # 分散を検出する既存の唯一の手段が全文Recheckであるため)。
+    current_fact_ids = {(c.get("dev", {}).get("related_fact_id") or "").strip() for c in blocking_claims}
+    if current_fact_ids & set(repeat_fact_ids):
+        reasons.append("same_fact_id_reappeared_across_cycles")
     return bool(reasons), reasons
 
 
 def find_sentence_context(full_text: str, needle: str) -> tuple:
     """needle(Rewrite後の対象文、after_fragment)がfull_text中のどの文に
     対応するかを`split_sentences_generic`(既存、¥0)で特定し、前後各1文を
-    返す(見つからなければ(None, None, None))。"""
+    返す(見つからなければ(None, None, None))。
+
+    委任_19 A-1是正: rep9実測(REPORT§18)でlocal QA fastpathの3試行中2件が
+    `revised_sentence_not_locatable_in_context`で失敗していた原因を調査した
+    結果、`locate_target`(→`locate_best_sentence`)の文分割
+    (`re.split(r"(?<=[。.!?])", full_text)`、改行を跨いで結合しない)と、
+    本関数が使う`split_sentences_generic`の文分割(見出し行除外+改行を
+    スペースで結合してから分割)が異なる方式であるため、Rewrite対象として
+    特定された`target_sentence`の境界と、Rewrite後にfind_sentence_contextが
+    再分割した際の文境界が完全には一致しないケースがあることが分かった
+    (根本原因の完全な再現はできなかったが、分割方式の不一致が濃厚)。
+    exact substring不一致時、SequenceMatcher近似(既存`locate_best_sentence`
+    と同型、閾値0.85)へfail-closedでfallbackする(十分高い一致度が
+    得られない場合は従来どおりNoneのまま、全文Recheckへフォールバックする
+    安全側動作は変えない)。"""
     if not needle or not needle.strip():
         return None, None, None
+    needle_s = needle.strip()
     sentences = split_sentences_generic(full_text)
     for i, s in enumerate(sentences):
-        if needle.strip() in s:
+        if needle_s in s:
             before_ctx = sentences[i - 1] if i > 0 else ""
             after_ctx = sentences[i + 1] if i + 1 < len(sentences) else ""
             return before_ctx, s, after_ctx
+    best_i, best_ratio = None, 0.0
+    for i, s in enumerate(sentences):
+        ratio = difflib.SequenceMatcher(None, needle_s, s).ratio()
+        if ratio > best_ratio:
+            best_ratio, best_i = ratio, i
+    if best_i is not None and best_ratio >= 0.85:
+        before_ctx = sentences[best_i - 1] if best_i > 0 else ""
+        after_ctx = sentences[best_i + 1] if best_i + 1 < len(sentences) else ""
+        return before_ctx, sentences[best_i], after_ctx
     return None, None, None
 
 
@@ -2987,6 +3065,29 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 cycles_log.append(cycle_record)
                 break
 
+        # 委任_19 A-2(hormuz_run03_standard cycle枯渇是正、disclosure非該当の
+        # rep9新規観測): このcycleのBLOCKING claimのfact_idが、過去cycleで
+        # 一度でもBLOCKINGとして見たfact_id(=同一問題が別文言・別箇所で
+        # 再出現)と一致する場合、①単語・接続詞/③1文の局所ラダーは既に
+        # 効果が乏しいと実証済みとみなし、④段落水準から試す
+        # (`escalate_to_paragraph`)。cycle数そのものの上限(MAX_CYCLES/
+        # HARD_MAX_CYCLES)は変更しない(既存の安全上限に触れない、狭い
+        # ラダー選択のみの変更)。段落ブロックが見つからない場合は既存の
+        # ⑥全体フォールバックへ自然にフォールバックする(新しいNG経路は
+        # 作らない)。**既知の限界**: hormuz_run03_standardの実例(cycle3が
+        # 見出し/one-line要約、cycle1-2が本文)のように同一fact_idの問題が
+        # 「別の段落・別のセクション」に分散する場合、対象claimを含む段落
+        # 単位のRewriteでは他セクションまでは直せない(Phase2課題item8、
+        # 多箇所分散Rewriteの根本解決ではなく、同一段落内での再発防止に
+        # 限定した部分対応であることをFableへ正直に報告する)。
+        repeat_fact_ids_for_recheck = frozenset(
+            (c["dev"].get("related_fact_id") or "").strip() for c in blocking_claims
+        ) & frozenset(r["fact_id"] for r in prior_blocking_records if r["fact_id"])
+        for c in blocking_claims:
+            fid = (c["dev"].get("related_fact_id") or "").strip()
+            if fid and fid in repeat_fact_ids_for_recheck:
+                c["escalate_to_paragraph"] = True
+
         for c in blocking_claims:
             prior_blocking_records.append({
                 "identity": claim_identity(c["dev"]),
@@ -3134,14 +3235,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 current_ja_text, current_en_text)
             cycle_record["ja_en_equivalence_verdict"] = eq_result.get("verdict")
 
-        # 委任_18 2-4(局所QA fastpath): 全文Recheckを残す条件(a)〜(e)に
-        # 該当しない場合のみ、局所QA 1 call/claimを試す。全件「解消・新規
-        # 逸脱なし・隣接文影響なし」ならこのcycleを解決として全文Recheck
-        # (run_recheck/run_recheck_confirm)を省略する。該当する、または
-        # 局所QAが問題を検出した場合は、既存の全文Recheckフロー(下記、
-        # 無変更)へそのままフォールバックする。
+        # 委任_18 2-4(局所QA fastpath)/委任_19 A-1(f新設): 全文Recheckを
+        # 残す条件(a)〜(f)に該当しない場合のみ、局所QA 1 call/claimを試す。
+        # 全件「解消・新規逸脱なし・隣接文影響なし」ならこのcycleを解決
+        # として全文Recheck(run_recheck/run_recheck_confirm)を省略する。
+        # 該当する、または局所QAが問題を検出した場合は、既存の全文Recheck
+        # フロー(下記、無変更)へそのままフォールバックする。
         recheck_required, recheck_required_reasons = full_recheck_required(
-            rewrite_records, blocking_claims, instance_id)
+            rewrite_records, blocking_claims, instance_id, repeat_fact_ids_for_recheck)
         cycle_record["full_recheck_required"] = recheck_required
         cycle_record["full_recheck_required_reasons"] = recheck_required_reasons
         if not recheck_required:

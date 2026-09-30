@@ -1908,5 +1908,169 @@ class TestBuildLedgerExcerpt(unittest.TestCase):
         self.assertEqual(excerpt, ledger)
 
 
+class TestFullRecheckRequiredRepeatFactId(unittest.TestCase):
+    """委任_19 A-1新設(f): 過去cycleで一度でもBLOCKINGだったfact_idが
+    このcycleにも含まれる場合、①水準の局所編集であっても全文Recheckを
+    要することを確認する(hormuz_run03_standard rep9実測の再発防止)。"""
+
+    def test_repeat_fact_id_requires_full_recheck_even_at_word_level(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None, "dev": {"related_fact_id": "HF-009"}}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "hormuz_run03_standard", frozenset({"HF-009"}))
+        self.assertTrue(required)
+        self.assertIn("same_fact_id_reappeared_across_cycles", reasons)
+
+    def test_non_repeat_fact_id_with_no_other_condition_does_not_require_full_recheck(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None, "dev": {"related_fact_id": "HF-009"}}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "hormuz_run03_standard", frozenset({"HF-999"}))
+        self.assertFalse(required)
+        self.assertEqual(reasons, [])
+
+    def test_default_repeat_fact_ids_is_empty(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None, "dev": {"related_fact_id": "HF-009"}}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "hormuz_run03_standard")
+        self.assertFalse(required)
+
+
+class TestFindSentenceContextFuzzyFallback(unittest.TestCase):
+    """委任_19 A-1是正: rep9実測(REPORT§18)でlocal QA fastpath 3試行中2件が
+    `revised_sentence_not_locatable_in_context`で失敗していた(exact
+    substring不一致)ことを受け、SequenceMatcher近似fallbackを追加した。
+    exactで見つかる場合の既存挙動は変えず、近似のみで見つかる/見つからない
+    ケースを確認する。"""
+
+    def test_exact_match_still_preferred(self):
+        text = "First sentence here. Second sentence here. Third sentence here."
+        before, target, after = runner.find_sentence_context(text, "Second sentence here.")
+        self.assertEqual(target, "Second sentence here.")
+
+    def test_near_match_with_whitespace_difference_found_via_fuzzy_fallback(self):
+        text = "First sentence here. Also, some calls could  need   user information. Third sentence here."
+        before, target, after = runner.find_sentence_context(
+            text, "Also, some calls could need user information.")
+        self.assertIsNotNone(target)
+        self.assertIn("some calls could", target)
+        self.assertEqual(before, "First sentence here.")
+        self.assertEqual(after, "Third sentence here.")
+
+    def test_dissimilar_needle_still_returns_none(self):
+        text = "First sentence here. Second sentence here."
+        before, target, after = runner.find_sentence_context(text, "Completely unrelated content about oil.")
+        self.assertIsNone(target)
+
+
+class TestEscalateToParagraphLadderSkip(unittest.TestCase):
+    """委任_19 A-2(hormuz_run03_standard cycle枯渇是正): claim_recに
+    `escalate_to_paragraph=True`が付与された場合、①単語・接続詞/③1文を
+    飛ばし④段落水準から直接試すことを、API呼び出しをmockして確認する
+    (¥0)。段落ブロックが見つからない場合はlevelsが空になり既存の⑥
+    フォールバックへ委ねる(新しいNG経路は作らない)ことも確認する。"""
+
+    def test_single_text_rewrite_skips_to_paragraph_level_when_escalated(self):
+        from unittest import mock
+
+        full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
+                     "## In one line\nA plan changed.\n")
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "problem"}, "escalate_to_paragraph": True,
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e2_paragraph_rewrite"):
+                return "Some sentence without the problem. Another sentence follows."
+            raise AssertionError(f"should skip directly to paragraph level, but called {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertEqual(result["ladder_level_used"], "4_paragraph")
+        self.assertEqual(calls, ["test_e2_paragraph_rewrite"])
+
+    def test_single_text_rewrite_falls_back_to_level6_when_paragraph_level_guard_fails_and_escalated(self):
+        from unittest import mock
+
+        full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
+                     "## In one line\nA plan changed.\n")
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "problem"}, "escalate_to_paragraph": True,
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e2_paragraph_rewrite"):
+                # guard抵触(元claim文言がそのまま残る)を再現し、⑥全体
+                # フォールバックへ落ちることを確認する。
+                return "Some sentence with a problem in it. Another sentence follows, unchanged."
+            if label.endswith("_fulltext_fallback"):
+                return "Some sentence without the problem. Another sentence follows."
+            raise AssertionError(f"unexpected call to {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertEqual(result["ladder_level_used"], "6_full_article")
+        self.assertEqual(calls, ["test_e2_paragraph_rewrite", "test_fulltext_fallback"])
+
+    def test_paired_rewrite_skips_to_paragraph_level_when_escalated(self):
+        from unittest import mock
+
+        en_full = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
+                   "## In one line\nA plan changed.\n")
+        ja_full = ("# タイトル\n\n問題のある文がある。もう一つの文が続く。\n\n"
+                   "## 一言でまとめると\n案が変わった。\n")
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": '"問題のある文がある。"', "dev": {"issue": "problem"}, "origin": "ja_source",
+            "escalate_to_paragraph": True,
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": en_full,
+                   "source_article_text": ja_full}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_j1_paired_rewrite_paragraph"):
+                return ('{"ja_revised": "問題のない文がある。もう一つの文が続く。", '
+                        '"en_revised": "Some sentence without the problem. Another sentence follows."}')
+            raise AssertionError(f"should skip directly to paragraph level, but called {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.paired_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, claim_rec)
+        self.assertEqual(result["ladder_level_used"], "4_paragraph")
+        self.assertEqual(calls, ["test_j1_paired_rewrite_paragraph"])
+
+
+class TestRepeatFactIdWiring(unittest.TestCase):
+    """委任_19 A-2: run_instanceのメインループが同一fact_id再出現を検出し
+    escalate_to_paragraphを付与すること、full_recheck_requiredへ
+    repeat_fact_idsを渡すことをソース検査で確認する(¥0)。"""
+
+    def test_run_instance_source_contains_escalation_wiring(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("escalate_to_paragraph", src)
+        self.assertIn("repeat_fact_ids_for_recheck", src)
+        self.assertIn("full_recheck_required(\n            rewrite_records, blocking_claims, instance_id, "
+                       "repeat_fact_ids_for_recheck)", src)
+
+
 if __name__ == "__main__":
     unittest.main()
