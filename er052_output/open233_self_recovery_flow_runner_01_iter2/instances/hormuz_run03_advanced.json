@@ -1,0 +1,117 @@
+{
+  "instance_id": "hormuz_run03_advanced",
+  "group": "hormuz",
+  "expected_group_label": "Normal群(§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+            "origin": null,
+            "related_fact_id": "HF-009",
+            "severity": "MAJOR",
+            "changed_actor": true,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_actor"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_caught_recall_miss": true,
+  "call_log": [
+    {
+      "label": "hormuz_run03_advanced_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.4778,
+      "usage": {
+        "input_tokens": 5430,
+        "cached_input_tokens": 0,
+        "output_tokens": 5005,
+        "reasoning_tokens": 4770
+      },
+      "elapsed_seconds": 51.386,
+      "prompt_sha256": "5235f64c864d7c1f29aba0c55af5e2bafd0a663fd7d215d4356680802909b38b"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1162,
+      "usage": {
+        "input_tokens": 4949,
+        "cached_input_tokens": 0,
+        "output_tokens": 492,
+        "reasoning_tokens": 440
+      },
+      "elapsed_seconds": 5.658,
+      "prompt_sha256": "bbf34e8b78f918e7035ec1d85b8850c62996100b09525bbc532cbbf84fc81699"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_fact:HF-009_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0746,
+      "usage": {
+        "input_tokens": 3226,
+        "cached_input_tokens": 0,
+        "output_tokens": 306,
+        "reasoning_tokens": 276
+      },
+      "elapsed_seconds": 3.791,
+      "prompt_sha256": "f892bc80bc2e5620b6f64f17d476c4e5f84f491d5365dc5821361abd93832fe2"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2089,
+      "usage": {
+        "input_tokens": 6429,
+        "cached_input_tokens": 0,
+        "output_tokens": 1378,
+        "reasoning_tokens": 1282
+      },
+      "elapsed_seconds": 11.952,
+      "prompt_sha256": "02369c818d83b76980006b886014ecca53b5db8132d700b7151d68e900544a64",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.8775,
+  "total_calls": 4,
+  "elapsed_seconds": 72.804
+}

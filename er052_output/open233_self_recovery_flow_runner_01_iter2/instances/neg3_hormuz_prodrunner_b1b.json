@@ -1,0 +1,126 @@
+{
+  "instance_id": "neg3_hormuz_prodrunner_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+            "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象文の引用: “The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.” 「events ... quickly returned」は、Ledgerでは関連する懸念が継続していたとされるため削除し、HF-009に沿って「撤回発表後、Brent先物は一時上げ幅を縮小したが、ほどなく発表前に近い高い水準へ戻った」と範囲を狭めてください。参照: HF-009。",
+          "floor_reason": "deterministic_floor:changed_time"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [],
+      "blocking_count": 0,
+      "non_blocking_count": 0
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1608,
+      "usage": {
+        "input_tokens": 5063,
+        "cached_input_tokens": 0,
+        "output_tokens": 1037,
+        "reasoning_tokens": 867
+      },
+      "elapsed_seconds": 10.487,
+      "prompt_sha256": "0019e0a14f399d8e41be1afde4d096023b9261d0cbcdcf38701c9989917a94c0"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_fact:HF-009_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0654,
+      "usage": {
+        "input_tokens": 3361,
+        "cached_input_tokens": 0,
+        "output_tokens": 161,
+        "reasoning_tokens": 125
+      },
+      "elapsed_seconds": 2.83,
+      "prompt_sha256": "0d161253a24718e6cf781162d99c5a85eef4dae1ed2b1952b986bf44fcef019b"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2689,
+      "usage": {
+        "input_tokens": 6706,
+        "cached_input_tokens": 0,
+        "output_tokens": 2087,
+        "reasoning_tokens": 1878
+      },
+      "elapsed_seconds": 18.593,
+      "prompt_sha256": "dd91c0af7e39c3702ec1bf79bb8e08a78859198aaf2d29faff79b2cd0293515b",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 0.4951,
+  "total_calls": 3,
+  "elapsed_seconds": 31.927
+}

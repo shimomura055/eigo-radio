@@ -1,0 +1,118 @@
+{
+  "instance_id": "safety_er009_changed_comparison",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+            "issue": "記事は、より高い推奨チップ率を見た乗客のほうが実際に多くチップを残したというLedgerの結果と、比較の方向を逆転させています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "F-004は高い推奨率を見た乗客がより多くチップを残したとするため、changed_comparisonと、それに矛盾するchanged_factが該当します。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "対象文の引用: “Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.” 修正指示: 「高い推奨チップ率のメニューを見た乗客は、より多くチップを残した」と、Ledgerの方向に置き換えてください。参照fact_id: F-004。",
+          "floor_reason": "deterministic_floor:changed_comparison"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:747c65cecc9dbd2e",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_comparison_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1098,
+      "usage": {
+        "input_tokens": 5095,
+        "cached_input_tokens": 0,
+        "output_tokens": 381,
+        "reasoning_tokens": 241
+      },
+      "elapsed_seconds": 5.545,
+      "prompt_sha256": "9613b506c92ebb06d12902436d2830c2200fdd9c408199e5709fe7041a3b80ed"
+    },
+    {
+      "label": "safety_er009_changed_comparison_c1_claim:747c65cecc9dbd_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0692,
+      "usage": {
+        "input_tokens": 4249,
+        "cached_input_tokens": 0,
+        "output_tokens": 32,
+        "reasoning_tokens": 0
+      },
+      "elapsed_seconds": 1.308,
+      "prompt_sha256": "aa8c39ab2f1760ac842d580cbb5ee2b80f6ff699493848df95a7ed669af3c198"
+    },
+    {
+      "label": "safety_er009_changed_comparison_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.12,
+      "usage": {
+        "input_tokens": 6228,
+        "cached_input_tokens": 0,
+        "output_tokens": 284,
+        "reasoning_tokens": 197
+      },
+      "elapsed_seconds": 2.954,
+      "prompt_sha256": "22f7b75ad5cd9c9bcf43aa72e807096eb15bde543e015e1a705294209a691f18",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.299,
+  "total_calls": 3,
+  "elapsed_seconds": 9.817
+}

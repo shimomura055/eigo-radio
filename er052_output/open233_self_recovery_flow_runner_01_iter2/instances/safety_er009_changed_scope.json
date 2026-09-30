@@ -1,0 +1,218 @@
+{
+  "instance_id": "safety_er009_changed_scope",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "issue": "タクシー研究の結果が全米のレストランでも直接確認され、レストラン画面の高い推奨率が客により多くチップを残させると因果的に断定している。Ledgerはレストランでのそのような因果確認を示していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-004の因果結果はニューヨーク市タクシーのクレジットカード利用者に関するもの。レストラン全国への拡張、レストラン客への主体の置き換え、およびレストラン画面の因果効果の断定はLedgerにない。F-011〜F-017の調査結果も自己申告等の記述的結果であり、直接の因果確認を裏付けない。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「higher suggested tip rates on restaurant screens cause customers to leave more money」を削除し、因果結果はF-004が記録するニューヨーク市タクシー研究の範囲に限定してください。F-015は記述的な時点比較であり、全国の飲食店で画面の提示率がチップ額を増やす因果関係や、タクシー研究の直接確認を裏づけていません。参照fact_id: F-004, F-015。",
+          "floor_reason": "deterministic_floor:changed_actor,changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:d3a7f9cf63dc204a",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide",
+          "origin": null,
+          "related_fact_id": "F-004",
+          "dev": {
+            "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide",
+            "issue": "Ledgerは、ニューヨーク市タクシーでの研究結果が全米のレストランでも確認されたとは示していない。タクシーでの因果結果をレストラン全国に拡張し、直接確認済みと述べている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-004の因果結果はニューヨーク市タクシーの利用者に関するもの。レストラン全国での直接確認はLedgerにないため、対象範囲と因果的な確実性を拡張した新規主張に当たる。",
+            "related_fact_id": "F-004",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study's results have now been directly confirmed in restaurants nationwide: In a New York City taxi study, passengers who happened to see menus with higher suggested tip rates left more., just as they did in the New York City taxi data.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “The taxi study's results have now been directly confirmed in restaurants nationwide” — 全国のレストランでタクシー研究の結果が直接確認されたという主張を削り、F-004に記録されたニューヨーク市タクシー研究の結果に範囲を限定してください。F-004は全国のレストランでの確認を裏付けていません。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F-004",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_scope_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1475,
+      "usage": {
+        "input_tokens": 5119,
+        "cached_input_tokens": 0,
+        "output_tokens": 856,
+        "reasoning_tokens": 688
+      },
+      "elapsed_seconds": 8.881,
+      "prompt_sha256": "e2db125def8f8497eff7ffd1c304b9c2fb0f8d58d58265525f1ad136f79f7df5"
+    },
+    {
+      "label": "safety_er009_changed_scope_c1_claim:d3a7f9cf63dc20_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0744,
+      "usage": {
+        "input_tokens": 4292,
+        "cached_input_tokens": 0,
+        "output_tokens": 90,
+        "reasoning_tokens": 62
+      },
+      "elapsed_seconds": 2.463,
+      "prompt_sha256": "af2b73719ab019a720d0c280f12ff19d9795486ecd57cc0652a5a7aa02796b64"
+    },
+    {
+      "label": "safety_er009_changed_scope_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2023,
+      "usage": {
+        "input_tokens": 6347,
+        "cached_input_tokens": 0,
+        "output_tokens": 1310,
+        "reasoning_tokens": 957
+      },
+      "elapsed_seconds": 11.972,
+      "prompt_sha256": "03fb950c28c9897832caf28ef1d19f6b22b9d00d70b157061438ddebaa7797b6",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_er009_changed_scope_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1309,
+      "usage": {
+        "input_tokens": 5101,
+        "cached_input_tokens": 0,
+        "output_tokens": 648,
+        "reasoning_tokens": 507
+      },
+      "elapsed_seconds": 7.648,
+      "prompt_sha256": "c2b15cce7d848bb62f8d4f69eb69345e1266044d1950a2c7752b8bd5d910a0a8"
+    },
+    {
+      "label": "safety_er009_changed_scope_c2_fact:F-004_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0732,
+      "usage": {
+        "input_tokens": 4254,
+        "cached_input_tokens": 0,
+        "output_tokens": 82,
+        "reasoning_tokens": 56
+      },
+      "elapsed_seconds": 1.838,
+      "prompt_sha256": "f22182441d41d12f9dae3be734a29c1f851ff3e023f0410bc2775eb7f7cac53f"
+    },
+    {
+      "label": "safety_er009_changed_scope_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1216,
+      "usage": {
+        "input_tokens": 6277,
+        "cached_input_tokens": 0,
+        "output_tokens": 295,
+        "reasoning_tokens": 190
+      },
+      "elapsed_seconds": 3.32,
+      "prompt_sha256": "ce63d1300095dbb5df182c66fcc58f002c4cb23a113f1e21c1ce5a1e6e1eaa25",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.7499,
+  "total_calls": 6,
+  "elapsed_seconds": 36.139
+}

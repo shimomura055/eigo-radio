@@ -1,0 +1,214 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "same_claim_fact_id_reblocked",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“People who asked Muse to make a call might think that AI was making it” and, more categorically, “They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“People who asked Muse to make a call might think that AI was making it” and, more categorically, “They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.”",
+            "issue": "The article moves from the Ledger-supported fact that the test began without proper disclosure to an assertion that users actually did not realize a human was making the call or had no way to know. The Ledger does not establish users’ actual awareness or what they learned during individual calls.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The claim about users actually being unaware is not established by the Ledger; it strengthens a lack-of-disclosure report into a claim about users’ knowledge. The Japanese source already makes this implication, so the origin is ja_source.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“in some cases” and “if this was not properly explained” appear immediately before the categorical claim that users encountered a human without realizing it.",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The issue was not that humans made the calls themselves. The issue was how to tell users who was speaking.\n\nPeople who asked Muse to make a call might think that AI was making it. But in some cases, a human was speaking. And if this was not properly explained, users had no way to know whether they were talking to AI or a person. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it. That was what was happening behind the scenes.\n\nAlso, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center. Meta employees pointed this out internally as a privacy concern.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所：「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません。AIの便利さを楽しんでいたら、いつの間にか電話の向こうに人間がいた。」利用者が実際にAIだと思っていた、相手が誰かを知る手段がなかった、または人間に気づかなかったという断定は削り、Ledgerで確認された「一部のテストで人間の契約スタッフが電話を担当し、適切な開示なしにテストを開始した」という範囲に狭めてください。参照：MUSE-HC-012。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "“if this was not properly explained, users had no way to know whether they were talking to AI or a person.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“if this was not properly explained, users had no way to know whether they were talking to AI or a person.”",
+            "issue": "The lack of proper disclosure does not establish that users had no way to identify who was speaking.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The Ledger supports that the test began without appropriate disclosure, but not the stronger assertion that users had no way to know who was speaking. The conditional wording does not establish that additional claim.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“might think” and “if this was not properly explained”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The issue was not that humans made the calls themselves. The issue was how to tell users who was speaking.\n\nPeople who asked Muse to make a call might think that AI was making it. But in some cases, a human was speaking. And if this was not properly explained, users had no way to know whether they were talking to AI or a person. In some tests, human contractors handled calls, and Meta acknowledged that starting the test without appropriate disclosure had been a mistake. That was what was happening behind the scenes.\n\nAlso, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center. Meta employees pointed this out internally as a privacy concern.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "逐語引用: 「けれど、その一部では人間が話していた。しかも、一部のテストでは人間の契約スタッフが電話を担当し、Metaは適切な開示なしにテストを始めたことを『ミス』だったと認めました。」 「users had no way to know whether they were talking to AI or a person」はLedgerで確認されていないため削除し、Metaが適切な開示なしにテストを開始したことを「ミス」と認めた、というLedger記載に置き換えてください。参照: MUSE-HC-012。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "repeat_claim_ids": [
+        "fact:MUSE-HC-012"
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.3265,
+      "usage": {
+        "input_tokens": 6286,
+        "cached_input_tokens": 0,
+        "output_tokens": 2905,
+        "reasoning_tokens": 2588
+      },
+      "elapsed_seconds": 29.108,
+      "prompt_sha256": "2189fa33926d83fb5b456b1a5d2beb4dd6996bfe047e8fa55ce3cd5396f650db"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1749,
+      "usage": {
+        "input_tokens": 4982,
+        "cached_input_tokens": 0,
+        "output_tokens": 1233,
+        "reasoning_tokens": 1021
+      },
+      "elapsed_seconds": 11.019,
+      "prompt_sha256": "d9eb67992e07ba720bd529f45fc0b64c14241a629ead1461ae1c299ad63f25af"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:MUSE-HC-012_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0779,
+      "usage": {
+        "input_tokens": 3448,
+        "cached_input_tokens": 0,
+        "output_tokens": 304,
+        "reasoning_tokens": 218
+      },
+      "elapsed_seconds": 2.915,
+      "prompt_sha256": "e6ac5aa6b14d79a5373b3478bfd29e201e4df045b3e8a341a3cc83114e85621e"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3845,
+      "usage": {
+        "input_tokens": 6573,
+        "cached_input_tokens": 0,
+        "output_tokens": 3587,
+        "reasoning_tokens": 3218
+      },
+      "elapsed_seconds": 32.161,
+      "prompt_sha256": "e0d0a7b49d860da975766871b3b9aefce1b114cdfce335858b522624c769a99f",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "meta_run03_advanced_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3396,
+      "usage": {
+        "input_tokens": 6737,
+        "cached_input_tokens": 0,
+        "output_tokens": 2982,
+        "reasoning_tokens": 2588
+      },
+      "elapsed_seconds": 28.797,
+      "prompt_sha256": "01d303c67530909dadda30c5bd4321d5f5df9e9a5e283b0c8e2bd6265b7c389f",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "meta_run03_advanced_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1716,
+      "usage": {
+        "input_tokens": 4944,
+        "cached_input_tokens": 0,
+        "output_tokens": 1199,
+        "reasoning_tokens": 1005
+      },
+      "elapsed_seconds": 12.075,
+      "prompt_sha256": "9cf43104c637c015b056f2ec7b273d908836eef13980f5b565e8e98753d971c8"
+    }
+  ],
+  "total_cost_jpy": 1.475,
+  "total_calls": 6,
+  "elapsed_seconds": 116.108
+}

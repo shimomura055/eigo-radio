@@ -1,0 +1,207 @@
+{
+  "instance_id": "bgroup_B3",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage",
+            "origin": null,
+            "related_fact_id": "HF-007",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象文：「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」。懸念が計画撤回の原因だったとする「so」を削り、懸念の継続と計画の置換を別々の事実として記述してください。トランプ氏は7月14日、湾岸諸国との貿易・投資案件に置き換えると投稿した（HF-007）。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+            "issue": "precheck detected number_mismatch vs ledger_value=約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)",
+            "explanation": "deterministic precheck finding (kind=number_mismatch)",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "precheck",
+          "materiality": "BLOCKING",
+          "llm_materiality": null,
+          "basis": "precheck_floor",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "'percent values found in article not matching any ledger fact' を、fact_id=HF-009のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)",
+          "floor_reason": "precheck_floor"
+        },
+        {
+          "claim_text": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+          "origin": null,
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+            "issue": "precheck detected number_mismatch vs ledger_value=$84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)",
+            "explanation": "deterministic precheck finding (kind=number_mismatch)",
+            "related_fact_id": "HF-011",
+            "origin": null,
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "precheck",
+          "materiality": "BLOCKING",
+          "llm_materiality": null,
+          "basis": "precheck_floor",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "'percent values found in article not matching any ledger fact' を、fact_id=HF-011のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=$84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)",
+          "floor_reason": "precheck_floor"
+        }
+      ],
+      "blocking_count": 3,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "target_not_found+fulltext_fallback",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:HF-011",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "target_not_found+fulltext_fallback",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_caught_recall_miss": true,
+  "call_log": [
+    {
+      "label": "bgroup_B3_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.2768,
+      "usage": {
+        "input_tokens": 5273,
+        "cached_input_tokens": 0,
+        "output_tokens": 2474,
+        "reasoning_tokens": 2328
+      },
+      "elapsed_seconds": 27.14,
+      "prompt_sha256": "d0098017550a3ea65f71cade2705726487ff85035cfc86ed9c387fe16c0f33de"
+    },
+    {
+      "label": "bgroup_B3_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1223,
+      "usage": {
+        "input_tokens": 4693,
+        "cached_input_tokens": 0,
+        "output_tokens": 621,
+        "reasoning_tokens": 455
+      },
+      "elapsed_seconds": 6.457,
+      "prompt_sha256": "884156f6fbe6ccc2f3a04a3c0f6da4ad509a5fb0eda0a1a8a8dac3ee090bdb95"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-007_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0675,
+      "usage": {
+        "input_tokens": 3345,
+        "cached_input_tokens": 0,
+        "output_tokens": 192,
+        "reasoning_tokens": 141
+      },
+      "elapsed_seconds": 3.548,
+      "prompt_sha256": "dc5eeb6191a8fba7a4008d2587fc32e293760e6ab3eb602c886f63cb644c8954"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-009_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.228,
+      "usage": {
+        "input_tokens": 3771,
+        "cached_input_tokens": 0,
+        "output_tokens": 2153,
+        "reasoning_tokens": 1682
+      },
+      "elapsed_seconds": 18.292,
+      "prompt_sha256": "e571951ca752b045ea0af591cf77fecec7080d7a0bf67a1e5e2afe90147cec4f"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-011_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1077,
+      "usage": {
+        "input_tokens": 3773,
+        "cached_input_tokens": 0,
+        "output_tokens": 619,
+        "reasoning_tokens": 140
+      },
+      "elapsed_seconds": 4.81,
+      "prompt_sha256": "2e06de426a14430e27801822102945b9d3b9521cb48972cf541d3cb72a4b0389"
+    },
+    {
+      "label": "bgroup_B3_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1832,
+      "usage": {
+        "input_tokens": 6530,
+        "cached_input_tokens": 0,
+        "output_tokens": 1030,
+        "reasoning_tokens": 827
+      },
+      "elapsed_seconds": 9.347,
+      "prompt_sha256": "fbaf92be921210b6ac254e8875e4ab8dc90bd1cd15a4953c71816645ef90199f",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.9855,
+  "total_calls": 6,
+  "elapsed_seconds": 69.62
+}

@@ -52,6 +52,7 @@ class TestPromptBuilders(unittest.TestCase):
             verified_ledger_text="LEDGERX", source_article_text="(なし)",
             claim_text="CLAIMX", local_context="CTXX", origin="translation",
             related_fact_id="F001", materiality_rubric=s2p.MATERIALITY_RUBRIC,
+            rewrite_hint_instruction=s2p.REWRITE_HINT_INSTRUCTION,
         )
         self.assertIn("LEDGERX", prompt)
         self.assertIn("CLAIMX", prompt)
@@ -61,6 +62,10 @@ class TestPromptBuilders(unittest.TestCase):
         # explanation/severity/10 flagsを「提示しない」旨の説明文自体は許容する
         # (実際のexplanation本文・changed_*フラグ値が入力に含まれないことのみ確認)。
         self.assertNotIn("severity_final", prompt)
+
+    def test_per_claim_prompt_requires_rewrite_hint(self):
+        self.assertIn("rewrite_hint", s2p.PER_CLAIM_JSON_SCHEMA["schema"]["required"])
+        self.assertIn("rewrite_hint", s2p.PER_CLAIM_PROMPT_TEMPLATE)
 
     def test_batch_prompt_contains_claim_index(self):
         claims = [
@@ -74,11 +79,17 @@ class TestPromptBuilders(unittest.TestCase):
         prompt = s2p.BATCH_PROMPT_TEMPLATE.format(
             verified_ledger_text="LEDGERX", source_article_text="(なし)",
             claims_block=claims_block, materiality_rubric=s2p.MATERIALITY_RUBRIC,
+            rewrite_hint_instruction=s2p.REWRITE_HINT_INSTRUCTION,
         )
         self.assertIn("claim_index=0", prompt)
         self.assertIn("claim_index=1", prompt)
         self.assertIn("C0", prompt)
         self.assertIn("C1", prompt)
+
+    def test_batch_json_schema_requires_rewrite_hint(self):
+        item_schema = s2p.BATCH_JSON_SCHEMA["schema"]["properties"]["judgments"]["items"]
+        self.assertIn("rewrite_hint", item_schema["required"])
+        self.assertIn("rewrite_hint", item_schema["properties"])
 
 
 class TestCostFunction(unittest.TestCase):

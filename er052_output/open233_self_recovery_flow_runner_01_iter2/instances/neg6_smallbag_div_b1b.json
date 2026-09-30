@@ -1,0 +1,117 @@
+{
+  "instance_id": "neg6_smallbag_div_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+          "origin": null,
+          "related_fact_id": "F004, F006",
+          "dev": {
+            "claim_in_article": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+            "origin": null,
+            "related_fact_id": "F004, F006",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load\n\nLooking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所: “Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.” 「all over」は広範な露出を示しますが、Ledgerが確認しているのは選ばれたランウェイや編集記事での例です。ELLEが紹介したKhaiteとChanelの例、およびVogueが取り上げた小ぶりなポーチなど、確認された範囲に限定してください。参照: F004, F006。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F004, F006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_caught_recall_miss": true,
+  "call_log": [
+    {
+      "label": "neg6_smallbag_div_b1b_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.4689,
+      "usage": {
+        "input_tokens": 5266,
+        "cached_input_tokens": 0,
+        "output_tokens": 4925,
+        "reasoning_tokens": 4636
+      },
+      "elapsed_seconds": 48.102,
+      "prompt_sha256": "0ea8cb570e55f219d307b3ebcca0cfb31002770e1b32ae13ce815e36ab89abc3"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1282,
+      "usage": {
+        "input_tokens": 4761,
+        "cached_input_tokens": 0,
+        "output_tokens": 682,
+        "reasoning_tokens": 514
+      },
+      "elapsed_seconds": 7.695,
+      "prompt_sha256": "5910fa8b340e0c73453440fc47506e8484f81559b4d000b59d4c3a01fc0bd963"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_fact:F004, F006_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0619,
+      "usage": {
+        "input_tokens": 3186,
+        "cached_input_tokens": 0,
+        "output_tokens": 152,
+        "reasoning_tokens": 105
+      },
+      "elapsed_seconds": 3.132,
+      "prompt_sha256": "5a1898df5ce556b9644e1e2d311b749ba626d2f7ded1f2e8883dad8bcfcc30d8"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3083,
+      "usage": {
+        "input_tokens": 6285,
+        "cached_input_tokens": 0,
+        "output_tokens": 2674,
+        "reasoning_tokens": 2588
+      },
+      "elapsed_seconds": 23.079,
+      "prompt_sha256": "404ba40a939dae8ad0f7aab5455dbeba4cf7e7a399fbdd89aa5e168e49c58c45",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.9673,
+  "total_calls": 4,
+  "elapsed_seconds": 82.025
+}

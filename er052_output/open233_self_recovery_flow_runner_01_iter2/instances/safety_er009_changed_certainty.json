@@ -1,0 +1,118 @@
+{
+  "instance_id": "safety_er009_changed_certainty",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+            "issue": "Ledgerでは著者のメカニズム説明として述べられている社会的圧力を、すべての顧客に生じることが証明済みの因果効果として断定している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-008はデジタル画面による社会的圧力を著者の議論として記し、実証的な因果効果ではないとしている。記事は因果関係を断定し（changed_causality）、証明済みと確実性を強め（changed_certainty）、対象を画面を見たすべての顧客に拡張している（changed_scope）。この普遍的な因果主張はLedgerにないため、changed_factとunsupported_new_claimもtrue。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "F-008",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.” Narrow this to the Ledger’s qualified account: attribute the social-pressure mechanism to the author’s argument, and do not state that causation is proven or that it applies to every customer. Relevant Ledger fact: F-008.",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:439420669563d7f6",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_certainty_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1246,
+      "usage": {
+        "input_tokens": 5079,
+        "cached_input_tokens": 0,
+        "output_tokens": 573,
+        "reasoning_tokens": 455
+      },
+      "elapsed_seconds": 6.528,
+      "prompt_sha256": "bab574003ddad550fb0a9c6631e8e341baf1725ad88295a7d3866c60a81f63b7"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_claim:439420669563d7_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0683,
+      "usage": {
+        "input_tokens": 4226,
+        "cached_input_tokens": 0,
+        "output_tokens": 25,
+        "reasoning_tokens": 0
+      },
+      "elapsed_seconds": 2.042,
+      "prompt_sha256": "1a27919801a6a489161caba0499e155505de1dabbe25927da571bc9f781af52f"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1209,
+      "usage": {
+        "input_tokens": 6293,
+        "cached_input_tokens": 0,
+        "output_tokens": 283,
+        "reasoning_tokens": 175
+      },
+      "elapsed_seconds": 3.682,
+      "prompt_sha256": "e8f92f6e19de05c07993dd28a3bd2b71c0469f33fb22ed1813ba2042ece7f38f",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3138,
+  "total_calls": 3,
+  "elapsed_seconds": 12.261
+}

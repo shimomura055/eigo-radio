@@ -42,7 +42,20 @@ hormuz_run02_advancedそのもの、Self-Recovery Flow到達前の見逃し)、
 無効、実クレーム文言での実測は0/4(0%)**。Phase 1計画①〜⑥完了、
 Phase 2着手前に上記改善優先順位[§9-2]の解消を推奨。実測費用
 ¥16.7806[Guardrail¥45のうち、Phase累計¥38.2769]。USER_DECISION_
-REQUIRED非該当[7条件いずれも]。Production実装は未着手)。
+REQUIRED非該当[7条件いずれも]。Production実装は未着手)。→
+**[委任_10更新]** `ITER2_DONE_TARGET_MET`(iteration 2完了: §9-2
+改善優先順位1〜4[rewrite_hint追加/J-1ロケータ改善/negative群R2再較正
+/Stage1 recall対策]を実装し29 instance再実行[126 call・¥26.0302]。
+claim単位Rewrite成功率60.6%→81.0%、J-1対象文特定成功率36.4%→81.8%、
+Escalation9→7件(Wilson95%CI[12.2%,42.1%])、true resolved11→16件へ
+改善[§9-1⑦]。**S1-U variant(Stage1 PASS時にS1-D 1 callを追加しunion
+screen)が委任_09の3件の重大recall miss[B2_hormuz・B3・hormuz_run02_
+advanced=現行Production STOP実例そのもの]を全件捕捉しRewriteで解消**
+(追加固定費¥3.1589、Escalation新規1件[meta_run03_advanced]という
+副作用あり)。R2'rubric較正はSafety誤降格1件+Productivity改善0件で
+不採用(既存R2維持)。実測費用¥29.4279[Guardrail¥50のうち、Phase累計
+¥67.7048]。USER_DECISION_REQUIRED非該当[7条件いずれも]。S1-U variant
+のPhase 2デフォルト採用可否はユーザー判断)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -267,6 +280,31 @@ Production Prompt変更承認[USER_DECISION_REQUIRED条件(4)]が必要)。
   ¥0のMINOR→BLOCKING昇格は、Phase 1で`overall_status`基準との比較実測
   対象として記録する(推奨のみ、Stage1採否確定は§9-1③実測後)。
 
+**[委任_10新設・実測] S1-U variant(Stage1 recall miss対策、union
+screen)**: 委任_09で発覚したStage1(V4A)recall miss(3 instance、
+うちhormuz_run02_advancedは現行Production STOP実例そのもの)への
+対策として、Stage1(V4A)がACCEPTABLE(PASS)だった場合に限り、S1-D
+(§14-2、materiality一体型、1 call)を追加実行し、S1-DがBLOCKINGと
+判定したclaimのみをunion(fail-closed)でStage2以降へ合流させる
+variantを実装した(`er052_open233_self_recovery_flow_runner_01.py::
+stage1_union_screen`、CLI `--s1u`、対象instanceのみ`s1u_eligible`
+フラグで限定しコストを抑制)。29 instance中s1u_eligibleは10
+(negative7+meta2+hormuz4のうちStage1 PASSの7件+b_group[B2_hormuz/
+B3]、実際に1 call追加実行したのは7件[既にBLOCKINGだった3件は
+コスト¥0でskip])。**結果**: 7件中6件(85.7%)でS1-DがBLOCKING claim
+を新規検出し、**委任_09の3件の重大recall miss(B2_hormuz・B3・
+hormuz_run02_advanced)を全件union screenが捕捉し、いずれも
+Rewriteで解消(`RESOLVED_REWRITE`)またはdowngrade到達まで進んだ**
+(§9-1⑦)。追加固定費¥3.1589(7 call)+捕捉後の下流Stage2/3/Recheck
+コスト増を伴う(§9-1⑦のQCD比較参照)。一方、新たに捕捉した
+`meta_run03_advanced`は2 cycle以内に解消できずSTAGE4到達した(委任_09
+では検出されずACCEPTABLE_STAGE1のまま静かに通過していたclaim。
+Escalation化はSafety観点では「見えない見逃し」を「人間が確認できる
+STOP」へ変換したものであり、委任文の「過剰BLOCK増分」相当の副作用
+として記録する)。採用可否はQCD(固定費増+STAGE4増分1件)とSafety
+改善(3件の重大見逃し解消)のトレードオフでありユーザー判断とする
+(§9-1⑦「採用推奨と根拠」参照)。
+
 ### 3-2. Stage 2: Re-screening(Second Judge)
 
 詳細設計は§4。概要: BLOCKING-candidateのclaim単位で、独立Prompt・
@@ -459,6 +497,19 @@ LLM降格を許さずBLOCKING確定**する(§3-1のとおり、precheck FP率�
 present`として観測用に残すが、判定ロジックには使わない(Opus論点4-D
 「notes分離は判定に使わず観測用として残す」と同じ思想)。
 
+**[委任_10実装・実測]** 委任_09統合dry-runで判明した「Stage2出力schema
+に`rewrite_hint`が未実装」を解消した。`er052_open233_self_recovery_
+stage2_production_01.py::_ITEM_PROPS`へ`rewrite_hint`(string、
+`REWRITE_HINT_INSTRUCTION`でBLOCKING時のみ「逐語引用+修正指示+
+fact_id」を要求)を追加し、`PER_CLAIM_JSON_SCHEMA`/`BATCH_JSON_SCHEMA`
+双方の`required`へ追加した(既存`er052_open233_self_recovery_stage2_
+calibration_01.py::run_stage2_batch_variant`もこのschemaを共有するため
+同時に対応)。Rewrite側(`er052_open233_self_recovery_flow_runner_01.
+py::locate_target`)は、この`rewrite_hint`から抽出した逐語引用断片
+(`extract_quoted_fragment`)を対象文特定の第一キーとして使うよう変更
+した。29 instance再実行(§9-1⑦)で、claim単位Rewrite成功率が60.6%→
+81.0%(34/42)へ改善したことを実測した。
+
 ### 4-6. Stage 1との独立性担保
 
 - 別Prompt定数、別API call(Stage 1の出力を再利用するのみで、Stage 1
@@ -594,6 +645,22 @@ test_01.py`へ追加することを次回実装項目とする(本委任では�
 継続観察が必要(Phase 2候補)。詳細ログ:
 `er052_output/open233_self_recovery_stage2_calibration_01/
 summary_stage2_calibration.json`。
+
+**[委任_10実測] R2'較正Trial(不採用)**: 委任_09で「negative群R2の
+実測Productivityが0/4(0%)」と訂正判明したことを受け、段階的判定手順
+(新規の具体的主張チェック→矛盾チェック→言い換えチェック→観測同士の
+関係付けチェック→一般常識背景/条件付き一般論チェック→fail-closed)+
+一般化した例示を追加した較正rubric`RUBRIC_R2_PRIME`(`er052_open233_
+self_recovery_stage2_calibration_01.py`)をn=2で実測した(新規
+`er052_open233_self_recovery_r2prime_recalibration_01.py`、20 batch
+call・¥3.3977、対象=B1/B3/B4/A2A3/A4/A5+negative実claim4件)。結果:
+Safety側で**誤降格が1件発生**(`A4-0`が2試行中1回`ACCEPTABLE`へ
+降格)、Productivity側は**改善0件**(B1-aが新たにBLOCKINGへ誤って
+降格する退行が発生し、B4-b/B4-c/negative4件はR2と同じく全件BLOCKING
+のまま)。委任文の受入条件(誤降格0件かつProductivity改善)を**両方
+未達のため不採用**とし、Stage2は既存`RUBRIC_R2`のまま維持する(§9-1⑦
+に理由記録)。詳細ログ: `er052_output/open233_self_recovery_r2prime_
+recalibration_01/summary_r2prime_recalibration.json`。
 
 ## 5. Stage 3 Automatic Rewrite設計
 
@@ -853,6 +920,27 @@ guard抵触(文体/記号/段落数いずれか)時は、§5-2と同じ段階的
 **Phase 1測定項目**: 型別(delete/replace_with_ledger_value/
 narrow_scope)成功率・実単価・guard抵触率・フォールバック発生率
 (§9-1⑤)。
+
+**[委任_10実装・実測] J-1汎用対象文特定の改善**: 委任_09統合dry-run
+で対象文特定失敗率63.6%(7/11)が最大の失敗要因と判明したため、以下
+3段階の統合ロケータ(`locate_target`/`locate_ja_counterpart_by_
+position`)を実装した。(1) 第一キー: Stage2出力`rewrite_hint`の逐語
+引用断片(`extract_quoted_fragment`)をEN/JA双方でexact substring
+照合。(2) 第二キー: 既存`locate_best_sentence`(claim_textでの
+exact/SequenceMatcher、ambiguous時[最有力候補と次点候補の差が僅少]は
+単一文を確定させず全文フォールバックへ委ねるよう変更)。(3) 第三キー:
+`er010_ledger_local_rewrite_09.locate_target_sentence`(英語word-
+overlap、read-only借用)。JA側はさらに、EN対象文の`en_full`内での
+文位置比を`split_ja_sentences`によるJA文分割へ写像し(対訳記事がほぼ
+同順序で対応するという構造的近似)、写像window内で数値トークン一致を
+優先する`locate_ja_counterpart_by_position`を第四キーとして追加した。
+29 instance再実行(§9-1⑦)の結果、J-1機構の対象文特定成功率は
+9/11(81.8%、うち`j1_paired_rewrite`到達後の解消率7/9=77.8%)まで改善し
+(委任_09実測27.3%→大幅改善)、hormuz_run03_standard(委任_09で
+`j1_pair_not_located`によりSTAGE4到達)は`RESOLVED_REWRITE_THEN_
+DOWNGRADE`まで到達した。固有名詞は言語間で一致しないため位置比+数値
+トークン一致は主に日付・割合・件数を伴うclaimでのみ有効という限界は
+残る(既知の限界として維持)。
 
 ### 5-4-補. JA局所Rewrite 代替案(J-2、[委任_06新設]、Phase 1 ⑤で
 J-1と比較実測対象)
@@ -1530,6 +1618,123 @@ Guardrail¥12)。⑤=¥3.0363(18 call、Guardrail¥30、見積り¥8〜22の
 累計、Guardrail¥400のうち、残¥361.7231)。Phase 1計画(§9-1冒頭)の
 ①〜⑥全項目が完了。
 
+**⑦ iteration 2実測(委任_10完了)**: §9-2改善優先順位1〜4の実装+
+再測定。実装項目: (a) Stage2出力schemaへの`rewrite_hint`追加(§4-5)、
+(b) J-1汎用ロケータ改善(§5-4、rewrite_hint引用+位置比マッピング)、
+(c) claim identityの正規化(fact_id無し時、引用符/大小文字/空白の
+表記揺れを吸収、Opus L2 #1論点5対応)、(d) delete型のclaim単位再出現
+確認(fuzzy matchによる重複削除漏れ検出)、(e) S1-U variant(§3-1、
+Stage1 recall miss対策)。同一29 instanceを`--s1u`有効で再実行し
+(Stage1[V4A]は既存出力を再利用し二重課金なし、Stage2以降は新schema
+で再実行)、126 call・¥26.0302(Guardrail¥35のうち、0 error)を実測
+した。
+
+**iteration 1→2 差分表(instance単位)**:
+
+| 指標 | iter1(委任_09) | iter2(委任_10) |
+|---|---|---|
+| Initial BLOCK | 23/29 | 28/29(S1-Uで4件追加検出) |
+| Re-screening自動解消 | 1 | 0 |
+| Rewrite進行 | 22 | 28 |
+| Rewrite自動解消 | 13 | 21 |
+| Final STOP(Escalation) | 9 | 7 |
+| 真の解消(all_prior_issues_resolved=True) | 11 | 16 |
+| 総call数 | 92 | 126 |
+| 総費用 | ¥16.7806 | ¥26.0302 |
+| 平均¥/instance | ¥0.5786 | ¥0.8976 |
+| worst instance | ¥2.2721(safety_A4) | ¥2.4664(safety_A4、Cap+¥3未超過) |
+| latency P50/P95 | 17.27s/143.5s | 62.25s/184.0s |
+| completion率 | 69.0% | 75.86% |
+| Escalation率(Wilson95%CI) | 31.0%[17.3%,49.2%] | 24.1%[12.2%,42.1%] |
+
+**claim単位Rewrite成功率**: floor後BLOCKING確定claim(cycle合計)に
+対するRewrite実行42件中、初回試行で再発せず解消=34/42(81.0%、iter1
+60.6%[20/33]から改善)。機構別: `single_text_local(E-2/delete-
+generic)`=27/31(87.1%)、`paired_ja_en(J-1)`=7/11(63.6%、iter1
+27.3%[3/11]から大幅改善)。J-1対象文特定(locate)成功率は9/11
+(81.8%、iter1 4/11[36.4%、`j1_paired_rewrite`+`j1_failed+...`含む]
+から改善、失敗[`j1_pair_not_located`]は1/11[9.1%、iter1
+7/11[63.6%]から改善])。**hormuz_run03_standard(iter1でJ-1失敗により
+STAGE4)は`RESOLVED_REWRITE_THEN_DOWNGRADE`まで到達した**。
+
+**S1-U variantの実測(recall改善 vs 固定費・過剰BLOCK増分)**:
+s1u_eligible instance10件中、Stage1(V4A)が実際にACCEPTABLE(PASS)
+だったのは7件(既にBLOCKINGだった3件はS1-D呼び出し自体をskipし追加
+コスト¥0)。7件中**6件(85.7%)でS1-DがBLOCKING claimを新規検出**し、
+union screenで合流させた。**iter1で発見された3件の重大Stage1 recall
+miss(B2_hormuz・B3・hormuz_run02_advanced[現行Production STOP実例
+そのもの])は、いずれもS1-U screenが捕捉し、全件`RESOLVED_REWRITE`
+まで到達した**(hormuz_run02_advancedはcycle1でRecheck
+`LEDGER_COMPLIANT`かつ`all_prior_issues_resolved=True`)。追加固定費=
+¥3.1589(7 call)。副作用: 新規に捕捉した`meta_run03_advanced`は2 cycle
+以内に解消できずSTAGE4到達した(iter1では非検出のままACCEPTABLE_
+STAGE1で静かに通過していたclaim。「見えない見逃し」を「人間が確認
+できるSTOP」へ変換したものであり、Escalation数の増分[+1]という形で
+Productivity側のコストとして現れる)。**採用推奨と根拠**: 固定費
+¥3.1589+Escalation増分1件のコストに対し、現行Production STOP実例
+そのものを含む3件の重大安全ギャップを解消できたことは、Safety側の
+実質的な改善(Stage1単独では構造的に捕捉不可能だった見逃しを
+Self-Recovery Flow内で解消可能にした)であり、+¥3/記事Capにも
+未抵触(worst instance実測¥2.4664)であるため、**Phase 2ではs1u_
+eligible対象(Stage1 PASS時)への適用を採用推奨する**(ユーザー最終
+判断)。
+
+**R2' rubric較正(不採用)**: §4-8追記のとおり、段階的判定手順+例示
+追加によるRUBRIC_R2_PRIME(n=2、20 call・¥3.3977)は、Safety側で
+1件の誤降格(A4-0)、Productivity側で改善0件という結果となり、委任文
+の受入条件(誤降格0件かつProductivity改善)を満たさなかったため
+**不採用、既存RUBRIC_R2を維持**した。
+
+**0件の内訳(iter2)**: 真の解消16、QUALITY通過0、`all_prior_issues_
+resolved`未確認0、誤PASS候補0(iter1と同様、全件Recheckで明示確認)。
+
+**残るStage4到達7件の原因分類**: bgroup_B1・bgroup_B4・safety_A2A3・
+safety_A4は委任_09と同一原因(J-1対象文特定失敗の残存分・Rewrite後も
+Recheckが引き続きLEDGER_DEVIATION)。meta_run03_standard・neg1は
+委任_09から継続(claim再発型)。meta_run03_advancedはS1-Uが新規に
+捕捉したが2 cycle以内に解消できなかった新規ケース(上記参照)。次案:
+(1) J-1のfulltext fallback(全文最小編集)発動条件をより早期に切替える、
+(2) cycle上限(現行2)をS1-U捕捉claimに限り3まで緩和する案(Cap内か
+要試算)、(3) safety_A4のRewrite後再発原因(Rewrite内容自体がLedger
+適合しない)をclaim単位で個別診断する。
+
+**Opus L2 #2論点案(5〜7個、委任_09から更新)**:
+1. S1-U variant(Stage1 PASS時のみ1 call追加)をPhase 2でデフォルト
+   採用すべきか(固定費増+Escalation増分1件 vs 重大safety gap解消3件)。
+2. J-1改善(位置比+数値トークン一致)は成功率を大幅に改善したが、
+   固有名詞中心のclaim(数値を伴わない)では依然locate失敗し得る。
+   さらなる汎用化(JA/EN対訳アラインメントの専用実装)への投資判断。
+3. R2'較正が失敗した(段階的手順化がむしろSafety/Productivity双方を
+   悪化させた)ことから、rubric較正自体のアプローチ(自然言語手順の
+   精緻化)の限界をどう評価すべきか。
+4. claim identity正規化(表記揺れ吸収)は今回regression testでのみ
+   検証した。実データでの効果測定(誤って別claim扱いされるケースの
+   実測)は次回実測項目とすべきか。
+5. meta_run03_advancedのような「S1-Uが新規発見したが解消できない
+   claim」の扱い(cycle上限緩和 vs 現行どおりSTAGE4)。
+6. Phase 2着手判断(iteration 1→2の改善実績を踏まえ、残る改善項目を
+   さらに解消してから着手すべきか、現状のままPhase 2データ収集へ
+   進むべきか)。
+7. +¥3/記事Capの余裕(worst実測¥2.4664)は、S1-U+rewrite_hintによる
+   token増加を織り込んでも維持されているが、Phase 2の記事数拡大時に
+   累積コストがGuardrail設計へ与える影響の試算。
+
+**USER_DECISION_REQUIRED該当有無(iter2)**: 該当なし(7条件いずれも
+非該当。S1-Uによる新規Escalation[meta_run03_advanced]はSafety
+「緩和」ではなくむしろ強化[見えない見逃しを可視化]であり条件2には
+該当しない。worst instance実測¥2.4664は+¥3/記事Cap未超過[条件3]。
+R2'不採用はTrial内較正判断でありProduction採用[条件4]は無関係)。
+
+**費用(iter2)**: 作業B(R2'較正)¥3.3977+作業C(統合dry-run再実行)
+¥26.0302=**¥29.4279**(本委任Guardrail¥50のうち)。Phase累計
+¥38.2769+¥29.4279=**¥67.7048**/総枠¥400、残¥332.2952。
+
+詳細ログ: `er052_output/open233_self_recovery_r2prime_recalibration_
+01/summary_r2prime_recalibration.json`、`er052_output/open233_self_
+recovery_flow_runner_01_iter2/summary_flow_runner.json`、`er052_
+output/open233_self_recovery_flow_runner_01_iter2/instances/*.json`
+(29件)。
+
 - **モデル**: gpt-6-luna(前Phase Trial資産との直接比較のため統一、
   §4-6参照)。Production Stage 1のgpt-5.6-lunaとの差異は既知の
   未解決事項として記録し、Phase 2で扱う。
@@ -1581,6 +1786,18 @@ Flow込みで10〜20記事規模実行し、Primary KPI(USER_DECISION_REQUIRED
    テーマは複数候補(英語・日本語・理由付き)を提示しユーザーが選択
    する(PM_GOVERNANCE.md§13「新規記事テーマ選定ルール」準拠。既存
    Hormuz/Meta run再開[regenerate]であればこの制約は適用されない)。
+
+**[委任_10追記]上記1〜4の実装・実測結果(§9-1⑦)**: 1(rewrite_hint
+追加)=**実装・実測済み**(claim単位成功率60.6%→81.0%)。2(J-1汎用
+対象文特定)=**実装・実測済み**(locate成功率36.4%→81.8%、固有名詞
+中心claimでは依然限界あり)。3(negative群Productivity再測定)=
+**再測定実施(R2'較正Trial)、不採用と判定**(誤降格1件+改善0件の
+ため既存R2を維持、理由は§4-8追記)。4(Stage1 recall底上げ)=
+**S1-U variant[union screen]として実装・実測済み**(委任_09の3件の
+重大recall miss全件を捕捉、副作用としてEscalation新規1件)。5(新規
+記事テーマ選定)は本委任では未着手のまま(Phase 2着手時に対応)。
+残る課題は§9-1⑦「残るStage4到達7件の原因分類」「Opus L2 #2論点案」
+を参照。
 
 ## 10. リスク
 
@@ -2151,6 +2368,15 @@ escalation未発火のケースのみ)であり、§13-6のworst case式全体�
 再計算(cycle 2発火・escalation発火ケースを含む)は次回⑥(統合
 dry-run)実測後に確定する(本委任では実単価の部分置換候補の報告に
 留める)。
+
+**[委任_09実測]** ⑥統合dry-run(29 instance)実測worst case=
+¥2.2721(safety_A4)。**+¥3/記事Cap未超過**(§13-6のtail懸念[¥3.96]
+より実測は良好)。**[委任_10実測]** rewrite_hint追加+S1-U variant込み
+のiteration2再実行(29 instance)実測worst case=¥2.4664(同じく
+safety_A4、+¥0.1943)。rewrite_hint分のprompt/output token増加・
+S1-U追加callを織り込んでも**Cap未超過を維持**(§9-1⑦)。S1-Uの追加
+固定費(¥3.1589/7 instance、平均¥0.4513/instance)は上記worst case
+instanceには含まれない(safety_A4はs1u_eligible対象外のため)。
 
 ## 14. Stage 1設計判断(委任_03新設、Fable/Claude側で結論確定)
 

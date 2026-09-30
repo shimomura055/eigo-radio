@@ -1,0 +1,142 @@
+{
+  "instance_id": "hormuz_run03_standard",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING(Safety群、§7-1、narrow_scope)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+            "issue": "Brent先物についての観測を、石油市場全体の値動きに広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "HF-009が確認するのはBrent先物の一時的な上げ幅縮小と回復であり、市場全体で原油価格が下落しなかったという主張までは保証しない。具体的事実の追加（changed_fact、unsupported_new_claim）と対象範囲の拡張（changed_scope）に該当する。",
+            "related_fact_id": "HF-009",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they soon returned to a high level near their earlier level. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole market after the plan was withdrawn. At the same time, attacks by the United States and Iran continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan disappeared. But news about tensions around the strait stayed on stage. Political statements changed greatly. Oil prices moved briefly, then returned to a high level. The interesting point this time was simple. One headline alone could not decide how the story would end.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象文の引用: “Oil prices did not fall across the whole market after the plan was withdrawn.” HF-009が確認しているのはBrent先物の値動きであり、市場全体の原油価格ではありません。主張をBrent先物に限定し、「一時的に上げ幅を縮小した後、発表前に近い高い水準へ戻った」と修正してください。参照: HF-009。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [],
+      "blocking_count": 0,
+      "non_blocking_count": 0
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "hormuz_run03_standard_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1136,
+      "usage": {
+        "input_tokens": 4917,
+        "cached_input_tokens": 0,
+        "output_tokens": 465,
+        "reasoning_tokens": 313
+      },
+      "elapsed_seconds": 5.005,
+      "prompt_sha256": "3df760774d10db692dae8d89308e47fd020cf60156a03ec19ffac98c6f153ba1"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_fact:HF-009_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0758,
+      "usage": {
+        "input_tokens": 3293,
+        "cached_input_tokens": 0,
+        "output_tokens": 308,
+        "reasoning_tokens": 177
+      },
+      "elapsed_seconds": 4.072,
+      "prompt_sha256": "d9199c6d4789fee8579b0e419f03d270b255690bf6ec0414a9e1eafe802a714e"
+    },
+    {
+      "label": "hormuz_run03_standard_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3719,
+      "usage": {
+        "input_tokens": 6575,
+        "cached_input_tokens": 0,
+        "output_tokens": 3426,
+        "reasoning_tokens": 3290
+      },
+      "elapsed_seconds": 35.481,
+      "prompt_sha256": "11903c9dfc9f34f680eed8de9887793af31c57052f10ea6f2af3689480fba538",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "hormuz_run03_standard_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.259,
+      "usage": {
+        "input_tokens": 6783,
+        "cached_input_tokens": 0,
+        "output_tokens": 1945,
+        "reasoning_tokens": 1498
+      },
+      "elapsed_seconds": 17.659,
+      "prompt_sha256": "7049153cd3fed268509cc2c9c5315b127d4169ff658c26e3c49bbcf128718b7d",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 0.8203,
+  "total_calls": 4,
+  "elapsed_seconds": 62.254
+}

@@ -1,0 +1,118 @@
+{
+  "instance_id": "safety_er009_changed_causality",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+            "issue": "Ledgerが記述的な歴史的傾向としているチップ率の上昇に、デジタル画面の導入が直接の原因だったという因果関係を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-006の数値・時期・対象範囲は保たれているが、因果関係を示さない記述に「directly caused」という新たな因果主張を加え、断定している。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “was directly caused by the introduction of digital tip screens.” 因果関係とデジタル画面導入への帰属を削除し、F-006に基づく記述的な歴史的傾向に範囲を狭めてください。参照fact_id: F-006",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:89721925ca5a0c1f",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_causality_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.127,
+      "usage": {
+        "input_tokens": 5125,
+        "cached_input_tokens": 0,
+        "output_tokens": 594,
+        "reasoning_tokens": 470
+      },
+      "elapsed_seconds": 7.24,
+      "prompt_sha256": "ca1ddf207d2161dfdb27de8d5299b306fdd60f58fef41dd47fb47672bbd85944"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0765,
+      "usage": {
+        "input_tokens": 4220,
+        "cached_input_tokens": 0,
+        "output_tokens": 131,
+        "reasoning_tokens": 95
+      },
+      "elapsed_seconds": 3.566,
+      "prompt_sha256": "c229678e2d814870456daf62406607a2122c5056ce5dc744d4fc01110300e011"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1213,
+      "usage": {
+        "input_tokens": 6285,
+        "cached_input_tokens": 0,
+        "output_tokens": 290,
+        "reasoning_tokens": 188
+      },
+      "elapsed_seconds": 4.687,
+      "prompt_sha256": "2d64b0e4ba6992ead8b218d3ff6f583061ef3badec4a27b44235be682eb471c4",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3248,
+  "total_calls": 3,
+  "elapsed_seconds": 15.502
+}

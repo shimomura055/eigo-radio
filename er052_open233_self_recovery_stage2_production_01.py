@@ -45,6 +45,16 @@ MATERIALITY_RUBRIC = """【材料性(materiality)の判定基準】
   背景説明・条件付きの一般論にとどまる。
 - 上記のどれに該当するか迷う場合は、BLOCKINGとしてください(fail-closed)。"""
 
+REWRITE_HINT_INSTRUCTION = """
+【rewrite_hint(委任_10で追加)】
+materialityがBLOCKINGの場合のみ、rewrite_hintに以下を全て含めてください:
+1. 対象文を一意に特定できる、記事本文からの逐語引用(10〜30語程度、対象claimの
+   核心部分をそのまま抜き出す。要約・言い換えは禁止)。
+2. どう直すべきかの具体的な修正指示(削除するのか、Ledgerのどの値へ置換すべきか、
+   範囲をどう狭めるべきか)。
+3. 参照したLedgerのfact_id(related_fact_idと一致させる)。
+BLOCKING以外(QUALITY/ACCEPTABLE)の場合、rewrite_hintは空文字列にしてください。"""
+
 PER_CLAIM_PROMPT_TEMPLATE = """これはStage 1が既にBLOCKING-candidateとして検出したclaimの再評価です。
 Stage 1の判定理由(explanation/severity/10種類のフラグ)はここでは一切提示しません。
 以下のLedger全文・対象claim・そのローカル文脈のみを見て、あなた自身の判断で
@@ -67,8 +77,9 @@ origin: {origin}
 related_fact_id: {related_fact_id}
 
 {materiality_rubric}
+{rewrite_hint_instruction}
 
-上記claimについてmateriality/basis/rewrite_kindを判定してください。"""
+上記claimについてmateriality/basis/rewrite_kind/rewrite_hintを判定してください。"""
 
 BATCH_PROMPT_TEMPLATE = """これはStage 1が既にBLOCKING-candidateとして検出した複数claimの一括
 再評価です。Stage 1の判定理由(explanation/severity/10種類のフラグ)はここでは
@@ -86,9 +97,10 @@ BATCH_PROMPT_TEMPLATE = """これはStage 1が既にBLOCKING-candidateとして�
 {claims_block}
 
 {materiality_rubric}
+{rewrite_hint_instruction}
 
 claim配列と同じ順序・同じ件数で、claim_indexを付けてmateriality/basis/
-rewrite_kindを判定してください。"""
+rewrite_kind/rewrite_hintを判定してください。"""
 
 _ITEM_PROPS = {
     "materiality": {"type": "string", "enum": ["BLOCKING", "QUALITY", "ACCEPTABLE"]},
@@ -104,6 +116,9 @@ _ITEM_PROPS = {
         "type": "string",
         "enum": ["delete", "replace_with_ledger_value", "narrow_scope", "none"],
     },
+    # 委任_10で追加: 対象文の特定に十分な逐語引用+修正指示+参照fact_id
+    # (BLOCKING時のみ非空、それ以外は空文字列)。§4-5。
+    "rewrite_hint": {"type": "string"},
 }
 
 PER_CLAIM_JSON_SCHEMA = {
@@ -111,7 +126,7 @@ PER_CLAIM_JSON_SCHEMA = {
     "schema": {
         "type": "object",
         "properties": dict(_ITEM_PROPS),
-        "required": ["materiality", "basis", "rewrite_kind"],
+        "required": ["materiality", "basis", "rewrite_kind", "rewrite_hint"],
         "additionalProperties": False,
     },
     "strict": True,
@@ -127,7 +142,7 @@ BATCH_JSON_SCHEMA = {
                 "items": {
                     "type": "object",
                     "properties": {"claim_index": {"type": "integer"}, **_ITEM_PROPS},
-                    "required": ["claim_index", "materiality", "basis", "rewrite_kind"],
+                    "required": ["claim_index", "materiality", "basis", "rewrite_kind", "rewrite_hint"],
                     "additionalProperties": False,
                 },
             },
@@ -228,6 +243,7 @@ def run_stage2_per_claim(client, verified_ledger_text: str, source_article_text:
         origin=origin or "(不明)",
         related_fact_id=related_fact_id or "(不明)",
         materiality_rubric=MATERIALITY_RUBRIC,
+        rewrite_hint_instruction=REWRITE_HINT_INSTRUCTION,
     )
     t0 = time.time()
     response = client.responses.create(
@@ -266,6 +282,7 @@ def run_stage2_batch(client, verified_ledger_text: str, source_article_text: str
         source_article_text=source_article_text or "(なし)",
         claims_block=claims_block,
         materiality_rubric=MATERIALITY_RUBRIC,
+        rewrite_hint_instruction=REWRITE_HINT_INSTRUCTION,
     )
     t0 = time.time()
     response = client.responses.create(

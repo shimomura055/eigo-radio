@@ -140,6 +140,149 @@ class TestAggregateMeasurements(unittest.TestCase):
         self.assertEqual(agg["qcd"]["completion_rate"], 0.75)
 
 
+class TestClaimIdentityNormalization(unittest.TestCase):
+    """委任_10: fact_idが無い場合のclaim identityが、表記揺れ(引用符・大小
+    文字・空白)だけで別claim扱いされないことのregression test(Opus L2 #1
+    論点5対応)。"""
+
+    def test_quote_wrapping_does_not_change_identity(self):
+        dev1 = {"related_fact_id": "", "claim_in_article": "「同じ主張です」"}
+        dev2 = {"related_fact_id": "", "claim_in_article": "同じ主張です"}
+        self.assertEqual(runner.claim_identity(dev1), runner.claim_identity(dev2))
+
+    def test_case_and_whitespace_do_not_change_identity(self):
+        dev1 = {"related_fact_id": "", "claim_in_article": "The Market Reacted   Strongly"}
+        dev2 = {"related_fact_id": "", "claim_in_article": "the market reacted strongly"}
+        self.assertEqual(runner.claim_identity(dev1), runner.claim_identity(dev2))
+
+    def test_genuinely_different_claims_still_differ(self):
+        dev1 = {"related_fact_id": "", "claim_in_article": "Alpha claim text"}
+        dev2 = {"related_fact_id": "", "claim_in_article": "Completely different beta claim"}
+        self.assertNotEqual(runner.claim_identity(dev1), runner.claim_identity(dev2))
+
+    def test_fact_id_still_takes_priority_over_text_normalization(self):
+        dev1 = {"related_fact_id": "HF-001", "claim_in_article": "text A"}
+        dev2 = {"related_fact_id": "HF-001", "claim_in_article": "「text A」"}
+        self.assertEqual(runner.claim_identity(dev1), runner.claim_identity(dev2))
+        self.assertEqual(runner.claim_identity(dev1), "fact:HF-001")
+
+
+class TestExtractQuotedFragment(unittest.TestCase):
+    def test_extracts_double_quoted_english(self):
+        hint = 'delete the sentence "Meta had run a test that caused exactly this surprise" (fact_id=MUSE-HC-006)'
+        frag = runner.extract_quoted_fragment(hint)
+        self.assertEqual(frag, "Meta had run a test that caused exactly this surprise")
+
+    def test_extracts_ja_kagi_quotes(self):
+        hint = "「原油価格が高い状態が続けば」を削除する(fact_id=HF-007)"
+        frag = runner.extract_quoted_fragment(hint)
+        self.assertEqual(frag, "原油価格が高い状態が続けば")
+
+    def test_returns_none_when_no_quotes(self):
+        self.assertIsNone(runner.extract_quoted_fragment("no quotes here at all"))
+
+    def test_returns_none_for_empty_hint(self):
+        self.assertIsNone(runner.extract_quoted_fragment(""))
+
+    def test_picks_longest_fragment_when_multiple_quotes(self):
+        hint = '"short" and also "a much longer quoted fragment here"'
+        frag = runner.extract_quoted_fragment(hint)
+        self.assertEqual(frag, "a much longer quoted fragment here")
+
+
+class TestLocateTarget(unittest.TestCase):
+    def test_uses_rewrite_hint_quote_as_first_key(self):
+        text = "Intro sentence. The exact target phrase appears here. Outro sentence."
+        # claim_textはtextと無関係でも、rewrite_hintの引用がexact substringなら
+        # それを優先する(委任_10、rewrite_hintを第一キーにする設計)。
+        target, method = runner.locate_target(
+            "totally unrelated claim wording",
+            'rewrite: replace "The exact target phrase appears here." per ledger',
+            text,
+        )
+        self.assertEqual(target, "The exact target phrase appears here.")
+        self.assertEqual(method, "rewrite_hint_quote")
+
+    def test_falls_back_to_claim_text_when_hint_has_no_match(self):
+        text = "Intro sentence. The market reacted very strongly today. Outro sentence."
+        target, method = runner.locate_target(
+            "The market reacted strongly today.", "no quotes in this hint", text)
+        self.assertIn("market reacted", target)
+
+    def test_falls_back_to_er010_word_overlap_when_sequence_matcher_fails(self):
+        # SequenceMatcher(文字単位)では閾値未満だが、語単位overlapでは
+        # 一致するケース(語順が大きく異なる長文)。
+        text = ("Intro. Regulators in several countries discussed new rules about data "
+                "privacy and cross-border transfers extensively during the summit. Outro.")
+        claim = ("during the summit regulators extensively discussed cross-border data "
+                 "transfers and new rules about privacy in several countries")
+        target, method = runner.locate_target(claim, "", text)
+        self.assertIsNotNone(target)
+        self.assertTrue(method.startswith("er010_word_overlap") or method.startswith("sequence_matcher"))
+
+    def test_returns_none_when_nothing_matches(self):
+        text = "Completely unrelated sentence content here."
+        target, method = runner.locate_target("XYZXYZXYZ nothing in common", "", text)
+        self.assertIsNone(target)
+
+
+class TestSplitSentencesGeneric(unittest.TestCase):
+    def test_splits_on_period_and_ignores_headers(self):
+        text = "# Heading\nFirst sentence. Second sentence! Third one?"
+        sentences = runner.split_sentences_generic(text)
+        self.assertEqual(sentences, ["First sentence.", "Second sentence!", "Third one?"])
+
+    def test_split_ja_sentences_on_kuten(self):
+        text = "# 見出し\nこれは一文目です。これは二文目です！これは三文目ですか？"
+        sentences = runner.split_ja_sentences(text)
+        self.assertEqual(sentences, ["これは一文目です。", "これは二文目です！", "これは三文目ですか？"])
+
+
+class TestLocateJaCounterpartByPosition(unittest.TestCase):
+    def test_maps_by_position_ratio_and_prefers_digit_match(self):
+        en_full = "First. Second. The price rose by 20 percent in July. Fourth. Fifth."
+        # JA全文は同じ位置(3文目付近)に対応する数値20を含む
+        ja_full = "一文目。二文目。7月に価格が20%上昇した。四文目。五文目。"
+        en_target = "The price rose by 20 percent in July."
+        target, method = runner.locate_ja_counterpart_by_position(en_target, en_full, ja_full)
+        self.assertIn("20", target)
+        self.assertIn("digit_match", method)
+
+    def test_returns_none_for_empty_text(self):
+        target, method = runner.locate_ja_counterpart_by_position("x", "", "")
+        self.assertIsNone(target)
+
+
+class TestDeleteReoccurrenceGuard(unittest.TestCase):
+    def test_delete_leaves_paraphrased_duplicate_detected_as_reoccurrence(self):
+        # locate_best_sentenceのfuzzy matchが、削除後も類似文が残っている
+        # ケースを検出できることを確認する(delete型claim単位再出現確認、
+        # single_text_rewrite内部ロジックの構成要素のunit test)。
+        updated_text = "Intro. The market reacted very strongly to the announcement. Outro."
+        target, method = runner.locate_best_sentence(
+            "The market reacted strongly to the announcement.", updated_text)
+        self.assertIsNotNone(target)
+
+
+class TestStage1UnionScreenConversion(unittest.TestCase):
+    """s1u screenの変換ロジック(S1D出力キー -> V4A互換キー)をstage1_union_
+    screenの実装から抽出したデータ変換規則で検証する(ネットワーク呼び出し
+    なし、変換規則そのもののread-only regression test)。"""
+
+    def test_floor_flags_are_carried_over_from_s1d_output(self):
+        d = {"claim_in_article": "X", "related_fact_id_guess": "HF-1", "changed_actor": True,
+             "changed_number": False, "materiality": "BLOCKING"}
+        converted = {
+            "claim_in_article": d.get("claim_in_article", ""), "origin": None,
+            "related_fact_id": d.get("related_fact_id_guess", ""), "severity": "MAJOR",
+            **{k: d.get(k, False) for k in runner.FLOOR_FLAGS},
+        }
+        self.assertEqual(converted["related_fact_id"], "HF-1")
+        self.assertEqual(converted["severity"], "MAJOR")
+        self.assertTrue(converted["changed_actor"])
+        self.assertFalse(converted["changed_number"])
+
+
 class TestNoCrossModuleBudgetStateContamination(unittest.TestCase):
     """委任_09で実際に検出したbug(`s3rt.simple_llm_call`をそのまま呼ぶと
     `s3rt`モジュール自身の`save_budget_state`が既存委任_08の証跡ファイル

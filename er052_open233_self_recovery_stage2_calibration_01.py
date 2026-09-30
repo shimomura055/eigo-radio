@@ -61,6 +61,45 @@ RUBRIC_R2 = """【材料性(materiality)の判定基準・較正版(R2、委任_
   一般常識レベルの背景説明・条件付きの一般論にとどまる場合のみ。
 - 上記のどれに該当するか迷う場合は、BLOCKINGとしてください(fail-closed)。"""
 
+RUBRIC_R2_PRIME = """【材料性(materiality)の判定基準・較正版(R2'、委任_10)】
+以下の手順を**この順番のまま**、各claimに対して段階的に適用してください(前の
+ステップでBLOCKINGと確定したら、それ以降のステップは評価しない)。
+
+ステップ1(新規の具体的主張チェック、最優先): このclaimは、Ledgerに存在しない
+新規の具体的主張(製品仕様・仕組み・動機・理由・因果関係・数値・主体・時期の
+いずれか)を1つでも追加しているか? YESならBLOCKING。
+  例(BLOCKINGになる新規具体的主張): 「この現象は、開発チームが過去に行った
+  類似のテストと同じ結果だった」(Ledgerに無い『過去の類似テスト』という
+  具体的事実を新規追加)。「AIだけでは対応できない場合に人が引き継ぐ」
+  (Ledgerに無い具体的な運用フローを新規追加)。
+ステップ2(矛盾チェック): Ledgerのclaim/scope/numeric_value/date_or_period/
+  conditionsのいずれかと矛盾するか、Ledgerが明記する原因・主体と異なるものを
+  述べているか、notes_for_writerが明示的に禁じた断定をしているか? YESなら
+  BLOCKING。
+ステップ3(Ledger観測の言い換えチェック): Ledgerが実際に記録した1つの観測を、
+  語順変更・同義語・平易な言い換えで述べ直しているだけで、新しい主体・数値・
+  時期・仕組みを一切加えていないか? YESならACCEPTABLE(言い換え)。
+ステップ4(Ledger観測同士の関係付けチェック): Ledgerが実際に記録した2つ以上の
+  観測を、因果接続詞・強調・言い回しでつないでいるだけで、新しい具体的主張を
+  何も追加していないか? YESならQUALITY。
+  例(QUALITY): Ledgerに「人は匿名の相手には話しにくい」という観測と「氏名を
+  明かすと話しやすくなる」という観測が別々に記録されている場合、「氏名を
+  知っているかどうかで話しやすさが変わる」とまとめて述べるのはQUALITY
+  (両方ともLedgerの観測そのものであり、新しい仕組みや因果を追加していない)。
+ステップ5(一般常識の背景・条件付き一般論チェック): Ledgerに無い新規の固有
+  名詞・数値・時期・主体・因果・仕組みを一切加えず、Ledgerが確認した事象の
+  一般常識レベルの背景説明、または「〜であれば/〜の場合」という条件付きの
+  一般論(特定の主体・数値・時期を名指ししない)にとどまっているか? YESなら
+  ACCEPTABLE。
+  例(ACCEPTABLE、一般常識の背景): ある海峡が石油輸送の要衝であるという
+  Ledger記載の事実について、「主要な航路は地理的に重要な意味を持つことが
+  多い」と一般論として補足する(特定の新事実を追加していない)。
+  例(ACCEPTABLE、条件付き一般論): ある商品の価格変動についてのLedger記載の
+  事実について、「原材料費が上がれば、関連する製品の価格にも影響しうる」と
+  一般的な条件文で補足する(特定の企業名・数値・時期を新たに主張していない)。
+ステップ6(fail-closed): 上記のどれにも明確に該当しない、または判断に迷う
+  場合は、BLOCKINGとしてください。"""
+
 R3_FLOOR_SAFE_BASIS = {"ledger_claim", "ledger_scope", "ledger_conditions", "notes_for_writer"}
 
 
@@ -112,6 +151,7 @@ def run_stage2_batch_variant(client, verified_ledger_text: str, source_article_t
         source_article_text=source_article_text or "(なし)",
         claims_block=claims_block,
         materiality_rubric=rubric_text,
+        rewrite_hint_instruction=s2p.REWRITE_HINT_INSTRUCTION,
     )
     t0 = time.time()
     response = client.responses.create(

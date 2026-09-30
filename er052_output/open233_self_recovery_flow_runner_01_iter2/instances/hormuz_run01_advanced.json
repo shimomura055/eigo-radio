@@ -1,0 +1,253 @@
+{
+  "instance_id": "hormuz_run01_advanced",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Trump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "“Trump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.”",
+            "issue": "The article makes the continued shipping risks a definite cause of oil prices staying high. The Ledger records a temporary narrowing of Brent’s gains followed by a recovery, while noting that other risks continued; it does not establish this specific causal link.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The Ledger supports the observed price movement and ongoing concerns, but not the summary’s definite causal attribution; this changes causality and certainty and adds an unsupported causal claim.",
+            "related_fact_id": "HF-009",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“Even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "該当箇所：「今回の値動きは、政治が案の名前を変えても、航路の危険まで消えたことにはならないと、原油が舞台の上で見せた一幕でした。」「shipping risks remained」を原油価格が高止まりした原因と断定せず、HF-009が確認する「発表後に一時的に上げ幅を縮小した後、発表前に近い高水準へ戻った（記事掲載時点で85ドル超）」という値動きに限定してください。航路上のリスクが続いていたことは併記できますが、価格との因果関係は示さないでください。参照：HF-009。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“Oil prices are linked to gasoline prices and transportation costs.”",
+          "origin": "ja_source",
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "“Oil prices are linked to gasoline prices and transportation costs.”",
+            "issue": "The article adds a specific claim about links between oil prices, gasoline prices, and transportation costs that is not covered by the Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This is a concrete factual addition absent from the Ledger, so changed_fact and unsupported_new_claim apply.",
+            "related_fact_id": "",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Oil Market's Main Player: The 20% Bill That Disappeared\n\nThis news may make Mr. Trump look like the main player. But the most interesting move came from oil, which did not fall in price.\n\nOn July 13, Mr. Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent “reimbursement fee.” Simply put, the plan was to make cargo passing through the strait help pay the cost of keeping it safe, a bit like handing a large bill to all cargo passing through the strait.\n\nThe next day, however, the scene suddenly changed. Mr. Trump withdrew the 20 percent plan and announced that it would instead be replaced by trade and investment deals between the Gulf states and the United States. He explained that this followed “very productive talks” with Middle Eastern leaders.\n\nA plan to charge a fee directly had changed into a discussion of trade and investment. It seemed as if the rough waves had become a little calmer. The oil market also reacted once, right after the announcement.\n\nBrent crude oil futures narrowed their gains after the announcement. But that calm did not last long. The price soon returned to a high level close to where it had been before the announcement. At the time of reporting, it was above 85 dollars a barrel.\n\nIt was as if oil had replied, “I understand that the bill is gone. But that alone is not enough to feel safe.”\n\nOf course, oil cannot speak. But its price movement seemed to show that people were watching not only whether there was a fee plan, but also the danger of the strait itself.\n\nAttacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+          "fallback_used": true,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+          "origin": "ja_source",
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+            "issue": "原油価格とガソリン価格・運送費との関係はLedgerに記載されておらず、記事が新たな具体的事実として追加しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "価格とガソリン・運送費の関係はLedgerで確認されていない新規の事実主張です。原文にも同じ主張があります。",
+            "related_fact_id": "",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Attacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\nAfter the withdrawal announcement, Brent futures briefly pared their gains before soon returning to near pre-announcement levels; they were above $85 a barrel at the time of publication. Shipping risks also continued.",
+          "fallback_used": false,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "hormuz_run01_advanced_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4684,
+      "usage": {
+        "input_tokens": 6241,
+        "cached_input_tokens": 0,
+        "output_tokens": 4723,
+        "reasoning_tokens": 4293
+      },
+      "elapsed_seconds": 46.768,
+      "prompt_sha256": "e71e2c6bebd59c29a7606a6fe2bacfca490083dfb6fd1723ca9b6b843ea22d0e"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.4185,
+      "usage": {
+        "input_tokens": 5336,
+        "cached_input_tokens": 0,
+        "output_tokens": 4268,
+        "reasoning_tokens": 4024
+      },
+      "elapsed_seconds": 39.772,
+      "prompt_sha256": "ce5b31e2ed3a0141f4723ed9a353b804f52969d1037a513975947f3c8a3e8246"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_fact:HF-009_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0972,
+      "usage": {
+        "input_tokens": 3389,
+        "cached_input_tokens": 0,
+        "output_tokens": 562,
+        "reasoning_tokens": 432
+      },
+      "elapsed_seconds": 4.674,
+      "prompt_sha256": "d11723e307b67a9993fccdad8fd6708e78907f24c123edf94603ac18afadb058"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5393,
+      "usage": {
+        "input_tokens": 6534,
+        "cached_input_tokens": 0,
+        "output_tokens": 5568,
+        "reasoning_tokens": 5149
+      },
+      "elapsed_seconds": 47.569,
+      "prompt_sha256": "81c2e5fa8f76bffc738cfef0a898eca4b6c2bffc612c0f6f6c51869b5048605a",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5036,
+      "usage": {
+        "input_tokens": 6691,
+        "cached_input_tokens": 0,
+        "output_tokens": 5082,
+        "reasoning_tokens": 4614
+      },
+      "elapsed_seconds": 43.626,
+      "prompt_sha256": "21cca3a368fe16aa6df838dbbaa47df15f82fcb81327fcbf853ffcfc5b6d11d0",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "hormuz_run01_advanced_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1207,
+      "usage": {
+        "input_tokens": 4921,
+        "cached_input_tokens": 0,
+        "output_tokens": 555,
+        "reasoning_tokens": 504
+      },
+      "elapsed_seconds": 8.537,
+      "prompt_sha256": "ad6ecbdd1775e8dfdabc7ac4fe0c4b18181b5c58078ba7585a08d07967075b9c"
+    }
+  ],
+  "total_cost_jpy": 2.1477,
+  "total_calls": 6,
+  "elapsed_seconds": 190.982
+}

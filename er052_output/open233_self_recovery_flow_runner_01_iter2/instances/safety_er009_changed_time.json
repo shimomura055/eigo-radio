@@ -1,0 +1,218 @@
+{
+  "instance_id": "safety_er009_changed_time",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+            "issue": "研究の発表年がLedgerの2014年と異なっています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "Ledgerの発表年は2014年であり、記事の2019年は異なる具体的な時期です。changed_timeおよび矛盾する事実の主張としてchanged_factをtrueにしました。チップが増えたという因果的な内容と対象範囲はLedgerの記述に沿っています。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "該当箇所: “In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.” 「2019」をLedger記載の発表日「2014年7月1日」に置き換えてください。高い推奨チップ率が実際のチップ増加につながったという内容はF-004に沿っています。参照Ledger fact_id: F-001（発表日・掲載誌）、F-004（研究結果）。",
+          "floor_reason": "deterministic_floor:changed_time"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:8f4f1deb9cceada6",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "On July 1, 2014, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": "F-004",
+          "dev": {
+            "claim_in_article": "On July 1, 2014, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+            "issue": "研究結果の対象を、Ledgerが確認しているクレジットカード利用者から、ニューヨーク市のタクシー乗客全般へ広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "F-004の因果的な結果と、2014年7月1日の発表日はLedgerに沿っています。ただし、結果の対象はニューヨーク市タクシーのクレジットカード利用者であり、記事はその限定を外して乗客全般に一般化しています。",
+            "related_fact_id": "F-004",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 1, 2014, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所：「higher suggested tip rates led New York City taxi passengers to leave more money」。対象を、より高い推奨チップ率のメニューを見たニューヨーク市タクシーのクレジットカード利用者に限定してください。参照Fact: F-004。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F-004",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_caught_recall_miss": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_time_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1288,
+      "usage": {
+        "input_tokens": 5107,
+        "cached_input_tokens": 0,
+        "output_tokens": 621,
+        "reasoning_tokens": 444
+      },
+      "elapsed_seconds": 6.241,
+      "prompt_sha256": "7e40274221e2fb333ca5a715e1913909f51bb2cf2865894d9df927bc4078f79a"
+    },
+    {
+      "label": "safety_er009_changed_time_c1_claim:8f4f1deb9ccead_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0826,
+      "usage": {
+        "input_tokens": 4260,
+        "cached_input_tokens": 0,
+        "output_tokens": 201,
+        "reasoning_tokens": 157
+      },
+      "elapsed_seconds": 2.992,
+      "prompt_sha256": "09b4cf93148174e8f6209ed63fe4e068dbc572de8edcf3b1aeeccfc5ce971c71"
+    },
+    {
+      "label": "safety_er009_changed_time_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.215,
+      "usage": {
+        "input_tokens": 6243,
+        "cached_input_tokens": 0,
+        "output_tokens": 1492,
+        "reasoning_tokens": 1101
+      },
+      "elapsed_seconds": 11.877,
+      "prompt_sha256": "2de1451737cbbaea7d7c17032d646b838c181caa10c4872fe16f9f150bc3b2c8",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_er009_changed_time_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1164,
+      "usage": {
+        "input_tokens": 5115,
+        "cached_input_tokens": 0,
+        "output_tokens": 461,
+        "reasoning_tokens": 342
+      },
+      "elapsed_seconds": 5.144,
+      "prompt_sha256": "b19a9952262d45b9145c05ad89470c7a688bad4fa710961a3d76c817f50d9429"
+    },
+    {
+      "label": "safety_er009_changed_time_c2_fact:F-004_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0795,
+      "usage": {
+        "input_tokens": 4210,
+        "cached_input_tokens": 0,
+        "output_tokens": 171,
+        "reasoning_tokens": 141
+      },
+      "elapsed_seconds": 5.898,
+      "prompt_sha256": "4df0440e2d3df7a2d9b6889f13b5e2bbcff950418fe19ead89c613d3236a135c"
+    },
+    {
+      "label": "safety_er009_changed_time_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1246,
+      "usage": {
+        "input_tokens": 6275,
+        "cached_input_tokens": 0,
+        "output_tokens": 334,
+        "reasoning_tokens": 236
+      },
+      "elapsed_seconds": 3.505,
+      "prompt_sha256": "a2c6b6529aa120054ed5af5dc2f9ca84f5ad1db7780d5f262523c6ce1b56e14d",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.7469,
+  "total_calls": 6,
+  "elapsed_seconds": 35.676
+}

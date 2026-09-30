@@ -1,0 +1,163 @@
+{
+  "instance_id": "neg7_meta_prodrunner_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "It was that testing began without clearly telling users about it.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "It was that testing began without clearly telling users about it.",
+            "origin": null,
+            "related_fact_id": "MUSE-HC-012",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### Why the hidden role mattered\n\nMeta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.\n\nNo large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「It was that testing began without clearly telling users about it.」を、ユーザー一般への告知ではなく、Meta社内テストで適切な開示なしに人間コンシェルジュ機能のテストが始まった、という範囲に狭めてください。参照: MUSE-HC-012",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "Users could not know who was really doing the work they’d asked AI to do.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006; MUSE-HC-007; MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Users could not know who was really doing the work they’d asked AI to do.",
+            "origin": null,
+            "related_fact_id": "MUSE-HC-006; MUSE-HC-007; MUSE-HC-012",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage\n\nImagine asking AI to book a haircut. Or asking it to call a store and check whether something is in stock. It could even ask a supplier for a price estimate. In this convenient future, the AI on your screen handles everything for you.\n\nMeta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call. But the picture changed once people looked behind the stage.\n\n### The call that was not made by AI\n\nSome calls through Muse were not made by AI at all. Trained human contract workers made them. Muse received the request—that part was AI—but then passed the job to a person. The worker made the call and finished the conversation. It was like an AI-led play with a hidden supporting actor. The system was called “human concierges.”\n\nThe hidden role made the simple picture less simple.\n\n### Why the hidden role mattered\n\nMeta employees worried that sensitive information needed for the calls might be shared by mistake with contract workers at a call center. The issue was not that humans handled calls. It was that testing began without clearly telling users about it. A service that seemed simple now looked like a mystery story.\n\nNo large information leak was confirmed. But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person. That uncertainty turned convenience into a mystery.\n\nA Meta executive admitted that starting the test without a proper explanation was a mistake. Meta then temporarily put the human-call feature back on hold. The company did not stop Muse itself.\n\nIn the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.\n\nEven in an age when AI does our work, a human may still need to help. But that person should not appear secretly. If they step onto the stage, they should give their name first. This case made that simple rule unusually clear.\n\n## In one line\n\nAI may need human help, but humans must say clearly when they take over.",
+          "fallback_used": true,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person.」の「users could not know」という対象・断定を、Meta従業員を対象とした社内テストで適切な開示がなかった、という範囲に狭めてください。参照: MUSE-HC-006、MUSE-HC-007、MUSE-HC-012",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-006; MUSE-HC-007; MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 2,
+  "s1u_caught_recall_miss": true,
+  "call_log": [
+    {
+      "label": "neg7_meta_prodrunner_b1b_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.4209,
+      "usage": {
+        "input_tokens": 5472,
+        "cached_input_tokens": 0,
+        "output_tokens": 4271,
+        "reasoning_tokens": 4023
+      },
+      "elapsed_seconds": 39.846,
+      "prompt_sha256": "027c66780d4cb85148011d0e23295047ffe1412026566cf95b6c3d53dece8812"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1885,
+      "usage": {
+        "input_tokens": 5430,
+        "cached_input_tokens": 0,
+        "output_tokens": 1317,
+        "reasoning_tokens": 1065
+      },
+      "elapsed_seconds": 12.684,
+      "prompt_sha256": "46491f4ead22c49346c83ee787abb7eecc7573e832389b9fcdf9c07a16cc1c13"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_c1_fact:MUSE-HC-012_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0601,
+      "usage": {
+        "input_tokens": 3323,
+        "cached_input_tokens": 0,
+        "output_tokens": 102,
+        "reasoning_tokens": 78
+      },
+      "elapsed_seconds": 3.852,
+      "prompt_sha256": "604c8e970db028d70d5c04a80aa26a0ca056ceb0ec048eec3995a55c46c55ef8"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_c1_fact:MUSE-HC-006; MU_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.07,
+      "usage": {
+        "input_tokens": 3365,
+        "cached_input_tokens": 0,
+        "output_tokens": 219,
+        "reasoning_tokens": 180
+      },
+      "elapsed_seconds": 2.805,
+      "prompt_sha256": "71fcb83bb705fcce20d201f37adc6cd2e32a737f8d89edf946750dfbd1e5433a"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2519,
+      "usage": {
+        "input_tokens": 6529,
+        "cached_input_tokens": 0,
+        "output_tokens": 1905,
+        "reasoning_tokens": 1764
+      },
+      "elapsed_seconds": 17.963,
+      "prompt_sha256": "3d47104e7c1e8d1d25316cb7e973fff61fba3aa1f78bbdd4ade7e37f77356560",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.9914,
+  "total_calls": 5,
+  "elapsed_seconds": 77.161
+}

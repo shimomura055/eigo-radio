@@ -1,0 +1,39 @@
+{
+  "label": "B1_R2PRIME_run1",
+  "prompt_sha256": "d60ef3f38f8f82566717283502c2835707d746bf767c787d616577fa72972b23",
+  "parsed": {
+    "judgments": [
+      {
+        "claim_index": 0,
+        "materiality": "BLOCKING",
+        "basis": "ledger_scope",
+        "rewrite_kind": "narrow_scope",
+        "rewrite_hint": "対象文の引用：「ホルムズ海峡は、中東から原油を運ぶ船が多く通る重要な海の道だ。」「中東から原油を運ぶ船が多く通る」という航路の具体的説明はLedgerで確認できないため削り、HF-006が記す「ホルムズ海峡を通るエネルギー輸送への懸念」に限定して表現する。参照fact_id：HF-006。"
+      },
+      {
+        "claim_index": 1,
+        "materiality": "ACCEPTABLE",
+        "basis": "none",
+        "rewrite_kind": "none",
+        "rewrite_hint": ""
+      },
+      {
+        "claim_index": 2,
+        "materiality": "BLOCKING",
+        "basis": "unsupported_relationship",
+        "rewrite_kind": "narrow_scope",
+        "rewrite_hint": "対象文の引用：「投資家が気にしているのは、20％の料金案が残るかどうかだけではない。」投資家の関心や海上の危険が価格反発を説明するという因果・動機の断定は避け、HF-009にある撤回後のBrent先物の値動きと、他の懸念が継続していたという報道内容に限定して記述する。参照fact_id：HF-009。"
+      }
+    ]
+  },
+  "model": "gpt-6-luna",
+  "response_id": "resp_0b24b03579247437006abc6f101a8087d0827515647303540f",
+  "usage": {
+    "input_tokens": 5812,
+    "cached_input_tokens": 0,
+    "output_tokens": 3114,
+    "reasoning_tokens": 2789
+  },
+  "cost_jpy": 0.3354,
+  "elapsed_seconds": 30.264
+}

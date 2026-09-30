@@ -735,3 +735,105 @@ open233_self_recovery_flow_01.md`(§9-1⑥[実測反映]/§9-2[改善優先
 (`summary_flow_runner.json`+`instances/*.json`29件)。入力: 委任文
 全文(2026-09-30、委任_09)。
 入力: 委任文全文(2026-09-30、委任_08)。
+
+## §9. iteration 2実測(委任_10、2026-09-30、rewrite_hint実装+J-1改善
++negative群R2再較正+S1-U variant実測+統合dry-run再実行)
+
+**目的**: §8(委任_09)で判明した改善優先順位(§9-2)1〜4を実装し、
+同一29 instanceで再実行して改善効果を実測する。
+
+**実装(¥0)**: (1) Stage2出力schema(`er052_open233_self_recovery_
+stage2_production_01.py`)へ`rewrite_hint`(BLOCKING時必須、逐語引用+
+修正指示+fact_id)を追加。(2) J-1ロケータ改善
+(`er052_open233_self_recovery_flow_runner_01.py::locate_target`/
+`locate_ja_counterpart_by_position`): rewrite_hint引用断片を第一キー
+・claim_textのlocate_best_sentence(ambiguous時は全文フォールバックへ
+委ねるよう変更)を第二キー・`er010_ledger_local_rewrite_09.locate_
+target_sentence`(word-overlap、read-only借用)を第三キーとし、JA側は
+EN対象文の文位置比をJA文分割へ写像し数値トークン一致を優先する構造的
+近似を追加。(3) claim identity正規化(`normalize_claim_text`、
+fact_id無し時の表記揺れ吸収)。(4) delete型のfuzzy再出現確認。(5) S1-U
+variant(`stage1_union_screen`、Stage1 PASS時にS1-D 1 callを追加し
+union screen、CLI `--s1u`)。新規regression test 19件追加、既存含め
+131件PASS。
+
+**実測(有料)**: 作業B(negative群R2'較正Trial、新規`er052_open233_
+self_recovery_r2prime_recalibration_01.py`)=20 call・¥3.3977。
+作業C(29 instance再実行、`--s1u`有効)=126 call・¥26.0302
+(Guardrail¥35のうち)。合計**¥29.4279**(本委任Guardrail¥50のうち)。
+
+**【iteration 1→2 差分表】**
+
+| 指標 | iter1(委任_09) | iter2(委任_10) |
+|---|---|---|
+| Initial BLOCK | 23/29 | 28/29 |
+| Rewrite自動解消 | 13 | 21 |
+| Final STOP(Escalation) | 9 | 7 |
+| 真の解消 | 11 | 16 |
+| 総call数/総費用 | 92/¥16.7806 | 126/¥26.0302 |
+| 平均¥/instance | ¥0.5786 | ¥0.8976 |
+| worst instance | ¥2.2721 | ¥2.4664(Cap未超過) |
+| completion率 | 69.0% | 75.86% |
+| Escalation率(Wilson95%CI) | 31.0%[17.3,49.2] | 24.1%[12.2,42.1] |
+| claim単位Rewrite成功率 | 60.6%(20/33) | 81.0%(34/42) |
+| J-1 locate成功率 | 36.4%(4/11) | 81.8%(9/11) |
+
+**0件の内訳(iter2)**: 真の解消16、QUALITY通過0、未確認0、誤PASS
+候補0(全件Recheckで明示確認)。
+
+**S1-U variant実測**: s1u_eligible10 instance中、Stage1(V4A)が実際に
+PASSしていた7件へ1 call追加、6件(85.7%)がBLOCKING claimを新規検出。
+**委任_09の3件の重大Stage1 recall miss(B2_hormuz・B3・hormuz_run02_
+advanced[現行Production STOP実例そのもの])を全件捕捉し、いずれも
+Rewriteで解消**(hormuz_run02_advancedはcycle1で`LEDGER_COMPLIANT`
+かつ`all_prior_issues_resolved=True`)。追加固定費¥3.1589(7 call)。
+副作用: 新規捕捉した`meta_run03_advanced`は2 cycle以内に解消できず
+STAGE4到達(「見えない見逃し」を「人間が確認できるSTOP」へ変換した
+もの)。**採用推奨**(Safety改善3件 vs 固定費+Escalation増分1件の
+トレードオフ、Cap未超過、最終判断はユーザー)。
+
+**R2'較正(不採用)**: 段階的判定手順+例示追加のRUBRIC_R2_PRIMEを
+n=2実測(20 call)。Safety側で誤降格1件(A4-0)発生、Productivity側は
+改善0件。委任文の受入条件(誤降格0件かつ改善)を満たさず**不採用、
+既存R2rubric維持**。
+
+**残るStage4到達7件の原因分類**: J-1対象文特定失敗の残存分・Rewrite
+後もRecheckが引き続きLEDGER_DEVIATION(bgroup_B1/B4・safety_A2A3/A4)、
+claim再発型(meta_run03_standard・neg1)、S1-U新規捕捉だが2 cycle以内
+未解消(meta_run03_advanced)。次案: J-1 fulltext fallback発動条件の
+早期化、S1-U捕捉claim限定のcycle上限緩和検討、safety_A4個別診断。
+
+**Opus L2 #2論点案(5〜7個)**: (1) S1-U variantのPhase 2デフォルト
+採用可否。(2) J-1のさらなる汎用化投資判断(固有名詞中心claimの限界)。
+(3) R2'較正失敗を踏まえたrubric較正アプローチ自体の限界評価。(4)
+claim identity正規化の実データ効果測定。(5) S1-U新規発見claim未解消
+時の扱い(cycle上限緩和 vs 現行STAGE4)。(6) Phase 2着手判断。(7)
+Cap余裕の累積コストへの影響試算。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+S1-Uの新規Escalationは見逃しの可視化でありSafety緩和ではない。worst
+instance実測¥2.4664はCap未超過。R2'不採用はTrial内較正判断)。
+
+**費用**: 今回¥29.4279(146 call、0 error)。Phase累計¥38.2769+
+¥29.4279=**¥67.7048**/総枠¥400、残¥332.2952。
+
+**Production/API安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1証跡
+(`er052_output/open233_self_recovery_flow_runner_01/`)・既存委任_08
+証跡に差分なし(iteration2出力は別ディレクトリ`..._flow_runner_01_
+iter2/`+新規`_r2prime_recalibration_01/`のみ)。変更対象は`er052_
+open233_self_recovery_stage2_production_01.py`(rewrite_hint追加、
+Trial file)・`er052_open233_self_recovery_stage2_calibration_01.py`
+(RUBRIC_R2_PRIME追加)・`er052_open233_self_recovery_flow_runner_01.py`
+(+test)・新規`er052_open233_self_recovery_r2prime_recalibration_01.py`
+のみ。API keyは環境変数のみ、保存jsonはprompt_sha256のみ記録。既存
+unittest全131件PASS(regression確認、新規21件追加)。
+
+Status=`ITER2_DONE_TARGET_MET`。Evidence: `docs/pm/design_open233_
+self_recovery_flow_01.md`(§3-1/§4-5/§4-8/§5-4/§9-1⑦/§9-2/§13-11/
+冒頭Status)、`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_open233_self_recovery_r2prime_recalibration_01.py`、
+`er052_output/open233_self_recovery_flow_runner_01_iter2/`
+(`summary_flow_runner.json`+`instances/*.json`29件)、`er052_output/
+open233_self_recovery_r2prime_recalibration_01/summary_r2prime_
+recalibration.json`。入力: 委任文全文(2026-09-30、委任_10)。

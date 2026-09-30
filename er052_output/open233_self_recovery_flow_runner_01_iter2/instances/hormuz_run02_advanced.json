@@ -1,0 +1,130 @@
+{
+  "instance_id": "hormuz_run02_advanced",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+          "origin": null,
+          "related_fact_id": "HF-009, HF-011",
+          "dev": {
+            "claim_in_article": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "origin": null,
+            "related_fact_id": "HF-009, HF-011",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用：「料金案が消えたからといって、価格がそのまま大きく下がる展開にはなりませんでした。」撤回が価格下落をもたらさなかったという因果関係の断定を避け、観測された値動きに限定してください。例：「撤回発表後、Brent先物は一時上げ幅を縮めたが、ほどなく発表前に近い高い水準へ戻った。」参照：HF-009。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009, HF-011",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 1,
+  "s1u_caught_recall_miss": true,
+  "call_log": [
+    {
+      "label": "hormuz_run02_advanced_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.2182,
+      "usage": {
+        "input_tokens": 6234,
+        "cached_input_tokens": 0,
+        "output_tokens": 1535,
+        "reasoning_tokens": 1512
+      },
+      "elapsed_seconds": 17.427,
+      "prompt_sha256": "870b5a61e34b363297ccabc47f25e0f7d2e8d37fc8aa8104a7f72849b6e32056"
+    },
+    {
+      "label": "hormuz_run02_advanced_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.3935,
+      "usage": {
+        "input_tokens": 5410,
+        "cached_input_tokens": 5407,
+        "output_tokens": 4908,
+        "reasoning_tokens": 4657
+      },
+      "elapsed_seconds": 53.097,
+      "prompt_sha256": "c3ad376c388a4f1214e0d6ba46cfce195da15b302f30c62b714609b008fe5ed1"
+    },
+    {
+      "label": "hormuz_run02_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1606,
+      "usage": {
+        "input_tokens": 4932,
+        "cached_input_tokens": 0,
+        "output_tokens": 1061,
+        "reasoning_tokens": 895
+      },
+      "elapsed_seconds": 12.14,
+      "prompt_sha256": "bee807afa9da7caeed36b8a1f3b2eff0fb301cff4fdb71e7ed7203425a25f136"
+    },
+    {
+      "label": "hormuz_run02_advanced_c1_fact:HF-009, HF-011_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0574,
+      "usage": {
+        "input_tokens": 3317,
+        "cached_input_tokens": 0,
+        "output_tokens": 68,
+        "reasoning_tokens": 41
+      },
+      "elapsed_seconds": 2.923,
+      "prompt_sha256": "02579165696aa5b722ee309f7a065fab431978ac14ad9ca40164e2d7f95cb2c5"
+    },
+    {
+      "label": "hormuz_run02_advanced_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4449,
+      "usage": {
+        "input_tokens": 6410,
+        "cached_input_tokens": 0,
+        "output_tokens": 4390,
+        "reasoning_tokens": 4287
+      },
+      "elapsed_seconds": 36.496,
+      "prompt_sha256": "9d8a9ce648e9d0b20554462289b3bb1e2a269c53171dc7bf8274aa4973d5ea07",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.2746,
+  "total_calls": 5,
+  "elapsed_seconds": 122.102
+}
