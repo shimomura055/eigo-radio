@@ -35,6 +35,7 @@
 #  detected_by: "precheck"}
 from __future__ import annotations
 
+import math
 import re
 
 # ------------------------------------------------------------
@@ -176,6 +177,42 @@ def _any_close(expected: set, observed: set, rel_tol: float = 0.05) -> bool:
     return any(_numbers_close(a, b, rel_tol) for a in expected for b in observed)
 
 
+# ------------------------------------------------------------
+# 委任_14 作業B-1(2026-09-30 ユーザー新方針item1): 「数値丸めはWriterでは
+# なくChecker側を修正する。通常の四捨五入で得られる自然な近似値(2.6%→
+# about 3%、1.7%→about 2%、$84.73→about $85)は別数値としてNGにしない。
+# 意味が変わる丸め(2.6%→about 2%、2.99%→about 2%、84.73→about 100)は
+# NGのまま」。基準=「元値から通常の四捨五入(round-half-up)で得られる
+# 近似値か」。適用範囲を限定するため、候補は(a)整数への四捨五入、
+# (b)小数第1位への四捨五入、(c)0.5刻みへの四捨五入の3種類のみとする
+# (nearest-10/nearest-100のような大きな桁の丸めは対象外、84.73→about 100
+# を誤って許容しないための意図的な制約)。"""
+def _round_half_up(x: float, decimals: int = 0) -> float:
+    factor = 10 ** decimals
+    if x >= 0:
+        return math.floor(x * factor + 0.5) / factor
+    return -math.floor(-x * factor + 0.5) / factor
+
+
+def is_natural_rounding(expected: float, observed: float) -> bool:
+    """`observed`が`expected`の「通常の四捨五入」で得られる近似値かどうかを
+    判定する(委任_14 B-1)。整数丸め・小数第1位丸め・0.5刻み丸めの3候補
+    のみを許容し、nearest-10/nearest-100等の粗い丸めは許容しない
+    (84.73→about 100はNGのまま)。"""
+    if expected == observed:
+        return True
+    candidates = {
+        _round_half_up(expected, 0),
+        _round_half_up(expected, 1),
+        _round_half_up(expected * 2, 0) / 2,
+    }
+    return any(abs(observed - c) < 1e-9 for c in candidates)
+
+
+def _any_natural_rounding(expected: set, observed: set) -> bool:
+    return any(is_natural_rounding(a, b) for a in expected for b in observed)
+
+
 def check_number_mismatch(fact: dict, article_text: str,
                            all_ledger_pct: set | None = None,
                            all_ledger_cnt: set | None = None) -> dict | None:
@@ -215,6 +252,11 @@ def check_number_mismatch(fact: dict, article_text: str,
         return None
     if _any_close(expected, observed):
         return None
+    # 委任_14 B-1: 通常の四捨五入で得られる自然な近似値(2.6%→about 3%等)は
+    # 別数値としてmismatch扱いしない(2.6%→about 2%のような意味が変わる
+    # 丸めは対象外のまま、is_natural_roundingの候補限定により区別される)。
+    if _any_natural_rounding(expected, observed):
+        return None
     # 記事側の「異なる数値」が、同じLedgerの別Factの正しい値であれば
     # このFactの取り違え証拠にはならない(除外)。
     foreign_observed = {o for o in observed if not _any_close({o}, other_ledger_values)}
@@ -229,6 +271,66 @@ def check_number_mismatch(fact: dict, article_text: str,
         "kind": "number_mismatch",
         "detected_by": "precheck",
     }
+
+
+# 委任_14 作業B-1: percent(%)・count(million/billion/万/億)以外の裸の数値
+# (例: "$84.73"のような金額)は既存extract_percentages/extract_countsでは
+# 抽出できない。changed_number_is_natural_rounding_only専用の狭い
+# fallback抽出器(桁区切り・小数・$prefixのみ対応)を追加する。既存の
+# check_number_mismatch(precheck本体のFP抑制ロジック)には影響しない
+# (本関数専用、precheck本体の挙動は無変更)。
+BARE_NUMBER_RE = re.compile(r"\$?\d+(?:,\d{3})*(?:\.\d+)?")
+
+
+def extract_bare_numbers(text: str) -> set:
+    out = set()
+    for m in BARE_NUMBER_RE.finditer(text or ""):
+        try:
+            out.add(round(_to_float(m.group(0).replace("$", "")), 2))
+        except ValueError:
+            continue
+    return out
+
+
+# ------------------------------------------------------------
+# 委任_14 作業B-1(Stage2入力・deterministic floor向け数値正規化):
+# Stage1 LLMが"changed_number"=true と判定したclaimでも、記事側の数値が
+# related_fact_idのLedger numeric_valueの「通常の四捨五入」で得られる
+# 近似値でしかない場合、number変更として扱わない(floorのfalse-positive
+# 抑制)。判定できない(fact_idがLedgerに無い/numeric_valueが単一の
+# percent・count・裸の数値に定まらない/記事側に候補数値が無い)場合は
+# Falseを返し、既存のfail-closed挙動(floor発火のまま)を維持する。
+# ------------------------------------------------------------
+def changed_number_is_natural_rounding_only(claim_text: str, related_fact_id: str | None,
+                                             ledger_text: str) -> bool:
+    if not related_fact_id or not claim_text:
+        return False
+    facts = parse_ledger_text(ledger_text)
+    fact = next((f for f in facts if f.get("fact_id") == related_fact_id), None)
+    if fact is None:
+        return False
+    numeric_value = fact.get("numeric_value")
+    if not numeric_value:
+        return False
+    ledger_pct = extract_percentages(numeric_value)
+    ledger_cnt = extract_counts(numeric_value)
+    if len(ledger_pct) == 1 and len(ledger_cnt) == 0:
+        expected, observed = ledger_pct, extract_percentages(claim_text)
+    elif len(ledger_cnt) == 1 and len(ledger_pct) == 0:
+        expected, observed = ledger_cnt, extract_counts(claim_text)
+    else:
+        ledger_bare = extract_bare_numbers(numeric_value)
+        if len(ledger_bare) == 1:
+            expected, observed = ledger_bare, extract_bare_numbers(claim_text)
+        else:
+            return False
+    if not observed:
+        return False
+    # 完全一致(そもそも変わっていない)は「丸めによる差」ではないため対象外
+    # (changed_number自体が誤検出だった可能性はあるが、本関数の責務外)。
+    if _any_close(expected, observed, rel_tol=1e-9):
+        return False
+    return _any_natural_rounding(expected, observed)
 
 
 # ------------------------------------------------------------

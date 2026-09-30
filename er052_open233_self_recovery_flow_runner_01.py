@@ -106,9 +106,17 @@ OUT_DIR_ITER4 = "er052_output/open233_self_recovery_flow_runner_01_iter4"
 # 制約の反映後、29 instance n=2で再実行、委任文§2/§3/§4)。入力deviation
 # 集合はiteration3/4と同一固定(paired比較のため、Stage1 reuseパス自体は
 # iteration1時点のartifactを参照し続ける、二重課金防止は変更しない)。
-OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter5"
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233q_d.json"
-TOTAL_BUDGET_JPY = 65.0  # 委任_13 作業D Guardrail
+OUT_DIR_ITER5 = "er052_output/open233_self_recovery_flow_runner_01_iter5"
+# 委任_14(iteration6): 既存iteration1〜5の出力(OUT_DIR_ITER1〜4/
+# OUT_DIR_ITER5)は変更しない。iteration6の出力は別ディレクトリへ書く
+# (丸め許容+floor-cited variant+最小変更ラダー+セクション役割維持+
+# Hook-aware統合+コスト5分割の反映後、29 instance n=2で再実行、
+# 委任文§3-D)。入力deviation集合はiteration3〜5と同一固定(paired比較の
+# ため、Stage1 reuseパス自体はiteration1時点のartifactを参照し続ける、
+# 二重課金防止は変更しない)。
+OUT_DIR = "er052_output/open233_self_recovery_flow_runner_01_iter6"
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233r_d.json"
+TOTAL_BUDGET_JPY = 60.0  # 委任_14 作業D Guardrail(委任文§3-D「有料≤¥60」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -394,6 +402,69 @@ def measure_rewrite_quality_degradation_v2(before_text: str, after_text: str,
         "hook_or_title_changed": title_changed or first_paragraph_changed,
         "needs_regeneration": bool(dup) or bool(orphan) or vocab_difficulty_increased,
         "reasons": "; ".join(reasons),
+    }
+
+
+# ------------------------------------------------------------
+# 委任_14 作業B-4(2026-09-30ユーザー新方針item5): Title=引きつける/
+# Hook=演出・興味喚起/本文=ストーリー性・読みやすさ/In one line=短く圧縮
+# して締める、という各パートの役割をRewrite後も維持しているかを決定論的に
+# 検出する(¥0)。In one lineの長文化(語数+30%超)・タイトル/In one lineへの
+# 数字追加・Hookの縮小/レトリック消失・タイトルのレトリック消失を検出し、
+# measure_rewrite_quality_degradation_v2と統合して既存の再生成トリガへ
+# 合流させる(新しい再生成機構は作らない)。
+# ------------------------------------------------------------
+_DIGIT_RE = re.compile(r"\d")
+_RHETORICAL_MARKER_RE = re.compile(r'[?!]|"[^"]{3,}"|\bimagine\b|\bwhat if\b', re.IGNORECASE)
+
+
+def measure_section_role_violation(before_text: str, after_text: str) -> dict:
+    title_before, title_after = _paragraph_title(before_text), _paragraph_title(after_text)
+    hook_before, hook_after = _first_body_paragraph(before_text), _first_body_paragraph(after_text)
+    iol_before, iol_after = _extract_in_one_line_text(before_text), _extract_in_one_line_text(after_text)
+
+    iol_words_before = len(_WORD_RE.findall(iol_before))
+    iol_words_after = len(_WORD_RE.findall(iol_after))
+    iol_length_increase_ratio = (
+        round((iol_words_after - iol_words_before) / iol_words_before, 4) if iol_words_before else 0.0
+    )
+    iol_too_long = iol_words_before > 0 and iol_length_increase_ratio > 0.30
+
+    numbers_added_title = len(_DIGIT_RE.findall(title_after)) > len(_DIGIT_RE.findall(title_before))
+    numbers_added_iol = len(_DIGIT_RE.findall(iol_after)) > len(_DIGIT_RE.findall(iol_before))
+
+    hook_words_before = len(_WORD_RE.findall(hook_before))
+    hook_words_after = len(_WORD_RE.findall(hook_after))
+    hook_shrank = hook_words_before > 0 and hook_words_after < hook_words_before * 0.5
+    hook_markers_before = len(_RHETORICAL_MARKER_RE.findall(hook_before))
+    hook_markers_after = len(_RHETORICAL_MARKER_RE.findall(hook_after))
+    hook_flattened = hook_before != hook_after and hook_markers_before > 0 and hook_markers_after == 0
+
+    title_markers_before = len(_RHETORICAL_MARKER_RE.findall(title_before))
+    title_markers_after = len(_RHETORICAL_MARKER_RE.findall(title_after))
+    title_flattened = title_before != title_after and title_markers_before > 0 and title_markers_after == 0
+
+    reasons = []
+    if iol_too_long:
+        reasons.append(f"in_one_line_too_long(+{round(iol_length_increase_ratio * 100, 1)}%)")
+    if numbers_added_title:
+        reasons.append("numbers_added_to_title")
+    if numbers_added_iol:
+        reasons.append("numbers_added_to_in_one_line")
+    if hook_shrank:
+        reasons.append(f"hook_shrank({hook_words_before}->{hook_words_after}words)")
+    if hook_flattened:
+        reasons.append("hook_rhetorical_markers_lost")
+    if title_flattened:
+        reasons.append("title_rhetorical_markers_lost")
+
+    return {
+        "in_one_line_length_increase_ratio": iol_length_increase_ratio, "in_one_line_too_long": iol_too_long,
+        "numbers_added_to_title": numbers_added_title, "numbers_added_to_in_one_line": numbers_added_iol,
+        "hook_word_count_before": hook_words_before, "hook_word_count_after": hook_words_after,
+        "hook_shrank": hook_shrank, "hook_rhetorical_markers_lost": hook_flattened,
+        "title_rhetorical_markers_lost": title_flattened,
+        "section_role_violated": bool(reasons), "reasons": "; ".join(reasons),
     }
 
 
@@ -964,6 +1035,26 @@ def run_recheck_confirm(client, state, consecutive_errors, call_log, label, fixt
 # ------------------------------------------------------------
 # Stage 2: R2 rubric、instance単位batch(§4-8/A9)、floor適用
 # ------------------------------------------------------------
+# 委任_14 作業B-1(2026-09-30ユーザー新方針item1): floorへ渡す前に、
+# Stage1 LLMが"changed_number"=trueとしたclaimのうち、記事側の数値が
+# related_fact_idのLedger numeric_valueの「通常の四捨五入」で得られる
+# 近似値でしかない場合はchanged_numberをfloor対象から除外する(precheck.
+# changed_number_is_natural_rounding_only、決定論・¥0)。他のfloor flag
+# (changed_actor/negation/comparison/time)は無変更、changed_numberが唯一
+# 発火していた場合のみfloor自体が不発火になる。fail-closed維持: 判定不能
+# (fact_id不明・numeric_value非単一等)の場合は常にFalseを返す既存設計
+# のため、従来どおりfloorが発火する。
+def _sanitize_dev_for_rounding(dev: dict, claim_text: str, ledger_text: str) -> dict:
+    if not dev.get("changed_number"):
+        return dev
+    if precheck.changed_number_is_natural_rounding_only(claim_text, dev.get("related_fact_id"), ledger_text):
+        dev2 = dict(dev)
+        dev2["changed_number"] = False
+        dev2["changed_number_suppressed_reason"] = "natural_rounding(委任_14 B-1)"
+        return dev2
+    return dev
+
+
 def apply_floor(materiality: str, dev: dict, detected_by: str) -> tuple:
     if detected_by == "precheck":
         return "BLOCKING", "precheck_floor"
@@ -971,6 +1062,140 @@ def apply_floor(materiality: str, dev: dict, detected_by: str) -> tuple:
     if triggered:
         return "BLOCKING", "deterministic_floor:" + ",".join(triggered)
     return materiality, None
+
+
+# ------------------------------------------------------------
+# 委任_14 作業B-2(floor-cited variant): 現行floor(floor-strict)は
+# FLOOR_FLAGSのいずれかがtrueであれば無条件にBLOCKINGへ強制する。
+# floor-cited variantは、Stage1が対象claimに対しLedgerの具体的値
+# (numeric_value/date_or_period/明示的なclaim文)を名指しできる場合
+# (related_fact_idがLedgerに実在し、Stage1のissue/explanationが当該
+# fact_idの具体的field[numeric_value/date_or_period/claim]のいずれかに
+# 言及している場合)に限りfloorを発火させる。反実仮想として両方を計算し
+# (追加API callなし、¥0)、instance結果へ両方の判定を記録する(実際の
+# フロー制御は既存floor-strictのまま変更しない、fail-closed維持)。
+# ------------------------------------------------------------
+def floor_cited_eligible(dev: dict, ledger_text: str) -> bool:
+    fact_id = (dev.get("related_fact_id") or "").strip()
+    if not fact_id:
+        return False
+    facts = precheck.parse_ledger_text(ledger_text)
+    fact = next((f for f in facts if f.get("fact_id") == fact_id), None)
+    if fact is None:
+        return False
+    probe_text = " ".join(str(dev.get(k) or "") for k in ("issue", "explanation"))
+    if not probe_text.strip():
+        return False
+    citable_fields = [fact.get("numeric_value"), fact.get("date_or_period"), fact.get("claim")]
+    for field_val in citable_fields:
+        if not field_val:
+            continue
+        # 簡易引用判定: fieldの内容の一部(4文字以上の連続部分文字列、数字を
+        # 含む短いtoken)がissue/explanation中に言及されているかを、数値
+        # token・4文字以上の語のoverlapで判定する(決定論・¥0、専用の新しい
+        # 安全装置ではなく既存precheckの数値抽出を再利用)。
+        field_numbers = precheck.extract_percentages(str(field_val)) | {
+            v for v in precheck.extract_counts(str(field_val))}
+        probe_numbers = precheck.extract_percentages(probe_text) | {
+            v for v in precheck.extract_counts(probe_text)}
+        if field_numbers and probe_numbers and (field_numbers & probe_numbers):
+            return True
+        field_words = {w.lower() for w in re.findall(r"[A-Za-z]{4,}", str(field_val))}
+        probe_words = {w.lower() for w in re.findall(r"[A-Za-z]{4,}", probe_text)}
+        if field_words and len(field_words & probe_words) >= 2:
+            return True
+    return False
+
+
+def apply_floor_cited(materiality: str, dev: dict, detected_by: str, ledger_text: str) -> tuple:
+    """floor-cited variant(委任_14 B-2)。precheck floorはfloor-strictと
+    同じ(precheckは既にLedger実値との機械照合による具体的な引用そのもの
+    のため、cite-or-releaseの精神上、常にcited扱い)。deterministic floor
+    (Stage1 LLM flag由来)は、floor_cited_eligible()がTrueの場合のみ発火
+    させる。"""
+    if detected_by == "precheck":
+        return "BLOCKING", "precheck_floor"
+    triggered = [k for k in FLOOR_FLAGS if bool(dev.get(k))]
+    if triggered and floor_cited_eligible(dev, ledger_text):
+        return "BLOCKING", "deterministic_floor_cited:" + ",".join(triggered)
+    return materiality, None
+
+
+# ------------------------------------------------------------
+# 委任_14 作業B-5(Hook-aware統合、監査結果[docs/pm/audit_hook_aware_and_
+# rewrite_qa_open233_01.md]に基づく)。Production HOOK_CLAUSE
+# (er003_v1_en_direct_vfl_01_generate.py L579-595)は「Hook文では
+# changed_scope/changed_comparisonの2種のみ緩和可、他8種は常時検査」と
+# 定める。Self-Recoveryのdeterministic floor(FLOOR_FLAGS)は
+# changed_comparisonを含むため、changed_comparisonをHook-awareで緩和する
+# とfail-closedのfloor(既存安全装置)を弱めることになり、governanceの
+# 「既存の安全装置を独自判断で回避・無効化しない」に抵触する。本委任では
+# floorに含まれないchanged_scopeのみをHook-aware緩和の対象とし、
+# changed_comparisonは対象外のまま維持する(Fable原案[§2]からの意図的な
+# 縮小、監査文書に理由を記録、拡大にはFable/ユーザー判断が必要)。
+# 判定は決定論的post-hoc(dev flagsのみで判定、LLMのHook解釈に依存しない
+# 設計としたことでStage2 promptは変更していない、監査文書に設計理由を
+# 記録)。
+# ------------------------------------------------------------
+HOOK_SECTION_TYPES = frozenset({"title", "hook", "in_one_line"})
+HOOK_AWARE_ELIGIBLE_FLAG = "changed_scope"
+HOOK_AWARE_OTHER_FLAGS = [
+    "changed_fact", "changed_causality", "changed_certainty", "changed_number",
+    "changed_actor", "changed_negation", "changed_comparison", "changed_time",
+    "unsupported_new_claim",
+]
+
+_IN_ONE_LINE_TEXT_RE = re.compile(r"^##\s+In [Oo]ne [Ll]ine[…\.]*\s*\n(.+)", flags=re.MULTILINE | re.DOTALL)
+
+
+def _extract_in_one_line_text(full_text: str) -> str:
+    m = _IN_ONE_LINE_TEXT_RE.search(full_text or "")
+    return m.group(1).strip() if m else ""
+
+
+def detect_claim_section_type(claim_text: str, full_text: str) -> str:
+    """claimがTitle/Hook(第1段落)/In one line/本文のどこに位置するかを
+    決定論的に判定する(委任_14 B-5、¥0)。位置特定にはlocate_best_sentence
+    (既存)を再利用し、新しいマッチングロジックは発明しない。"""
+    if not full_text:
+        return "body"
+    title = _paragraph_title(full_text)
+    hook = _first_body_paragraph(full_text)
+    in_one_line = _extract_in_one_line_text(full_text)
+    target, _method = locate_best_sentence(claim_text, full_text)
+    probe = target or claim_text or ""
+    probe_tokens = _normalize_tokens_for_jaccard(probe)
+
+    def _overlaps(section_text: str, threshold: float) -> bool:
+        if not section_text:
+            return False
+        if probe.strip() and (probe.strip() in section_text or section_text.strip() in probe):
+            return True
+        return _jaccard_similarity(probe_tokens, _normalize_tokens_for_jaccard(section_text)) >= threshold
+
+    if _overlaps(title, 0.4):
+        return "title"
+    if _overlaps(in_one_line, 0.4):
+        return "in_one_line"
+    if _overlaps(hook, 0.3):
+        return "hook"
+    return "body"
+
+
+def apply_hook_aware_downgrade(materiality: str, dev: dict, section_type: str, floor_reason) -> tuple:
+    """floor適用後のmaterialityに対し、Hook section×changed_scope単独×
+    floor不発火の場合のみBLOCKING->QUALITYへpost-hoc downgradeする
+    (委任_14 B-5)。changed_scopeがFLOOR_FLAGSに含まれないため、既存floor
+    には一切触れない。"""
+    if materiality != "BLOCKING" or floor_reason is not None:
+        return materiality, None
+    if section_type not in HOOK_SECTION_TYPES:
+        return materiality, None
+    if not dev.get(HOOK_AWARE_ELIGIBLE_FLAG):
+        return materiality, None
+    if any(dev.get(f) for f in HOOK_AWARE_OTHER_FLAGS):
+        return materiality, None
+    return "QUALITY", "hook_aware_scope_downgrade"
 
 
 def run_stage2(client, state, consecutive_errors, call_log, label, fixture, claims: list) -> list:
@@ -1034,12 +1259,38 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
             materiality, basis, rewrite_kind = match["materiality"], match["basis"], match["rewrite_kind"]
             rewrite_hint = match.get("rewrite_hint", "") or ""
             floor_reason = None
-        final_materiality, floor_applied = apply_floor(materiality, c["dev"], c.get("detected_by", "stage1_llm"))
+        detected_by = c.get("detected_by", "stage1_llm")
+        # 委任_14 B-1: floor評価直前にchanged_numberの丸め誤検出を除去する
+        # (precheck floor[detected_by=="precheck"]は既に丸め対応済みの
+        # check_number_mismatch経由のため対象外、ここではdeterministic
+        # floor[Stage1 LLM flag由来]のみ対象)。
+        dev_for_floor = (
+            _sanitize_dev_for_rounding(c["dev"], c["claim_text"], fixture["ledger_text"])
+            if detected_by != "precheck" else c["dev"]
+        )
+        final_materiality, floor_applied = apply_floor(materiality, dev_for_floor, detected_by)
         if floor_applied:
             floor_reason = floor_applied
-        out.append({**c, "materiality": final_materiality, "llm_materiality": materiality, "basis": basis,
+        # 委任_14 B-2: floor-cited variantを反実仮想として同時計算し記録する
+        # (実際のフロー制御には使わない、floor-strict[既存]のまま)。
+        cited_materiality, cited_floor_applied = apply_floor_cited(
+            materiality, dev_for_floor, detected_by, fixture["ledger_text"])
+        # 委任_14 B-5: Hook-aware post-hoc downgrade(floor不発火時のみ、
+        # changed_scope単独発火時のみ)。changed_comparisonは既存
+        # deterministic floor(Safety側安全装置)の対象のままとし、本委任
+        # では独自判断で緩和しない(監査文書に理由を記録)。
+        section_type = detect_claim_section_type(c["claim_text"], fixture["article_text"])
+        hook_materiality, hook_reason = apply_hook_aware_downgrade(
+            final_materiality, dev_for_floor, section_type, floor_reason)
+        if hook_reason:
+            final_materiality = hook_materiality
+            floor_reason = hook_reason
+        out.append({**c, "dev": dev_for_floor, "materiality": final_materiality, "llm_materiality": materiality,
+                    "basis": basis,
                     "rewrite_kind": rewrite_kind if rewrite_kind != "none" else "replace_with_ledger_value",
-                    "rewrite_hint": rewrite_hint, "floor_reason": floor_reason})
+                    "rewrite_hint": rewrite_hint, "floor_reason": floor_reason,
+                    "section_type": section_type,
+                    "floor_cited_materiality": cited_materiality, "floor_cited_reason": cited_floor_applied})
     return out
 
 
@@ -1272,6 +1523,47 @@ def locate_ja_counterpart_by_position(en_target: str, en_full: str, ja_full: str
     return window[center_idx], f"ja_position_ratio(idx={ja_index_guess})"
 
 
+# ------------------------------------------------------------
+# 委任_14 作業B-3(最小変更ラダー、2026-09-30ユーザー新方針item3): Rewriteは
+# 「最小変更」第一原則。①単語・接続詞のみ ②文の一部 ③1文 ④段落 ⑤より広い
+# 範囲 ⑥記事全体、の順に試し、前段で直れば後段へ進まない。実装上は
+# API呼び出し回数を無制限に増やさないため、①②を1つの「単語・接続詞のみ」
+# 水準(E1_MINIMAL_WORD)に、④⑤を1つの「段落」水準(既存E2_PARAGRAPH)に
+# 集約する(6段階の意図[小さい範囲から順に試し、前段で直れば止まる]は
+# 保持しつつ、呼び出し段数を実務的な4水準[単語・接続詞/1文/段落/記事全体]
+# に圧縮。詳細はdesign書§5-7・監査文書に記録)。B3型(接続詞"so"の因果、
+# 2026-09-30ユーザー新方針item4)はこの水準①で"so"→"while"/"meanwhile"
+# 相当への置換または文分割により解消を試みる。
+# ------------------------------------------------------------
+E1_MINIMAL_WORD_DEVELOPER_MSG = (
+    "You are fixing a fact deviation flagged by a Ledger Deviation Checker, using the SMALLEST "
+    "possible edit: swap a single word or connective, or split one sentence into two at a "
+    "connective. Do not rewrite the sentence's content or structure beyond that. You may be given "
+    "Japanese or English text."
+)
+E1_MINIMAL_WORD_PROMPT_TEMPLATE = """[Verified Fact Ledger]
+{ledger_text}
+
+[Sentence flagged as a Ledger deviation]
+{target_sentence}
+
+[Checker's issue]
+{issue}
+
+[Rewrite hint]
+{rewrite_hint}
+
+Try to resolve the issue using ONLY a minimal edit: swap a single word, swap a connective (for \
+example "so" -> "while" / "meanwhile" / "at the same time", or a causal connective that wrongly \
+implies one thing caused another -> a connective that only states they happened together), remove a \
+single qualifying word or short phrase, or split this one sentence into two sentences at a connective \
+(without adding any new fact and without changing any other word). Do NOT rewrite the sentence's \
+content or structure beyond this. Do NOT make the tone flatter, and do NOT remove its hook or \
+storytelling value. Preserve the original intent and meaning wherever the Ledger allows. Keep the \
+same language as the input sentence. Return ONLY the revised sentence (or two sentences if you split \
+it), nothing else. If this issue genuinely CANNOT be resolved by such a minimal edit, return an empty \
+string (do not attempt a larger rewrite)."""
+
 E2_GENERIC_DEVELOPER_MSG = (
     "You are fixing a fact deviation flagged by a Ledger Deviation Checker, using the smallest "
     "possible edit (single-shot, no escalation). You may be given Japanese or English text."
@@ -1425,42 +1717,62 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
             delete_reoccurrence_detected = reoccur_target is not None
         else:
             method_used = "delete_target_not_found"
-    else:
+    ladder_level_used = None
+    if rewrite_kind != "delete":
         if found:
+            # 委任_14 作業B-3(最小変更ラダー): ①単語・接続詞のみ(E1) ->
+            # ③1文(既存E2_GENERIC) -> ④段落(既存E2_PARAGRAPH、対象文を含む
+            # 段落ブロックが特定できる場合のみ)、の順に試し、guardを満たした
+            # 最初の水準で止める(前段で直れば後段へ進まない)。
+            levels = []
+            prompt_l1 = E1_MINIMAL_WORD_PROMPT_TEMPLATE.format(
+                ledger_text=fixture["ledger_text"], target_sentence=target_sentence,
+                issue=issue, rewrite_hint=rewrite_hint,
+            )
+            levels.append({"name": "1_word_connective", "prompt": prompt_l1,
+                            "dev_msg": E1_MINIMAL_WORD_DEVELOPER_MSG,
+                            "label": f"{label_prefix}_e1_minimal_word", "target": target_sentence,
+                            "tag": "e1_minimal_word_edit", "allow_empty_as_delete": False})
+            prompt_l3 = E2_GENERIC_PROMPT_TEMPLATE.format(
+                ledger_text=fixture["ledger_text"], target_sentence=target_sentence,
+                issue=issue, rewrite_hint=rewrite_hint,
+            )
+            levels.append({"name": "3_sentence", "prompt": prompt_l3, "dev_msg": E2_GENERIC_DEVELOPER_MSG,
+                            "label": f"{label_prefix}_e2_rewrite", "target": target_sentence,
+                            "tag": "e2_generic_rewrite", "allow_empty_as_delete": True})
             # 委任_11 作業B-4: 対象文を含む段落ブロック(見出し/タイトル行を
-            # 含み得る)が特定できれば、段落単位でRewriteする(兄弟文カスケード
-            # 対策)。見つからなければ従来の文単位E-2 Promptへフォールバック。
+            # 含み得る)が特定できれば水準④として追加する(兄弟文カスケード対策)。
             paragraph_block, _ = locate_paragraph_block(target_sentence, full_text)
             if paragraph_block:
-                prompt = E2_PARAGRAPH_PROMPT_TEMPLATE.format(
+                prompt_l4 = E2_PARAGRAPH_PROMPT_TEMPLATE.format(
                     ledger_text=fixture["ledger_text"], paragraph_block=paragraph_block,
                     target_sentence=target_sentence, issue=issue, rewrite_hint=rewrite_hint,
                 )
-                revised_block = simple_llm_call(client, state, consecutive_errors, call_log,
-                                                 f"{label_prefix}_e2_paragraph_rewrite",
-                                                 E2_PARAGRAPH_DEVELOPER_MSG, prompt, model=MODEL)
-                if revised_block is not None:
-                    updated_text = full_text.replace(paragraph_block, revised_block, 1)
-                    method_used = f"e2_paragraph_rewrite({locate_method})"
-                    # paragraph-level rewriteはtarget_sentence単位のafter断片を
-                    # 一意に特定できないため(段落内の他文も変わり得る)、
+                levels.append({"name": "4_paragraph", "prompt": prompt_l4,
+                                "dev_msg": E2_PARAGRAPH_DEVELOPER_MSG,
+                                "label": f"{label_prefix}_e2_paragraph_rewrite", "target": paragraph_block,
+                                "tag": "e2_paragraph_rewrite", "allow_empty_as_delete": True})
+
+            for lv in levels:
+                revised = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
+                                           lv["dev_msg"], lv["prompt"], model=MODEL)
+                if revised is None:
+                    method_used = f"{lv['tag']}_api_failure"
+                    continue
+                if revised == "" and not lv["allow_empty_as_delete"]:
+                    method_used = f"{lv['tag']}_declined"
+                    continue
+                candidate = full_text.replace(lv["target"], revised, 1)
+                if candidate != full_text and claim_text.strip() not in candidate:
+                    updated_text = candidate
+                    method_used = f"{lv['tag']}({locate_method})"
+                    ladder_level_used = lv["name"]
+                    # paragraph水準はtarget_sentence単位のafter断片を一意に
+                    # 特定できないため(段落内の他文も変わり得る)、
                     # cite-or-release用のafter_fragmentはNoneのまま(既知の限界)。
-                else:
-                    method_used = "e2_paragraph_rewrite_api_failure"
-            else:
-                prompt = E2_GENERIC_PROMPT_TEMPLATE.format(
-                    ledger_text=fixture["ledger_text"], target_sentence=target_sentence,
-                    issue=issue, rewrite_hint=rewrite_hint,
-                )
-                revised = simple_llm_call(client, state, consecutive_errors, call_log,
-                                                f"{label_prefix}_e2_rewrite", E2_GENERIC_DEVELOPER_MSG, prompt,
-                                                model=MODEL)
-                if revised is not None:
-                    updated_text = full_text.replace(target_sentence, revised, 1)
-                    method_used = f"e2_generic_rewrite({locate_method})"
-                    after_fragment = revised
-                else:
-                    method_used = "e2_generic_rewrite_api_failure"
+                    after_fragment = revised if lv["target"] == target_sentence else None
+                    break
+                method_used = f"{lv['tag']}_guard_failed({locate_method})"
         else:
             method_used = "target_not_found"
 
@@ -1468,8 +1780,9 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                 and not delete_reoccurrence_detected) if found else False
     if not guard_ok:
         after_fragment = None
-        # guard抵触(見つからない、または置換後も同じclaim文言が残存) ->
-        # 全文最小編集フォールバック(§5-2/§5-4のフォールバック段2に相当)
+        # guard抵触(見つからない、またはラダー全段で置換後も同じclaim文言が
+        # 残存) -> 全文最小編集フォールバック(水準⑥、§5-2/§5-4のフォール
+        # バック段2に相当)
         prompt = FULL_TEXT_FALLBACK_PROMPT_TEMPLATE.format(
             ledger_text=fixture["ledger_text"], full_text=full_text,
             target_sentence=target_sentence or claim_text, issue=issue, rewrite_hint=rewrite_hint,
@@ -1481,13 +1794,18 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
             updated_text = fallback_text
             method_used = (method_used or "") + "+fulltext_fallback"
             guard_ok = updated_text != full_text
+            if guard_ok:
+                ladder_level_used = "6_full_article"
         else:
             method_used = (method_used or "") + "+fulltext_fallback_api_failure"
+    elif rewrite_kind == "delete":
+        ladder_level_used = "0_delete"
 
     return {"updated_text": updated_text, "method": method_used, "guard_ok": guard_ok,
             "target_sentence": target_sentence, "locate_method": locate_method,
             "delete_reoccurrence_detected": delete_reoccurrence_detected,
-            "before_fragment": target_sentence, "after_fragment": after_fragment}
+            "before_fragment": target_sentence, "after_fragment": after_fragment,
+            "ladder_level_used": ladder_level_used}
 
 
 def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fixture, claim_rec: dict) -> dict:
@@ -1661,15 +1979,20 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
 
     if use_pairing:
         res = paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture, claim_rec)
+        # 委任_14 B-3: paired J-1は既存のペア文単位1-shot Promptのままで、
+        # 最小変更ラダーは未適用(既知の限界、監査文書に記録。JA/EN対訳の
+        # 単語単位ラダー化は新設スコープが大きく本委任では見送る)。
         return {"mechanism": "paired_ja_en(J-1)", "en_text": res["updated_en_text"],
                 "ja_text": res["updated_ja_text"], "method": res["method"], "guard_ok": res["guard_ok"],
-                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment")}
+                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
+                "ladder_level_used": "paired_j1_not_laddered"}
     else:
         res = single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture,
                                    "article_text", claim_rec)
         return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": res["updated_text"],
                 "ja_text": current_ja_text, "method": res["method"], "guard_ok": res["guard_ok"],
-                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment")}
+                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
+                "ladder_level_used": res.get("ladder_level_used")}
 
 
 # ------------------------------------------------------------
@@ -1940,7 +2263,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                     f"Ledger値へ置換する。issue: {pc['dev'].get('issue', '')}")
             stage2_results.append({**pc, "materiality": "BLOCKING", "llm_materiality": None,
                                     "basis": "precheck_floor", "rewrite_kind": "replace_with_ledger_value",
-                                    "rewrite_hint": hint, "floor_reason": "precheck_floor"})
+                                    "rewrite_hint": hint, "floor_reason": "precheck_floor",
+                                    "section_type": detect_claim_section_type(
+                                        pc["claim_text"], working_fixture["article_text"]),
+                                    "floor_cited_materiality": "BLOCKING", "floor_cited_reason": "precheck_floor"})
 
         # 委任_13(iteration5、Stage2 2-of-2安定化): precheck floor claim
         # (floor_reason="precheck_floor")は対象外なので混在させても安全。
@@ -2033,7 +2359,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 if r["ja_text"] is not None:
                     ja_out = r["ja_text"]
                 records.append({"claim_identity": claim_identity(c["dev"]), "rewrite_kind": c["rewrite_kind"],
-                                 "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"]})
+                                 "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"],
+                                 "ladder_level_used": r.get("ladder_level_used"),
+                                 "section_type": c.get("section_type")})
                 pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
             return en_out, ja_out, records, pairs
 
@@ -2048,24 +2376,36 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # 再生成トリガにしない(needs_regenerationの定義どおり)。
         quality_degradation_v2 = measure_rewrite_quality_degradation_v2(
             en_text_before_rewrite, current_en_text, changed_fragments=before_after_pairs)
+        # 委任_14 B-4(2026-09-30ユーザー新方針item5): Title/Hook/In one line
+        # の役割維持を品質劣化v2と統合し、同じ再生成トリガへ合流させる
+        # (段落以上のRewriteへ進まず、既存の同一cycle内1回だけの再生成
+        # 機構[委任_13]をそのまま再利用する、新しい機構は作らない)。
+        section_role = measure_section_role_violation(en_text_before_rewrite, current_en_text)
         regenerated = False
-        if quality_degradation_v2["needs_regeneration"]:
+        if quality_degradation_v2["needs_regeneration"] or section_role["section_role_violated"]:
             regenerated = True
+            combined_reasons = "; ".join(
+                r for r in (quality_degradation_v2["reasons"], section_role["reasons"]) if r)
             emphasized_constraint = base_constraint + REGENERATION_EMPHASIS_TEMPLATE.format(
-                reasons=quality_degradation_v2["reasons"])
+                reasons=combined_reasons)
             current_en_text, current_ja_text, rewrite_records, before_after_pairs = _run_stage3_cycle(
                 blocking_claims, en_text_before_rewrite, ja_text_before_rewrite, emphasized_constraint,
                 label_suffix="_regen")
             quality_degradation_v2_after_regen = measure_rewrite_quality_degradation_v2(
                 en_text_before_rewrite, current_en_text, changed_fragments=before_after_pairs)
+            section_role_after_regen = measure_section_role_violation(en_text_before_rewrite, current_en_text)
         else:
             quality_degradation_v2_after_regen = None
+            section_role_after_regen = None
 
         cycle_record["rewrite_records"] = rewrite_records
         cycle_record["quality_degradation_v2"] = quality_degradation_v2
+        cycle_record["section_role_violation"] = section_role
         cycle_record["quality_degradation_v2_regenerated"] = regenerated
         if quality_degradation_v2_after_regen is not None:
             cycle_record["quality_degradation_v2_after_regen"] = quality_degradation_v2_after_regen
+        if section_role_after_regen is not None:
+            cycle_record["section_role_violation_after_regen"] = section_role_after_regen
         cycle_record["quality_degradation_en"] = measure_rewrite_quality_degradation(
             en_text_before_rewrite, current_en_text)
         if ja_text_before_rewrite is not None and current_ja_text is not None:
@@ -2364,6 +2704,7 @@ def aggregate_measurements(instance_results: list) -> dict:
         },
         "iter4_additional_measures": _iter4_additional_measures(instance_results),
         "iter5_additional_measures": _iter5_additional_measures(instance_results),
+        "iter6_additional_measures": _iter6_additional_measures(instance_results),
     }
 
 
@@ -2546,6 +2887,138 @@ def _iter5_additional_measures(instance_results: list) -> dict:
     }
 
 
+# ------------------------------------------------------------
+# 委任_14(iteration6、2026-09-30ユーザー新方針item8/9): 不要Rewrite内訳・
+# 最小変更ラダー段別分布・セクション役割違反・Hook-aware由来BLOCK回避・
+# 丸め誤検出回避・floor-strict/cited比較・記事単位コスト5分割。
+# ------------------------------------------------------------
+def compute_cost_breakdown_5way(instance_results: list) -> dict:
+    """委任_14 B-6(item9): 記事単位(instance単位、既存article-level合算
+    [ARTICLE_GROUPS]とは別枠、instance粒度)のRewiteなし平均/あり平均/
+    Rewrite率/全記事平均/worstを算出する(¥0、既存total_cost_jpy/
+    rewrite_recordsの再集計のみ、新規API呼び出しなし)。"""
+    with_rewrite = []
+    without_rewrite = []
+    for r in instance_results:
+        had_rewrite = any(c.get("rewrite_records") for c in r.get("cycles", []))
+        (with_rewrite if had_rewrite else without_rewrite).append(r["total_cost_jpy"])
+    all_costs = with_rewrite + without_rewrite
+    n = len(all_costs)
+
+    def _avg(vals):
+        return round(sum(vals) / len(vals), 4) if vals else None
+
+    return {
+        "n_instances": n,
+        "no_rewrite_count": len(without_rewrite), "no_rewrite_avg_cost_jpy": _avg(without_rewrite),
+        "with_rewrite_count": len(with_rewrite), "with_rewrite_avg_cost_jpy": _avg(with_rewrite),
+        "rewrite_rate": round(len(with_rewrite) / n, 4) if n else None,
+        "overall_avg_cost_jpy": _avg(all_costs),
+        "worst_cost_jpy": max(all_costs) if all_costs else None,
+    }
+
+
+def _iter6_additional_measures(instance_results: list) -> dict:
+    normal_present = [r for r in instance_results if r["instance_id"] in NORMAL_GROUP_INSTANCE_IDS]
+    unnecessary_rewrite_v1 = [r for r in normal_present if any(c.get("rewrite_records") for c in r["cycles"])]
+    unnecessary_rewrite_v2 = [r for r in unnecessary_rewrite_v1
+                               if r["instance_id"] not in UNNECESSARY_REWRITE_V2_EXCLUDE_INSTANCE_IDS]
+
+    # ラダー段別分布(委任_14 item7/8): 実際にRewriteが試行されたclaim単位で、
+    # どの水準で解消したか(0_delete/1_word_connective/3_sentence/4_paragraph/
+    # 6_full_article/paired_j1_not_laddered)を集計する。
+    ladder_distribution: dict = {}
+    for r in instance_results:
+        for c in r["cycles"]:
+            for rec in c.get("rewrite_records", []):
+                lvl = rec.get("ladder_level_used") or "unresolved_or_api_failure"
+                ladder_distribution[lvl] = ladder_distribution.get(lvl, 0) + 1
+
+    # セクション役割違反(委任_14 B-4)
+    role_violation_count = 0
+    role_violation_detail = []
+    for r in instance_results:
+        for ci, c in enumerate(r["cycles"], start=1):
+            sr = c.get("section_role_violation")
+            if sr and sr.get("section_role_violated"):
+                role_violation_count += 1
+                role_violation_detail.append({
+                    "instance_id": r["instance_id"], "cycle": ci, "reasons": sr.get("reasons"),
+                })
+
+    # Hook-aware由来BLOCK回避件数(委任_14 B-5)
+    hook_aware_downgrade_count = 0
+    hook_aware_detail = []
+    for r in instance_results:
+        for c in r["cycles"]:
+            for sr in c.get("stage2_results", []):
+                if sr.get("floor_reason") == "hook_aware_scope_downgrade":
+                    hook_aware_downgrade_count += 1
+                    hook_aware_detail.append({
+                        "instance_id": r["instance_id"], "section_type": sr.get("section_type"),
+                        "claim_text": sr.get("claim_text", "")[:80],
+                    })
+
+    # 丸め誤検出回避件数(委任_14 B-1): dev内でchanged_number_suppressed_
+    # reasonが記録されたclaim(floor評価直前にchanged_numberを除外した件数)。
+    rounding_suppressed_count = 0
+    for r in instance_results:
+        for c in r["cycles"]:
+            for sr in c.get("stage2_results", []):
+                if sr.get("dev", {}).get("changed_number_suppressed_reason"):
+                    rounding_suppressed_count += 1
+
+    # floor-strict vs floor-cited比較(委任_14 B-2)。Safety群(group=="safety"、
+    # 12 instance)を対象にhard gate(false-negative候補0)を確認する。
+    # 「false-negative候補」= floor-strictはdeterministic floorで発火した
+    # (floor_reason startswith "deterministic_floor:")が、floor-citedは
+    # 発火せず(floor_cited_reason is None)、かつLLM自体の判定
+    # (llm_materiality)もBLOCKINGではなかった(floor無しではQUALITY/
+    # ACCEPTABLEへ抜ける)claim。
+    floor_divergence_all = []
+    floor_divergence_safety = []
+    for r in instance_results:
+        for c in r["cycles"]:
+            for sr in c.get("stage2_results", []):
+                fr = sr.get("floor_reason") or ""
+                if not fr.startswith("deterministic_floor:"):
+                    continue
+                if sr.get("floor_cited_reason") is not None:
+                    continue
+                if sr.get("llm_materiality") == "BLOCKING":
+                    continue
+                entry = {"instance_id": r["instance_id"], "group": r["group"],
+                         "claim_text": sr.get("claim_text", "")[:100], "floor_reason": fr}
+                floor_divergence_all.append(entry)
+                if r["group"] == "safety":
+                    floor_divergence_safety.append(entry)
+
+    return {
+        "unnecessary_rewrite_v3": {
+            "n_normal_group": len(normal_present),
+            "count": len(unnecessary_rewrite_v2),
+            "rate": round(len(unnecessary_rewrite_v2) / len(normal_present), 4) if normal_present else None,
+            "instance_ids": [r["instance_id"] for r in unnecessary_rewrite_v2],
+        },
+        "ladder_level_distribution": ladder_distribution,
+        "section_role_violation": {
+            "count": role_violation_count, "detail": role_violation_detail,
+        },
+        "hook_aware_downgrade": {
+            "count": hook_aware_downgrade_count, "detail": hook_aware_detail,
+        },
+        "rounding_false_positive_suppressed_count": rounding_suppressed_count,
+        "floor_variant_comparison": {
+            "false_negative_candidates_all_groups": len(floor_divergence_all),
+            "false_negative_candidates_safety_group": len(floor_divergence_safety),
+            "safety_group_hard_gate_passed": len(floor_divergence_safety) == 0,
+            "detail_safety_group": floor_divergence_safety,
+            "detail_all_groups": floor_divergence_all,
+        },
+        "cost_breakdown_5way": compute_cost_breakdown_5way(instance_results),
+    }
+
+
 def compute_s1u_counterfactual(instance_results: list) -> dict:
     """委任_12(iteration4、§2項目6): S1-Uが付加したclaimを除外した反実仮想
     を0 callで算出する。S1-Uはstage1_parsedがACCEPTABLE(PASS)の場合のみ
@@ -2677,6 +3150,13 @@ def combine_n2_measures(sample_results_list: list) -> dict:
         max((max(v) for v in per_sample_article_costs.values()), default=0.0)
     )
 
+    # 委任_14(iteration6、item9): sample1+sample2を合算したinstance_resultsで
+    # 不要Rewrite率v3・ラダー段別分布・セクション役割違反・Hook-aware・
+    # floor-strict/cited比較・コスト5分割を算出する(n=2結合、非決定性の
+    # 影響を1回のrunよりも安定的に見るため)。
+    combined_instance_results = [r for results in sample_results_list for r in results]
+    iter6_combined = _iter6_additional_measures(combined_instance_results) if combined_instance_results else {}
+
     return {
         "n_samples": len(sample_results_list),
         "per_instance_final_state_agreement": {
@@ -2693,6 +3173,7 @@ def combine_n2_measures(sample_results_list: list) -> dict:
             "worst_cost_jpy": worst_article_cost_across_samples,
             "by_article_per_sample": per_sample_article_costs,
         },
+        "iter6_additional_measures_combined": iter6_combined,
     }
 
 

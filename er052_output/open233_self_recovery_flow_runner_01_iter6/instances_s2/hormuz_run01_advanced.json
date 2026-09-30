@@ -1,0 +1,86 @@
+{
+  "instance_id": "hormuz_run01_advanced",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.”",
+          "origin": "ja_source",
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "“Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.”",
+            "issue": "The article adds a factual claim about the relationship between oil prices, gasoline prices, and transportation costs that is not established in the Verified Fact Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This economic relationship is not stated in the Ledger, so it is an unsupported new factual claim (changed_fact and unsupported_new_claim). It does not contradict a Ledger observation, but the Ledger does not verify it.",
+            "related_fact_id": "",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Attacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+          "fallback_used": false,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "hormuz_run01_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1038,
+      "usage": {
+        "input_tokens": 5831,
+        "cached_input_tokens": 0,
+        "output_tokens": 157,
+        "reasoning_tokens": 106
+      },
+      "elapsed_seconds": 3.092,
+      "prompt_sha256": "97f4f96f7f80af9837755bdb324b869ed01c4967d3c0561db2183bdb27112821"
+    }
+  ],
+  "total_cost_jpy": 0.1038,
+  "total_calls": 1,
+  "elapsed_seconds": 3.129
+}

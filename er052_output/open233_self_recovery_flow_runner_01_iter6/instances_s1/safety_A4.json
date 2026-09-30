@@ -1,0 +1,1052 @@
+{
+  "instance_id": "safety_A4",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+            "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“some calls”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with users. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」の「with users」を、MUSE-HC-006に沿って「with the people they called」など、電話の相手を指す表現に置き換えてください。",
+          "floor_reason": "deterministic_floor:changed_actor",
+          "section_type": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+            "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“people who thought they were speaking with AI”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「So people who thought they were speaking with AI were actually speaking with human staff.」という、相手が実際にどう認識していたかの断定を避け、MUSE-HC-012が確認する「適切な開示なしにテストが始まった」という事実に範囲を狭めてください。",
+          "floor_reason": null,
+          "section_type": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“One helper meant one more person handling private data.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "“One helper meant one more person handling private data.”",
+            "issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerが示すのは機微情報が意図せず共有される可能性であり、各ヘルパーが実際に個人情報を扱うという断定ではありません。可能性を確定的な結果に変えています。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "直前の文の “might be shared with contract workers at a call center”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.」の後半を、MUSE-HC-010に沿って、電話の遂行にユーザー情報が必要な場合に契約スタッフへ意図せず共有される可能性がある、という条件付きの記述に狭めてください。",
+          "floor_reason": null,
+          "section_type": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 3,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body"
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_failed+ja_fulltext_fallback+en_local_edit",
+          "guard_ok": true,
+          "ladder_level_used": "paired_j1_not_laddered",
+          "section_type": "body"
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-010",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite_paragraph",
+          "guard_ok": true,
+          "ladder_level_used": "paired_j1_not_laddered",
+          "section_type": "body"
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.87,
+          "difficult_word_ratio": 0.1284,
+          "word_count": 296
+        },
+        "stats_after": {
+          "avg_sentence_len": 13.14,
+          "difficult_word_ratio": 0.1315,
+          "word_count": 289
+        },
+        "sentence_len_increase": 0.27,
+        "difficulty_ratio_increase": 0.0031,
+        "fragment_stats_before": {
+          "avg_sentence_len": 15.0,
+          "difficult_word_ratio": 0.1,
+          "word_count": 30
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 12.5,
+          "difficult_word_ratio": 0.16,
+          "word_count": 25
+        },
+        "fragment_sentence_len_increase": -2.5,
+        "fragment_difficulty_ratio_increase": 0.06,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+-2.5,difficult_ratio+0.06)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.87,
+          "difficult_word_ratio": 0.1284,
+          "word_count": 296
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.95,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 285
+        },
+        "sentence_len_increase": 0.08,
+        "difficulty_ratio_increase": 0.0049,
+        "fragment_stats_before": {
+          "avg_sentence_len": 15.0,
+          "difficult_word_ratio": 0.1,
+          "word_count": 30
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 24
+        },
+        "fragment_sentence_len_increase": -3.0,
+        "fragment_difficulty_ratio_increase": 0.025,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 23,
+        "sentence_count_after": 22,
+        "sentence_drop_rate": 0.0435,
+        "hedge_word_count_before": 4,
+        "hedge_word_count_after": 4,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with users. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "en_text_after_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with the people they called. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. The test began without proper disclosure. These workers did more than make the conversation smooth: if user information was needed to complete a call, it might be shared unintentionally with call-center contract workers.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "ja_text_before_rewrite": "AIの電話、その正体は人間の助っ人でした\n\nAIから電話が来た。そう思って話していたら、舞台裏から登場したのは人間だった。MetaのAIエージェント、Museをめぐって、そんな種明かしのようなテストが行われていました。\n\nMuseを通じた電話の一部では、AIではなく、訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させていました。\n\nAIが苦手な場面で人間が助ける。仕組みだけ見れば、かなり現実的な作戦です。AIに全部任せるより、人間を控えに置くほうが安心。そんな発想だったのかもしれません。\n\nところが電話は、ここで一気にややこしくなります。適切な開示がないままテストが始まったため、相手から見ると、AIの電話のはずが、人間のスタッフと話していることになります。\n\nしかも、その人間スタッフは、会話をなめらかにするだけではありません。電話を担当すれば、ユーザーの機微な情報が、コールセンターの契約スタッフに共有される可能性があります。\n\nAIに人間の助っ人を一人入れたら、情報を扱う人も増える。便利さの裏から、プライバシーの問題が顔を出したわけです。\n\nここが今回の、面白くて少し怖いところです。AIの電話で心配されがちなのは、機械が変な答えを返すことですよね。でも今回は逆でした。話し方が人間らしすぎたのではなく、本当に人間が話していた。しかも、そのことが十分に知らされていませんでした。\n\nこの問題を受け、Metaの幹部は、適切な開示なしに契約スタッフが電話をかけるテストを始めたのはミスだったと認めました。そして、人間が対応するコンシェルジュ機能を当面ロールバックしました。\n\nAIの世界では、機械が人間に近づく話ばかりが注目されます。今回のMuseは、そこに別の問いを持ち込みました。人間がAIの裏側に入るなら、その事実を利用者に伝えられるのか。誰が話しているのか。誰が情報を見るのか。\n\n電話では、その二つを最初に説明しないと、未来のサービスが一瞬で、知らない人からの電話に見えてしまうのです。",
+      "ja_text_after_rewrite": "AIの電話、その正体は人間の助っ人でした\n\nAIから電話が来た。そう思って話していたら、舞台裏から登場したのは人間だった。MetaのAIエージェント、Museをめぐって、そんな種明かしのようなテストが行われていました。\n\nMuseを通じた電話の一部では、AIではなく、訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させていました。\n\nAIが苦手な場面で人間が助ける。仕組みだけ見れば、かなり現実的な作戦です。AIに全部任せるより、人間を控えに置くほうが安心。そんな発想だったのかもしれません。\n\nところが電話は、ここで一気にややこしくなります。適切な開示がないままテストが始まったため、相手から見ると、AIの電話のはずが、人間のスタッフと話していることになります。\n\nしかも、その人間スタッフは、会話をなめらかにするだけではありません。電話を完了するためにユーザー情報が必要な場合、機微情報がコールセンターの契約スタッフに意図せず共有される可能性があります。\n\nAIに人間の助っ人を一人入れたら、情報を扱う人も増える。便利さの裏から、プライバシーの問題が顔を出したわけです。\n\nここが今回の、面白くて少し怖いところです。AIの電話で心配されがちなのは、機械が変な答えを返すことですよね。でも今回は逆でした。話し方が人間らしすぎたのではなく、本当に人間が話していた。しかも、そのことが十分に知らされていませんでした。\n\nMetaの幹部は、契約スタッフが電話をかけるテストを適切な開示なしに始めたのはミスだったと認めました。そして、人間が対応するコンシェルジュ機能を当面ロールバックしました。\n\nAIの世界では、機械が人間に近づく話ばかりが注目されます。今回のMuseは、そこに別の問いを持ち込みました。人間がAIの裏側に入るなら、その事実を利用者に伝えられるのか。誰が話しているのか。誰が情報を見るのか。\n\n電話では、その二つを最初に説明しないと、未来のサービスが一瞬で、知らない人からの電話に見えてしまうのです。",
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "“An AI called. That was what people thought as they spoke.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“An AI called. That was what people thought as they spoke.”",
+            "issue": "記事は、電話を受けた人々が相手をAIだと思っていたと断定しています。Ledgerが確認しているのは適切な開示なしでテストが行われたことや人間が一部の電話を担当したことまでで、相手の認識は確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "相手の認識を裏づけるLedger上の事実がないのに、推定を確定した事実として述べています。適切な開示がなかったという事実だけでは、その認識までは示されません。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所：「An AI called. That was what people thought as they spoke.」この人々の認識を事実として述べる部分を削除し、確認済みの「Muse経由の電話の一部を、訓練を受けた人間の契約スタッフが担当した」という範囲に限定してください。参照Ledger: MUSE-HC-012",
+          "floor_reason": null,
+          "section_type": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“when AI struggled, a person could help”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“when AI struggled, a person could help”",
+            "issue": "人間の契約スタッフがAIの苦手な場面で呼ばれる、またはAIの失敗を補う役割だったという運用上の関係はLedgerで確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerは一部の電話を人間が担当したテストを示すだけで、AIが苦戦した場合に人間が対応するという条件・関係は示していません。「could」は可能性を表しますが、その運用上の関係を裏づけるものではありません。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "could help",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with the people they called. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所：「The idea was practical: when AI struggled, a person could help.」AIが苦戦したことを人間対応の契機とする記述を削除し、人間の契約スタッフがMuse経由の一部の電話を担当して相手とのやり取りを完了させたという確認済みの内容に限定してください。参照Ledger: MUSE-HC-006",
+          "floor_reason": null,
+          "section_type": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_failed+ja_fulltext_fallback+en_local_edit",
+          "guard_ok": true,
+          "ladder_level_used": "paired_j1_not_laddered",
+          "section_type": "hook"
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_failed+ja_fulltext_fallback+en_local_edit",
+          "guard_ok": true,
+          "ladder_level_used": "paired_j1_not_laddered",
+          "section_type": "body"
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.95,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 285
+        },
+        "stats_after": {
+          "avg_sentence_len": 13.76,
+          "difficult_word_ratio": 0.1349,
+          "word_count": 289
+        },
+        "sentence_len_increase": 0.81,
+        "difficulty_ratio_increase": 0.0016,
+        "fragment_stats_before": {
+          "avg_sentence_len": 7.33,
+          "difficult_word_ratio": 0.0909,
+          "word_count": 22
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 13.0,
+          "difficult_word_ratio": 0.1154,
+          "word_count": 26
+        },
+        "fragment_sentence_len_increase": 5.67,
+        "fragment_difficulty_ratio_increase": 0.0245,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+5.67,difficult_ratio+0.0245)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.95,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 285
+        },
+        "stats_after": {
+          "avg_sentence_len": 13.67,
+          "difficult_word_ratio": 0.1359,
+          "word_count": 287
+        },
+        "sentence_len_increase": 0.72,
+        "difficulty_ratio_increase": 0.0026,
+        "fragment_stats_before": {
+          "avg_sentence_len": 7.33,
+          "difficult_word_ratio": 0.0909,
+          "word_count": 22
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 24
+        },
+        "fragment_sentence_len_increase": 4.67,
+        "fragment_difficulty_ratio_increase": 0.0341,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+4.67,difficult_ratio+0.0341)"
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 34,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 22,
+        "sentence_count_after": 21,
+        "sentence_drop_rate": 0.0455,
+        "hedge_word_count_before": 4,
+        "hedge_word_count_after": 3,
+        "hedge_word_increase": -1,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with the people they called. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. The test began without proper disclosure. These workers did more than make the conversation smooth: if user information was needed to complete a call, it might be shared unintentionally with call-center contract workers.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "en_text_after_rewrite": "# The AI Phone Call Had a Human Helper\n\nSome calls through Muse were handled by trained human contractors. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with the people they called. For some Muse calls, trained human contractors made the call and handled the conversation. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. The test began without proper disclosure. These workers did more than make the conversation smooth: if user information was needed to complete a call, it might be shared unintentionally with call-center contract workers.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "ja_text_before_rewrite": "AIの電話、その正体は人間の助っ人でした\n\nAIから電話が来た。そう思って話していたら、舞台裏から登場したのは人間だった。MetaのAIエージェント、Museをめぐって、そんな種明かしのようなテストが行われていました。\n\nMuseを通じた電話の一部では、AIではなく、訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させていました。\n\nAIが苦手な場面で人間が助ける。仕組みだけ見れば、かなり現実的な作戦です。AIに全部任せるより、人間を控えに置くほうが安心。そんな発想だったのかもしれません。\n\nところが電話は、ここで一気にややこしくなります。適切な開示がないままテストが始まったため、相手から見ると、AIの電話のはずが、人間のスタッフと話していることになります。\n\nしかも、その人間スタッフは、会話をなめらかにするだけではありません。電話を完了するためにユーザー情報が必要な場合、機微情報がコールセンターの契約スタッフに意図せず共有される可能性があります。\n\nAIに人間の助っ人を一人入れたら、情報を扱う人も増える。便利さの裏から、プライバシーの問題が顔を出したわけです。\n\nここが今回の、面白くて少し怖いところです。AIの電話で心配されがちなのは、機械が変な答えを返すことですよね。でも今回は逆でした。話し方が人間らしすぎたのではなく、本当に人間が話していた。しかも、そのことが十分に知らされていませんでした。\n\nMetaの幹部は、契約スタッフが電話をかけるテストを適切な開示なしに始めたのはミスだったと認めました。そして、人間が対応するコンシェルジュ機能を当面ロールバックしました。\n\nAIの世界では、機械が人間に近づく話ばかりが注目されます。今回のMuseは、そこに別の問いを持ち込みました。人間がAIの裏側に入るなら、その事実を利用者に伝えられるのか。誰が話しているのか。誰が情報を見るのか。\n\n電話では、その二つを最初に説明しないと、未来のサービスが一瞬で、知らない人からの電話に見えてしまうのです。",
+      "ja_text_after_rewrite": "AIの電話、その正体は人間の助っ人でした\n\nAIから電話が来た。そう思って話していたら、舞台裏から登場したのは人間だった。MetaのAIエージェント、Museをめぐって、そんな種明かしのようなテストが行われていました。\n\nMuse経由の一部の電話は、訓練を受けた人間の契約スタッフが担当し、相手とのやり取りを完了させていました。\n\nAIが苦手な場面で人間が助ける。仕組みだけ見れば、かなり現実的な作戦です。AIに全部任せるより、人間を控えに置くほうが安心。そんな発想だったのかもしれません。\n\nところが電話は、ここで一気にややこしくなります。適切な開示がないままテストが始まったため、相手から見ると、AIの電話のはずが、人間のスタッフと話していることになります。\n\nしかも、その人間スタッフは、会話をなめらかにするだけではありません。電話を完了するためにユーザー情報が必要な場合、機微情報がコールセンターの契約スタッフに意図せず共有される可能性があります。\n\nAIに人間の助っ人を一人入れたら、情報を扱う人も増える。便利さの裏から、プライバシーの問題が顔を出したわけです。\n\nここが今回の、面白くて少し怖いところです。AIの電話で心配されがちなのは、機械が変な答えを返すことですよね。でも今回は逆でした。話し方が人間らしすぎたのではなく、本当に人間が話していた。しかも、そのことが十分に知らされていませんでした。\n\nMetaの幹部は、適切な開示なしにテストを始めたことをミスだったと認めました。そして、人間が対応するコンシェルジュ機能を当面ロールバックしました。\n\nAIの世界では、機械が人間に近づく話ばかりが注目されます。今回のMuseは、そこに別の問いを持ち込みました。人間がAIの裏側に入るなら、その事実を利用者に伝えられるのか。誰が話しているのか。誰が情報を見るのか。\n\n電話では、その二つを最初に説明しないと、未来のサービスが一瞬で、知らない人からの電話に見えてしまうのです。",
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "PASS",
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "claim_text": "“Keeping a human in reserve seemed safer than leaving everything to AI” and the description of this as a “human backup plan.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“Keeping a human in reserve seemed safer than leaving everything to AI” and the description of this as a “human backup plan.”",
+            "issue": "The article characterizes the test as keeping humans in reserve as a fallback to AI. The Ledger confirms that humans handled some calls, but does not establish that they were held in reserve or brought in as a backup when AI could not handle a call.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The reserve/backup role is an unsupported operational characterization (changed_fact and unsupported_new_claim); “seemed safer” does not establish that role.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“Keeping a human in reserve seemed safer” and “human backup plan.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with the people they called. For some Muse calls, trained human contractors made the call and handled the conversation. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A4_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2847,
+      "usage": {
+        "input_tokens": 6165,
+        "cached_input_tokens": 0,
+        "output_tokens": 2397,
+        "reasoning_tokens": 2070
+      },
+      "elapsed_seconds": 19.667,
+      "prompt_sha256": "6d472973fa07c24085dd93f6a43ee24f061728f9d4521e2dbc2b6140f3a294a6"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-006_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0618,
+      "usage": {
+        "input_tokens": 3583,
+        "cached_input_tokens": 0,
+        "output_tokens": 71,
+        "reasoning_tokens": 45
+      },
+      "elapsed_seconds": 1.837,
+      "prompt_sha256": "4ee57fcd83cdc1325763c961ef2628d5b446a8b35d16a1e99bac354a451df94b"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-012_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0866,
+      "usage": {
+        "input_tokens": 3637,
+        "cached_input_tokens": 0,
+        "output_tokens": 377,
+        "reasoning_tokens": 242
+      },
+      "elapsed_seconds": 4.551,
+      "prompt_sha256": "833f3c12a78753716c7b4be7080e8e5563622407497c0487de46a4abd60dca1e"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-012_j1_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1235,
+      "usage": {
+        "input_tokens": 4065,
+        "cached_input_tokens": 0,
+        "output_tokens": 762,
+        "reasoning_tokens": 157
+      },
+      "elapsed_seconds": 8.699,
+      "prompt_sha256": "0f4cd1c9fca797853cfad6be8a0f8cf193e6986846eb27392013e8e50bd34f5d"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-012_j1_en_fallback_edit",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0612,
+      "usage": {
+        "input_tokens": 3457,
+        "cached_input_tokens": 0,
+        "output_tokens": 89,
+        "reasoning_tokens": 75
+      },
+      "elapsed_seconds": 3.149,
+      "prompt_sha256": "eeb0c761ba6a2267498b64f1217c06abcc00725840ed78426757f582914106ee"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-010_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0884,
+      "usage": {
+        "input_tokens": 3620,
+        "cached_input_tokens": 0,
+        "output_tokens": 403,
+        "reasoning_tokens": 266
+      },
+      "elapsed_seconds": 4.471,
+      "prompt_sha256": "a677c3399b7ccec970c82a6bd6429cda7f614855aa674a82afb9a8ce00ca1e13"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-006_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0701,
+      "usage": {
+        "input_tokens": 3634,
+        "cached_input_tokens": 0,
+        "output_tokens": 167,
+        "reasoning_tokens": 141
+      },
+      "elapsed_seconds": 4.053,
+      "prompt_sha256": "f77cefd6c5781b6588767a7e6b1e7eb236fada04b714ef2b2e057f9a4355c175"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-012_regen_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1092,
+      "usage": {
+        "input_tokens": 3688,
+        "cached_input_tokens": 0,
+        "output_tokens": 655,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 6.809,
+      "prompt_sha256": "893f9ec7b9bd7be9737e3bcd34a3bff8d4cfb096e638de9bf4db0ca53ecae170"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-012_regen_j1_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1403,
+      "usage": {
+        "input_tokens": 4116,
+        "cached_input_tokens": 0,
+        "output_tokens": 965,
+        "reasoning_tokens": 360
+      },
+      "elapsed_seconds": 11.899,
+      "prompt_sha256": "da8d185c32bc9431ed59ad9496b303379f7830eeb59aca30deac57470cc4b2e8"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-012_regen_j1_en_fallback_edit",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0611,
+      "usage": {
+        "input_tokens": 3508,
+        "cached_input_tokens": 0,
+        "output_tokens": 77,
+        "reasoning_tokens": 64
+      },
+      "elapsed_seconds": 2.075,
+      "prompt_sha256": "cba6b3bcededd953ec7979934a58307ec0cfed22e02788d4c9207fac5cadd4e6"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-010_regen_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1162,
+      "usage": {
+        "input_tokens": 3670,
+        "cached_input_tokens": 0,
+        "output_tokens": 747,
+        "reasoning_tokens": 610
+      },
+      "elapsed_seconds": 8.815,
+      "prompt_sha256": "1cf2a8a9a975bcf20919ff6f5e0be0a544a072bd538a8cffe49b6a83d39b2536"
+    },
+    {
+      "label": "safety_A4_c1_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.1159,
+      "usage": {
+        "input_tokens": 1415,
+        "cached_input_tokens": 0,
+        "output_tokens": 1194,
+        "reasoning_tokens": 1025
+      },
+      "elapsed_seconds": 10.245,
+      "prompt_sha256": "92c1091747afeb6727444ba482d8cb406a5bec29bf5ef080cd579fd0d5ed1f42",
+      "verdict": "REVIEW_REQUIRED"
+    },
+    {
+      "label": "safety_A4_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.7364,
+      "usage": {
+        "input_tokens": 6693,
+        "cached_input_tokens": 0,
+        "output_tokens": 8049,
+        "reasoning_tokens": 7199
+      },
+      "elapsed_seconds": 66.308,
+      "prompt_sha256": "3cf0f44eac09a15c531de828125fb7fc961aec1a51e8ee9f2e416103e27bcfdb",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A4_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4963,
+      "usage": {
+        "input_tokens": 6969,
+        "cached_input_tokens": 0,
+        "output_tokens": 4933,
+        "reasoning_tokens": 4023
+      },
+      "elapsed_seconds": 41.461,
+      "prompt_sha256": "63a93c3688b121d2a6b5bdf3b2ce8d21b58b3fc800892e2808e49da8ee2f8711",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A4_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1693,
+      "usage": {
+        "input_tokens": 5910,
+        "cached_input_tokens": 0,
+        "output_tokens": 976,
+        "reasoning_tokens": 718
+      },
+      "elapsed_seconds": 14.204,
+      "prompt_sha256": "a580dd007aa5494cf32f2fc668bb41f5c9f577013efd767fe018e13cb243baa8"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-012_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1268,
+      "usage": {
+        "input_tokens": 3614,
+        "cached_input_tokens": 0,
+        "output_tokens": 894,
+        "reasoning_tokens": 796
+      },
+      "elapsed_seconds": 10.489,
+      "prompt_sha256": "ff8ebf133c1010fa62fce5e440bb0cbb3b77ee63ff44da87b92c84b9d2f14e79"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-012_j1_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.3398,
+      "usage": {
+        "input_tokens": 4104,
+        "cached_input_tokens": 0,
+        "output_tokens": 3511,
+        "reasoning_tokens": 2906
+      },
+      "elapsed_seconds": 40.998,
+      "prompt_sha256": "222c2ac409d8a5305389f80ff836e4f98bceca4570f5bb5d184050cb0c39f3d6"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-012_j1_en_fallback_edit",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0607,
+      "usage": {
+        "input_tokens": 3497,
+        "cached_input_tokens": 0,
+        "output_tokens": 74,
+        "reasoning_tokens": 56
+      },
+      "elapsed_seconds": 1.703,
+      "prompt_sha256": "73a0fbd838880d2883b75ba94c5c4d877d1b8f1d7365362351d7e9b5b6d8ff43"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0944,
+      "usage": {
+        "input_tokens": 3620,
+        "cached_input_tokens": 0,
+        "output_tokens": 479,
+        "reasoning_tokens": 386
+      },
+      "elapsed_seconds": 5.574,
+      "prompt_sha256": "8b9095f0afe9330b481ebd38d00617afa27907cb401d0accbf02e75bfee7f564"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_j1_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.2027,
+      "usage": {
+        "input_tokens": 4085,
+        "cached_input_tokens": 0,
+        "output_tokens": 1767,
+        "reasoning_tokens": 1224
+      },
+      "elapsed_seconds": 20.008,
+      "prompt_sha256": "e8c78f2ec70246e28ddf1eda5e99ffece2cf9c6348984249e5d1bca18715339e"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_j1_en_fallback_edit",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0641,
+      "usage": {
+        "input_tokens": 3477,
+        "cached_input_tokens": 0,
+        "output_tokens": 122,
+        "reasoning_tokens": 99
+      },
+      "elapsed_seconds": 2.052,
+      "prompt_sha256": "85cf819f0a4d1e36c01ec184e7c5f9aa1394fa453a2d00def933b422f9e3ec1c"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-012_regen_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1276,
+      "usage": {
+        "input_tokens": 3666,
+        "cached_input_tokens": 0,
+        "output_tokens": 894,
+        "reasoning_tokens": 795
+      },
+      "elapsed_seconds": 8.839,
+      "prompt_sha256": "914f2773b85a46ed2dbcacfae272587098f80f18cf48ac915a4d336da42b7cd2"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-012_regen_j1_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.2239,
+      "usage": {
+        "input_tokens": 4156,
+        "cached_input_tokens": 0,
+        "output_tokens": 2023,
+        "reasoning_tokens": 1419
+      },
+      "elapsed_seconds": 22.299,
+      "prompt_sha256": "3cdcc70989341d9a3ccd5bab0203e6e1646ba56c90c233172c241ae0ea4dc23c"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-012_regen_j1_en_fallback_edit",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.065,
+      "usage": {
+        "input_tokens": 3549,
+        "cached_input_tokens": 0,
+        "output_tokens": 119,
+        "reasoning_tokens": 102
+      },
+      "elapsed_seconds": 3.831,
+      "prompt_sha256": "6b10fe426597e74d4df4d81c4b40b9968faefd6aac0a88d7c166829ad18e7f4e"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_regen_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1214,
+      "usage": {
+        "input_tokens": 3672,
+        "cached_input_tokens": 0,
+        "output_tokens": 813,
+        "reasoning_tokens": 719
+      },
+      "elapsed_seconds": 8.042,
+      "prompt_sha256": "dafa9787a48e0d247a4a02afd25c9e6c70e0aab5c962944c637c7272f01b308c"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_regen_j1_fulltext_fallback",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1632,
+      "usage": {
+        "input_tokens": 4136,
+        "cached_input_tokens": 0,
+        "output_tokens": 1253,
+        "reasoning_tokens": 656
+      },
+      "elapsed_seconds": 12.896,
+      "prompt_sha256": "a2d73ffa155c810aedcf1ece005c9c7eddc887342357c14081aba42ff8600fe8"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_regen_j1_en_fallback_edit",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0694,
+      "usage": {
+        "input_tokens": 3529,
+        "cached_input_tokens": 0,
+        "output_tokens": 179,
+        "reasoning_tokens": 157
+      },
+      "elapsed_seconds": 3.295,
+      "prompt_sha256": "344cf9b2e6ad17788f58a4e0987ad1c637890ed4ab7295ae308ff827eab2794a"
+    },
+    {
+      "label": "safety_A4_c2_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.1282,
+      "usage": {
+        "input_tokens": 1399,
+        "cached_input_tokens": 0,
+        "output_tokens": 1355,
+        "reasoning_tokens": 1280
+      },
+      "elapsed_seconds": 10.766,
+      "prompt_sha256": "1cf2aef7b3433f7807f426ef7b10cf6d5767cfa1d6093ab26275981c317bf240",
+      "verdict": "PASS"
+    },
+    {
+      "label": "safety_A4_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.6697,
+      "usage": {
+        "input_tokens": 6586,
+        "cached_input_tokens": 0,
+        "output_tokens": 7221,
+        "reasoning_tokens": 6782
+      },
+      "elapsed_seconds": 55.963,
+      "prompt_sha256": "cda4f4fe1abc82485dd72c69e672d54308bee3f4409d5281951f5a5426e0717e",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A4_c2_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5212,
+      "usage": {
+        "input_tokens": 6846,
+        "cached_input_tokens": 0,
+        "output_tokens": 5275,
+        "reasoning_tokens": 4358
+      },
+      "elapsed_seconds": 44.27,
+      "prompt_sha256": "8802f51e69f65bfa2b6d71d9f94100812b3eebfaa9c7486833524e5db7c9b02d",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A4_c3_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0892,
+      "usage": {
+        "input_tokens": 5805,
+        "cached_input_tokens": 5802,
+        "output_tokens": 1021,
+        "reasoning_tokens": 971
+      },
+      "elapsed_seconds": 19.83,
+      "prompt_sha256": "9b6787c36950418110bbb14079f813b52dc30b947060c4bdca5ba76ae0226e5f"
+    }
+  ],
+  "total_cost_jpy": 5.7883,
+  "total_calls": 31,
+  "elapsed_seconds": 479.264
+}

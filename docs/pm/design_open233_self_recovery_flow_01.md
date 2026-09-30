@@ -102,6 +102,23 @@ USER_DECISION_REQUIRED条件3には非該当)。不要Rewrite悪化の主因は
 (a)floor精度[item7、ユーザー判断待ちで凍結]起因と(b)Stage2較正
 セット外claimパターン[MUSE-HC-006/012等]への汎化未確認の2系統と
 特定。USER_DECISION_REQUIRED非該当[7条件いずれも]。詳細§9-1⑩。
+Production実装は未着手)。→ **[委任_14更新]**
+`ITER6_DONE_LADDER_IMPROVED_ROOT_CAUSE_REMAINING`(ユーザー新方針10項目
+[丸め許容・floor-cited・最小変更ラダー・セクション役割維持・Hook-aware
+統合・コスト5分割等]を実装、監査2件[Hook-aware再監査・Rewrite後QA
+資産棚卸し、¥0]実施、29 instance×n=2実行[Guardrail¥60到達で
+TrialAbort、sample1 29/29完走・sample2 26/29]。**最小変更ラダーにより
+段落単位Rewrite使用が0件(iter5はほぼ全件が段落単位)、記事単位平均
+コストは¥1.0649でiter5から実質横ばい**(+¥2/記事Capを大きく下回る)。
+**不要Rewrite率(sample1、iter5と同一base)は44.44%[4/9]でiter5の
+77.78%から明確に改善**(iter4の44.4%と同水準)、ただし該当4 instance
+は両sampleで完全一致し根本解消はできていない(Hook-aware対象外flag・
+Stage2較正セット外汎化という既知の限界)。**real_run Escalation
+(n=2 overlap)=16.67%[2/12]でiter5[8.33%]より悪化**(meta_run03_
+standardがpaired J-1[未ラダー化]の既存挙動で両sample STAGE4)。
+floor-cited variantはSafety群でhard gate通過(false-negative 0)だが
+`related_fact_id`依存の限界を確認、floor-strict維持を推奨。
+USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細§9-1⑪、REPORT§15。
 Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
@@ -872,6 +889,60 @@ claim・deterministic floor経由のclaimは対象外(fail-closedを緩めない
 Safety側の検出力には影響しない)。追加費用はトリガしたclaim数×Stage2
 単価(≈¥0.2/claim)のみ。
 
+### 4-12. 丸め許容(委任_14 B-1、2026-09-30ユーザー新方針item1)
+
+**背景**: 数値丸めの誤検出はWriter側ではなくChecker側の問題であり、
+「元値から通常の四捨五入で得られる自然な近似値」(2.6%→about 3%、
+1.7%→about 2%、$84.73→about $85)は別数値としてNGにしない。「意味が
+変わる丸め」(2.6%→about 2%、2.99%→about 2%、84.73→about 100)は
+NGのまま。基準=「元値から通常の四捨五入(round-half-up)で得られる
+近似値か」。
+
+**実装**: `er052_open233_self_recovery_precheck_01.py`に
+`is_natural_rounding(expected, observed)`を新設。候補は(a)整数への
+四捨五入、(b)小数第1位への四捨五入、(c)0.5刻みへの四捨五入の3種類のみ
+(nearest-10/nearest-100等の粗い丸みは対象外、84.73→about 100を誤って
+許容しないための意図的な制約)。`check_number_mismatch`(precheck本体)
+と`changed_number_is_natural_rounding_only`(Stage2入力・deterministic
+floor向け、related_fact_id経由でLedger numeric_valueと照合)の両方へ
+統合した。floor評価直前に`_sanitize_dev_for_rounding`
+(`er052_open233_self_recovery_flow_runner_01.py`)がchanged_numberの
+丸め誤検出を除去する(他のfloor flagは無変更)。unittest 7件で6例
+(ユーザー明示のOK3例・NG3例)+floor混在ケースを検証、全PASS。実測
+(iteration6、29 instance×n=2)では該当claimが0件だった(既存fixture
+セットにこの型の丸めclaimが含まれていなかったため、実測では未発火。
+機能自体はunittestで独立に確認済み)。
+
+### 4-13. floor-cited variant(委任_14 B-2)
+
+**背景**: Fable判定(§2)により、floor(deterministic safety floor)を
+「Stage1が対象claimに対しLedgerの具体的値[numeric_value/date_or_period/
+明示的なclaim文]を名指しできる場合のみ発火」に絞る floor-cited variant
+を、既存のfloor-strict(現行)と併走測定する。
+
+**実装**: `apply_floor_cited`が、`floor_cited_eligible`(related_fact_id
+がLedgerに実在し、Stage1のissue/explanationが当該factのnumeric_value/
+date_or_period/claimのいずれかを言及[数値token一致または4文字以上語の
+2語以上一致]している場合のみTrue)を満たす場合のみBLOCKINGを発火する。
+反実仮想として全claimで両方計算し(追加API callなし、¥0)、
+`floor_cited_materiality`/`floor_cited_reason`として記録する(実際の
+フロー制御は既存floor-strictのまま変更しない)。
+
+**実測結果(iteration6、29 instance×n=2、26 instance overlap分の
+combined、詳細REPORT§15)**: floor-strictとfloor-citedが分岐した
+claim(floor-cited側が発火しなかった)は全体で1件のみ(`bgroup_B4`の
+`changed_comparison`)。**Safety群(12 instance×n=2=24)では分岐0件
+(hard gate通過)**。ただし`floor_cited_eligible`は`related_fact_id`の
+実在を前提にしており、Stage1がrelated_fact_idを付与しなかった一部の
+claim(実測例: `safety_er009_changed_number`、issue文言はLedger数値を
+日本語で明示的に引用していたが`related_fact_id`がNoneだったため
+floor-citedは判定不能[非発火]扱いになった)では、明確な引用があっても
+検出できない既知の限界がある。**採用推奨**: 実測サンプルが小さく
+(false-negative候補1件のみ)、上記の`related_fact_id`依存の限界も
+未解消のため、floor-strict(現行)を既定のまま維持し、floor-citedは
+「より広い測定を継続すべき候補」として記録するにとどめる(独自に
+採用判断はしない、Fable/ユーザーへの提示材料)。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -1343,6 +1414,51 @@ cycle`ヘルパーで2回目呼び出しを実装)。(d)タイトル/hook変更�
 再生成トリガにしない(常時フラグとして報告のみ)。追加call数はトリガした
 instanceのみ、対象claim数×1回分(既存Stage3単価と同水準)。
 
+### 5-7. 最小変更ラダー・セクション役割維持(委任_14 B-3/B-4、2026-09-30
+ユーザー新方針item3/item5)
+
+**背景(item3)**: Rewriteは「最小変更」第一原則。①単語・接続詞のみ
+②文の一部 ③1文 ④段落 ⑤より広い範囲 ⑥記事全体、の順に試し、前段で
+直れば後段へ進まない。iteration5までの`single_text_rewrite`は
+「対象文を含む段落ブロックが特定できれば常に段落単位(E2_PARAGRAPH)を
+最初に試す」実装だったため、iteration5の全Rewrite event(28件)を委任_14
+作業Cで机上分類したところ、ほぼ全てが段落単位から開始していたことが
+判明した(単語・接続詞レベルで直る可能性のあるケースでも常に段落単位が
+選ばれていた)。
+
+**実装**: `single_text_rewrite`の非delete分岐を、①単語・接続詞のみ
+(新設`E1_MINIMAL_WORD_PROMPT_TEMPLATE`、"so"→"while"/"meanwhile"相当の
+接続詞置換・文分割を明示的に例示) → ③1文(既存`E2_GENERIC_PROMPT_
+TEMPLATE`) → ④段落(既存`E2_PARAGRAPH_PROMPT_TEMPLATE`、対象文を含む
+段落ブロックが特定できる場合のみ)の順に試すladderへ再設計した(②文の
+一部・⑤より広い範囲は、API呼び出し回数を無制限に増やさないため①・④
+へ実務的に統合、⑥記事全体は既存`FULL_TEXT_FALLBACK`のまま維持)。各水準は
+既存のguardロジック(`updated_text != full_text and claim_text.strip()
+not in updated_text`)を満たした時点で停止する(新しい安全判定は発明
+せず既存guardを再利用)。`ladder_level_used`を`rewrite_records`へ記録し、
+§8-7で段別分布を測定する。
+
+**既知の限界**: `paired_rewrite`(JA/EN対訳ペア、origin=ja_sourceの
+claim向け、J-1機構)はラダー未適用のまま(`ladder_level_used=
+"paired_j1_not_laddered"`)。JA/EN対訳の単語単位ラダー化は新設スコープが
+大きく本委任では見送った(次回委任の課題)。2026-09-30ユーザー新方針
+item4のB3型実例(`bgroup_B3`、接続詞"so"の因果)自体がorigin=ja_sourceの
+claimであったため、実測(iteration6)では**ラダーの恩恵を受けず、従来
+どおり段落単位(paired J-1)でRewriteされた**(達成できなかった点として
+正直に報告、REPORT§15参照)。
+
+**背景(item5)**: 各パートの役割(Title=引きつける/Hook=演出・興味喚起/
+本文=ストーリー性・読みやすさ/In one line=短く圧縮して締める)をRewrite
+後も維持する。
+
+**実装**: `measure_section_role_violation`(¥0、決定論)が、Rewrite前後で
+(a)In one lineの長文化(語数+30%超)、(b)Title/In one lineへの数字追加、
+(c)Hookの縮小(語数50%未満への減少)、(d)Hook/Titleのレトリックマーカー
+(疑問符・感嘆符・引用符・"imagine"等)消失、を検出する。検出時は
+§5-6の品質劣化検出v2と統合し、同一の再生成トリガ(`_run_stage3_cycle`の
+2回目呼び出し)へ合流させる(新しい再生成機構は作らない、既存機構の
+条件を拡張しただけ)。
+
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
 ### 6-1. Escalation条件
@@ -1429,6 +1545,39 @@ vfl01[Production]は変更せずTrial側でschema/instructionを組み立てる)
 置換で判明したものだけを使う。paragraph-level rewriteやfull-text
 fallbackではfragmentを一意に特定できないため対象外、既知の限界)。
 追加call数は0(既存確認callのschemaを差し替えるのみ)。
+
+### 6-4. Hook-aware統合(委任_14 B-5、監査結果に基づく、2026-09-30
+ユーザー新方針item2)
+
+**監査結果(詳細`docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`
+§A-1)**: Production HOOK_CLAUSE(`er003_v1_en_direct_vfl_01_generate.py`
+L579-595)は**changed_scope/changed_comparisonの2種類のみ**緩和対象。
+Family X(Hormuz/Meta記事の経路)・OPEN-233 Self-Recovery/Checker Trial
+双方とも`hook_aware=False`のまま(未配線)。ユーザーが指摘したMeta hook
+実例(`neg1_meta_b3prod_a2`)の実際のflagは changed_fact/changed_
+certainty/unsupported_new_claim であり、Production HOOK_CLAUSEの緩和
+対象(scope/comparison)には該当しない(Hook-aware判定を適用しても
+このケースは変わらなかったと机上確認)。
+
+**実装(意図的な縮小を含む)**: Stage2へ`section_type`
+(title/hook/in_one_line/body、`detect_claim_section_type`、既存
+`locate_best_sentence`を再利用した決定論的判定、¥0)を付与し、post-hoc
+`apply_hook_aware_downgrade`が**changed_scope単独発火時のみ**BLOCKING→
+QUALITYへdowngradeする。Fable原案(§2)はchanged_scope/changed_
+comparisonの2種類を指定していたが、changed_comparisonはSelf-Recovery
+Flow自身のdeterministic floor(`FLOOR_FLAGS`、Safety側の安全装置)に
+含まれるため、これをHook-awareで緩和すると既存安全装置を弱めることに
+なり、governance「既存の安全装置を独自判断で回避・無効化しない」に
+抵触する。本委任ではchanged_scope単独のみへ意図的に縮小した(監査文書に
+理由を記録、拡大にはFable/ユーザー判断が必要)。判定はLLMのHook解釈に
+依存しない決定論的post-hoc方式とした(Stage2 promptは変更していない、
+再現性・regression testの容易さを優先)。
+
+**実測結果(iteration6、29 instance×n=2)**: `hook_aware_downgrade`
+発火0件(該当条件[Hook区分×changed_scope単独×floor不発火]に合致する
+claimが実際のfixture setに存在しなかった)。機構自体はunittest 5件で
+独立に動作確認済み。Meta neg1のケースは本統合では解消されない(監査
+文書の結論どおり)。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
@@ -1692,6 +1841,41 @@ v1関数は変更せずiter4比較用に残す):
 (iteration4実測の実テキストをfixtureとして固定、`er052_open233_self_
 recovery_flow_runner_01_test_01.py::TestMeasureRewriteQualityDegradationV2`)
 で(a)(b)(c)を検出できることを固定した。
+
+### 8-7. iteration6追加測定(委任_14、2026-09-30ユーザー新方針item8/9)
+
+**不要Rewrite率(主要指標)**: 既存`unnecessary_rewrite_v2_corrected`
+(iteration5、neg5除外済み)と同一定義を正常記事群(negative7+Normal群2)
+へ適用し、`unnecessary_rewrite_v3`として継続測定する(定義自体は
+変更しない、instance集合がiteration6で一部欠落した場合[Guardrail到達等]
+は分母を実際に完走したinstance数へ機械的に合わせる)。
+
+**ラダー段別分布**(§5-7): `rewrite_records`の`ladder_level_used`
+(`0_delete`/`1_word_connective`/`3_sentence`/`4_paragraph`/
+`6_full_article`/`paired_j1_not_laddered`)を集計し、どの水準で
+解消したかの分布を報告する。
+
+**セクション役割違反件数**(§5-7): `section_role_violation.
+section_role_violated`をcycle単位で集計する。
+
+**Hook由来BLOCK回避件数**(§6-4): `floor_reason ==
+"hook_aware_scope_downgrade"`のclaim数を集計する。
+
+**丸め誤検出回避件数**(§4-12): `dev.changed_number_suppressed_reason`
+が記録されたclaim数を集計する。
+
+**floor-strict/floor-cited比較**(§4-13): `floor_cited_materiality`/
+`floor_cited_reason`をfloor-strictの実際の判定と突き合わせ、divergence
+(floor-strictは発火したがfloor-citedは発火せず、かつLLM自体の判定も
+BLOCKINGでなかった)件数をSafety群/全群別に報告する。
+
+**コスト5分割**(item9、平均+¥2/記事を上限指標、目標値ではない):
+`compute_cost_breakdown_5way`(instance単位、¥0・既存`total_cost_jpy`/
+`rewrite_records`の再集計のみ)が、Rewriteなし記事平均/Rewriteあり記事
+平均/Rewrite率/全記事平均/worstの5値を算出する。`combine_n2_measures`
+にも`iter6_additional_measures_combined`として統合した(n=2結合値、
+両sampleのinstance_resultsを単純連結して集計、既存article_level
+[Standard+Advanced合算]集計とは別枠のinstance粒度集計)。
 
 ## 9. Trial計画
 
@@ -2444,7 +2628,85 @@ Escalation 0〜1/29、negative Stage 4=0かつ読み物品質確認、JA/EN乖�
    Ledgerの具体値[numeric_value/date_or_period/明示claim文]を名指し
    できている場合のみ」へ限定する案)は、既存安全装置(fail-closed floor)
    の緩和方向の変更に該当するため、7条件④に照らしiteration5では実装
-   せず、ユーザー判断待ちのまま据え置く。
+   せず、ユーザー判断待ちのまま据え置く。**iteration6(§9-1⑪)で
+   floor-cited variantとして反実仮想測定を実施した(§4-13)。**
+
+**⑪ iteration 6実測(委任_14完了)**: ユーザー新方針10項目(§1)を実装し
+(丸め許容§4-12・floor-cited§4-13・最小変更ラダー§5-7・セクション役割
+維持§5-7・Hook-aware統合§6-4・コスト5分割§8-7)、監査2件(Hook-aware
+再監査・Rewrite後QA資産棚卸し、`docs/pm/audit_hook_aware_and_rewrite_qa_
+open233_01.md`、¥0)を実施した後、29 instance×n=2で再実行した(作業D、
+--groups全群、Guardrail¥60)。**累計¥60.226でGuardrailへ到達し
+TrialAbort(既存の安全装置どおり正常停止)**。sample1は29/29完走、
+sample2は26/29(negative群の`neg5_hormuz_div_a2`/`neg6_smallbag_div_b1b`/
+`neg7_meta_prodrunner_b1b`の3件が未完走)。n=2の自動集計
+(`combine_n2_measures`)は両sample完走が前提のため、両sampleに存在する
+26 instanceのoverlapで手動再集計した(詳細ログ:
+`er052_output/open233_self_recovery_flow_runner_01_iter6/summary_
+flow_runner.json`[sample1]、`/tmp`下の一時集計はcommit対象外のため
+REPORT§15に転記)。
+
+**最重要発見(ラダー効果、§5-7)**: iteration5では段落単位Rewrite
+(`e2_paragraph_rewrite`)がほぼ全Rewrite eventで使われていたが、
+iteration6(26 instance×2=52 instance-run、single_text_rewrite経由の
+rewrite操作のみ集計)では**`4_paragraph`水準の使用が0件**になった
+(`1_word_connective`25件・`3_sentence`9件・`6_full_article`3件・
+`0_delete`1件・`paired_j1_not_laddered`[J-1、未ラダー化]22件)。**記事
+単位平均コストは¥1.0649(combined)でiteration5(¥1.047/¥1.0617)から
+実質横ばい**(+¥2/記事Capを大きく下回る、ラダーの追加call費用と
+段落回避によるコスト削減が相殺した)。
+
+**不要Rewrite率(v3、主要指標)**: sample1(n=1、9 instance全完走、
+iteration5と同一base)で**44.44%(4/9)**、iteration5の77.78%(7/9)から
+明確に改善した(iteration4の44.4%と同水準まで低下)。ただし該当4
+instance(`neg1_meta_b3prod_a2`/`neg2_meta_refresh_a2`/
+`neg3_hormuz_prodrunner_b1b`/`meta_run03_advanced`)はsample1・sample2
+(26 instance overlap、6.67%→66.67%[8/12]、baseがiteration5の9件から
+6件へ縮小しているため単純比較不可)の**両方で完全に一致**しており、
+根本解消はできていない。監査(§6-4)の結論どおり`neg1`はHook-aware
+(changed_scope単独のみ緩和)の対象外flag(changed_fact/changed_
+certainty/unsupported_new_claim)のため未解消、`meta_run03_advanced`は
+新規に出現した事例(較正セット外claimパターンへのStage2汎化問題、
+iteration5§14-3(b)で既に指摘された既知知見の継続)。
+
+**real_run Escalation(n=2 overlap、12 instance-run)**: **2/12
+(16.67%、Wilson95%CI[4.7%,44.8%])で、iteration5のn=2実測(8.33%)より
+悪化**。`meta_run03_standard`がsample1・sample2の両方でSTAGE4
+(`same_claim_fact_id_reblocked`/`cycle_limit_exhausted`)に至ったことが
+主因。これはpaired J-1(未ラダー化、§5-7既知の限界)側の既存挙動であり、
+本委任のB-1〜B-6変更がJ-1機構自体には触れていないため、新規の regression
+というより既存の非決定性・既知の限界の別サンプルでの再現と考えられる
+(独断で追加のJ-1修正はしていない)。
+
+**floor-strict/floor-cited比較(§4-13)**: divergence
+(floor-strictは発火・floor-citedは不発火)は全体で1件のみ(`bgroup_B4`の
+`changed_comparison`)、**Safety群(24 instance-run)では0件(hard gate
+通過)**。floor-citedの`related_fact_id`依存という実装上の限界
+(`safety_er009_changed_number`で明示的な数値引用があるのに
+`related_fact_id`未付与のため判定不能だった実例を確認)も踏まえ、
+floor-strict(現行)を既定のまま維持する採用推奨とした(§4-13)。
+
+**その他の新機構の実測発火状況**: 丸め誤検出回避0件・Hook-aware
+downgrade 0件(いずれも該当条件を満たすclaimが本fixture setに存在
+しなかった、機構自体はunittestで独立に動作確認済み)、セクション役割
+違反5件(numbers_added_to_title×2[safety_er009_changed_causality]・
+hook_shrank×2[safety_er009_unsupported_new_claim 25→0語・neg1
+28→11語]・in_one_line_too_long×1[neg3、+55.6%])。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(6条件いずれも非該当)。
+Guardrail到達によるsample2部分完走(26/29)は「予算超過」ではなく既存
+安全装置の設計どおりの正常停止であり、条件(累計予算超過)には該当しない
+(委任Guardrail¥60に対し実際の停止点は¥60.226、既存check_budget()の
+「呼び出し前チェック」設計上の必然的な小幅超過)。
+
+**総括**: ラダー再設計(§5-7)は狙いどおり段落単位Rewriteをほぼ全廃し、
+コストを増やさずに不要Rewrite率をiteration5比で改善した(sample1
+77.78%→44.44%)点で明確な前進。一方、(a)不要Rewriteの主因4件は
+根本解消できておらず(Hook-aware/Stage2汎化の既知の限界)、(b)paired J-1
+(JA/EN対訳)はラダー未適用のままで、2026-09-30ユーザー新方針item4の
+flagship例(`bgroup_B3`)自体もJ-1経由だったため恩恵を受けなかった、
+(c)real_run Escalationはn=2実測でむしろ悪化した。Status=
+`ITER6_DONE_LADDER_IMPROVED_ROOT_CAUSE_REMAINING`。詳細REPORT§15。
 
 ## 10. リスク
 

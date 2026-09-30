@@ -14341,3 +14341,106 @@ open233_self_recovery_flow_runner_01_iter5/`、`er052_output/open233_
 self_recovery_r3dprime_calibration_01/`、`user_test/open233_rewrite_
 compare_01/index.html`、`user_test/open233_rewrite_compare_01/
 index_iter4.html`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: iteration 6実測完了(ユーザー新方針
+10項目+監査2件+最小変更ラダー、委任_14、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_14)。
+
+**ユーザー指示(逐語要旨)**: 数値丸めはChecker側の通常四捨五入判定で
+NG誤検出を防ぐ(B3の丸め戻しRewriteは不要Rewrite)。Hook-aware仕様
+(Production HOOK_CLAUSE)を再監査し統合(確認済みFactから自然に導ける
+演出は許容、新しいFactの発明はNG)。Rewriteは最小変更第一原則
+(①単語・接続詞②文の一部③1文④段落⑤より広い範囲⑥記事全体の順、前段で
+直れば後段へ進まない)。B3因果(so接続詞)はまず最小変更で解消を試す。
+各パート(Title/Hook/本文/In one line)の役割をRewrite後も維持。既存QA
+資産の再利用状況を監査。不要Rewrite率を主要指標に。コスト主指標=全記事
+平均追加コスト上限+¥2/記事。Trial継続、Production正式path不変。
+
+**Fable判定**: floor-strict/floor-cited variantを併走測定、Safety群
+hard gate(false-negative 0)を条件。Hook-awareはStage2に section_type
+を入力し、changed_scope/changed_comparisonを緩和しつつ新Fact発明はNG
+維持。
+
+**監査(¥0、`docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`)**:
+Production HOOK_CLAUSEはchanged_scope/changed_comparisonの2種類のみ
+緩和、Family X/Trial双方hook_aware=False(未配線)。ユーザー指摘のMeta
+hook実例(neg1)の実際のflag(changed_fact/changed_certainty/
+unsupported_new_claim)はHook-aware対象外と机上確認、「Hook-aware適用で
+防げていた」という前提は成立しない。既存Rewrite後QA資産(Fact Checker
+A' web_search・対象文/隣接文分離)は予算制約により今回は未実装、Phase2
+課題として記録。
+
+**実装(B-1〜B-6)**: 丸め許容(`is_natural_rounding`、整数/小数第1位/
+0.5刻みの3候補限定)・floor-cited variant(`apply_floor_cited`、
+related_fact_id経由のLedger言及一致判定)・最小変更ラダー
+(`single_text_rewrite`を①単語接続詞→③1文→④段落の順へ再設計、paired
+J-1は未ラダー化のまま既知の限界)・セクション役割維持検出
+(`measure_section_role_violation`)・Hook-aware統合(changed_scope単独
+発火のみpost-hoc downgrade、changed_comparisonは既存floor安全装置の
+ためgovernanceに基づき意図的に対象外化)・コスト5分割
+(`compute_cost_breakdown_5way`)。unittest 28件新規追加、既存136件+
+新規28件=**164件全PASS**。
+
+**作業D(29 instance×n=2、Guardrail¥60)**: 累計¥60.226でGuardrail到達
+しTrialAbort(既存安全装置の正常停止)。sample1 29/29完走、sample2
+26/29完走(negative群3件未完走)。両sample存在の26 instance overlapで
+手動n=2集計。**最重要発見**: 最小変更ラダーにより段落単位Rewrite使用が
+**0件**(iteration5はほぼ全件が段落単位)、記事単位平均コストは
+¥1.0649でiteration5から**実質横ばい**(+¥2/記事Capを大きく下回る)。
+**不要Rewrite率(sample1、iter5と同一base)は44.44%[4/9]でiter5の
+77.78%から明確に改善**(iter4の44.4%と同水準)。ただし該当4
+instance(neg1/neg2/neg3/meta_run03_advanced)は両sampleで完全一致し
+根本解消はできていない(Hook-aware対象外flag・Stage2較正セット外
+汎化という既知の限界)。**real_run Escalation(n=2 overlap)=16.67%
+[2/12]でiter5[8.33%]より悪化**(meta_run03_standardがpaired J-1
+[未ラダー化]の既存挙動で両sample STAGE4、独断でのJ-1修正はしていない)。
+floor-strict/floor-cited比較はSafety群でdivergence 0件(hard gate
+通過)、全体で1件(bgroup_B4のchanged_comparison)のみ、floor-citedの
+related_fact_id依存という限界も確認しfloor-strict維持を推奨。B3
+(item4のflagship例)自身がJA対訳ペア(paired J-1、未ラダー化)経由の
+claimだったため、**item4の目標[最小変更での解消]はB3自身では達成
+できなかった**ことを正直に報告する。
+
+読み比べページ更新: `user_test/open233_rewrite_compare_01/index.html`
+(iter5版は`index_iter5.html`として保持、収録4記事: neg1/bgroup_B3/
+hormuz_run02_advanced/neg2)。GitHub Pages:
+`https://shimomura055.github.io/eigo-radio/user_test/
+open233_rewrite_compare_01/index.html`。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(6条件いずれも非該当)。
+Guardrail到達によるsample2部分完走は既存安全装置の正常停止であり
+予算超過には該当しない。
+
+**Gate分類**: Safety群hard gate達成・コストCap達成(実質増加なし)だが
+不要Rewrite率(44.44%、目安15%超過)・real_run Escalation(n=2で
+2/12、0件未達)が未達のため**Gate=REJECTED(継続改善)**。ただし
+ラダー再設計による明確な前進(77.78%→44.44%、コスト増無し)を確認、
+残る主因(paired J-1未ラダー化・Stage2汎化未確認・Hook-aware対象外
+flag)を次委任の優先順位として記録する。
+
+**費用**: 作業A/B/C¥0+作業D¥60.226=**¥60.226**(Guardrail¥65内)。
+Phase累計¥222.9756+¥60.226=**¥283.2016**/総枠¥400、残¥116.7984。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1〜5証跡・
+委任_05〜_13証跡に差分なし。iteration6出力は別ディレクトリ
+(`er052_output/open233_self_recovery_flow_runner_01_iter6/`)。変更
+対象は`er052_open233_self_recovery_flow_runner_01.py`(+test)・
+`er052_open233_self_recovery_precheck_01.py`(+test)・新規
+`er052_open233_self_recovery_rewrite_compare_page_iter6_01.py`・新規
+`docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`のみ。API keyは
+環境変数のみ、保存jsonはprompt_sha256のみ記録。既存unittest全164件
+PASS(regression確認、新規28件追加)。
+
+Status=`ITER6_DONE_LADDER_IMPROVED_ROOT_CAUSE_REMAINING`。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-12/§4-13/§5-7/
+§6-4/§8-7/§9-1⑪/冒頭Status、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`
+§15、`docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+14.md`、`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_open233_self_recovery_precheck_01.py`(+test)、`er052_open233_
+self_recovery_rewrite_compare_page_iter6_01.py`、`er052_output/
+open233_self_recovery_flow_runner_01_iter6/`、`user_test/open233_
+rewrite_compare_01/index.html`、`user_test/open233_rewrite_compare_01/
+index_iter5.html`。

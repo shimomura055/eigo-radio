@@ -1,0 +1,208 @@
+{
+  "instance_id": "safety_A5",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "対象文: “They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.” 「put back」は機能を再開した意味に読めるため、「temporarily rolled back the feature in which humans handled the calls」に置き換えてください。Muse自体を停止しなかったという後半は維持できます。参照: MUSE-HC-012。",
+          "floor_reason": null,
+          "section_type": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body"
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.75,
+          "difficult_word_ratio": 0.1289,
+          "word_count": 357
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.75,
+          "difficult_word_ratio": 0.1289,
+          "word_count": 357
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 9.5,
+          "difficult_word_ratio": 0.1053,
+          "word_count": 19
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 9.5,
+          "difficult_word_ratio": 0.1053,
+          "word_count": 19
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 40,
+        "hook_word_count_after": 40,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 28,
+        "sentence_count_after": 28,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 6,
+        "hedge_word_count_after": 6,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes\n\nAsk AI to make a haircut appointment. Have it call a store, ask about an item’s stock, and get an estimate from a supplier. The AI on your screen does all of it. It is a very convenient future.\n\nMeta’s AI agent, Muse, actually has phone features like these.\n\nBut something unexpected happened behind the scenes. In some calls made through Muse, the caller was not AI but trained contract workers.\n\nMuse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.\n\nThis system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.\n\nMeta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.\n\nThis is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.\n\nEven in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.",
+      "en_text_after_rewrite": "# It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes\n\nAsk AI to make a haircut appointment. Have it call a store, ask about an item’s stock, and get an estimate from a supplier. The AI on your screen does all of it. It is a very convenient future.\n\nMeta’s AI agent, Muse, actually has phone features like these.\n\nBut something unexpected happened behind the scenes. In some calls made through Muse, the caller was not AI but trained contract workers.\n\nMuse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.\n\nThis system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.\n\nMeta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.\n\nThis is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily rolled back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.\n\nEven in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.",
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A5_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1507,
+      "usage": {
+        "input_tokens": 5901,
+        "cached_input_tokens": 0,
+        "output_tokens": 741,
+        "reasoning_tokens": 600
+      },
+      "elapsed_seconds": 7.74,
+      "prompt_sha256": "06f6c143887c15c1c740b82612b6833d0d8318f466cd7b481c14634795772e03"
+    },
+    {
+      "label": "safety_A5_c1_fact:MUSE-HC-012_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0625,
+      "usage": {
+        "input_tokens": 3608,
+        "cached_input_tokens": 0,
+        "output_tokens": 75,
+        "reasoning_tokens": 48
+      },
+      "elapsed_seconds": 1.879,
+      "prompt_sha256": "d4c1eb5f6608a200147938e224941074b15cf328686c1cd1a9baf676ed1b8d4d"
+    },
+    {
+      "label": "safety_A5_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3221,
+      "usage": {
+        "input_tokens": 6515,
+        "cached_input_tokens": 0,
+        "output_tokens": 2803,
+        "reasoning_tokens": 2717
+      },
+      "elapsed_seconds": 26.643,
+      "prompt_sha256": "9a3ea30be730c15e40aa4aa1afefaa1d9e458a58250bac32a5404eb6c8eab1a1",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.5353,
+  "total_calls": 3,
+  "elapsed_seconds": 36.297
+}

@@ -911,5 +911,289 @@ class TestUnnecessaryRewriteV2Correction(unittest.TestCase):
         self.assertIn("neg1_meta_b3prod_a2", corrected["instance_ids_v2"])
 
 
+# ------------------------------------------------------------
+# 委任_14(iteration6、作業B-7): 丸め許容6例・Meta hook不BLOCK・B3型
+# so->while・In one line長文化検出・ラダー停止・floor-cited/section_type。
+# ------------------------------------------------------------
+class TestNaturalRoundingFloorSuppression(unittest.TestCase):
+    LEDGER = ("[VERIFIED] HF-001: The tanker traffic share fell.\n"
+              "  scope: Hormuz strait tanker traffic\n"
+              "  numeric_value: 2.6%\n"
+              "  date_or_period: 2026-07-14\n")
+
+    def _dev(self, claim_text):
+        return {"claim_in_article": claim_text, "related_fact_id": "HF-001",
+                "changed_number": True, "changed_actor": False, "changed_negation": False,
+                "changed_comparison": False, "changed_time": False}
+
+    def test_2_6_to_about_3_percent_is_natural_rounding_ok(self):
+        dev = self._dev("Traffic fell by about 3%.")
+        sanitized = runner._sanitize_dev_for_rounding(dev, "Traffic fell by about 3%.", self.LEDGER)
+        self.assertFalse(sanitized["changed_number"])
+        materiality, reason = runner.apply_floor("QUALITY", sanitized, "stage1_llm")
+        self.assertEqual(materiality, "QUALITY")
+        self.assertIsNone(reason)
+
+    def test_1_7_to_about_2_percent_is_natural_rounding_ok(self):
+        ledger = self.LEDGER.replace("2.6%", "1.7%")
+        dev = self._dev("Traffic fell by about 2%.")
+        sanitized = runner._sanitize_dev_for_rounding(dev, "Traffic fell by about 2%.", ledger)
+        self.assertFalse(sanitized["changed_number"])
+
+    def test_84_73_to_about_85_is_natural_rounding_ok(self):
+        ledger = self.LEDGER.replace("2.6%", "84.73 workers")
+        dev = self._dev("about 85 workers")
+        sanitized = runner._sanitize_dev_for_rounding(dev, "about 85 workers", ledger)
+        self.assertFalse(sanitized["changed_number"])
+
+    def test_2_6_to_about_2_percent_is_meaning_changing_ng(self):
+        dev = self._dev("Traffic fell by about 2%.")
+        sanitized = runner._sanitize_dev_for_rounding(dev, "Traffic fell by about 2%.", self.LEDGER)
+        self.assertTrue(sanitized["changed_number"])
+        materiality, reason = runner.apply_floor("QUALITY", sanitized, "stage1_llm")
+        self.assertEqual(materiality, "BLOCKING")
+
+    def test_2_99_to_about_2_percent_is_meaning_changing_ng(self):
+        ledger = self.LEDGER.replace("2.6%", "2.99%")
+        dev = self._dev("about 2%")
+        sanitized = runner._sanitize_dev_for_rounding(dev, "about 2%", ledger)
+        self.assertTrue(sanitized["changed_number"])
+
+    def test_84_73_to_about_100_is_meaning_changing_ng(self):
+        ledger = self.LEDGER.replace("2.6%", "84.73 workers")
+        dev = self._dev("about 100 workers")
+        sanitized = runner._sanitize_dev_for_rounding(dev, "about 100 workers", ledger)
+        self.assertTrue(sanitized["changed_number"])
+
+    def test_other_floor_flags_unaffected_by_rounding_suppression(self):
+        dev = self._dev("about 3%")
+        dev["changed_actor"] = True
+        sanitized = runner._sanitize_dev_for_rounding(dev, "about 3%", self.LEDGER)
+        self.assertFalse(sanitized["changed_number"])
+        materiality, reason = runner.apply_floor("QUALITY", sanitized, "stage1_llm")
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIn("changed_actor", reason)
+        self.assertNotIn("changed_number", reason)
+
+
+class TestIsNaturalRoundingDirect(unittest.TestCase):
+    def test_six_examples_from_user_spec(self):
+        import er052_open233_self_recovery_precheck_01 as pc
+        self.assertTrue(pc.is_natural_rounding(2.6, 3.0))
+        self.assertTrue(pc.is_natural_rounding(1.7, 2.0))
+        self.assertTrue(pc.is_natural_rounding(84.73, 85.0))
+        self.assertFalse(pc.is_natural_rounding(2.6, 2.0))
+        self.assertFalse(pc.is_natural_rounding(2.99, 2.0))
+        self.assertFalse(pc.is_natural_rounding(84.73, 100.0))
+
+
+class TestHookAwareDowngrade(unittest.TestCase):
+    def test_meta_style_scope_only_hook_claim_is_downgraded(self):
+        dev = {"changed_scope": True, "changed_fact": False, "changed_causality": False,
+               "changed_certainty": False, "changed_number": False, "changed_actor": False,
+               "changed_negation": False, "changed_comparison": False, "changed_time": False,
+               "unsupported_new_claim": False}
+        materiality, reason = runner.apply_hook_aware_downgrade("BLOCKING", dev, "hook", None)
+        self.assertEqual(materiality, "QUALITY")
+        self.assertEqual(reason, "hook_aware_scope_downgrade")
+
+    def test_not_applied_outside_hook_sections(self):
+        dev = {"changed_scope": True}
+        materiality, reason = runner.apply_hook_aware_downgrade("BLOCKING", dev, "body", None)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_not_applied_when_floor_already_fired(self):
+        dev = {"changed_scope": True}
+        materiality, reason = runner.apply_hook_aware_downgrade(
+            "BLOCKING", dev, "hook", "deterministic_floor:changed_comparison")
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_not_applied_when_other_flag_also_fired(self):
+        # neg1(Meta)実例の実際のflag(changed_fact/changed_certainty/
+        # unsupported_new_claim)はHook-aware対象外のまま(監査文書の
+        # 既知の限界どおり)。
+        dev = {"changed_scope": False, "changed_fact": True, "changed_certainty": True,
+               "unsupported_new_claim": True}
+        materiality, reason = runner.apply_hook_aware_downgrade("BLOCKING", dev, "hook", None)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_changed_comparison_is_never_relaxed_because_it_is_in_floor_flags(self):
+        # changed_comparisonはFLOOR_FLAGSに含まれる安全装置であり、
+        # Hook-aware緩和の対象に含めない(governance: 既存安全装置の
+        # 独自判断での無効化禁止)。
+        self.assertIn("changed_comparison", runner.FLOOR_FLAGS)
+        self.assertNotEqual(runner.HOOK_AWARE_ELIGIBLE_FLAG, "changed_comparison")
+
+
+class TestDetectClaimSectionType(unittest.TestCase):
+    ARTICLE = (
+        "# A Call That Surprised Everyone\n\n"
+        "Ring, ring. A call seemed to come from an AI agent, but it was a person all along.\n\n"
+        "Meta ran a test with trained contract workers on some calls, a report says.\n\n"
+        "## In one line\n"
+        "A test used real people on some calls.\n"
+    )
+
+    def test_title_detected(self):
+        self.assertEqual(runner.detect_claim_section_type(
+            "A Call That Surprised Everyone", self.ARTICLE), "title")
+
+    def test_hook_paragraph_detected(self):
+        self.assertEqual(runner.detect_claim_section_type(
+            "Ring, ring. A call seemed to come from an AI agent, but it was a person all along.",
+            self.ARTICLE), "hook")
+
+    def test_in_one_line_detected(self):
+        self.assertEqual(runner.detect_claim_section_type(
+            "A test used real people on some calls.", self.ARTICLE), "in_one_line")
+
+    def test_body_detected(self):
+        self.assertEqual(runner.detect_claim_section_type(
+            "Meta ran a test with trained contract workers on some calls, a report says.",
+            self.ARTICLE), "body")
+
+
+class TestFloorCitedVariant(unittest.TestCase):
+    LEDGER = ("[VERIFIED] HF-001: The tanker traffic share fell.\n"
+              "  scope: Hormuz strait tanker traffic\n"
+              "  numeric_value: 2.6%\n"
+              "  date_or_period: 2026-07-14\n")
+
+    def test_precheck_is_always_cited(self):
+        materiality, reason = runner.apply_floor_cited("ACCEPTABLE", {}, "precheck", self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertEqual(reason, "precheck_floor")
+
+    def test_deterministic_floor_fires_when_issue_cites_ledger_value(self):
+        dev = {"changed_number": True, "related_fact_id": "HF-001",
+               "issue": "Article says the share fell 9%, but Ledger HF-001 records 2.6%."}
+        materiality, reason = runner.apply_floor_cited("QUALITY", dev, "stage1_llm", self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNotNone(reason)
+
+    def test_deterministic_floor_does_not_fire_without_citation(self):
+        dev = {"changed_number": True, "related_fact_id": "HF-001",
+               "issue": "The number looks different from what I expect."}
+        materiality, reason = runner.apply_floor_cited("QUALITY", dev, "stage1_llm", self.LEDGER)
+        self.assertEqual(materiality, "QUALITY")
+        self.assertIsNone(reason)
+
+    def test_no_related_fact_id_never_cited(self):
+        dev = {"changed_number": True, "related_fact_id": "",
+               "issue": "2.6% mentioned in Ledger HF-001"}
+        materiality, reason = runner.apply_floor_cited("QUALITY", dev, "stage1_llm", self.LEDGER)
+        self.assertEqual(materiality, "QUALITY")
+        self.assertIsNone(reason)
+
+
+class TestSectionRoleViolation(unittest.TestCase):
+    def test_in_one_line_length_increase_over_30_percent_detected(self):
+        before = "# Title\n\nHook paragraph here.\n\n## In one line\nShort summary here now.\n"
+        after = ("# Title\n\nHook paragraph here.\n\n## In one line\n"
+                 "This is a much longer summary that adds many extra words to the line now.\n")
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["in_one_line_too_long"])
+        self.assertTrue(result["section_role_violated"])
+
+    def test_numbers_added_to_title_detected(self):
+        before = "# A Surprising Call\n\nHook.\n\n## In one line\nSummary.\n"
+        after = "# 3 Surprising Facts About The Call\n\nHook.\n\n## In one line\nSummary.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["numbers_added_to_title"])
+
+    def test_hook_shrinking_detected(self):
+        before = ("# Title\n\nRing, ring! Was it a robot calling, or a real person? "
+                   "Nobody could quite believe what happened next.\n\n## In one line\nS.\n")
+        after = "# Title\n\nA call happened.\n\n## In one line\nS.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["hook_shrank"])
+        self.assertTrue(result["section_role_violated"])
+
+    def test_no_violation_when_unchanged(self):
+        text = "# Title\n\nHook paragraph.\n\n## In one line\nSummary line.\n"
+        result = runner.measure_section_role_violation(text, text)
+        self.assertFalse(result["section_role_violated"])
+
+
+class TestMinimalChangeLadderOrdering(unittest.TestCase):
+    """委任_14 B-3: single_text_rewriteが水準①(単語・接続詞)を先に試し、
+    guardを満たしたらそれ以降(③文/④段落)へ進まないことを、API呼び出しを
+    mockして確認する(¥0)。"""
+
+    def test_stops_at_level1_when_minimal_edit_resolves_it(self):
+        from unittest import mock
+
+        full_text = ("# Title\n\nConcerns continued on July 14. So the flashy 20% plan left "
+                     "the stage.\n\n## In one line\nA plan changed.\n")
+        claim_rec = {
+            "claim_text": "So the flashy 20% plan left the stage.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "wrong causal link"},
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e1_minimal_word"):
+                return "Concerns continued on July 14, while the flashy 20% plan left the stage."
+            raise AssertionError(f"should not escalate past level 1, but called {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertEqual(result["ladder_level_used"], "1_word_connective")
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(result["guard_ok"])
+
+    def test_escalates_to_level3_when_level1_declines(self):
+        from unittest import mock
+
+        full_text = "# Title\n\nSome sentence with a problem in it.\n\n## In one line\nA plan changed.\n"
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "problem"},
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e1_minimal_word"):
+                return ""  # 委任_14: 最小編集では解消できない宣言
+            if label.endswith("_e2_rewrite"):
+                return "Some sentence without the problem."
+            raise AssertionError(f"unexpected escalation to {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertEqual(result["ladder_level_used"], "3_sentence")
+        self.assertEqual(calls, ["test_e1_minimal_word", "test_e2_rewrite"])
+
+
+class TestCostBreakdown5Way(unittest.TestCase):
+    def test_splits_rewrite_vs_no_rewrite_and_computes_worst(self):
+        results = [
+            {"instance_id": "a", "total_cost_jpy": 1.0, "cycles": []},
+            {"instance_id": "b", "total_cost_jpy": 2.0, "cycles": [{"rewrite_records": [{"x": 1}]}]},
+            {"instance_id": "c", "total_cost_jpy": 5.0, "cycles": [{"rewrite_records": [{"x": 1}]}]},
+        ]
+        out = runner.compute_cost_breakdown_5way(results)
+        self.assertEqual(out["no_rewrite_count"], 1)
+        self.assertEqual(out["no_rewrite_avg_cost_jpy"], 1.0)
+        self.assertEqual(out["with_rewrite_count"], 2)
+        self.assertEqual(out["with_rewrite_avg_cost_jpy"], 3.5)
+        self.assertEqual(out["rewrite_rate"], round(2 / 3, 4))
+        self.assertEqual(out["overall_avg_cost_jpy"], round(8.0 / 3, 4))
+        self.assertEqual(out["worst_cost_jpy"], 5.0)
+
+
 if __name__ == "__main__":
     unittest.main()
