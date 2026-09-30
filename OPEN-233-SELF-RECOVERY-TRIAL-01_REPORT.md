@@ -1531,3 +1531,97 @@ A-3のneg3 n=3測定スクリプト(`er052_open233_self_recovery_neg3_stage2_n3_
 **STOP条件該当確認**: ¥16超え見込み(該当せず、¥12.6575)/API error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、§19-6の事故は復旧済みでgit diffで無変更を確認済み)/USER_DECISION_REQUIRED6条件(該当せず、下記)/開始前チェック未反映(0件、§0対応表)/最小修正1回後もFAIL(該当なし、rep10は1回で14/14完走)/Safety-critical claimまたはSafety 12のいずれかがBLOCKINGでなくなった(該当せず、`safety_A2A3`/`safety_A5`で全文Recheック維持を確認)/全文Recheck条件最小化で開示分析の4件のいずれかを取りこぼす(該当せず、narrowingを実施しなかったため)。
 
 **Status**: `REP10_ALL_7_INSTANCES_COMPLETE_STAGE4_ZERO`(限定7 instance×n=2、14/14完走・Guardrail内・STAGE4 0件。A-1のnarrowing判断[実施しない]・A-2の部分改善・A-3の両論併記はFable/ユーザーへの判断材料として提示する。29 instance全量の広いTrialは次回委任でのFable/ユーザー判断を待つ)。
+
+## §20. Opus L2レビュー#4是正W1〜W5+限定Trial rep11(委任_20、2026-09-30)
+
+### 20-0. 対応表(ユーザー指示・Opus W1〜W5)
+
+| # | 指示/W項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| 1 | W1: JA fail-open封鎖(i)(ii)(iii) | (i)JA recheck MAJOR deviationsの次cycle合流+`ja_pending_deviation`フラグによるSTAGE4安全網、(ii)`ja_en_equivalence_verdict`のgating化、(iii)¥0決定論JAガード(`ja_fail_open_guard`新設) | §20-1、design書§6-7 |
+| 6 | 不要Rewrite統合報告 | rep11で`neg1_meta_b3prod_a2`が新規claim(MUSE-HC-006、hook区分)でRewrite発生(2/2 sample)。既知の解消済みclaim[Ring, ring]とは別claim | §20-2 |
+| 7 | 全体Rewrite(⑥)再確認 | rep11で`6_full_article`使用0件(継続確認) | §20-3 |
+| 8 | 人間確認残存・false PASS | rep11でSTAGE4 3/8(`bgroup_B3`×2・`meta_run03_standard`s1)、いずれもJA fail-open是正が機能した結果の正しいfail-closed。false PASS(JA逸脱残存でRESOLVED)は0/8 | §20-4 |
+| 9 | コスト | rep11実測¥8.0288(8 instance-run、Guardrail¥12内) | §20-5 |
+| W2 | Stage1同一fact_id列挙 | schema拡張+展開関数実装。rep11では`hormuz_run03_standard`のfresh Stage1がrecall miss(ACCEPTABLE_STAGE1)となり実run検証は不成立、unittestでrep10実データにより機構自体は検証済み | §20-1、design書§6-8 |
+| W3 | 全文Recheck条件更新 | (c)縮小[paired かつ ladder≥④ or JAガード不通過]・(g)(h)新設・(e)にTrial限定但し書き | §20-1、design書§6-9 |
+
+### 20-1. 実装(W1〜W3、¥0・regression確認)
+
+Opus L2レビュー#4(`docs/pm/opus_l2_review_open233_self_recovery_04.md`、逐語保存)の是正W1(JA fail-open封鎖)・W2(Stage1同一fact_id列挙)・W3(全文Recheck条件更新)を実装した。詳細はdesign書§6-7/§6-8/§6-9・§4-16参照。要点は以下:
+
+- **W1(i)**: `run_instance`の未解消時next-cycle再構築(旧実装はEN側`recheck_parsed`のMAJOR deviationsのみを使用)へ、JA側`ja_recheck_parsed`のMAJOR deviationsを合流(`origin="ja_source"`明示)。加えて`ja_pending_deviation`フラグ(このinstance内でJA未解消が持ち越されているか)を新設し、`not blocking_claims`によるdowngrade経路へ入る際、Trueなら無条件で`STAGE4_ESCALATION`(`stage4_reason="ja_deviation_unresolved"`)を強制する二重の安全網とした。
+- **W1(ii)**: `ja_en_equivalence_verdict`(従来は測定専用)を`PASS`以外なら`ja_ok`をFalseへ倒すgatingへ昇格。
+- **W1(iii)**: `ja_fail_open_guard`(新設、¥0・決定論)。指摘BLOCKING claimのJA引用文(`rewrite_hint`から抽出、新設ヘルパー`extract_quoted_fragment_present_in`でJA本文[Rewrite前]に実在する候補を優先し、既存`extract_quoted_fragment`の「最長一致」による誤抽出[rep10実データで実際に発生]を回避)がRewrite後も逐語で残っていないか、対象段落外のJA文が理由なく消えていないかを判定。違反時は局所QA fastpathを無条件で不可とし全文Recheckへ回し、全文Recheckが「解消」を返した場合でも`ja_ok`をFalseへ上書きする。
+- **W2**: Stage1初回(`stage1_fresh_with_enumeration`新設)・Recheck(`run_recheck`拡張)の出力schemaへ`same_fact_id_locations`(文字列配列)を追加(追加callなし)し、`expand_same_fact_id_locations`(¥0・決定論、逐語実在確認でfail-closed)が各locationを独立deviationへ展開する。reuse fixture(26/29 instance)はフィールド非存在時に何も追加しない安全側fallback。
+- **W3**: `full_recheck_required`の条件(c)を「paired かつ(ladder≥④ or JAガード不通過)」へ縮小(`ja_guard_ok`引数追加)、(g)`section_type`がtitle/hook/in_one_lineの場合、(h)`ja_en_equivalence_verdict`が`PASS`以外の場合を新設。(b)は実証例なしと明記のうえ保守側で維持、(e)にTrial限定(Production非外挿)の但し書きを追加。
+
+**unittest**: 新規16件(`TestJaFailOpenGuard`4件[rep10実データfixture含む]・`TestExpandSameFactIdLocations`4件・`TestJaPendingDeviationSafetyNet`1件・`TestFullRecheckRequired`系7件[既存1件を置換+新規6件])+既存180件=**計196件全PASS**(`.venv/Scripts/python.exe -m unittest er052_open233_self_recovery_flow_runner_01_test_01`、regressionなし)。`TestJaFailOpenGuard.test_detects_rep10_hormuz_cycle2_defect`は、rep10 `hormuz_run03_standard` sample1 cycle2の実データ(`summary_rep10.json` L1091-1092のja before/after・L939のrewrite_hint)をfixtureとして転記し、ガードが(i)指摘JA文の逐語残存・(ii)対象段落外JA文の消失の両方を実際に検出することを確認している。
+
+### 20-2. rep11実測(fastpathが起動できる代表4 instance×n=2、¥8.0288)
+
+CLI拡張(`--instance_ids`/`--force_fresh_stage1`、新設・既存呼び出しの挙動は変えない既定値)を追加し、`hormuz_run03_standard`(Stage1をforce_fresh、W2検証目的)・`bgroup_B3`・`meta_run03_standard`・`neg1_meta_b3prod_a2`をn=2実行した(OUT_DIR=`er052_output/open233_self_recovery_flow_runner_01_rep11`、TOTAL_BUDGET_JPY=12.0、**8/8 instance-run完走・API error 0件**):
+
+| instance | sample1 | sample2 |
+|---|---|---|
+| `hormuz_run03_standard` | ACCEPTABLE_STAGE1(fresh Stage1がrecall miss、cost¥0.356) | ACCEPTABLE_STAGE1(cache共有、cost¥0) |
+| `bgroup_B3` | STAGE4_ESCALATION(`ja_deviation_unresolved`) | STAGE4_ESCALATION(`ja_deviation_unresolved`) |
+| `meta_run03_standard` | STAGE4_ESCALATION(`ja_deviation_unresolved`) | RESOLVED_REWRITE_THEN_DOWNGRADE |
+| `neg1_meta_b3prod_a2` | RESOLVED_REWRITE | RESOLVED_REWRITE_THEN_DOWNGRADE |
+
+**(i) fastpath発火**: `meta_run03_standard`のcycle1で2/8 instance-run(sample1・sample2とも)が`full_recheck_required=False`(条件(a)〜(h)いずれも非該当)となり局所QA fastpathへ到達した(W3縮小の効果、条件(c)がpairedでない単純claimでは元々非該当だった点に注意=このケースはmechanismが`single_text_local`)。ただし局所QA自体は`find_sentence_context`の`revised_sentence_not_locatable_in_context`(既存locateバグ、委任_19のSequenceMatcher fallbackでも解消せず)により2/2ともAPI callに到達せずskip、既存の全文Recheckへ正しくフォールバックした。**fastpathの実call成功による全文Recheck省略は0/8**(発火はしたが局所QA自体は未到達、正直に報告する)。
+**(ii) Stage1列挙のhormuz surface**: `hormuz_run03_standard`のforce fresh Stage1(gpt-6-luna、W2 enumeration prompt付き)が**deviationを1件も検出しなかった**(`ACCEPTABLE_STAGE1`、recall miss。rep9/rep10で繰り返し検出されていたHF-009が今回は検出されず、既存のStage1 recall miss現象[S1-Uが対策として存在する理由そのもの]であり、W2のenumeration instruction追加が原因かは切り分けできていない)。この結果、W2の「headline/one-lineをsurfaceできるか」自体は**rep11の実runでは検証不成立**(cycle自体が起動しなかったため)。機構自体の正しさはunittest(`TestExpandSameFactIdLocations`)で実データ形式のfixtureにより別途確認済み(¥0)。
+**(iii) W1 JAガードの捕捉**: `bgroup_B3`(2/2 sample)のcycle1で`ja_fail_open_guard`が`ok=False`(`unexplained_ja_sentence_deletion`)を検出し`full_recheck_required_reasons`へ`ja_fail_open_guard_violation`を追加、局所QA fastpathを試みず全文Recheckへ強制フォールバックした。**ただし重要な限界を正直に報告する**: `bgroup_B3`の`source_article_text`(paired J-1の"JA"側として扱われるfixture)は実際には英語テキストである(`split_ja_sentences`が句点`。！？`で分割するため、英語文には分割点が無く全文が1文として扱われ、些細な変更でも「1文丸ごと消失」という粗い誤検知を生む構造的な既知の限界)。したがって`bgroup_B3`での発火は、rep10 hormuz型の「特定JA文の逐語残存+別文の消失」という精密な再現ではなく、保守側に倒れる形の(安全だが診断精度の粗い)発火である。**W1(i)の主機構(merge+pending flag)が精密に働いた実例**は`meta_run03_standard` sample1で確認できた: cycle2で`paired_ja_en(J-1)`Rewrite後、`ja_recheck_overall_status=LEDGER_DEVIATION`(ガードに頼らず主経路の全文Recheckが直接検出)となり、cycle3で`blocking_claims`が空になった際も`ja_pending_deviation=True`により`RESOLVED_REWRITE_THEN_DOWNGRADE`ではなく正しく`STAGE4_ESCALATION`(`ja_deviation_unresolved`)へ到達した。これはrep10 hormuz cycle2型の欠陥パターン(JA未解消が握り潰されてfalse PASSになる)が、**W1是正後は実際に防止されることをrep11の実runで確認した**、最も明確な実例である。
+**(iv) false PASS確認**: 8 instance-run全てについて、`RESOLVED_REWRITE`/`RESOLVED_REWRITE_THEN_DOWNGRADE`で完了した4件(`neg1`×2、`meta_run03_standard`s2、`hormuz_run03_standard`×2[Stage1非検出のため無関係])のrewrite_recordsを確認し、いずれも`mechanism=single_text_local`(JAを一切変更しない、または`hormuz`はRewrite自体が発生していない)であり、**JA fail-open型のfalse PASSは0/8で発生していない**ことを確認した。
+
+### 20-3. 全体Rewrite(⑥)再確認
+
+rep11の全rewrite_records(合計10件)で`ladder_level_used="6_full_article"`は**0件**(継続確認、委任_18是正が維持されている)。
+
+### 20-4. 不要Rewrite(neg1)・人間確認残存
+
+`neg1_meta_b3prod_a2`は正解ラベル上「Rewrite不要」の負例群だが、rep11では2/2 sampleともRewriteが発生した(claim: MUSE-HC-006「A call seemed to come from an AI agent...」、`stage2_route=hook`、floor非経由の純粋LLM判定でBLOCKING)。これは委任_17で解消したclaim(「Ring, ring…」hook)とは**別のclaim**であり、Hook専用Stage2が今回**別の一文**を新規にBLOCKINGと判定した結果である(regressionの再現ではなく、Hook専用Stage2の判定対象が記事内の別claimへ拡張された可能性を示す新規観測、原因分析は次回委任の課題として持ち越す)。sample1はcycle1で解消(`RESOLVED_REWRITE`)、sample2はcycle1解消後cycle2で`blocking_claims`が空になり`RESOLVED_REWRITE_THEN_DOWNGRADE`。
+
+**neg3両建て集計(W5)**: 本委任は`neg3_hormuz_prodrunner_b1b`を再実行していないため新規測定はない。Opus L2レビュー#4のQ2判定(BLOCKING妥当、floor/rubric変更なし)を踏襲し、iter6の不要Rewrite率をneg3の扱いで両建てで示す: **neg3込み4/9=44.4%(既報告値)、neg3をdisputed除外[分子・分母とも除外]で3/8=37.5%、分子のみ除外で3/9=33.3%**(Opus L2レビュー#4 Q2)。どの数値を採用するかはFable/ユーザー判断とし、本委任では確定させない。
+
+**`safety_A2A3`のrep10 `RESOLVED_REWRITE_THEN_DOWNGRADE`(2/2)経路確認(¥0、既存json読み取り)**: `er052_output/open233_self_recovery_flow_runner_01_rep10/instances_s1/safety_A2A3.json`(L5)・`instances_s2/safety_A2A3.json`を確認したところ、いずれもcycle1でBLOCKING 1件(floor経由)+QUALITY 2件を検出しRewrite後にblocking_claimsが空になり`RESOLVED_REWRITE_THEN_DOWNGRADE`で完了していた。QUALITY 2件はfloor非該当のためStage2の裁量的降格であり、`safety_fixture`条件により全cycle`full_recheck_required=True`が維持されていたことも確認した(fail-open型の懸念には該当しない、想定どおりの経路)。
+
+**人間確認残存(STAGE4)**: rep11は3/8(`bgroup_B3`×2・`meta_run03_standard`s1)。rep10(0/14)から増加しているが、これは**W1是正が機能した結果の正しいfail-closed**であり、regressionではない(§20-2(iii)参照)。
+
+### 20-5. コスト
+
+| call種別 | 回数 | 合計(¥) |
+|---|---|---|
+| `stage1_recheck` | 10 | 3.1836 |
+| `stage2_second_judge` | 14 | 2.7854 |
+| `stage3_rewrite` | 13 | 1.3673 |
+| `stage1_initial` | 1 | 0.356 |
+| `ja_en_equivalence` | 3 | 0.3365 |
+
+`local_qa`call種別は0回(§20-2(i)のとおり、fastpath発火2回とも局所QA自体はlocate失敗でskip)。**rep11合計¥8.0288**(8 instance-run、Guardrail¥12内)。全文Recheckの代替による削減は今回も実測できていない(fastpath実call成功0件のため)。W1〜W3の実装自体は追加API callなし(¥0)。
+
+本委任合計: **¥8.0288**(実装W1〜W3 ¥0+rep11 ¥8.0288、Guardrail¥12内)。Phase累計(前回まで¥330.499)+本委任¥8.0288=**¥338.5278**。Phase残額(**上限¥500**のうち)=**¥161.4722**。
+
+### 20-6. Gate 9項目充足表(Opus L2レビュー#4判定からの変化)
+
+| # | Gate項目 | Opus#4判定 | rep11後 |
+|---|---|---|---|
+| 1 | 局所QA是正 | 未充足(0/14発火) | **部分改善**(発火2/8だが実call成功0/8、locateバグ[`revised_sentence_not_locatable_in_context`]が依然主因と再確認) |
+| 2 | 全体Rewrite3件の立証 | 充足 | 充足を維持(⑥ 0/10) |
+| 3 | 不要Rewrite4件の開示 | 充足 | 充足を維持+neg1新規observationを追加開示(§20-4) |
+| 4 | 解決策 | 部分充足 | 変化なし(neg3両建てのみ、決定はしない) |
+| 5 | 人間確認残存 | 部分充足(不安定) | **改善**(STAGE4 3/8全てがfail-closedとして正しく機能した結果と確認、false PASS 0/8) |
+| 6 | 代表ケース動作確認 | 充足(範囲限定) | 充足を維持(8/8完走、¥12内) |
+| 7 | Safety誤通過なし | **未充足**(rep10 false PASS 1件) | **充足**(rep11でfalse PASS 0/8、W1是正の直接的効果をmeta_run03_standard s1で確認) |
+| 8 | 不要な全文Check・全体Rewriteの削減 | 半分充足 | 変化なし(全体Rewriteは充足維持、全文Check削減は未実証のまま) |
+| 9 | 平均コスト影響 | 部分充足 | 変化なし(¥1.0036/instance-run、+¥2/記事の上限内) |
+
+**総合**: 充足5/部分充足3/未充足0(Opus#4時点は充足3/部分4/未充足2)。項目7(Safety誤通過)が是正され最重要の未充足が解消した。項目1(局所QA基本形)は引き続き未達(locateバグの根本原因は本委任のスコープ外)。
+
+### 20-7. STOP条件該当確認・USER_DECISION_REQUIRED・Status
+
+**STOP条件**: ¥12超え見込み(該当せず、¥8.0288)/API error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、`git diff --stat`で対象外を確認)/6条件該当(該当せず、下記)/開始前チェック未反映(0件)/最小修正1回後もFAIL(該当なし、rep11は1回で8/8完走)/Safety-critical 10claim・Safety 12がBLOCKINGでなくなった(該当せず)/false PASS(JA逸脱残存でRESOLVED)がrep11で1件でも発生(**該当せず、0/8**、§20-2(iv))。
+
+**USER_DECISION_REQUIRED 6条件該当有無**: 非該当(neg3両建て[§20-4]・neg1新規observation[§20-4]・局所QA locateバグ未解消[§20-6項目1]はFable/ユーザーへの判断材料として提示するが、いずれもSTOP/UDR条件そのものには該当しない)。
+
+**Status**: `W1_W3_IMPLEMENTED_REP11_8_OF_8_COMPLETE_FALSE_PASS_ZERO`(W1〜W3実装+代表4 instance×n=2 rep11実行、8/8完走・false PASS 0件・Gate項目7[Safety誤通過]解消。局所QA基本形[項目1]・Stage1列挙の実run検証[W2 (ii)]・fastpath実call成功は未達のまま次回委任へ持ち越し。29 instance全量の広いTrial着手はFable/ユーザー判断待ち)。

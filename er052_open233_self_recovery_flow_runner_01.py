@@ -145,9 +145,17 @@ OUT_DIR_REP9 = "er052_output/open233_self_recovery_flow_runner_01_rep9"
 # (委任文§2 B、広いTrialはスコープ外)。出力は新規ディレクトリ(`_rep10`)へ
 # 書く。
 OUT_DIR_REP10 = "er052_output/open233_self_recovery_flow_runner_01_rep10"
-OUT_DIR = OUT_DIR_REP10
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233w_19.json"
-TOTAL_BUDGET_JPY = 13.0  # 委任_19 Guardrail(委任文§2 Phase B「有料≤¥13」)
+# 委任_20(2026-09-30、Opus L2レビュー#4是正W1〜W5): 既存iteration1〜6・
+# rep7〜rep10の出力(OUT_DIR_ITER1〜6/OUT_DIR_REP7〜10)は変更しない。
+# W1(JA fail-openガード封鎖)/W2(Stage1同一fact_id列挙)/W3(全文Recheck
+# 条件更新)の反映後、fastpathが実際に起動できる代表4 instance
+# (hormuz_run03_standard/bgroup_B3/meta_run03_standard/
+# neg1_meta_b3prod_a2)のみをn=2で再実行する(委任文§3 W4、広いTrialは
+# スコープ外)。出力は新規ディレクトリ(`_rep11`)へ書く。
+OUT_DIR_REP11 = "er052_output/open233_self_recovery_flow_runner_01_rep11"
+OUT_DIR = OUT_DIR_REP11
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233x_20.json"
+TOTAL_BUDGET_JPY = 12.0  # 委任_20 Guardrail(委任文§0「本委任Guardrail¥12」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -791,6 +799,123 @@ def stage1_reuse(path: str) -> dict:
     return d["parsed"] if "parsed" in d else d
 
 
+# ------------------------------------------------------------
+# 委任_20 W2(Opus L2レビュー#4 Q1(c)推奨): Stage1初回/Recheckのdeviation
+# schemaへ「同一factを主張する記事内の他箇所を列挙する」フィールドを追加
+# する(追加API callなし、¥0限界コスト)。er051(trial、他Trialとも共有
+# されるモジュール)自体は変更せず、run_recheck()が既に行っている
+# 「schemaだけ本runner内でローカルに拡張する」既存パターンをStage1初回
+# 側にも適用する(stage1_fresh()自体は変更せず、別関数として追加する。
+# 既存iteration1〜6/rep7〜10の再現性に影響しない)。
+# ------------------------------------------------------------
+SAME_FACT_ID_ENUMERATION_INSTRUCTION = """
+
+For EACH deviation you report, also add a field "same_fact_id_locations": a JSON array of \
+strings. In this array, quote verbatim every OTHER place in the article (if any) that asserts \
+or restates the SAME underlying fact as this deviation, including the title, the hook/lead \
+sentence, and the "In one line" summary if present, in addition to any other body sentences. \
+Each quoted string must be an exact verbatim substring of the article text. If there are no \
+other locations, return an empty array."""
+
+
+def build_deviation_schema_with_enumeration(item_schema: dict) -> dict:
+    """既存のdeviation item schema(trial.build_trial_deviation_item_schemaの
+    出力)へ`same_fact_id_locations`(文字列配列)を追加する(委任_20 W2)。"""
+    props = dict(item_schema["properties"])
+    props["same_fact_id_locations"] = {"type": "array", "items": {"type": "string"}}
+    required = list(item_schema["required"]) + ["same_fact_id_locations"]
+    return {"type": "object", "properties": props, "required": required, "additionalProperties": False}
+
+
+def expand_same_fact_id_locations(deviations: list, article_text: str) -> list:
+    """委任_20 W2: 各deviationの`same_fact_id_locations`を、独立した追加
+    deviationへ展開する(¥0・決定論)。展開後は既存の複数claim処理
+    (`_run_stage3_cycle`が各claimを独立にladder①から試す既存機構、
+    委任_18)がそのまま使われる(新しいRewrite機構は作らない)。
+
+    - `same_fact_id_locations`が無い/空/フィールド自体が存在しない場合
+      (reuse fixture[stage1_mode=reuse]のjsonに本フィールドが無い場合を
+      含む)は何も追加しない(安全側fallback、既存動作を変えない)。
+    - 各locationはarticle_text中の逐語substringとして実在する場合のみ
+      採用する(fail-closedで幻覚を弾く)。元のclaim_in_articleと同一、
+      またはfixed既に採用済みの場合は重複追加しない。
+    """
+    out = list(deviations)
+    seen_texts = {(d.get("claim_in_article") or "").strip() for d in deviations}
+    for d in deviations:
+        locations = d.get("same_fact_id_locations")
+        if not isinstance(locations, list):
+            continue
+        for loc in locations:
+            loc_s = (loc or "").strip() if isinstance(loc, str) else ""
+            if not loc_s or loc_s in seen_texts:
+                continue
+            if loc_s not in article_text:
+                continue  # fail-closed: 逐語で実在しない候補は採用しない
+            new_dev = dict(d)
+            new_dev["claim_in_article"] = loc_s
+            new_dev["detected_by_enumeration"] = True
+            new_dev["enumeration_source_claim"] = (d.get("claim_in_article") or "").strip()
+            out.append(new_dev)
+            seen_texts.add(loc_s)
+    return out
+
+
+def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, label, fixture) -> dict:
+    """委任_20 W2: `stage1_fresh()`と同一のretry/cost計上パターンだが、
+    schemaへ`same_fact_id_locations`を追加したローカル拡張版(`run_recheck()`
+    と同じ「schemaだけローカルに拡張する」既存パターンを踏襲、er051は
+    read-onlyのまま)。呼び出し元(`run_instance`)がこのinstanceについて
+    Stage1を新規実行する場合のみ使う(reuse fixtureには影響しない)。"""
+    check_budget(state)
+    include_origin = fixture.get("source_article_text") is not None
+    prompt_template = trial.build_trial_prompt_template("V4A")
+    prompt = prompt_template.format(verified_ledger_text=fixture["ledger_text"],
+                                     article_text=fixture["article_text"])
+    prompt += vfl01.RELATED_FACT_ID_INSTRUCTION
+    if include_origin:
+        prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=fixture["source_article_text"])
+    prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
+    item_schema = build_deviation_schema_with_enumeration(
+        trial.build_trial_deviation_item_schema(True, include_origin))
+    schema = {
+        "name": "open233_self_recovery_stage1_v4a_enum",
+        "schema": {"type": "object", "properties": {"deviations": {"type": "array", "items": item_schema}},
+                   "required": ["deviations"], "additionalProperties": False},
+        "strict": True,
+    }
+    last_err = None
+    response = None
+    t0 = time.time()
+    for _ in range(1 + MAX_RETRIES_PER_CALL):
+        try:
+            response = client.responses.create(
+                model=MODEL, reasoning={"effort": vfl01.REASONING_EFFORT},
+                text={"format": {"type": "json_schema", **schema}},
+                input=[{"role": "developer", "content": vfl01.DEVIATION_DEVELOPER_MESSAGE},
+                       {"role": "user", "content": prompt}],
+            )
+            break
+        except Exception as e:  # noqa: BLE001
+            last_err = f"{type(e).__name__}: {e}"
+            time.sleep(1.0)
+    elapsed = round(time.time() - t0, 3)
+    if response is None:
+        call_log.append({"label": label, "recovery_stage": "stage1_initial", "error": last_err})
+        record_call(state, consecutive_errors, label, 0.0, False, "stage1_initial")
+        return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "_stage1_api_failure": True}
+    raw_parsed = json.loads(response.output_text)
+    parsed = vfl01._apply_deviation_post_hoc_validation(raw_parsed)
+    parsed_trial = trial.classify_parsed_result_trial(parsed, "V4A")
+    parsed_trial["deviations"] = expand_same_fact_id_locations(parsed_trial["deviations"], fixture["article_text"])
+    usage = s2p._extract_usage(response)
+    cost = round(s2p.official_cost_jpy(usage), 4)
+    call_log.append({"label": label, "recovery_stage": "stage1_initial", "cost_jpy": cost, "usage": usage,
+                      "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt)})
+    record_call(state, consecutive_errors, label, cost, True, "stage1_initial", usage)
+    return parsed_trial
+
+
 def stage1_fresh(client, state, consecutive_errors, call_log, label, fixture) -> dict:
     check_budget(state)
     last_err = None
@@ -868,7 +993,10 @@ def stage1_union_screen(client, state, consecutive_errors, call_log, label, fixt
 # (er051側は変更しない、read-onlyで部品を借用するだけ)。
 # ------------------------------------------------------------
 def build_recheck_schema(include_related_fact_id: bool, include_origin: bool) -> dict:
-    item_schema = trial.build_trial_deviation_item_schema(include_related_fact_id, include_origin)
+    # 委任_20 W2: Recheckにも同一fact_id列挙フィールドを追加する(¥0、
+    # 追加callなし)。
+    item_schema = build_deviation_schema_with_enumeration(
+        trial.build_trial_deviation_item_schema(include_related_fact_id, include_origin))
     props = {"deviations": {"type": "array", "items": item_schema},
               "prior_issues_resolved": {"type": "array", "items": vfl01.PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA}}
     required = ["deviations", "prior_issues_resolved"]
@@ -889,6 +1017,7 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     if include_origin:
         prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=fixture["source_article_text"])
     prompt += vfl01.build_prior_issues_instruction(prior_issues)
+    prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
     schema = build_recheck_schema(True, include_origin)
 
     last_err = None
@@ -917,6 +1046,8 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     raw_parsed = json.loads(response.output_text)
     parsed = vfl01._apply_deviation_post_hoc_validation(raw_parsed)
     parsed_trial = trial.classify_parsed_result_trial(parsed, "V4A")
+    # 委任_20 W2: Recheckが検出した同一fact_id別箇所も展開する(¥0)。
+    parsed_trial["deviations"] = expand_same_fact_id_locations(parsed_trial["deviations"], article_text)
     resolved = raw_parsed.get("prior_issues_resolved", [])
     parsed_trial["prior_issues_resolved"] = resolved
     parsed_trial["all_prior_issues_resolved"] = (
@@ -1658,6 +1789,36 @@ def extract_quoted_fragment(hint: str) -> str | None:
     return max(candidates, key=len)
 
 
+def extract_quoted_fragment_present_in(hint: str, text: str) -> str | None:
+    """委任_20 W1(iii): `extract_quoted_fragment`と同じ候補抽出だが、
+    hint中に複数の引用(例:「元の文」を「置換後の文」に、のような
+    rewrite_hint)が含まれる場合、textに逐語で実在する候補を優先して
+    返す。`extract_quoted_fragment`単体は最長一致の候補を返すため、
+    置換後の文の方が元の文(textに実在するはずの文)より長い場合に
+    誤って置換後の文(textにまだ存在しない)を返してしまう既知の曖昧性が
+    あり(rep10 hormuz_run03_standard実データで実際に発生、置換後の文が
+    元の文より1文字長かった)、本関数はそれを避けるためtext中の実在を
+    条件に含める。実在する候補が無ければNoneを返す(呼び出し側は保守的に
+    skipする)。"""
+    if not hint:
+        return None
+    candidates = []
+    for pat in _BRACKET_QUOTE_PATTERNS:
+        for m in pat.finditer(hint):
+            frag = m.group(1).strip()
+            if frag:
+                candidates.append(frag)
+    parts = hint.split('"')
+    for i in range(1, len(parts), 2):
+        frag = parts[i].strip()
+        if len(frag) >= 8:
+            candidates.append(frag)
+    present = [c for c in candidates if c in text]
+    if not present:
+        return None
+    return max(present, key=len)
+
+
 def split_sentences_generic(text: str) -> list:
     """見出し行(#開始)を除いた本文を句点等(全角。！？/半角.!?)で分割する
     汎用関数(JA/EN共通、位置比計算用)。"""
@@ -2396,10 +2557,27 @@ LOCAL_QA_ESCALATION_LADDER_LEVELS = frozenset({"4_paragraph", "6_full_article", 
 
 
 def full_recheck_required(rewrite_records: list, blocking_claims: list, instance_id: str,
-                           repeat_fact_ids: frozenset = frozenset()) -> tuple:
-    """委任_18 2-4/委任_19 A-1是正: 全文Recheckを残す条件(a)〜(f)を判定する
-    (¥0、決定論)。Trueの場合は既存の全文Recheckフローをそのまま使う
-    (理由のlistも返し、cycle_recordへEvidenceとして記録する)。
+                           repeat_fact_ids: frozenset = frozenset(), ja_guard_ok: bool | None = None,
+                           ja_equivalence_verdict: str | None = None) -> tuple:
+    """委任_18 2-4/委任_19 A-1/委任_20 W3是正: 全文Recheckを残す条件
+    (a)〜(h)を判定する(¥0、決定論)。Trueの場合は既存の全文Recheckフロー
+    をそのまま使う(理由のlistも返し、cycle_recordへEvidenceとして記録する)。
+
+    委任_20 W3(Opus L2レビュー#4 Q1(b)推奨、前提: W1でJA fail-openガード
+    [ja_fail_open_guard]とja_en_equivalence_verdictのgating化が既に導入
+    済み): (c)を「paired かつ(ladder≥④ or JA ガード不通過)」へ縮小する。
+    (a)は既にrewrite_records全件[paired含む]についてladder≥④を判定して
+    いるため、狭めた(c)が追加で捕捉するのは「paired・ladder①〜③・かつ
+    JAガード不通過」の場合のみ(rep10 hormuz cycle2は実際にはladder=
+    4_paragraphだったため(a)で捕捉されるが、ladder①〜③でも同型の欠陥が
+    起きた場合に備える保守的な追加条件)。(b)
+    multiple_claims_rewritten_same_cycleは実証例なし(disclosure §1-4-5の
+    meta_run03_standard sample2は(d)floorでも捕捉される)だが、保守側で
+    維持する(削除の実証的根拠がないため)。(e)safety_fixtureは
+    instance_idの命名規約(Trial fixture限定)に依存しており、Production
+    記事には該当する信号がない。Production配線時は「Ledger factが
+    Safety-critical指定」等の実信号へ置換が必須(Trial限定条件、
+    Productionへ外挿不可)。(g)(h)は本委任で新設。
 
     委任_19 A-1: 委任文は「paired J-1はラダー①〜③の局所変更なら条件から
     外す」ことを求めていたが、本委任のrep10実測前調査(rep9
@@ -2424,12 +2602,27 @@ def full_recheck_required(rewrite_records: list, blocking_claims: list, instance
         reasons.append("paragraph_or_full_or_delete_rewrite")
     if len(rewrite_records) > 1:
         reasons.append("multiple_claims_rewritten_same_cycle")
-    if any(r.get("mechanism", "").startswith("paired") for r in rewrite_records):
-        reasons.append("both_ja_en_changed(paired_j1)")
+    # 委任_20 W3: (c)を「paired かつ(ladder≥④ or JAガード不通過)」へ縮小。
+    paired_records = [r for r in rewrite_records if r.get("mechanism", "").startswith("paired")]
+    if paired_records:
+        paired_high_ladder = any(
+            r.get("ladder_level_used") in LOCAL_QA_ESCALATION_LADDER_LEVELS for r in paired_records)
+        if paired_high_ladder or ja_guard_ok is False:
+            reasons.append("both_ja_en_changed(paired_j1)")
     if any(c.get("floor_reason") for c in blocking_claims):
         reasons.append("deterministic_floor_claim")
     if instance_id.startswith("safety_"):
         reasons.append("safety_fixture")
+    # 委任_20 W3新設(g): title/hook/in_one_line(前後1文が成立しない
+    # section)を含む場合、局所QAのwindow概念が成立しないため全文Recheckへ
+    # 回す。
+    if any((c.get("section_type") in HOOK_SECTION_TYPES) for c in blocking_claims):
+        reasons.append("short_section_no_window(title_hook_in_one_line)")
+    # 委任_20 W3新設(h): JA/EN等価チェックが非PASS(FAIL/REVIEW_REQUIRED)
+    # の場合、全文Recheckを維持する(rep10で唯一のFAILが実際のJA破損と
+    # 一致した実測を踏まえ、測定専用から昇格)。
+    if ja_equivalence_verdict not in (None, "PASS"):
+        reasons.append("ja_en_equivalence_not_pass")
     # 委任_19 A-1新設(f): このcycleのBLOCKING claimのfact_idが、この
     # instanceの過去cycleで一度でもBLOCKINGとして検出されたfact_idと
     # 一致する場合(同一claim完全一致は既存`matched_records`が即Stage4で
@@ -2440,6 +2633,53 @@ def full_recheck_required(rewrite_records: list, blocking_claims: list, instance
     if current_fact_ids & set(repeat_fact_ids):
         reasons.append("same_fact_id_reappeared_across_cycles")
     return bool(reasons), reasons
+
+
+def ja_fail_open_guard(ja_text_before: str, ja_text_after: str, blocking_claims: list) -> dict:
+    """委任_20 W1(iii)(Opus L2レビュー#4 §0/Q1(b)提案): ¥0・決定論の
+    JA fail-openガード。paired rewrite(J-1)でJA本文がこのcycleで変化した
+    場合に、(i)指摘されたBLOCKING claimのJA文(rewrite_hint中の引用断片、
+    既存`extract_quoted_fragment`と同じ抽出方法。paired_rewriteの
+    JA対象文特定[第一キー]と同一の考え方を流用する)がRewrite後も逐語で
+    残っていないか、(ii)そのJA文を含む段落ブロック(既存
+    `locate_paragraph_block`)の外側にあった他のJA文が理由なく消えて
+    いないか、を機械的に判定する(追加API callなし)。
+
+    rep10 `hormuz_run03_standard` sample1 cycle2の実データ(指摘JA文が
+    一字一句残存したまま、別段落の"報道時点では約2.6%高..."が消失し
+    `RESOLVED_REWRITE_THEN_DOWNGRADE`として誤って完了した事故)を再現
+    できることをunittestで確認する(fixtureとして使用)。
+
+    rewrite_hintから引用断片を抽出できないclaim(underspecified rewrite_
+    hint)は対象外とする(このガードを理由に既存動作を不必要に広げない、
+    保守側で見送る)。"""
+    if ja_text_before == ja_text_after:
+        return {"ok": True, "violations": [], "checked": False}
+    violations = []
+    sentences_before = split_ja_sentences(ja_text_before)
+    sentences_after_set = set(split_ja_sentences(ja_text_after))
+    checked_any = False
+    for c in blocking_claims:
+        hint = c.get("rewrite_hint") or ""
+        flagged = extract_quoted_fragment_present_in(hint, ja_text_before)
+        if not flagged:
+            continue
+        checked_any = True
+        fact_id = (c.get("dev", {}) or {}).get("related_fact_id") or c.get("related_fact_id")
+        # (i) 指摘されたJA文がRewrite後も逐語で残っていないか
+        if flagged in ja_text_after:
+            violations.append({"type": "flagged_ja_sentence_unchanged", "sentence": flagged,
+                                "related_fact_id": fact_id})
+        # (ii) 対象段落(既存locate_paragraph_blockで特定)外のJA文が消失していないか
+        block, _ = locate_paragraph_block(flagged, ja_text_before)
+        window = block if block else flagged
+        for s in sentences_before:
+            if s in window:
+                continue
+            if s not in sentences_after_set:
+                violations.append({"type": "unexplained_ja_sentence_deletion", "sentence": s,
+                                    "related_fact_id": fact_id})
+    return {"ok": not violations, "violations": violations, "checked": checked_any}
 
 
 def find_sentence_context(full_text: str, needle: str) -> tuple:
@@ -2845,7 +3085,8 @@ def build_precheck_floor_claims(fixture: dict, existing_fact_ids: set) -> list:
 # instance単位オーケストレーション(Stage1→2→3→Recheck、cycle上限2)
 # ------------------------------------------------------------
 def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool = False,
-                  stage1_cache: dict | None = None, instances_subdir: str = "instances") -> dict:
+                  stage1_cache: dict | None = None, instances_subdir: str = "instances",
+                  use_enumeration_stage1: bool = True) -> dict:
     instance_id = inst["instance_id"]
     fixture = inst["fixture"]
     call_log: list = []
@@ -2870,8 +3111,11 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if cache_key is not None and cache_key in stage1_cache:
             stage1_parsed = stage1_cache[cache_key]
         else:
-            stage1_parsed = stage1_fresh(client, state, consecutive_errors, call_log,
-                                          f"{instance_id}_stage1", fixture)
+            # 委任_20 W2(既定True): 同一fact_id別箇所列挙フィールド付きの
+            # Stage1初回callを使う(追加callなし、¥0限界コスト)。
+            stage1_fn = stage1_fresh_with_enumeration if use_enumeration_stage1 else stage1_fresh
+            stage1_parsed = stage1_fn(client, state, consecutive_errors, call_log,
+                                       f"{instance_id}_stage1", fixture)
             stage1_call_used = True
             if cache_key is not None:
                 stage1_cache[cache_key] = stage1_parsed
@@ -2941,6 +3185,13 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     current_ja_text = fixture.get("source_article_text")
     cycles_log = []
     final_state, stage4_reason = None, None
+    # 委任_20 W1(i)(Opus L2レビュー#4 §0): JA recheckが未解消
+    # (ja_ok=False)のまま次cycleへ進んだ事実を保持する。この状態のまま
+    # loopが「not blocking_claims」downgrade経路(RESOLVED_STAGE2_DOWNGRADE/
+    # RESOLVED_REWRITE_THEN_DOWNGRADE)へ抜けた場合は、JA側の未解消を
+    # 握り潰さずSTAGE4_ESCALATION(ja_deviation_unresolved)を強制する
+    # (rep10 hormuz_run03_standard sample1 cycle2のfalse PASS再発防止)。
+    ja_pending_deviation = False
 
     # 委任_11 作業B-6(§4 Rewrite由来新規逸脱検出、Opus L2 #2論点4推奨3):
     # Rewrite前(オリジナル記事)のprecheck findingをbaselineとして保持し、
@@ -3004,7 +3255,17 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         }
 
         if not blocking_claims:
-            final_state = "RESOLVED_STAGE2_DOWNGRADE" if cycle == 1 else "RESOLVED_REWRITE_THEN_DOWNGRADE"
+            # 委任_20 W1(i): 直前cycleでJA recheckが未解消(ja_pending_
+            # deviation=True)のまま、このcycleでEN側由来のstage1_deviations
+            # だけがblocking_claimsへ再構築され空になった場合(rep10
+            # hormuz_run03_standard sample1 cycle2の実データで観測)、
+            # 「解消」として静かにdowngradeせず、JA側の未解消を理由に
+            # STAGE4_ESCALATIONへ回す(false PASS再発防止、fail-closed)。
+            if ja_pending_deviation:
+                final_state = "STAGE4_ESCALATION"
+                stage4_reason = "ja_deviation_unresolved"
+            else:
+                final_state = "RESOLVED_STAGE2_DOWNGRADE" if cycle == 1 else "RESOLVED_REWRITE_THEN_DOWNGRADE"
             cycles_log.append(cycle_record)
             break
 
@@ -3202,6 +3463,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cycle_record["ja_text_before_rewrite"] = ja_text_before_rewrite
             cycle_record["ja_text_after_rewrite"] = current_ja_text
 
+        # 委任_20 W1(iii)(Opus L2レビュー#4 §0/Q1(b)): ¥0決定論JA fail-open
+        # ガード。paired rewriteでJA本文がこのcycleで変化した場合、
+        # 指摘JA文の逐語残存/対象段落外JA文の消失を機械的に判定する。
+        ja_guard_result = None
+        if ja_text_before_rewrite is not None and current_ja_text is not None:
+            ja_guard_result = ja_fail_open_guard(ja_text_before_rewrite, current_ja_text, blocking_claims)
+            cycle_record["ja_fail_open_guard"] = ja_guard_result
+
         # 委任_18 2-1(c)(disclosure §1-1-4是正): title/hookが空文字・極端
         # 短縮(語数<3)になった場合、既存needs_regeneration(1回だけ再生成
         # を試みるが、再生成後も同じ結果ならそのまま通過してしまう既存の
@@ -3228,21 +3497,32 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if rewrite_new_findings_en or rewrite_new_findings_ja:
             cycle_record["rewrite_new_precheck_findings"] = rewrite_new_findings_en + rewrite_new_findings_ja
         # (b) paired rewrite(J-1)が使われた場合のみ、JA↔EN等価チェック1 call
-        # (既存の翻訳忠実性QA資産を借用、flow制御には使わず測定専用)。
+        # (既存の翻訳忠実性QA資産を借用)。委任_20 W1(ii)是正: 従来は
+        # flow制御に使わず測定専用だったが、rep10でFAILが実際のJA破損と
+        # 一致した実測を踏まえ、ja_ok/full_recheck_required双方のgatingへ
+        # 昇格した(下記en_ok/ja_ok計算・full_recheck_required呼び出し参照)。
         if current_ja_text is not None and any(rr["mechanism"].startswith("paired") for rr in rewrite_records):
             eq_result = run_ja_en_equivalence_check(
                 client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}_ja_en_equivalence",
                 current_ja_text, current_en_text)
             cycle_record["ja_en_equivalence_verdict"] = eq_result.get("verdict")
 
-        # 委任_18 2-4(局所QA fastpath)/委任_19 A-1(f新設): 全文Recheckを
-        # 残す条件(a)〜(f)に該当しない場合のみ、局所QA 1 call/claimを試す。
-        # 全件「解消・新規逸脱なし・隣接文影響なし」ならこのcycleを解決
-        # として全文Recheck(run_recheck/run_recheck_confirm)を省略する。
-        # 該当する、または局所QAが問題を検出した場合は、既存の全文Recheck
-        # フロー(下記、無変更)へそのままフォールバックする。
+        # 委任_18 2-4(局所QA fastpath)/委任_19 A-1(f新設)/委任_20 W3:
+        # 全文Recheckを残す条件(a)〜(h)に該当しない場合のみ、局所QA 1
+        # call/claimを試す。全件「解消・新規逸脱なし・隣接文影響なし」なら
+        # このcycleを解決として全文Recheck(run_recheck/run_recheck_confirm)
+        # を省略する。該当する、または局所QAが問題を検出した場合は、既存の
+        # 全文Recheckフロー(下記、無変更)へそのままフォールバックする。
         recheck_required, recheck_required_reasons = full_recheck_required(
-            rewrite_records, blocking_claims, instance_id, repeat_fact_ids_for_recheck)
+            rewrite_records, blocking_claims, instance_id, repeat_fact_ids_for_recheck,
+            ja_guard_ok=(ja_guard_result["ok"] if ja_guard_result is not None else None),
+            ja_equivalence_verdict=cycle_record.get("ja_en_equivalence_verdict"))
+        # 委任_20 W1(iii): JA fail-openガード不通過は無条件で全文Recheckへ
+        # 回す(局所QA fastpathを試みない。局所QAはJA本文を独立確認しない
+        # ため、ガード違反を見逃す構造的リスクがある)。
+        if ja_guard_result is not None and not ja_guard_result["ok"]:
+            recheck_required = True
+            recheck_required_reasons = recheck_required_reasons + ["ja_fail_open_guard_violation"]
         cycle_record["full_recheck_required"] = recheck_required
         cycle_record["full_recheck_required_reasons"] = recheck_required_reasons
         if not recheck_required:
@@ -3252,7 +3532,12 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cycle_record["local_qa_fastpath_attempted"] = True
             cycle_record["local_qa_fastpath_results"] = local_qa_outcome["results"]
             cycle_record["local_qa_fastpath_success"] = local_qa_outcome["success"]
-            if local_qa_outcome["success"]:
+            # 委任_20 W1(iii)是正: 前cycle以前から持ち越したJA未解消
+            # (ja_pending_deviation、このcycleに入った時点の値)がある場合、
+            # 局所QA(EN側のみ)の成功だけではJA側の未解消を確認できない
+            # ため、fastpathでの即時解決を許さない(既存の全文Recheckへ
+            # フォールバックする)。
+            if local_qa_outcome["success"] and not ja_pending_deviation:
                 cycles_log.append(cycle_record)
                 final_state = "RESOLVED_REWRITE"
                 break
@@ -3291,6 +3576,30 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         ja_ok = True if ja_recheck_parsed is None else (
             ja_recheck_parsed.get("overall_status") == "LEDGER_COMPLIANT"
             and ja_recheck_parsed.get("all_prior_issues_resolved"))
+
+        # 委任_20 W1(ii)(Opus L2レビュー#4 §0/Q1(b)推奨): 従来は測定専用
+        # だったja_en_equivalence_verdictを、paired rewrite使用cycleに限り
+        # gating化する(FAIL/REVIEW_REQUIREDならja_okをFalseへ倒す)。
+        ja_equivalence_verdict = cycle_record.get("ja_en_equivalence_verdict")
+        if ja_ok and ja_equivalence_verdict not in (None, "PASS"):
+            ja_ok = False
+            cycle_record["ja_ok_blocked_by_equivalence"] = True
+        # 委任_20 W1(iii): JA fail-openガード不通過はja_okをFalseへ倒す
+        # (全文Recheckがself-contradictionなく「解消」を返した場合でも、
+        # ¥0決定論ガードが指摘JA文の逐語残存/対象段落外JA文消失を検出した
+        # 場合は未解消として扱う)。
+        if ja_ok and ja_guard_result is not None and not ja_guard_result["ok"]:
+            ja_ok = False
+            cycle_record["ja_ok_blocked_by_guard"] = True
+        # 委任_20 W1(i): このcycle終了時点のja_ok最終値を保持する(次cycleで
+        # 「not blocking_claims」downgrade経路に入った際、JA未解消を握り
+        # 潰さないためのfail-closedフラグ)。このcycleでja_recheck_parsedが
+        # None(paired rewriteがこのcycleでは使われなかった)の場合は、
+        # 「JA側を今cycleは検査していない」だけであり「解消した」わけでは
+        # ないため、前cycle以前から持ち越したja_pending_deviationの値を
+        # 保持する(誤って安全側フラグを消さない、fail-closed)。
+        if ja_recheck_parsed is not None:
+            ja_pending_deviation = not ja_ok
 
         # 委任_11 作業B-5是正(§8測定是正、Opus L2 #2論点7「安全≠成功」):
         # overall_status=LEDGER_COMPLIANTかつall_prior_issues_resolved=False
@@ -3337,6 +3646,31 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
         # 未解消 -> 次cycleのStage1 deviationsをRecheck結果から再構築
         stage1_deviations = [d for d in recheck_parsed.get("deviations", []) if d.get("severity") == "MAJOR"]
+        # 委任_20 W1(i)是正(Opus L2レビュー#4 §0): 旧実装はEN側
+        # recheck_parsed[MAJOR deviations]のみから次cycleを再構築しており、
+        # JA側ja_recheck_parsedのMAJOR deviationsが常に握り潰され(JA側
+        # LEDGER_DEVIATIONが「解消」として消える)、rep10
+        # hormuz_run03_standard sample1 cycle2でfalse PASS
+        # (RESOLVED_REWRITE_THEN_DOWNGRADE)を引き起こした。JA側MAJOR
+        # deviationsも同一fact_idの重複を避けつつ合流させ、次cycleの
+        # blocking_claims候補から脱落しないようにする(origin=ja_sourceを
+        # 明示し、次cycleがpaired rewriteで再挑戦できるようにする)。合流
+        # してもStage2が再度非BLOCKINGへ倒す等でblocking_claimsが空になる
+        # 場合は、上記ja_pending_deviationフラグがSTAGE4_ESCALATIONへ強制
+        # 誘導する(fail-closedの二重の安全網)。
+        if ja_recheck_parsed is not None:
+            existing_dev_fact_ids = {(d.get("related_fact_id") or "") for d in stage1_deviations}
+            ja_major_deviations = [
+                d for d in ja_recheck_parsed.get("deviations", []) if d.get("severity") == "MAJOR"]
+            for d in ja_major_deviations:
+                fid = (d.get("related_fact_id") or "")
+                if fid and fid in existing_dev_fact_ids:
+                    continue
+                d = dict(d)
+                d["origin"] = "ja_source"
+                stage1_deviations.append(d)
+                if fid:
+                    existing_dev_fact_ids.add(fid)
         cycle += 1
         if cycle > HARD_MAX_CYCLES:
             final_state = "STAGE4_ESCALATION"
@@ -4012,14 +4346,35 @@ def main():
                          help="委任_10 S1-U variant: s1u_eligibleなinstanceがStage1(V4A)で"
                               "ACCEPTABLEだった場合、S1-D 1 callを追加してBLOCKING claimを"
                               "union(fail-closed)で拾う(recall対策の実測、既定は無効)")
+    parser.add_argument("--instance_ids", default=None,
+                         help="委任_20 W4: comma-separated instance_id allowlist。指定時は"
+                              "--groupsフィルタ後にさらにこのIDへ絞り込む(既定None=無効、"
+                              "既存呼び出しの挙動は変えない)")
+    parser.add_argument("--force_fresh_stage1", default=None,
+                         help="委任_20 W4: comma-separated instance_id list。指定された"
+                              "instanceのstage1_modeを'fresh'へ上書きする(既定reuseの"
+                              "instanceでもW2[同一fact_id列挙]を検証するためStage1を新規"
+                              "実行させる、既定None=無効)")
     args = parser.parse_args()
     selected_groups = {g.strip() for g in args.groups.split(",") if g.strip()}
+    selected_instance_ids = (
+        {s.strip() for s in args.instance_ids.split(",") if s.strip()} if args.instance_ids else None
+    )
+    force_fresh_stage1_ids = (
+        {s.strip() for s in args.force_fresh_stage1.split(",") if s.strip()} if args.force_fresh_stage1 else set()
+    )
 
     client = vfl01.get_client()
     state = load_budget_state()
     consecutive_errors = [0]
 
     instances = [inst for inst in build_target_instances() if inst["group"] in selected_groups]
+    if selected_instance_ids is not None:
+        instances = [inst for inst in instances if inst["instance_id"] in selected_instance_ids]
+    for inst in instances:
+        if inst["instance_id"] in force_fresh_stage1_ids:
+            inst["stage1_mode"] = "fresh"
+            inst["stage1_source"] = None
     # 委任_13(iteration5): stage1_cacheはsample1/sample2間で共有する
     # (Stage1[fresh mode]はcycle1入力が同一である限りsha256一致で再利用、
     # 二重課金防止)。--n_runs=1(既定)ではiter1〜4と同じ挙動(cache自体は

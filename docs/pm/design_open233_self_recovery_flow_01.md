@@ -1140,6 +1140,18 @@ LLM自身が独立にBLOCKINGと判定したrunが存在する)。floorを緩め
 推奨どおり、次委任でこのclaim単体のn≥3再現性測定が必要)。rep9では
 従来どおりfloor維持のまま従来のRewrite経路が機能することのみ確認する。
 
+### 4-16. Stage 1同一fact_id列挙(委任_20 W2)
+
+**注記**: 委任文では本節を「§4-18」と指定していたが、本書§4は§4-15
+までしか存在せず(§4-16/§4-17は未使用)、間に空番を作らないため新規
+追加分は本書の実採番どおり§4-16として追記する(§4-15の前例と同じ方針)。
+
+Stage 1初回・Recheckの出力schemaへ`same_fact_id_locations`を追加し、
+記事内の同一fact_id別箇所(title/hook/in_one_line含む)を追加callなしで
+列挙・展開する仕組みの詳細は§6-8に記載する(Stage 4 Escalation条件・
+全文Recheck省略条件と一体で設計・実装したため、本節では概要のみを示し
+重複記載を避ける)。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -2116,6 +2128,146 @@ windowしか見ないため、「元の対象claimとは別の、記事全体の
 逸脱」を発見する手段を構造的に持たない。むしろこの事例は、全文Recheck
 (および今回のconfirm call)が持つ「記事全体を見る」という価値を裏付ける
 追加のEvidenceである。
+
+### 6-7. JA fail-open封鎖(委任_20 W1、Opus L2レビュー#4 §0是正)
+
+**背景(発見された事故)**: Opus L2レビュー#4(`docs/pm/
+opus_l2_review_open233_self_recovery_04.md`)が、rep10
+`hormuz_run03_standard` sample1 cycle2で、paired J-1の段落Rewriteが
+「指摘されたBLOCKING claimのJA文を一字も変えず、別段落の無関係なJA文
+(+2.6%/$85の記述)を削除」し、`ja_recheck_overall_status:
+LEDGER_DEVIATION`・`ja_en_equivalence_verdict: FAIL`だったにも関わらず
+`RESOLVED_REWRITE_THEN_DOWNGRADE`(false PASS)として完了していた実例を
+発見した。原因は本runnerのcycle継ぎ目のfail-open: 未解消時に次cycleの
+`stage1_deviations`をEN側`recheck_parsed`のみから再構築しており、
+JA側`ja_recheck_parsed`のMAJOR deviationsが構造的に握り潰されていた
+(`ja_en_equivalence_verdict`もflow制御に使われず測定専用だった)。
+
+**是正(3点、いずれも¥0・追加API callなし)**:
+- **(i) JA recheck deviationsの合流**: 未解消cycleの次cycle再構築時に、
+  EN側`recheck_parsed`のMAJOR deviationsへJA側`ja_recheck_parsed`の
+  MAJOR deviationsを(同一fact_idの重複を避けつつ、`origin="ja_source"`
+  を明示して)合流させる。さらに`ja_pending_deviation`フラグ
+  (このinstance内でJA未解消のまま持ち越されているかを保持)を新設し、
+  `not blocking_claims`によるdowngrade経路(`RESOLVED_STAGE2_DOWNGRADE`/
+  `RESOLVED_REWRITE_THEN_DOWNGRADE`)へ入る際、このフラグがTrueなら
+  無条件で`STAGE4_ESCALATION`(`stage4_reason="ja_deviation_unresolved"`)
+  へ強制する(合流してもStage2が再度非BLOCKINGへ倒す等でblocking_claims
+  が空になるケースへの二重の安全網)。`ja_pending_deviation`は、このcycle
+  でJA recheckを実行していない(`ja_recheck_parsed is None`)場合は
+  前cycle以前の値を保持する(「今cycleは検査していない」を「解消した」と
+  誤読しない)。
+- **(ii) ja_en_equivalence_verdictのgating化**: 従来「測定専用」だった
+  `ja_en_equivalence_verdict`を、`PASS`以外(`FAIL`/`REVIEW_REQUIRED`)なら
+  `ja_ok`をFalseへ倒すgatingへ昇格した。rep10の唯一のFAILが実際のJA破損
+  と一致した実測(Opus L2レビュー#4)を踏まえる。
+- **(iii) ¥0決定論JA fail-openガード**(`ja_fail_open_guard`関数、新設):
+  paired rewriteでJA本文が変化したcycleについて、(a)指摘BLOCKING claim
+  の`rewrite_hint`から抽出したJA引用文(`extract_quoted_fragment_
+  present_in`、新設ヘルパー。既存`extract_quoted_fragment`は最長一致を
+  返すため、rewrite_hintが「元の文」と「置換後の文」の2つの引用を含み
+  後者の方が長い場合に誤って置換後の文を返す既知の曖昧性があり[rep10
+  hormuz実データで実際に発生]、本ヘルパーはJA本文[Rewrite前]に実在する
+  候補を優先することでこれを避ける)が、Rewrite後も逐語で残っていないか、
+  (b)そのJA文を含む段落ブロック(既存`locate_paragraph_block`を再利用)の
+  外側にあった他のJA文が理由なく消えていないか、を機械的に判定する。
+  違反時は(1)局所QA fastpathを無条件で不可とし全文Recheckへ回す
+  (`full_recheck_required`のreasonへ`ja_fail_open_guard_violation`を
+  追加)、(2)全文Recheックが「解消」を返した場合でも`ja_ok`をFalseへ
+  上書きする、の2箇所でgatingする。unittest(`er052_open233_self_
+  recovery_flow_runner_01_test_01.py`の`TestJaFailOpenGuard`)は、
+  rep10 `hormuz_run03_standard` sample1 cycle2の実データ(`summary_
+  rep10.json` L1091-1092のja_text_before/after、L939のrewrite_hint)を
+  fixtureとして転記し、本ガードが(a)(b)双方の違反を実際に捕捉することを
+  確認している。
+
+**rep11実測での検証**: 本節はコードレビューのみでなく、W4の
+rep11実行で`ja_fail_open_guard_violation`が実際に発火し
+`ja_deviation_unresolved`によるSTAGE4_ESCALATIONへ正しく到達した実例
+(`bgroup_B3` sample1)を確認した(詳細はREPORT§20参照)。
+
+### 6-8. Stage 1同一fact_id列挙(委任_20 W2、Opus L2レビュー#4 Q1(c)推奨)
+
+**背景**: Opus L2レビュー#4は、rep9/rep10で全文Recheckが実際に価値を
+発揮した最後の実例(`hormuz_run03_standard`のcycle3、見出し/one-line要約
+のHF-009問題)について、「1文の局所Rewriteが新しい問題を作った」のでは
+なく「Stage 1初回(全文)が、同一fact_id(HF-009)の記事内の別箇所[見出し/
+one-line]を列挙し損ねたrecall不足」であると特定した(headline/one-line
+はRewrite前から一貫して存在する原文であり、Rewriteが作ったものではない
+ことを`summary_rep10.json`のcycle1 `en_text_before_rewrite`で確認済み)。
+全文Recheckが後から拾えていたのは「全文を毎回見ているから」ではなく
+「`prior_issues`により同一fact_idを記事全体で探すようprimingされて
+いたから」であり、その機能はStage 1初回へ、追加callなしで移せる。
+
+**実装(¥0限界コスト、追加callなし)**: Stage 1初回(`stage1_fresh_with_
+enumeration`、新設)・Recheck(`run_recheck`、既存関数を拡張)双方の
+出力schemaへ`same_fact_id_locations`(文字列配列)フィールドを追加し、
+プロンプトへ「各deviationについて、title/hook/in-one-lineを含む記事内の
+他箇所で同じfactを主張している箇所があれば逐語で列挙する」指示
+(`SAME_FACT_ID_ENUMERATION_INSTRUCTION`)を追記した。schema拡張は
+本runner内のローカル関数(`build_deviation_schema_with_enumeration`)で
+行い、`er051_open233_checker_trial_variant_01`(他のOPEN-233-CHECKER-
+REDESIGN-TRIAL-01系スクリプトとも共有される既存モジュール)自体は
+変更しない。応答後、`expand_same_fact_id_locations`(新設、¥0・決定論)が
+各locationを記事本文中の逐語substringとして実在確認できたものだけを
+独立の追加deviationへ展開する(fail-closed、幻覚を弾く)。展開後の複数
+claimは、既存の`_run_stage3_cycle`(1 cycle内で各claimを独立にladder①
+から試す既存機構、委任_18)がそのまま処理する(新しいRewrite機構は
+作らない)。
+
+**reuse fixtureへの安全側fallback**: `stage1_mode=reuse`のinstance
+(29 instance中26/29)は既存json(`same_fact_id_locations`フィールドを
+持たない)をそのまま読み込むため、`expand_same_fact_id_locations`は
+`.get("same_fact_id_locations")`がNoneであれば何も追加せず、既存動作を
+変えない。
+
+**既知の副作用(Opus L2レビュー#4 Q1(c)で事前に指摘済み)**: Stage 1で
+複数箇所を列挙すると、cycle1のclaim数が増え、既存条件(b)
+`multiple_claims_rewritten_same_cycle`が発火して結局全文Recheckに戻る
+ケースが生じ得る(欠陥ではなくリスク比例の正しい形だが、「列挙を入れれば
+fastpath発火率が単純に上がる」という期待は成立しない)。
+
+### 6-9. 全文Recheckを残す条件の更新(委任_20 W3、Opus L2レビュー#4 Q1(b)推奨)
+
+**前提**: 本節の変更は§6-7(W1)のJA fail-openガード/equivalence gatingが
+既に導入済みであることを前提とする(順序を逆にしない、Opus L2レビュー#4
+Q1推奨4「先にJA fail-openを塞ぎ、その後にのみ(c)を縮小する」)。
+
+- **(c)縮小**: 「paired」блanket維持から、「paired かつ(ladder≥④[段落/
+  全体/削除] or JAガード[§6-7(iii)]不通過)」へ縮小した
+  (`full_recheck_required`関数、`ja_guard_ok`引数)。(a)が既にrewrite_
+  records全件[paired含む]についてladder≥④を判定しているため、狭めた
+  (c)が追加で捕捉するのは「paired・ladder①〜③(低水準)・かつJAガード
+  不通過」の場合のみ。
+- **(b)は維持(実証例なしと明記)**: `multiple_claims_rewritten_same_
+  cycle`は単独の実証例が無い(disclosure §1-4-5の`meta_run03_standard`
+  sample2は(d)floorでも捕捉される)が、削除の実証的根拠がないため保守側
+  で維持する。
+- **(e)にTrial限定の但し書きを追加**: `instance_id.startswith("safety_")`
+  はTrial fixtureの命名規約に依存する条件であり、Production記事には
+  該当する信号が存在しない。Production配線を検討する段階になったら
+  「Ledger factがSafety-critical指定」等の実信号へ置換が必須であり、
+  現状のTrial実測数字はProductionへ外挿できない。
+- **(g)新設**: 対象claimの`section_type`が`title`/`hook`/`in_one_line`
+  (`HOOK_SECTION_TYPES`)の場合、前後1文の概念が成立しない(1文で1
+  セクション、または前後文が存在しない)ため、全文Recheckを維持する。
+  省略時に取りこぼす実例: `neg3_hormuz_prodrunner_b1b`(section_type
+  `in_one_line`)、`safety_er009_unsupported_new_claim`(title全体が1文、
+  削除で空文字化、disclosure §1-1-4)。
+- **(h)新設**: `ja_en_equivalence_verdict`が`PASS`以外の場合、全文
+  Recheckを維持する(§6-7(ii)のgating化と対になる条件、rep10の唯一の
+  FAILが実際のJA破損と一致した実測を踏まえる)。
+- **局所QA(Ledger局所突合)の呼称統一**: OPEN-233の局所QA
+  (`run_local_qa_fastpath`)はweb_searchを含まないLedger突合1 callで
+  あり、Production側`er010_ledger_local_rewrite_09.run_diff_qa_for_
+  accepted_rewrite`(Fact Checker A'、web_search込み)とは守備範囲が
+  異なる(Opus L2レビュー#4「追加で気づいた重大点5」)。本書・REPORTでは
+  以後「Ledger局所突合(web_searchなし、Production A'差分QAと同等では
+  ない)」と表記を統一する。
+
+**rep11実測**: REPORT§20参照(rep9/rep10と同様、§9-1の①〜⑬連番
+リストへは追加せず、本節[§6-7〜§6-9]とREPORTの専用節で記録する、
+§9-1⑬以降の既存踏襲)。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 

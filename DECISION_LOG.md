@@ -14828,3 +14828,91 @@ delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_19.md`、
 self_recovery_flow_runner_01_rep10_representative_01.py`、
 `er052_output/open233_self_recovery_flow_runner_01_rep10/`、
 `er052_output/open233_self_recovery_neg3_stage2_n3_01/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Opus L2レビュー#4是正W1〜W5+
+限定Trial rep11(委任_20、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_20: Opus L2 #4の是正
+W1〜W5+微小Trial rep11。広いTrialは含めない)。
+
+**背景**: Opus L2レビュー#4(`docs/pm/opus_l2_review_open233_self_
+recovery_04.md`、逐語保存)が、rep10 `hormuz_run03_standard` sample1
+cycle2で、指摘されたJA文を一字も変えず別段落の無関係なJA文を削除する
+paired Rewriteが発生し、`ja_recheck_overall_status: LEDGER_DEVIATION`・
+`ja_en_equivalence_verdict: FAIL`だったにも関わらず
+`RESOLVED_REWRITE_THEN_DOWNGRADE`(false PASS)として完了していた
+「JA fail-open」を発見した。原因は本runnerのcycle継ぎ目のfail-open
+(未解消時の次cycle再構築がEN側recheck deviationsのみを使い、JA側
+MAJOR deviationsを構造的に握り潰していた)。
+
+**W1(JA fail-open封鎖、¥0)**: (i)JA recheck MAJOR deviationsを次cycleへ
+合流(`origin="ja_source"`明示)+`ja_pending_deviation`フラグによる
+STAGE4安全網(`stage4_reason="ja_deviation_unresolved"`)新設、
+(ii)`ja_en_equivalence_verdict`を測定専用からgating化、(iii)¥0決定論
+JAガード(`ja_fail_open_guard`新設、指摘JA文の逐語残存/対象段落外JA文の
+消失を機械判定)。新設ヘルパー`extract_quoted_fragment_present_in`は、
+既存`extract_quoted_fragment`(最長一致)がrewrite_hint中の「置換後の文」
+を誤って返す既知の曖昧性(rep10実データで実際に発生)を、JA本文[Rewrite
+前]への実在確認で回避する。
+
+**W2(Stage1同一fact_id列挙、¥0限界コスト)**: Stage1初回・Recheckの
+出力schemaへ`same_fact_id_locations`(title/hook/in_one_line含む同一
+factの他箇所列挙)を追加(追加callなし)、`expand_same_fact_id_locations`
+(¥0・決定論、逐語実在確認でfail-closed)で独立deviationへ展開する。
+er051(他Trialとも共有される既存モジュール)は変更せず、本runner内の
+ローカル拡張のみで実装した。reuse fixture(26/29 instance)は安全側
+fallback(フィールド非存在時は何も追加しない)。
+
+**W3(全文Recheck条件更新)**: (c)を「paired かつ(ladder≥④ or JAガード
+不通過)」へ縮小(W1導入後にのみ実施、順序を守った)。(g)`section_type`
+がtitle/hook/in_one_lineの場合、(h)`ja_en_equivalence_verdict`が
+PASS以外の場合を新設。(b)は実証例なしと明記のうえ保守側で維持、
+(e)`safety_`命名規約はTrial限定でProduction非外挿と明記。
+
+**unittest**: 新規16件+既存180件=計196件全PASS(regressionなし)。
+`TestJaFailOpenGuard`はrep10実データ(`summary_rep10.json`
+L1091-1092・L939)をfixtureとして転記し、ガードが実際の欠陥パターンを
+捕捉することを確認。
+
+**rep11実測**(fastpathが起動できる代表4 instance[`hormuz_run03_
+standard`(Stage1 force fresh)/`bgroup_B3`/`meta_run03_standard`/
+`neg1_meta_b3prod_a2`]×n=2、CLI拡張`--instance_ids`/`--force_fresh_
+stage1`新設、Guardrail¥12、実測¥8.0288): **8/8 instance-run完走・
+API error 0件・false PASS 0/8**。最も明確な実例: `meta_run03_
+standard`sample1でcycle2 `paired_ja_en(J-1)`Rewrite後`ja_recheck_
+overall_status=LEDGER_DEVIATION`(主経路が直接検出)となり、cycle3で
+blocking_claimsが空になった際も`ja_pending_deviation=True`により
+正しく`STAGE4_ESCALATION`(`ja_deviation_unresolved`)へ到達した
+(rep10型のfalse PASSが実際に防止されることを実run確認)。`bgroup_B3`
+(2/2)でも`ja_fail_open_guard`が発火したが、当該fixtureの
+`source_article_text`が実際には英語であるため句点分割が機能せず
+「1文丸ごと消失」という粗い(安全だが診断精度が粗い)発火だったことも
+正直に報告する。`hormuz_run03_standard`のforce fresh Stage1は
+deviationを1件も検出せず(recall miss、ACCEPTABLE_STAGE1)、W2の
+「headline/one-line surface」検証はrep11の実runでは不成立(機構自体は
+unittestで別途確認済み)。局所QA fastpathは2/8(`meta_run03_standard`
+cycle1)で発火したが、いずれも`find_sentence_context`の既存locateバグ
+(`revised_sentence_not_locatable_in_context`)によりAPI call自体に
+到達せずskip、全文Recheckへ正しくフォールバックした(fastpath実call
+成功は今回も0件)。全体Rewrite(⑥)は0件を維持。`neg1_meta_b3prod_a2`
+(負例群)は今回2/2 sampleでRewriteが発生した(新規claim「MUSE-HC-006」、
+既知の解消済みclaimとは別)ことを新規observationとして報告する
+(原因分析は次回委任の課題)。
+
+**Gate 9項目**: Opus#4時点の充足3/部分4/未充足2から、**充足5/部分3/
+未充足0**へ改善(最重要だった項目7[Safety誤通過]が解消)。項目1
+(局所QA基本形)は引き続き未達。
+
+**USER_DECISION_REQUIRED非該当**(6条件いずれも、neg3両建て集計[iter6:
+4/9=44.4%/3/8=37.5%/3/9=33.3%、決定しない]・neg1新規observation・
+局所QA locateバグ未解消はFable/ユーザーへの判断材料として提示)。
+
+費用: 実装W1〜W3¥0+rep11¥8.0288=本委任合計**¥8.0288**(Guardrail¥12
+内)。Phase累計¥330.499+¥8.0288=**¥338.5278**/総枠¥500、
+残¥161.4722。Status=`W1_W3_IMPLEMENTED_REP11_8_OF_8_COMPLETE_
+FALSE_PASS_ZERO`。詳細: `docs/pm/opus_l2_review_open233_self_
+recovery_04.md`、`docs/pm/design_open233_self_recovery_flow_01.md`
+§4-16/§6-7/§6-8/§6-9、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`
+§20、`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-
+TRIAL-01_20.md`、`er052_open233_self_recovery_flow_runner_01.py`
+(+test)、`er052_output/open233_self_recovery_flow_runner_01_rep11/`。

@@ -1765,7 +1765,10 @@ class TestApplyDisclosureGapDowngradeWiredIntoStage2(unittest.TestCase):
 
 
 class TestFullRecheckRequired(unittest.TestCase):
-    """委任_18 2-4: 全文Recheckを残す5条件(a)〜(e)の判定を確認する。"""
+    """委任_18 2-4/委任_20 W3: 全文Recheckを残す条件(a)〜(h)の判定を確認
+    する。委任_20 W3で(c)を「paired かつ(ladder≥④ or JAガード不通過)」へ
+    縮小し、(g)(h)を新設した(Opus L2レビュー#4 Q1(b)推奨、前提: W1で
+    JA fail-openガード/equivalence gatingを導入済み)。"""
 
     def test_no_escalation_condition_returns_false(self):
         rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
@@ -1791,12 +1794,78 @@ class TestFullRecheckRequired(unittest.TestCase):
         self.assertTrue(required)
         self.assertIn("multiple_claims_rewritten_same_cycle", reasons)
 
-    def test_paired_j1_requires_full_recheck(self):
-        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "paired_ja_en(J-1)"}]
+    def test_paired_j1_high_ladder_requires_full_recheck(self):
+        # 委任_20 W3: paired かつ ladder≥④(段落水準)は(a)からも捕捉される
+        # ため、(c)理由も併記されfull recheckが要求される。
+        rewrite_records = [{"ladder_level_used": "4_paragraph", "mechanism": "paired_ja_en(J-1)"}]
         blocking_claims = [{"floor_reason": None}]
         required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "meta_run03_standard")
         self.assertTrue(required)
         self.assertIn("both_ja_en_changed(paired_j1)", reasons)
+        self.assertIn("paragraph_or_full_or_delete_rewrite", reasons)
+
+    def test_paired_j1_low_ladder_with_ja_guard_violation_requires_full_recheck(self):
+        # 委任_20 W3: paired・ladder①(低水準)でも、JA fail-openガードが
+        # 不通過(ja_guard_ok=False)ならfull recheckを維持する。
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "paired_ja_en(J-1)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "meta_run03_standard", ja_guard_ok=False)
+        self.assertTrue(required)
+        self.assertIn("both_ja_en_changed(paired_j1)", reasons)
+
+    def test_paired_j1_low_ladder_with_ja_guard_ok_does_not_force_full_recheck(self):
+        # 委任_20 W3(narrowing本体): paired・ladder①(低水準)・JAガード通過
+        # (ja_guard_ok=True)なら、(c)単独では全文Recheckを要さない(他の
+        # 条件[(a)〜(h)]に該当しない前提)。
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "paired_ja_en(J-1)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "meta_run03_standard", ja_guard_ok=True)
+        self.assertFalse(required)
+        self.assertEqual(reasons, [])
+
+    def test_paired_j1_low_ladder_with_ja_guard_unknown_does_not_force_full_recheck(self):
+        # ja_guard_ok=None(このcycleでJAガードを計算していない、例えば
+        # 非paired文脈やJA本文自体が存在しない場合)は違反扱いにしない
+        # (fail-openへ倒さない側だが、明示的な違反シグナルが無い限り
+        # narrowingの効果を持たせる、既定値)。
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "paired_ja_en(J-1)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "meta_run03_standard")
+        self.assertFalse(required)
+
+    def test_short_section_claim_requires_full_recheck(self):
+        # 委任_20 W3新設(g): title/hook/in_one_lineは局所QAのwindow概念が
+        # 成立しないため全文Recheckを維持する。
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None, "section_type": "in_one_line"}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "neg3_hormuz_prodrunner_b1b")
+        self.assertTrue(required)
+        self.assertIn("short_section_no_window(title_hook_in_one_line)", reasons)
+
+    def test_body_section_claim_does_not_trigger_short_section_condition(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None, "section_type": "body"}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "neg2_meta_refresh_a2")
+        self.assertFalse(required)
+
+    def test_ja_en_equivalence_non_pass_requires_full_recheck(self):
+        # 委任_20 W3新設(h): ja_en_equivalence_verdictがPASS以外(FAIL/
+        # REVIEW_REQUIRED)の場合、全文Recheckを維持する。
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "neg2_meta_refresh_a2", ja_equivalence_verdict="FAIL")
+        self.assertTrue(required)
+        self.assertIn("ja_en_equivalence_not_pass", reasons)
+
+    def test_ja_en_equivalence_pass_does_not_trigger_condition_h(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "neg2_meta_refresh_a2", ja_equivalence_verdict="PASS")
+        self.assertFalse(required)
 
     def test_deterministic_floor_claim_requires_full_recheck(self):
         rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
@@ -2068,8 +2137,183 @@ class TestRepeatFactIdWiring(unittest.TestCase):
         src = inspect.getsource(runner.run_instance)
         self.assertIn("escalate_to_paragraph", src)
         self.assertIn("repeat_fact_ids_for_recheck", src)
+        # 委任_20 W3: full_recheck_required呼び出しへja_guard_ok/
+        # ja_equivalence_verdictが追加された(引数の折返し位置が変わった
+        # ため、呼び出し自体と新規引数名の存在を確認する形へ更新)。
         self.assertIn("full_recheck_required(\n            rewrite_records, blocking_claims, instance_id, "
-                       "repeat_fact_ids_for_recheck)", src)
+                       "repeat_fact_ids_for_recheck,", src)
+        self.assertIn("ja_guard_ok=", src)
+        self.assertIn("ja_equivalence_verdict=", src)
+
+
+# ============================================================
+# 委任_20 W1(iii): JA fail-openガード(rep10 hormuz_run03_standard sample1
+# cycle2の実データを再現用fixtureとして使用、
+# `er052_output/open233_self_recovery_flow_runner_01_rep10/summary_rep10.json`
+# L1091-1092のja_text_before_rewrite/ja_text_after_rewrite・L939の
+# rewrite_hintから逐語で転記)。
+# ============================================================
+REP10_JA_TEXT_BEFORE_REWRITE = (
+    "料金案は退場、原油高は居残り\n\n"
+    "七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\n"
+    "トランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。"
+    "対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、"
+    "どう計算するのかといった大事な部分は、まだ空欄でした。\n\n"
+    "つまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、"
+    "完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\n"
+    "そして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、"
+    "湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。"
+    "中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\n"
+    "さらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、"
+    "料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で"
+    "舞台を降りたことになります。\n\n"
+    "ここで原油市場にカメラを向けると、次の場面が始まります。\n\n"
+    "料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に"
+    "縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、"
+    "発表前に近い高い水準へ戻りました。報道時点では約二点六パーセント高で、"
+    "一バレル八十五ドルを超えていました。\n\n"
+    "このとき確認できるのは、撤回の直後にBrent先物が下落したわけではない、"
+    "ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、"
+    "タンカーの安全への懸念が続いていました。\n\n"
+    "料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、"
+    "舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、"
+    "高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、"
+    "物語の結末まで決められなかったように見えるところです。"
+)
+REP10_JA_TEXT_AFTER_REWRITE = (
+    "料金案は退場、原油高は居残り\n\n"
+    "七月十三日、いきなり登場したのは、ホルムズ海峡の貨物に二割を求めるという料金案でした。\n\n"
+    "トランプ氏が示した名目は、アメリカが海峡の安全を守る費用を返してもらうことです。"
+    "対象は、海峡を通るすべての貨物。ところが、誰が集めるのか、誰が払うのか、"
+    "どう計算するのかといった大事な部分は、まだ空欄でした。\n\n"
+    "つまり、実際に料金を徴収し始めたわけではありません。舞台に登場したのは、"
+    "完成した料金制度ではなく、二割という数字を掲げた提案でした。\n\n"
+    "そして翌日、物語は急展開します。トランプ氏は、この二割の償還料案を取りやめ、"
+    "湾岸諸国によるアメリカ向けの貿易や投資の案件に置き換えると発表しました。"
+    "中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明しています。\n\n"
+    "さらに記者団には、ホルムズ海峡を通る船に誰も料金を課すべきではない、"
+    "料金という考え方自体を好まないとも話しました。二割案は、登場から約一日で"
+    "舞台を降りたことになります。\n\n"
+    "ここで原油市場にカメラを向けると、次の場面が始まります。\n\n"
+    "料金案の撤回と置き換えが発表されたあと、ブレント原油先物は上げ幅を一時的に"
+    "縮めました。これで値下がりの幕が開くのかと思ったところ、ほどなくして、"
+    "発表前に近い高い水準へ戻りました。\n\n"
+    "このとき確認できるのは、撤回の直後にBrent先物が下落したわけではない、"
+    "ということです。同じ時間帯には、アメリカとイランの攻撃、海上封鎖、"
+    "タンカーの安全への懸念が続いていました。\n\n"
+    "料金案は消えました。けれど、海峡をめぐる緊張に関するニュースは、"
+    "舞台に残ったままです。政治の発言が大きく変わっても、原油価格は一度揺れたあと、"
+    "高い水準へ戻った。今回の面白さは、まるで一つの見出しだけでは、"
+    "物語の結末まで決められなかったように見えるところです。"
+)
+REP10_REWRITE_HINT = (
+    "「このとき確認できるのは、撤回の直後にBrent先物が下落したわけではない、"
+    "ということです。」を、「撤回発表後、Brent先物は一時的に上げ幅を縮小したが、"
+    "ほどなく発表前に近い高い水準へ戻った」と置き換えてください。参照Fact: HF-009。"
+)
+
+
+class TestJaFailOpenGuard(unittest.TestCase):
+    """委任_20 W1(iii): rep10 hormuz_run03_standard sample1 cycle2の実データ
+    (指摘JA文が一字一句残存したまま、別段落の"報道時点では約2.6%高..."が
+    消失し`RESOLVED_REWRITE_THEN_DOWNGRADE`として誤って完了した事故)を
+    ガードが実際に捕捉することを確認する(¥0、決定論)。"""
+
+    def test_detects_rep10_hormuz_cycle2_defect(self):
+        blocking_claims = [{
+            "rewrite_hint": REP10_REWRITE_HINT,
+            "dev": {"related_fact_id": "HF-009"},
+        }]
+        result = runner.ja_fail_open_guard(
+            REP10_JA_TEXT_BEFORE_REWRITE, REP10_JA_TEXT_AFTER_REWRITE, blocking_claims)
+        self.assertFalse(result["ok"])
+        self.assertTrue(result["checked"])
+        violation_types = {v["type"] for v in result["violations"]}
+        self.assertIn("flagged_ja_sentence_unchanged", violation_types)
+        self.assertIn("unexplained_ja_sentence_deletion", violation_types)
+        deleted_sentences = [v["sentence"] for v in result["violations"]
+                              if v["type"] == "unexplained_ja_sentence_deletion"]
+        self.assertTrue(any("二点六パーセント" in s for s in deleted_sentences))
+
+    def test_ok_when_ja_text_unchanged(self):
+        blocking_claims = [{"rewrite_hint": REP10_REWRITE_HINT, "dev": {"related_fact_id": "HF-009"}}]
+        result = runner.ja_fail_open_guard(
+            REP10_JA_TEXT_BEFORE_REWRITE, REP10_JA_TEXT_BEFORE_REWRITE, blocking_claims)
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["checked"])
+
+    def test_ok_when_flagged_sentence_actually_rewritten_and_no_other_deletion(self):
+        before = "First problem sentence. Unrelated second sentence."
+        after = "First problem sentence, fixed correctly. Unrelated second sentence."
+        blocking_claims = [{"rewrite_hint": '"First problem sentence." を修正してください。',
+                             "dev": {"related_fact_id": "X-1"}}]
+        result = runner.ja_fail_open_guard(before, after, blocking_claims)
+        self.assertTrue(result["ok"])
+        self.assertTrue(result["checked"])
+
+    def test_no_extractable_quote_is_skipped_conservatively(self):
+        before = "Some sentence here. Another one."
+        after = "Some sentence here. Another one changed."
+        blocking_claims = [{"rewrite_hint": "no quotes in this hint", "dev": {"related_fact_id": "X-1"}}]
+        result = runner.ja_fail_open_guard(before, after, blocking_claims)
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["checked"])
+
+
+class TestExpandSameFactIdLocations(unittest.TestCase):
+    """委任_20 W2: Stage1/Recheckのsame_fact_id_locationsを追加deviationへ
+    展開する(¥0、決定論)。reuse fixture(フィールド無し)は安全側で
+    従来動作のまま(何も追加しない)ことを確認する。"""
+
+    def test_expands_verbatim_locations_found_in_article(self):
+        article_text = "Title line here.\n\nBody sentence one. Another body sentence."
+        deviations = [{
+            "claim_in_article": "Body sentence one.", "severity": "MAJOR",
+            "related_fact_id": "F-1",
+            "same_fact_id_locations": ["Title line here."],
+        }]
+        out = runner.expand_same_fact_id_locations(deviations, article_text)
+        self.assertEqual(len(out), 2)
+        self.assertEqual(out[1]["claim_in_article"], "Title line here.")
+        self.assertTrue(out[1]["detected_by_enumeration"])
+        self.assertEqual(out[1]["related_fact_id"], "F-1")
+
+    def test_hallucinated_location_not_in_article_is_rejected(self):
+        article_text = "Body sentence one."
+        deviations = [{"claim_in_article": "Body sentence one.", "severity": "MAJOR",
+                        "same_fact_id_locations": ["This text does not exist in the article."]}]
+        out = runner.expand_same_fact_id_locations(deviations, article_text)
+        self.assertEqual(len(out), 1)
+
+    def test_missing_field_is_safe_fallback_noop(self):
+        # reuse fixture(旧jsonにsame_fact_id_locations自体が無い)を模擬。
+        article_text = "Body sentence one."
+        deviations = [{"claim_in_article": "Body sentence one.", "severity": "MAJOR"}]
+        out = runner.expand_same_fact_id_locations(deviations, article_text)
+        self.assertEqual(out, deviations)
+
+    def test_duplicate_location_not_added_twice(self):
+        article_text = "Body sentence one. Body sentence one repeated elsewhere? No."
+        deviations = [{
+            "claim_in_article": "Body sentence one.", "severity": "MAJOR",
+            "same_fact_id_locations": ["Body sentence one.", "Body sentence one."],
+        }]
+        out = runner.expand_same_fact_id_locations(deviations, article_text)
+        self.assertEqual(len(out), 1)
+
+
+class TestJaPendingDeviationSafetyNet(unittest.TestCase):
+    """委任_20 W1(i): run_instanceのソースにJA未解消フラグ(ja_pending_
+    deviation)とSTAGE4安全網(ja_deviation_unresolved)、JA recheck
+    deviationsの次cycleへの合流が実装されていることを確認する(¥0)。"""
+
+    def test_run_instance_source_contains_ja_pending_deviation_safety_net(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("ja_pending_deviation", src)
+        self.assertIn("ja_deviation_unresolved", src)
+        self.assertIn("ja_major_deviations", src)
+        self.assertIn('d["origin"] = "ja_source"', src)
 
 
 if __name__ == "__main__":
