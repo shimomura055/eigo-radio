@@ -1,0 +1,56 @@
+{
+  "label": "b_changed_actor_s1d",
+  "fixture_id": "er009_changed_actor",
+  "variant": "S1D",
+  "attempt": 12,
+  "prompt_sha256": "af3b2dc3a47a4e8557f082be4bd3b4570d77a9da46a177ae6dd825256b26dc9d",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_07dce6166df5fc05006abc4ed2487087d0a460b4e5906005c5",
+  "usage": {
+    "input_tokens": 5303,
+    "cached_input_tokens": 5300,
+    "output_tokens": 1675,
+    "reasoning_tokens": 1442
+  },
+  "elapsed_seconds": 15.727,
+  "cost_jpy": 0.1397,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis",
+        "related_fact_id_guess": "F-001",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "materiality": "BLOCKING",
+        "basis": "ledger_claim",
+        "rewrite_kind": "replace_with_ledger_value"
+      },
+      {
+        "claim_in_article": "higher suggested tip rates led passengers to leave more money",
+        "related_fact_id_guess": "F-004",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "rewrite_kind": "narrow_scope"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

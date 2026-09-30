@@ -415,3 +415,93 @@ precheck_01.py`(+test)、`er052_open233_self_recovery_stage2_01.py`、
 `er052_output/open233_self_recovery_precheck_01/`、`er052_output/
 open233_self_recovery_phase1_hormuz_followup_01/`。入力: 委任文全文
 (2026-09-30、委任_06)。
+
+## §6. Phase 1 ③④実測・Stage 1最終確定(委任_07、2026-09-30、V0/V4-A/
+S1-D比較実測+Stage2実単価・batch化・prompt caching実測)
+
+**目的**: Phase 1 ③(Stage 1 variant実測確定)・④(Stage2実単価・
+batch化・prompt caching実測)を実施する。ユーザー方針(既存方式に
+縛られないQCD比較)に基づき、前Phaseで理論上不採用としていた
+**S1-D(検出とmateriality判定を同一callで行う一体型)を実際にTrial
+実装し、V0/V4-Aと同一fixtureで比較実測した**上でStage 1を最終確定
+する(設計書§14-5)。
+
+**新規実装**(Production非接続、Contract非経由、API keyは環境変数
+のみ、保存jsonはprompt_sha256のみ): `er052_open233_self_recovery_
+s1d_trial_01.py`(+test、S1-D Prompt/schema。10 flags+materiality+
+basis+rewrite_kindを1callで出力、explanationなし)、
+`er052_open233_self_recovery_phase1_step3_stage1_compare_01.py`
+(V0/V4-A/S1-D比較harness、(a)〜(e)5作業)、`er052_open233_self_
+recovery_stage2_production_01.py`(+test、§4-4確定入力どおりの
+per-claim/batch Stage2実装、段落±1抽出+引用符正規化)、
+`er052_open233_self_recovery_phase1_step4_stage2_unitcost_01.py`
+(per-claim vs batch・prompt caching比較harness)。
+
+**Phase 1③実測結果**(詳細は設計書§14-5、新規76 call・¥13.5234):
+(a) Safety群12 fixture: S1-D 12/12(100%)BLOCKING確定。(b)
+`er009_changed_actor` n=15追加実測: V0=7/15(46.7%)・V4-A=15/15
+(100%)・S1-D=15/15(100%)、Fisher両側検定V0 vs V4-A/S1-D共に
+p=0.00220(有意、n=5時点p=0.18から統計的有意水準へ到達)。(c)
+negative候補7記事BLOCK率: V0=0/7(既存記録)・V4-A=4/7(57.1%)・
+**S1-D=6/7(85.7%、V4-Aより高い不要BLOCK率)**。(d) B群5 fixture
+claim単位ラベル一致: B3・Meta_run03_standardは確定ラベルと一致した
+が、**B1/B4でReal-but-fixable群(B1-c/B4-a、確定ラベル=BLOCKING)を
+S1-DがQUALITYへ誤降格させる実例を2件観測**。(e) hormuz/Meta n5:
+S1-D=10/10(100%)。
+
+**Stage 1最終確定**: **V4-Aを確定とする(S1-D不採用)**。(a)(b)(e)
+ではS1-DはV4-Aと同水準だが、(c)で不要BLOCK率がV4-Aより高く、(d)で
+Real-but-fixable群の誤降格が観測されたため。**S1-Dは「検出と
+materiality判定を1callで確定する」構造上、誤判定を第二の独立callで
+訂正する機会がない**ことが実測で裏付けられた(Opus L2レビュー#1が
+理論面で推奨していたdetect/materiality分離によるSafety資産保存の
+実利を、実測で確認した形)。
+
+**Phase 1④実測結果**(詳細は設計書§4-7、新規12 call・¥1.1364):
+per-claim vs batch(B4=4claim/B1=2claim)は**判定一致率100%**(claim間
+相互汚染なし)。batch化でcall数・費用(55%減/29%減)・latencyの全てが
+改善。prompt caching(同一Ledger prefix連続call)はcached_input_tokens
+比率99.9%を実測し、**費用削減率63〜64%**を確認(gpt-6-luna Responses
+APIで自動キャッシュが機能することを実測確認、ただし本実測のcall1は
+直前の同一Ledger call群でキャッシュが既に温まっていたため、厳密な
+「未キャッシュ初回」との対比ではない点は限界として明記)。
+
+**[重要な新規発見]Stage2較正リスク**: per-claim Stage2(§4-4確定
+入力どおり、explanation/severity/10flags除外)で、B1-c/B4-a相当の
+claim(Real-but-fixable群、確定ラベル=BLOCKING)が**全てQUALITYへ
+降格**した。S1-Dの誤降格と同一方向であり、**Stage2 rubric+入力制限
+自体の較正課題である可能性が高い**。Production非接続のTrial実装で
+あり現時点でSafety事故には至っていないが、rubric文言変更や
+deterministic floor対象拡大は設計変更に相当するため、**勝手に修正
+せず報告のみ行う**(Phase 1⑤[Stage3 Rewrite成功率実測]で
+Real-but-fixable群がRewrite段に到達するかを継続確認し、必要な設計
+判断はFable/ユーザーへ提示する)。
+
+**Stage2実単価確定**: per-claim実測¥0.087〜0.112/call(4件平均
+¥0.1013)。§13-4の「楽観的¥0.10〜0.20/call」に近く、「保守的¥0.30〜
+0.40/call」ほど高くないことを確認(設計書§13-4追記)。
+
+**費用**: 今回¥14.6598(88 call、0 error)。Phase累計¥15.2883/総枠
+¥400、残¥384.7117。Guardrail¥35に対し実測¥14.6598(約42%)、超過なし。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも
+非該当。Stage2較正リスクの発見は新しい仕様候補の報告であり、
+Safety緩和[条件2]には該当しない[むしろSafety強化方向の課題提起]。
+Stage 1最終確定[V4-A]は既存暫定採用[§14-3]の確定化であり新しい
+仕様原則の導入ではない)。
+
+**Production/Dangling Reference確認**: `git diff --stat`でProduction
+ファイル(`er003_*`/`er006_*`/`er010_*`/`er012_*`/`er019_*`)に差分
+なし(新規`er052_*`ファイルのみ追加)。API keyは環境変数のみ、保存
+jsonにはprompt本体ではなくprompt_sha256のみ記録。unittest全PASS
+(新規19件+既存回帰51件、計70件確認)。
+
+Status=`PHASE1_STEP4_DONE`。Evidence: `docs/pm/design_open233_self_
+recovery_flow_01.md`(§4-7[新設]/§9-1③④/§13-4追記/§14-5[新設]/
+冒頭Status)、`er052_open233_self_recovery_s1d_trial_01.py`(+test)、
+`er052_open233_self_recovery_phase1_step3_stage1_compare_01.py`、
+`er052_open233_self_recovery_stage2_production_01.py`(+test)、
+`er052_open233_self_recovery_phase1_step4_stage2_unitcost_01.py`、
+`er052_output/open233_self_recovery_phase1_step3_stage1_compare_01/`、
+`er052_output/open233_self_recovery_phase1_step4_stage2_unitcost_01/`。
+入力: 委任文全文(2026-09-30、委任_07)。

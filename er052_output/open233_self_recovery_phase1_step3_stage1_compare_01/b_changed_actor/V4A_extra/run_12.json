@@ -1,0 +1,50 @@
+{
+  "label": "b_changed_actor_v4a_extra",
+  "fixture_id": "er009_changed_actor",
+  "variant": "V4A",
+  "attempt": 12,
+  "prompt_sha256": "90f140b6825fb184a273faa5b78391ee16d0ff7efdafb42f65f056c2d04e9654",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_09e4cd410d205dc2006abc4e276ea887d096c97f2975905789",
+  "usage": {
+    "input_tokens": 5881,
+    "cached_input_tokens": 5878,
+    "output_tokens": 1121,
+    "reasoning_tokens": 861
+  },
+  "elapsed_seconds": 8.921,
+  "cost_jpy": 0.0972,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームとする所属情報はLedgerで確認されておらず、Ledger記載の研究者から主体を置き換えています。研究件数と結果の因果表現はLedgerの範囲内です。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Harvard Business Schoolへの所属という具体的主張はLedgerにないためchanged_factとunsupported_new_claimがtrueで、研究主体の置き換えによりchanged_actorもtrueです。",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

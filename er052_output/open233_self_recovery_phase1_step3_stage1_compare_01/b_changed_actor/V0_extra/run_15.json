@@ -1,0 +1,39 @@
+{
+  "label": "b_changed_actor_v0_extra",
+  "fixture_id": "er009_changed_actor",
+  "variant": "V0",
+  "attempt": 15,
+  "prompt_sha256": "c725ab21ffb355125977980e9821fcc781acc43c71657e25c7db465f063ed053",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_04e81ba0068c99d8006abc4dc6bc2c87d0ae12361c0fdd82b6",
+  "usage": {
+    "input_tokens": 5025,
+    "cached_input_tokens": 5022,
+    "output_tokens": 1055,
+    "reasoning_tokens": 870
+  },
+  "elapsed_seconds": 10.535,
+  "cost_jpy": 0.0907,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“A team at Harvard Business School studied…”",
+        "issue": "Harvard Business Schoolへの所属・調査主体の帰属はLedgerで確認されていません。研究の件数・対象・結果はLedgerの範囲内です。",
+        "severity": "MINOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない所属を調査主体に付け加えています（changed_fact、changed_actor、unsupported_new_claim）。ただし研究内容の主張はおおむねLedgerと同じです。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_COMPLIANT"
+  }
+}

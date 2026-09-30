@@ -1,0 +1,52 @@
+{
+  "label": "c_negative_v4a",
+  "fixture_id": "neg3_hormuz_prodrunner_b1b",
+  "variant": "V4A",
+  "attempt": 1,
+  "prompt_sha256": "8fc58b496f6224d7398c37fe6f31ac2b4d231ded6f9faa2c8b9c2aff5ed40e07",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0d8d2b32d6ea4aab006abc4f9f485487d0bc020c24bbe018f7",
+  "usage": {
+    "input_tokens": 6444,
+    "cached_input_tokens": 0,
+    "output_tokens": 2794,
+    "reasoning_tokens": 2555
+  },
+  "elapsed_seconds": 24.949,
+  "cost_jpy": 0.3203,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+        "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger.",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": true,
+        "unsupported_new_claim": true,
+        "explanation": "The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices.",
+        "related_fact_id": "HF-009",
+        "origin": "translation",
+        "qualifier_present": false,
+        "qualifier_text": "",
+        "ledger_field_basis": "ledger_fact",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}

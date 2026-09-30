@@ -10,7 +10,14 @@
 pre-check[`er052_open233_self_recovery_precheck_01.py`]をTrial実装、
 Phase 1 ①[precheck FP率0%実測]・②[hormuz見逃し3attempt、Stage 2
 診断3/3検出実測]完了。実測費用¥0.6285[Guardrail¥10、Phase累計]。
-③以降・Production実装は未着手)。
+③以降・Production実装は未着手)。→ **[委任_07更新]**
+`PHASE1_STEP4_DONE`(Phase 1 ③[Stage 1 variant実測確定: V0/V4-A/
+S1-D比較、V4-Aを最終確定・S1-D不採用、根拠§14-5]・④[Stage2実単価・
+batch化・prompt caching実測、per-claim vs batch判定一致率100%・
+batch化でcost/latency改善、prompt caching費用削減率63〜64%実測、
+Stage2較正リスク[Real-but-fixable群のQUALITY誤降格]を新規発見・
+報告]完了。実測費用¥14.6598[Guardrail¥35のうち、Phase累計
+¥15.2883]。⑤⑥は次回委任予定、Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -437,6 +444,61 @@ present`として観測用に残すが、判定ロジックには使わない(Op
   **前Phase Trial資産(gpt-6-luna実測データ)との直接比較を優先し、
   gpt-6-lunaで統一する**。gpt-5.6-lunaとの整合確認は別途Phase 2で
   行う、§10リスク参照)。
+
+### 4-7. Phase 1④実測(委任_07、per-claim vs batch・prompt caching・
+Stage2較正リスクの新規発見)
+
+**per-claim vs instance batch(B4=4claim/B1=2claim、gpt-6-luna、
+`er052_open233_self_recovery_stage2_production_01.py`実装、§4-4
+確定入力[Ledger全文+source context+対象claim+段落±1+origin/
+related_fact_id、explanation/severity/10flags除外]どおり)**:
+- **判定一致率100%**(batch callの各claim判定が、対応するper-claim
+  callの判定と全件[B4 4/4、B1 2/2]完全一致。claim間相互汚染は
+  観測されなかった)。
+- **単価**: B4 per-claim合計¥0.4163(4call)→batch¥0.1862(1call、
+  約55%減)。B1 per-claim合計¥0.1787(2call)→batch¥0.127(1call、
+  約29%減)。
+- **latency**: B4 per-claim合計19.3秒(4call逐次実行)→batch11.845秒。
+  B1 per-claim合計7.87秒→batch6.485秒。batchはcall数・費用・
+  wall-clock時間のいずれでもper-claimを上回った。
+- **結論(A9)**: 本実測範囲(2 fixture、6 claim)ではbatch化を主案
+  として採用する根拠が実測で補強された。claim数が増えた場合の
+  相互汚染有無は未検証(n_claim=4が本実測での上限)。
+
+**prompt caching**: 同一Ledger全文prefixで連続callを実行した結果、
+**cached_input_tokensがinput_tokensの99.9%(B4: 4489/4492、B1:
+4335/4338)を占めた**(gpt-6-luna Responses APIで自動キャッシュが
+機能することを実測確認、A12)。**費用削減率≈63〜64%**(call全体、
+出力token分はキャッシュ対象外のため入力token単体では約90%削減
+[$0.10→$0.01/1M]、出力込みの実測削減率は63.2%[B1]〜64.4%[B4])。
+**観測上の限界**: 本実測の「call1」は同一Ledgerを用いた直前の
+per-claim/batch実測(5call、B4)と連続実行したため、厳密な
+「未キャッシュ初回→キャッシュ済み2回目」の対比にはなっていない
+(call1の時点で既にキャッシュが温まっていた)。それでも「同一Ledger
+prefixの再利用でキャッシュが機能し、費用が実際に下がる」という
+受理可否自体は実測で確認できた。
+
+**[委任_07新規発見、重要]Stage 2較正リスク**: per-claim Stage2
+(§4-4確定入力どおり、explanation/severity/10flags除外)で、V4Aが
+BLOCKING確定していたB1-c相当claim(HF-009市場動機の断定)・B4-a相当
+claim(AIフォールバック機構の新規主張、2件)の**全てがQUALITYへ
+降格された**(§7-0の確定ラベルではB1-c/B4-aはRewrite対象の
+Real-but-fixable群=BLOCKING期待)。rubric基準1(「Ledgerが別の原因・
+主体を明記しているのに異なるものを述べる」)がこれらを捕捉することを
+設計は期待していたが、実測ではQUALITY(「Ledgerの観測と矛盾しないが
+保証されない関係付け」)側に倒れた。**これはS1-D固有の欠陥ではなく、
+Stage2 rubric+§4-4入力制限[explanation/severity/10flags除外、
+Opus論点3(A)のanchoring対策]自体の較正課題である可能性が高い**
+(S1-D・per-claim Stage2の両方で同一方向の誤判定が独立に観測された
+ため)。**現時点でProduction非接続のTrial実装であり、Safety事故には
+至っていない**が、Phase 1⑤(Stage3 Rewrite成功率実測)実行時に、
+B1-c/B4-a相当のReal-but-fixable群がRewrite段まで到達しない(Stage2で
+QUALITY止まりになり、Rewriteが発火しない)事象が再現するかを確認する
+必要がある。**新しい仕様候補として報告のみ行い、勝手にrubric文言を
+変更しない**(rubric改訂[基準1の文言強化、または§4-3
+deterministic floorへchanged_scope/causality/unsupported_new_claimの
+一部を追加する等]はUSER_DECISION_REQUIRED相当の設計変更であり、
+Phase 1⑤の追加実測結果を待ってFable/ユーザーへ提示する)。
 
 ## 5. Stage 3 Automatic Rewrite設計
 
@@ -1053,24 +1115,32 @@ Phase 2での扱いは§11-5への追記候補とする)。**費用**: Stage 2�
 その約1/3)は行わなかった。詳細ログ:
 `er052_output/open233_self_recovery_phase1_hormuz_followup_01/summary.json`。
 
-**③ V4-A BLOCK率増分+changed_actor有意性実測(¥1.5〜3+¥6=約¥8〜9)**:
-(a) `docs/pm/negative_claim_candidates_open233_01.md`の出典7記事
-(既に`deviations=[]`)をV4-Aで再実行しBLOCK率増分を直接測る(7〜14
-call、gpt-6-luna ¥0.2/call≒¥1.5〜3)。(b) `er009_changed_actor`の
-V0/V4-A各n=15追加実測(30 call≒¥6)でFisher検定を有意水準まで詰める。
-**この2つの実測結果をもって、Stage 1 variant(V4-A vs V0+pre-check)を
-最終確定する**(A14。V0+pre-checkを比較対照としてPhase1に含め、実測前
-にV0へ戻さない)。**Guardrail**: 上限¥15、超過見込みでSTOP。
+**③ V4-A BLOCK率増分+changed_actor有意性実測(¥1.5〜3+¥6=約¥8〜9)**
+**[委任_07実測完了]**: 当初計画のV0/V4-A 2variant比較に加え、ユーザー
+方針(既存方式に縛られないQCD比較)に基づき**S1-D(一体型、§14-2で
+理論上不採用としていたものを実測対象へ追加)**を同一fixtureで比較した
+(実測結果・費用内訳は§14-5参照)。(a) Safety群12 fixture: S1-D
+12/12(100%)、費用¥3.0542。(b) `er009_changed_actor` n=15追加実測:
+V0=7/15(46.7%)・V4-A=15/15(100%)・S1-D=15/15(100%)、Fisher検定
+V0 vs V4-A/S1-D共にp=0.00220(有意)。(c) negative候補7記事BLOCK率:
+V0=0/7・V4-A=4/7(57.1%)・S1-D=6/7(85.7%、V4-Aより過剰BLOCK)。
+(d) B群5 fixture claim単位ラベル一致: S1-DはB3/Meta_run03_standardで
+確定ラベルと一致したが、B1/B4でReal-but-fixable群(B1-c/B4-a)を
+QUALITYへ誤降格させる実例が観測された。(e) hormuz/Meta n5:
+S1-D=10/10(100%)。**Stage 1最終確定: V4-A(変更なし、S1-Dは不採用、
+根拠§14-5)**。費用: (a)¥3.0542+(b)¥4.0283+(c)¥3.3103+(d)¥1.2379+
+(e)¥1.8927=**¥13.5234**(76 call)。
 
-**④ Stage2実単価/batch化/prompt caching実測(数円〜¥10程度)**:
-per-claim call vs instance単位batch call(同一入力で比較、A9)、
-prompt caching(Ledger prefix固定化)の受理可否・削減率(A12、Opus
-論点6推奨1、Cap問題の本命レバー)を実測する。既存Trial 1/2/n=20の
-deviation json(`er051_output/open233_checker_trial_01/trial_01/`、
-`trial_01_step2_diag/`、`trial_02/`、`trial_03_stability_n20/`)から
-BLOCKING-candidateレコードをV4-A由来分に限定して再利用する(Stage1
-再課金なし)。対象レコード数(概算、V4-A由来分): Safety群+B群合計で
-約20〜30件。**Guardrail**: 上限¥15、超過見込みでSTOP。
+**④ Stage2実単価/batch化/prompt caching実測(数円〜¥10程度)**
+**[委任_07実測完了]**: per-claim call vs instance単位batch call
+(B4=4claim/B1=2claim、gpt-6-luna、`er052_open233_self_recovery_
+stage2_production_01.py`新規実装、§4-4確定入力どおり)を実測した
+結果、判定一致率100%(claim間相互汚染なし)・batch化でcall数/費用
+(55%減/29%減)/latency全てが改善(§4-7)。prompt caching受理可否も
+実測確認(cached_input_tokens比率99.9%、費用削減率63〜64%、§4-7)。
+**[委任_07新規発見]** per-claim Stage2でReal-but-fixable群
+(B1-c/B4-a)がQUALITYへ誤降格される較正リスクを発見(S1-D実測と
+独立に同一方向の誤判定、詳細§4-7)。費用¥1.1364(12 call)。
 
 **⑤ Stage3型別Rewrite成功率実測(約¥8〜22)**: Stage 2でBLOCKING確定
 した候補のうちReal-but-fixable群(B1-c/B3/B4-a/B4-d)+Safety群の代表例
@@ -1099,8 +1169,13 @@ Phase 2準備に充てる想定とする(次回委任で個別確定)。
 
 **[委任_06実測]** ①=¥0(実測、確定)。②=¥0.6285(実測、確定。
 見積り上限¥2の約31%)。①②実測合計=**¥0.6285**(Phase累計、後述の
-Guardrail上限¥10のうち)。③〜⑥は本委任(委任_06)未実施(次回委任で
-実施)。
+Guardrail上限¥10のうち)。
+
+**[委任_07実測]** ③=¥13.5234(実測、確定。見積り¥8〜9比+約¥5、
+S1-D追加実測分を含むため)。④=¥1.1364(実測、確定。見積り数円〜¥10の
+範囲内)。③④実測合計=**¥14.6598**。①〜④累計=**¥15.2883**
+(Phase累計、Guardrail¥400のうち)。⑤⑥は本委任(委任_07)未実施
+(次回委任で実施予定)。
 
 - **モデル**: gpt-6-luna(前Phase Trial資産との直接比較のため統一、
   §4-6参照)。Production Stage 1のgpt-5.6-lunaとの差異は既知の
@@ -1430,6 +1505,24 @@ Phase 1最優先実測項目とする。
 (Fable第一候補、委任文§2)。gpt-5.6-lunaをStage 2に使う案は§13-7で
 比較のみ行う。
 
+**[委任_07実測、Stage2実単価確定]** §4-7の実測により、Stage2(claim
+単位、per-claim、§4-4確定入力)の実単価は**¥0.087〜0.112/call**
+(B4/B1実測4件平均¥0.1013)であり、上表の「楽観的¥0.10〜0.20/call」
+に近い水準であることが確認された(「保守的¥0.30〜0.40/call」ほど
+高くない)。**batch化(instance単位1call)を使う場合**、B4(4claim)
+=¥0.1862/call・B1(2claim)=¥0.127/callで、**claim数で正規化した
+実効単価はさらに下がる**(B4: ¥0.0466/claim相当)。**prompt caching
+併用時**はcall全体費用が63〜64%減(§4-7)であり、Stage2を連続して
+複数claim・複数記事へ適用する運用(同一Ledgerの記事群を連続処理)では
+Ledger prefix共有によりさらに安価になる可能性がある(未実測、Phase 2
+候補)。**結論**: §13-3が「削減効果は未実測」としていた段落±1縮小は
+実際に機能しており(§4-4の入力設計どおり)、Stage2単価に関する
+§13-10課題1(「Stage2の真の単価が最大の不確実性要因」)は
+**解消方向(実測¥0.10前後、保守的見積りの下限に近い)**。§13-5〜
+§13-9の期待値・worst case式の`c_stage2`変数は、次回委任(⑤⑥実測後)
+で実測値へ差し替え、Cap判定を再計算する(Stage3実単価[局所Rewrite]が
+未確定のため、本委任では式の再計算は行わない)。
+
 ### 13-4-補. Stage 1のV4A採用に伴う単価再計算(委任_03、§14で確定)
 
 §14でStage 1をV0からV4Aへ変更したため、Stage 1呼び出し(初回2 call)と
@@ -1744,6 +1837,83 @@ Phase 1実装対象として採用する。これによりchanged_number/changed
 検出漏れ(意味的判断が必要)は機械照合の対象外のままであり、**完全な
 解決策ではない**ことを明記する。この残存リスクはPhase 1実測後も
 継続的にリスク登録簿(§10)へ残す。
+
+### 14-5. Stage 1最終確定(委任_07、Phase 1③実測結果に基づく確定)
+
+**結論**: **Stage 1はV4-Aを最終確定とする**(S1-B、§14-3の暫定採用を
+確定へ格上げ)。S1-D(一体型、§14-2で理論上は不採用としていたが、
+ユーザー方針「既存方式に縛られない、QCDで最良の方法をTrialする」に
+従い委任_07で実際にTrial実装・実測した)は、以下の実測結果に基づき
+**Stage 1としては不採用**と確定する(Opus L2レビュー#1論点1の
+「detect/materiality分離によるSafety資産保存」という推奨が、理論では
+なく実測で裏付けられた)。
+
+**(a) Safety群12 fixture(er009 9種+A2A3/A4/A5)**: S1-D 12/12
+(100%)がBLOCKING確定。V0/V4Aと同水準([既存実測]V4A 12/12)。
+費用¥3.0542(12 call、gpt-6-luna)。
+
+**(b) er009_changed_actor n=15追加実測(既存n=5+新規n=10)**:
+V0=7/15(46.7%、既存3/5+新規4/10)、V4A=15/15(100%、既存5/5+新規
+10/10)、S1-D=15/15(100%、新規15/15)。Fisher両側検定: V0 vs V4A
+p=0.00220、V0 vs S1-D p=0.00220(いずれもn=5時点のp=0.18から統計的
+有意水準まで低下、A14が要求した実測完了)。**V4A・S1-Dともに
+changed_actor検出でV0を統計的有意に上回ることを確認**。費用: 追加
+V0 10call+V4A 10call+S1-D 15call=35call、¥4.0283(既存n=5分は
+再利用、0 call)。
+
+**(c) negative候補7記事のBLOCK率増分(V0は既存記録0 call、V4A/S1-D
+新規実行)**: V0(既存)=0/7(0%)。V4A=4/7(57.1%、neg1/2/3/5がBLOCKING
+確定、neg4/6/7はLEDGER_COMPLIANT)。**S1-D=6/7(85.7%、neg5のみ
+QUALITY止まりでBLOCKING無し、他6件はBLOCKING確定)**。Fisher両側検定:
+V0 vs V4A p=0.0699(有意水準未満だが増加傾向)、V0 vs S1-D p=0.00466
+(有意)、**V4A vs S1-D p=0.559(有意差なしだがS1-Dが数値上より高い
+over-block率)**。**S1-DはV4Aより不要BLOCK率が高い方向にある**
+(86%>57%、既に本来ACCEPTABLEなfalse control記事に対しても、V4Aより
+多くのclaimをBLOCKINGへ倒す)。費用: V4A 7call+S1-D 7call=14call、
+¥3.3103(gpt-6-luna、記事によりLedger規模差で単価幅¥0.15〜0.6超)。
+
+**(d) B群5 fixture(B1/B2_hormuz/B3/B4/Meta_run03_standard)claim単位
+正解ラベル一致率(S1-D、新規5 call)**: **B3=BLOCKING(1/1一致、確定
+ラベルどおり)**。**Meta_run03_standard=全4claim BLOCKING(確定ラベル
+BLOCKINGと一致、ただしV4A gold[MAJORx1]よりclaim分割が細かい)**。
+**B1=1 BLOCKING+2 QUALITY(V4Aが検出した2claimのうち1件[HF-009市場
+動機claim、確定ラベルB1-c=BLOCKING]をQUALITYへ降格。もう1件は新規
+BLOCKING[湾岸諸国貿易投資claim、V4A非検出]を独自検出)**。**B2_hormuz
+=2 BLOCKING+2 QUALITY(確定ラベルはQUALITYのみだが、S1-Dは2claimを
+BLOCKINGへ判定、過剰BLOCK方向)**。**B4=2 BLOCKING+3 QUALITY(V4Aが
+BLOCKING確定した4claimのうち、確定ラベルB4-a[AIフォールバック機構の
+新規主張、Real-but-fixable群]に対応する2claim["Meta had run a
+test..."/"A person can take over..."]をいずれもQUALITYへ降格。
+B4-b/c相当[human心理一般論]はQUALITY[確定ラベルどおり一致]。新規に
+別claim[contract worker情報共有]をBLOCKINGへ判定)**。**正解ラベル
+一致率(claim単位、目視対応付け)= 3/5 fixture(B3・Meta完全一致相当、
+B1/B2/B4は部分不一致)**。費用¥1.2379(5 call)。
+
+**(e) hormuz_run03_standard/Meta_run03_standard n=5(S1-Dのみ新規、
+既存V0/V4A n=20は流用)**: hormuz_run03_standard=5/5(100%)BLOCKING
+確定(V0実測85%[n=20]・V4A実測85%[n=20]と比べ、n=5では非検出0件)。
+Meta_run03_standard=5/5(100%)BLOCKING確定(V0/V4A実測90%[n=20]と
+比べ、n=5では非検出0件)。費用¥1.8927(10 call)。
+
+**Stage 1最終判定の根拠**: (a)(b)(e)ではS1-DはV4Aと同水準(100%)の
+recallを示すが、(c)ではS1-DがV4Aより高い不要BLOCK率(86%>57%)を示し、
+(d)ではS1-Dが**Real-but-fixable群の確定BLOCKINGラベル(B1-c/B4-a)を
+QUALITYへ誤って降格**させる実例が2件観測された(V4A→Stage2の2段構成
+では、Stage2 rubric基準1[Ledgerが別原因・別主体を明記]がこれらを
+BLOCKING確定させることを期待していたが、後述§4追記のとおり実際の
+per-claim Stage2でも同様の降格が観測されており、これはS1-D固有の
+欠陥ではなくStage2 rubric自体の較正課題である可能性が高い。ただし
+S1-Dは「検出とmateriality判定を同一callで行う一体型」であるため、
+この種の誤判定を第二の独立callで訂正する機会が構造的に存在しない
+[Stage2を経由しないため]。V4A→Stage2の2段構成なら、Stage2の判定が
+誤っていても「Stage2を改善する」余地が残るが、S1-Dは1callで確定して
+しまうため、Opus L2レビュー#1が指摘した「detect/materiality分離に
+よるSafety資産保存」の実利が実測で裏付けられた)。
+
+**結論**: Stage 1=V4A(確定、変更なし)。S1-Dは検討対象として実測した
+上で不採用(§14-2の理論的判断が実測で補強された)。S1-D関連の実装
+(`er052_open233_self_recovery_s1d_trial_01.py`)はTrial記録として
+保持するが、Self-Recovery Flowの構成(§3-0)には組み込まない。
 
 ## 15. Opus L2レビュー#1(委任_04)への対応(採否・反映節、[委任_04新設])
 

@@ -1,0 +1,39 @@
+{
+  "label": "b_changed_actor_v0_extra",
+  "fixture_id": "er009_changed_actor",
+  "variant": "V0",
+  "attempt": 11,
+  "prompt_sha256": "c725ab21ffb355125977980e9821fcc781acc43c71657e25c7db465f063ed053",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0c099644ce3791ba006abc4d96b52487d09549592949646abd",
+  "usage": {
+    "input_tokens": 5025,
+    "cached_input_tokens": 5022,
+    "output_tokens": 1296,
+    "reasoning_tokens": 1078
+  },
+  "elapsed_seconds": 11.237,
+  "cost_jpy": 0.1096,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "issue": "研究主体をHarvard Business Schoolのチームとする所属情報はLedgerにありません。取引件数・対象・結果の記述はLedgerとおおむね一致しています。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerは著者をKareem HaggagとGiovanni Paciと記載していますが、Harvard Business School所属とは確認していません。未記載の所属を研究主体に付加しているためです。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

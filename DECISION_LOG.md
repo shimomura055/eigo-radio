@@ -13664,3 +13664,82 @@ flow_01.md`§5-0/§5-2/§5-2-補/§5-4/§5-4-補/§5-5/§9-1、
 log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_05.md`/
 `_06.md`、`er052_output/open233_self_recovery_precheck_01/`、
 `er052_output/open233_self_recovery_phase1_hormuz_followup_01/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Phase 1 ③④実測+Stage 1最終確定
+(V4-A確定・S1-D不採用、委任_07、2026-09-30)
+
+**ユーザー方針(逐語要旨)**: 既存方式に縛られず、QCDで最良の方法を
+Trialする。前Phase(委任_03)でOpus L2レビュー#1の「detect/materiality
+分離によるSafety資産保存」を根拠に理論上不採用としたS1-D(検出と
+materiality判定を1callで行う一体型)を、実測でSafety群100%を維持
+できるなら再検討する。Stage 1の最終確定はこの委任で行う(ユーザー
+判断不要、根拠付きで設計書へ記録)。
+
+**Phase 1③実測(V0/V4-A/S1-D比較、新規76 call・¥13.5234)**:
+(a) Safety群12 fixture(er009 9種+A2A3/A4/A5): S1-D 12/12(100%)
+BLOCKING確定。(b) `er009_changed_actor` n=15追加実測(既存n=5+新規
+n=10/10/15): V0=7/15(46.7%)・V4-A=15/15(100%)・S1-D=15/15(100%)。
+Fisher両側検定V0 vs V4-A/S1-D共にp=0.00220(有意、n=5時点p=0.18から
+統計的有意水準へ到達)。(c) negative候補7記事BLOCK率増分: V0=0/7
+(既存記録)・V4-A=4/7(57.1%)・**S1-D=6/7(85.7%、V4-Aより高い不要
+BLOCK率)**。(d) B群5 fixture claim単位ラベル一致: B3・
+Meta_run03_standardは確定ラベルと一致したが、**B1/B4でReal-but-
+fixable群(B1-c/B4-a、確定ラベル=BLOCKING)をS1-DがQUALITYへ誤降格
+させる実例を2件観測**。(e) hormuz_run03_standard/Meta_run03_standard
+n=5: S1-D=10/10(100%)。
+
+**Stage 1最終確定**: **V4-Aを確定とする(S1-D不採用)**。理由:
+(a)(b)(e)ではS1-DはV4-Aと同水準(100%)だが、(c)で不要BLOCK率が
+V4-Aより高く(86%>57%)、(d)でReal-but-fixable群の誤降格が観測された
+ため。S1-Dは「検出とmateriality判定を1callで確定する」構造上、誤判定
+を第二の独立callで訂正する機会がない。Opus L2レビュー#1が理論面で
+推奨していたdetect/materiality分離によるSafety資産保存の実利が、
+実測で裏付けられた(設計書§14-5)。
+
+**Phase 1④実測(Stage2実単価・batch化・prompt caching、新規12 call・
+¥1.1364)**: per-claim vs instance batch(B4=4claim/B1=2claim、
+§4-4確定入力どおりのper-claim Stage2実装
+`er052_open233_self_recovery_stage2_production_01.py`新規実装)は
+判定一致率100%(claim間相互汚染なし)。batch化でcall数・費用(55%減/
+29%減)・latencyの全てが改善。prompt caching(同一Ledger prefix連続
+call)はcached_input_tokens比率99.9%・費用削減率63〜64%を実測確認
+(ただし本実測のcall1は直前の同一Ledger call群でキャッシュが既に
+温まっていたため、厳密な「未キャッシュ初回」対比ではない限界あり)。
+Stage2実単価は¥0.087〜0.112/call(4件平均¥0.1013)で、§13-4の
+「楽観的¥0.10〜0.20/call」に近く「保守的¥0.30〜0.40/call」ほど
+高くないことを確認。
+
+**[重要な新規発見、報告のみ]Stage2較正リスク**: per-claim Stage2で
+B1-c/B4-a相当のclaim(Real-but-fixable群、確定ラベル=BLOCKING)が
+全てQUALITYへ降格した。S1-Dの誤降格と同一方向であり、Stage2 rubric+
+§4-4入力制限(explanation/severity/10flags除外)自体の較正課題である
+可能性が高い。Production非接続のTrial実装であり現時点でSafety事故
+には至っていないが、rubric文言変更やdeterministic floor対象拡大は
+設計変更に相当するため勝手に修正せず報告のみ行う(Phase 1⑤で
+Real-but-fixable群がRewrite段に到達するかを継続確認し、必要な設計
+判断はFable/ユーザーへ提示する)。
+
+**費用**: 今回¥14.6598(88 call、0 error)。Phase累計¥15.2883/総枠
+¥400、残¥384.7117。Guardrail¥35に対し実測¥14.6598(約42%)、超過なし。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+Stage2較正リスクの発見は新しい仕様候補の報告でありSafety緩和[条件2]
+には該当しない[むしろSafety強化方向の課題提起]。Stage 1最終確定
+[V4-A]は既存暫定採用[§14-3]の確定化であり新しい仕様原則の導入では
+ない)。
+
+**Production安全性**: 新規`er052_open233_self_recovery_s1d_trial_
+01.py`/`er052_open233_self_recovery_phase1_step3_stage1_compare_01.
+py`/`er052_open233_self_recovery_stage2_production_01.py`/
+`er052_open233_self_recovery_phase1_step4_stage2_unitcost_01.py`
+(+test)全てProduction非接続(既存`er003_*`/`er006_*`/`er010_*`/
+`er012_*`/`er019_*`は無変更、`git diff --stat`で確認済み)。API keyは
+環境変数のみ、保存jsonにはprompt本体ではなくprompt_sha256のみ記録。
+unittest全PASS(新規19件+既存回帰51件、計70件確認)。
+
+Status=`PHASE1_STEP4_DONE`。詳細: `docs/pm/design_open233_self_
+recovery_flow_01.md`§4-7[新設]/§9-1③④/§13-4追記/§14-5[新設]、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§6、`docs/pm/delegation_
+log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_07.md`、
+`er052_output/open233_self_recovery_phase1_step3_stage1_compare_01/`、
+`er052_output/open233_self_recovery_phase1_step4_stage2_unitcost_01/`。

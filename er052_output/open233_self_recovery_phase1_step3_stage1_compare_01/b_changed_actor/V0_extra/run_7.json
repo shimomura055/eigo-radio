@@ -1,0 +1,39 @@
+{
+  "label": "b_changed_actor_v0_extra",
+  "fixture_id": "er009_changed_actor",
+  "variant": "V0",
+  "attempt": 7,
+  "prompt_sha256": "c725ab21ffb355125977980e9821fcc781acc43c71657e25c7db465f063ed053",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_09878f1f932d5d6c006abc4d7174ac87d0be3a4042b7342df2",
+  "usage": {
+    "input_tokens": 5025,
+    "cached_input_tokens": 5022,
+    "output_tokens": 621,
+    "reasoning_tokens": 434
+  },
+  "elapsed_seconds": 6.799,
+  "cost_jpy": 0.0566,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis",
+        "issue": "研究主体をHarvard Business Schoolのチームとしていますが、Ledgerは研究者名と研究内容を示すのみで、Harvard Business Schoolとの所属関係を保証していません。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": true,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない所属・研究主体を具体的に追加しているため、changed_fact、changed_actor、unsupported_new_claimに該当します。",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  }
+}

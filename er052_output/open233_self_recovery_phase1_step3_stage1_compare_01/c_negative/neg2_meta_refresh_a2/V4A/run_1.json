@@ -1,0 +1,52 @@
+{
+  "label": "c_negative_v4a",
+  "fixture_id": "neg2_meta_refresh_a2",
+  "variant": "V4A",
+  "attempt": 1,
+  "prompt_sha256": "b851c447e06f5813b33070a2d7abe56d1481ef1026be7b1b391ba57966420413",
+  "model_returned": "gpt-6-luna",
+  "response_id": "resp_0808ea90591f43d4006abc4f67964087d0a7b1ca87b9a21f51",
+  "usage": {
+    "input_tokens": 6457,
+    "cached_input_tokens": 0,
+    "output_tokens": 3621,
+    "reasoning_tokens": 3283
+  },
+  "elapsed_seconds": 31.141,
+  "cost_jpy": 0.3853,
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "“They enjoyed the ease of AI. But they did not know that a human was on the other end.”",
+        "issue": "記事は利用者が実際にAIの利便性を享受し、人間が電話していると知らなかったと断定しているが、Ledgerが確認するのは適切な開示なしにテストが始まったことまでで、利用者の認識や反応は確認していない。原文の条件付き・比喩的な表現を、翻訳で実際に起きた事実のように強めている。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": true,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "Ledgerにない利用者の反応・認識を事実として追加し、原文の留保を弱めているため。",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "qualifier_present": true,
+        "qualifier_text": "直前の文に “If this was not explained clearly” という条件があるが、対象の2文では利用者の反応・認識を断定している。",
+        "ledger_field_basis": "none",
+        "observation_consistent": false,
+        "matched_notes_id": "",
+        "auto_downgraded": false,
+        "severity_final": "BLOCKING",
+        "action": "STOP",
+        "basis": "ledger_fact",
+        "rule_id": "existing_major_v2"
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION",
+    "overall_action_trial": "STOP",
+    "variant": "V4A"
+  }
+}
