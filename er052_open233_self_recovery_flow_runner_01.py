@@ -128,9 +128,17 @@ OUT_DIR_REP7 = "er052_output/open233_self_recovery_flow_runner_01_rep7"
 # 反映後、代表5ケースのみをn=2で再実行する(委任文§3-B、広いTrialは
 # スコープ外)。出力は新規ディレクトリ(`_rep8`)へ書く。
 OUT_DIR_REP8 = "er052_output/open233_self_recovery_flow_runner_01_rep8"
-OUT_DIR = OUT_DIR_REP8
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233t_17.json"
-TOTAL_BUDGET_JPY = 14.0  # 委任_17 Guardrail(委任文§0「本委任Guardrail¥14」)
+# 委任_18(2026-09-30): 既存iteration1〜6・rep7・rep8の出力(OUT_DIR_ITER1〜6/
+# OUT_DIR_REP7/OUT_DIR_REP8)は変更しない。局所QA統合/全体Rewrite経路是正
+# (⑥の例外化+precheck合成マーカー実文解決)/不要Rewrite4件の解決策
+# (disclosure-gap downgrade)/Escalation 2 run是正(fact_id複数箇所cycle
+# 緩和)/degenerate output guardの反映後、代表12 instanceのみをn=2で
+# 再実行する(委任文§3-B、広いTrialはスコープ外)。出力は新規ディレクトリ
+# (`_rep9`)へ書く。
+OUT_DIR_REP9 = "er052_output/open233_self_recovery_flow_runner_01_rep9"
+OUT_DIR = OUT_DIR_REP9
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233v_18.json"
+TOTAL_BUDGET_JPY = 20.0  # 委任_18 Guardrail(委任文§3 Phase B「有料≤¥20」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -458,6 +466,19 @@ def measure_section_role_violation(before_text: str, after_text: str) -> dict:
     title_markers_after = len(_RHETORICAL_MARKER_RE.findall(title_after))
     title_flattened = title_before != title_after and title_markers_before > 0 and title_markers_after == 0
 
+    # 委任_18 2-1(c)(disclosure §1-1-4「タイトル全文削除→空文字列の検出
+    # 漏れ」是正): 削除型Rewriteでtitle/hookが空文字、またはtitleが極端に
+    # 短縮(語数<3)された場合をFAILとして検出する(¥0、決定論)。既存の
+    # hook_shrank(50%未満)より厳しい「空/ほぼ空」専用の判定を別フラグとして
+    # 持ち、呼び出し側run_instanceでこれを検出したcycleはRecheckの結果に
+    # 関わらず無条件でSTAGE4へ回す(単なる再生成トリガではなくhard block、
+    # 既存needs_regenerationとは異なる新しい安全装置)。
+    title_words_after = len(_WORD_RE.findall(title_after))
+    title_degenerate = bool(title_before.strip()) and title_after != title_before and (
+        not title_after.strip() or title_words_after < 3
+    )
+    hook_degenerate = bool(hook_before.strip()) and hook_after != hook_before and not hook_after.strip()
+
     reasons = []
     if iol_too_long:
         reasons.append(f"in_one_line_too_long(+{round(iol_length_increase_ratio * 100, 1)}%)")
@@ -471,6 +492,10 @@ def measure_section_role_violation(before_text: str, after_text: str) -> dict:
         reasons.append("hook_rhetorical_markers_lost")
     if title_flattened:
         reasons.append("title_rhetorical_markers_lost")
+    if title_degenerate:
+        reasons.append(f"title_degenerate(words_after={title_words_after})")
+    if hook_degenerate:
+        reasons.append("hook_degenerate(emptied)")
 
     return {
         "in_one_line_length_increase_ratio": iol_length_increase_ratio, "in_one_line_too_long": iol_too_long,
@@ -478,6 +503,8 @@ def measure_section_role_violation(before_text: str, after_text: str) -> dict:
         "hook_word_count_before": hook_words_before, "hook_word_count_after": hook_words_after,
         "hook_shrank": hook_shrank, "hook_rhetorical_markers_lost": hook_flattened,
         "title_rhetorical_markers_lost": title_flattened,
+        "title_word_count_after": title_words_after,
+        "title_degenerate": title_degenerate, "hook_degenerate": hook_degenerate,
         "section_role_violated": bool(reasons), "reasons": "; ".join(reasons),
     }
 
@@ -1253,6 +1280,76 @@ def apply_hook_aware_downgrade(materiality: str, dev: dict, section_type: str, f
     return "QUALITY", "hook_aware_scope_downgrade"
 
 
+# ------------------------------------------------------------
+# 委任_18 2-2(disclosure §1-2-2/§1-2-3、neg2_meta_refresh_a2/
+# meta_run03_advanced=MUSE-HC-012パターン是正)。方式選択: disclosure文書
+# §2-2で提示された(i)共通rubricの例示リスト追記[委任_16 B-2がprompt
+# priming[Safety-critical bgroup_B3誤降格]を起こした前例あり]と(ii)
+# deterministic post-Stage2条件の2案のうち、本委任は(ii)を採用する
+# (理由: (i)は較正セット全体の再実行が必要でGuardrail ¥25/Phase B ¥20内に
+# 収まらず、かつ委任_16の実測済みpriming riskを再度負うことになる。(ii)は
+# ¥0・追加API callなし・既存floor/hook-aware downgradeと同じpost-hoc
+# 判定パターンを踏襲でき、対象を狭い決定論条件に限定できるため安全側)。
+#
+# 条件(Ledgerが確認済みの「開示不備」から『読者/利用者はその時点で知る
+# 手段がなかった』という論理的帰結を導く記述のみを対象とする):
+# 1. floor不発火(floor_reason is None、既存floor[Safety側安全装置]には
+#    一切触れない)。
+# 2. unsupported_new_claim または changed_certainty のいずれかが立っている
+#    (このパターンの実測フラグ、disclosure §1-2-2/§1-2-3)。
+# 3. FLOOR_FLAGS+changed_scope(数値/時間/主体/比較/scopeという事実その
+#    ものの変化)がいずれも立っていない(floorが本来カバーすべき種類の
+#    変化には適用しない)。
+# 4. claim文言が「知る手段がなかった/気づかなかった」系の**否定形**
+#    (DISCLOSURE_GAP_NEGATION_RE)を含む(方向性を否定形のみへ限定。
+#    neg1のような肯定形の主観断定[「驚いた」「気づいた」等]には適用しない、
+#    disclosure §1-2-5でneg1はこの緩和の対象外と整理済み)。
+# 5. claimがLedger本文に無い新しい数値・固有名詞を追加していない(既存
+#    precheckの抽出器を再利用、¥0、「新しい具体的Factの発明」を機械的に
+#    排除する)。
+#
+# Trial限定の判定候補であり、Production採用(APPROVED_FOR_PRODUCTION)には
+# 別途ユーザー承認が必要(本委任はTrialコード[er052]のみを変更し、
+# Production[er003/er009/er010/er012/er019]には一切配線しない)。
+# ------------------------------------------------------------
+DISCLOSURE_GAP_NEGATION_RE = re.compile(
+    r"\b(did not|didn't|could not|couldn't|had no way to|were not aware|"
+    r"was not aware|no way of knowing|could not tell|couldn't tell|"
+    r"didn't realize|did not realize|did not know|didn't know)\b",
+    re.IGNORECASE,
+)
+DISCLOSURE_GAP_DISQUALIFYING_FLAGS = FLOOR_FLAGS + ["changed_scope"]
+
+
+def apply_disclosure_gap_downgrade(materiality: str, dev: dict, floor_reason, claim_text: str,
+                                    ledger_text: str) -> tuple:
+    if materiality != "BLOCKING" or floor_reason is not None:
+        return materiality, None
+    if any(dev.get(f) for f in DISCLOSURE_GAP_DISQUALIFYING_FLAGS):
+        return materiality, None
+    if not (dev.get("unsupported_new_claim") or dev.get("changed_certainty")):
+        return materiality, None
+    if not DISCLOSURE_GAP_NEGATION_RE.search(claim_text or ""):
+        return materiality, None
+    # 新規の数値を追加していないか(既存precheck抽出器の再利用、¥0)。
+    claim_numbers = precheck.extract_percentages(claim_text) | set(precheck.extract_counts(claim_text))
+    ledger_numbers = precheck.extract_percentages(ledger_text) | set(precheck.extract_counts(ledger_text))
+    if claim_numbers - ledger_numbers:
+        return materiality, None
+    # 新規の固有名詞(人物・組織等)を追加していないか。claimの固有名詞候補
+    # (extract_proper_nouns、既存precheck抽出器の再利用)が、ledger_text中に
+    # (大小文字を問わず)一切現れなければ「新規」とみなす(extract_proper_
+    # nouns同士を厳密比較すると"The AI"のような隣接語の連結差で誤検出する
+    # ため、部分文字列包含という緩い基準にする、fail-closed側=新規と
+    # 判定されればdowngradeしない、を維持)。
+    claim_actors = precheck.extract_proper_nouns(claim_text or "")
+    ledger_lower = (ledger_text or "").lower()
+    new_actors = {a for a in claim_actors if precheck._strip_possessive(a).lower() not in ledger_lower}
+    if new_actors:
+        return materiality, None
+    return "QUALITY", "disclosure_gap_negative_inference_downgrade(委任_18 2-2)"
+
+
 def run_stage2(client, state, consecutive_errors, call_log, label, fixture, claims: list) -> list:
     """claims: list of dict(claim_text, origin, related_fact_id, dev[元deviation])。
     戻り値: 各claimにmateriality/basis/rewrite_kind/floor_appliedを付与したlist。"""
@@ -1404,6 +1501,15 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         if hook_reason:
             final_materiality = hook_materiality
             floor_reason = hook_reason
+        # 委任_18 2-2: disclosure-gap negative inference downgrade
+        # (MUSE-HC-012パターン、body claim。hook_aware[title/hook×
+        # changed_scope]とは条件が排他的だが、念のためfloor_reasonの
+        # 最新値[hook downgrade適用後]を渡し二重適用を防ぐ)。
+        disclosure_materiality, disclosure_reason = apply_disclosure_gap_downgrade(
+            final_materiality, dev_for_floor, floor_reason, c["claim_text"], fixture["ledger_text"])
+        if disclosure_reason:
+            final_materiality = disclosure_materiality
+            floor_reason = disclosure_reason
         out.append({**c, "dev": dev_for_floor, "materiality": final_materiality, "llm_materiality": materiality,
                     "basis": basis,
                     "rewrite_kind": rewrite_kind if rewrite_kind != "none" else "replace_with_ledger_value",
@@ -1942,11 +2048,27 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
 
     guard_ok = (updated_text != full_text and claim_text.strip() not in updated_text
                 and not delete_reoccurrence_detected) if found else False
+    # 委任_18 2-1(b)(d): 対象文が一度も特定できない場合(found=False)は、
+    # ①〜④のladderが一度も試行されていない(§1-1-1で機械確認済みの根本
+    # 原因)。この場合に⑥全体フォールバックを「試行して失敗した最後の
+    # 手段」として使うのは不適切なため、Rewriteを試みずStage4
+    # (target_not_locatable)へ回す(呼び出し側run_instanceが処理)。
+    # found=True(対象文は特定できたが、ladder全段でguardが失敗、または
+    # delete再出現検出)の場合は、①〜④の試行ログがcall_logに残っている
+    # 正当な最後の手段として、従来どおり⑥を試みる(disclosure §1-1-3で
+    # ⑥が①より安全だった実例があるため、この経路は残す)。
+    if not found:
+        return {"updated_text": full_text, "method": method_used, "guard_ok": False,
+                "target_sentence": None, "locate_method": locate_method,
+                "delete_reoccurrence_detected": delete_reoccurrence_detected,
+                "before_fragment": None, "after_fragment": None,
+                "ladder_level_used": None, "target_not_locatable": True}
     if not guard_ok:
         after_fragment = None
-        # guard抵触(見つからない、またはラダー全段で置換後も同じclaim文言が
-        # 残存) -> 全文最小編集フォールバック(水準⑥、§5-2/§5-4のフォール
-        # バック段2に相当)
+        # guard抵触(ラダー全段で置換後も同じclaim文言が残存、またはdelete
+        # 再出現検出) -> 全文最小編集フォールバック(水準⑥、§5-2/§5-4の
+        # フォールバック段2に相当。found=Trueで①〜④[delete型は0]を実際に
+        # 試行した記録がある場合のみ到達する、委任_18 2-1(d))。
         prompt = FULL_TEXT_FALLBACK_PROMPT_TEMPLATE.format(
             ledger_text=fixture["ledger_text"], full_text=full_text,
             target_sentence=target_sentence or claim_text, issue=issue, rewrite_hint=rewrite_hint,
@@ -1969,7 +2091,7 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
             "target_sentence": target_sentence, "locate_method": locate_method,
             "delete_reoccurrence_detected": delete_reoccurrence_detected,
             "before_fragment": target_sentence, "after_fragment": after_fragment,
-            "ladder_level_used": ladder_level_used}
+            "ladder_level_used": ladder_level_used, "target_not_locatable": False}
 
 
 def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fixture, claim_rec: dict) -> dict:
@@ -2022,6 +2144,19 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     method = None
     updated_en = en_full
     updated_ja = ja_full
+
+    # 委任_18 2-1(b)(d): EN/JA双方とも対象文が一度も特定できない場合
+    # (single_text_rewriteと同一原則)、①〜④のladderは意味を持たず、
+    # 既存のJA全文フォールバック→EN全文フォールバックの連鎖([6_full_article]
+    # 相当)を「試行して失敗した最後の手段」として使うのは不適切。
+    # Rewriteを試みずStage4(target_not_locatable)へ回す。片方のみ特定
+    # できた場合(既存のJA全文フォールバック+EN局所編集等の部分回復)は
+    # 変更しない(既知の正当な回復経路のため、対象を完全未特定の場合のみに限定)。
+    if not en_located and not ja_located:
+        return {"updated_en_text": en_full, "updated_ja_text": ja_full, "method": "j1_target_not_locatable",
+                "guard_ok": False, "en_target": None, "ja_target": None,
+                "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
+                "target_not_locatable": True}
 
     ladder_level_used = None
     if en_located and ja_located:
@@ -2159,7 +2294,7 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     return {"updated_en_text": updated_en, "updated_ja_text": updated_ja, "method": method, "guard_ok": guard_ok,
             "en_target": en_target, "ja_target": ja_target,
             "before_fragment": en_target, "after_fragment": en_after_fragment,
-            "ladder_level_used": ladder_level_used}
+            "ladder_level_used": ladder_level_used, "target_not_locatable": False}
 
 
 def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_prefix, fixture,
@@ -2185,14 +2320,240 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
         return {"mechanism": "paired_ja_en(J-1)", "en_text": res["updated_en_text"],
                 "ja_text": res["updated_ja_text"], "method": res["method"], "guard_ok": res["guard_ok"],
                 "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
-                "ladder_level_used": res.get("ladder_level_used")}
+                "ladder_level_used": res.get("ladder_level_used"),
+                "target_not_locatable": res.get("target_not_locatable", False)}
     else:
         res = single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture,
                                    "article_text", claim_rec)
         return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": res["updated_text"],
                 "ja_text": current_ja_text, "method": res["method"], "guard_ok": res["guard_ok"],
                 "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
+                "target_not_locatable": res.get("target_not_locatable", False),
                 "ladder_level_used": res.get("ladder_level_used")}
+
+
+# ============================================================
+# 委任_18 2-4(局所QA統合、2026-09-30ユーザー新方針item1/7/9): 基本形
+# 「最小修正 → 修正文+前後文確認 → 問題解消・周辺影響なしなら終了」を
+# 実装する。Production局所QA(`er010_ledger_local_rewrite_09.
+# extract_point_context`[L97-114]・`classify_deviation_role`[L211-235]・
+# `evaluate_target_sentence_status`[L238-273]、いずれも決定論の純粋関数、
+# 既に`import er010_ledger_local_rewrite_09 as er010`済みのため read-only
+# importで再利用しProduction自体は一切変更しない)の設計思想(対象文単位の
+# window判定)を踏襲し、全文Recheck(`run_recheck`/`run_recheck_confirm`)の
+# 代わりに「修正文+前後1文」だけを見る軽量な1 callをまず試す。
+#
+# 全文Recheckを残す条件(§1-4-5の実測: 55 instance-run中4件[うち3件
+# Safety群]で全文Recheckがcycle1のRewrite対象とは別のLedger fact由来の
+# 新規BLOCKING claimを検出した実績があるため、これらの条件に該当する
+# cycleは局所QAで代替せず既存の全文Recheckをそのまま使う、既存の安全側
+# 挙動を変えない):
+#   (a) このcycleで段落単位[4_paragraph]・全体[6_full_article]・削除
+#       [0_delete]のいずれかのladder水準が使われた(局所QAの前後1文
+#       windowでは変更範囲を捉えきれない)。
+#   (b) このcycleで2件以上のclaimをRewriteした(claim間の相互作用を
+#       局所QAのwindow単体では検出できない)。
+#   (c) paired(J-1、JA・EN双方変更)が使われた(§1-4-5の対象外条件と
+#       同様、複雑度が高いため既存のJA/EN双方の全文Recheckを維持)。
+#   (d) deterministic floor由来のclaim(floor_reason起動)が含まれる
+#       (Safety側安全装置、既存のfail-closed全文確認を弱めない)。
+#   (e) Safety fixture(instance_idが"safety_"始まり、Safety-critical
+#       10 claim/Safety 12を含む可能性がある群)。
+# 上記いずれにも該当しない場合のみ局所QA 1 callを試し、
+# 「元問題解消かつ新規逸脱なしかつ隣接文への影響なし」なら全文Recheckを
+# 省略してcycleを解決とする(既存のcite-or-release confirm[委任_13]は
+# 局所QAの出力[prior_issue_resolved]へ統合され、この経路では別途呼ばない
+# ため重複callが解消される)。条件に該当する場合、または局所QAが問題を
+# 検出した場合は、既存の全文Recheckフロー(下記、無変更)へそのまま
+# フォールバックする(安全側、既存の正しい経路を壊さない)。
+# ============================================================
+LOCAL_QA_ESCALATION_LADDER_LEVELS = frozenset({"4_paragraph", "6_full_article", "0_delete", None})
+
+
+def full_recheck_required(rewrite_records: list, blocking_claims: list, instance_id: str) -> tuple:
+    """委任_18 2-4: 全文Recheckを残す条件(上記(a)〜(e))を判定する(¥0、
+    決定論)。Trueの場合は既存の全文Recheckフローをそのまま使う(理由の
+    listも返し、cycle_recordへEvidenceとして記録する)。"""
+    reasons = []
+    if any((r.get("ladder_level_used") in LOCAL_QA_ESCALATION_LADDER_LEVELS) for r in rewrite_records):
+        reasons.append("paragraph_or_full_or_delete_rewrite")
+    if len(rewrite_records) > 1:
+        reasons.append("multiple_claims_rewritten_same_cycle")
+    if any(r.get("mechanism", "").startswith("paired") for r in rewrite_records):
+        reasons.append("both_ja_en_changed(paired_j1)")
+    if any(c.get("floor_reason") for c in blocking_claims):
+        reasons.append("deterministic_floor_claim")
+    if instance_id.startswith("safety_"):
+        reasons.append("safety_fixture")
+    return bool(reasons), reasons
+
+
+def find_sentence_context(full_text: str, needle: str) -> tuple:
+    """needle(Rewrite後の対象文、after_fragment)がfull_text中のどの文に
+    対応するかを`split_sentences_generic`(既存、¥0)で特定し、前後各1文を
+    返す(見つからなければ(None, None, None))。"""
+    if not needle or not needle.strip():
+        return None, None, None
+    sentences = split_sentences_generic(full_text)
+    for i, s in enumerate(sentences):
+        if needle.strip() in s:
+            before_ctx = sentences[i - 1] if i > 0 else ""
+            after_ctx = sentences[i + 1] if i + 1 < len(sentences) else ""
+            return before_ctx, s, after_ctx
+    return None, None, None
+
+
+LOCAL_QA_DEVELOPER_MSG = (
+    "You are performing a local QA check after a minimal, local edit to a news article, using the same "
+    "fact-verification standard as a Ledger Deviation Checker. You are given ONLY the edited sentence and "
+    "its immediate neighbors (not the full article) plus the specific Verified Fact Ledger entries relevant "
+    "to this edit. Judge strictly whether the prior issue is resolved, whether the revised sentence itself "
+    "introduces any NEW deviation from the Ledger, and whether the (unchanged) neighboring sentences are "
+    "still consistent given the edit."
+)
+LOCAL_QA_PROMPT_TEMPLATE = """[Verified Fact Ledger entries relevant to this edit]
+{ledger_excerpt}
+
+[Prior issue that was flagged before this edit]
+{prior_issue}
+
+[Sentence immediately before the edited sentence (unchanged context)]
+{before_ctx}
+
+[Revised sentence]
+{revised_sentence}
+
+[Sentence immediately after the edited sentence (unchanged context)]
+{after_ctx}
+
+Answer strict JSON with these fields:
+- prior_issue_resolved (boolean): does the revised sentence resolve the prior issue above?
+- new_deviation_in_revised_sentence (boolean): does the revised sentence itself now contain a NEW \
+deviation from the Ledger entries above (a different fact error, not the original issue)?
+- new_deviation_explanation (string): if new_deviation_in_revised_sentence is true, explain briefly; \
+otherwise empty string.
+- adjacent_sentence_affected (boolean): given the edit, does either neighboring sentence now read as \
+inconsistent, contradictory, or factually orphaned (e.g. refers back to something the edit removed)?
+- adjacent_sentence_explanation (string): if adjacent_sentence_affected is true, explain briefly; \
+otherwise empty string."""
+
+LOCAL_QA_JSON_SCHEMA = {
+    "name": "open233_self_recovery_local_qa",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "prior_issue_resolved": {"type": "boolean"},
+            "new_deviation_in_revised_sentence": {"type": "boolean"},
+            "new_deviation_explanation": {"type": "string"},
+            "adjacent_sentence_affected": {"type": "boolean"},
+            "adjacent_sentence_explanation": {"type": "string"},
+        },
+        "required": ["prior_issue_resolved", "new_deviation_in_revised_sentence",
+                     "new_deviation_explanation", "adjacent_sentence_affected",
+                     "adjacent_sentence_explanation"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+
+def build_ledger_excerpt(ledger_text: str, fact_id: str) -> str:
+    """委任_18 2-4: 局所QAの入力を「当該Ledger fact群(関連factのみ)」に
+    絞る(¥0、既存precheck.parse_ledger_text[決定論]を再利用)。fact_idが
+    Ledgerに実在しない場合はledger_text全体へ安全側fallbackする。"""
+    if not fact_id:
+        return ledger_text
+    facts = precheck.parse_ledger_text(ledger_text)
+    fact = next((f for f in facts if f.get("fact_id") == fact_id), None)
+    if fact is None:
+        return ledger_text
+    lines = [f"fact_id: {fact_id}"]
+    for key in ("claim", "numeric_value", "date_or_period"):
+        if fact.get(key):
+            lines.append(f"{key}: {fact[key]}")
+    return "\n".join(lines)
+
+
+def run_local_qa(client, state, consecutive_errors, call_log, label, ledger_excerpt: str,
+                  prior_issue: str, before_ctx: str, revised_sentence: str, after_ctx: str) -> dict:
+    check_budget(state)
+    prompt = LOCAL_QA_PROMPT_TEMPLATE.format(
+        ledger_excerpt=ledger_excerpt, prior_issue=prior_issue or "",
+        before_ctx=before_ctx or "", revised_sentence=revised_sentence, after_ctx=after_ctx or "",
+    )
+    last_err = None
+    response = None
+    t0 = time.time()
+    for _ in range(1 + MAX_RETRIES_PER_CALL):
+        try:
+            response = client.responses.create(
+                model=MODEL, reasoning={"effort": vfl01.REASONING_EFFORT},
+                text={"format": {"type": "json_schema", **LOCAL_QA_JSON_SCHEMA}},
+                input=[{"role": "developer", "content": LOCAL_QA_DEVELOPER_MSG},
+                       {"role": "user", "content": prompt}],
+            )
+            break
+        except Exception as e:  # noqa: BLE001
+            last_err = f"{type(e).__name__}: {e}"
+            time.sleep(1.0)
+    elapsed = round(time.time() - t0, 3)
+    if response is None:
+        call_log.append({"label": label, "recovery_stage": "local_qa", "error": last_err})
+        record_call(state, consecutive_errors, label, 0.0, False, "local_qa")
+        # fail-closed: API失敗は「未解消」扱い(呼び出し側が全文Recheckへ
+        # フォールバックする、§6-1 A7と同一原則)。
+        return {"prior_issue_resolved": False, "new_deviation_in_revised_sentence": True,
+                "new_deviation_explanation": "local_qa_api_failure", "adjacent_sentence_affected": False,
+                "adjacent_sentence_explanation": "", "_api_failure": True}
+    parsed = json.loads(response.output_text)
+    usage = s2p._extract_usage(response)
+    cost = round(s2p.official_cost_jpy(usage), 4)
+    call_log.append({"label": label, "recovery_stage": "local_qa", "cost_jpy": cost, "usage": usage,
+                      "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt),
+                      "prior_issue_resolved": parsed.get("prior_issue_resolved"),
+                      "new_deviation_in_revised_sentence": parsed.get("new_deviation_in_revised_sentence"),
+                      "adjacent_sentence_affected": parsed.get("adjacent_sentence_affected")})
+    record_call(state, consecutive_errors, label, cost, True, "local_qa", usage)
+    parsed["_api_failure"] = False
+    return parsed
+
+
+def run_local_qa_fastpath(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                           current_en_text: str, blocking_claims: list, before_after_pairs: list) -> dict:
+    """委任_18 2-4: cycle内の全claimについて局所QAを実行し、全件が
+    「解消・新規逸脱なし・隣接文影響なし」ならfastpath成功(全文Recheckを
+    省略)。1件でも問題があれば{"success": False}を返し、呼び出し側は
+    既存の全文Recheckフローへフォールバックする(呼び出し元がclaim毎の
+    before_after_pairsのafter[Noneでない]を持つ前提、full_recheck_required
+    がFalseの場合のみ呼ばれるため、対象claimは全て単一文水準の局所編集で
+    after_fragmentが判明している)。"""
+    results = []
+    for claim, pair in zip(blocking_claims, before_after_pairs):
+        after_fragment = pair.get("after")
+        if not after_fragment:
+            results.append({"claim_identity": claim_identity(claim["dev"]), "prior_issue_resolved": False,
+                             "new_deviation_in_revised_sentence": False, "adjacent_sentence_affected": False,
+                             "skipped_reason": "after_fragment_unknown"})
+            continue
+        before_ctx, located_sentence, after_ctx = find_sentence_context(current_en_text, after_fragment)
+        if located_sentence is None:
+            results.append({"claim_identity": claim_identity(claim["dev"]), "prior_issue_resolved": False,
+                             "new_deviation_in_revised_sentence": False, "adjacent_sentence_affected": False,
+                             "skipped_reason": "revised_sentence_not_locatable_in_context"})
+            continue
+        ledger_excerpt = build_ledger_excerpt(fixture["ledger_text"], claim["dev"].get("related_fact_id", ""))
+        prior_issue = claim["dev"].get("issue") or claim["dev"].get("explanation") or claim["claim_text"]
+        qa = run_local_qa(client, state, consecutive_errors, call_log,
+                           f"{label_prefix}_local_qa_{claim_identity(claim['dev'])[:20]}",
+                           ledger_excerpt, prior_issue, before_ctx, located_sentence, after_ctx)
+        qa["claim_identity"] = claim_identity(claim["dev"])
+        results.append(qa)
+    success = bool(results) and all(
+        r.get("prior_issue_resolved") and not r.get("new_deviation_in_revised_sentence")
+        and not r.get("adjacent_sentence_affected") and not r.get("skipped_reason")
+        for r in results
+    )
+    return {"success": success, "results": results}
 
 
 # ------------------------------------------------------------
@@ -2303,6 +2664,75 @@ def build_target_instances() -> list:
 
 
 # ------------------------------------------------------------
+# 委任_18 2-1(a)(b): precheck合成マーカーの実文解決(§1-1-2/§1-1-3の
+# 根本原因是正)。precheckのarticle_evidenceは診断用の合成文字列
+# (例: "count values found in article not matching any ledger fact:
+# [30000000.0]")であり記事本文には一言一句存在しない。これをそのまま
+# claim_textとしてlocate_target()へ渡すと必ずfound=Falseになり、
+# ①〜④のladderが一度も試行されないまま⑥全体フォールバックへ落ちる
+# (disclosure §1-1-1で機械確認済み)。本関数はfinding固有の生の実測値
+# (foreign_values/other_dates_raw/matched_phrase/article_evidence[list])
+# を使って記事本文中の実文(その値を含む文)を検索し、見つかればそれを
+# claim_textとして使う(以降は既存locate_target()の通常経路[exact
+# substring→SequenceMatcher→er010 word-overlap]がそのまま機能し、
+# ①〜④のladderが正しく試行される)。見つからなければ
+# (None, "not_locatable")を返し、呼び出し側(run_instance)は
+# Rewriteを試みずStage4(target_not_locatable)へ回す(2-1(b)(d)、
+# ⑥全体フォールバックを「locate未試行の代替」として使わない)。
+# ------------------------------------------------------------
+def resolve_precheck_target_sentence(article_text: str, finding: dict) -> tuple:
+    kind = finding.get("kind")
+    sentences = split_sentences_generic(article_text)
+
+    if kind == "number_mismatch":
+        for v in finding.get("foreign_values") or []:
+            for s in sentences:
+                nums = precheck.extract_percentages(s) | set(precheck.extract_counts(s))
+                if v in nums:
+                    return s, "precheck_number_locate"
+        return None, "not_locatable"
+    if kind == "date_mismatch":
+        for (y, m, d) in finding.get("other_dates_raw") or []:
+            for rep in _date_representations_safe(y, m, d):
+                for s in sentences:
+                    if rep and rep in s:
+                        return s, "precheck_date_locate"
+        return None, "not_locatable"
+    if kind == "actor_missing":
+        candidates = finding.get("article_evidence")
+        candidates = candidates if isinstance(candidates, list) else []
+        for cand in candidates:
+            for s in sentences:
+                if cand and cand in s:
+                    return s, "precheck_actor_locate"
+        return None, "not_locatable"
+    if kind == "comparison_marker":
+        phrase = finding.get("matched_phrase")
+        if phrase:
+            for s in sentences:
+                if phrase.lower() in s.lower():
+                    return s, "precheck_comparison_locate"
+        return None, "not_locatable"
+    if kind == "negation_marker":
+        # article_evidence(stripped、既に記事本文へ小文字化一致で実在確認
+        # 済みの文言)から、大小文字を問わず対応する実文を探す。
+        phrase = finding.get("article_evidence")
+        if isinstance(phrase, str) and phrase:
+            for s in sentences:
+                if phrase.lower() in s.lower():
+                    return s, "precheck_negation_locate"
+        return None, "not_locatable"
+    return None, "not_locatable"
+
+
+def _date_representations_safe(year: int, month: int, day: int) -> list:
+    try:
+        return precheck._date_representations(year, month, day)
+    except Exception:  # noqa: BLE001
+        return []
+
+
+# ------------------------------------------------------------
 # precheck floor claim構築(§3-1/§4-3、findingが既存Stage1 MAJOR claimの
 # related_fact_idと重複しない場合のみ追加)
 # ------------------------------------------------------------
@@ -2312,16 +2742,24 @@ def build_precheck_floor_claims(fixture: dict, existing_fact_ids: set) -> list:
     for f in findings:
         if f["field"] in existing_fact_ids:
             continue
+        # 委任_18 2-1(a): claim_textを合成マーカーではなく実文へ解決する。
+        resolved_sentence, resolve_method = resolve_precheck_target_sentence(fixture["article_text"], f)
+        evidence_str = f.get("article_evidence") if isinstance(f.get("article_evidence"), str) \
+            else str(f.get("article_evidence"))
+        claim_text = resolved_sentence if resolved_sentence is not None else evidence_str
         dev = {
-            "claim_in_article": f.get("article_evidence") if isinstance(f.get("article_evidence"), str)
-            else str(f.get("article_evidence")),
+            "claim_in_article": claim_text,
             "issue": f"precheck detected {f['kind']} vs ledger_value={f['ledger_value']}",
             "explanation": f"deterministic precheck finding (kind={f['kind']})",
             "related_fact_id": f["field"], "origin": None,
             **{k: False for k in FLOOR_FLAGS},
         }
-        out.append({"claim_text": dev["claim_in_article"], "origin": None, "related_fact_id": f["field"],
-                     "dev": dev, "detected_by": "precheck"})
+        out.append({"claim_text": claim_text, "origin": None, "related_fact_id": f["field"],
+                     "dev": dev, "detected_by": "precheck",
+                     # 委任_18 2-1(b): 実文へ解決できなかった場合のフラグ
+                     # (run_instanceがRewriteを試みずStage4へ回すための合図)。
+                     "precheck_target_locatable": resolved_sentence is not None,
+                     "precheck_locate_method": resolve_method})
     return out
 
 
@@ -2516,13 +2954,33 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             break
 
         if cycle > MAX_CYCLES:
+            # 委任_18 2-3(b)(meta_run03_standard sample2実測、disclosure
+            # §1-3-2): 同一fact_idのclaimが記事内の複数箇所に分散し、
+            # cycleごとに1箇所ずつしか検出されない場合(この時点で
+            # matched_recordsは空=claim本文は別物と既に判定済み)、
+            # blocking件数が厳密に減少していなくても、その中に「過去cycleで
+            # 一度でもBLOCKINGとして見たfact_idの、新しい箇所(別文言)」が
+            # 含まれていれば、cycle上限3を超えない範囲で1回だけ追加cycleを
+            # 許可する(「箇所ごとに①からladder」の最小対応、cycle_limit_
+            # exhaustedによる誤ったSTAGE4を防ぐ)。
+            current_fact_ids = {
+                (c["dev"].get("related_fact_id") or "").strip() for c in blocking_claims
+                if (c["dev"].get("related_fact_id") or "").strip()
+            }
+            prior_fact_ids = {r["fact_id"] for r in prior_blocking_records if r["fact_id"]}
+            same_fact_id_new_location = bool(current_fact_ids & prior_fact_ids)
+            progress_shown = (
+                prev_cycle_blocking_count is not None and len(blocking_claims) < prev_cycle_blocking_count
+            )
             allow_extra_cycle = (
-                not extra_cycle_granted and prev_cycle_blocking_count is not None
-                and len(blocking_claims) < prev_cycle_blocking_count and cycle == MAX_CYCLES + 1
+                not extra_cycle_granted and cycle == MAX_CYCLES + 1
+                and (progress_shown or same_fact_id_new_location)
             )
             if allow_extra_cycle:
                 extra_cycle_granted = True
                 cycle_record["extra_cycle_granted"] = True
+                if same_fact_id_new_location and not progress_shown:
+                    cycle_record["extra_cycle_reason"] = "same_fact_id_new_location(委任_18 2-3b)"
             else:
                 final_state = "STAGE4_ESCALATION"
                 stage4_reason = "cycle_limit_exhausted"
@@ -2565,13 +3023,31 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 records.append({"claim_identity": claim_identity(c["dev"]), "rewrite_kind": c["rewrite_kind"],
                                  "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"],
                                  "ladder_level_used": r.get("ladder_level_used"),
-                                 "section_type": c.get("section_type")})
+                                 "section_type": c.get("section_type"),
+                                 # 委任_18 2-1(b): 対象文が一度も特定できずRewrite自体を
+                                 # 試みなかったclaim(呼び出し側run_instanceがStage4へ回す)。
+                                 "target_not_locatable": r.get("target_not_locatable", False)})
                 pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
             return en_out, ja_out, records, pairs
 
         # Stage 3: 各BLOCKING claimに対しRewrite dispatch(1回目)
         current_en_text, current_ja_text, rewrite_records, before_after_pairs = _run_stage3_cycle(
             blocking_claims, current_en_text, current_ja_text, base_constraint)
+
+        # 委任_18 2-1(b): 対象文が一度も特定できず(single_text_rewrite/
+        # paired_rewriteがRewriteを試みずtarget_not_locatable=Trueを返した)
+        # claimが1件でもあれば、他claimの結果を保存したうえでこの記事の
+        # cycleを打ち切り、Stage4(target_not_locatable)へ回す(⑥全体
+        # フォールバックを未試行の代替として使わない、2-1(d))。
+        unlocatable_records = [r for r in rewrite_records if r.get("target_not_locatable")]
+        if unlocatable_records:
+            final_state = "STAGE4_ESCALATION"
+            stage4_reason = "target_not_locatable"
+            cycle_record["rewrite_records"] = rewrite_records
+            cycle_record["unlocatable_claim_ids"] = sorted(
+                {r["claim_identity"] for r in unlocatable_records})
+            cycles_log.append(cycle_record)
+            break
 
         # 委任_13(iteration5、品質劣化検出v2+同一cycle内1回だけの再生成):
         # (a)重複段落/(b)孤立逆接語/(c)語彙難化のいずれかを検出した場合のみ、
@@ -2625,6 +3101,19 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cycle_record["ja_text_before_rewrite"] = ja_text_before_rewrite
             cycle_record["ja_text_after_rewrite"] = current_ja_text
 
+        # 委任_18 2-1(c)(disclosure §1-1-4是正): title/hookが空文字・極端
+        # 短縮(語数<3)になった場合、既存needs_regeneration(1回だけ再生成
+        # を試みるが、再生成後も同じ結果ならそのまま通過してしまう既存の
+        # ガード漏れ)とは別に、無条件hard blockとしてSTAGE4へ回す
+        # (再生成を1回試みた後の結果[regenerated時]を優先して判定する)。
+        final_section_role = section_role_after_regen if section_role_after_regen is not None else section_role
+        if final_section_role.get("title_degenerate") or final_section_role.get("hook_degenerate"):
+            final_state = "STAGE4_ESCALATION"
+            stage4_reason = "degenerate_rewrite_output"
+            cycle_record["degenerate_rewrite_detected"] = True
+            cycles_log.append(cycle_record)
+            break
+
         # 委任_11 作業B-6(§4 Rewrite由来新規逸脱検出、Opus L2 #2論点4):
         # (a) 決定論precheckの再実行(¥0、baseline比較で新規finding検出)。
         rewrite_new_findings_en = detect_rewrite_new_precheck_findings(
@@ -2645,7 +3134,33 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 current_ja_text, current_en_text)
             cycle_record["ja_en_equivalence_verdict"] = eq_result.get("verdict")
 
-        # Recheck(全文、prior_issuesあり、A1)
+        # 委任_18 2-4(局所QA fastpath): 全文Recheckを残す条件(a)〜(e)に
+        # 該当しない場合のみ、局所QA 1 call/claimを試す。全件「解消・新規
+        # 逸脱なし・隣接文影響なし」ならこのcycleを解決として全文Recheck
+        # (run_recheck/run_recheck_confirm)を省略する。該当する、または
+        # 局所QAが問題を検出した場合は、既存の全文Recheckフロー(下記、
+        # 無変更)へそのままフォールバックする。
+        recheck_required, recheck_required_reasons = full_recheck_required(
+            rewrite_records, blocking_claims, instance_id)
+        cycle_record["full_recheck_required"] = recheck_required
+        cycle_record["full_recheck_required_reasons"] = recheck_required_reasons
+        if not recheck_required:
+            local_qa_outcome = run_local_qa_fastpath(
+                client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}",
+                working_fixture, current_en_text, blocking_claims, before_after_pairs)
+            cycle_record["local_qa_fastpath_attempted"] = True
+            cycle_record["local_qa_fastpath_results"] = local_qa_outcome["results"]
+            cycle_record["local_qa_fastpath_success"] = local_qa_outcome["success"]
+            if local_qa_outcome["success"]:
+                cycles_log.append(cycle_record)
+                final_state = "RESOLVED_REWRITE"
+                break
+        else:
+            cycle_record["local_qa_fastpath_attempted"] = False
+
+        # Recheck(全文、prior_issuesあり、A1。局所QA fastpathが不成立
+        # [未該当、または局所QAが問題を検出]の場合のみ到達する、既存挙動
+        # は無変更)
         prior_issues = [{"fact_id": c["dev"].get("related_fact_id", ""),
                           "claim_in_article": c["claim_text"],
                           "issue": c["dev"].get("issue", ""), "explanation": c["dev"].get("explanation", "")}

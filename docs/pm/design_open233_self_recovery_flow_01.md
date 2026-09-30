@@ -145,7 +145,26 @@ hormuz_run03_standard/safety_er009系2件も従来どおりfloor/BLOCKING維持
 0件。最小修正は不要だった(1回目実行で全PASS)。広いiteration7 Trialへは
 本委任のスコープ外のため未実施(次回委任でのユーザー判断待ち)。
 USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細§9-1⑬、REPORT§17。
-Production実装は未着手)。
+Production実装は未着手)。→ **[委任_18更新]**
+`REP9_PARTIAL_GUARDRAIL_REACHED_MIXED_RESULTS`(ユーザー新指示12項目
+[局所QA統合/全体Rewrite経路の是正/不要Rewrite4件の解決策/Escalation 2
+runの解消/コスト是正]を実装[§4-15/§5-9/§6-5]し、代表12 instanceを
+n=2で再実行した[¥20.0358、Guardrail¥20到達により`safety_A2A3`/
+`safety_A5`のsample2は未実行、rep9]。主要3目標達成: (1)`safety_er009_
+changed_number`が⑥[全体フォールバック]を経由せず解消(precheck合成
+マーカー実文解決の効果)、(2)`neg2_meta_refresh_a2`が2/2 sampleで
+disclosure-gap downgradeによりRewriteなしで通過、(3)`meta_run03_
+standard`が2/2 sampleともSTAGE4_ESCALATIONに至らず(人間確認率0達成)。
+`safety_er009_unsupported_new_claim`のtitle空文字化を2/2で正しく検出し
+STAGE4へ回した(degenerate output guard、disclosure §1-1-4の静かな
+false PASSを解消)。局所QA fastpathは3/3が安全側に全文Recheckへ
+フォールバックし、コスト削減効果は今回未実証。**新規観測(未解決)**:
+`hormuz_run03_standard`(sample1)で新規STAGE4(`cycle_limit_exhausted_
+after_recheck`)、根本原因は既存の構造的限界(claim言い換えcycle
+パターン)と分析したが実測FAILとして記録し追加の単発再実行は見送った
+(§18-3/§18-9)。29 instance全量ではないため広いTrialのGateは判定保留。
+USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細§18。Production実装は
+未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -1077,6 +1096,50 @@ Hook専用StageがQUALITYを返しても、floorにより最終的にBLOCKINGへ
 強制されることを確認、(4) hookに新しい具体的事実を発明した合成claim
 に対しHook専用StageがBLOCKINGを返すケースの基本疎通を確認。
 
+### 4-15. 不要Rewrite4件の解決策(委任_18 2-2、iter6全件開示§1-2是正)
+
+**注記**: 委任文では本節を「§4-17」と指定していたが、本書§4は§4-14
+までしか存在せず(§4-15/§4-16は未使用)、間に空番を作らないため新規
+追加分は本書の実採番どおり§4-15として追記する(§4-14の前例と同じ方針)。
+
+**背景**: disclosure §1-2は不要Rewrite4件(分母9、v2訂正後)を原因別に
+分類した: (1) `neg1_meta_b3prod_a2`=Hook誤判定(委任_17で対象内、§4-14で
+解消済み・実測確認はrep9)、(2)(3) `neg2_meta_refresh_a2`/
+`meta_run03_advanced`=同一Ledger fact「MUSE-HC-012」・同一パターン
+(「テストが適切な開示なしに始まった」という確認済み条件から、「利用者は
+実際に気づかなかった/知らなかった」という帰結を導く記述を新規主観断定と
+誤BLOCK)、(4) `neg3_hormuz_prodrunner_b1b`=floor+LLM独立判定一致
+(`changed_time`解釈、iteration間でLLM判定自体が非決定的)。
+
+**(2)(3)の解決策(`apply_disclosure_gap_downgrade`)**: disclosure §2-2が
+提示した2方式のうち、本委任は**(ii) deterministic post-Stage2条件**を
+採用した(理由: (i)共通rubricの例示リスト追記は委任_16 B-2が実測した
+prompt priming[Safety-critical `bgroup_B3`誤降格]のリスクを再度負う
+うえ、較正セット全体の再実行がGuardrail内に収まらない。(ii)は¥0・
+追加API callなし・既存floor/hook-aware downgradeと同型のpost-hoc判定
+パターンを踏襲でき、対象を狭い決定論条件に限定できるため安全側)。
+
+条件: floor不発火(既存floorには一切触れない)+
+`unsupported_new_claim`または`changed_certainty`のいずれか+
+FLOOR_FLAGS+changed_scopeがいずれも不発火+claim文言が「知る手段が
+なかった/気づかなかった」系の**否定形**(`DISCLOSURE_GAP_NEGATION_RE`、
+方向性を否定形のみへ限定し、neg1のような肯定形の主観断定[「驚いた」
+「気づいた」等]には適用しない、disclosure §1-2-5の整理どおり)+
+claimがLedger本文に無い新しい数値・固有名詞を追加していない(既存
+precheck抽出器を再利用)。全条件を満たす場合のみBLOCKING→QUALITYへ
+downgradeする。**Trial限定の判定候補であり、Production採用
+(`APPROVED_FOR_PRODUCTION`)には別途ユーザー承認が必要**
+(Production[er003/er009/er010/er012/er019]には配線しない)。
+
+**(4)neg3は解決策なし(disclosure §1-2-4の結論を維持)**: `neg3_
+hormuz_prodrunner_b1b`は同一claim文言に対しLLM自身の判定がiteration間で
+非決定的(iter4/5はQUALITY、iter6はBLOCKING、いずれもfloor起因ではなく
+LLM自身が独立にBLOCKINGと判定したrunが存在する)。floorを緩めるだけでは
+解消しない可能性が高く、単純なrubric一箇所修正では再現性のある解消が
+保証できないため、本委任でも確定的な解決策は実装しない(disclosureの
+推奨どおり、次委任でこのclaim単体のn≥3再現性測定が必要)。rep9では
+従来どおりfloor維持のまま従来のRewrite経路が機能することのみ確認する。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -1629,6 +1692,65 @@ rubric構成(RUBRIC_R3_TRIPLE_PRIME、§6-4参照)のもとで、`bgroup_B3`の
 ユーザー新方針item4の目標(「まずso→while/meanwhile相当の最小変更で
 解消を試す」)をB3自身の実例で達成した(iteration6の既知の限界を解消)。
 
+### 5-9. precheck合成マーカーの実文解決・⑥全体フォールバックの例外化
+(委任_18 2-1(a)(b)(d)、iter6全件開示[`docs/pm/open233_iter6_rewrite_
+disclosure_01.md`]§1-1是正)
+
+**背景**: iter6の全体Rewrite(水準⑥)3件は、開示分析により3/3とも
+「locate失敗の副作用」と機械確認された。うち2件(`safety_er009_
+changed_number`)は、pre-check(`build_precheck_floor_claims`)が
+`claim_text`へ**article_evidence(診断用の合成文字列、例:"count values
+found in article not matching any ledger fact: [30000000.0]")をそのまま
+代入**していたことが根本原因だった。この文字列は記事本文に一言一句
+存在しないため`locate_target`の3段フォールバック(rewrite_hint引用→
+`locate_best_sentence`→`er010.locate_target_sentence`)がいずれも
+`found=False`を返し、①〜④のladderが一度も呼ばれないまま⑥へ必然的に
+落ちていた(単語演算令ミスではなく、コード構造上①〜④のforループ自体に
+入らない設計だった)。同じ数値ズレを検出したtitle側claim(Stage1由来)は
+①水準で正常に解消しており、「⑥まで必要だったという実測根拠はない」と
+disclosure §1-1-2は結論づけている。3件目(`safety_er009_unsupported_
+new_claim`)は逆に「⑥の方が①相当より安全だった」逆転現象(局所削除が
+title全体消失を招いた)を示しており、⑥経路自体の削除は推奨されていない。
+
+**実装1(2-1(a)、`resolve_precheck_target_sentence`+`build_precheck_
+floor_claims`是正)**: precheck finding(`number_mismatch`/`date_
+mismatch`/`actor_missing`/`comparison_marker`/`negation_marker`)から、
+finding固有の生の実測値(`foreign_values`/`other_dates_raw`/
+`matched_phrase`/`article_evidence`[list]、precheck module側へ追加
+フィールドとして併記。既存`article_evidence`文字列は後方互換のため
+変更しない)を使い、記事本文中の実文(その値を含む文)を
+`split_sentences_generic`で検索する。見つかればそれを`claim_text`として
+使う(以降は既存`locate_target`の通常経路がそのまま機能し、①〜④の
+ladderが正しく試行される)。
+
+**実装2(2-1(b)(d)、`single_text_rewrite`/`paired_rewrite`の`found=
+False`早期return)**: 実文解決を試みても`locate_target`が`None`を返す
+場合(found=False、single_text_rewriteは対象文が一度も特定できない場合、
+paired_rewriteはEN/JA双方とも特定できない場合)、⑥全体フォールバックを
+「試行して失敗した最後の手段」として使うのは不適切と判断し、Rewriteを
+試みず`target_not_locatable=True`を返す。呼び出し側(`run_instance`)は
+この場合、他claimの結果を保存したうえでcycleを打ち切り、
+`stage4_reason="target_not_locatable"`でSTAGE4_ESCALATIONへ回す(人間へ
+「locateできなかった」という明示理由を渡す)。**⑥は「found=True(対象
+文は特定できた)だが、①〜④[delete型は再出現検出]の全段でguardが失敗
+した」場合のみ到達する経路として残す**(①〜④/delete試行のログが
+call_logに残っている正当な最後の手段、disclosure §1-1-3の「⑥が①より
+安全だった」逆転現象への対応として、この経路自体は削除しない)。
+
+**期待される効果**: precheck由来のnumber_mismatch/actor_missing等の
+claimは、記事本文中に実際に矛盾する数値・主体が書かれている限り、
+実文解決によって①水準(単語・接続詞のみ)で解消できる可能性が高い
+(`safety_er009_changed_number`のtitle側claimが実際に①で解消した実績と
+整合)。代表ケースTrial(rep9)で`safety_er009_changed_number`/
+`safety_er009_changed_actor`の`ladder_level_used`が`6_full_article`に
+ならないことを確認する(委任_18 REPORT§18参照)。
+
+**未解決部分(disclosure §1-1-4、本節ではガード追加のみ対応・§6-5参照)**:
+delete型Rewriteの対象がセクション全体(title/hook)と一致し、削除後に
+空文字列になるケースの検出漏れは、本節の実文解決だけでは解消しない
+(locate自体は成功するため)。§6-5の`title_degenerate`/`hook_degenerate`
+guardで別途対応する。
+
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
 ### 6-1. Escalation条件
@@ -1783,6 +1905,86 @@ RUBRIC_R3_TRIPLE_PRIMEへ復帰**し(section_type自体はPython側の計算
 向けにコードとして保持する(Phase2課題、詳細REPORT§16/DECISION_LOG)。
 neg1(Meta hook)自体の未解消は、post-hoc downgrade・rubric側の両approach
 とも根本解消できておらず、Phase2への持ち越し課題として記録する。
+
+### 6-5. 局所QA fastpath・全文Recheckを残す条件・degenerate output guard・
+Escalation 2 run是正(委任_18 2-1(c)/2-3(a)(b)/2-4、2026-09-30ユーザー
+新方針item1/7/9)
+
+**A. degenerate output guard(2-1(c)、disclosure §1-1-4是正)**:
+`measure_section_role_violation`へ`title_degenerate`(title変更後、空文字
+または語数<3)・`hook_degenerate`(hook変更後、空文字)を追加した(¥0、
+決定論)。既存`needs_regeneration`(1回だけ再生成を試み、再生成後も
+同じ結果ならそのまま通過してしまう既存のガード漏れ、
+`safety_er009_unsupported_new_claim`sample1でtitle完全消失が「解決」
+扱いで通過していた実例)とは別に、**再生成試行後の結果[regenerated時]
+を優先して判定し、degenerateなら無条件でRecheckの結果に関わらず
+`stage4_reason="degenerate_rewrite_output"`でSTAGE4へ回す**(hard block、
+既存needs_regenerationとは異なる新しい安全装置)。
+
+**B. 局所QA fastpath+全文Recheckを残す条件(2-4)**: Production局所QA
+(`er010_ledger_local_rewrite_09.extract_point_context`/`classify_
+deviation_role`/`evaluate_target_sentence_status`、いずれも決定論の
+純粋関数、read-only importで再利用しProduction自体は変更しない)の
+設計思想(対象文単位のwindow判定)を踏襲し、「最小修正→修正文+前後1文
+確認→問題解消・周辺影響なしなら終了」という基本形を実装した
+(`run_local_qa_fastpath`)。局所QA 1 call(入力=修正文+前後1文+当該
+Ledger fact[`build_ledger_excerpt`、関連factのみ]+prior_issue、出力=
+`prior_issue_resolved`/`new_deviation_in_revised_sentence`/
+`adjacent_sentence_affected`)を試し、全claim成功なら全文Recheck
+(`run_recheck`/`run_recheck_confirm`)を省略する(cite-or-release
+confirmは局所QAの`prior_issue_resolved`出力へ統合され、この経路では
+別途呼ばないため重複callが解消される)。
+
+全文Recheckを残す条件(`full_recheck_required`、いずれか1つでも該当
+すれば局所QAは試みず既存の全文Recheckをそのまま使う): (a) このcycleで
+段落単位[4_paragraph]・全体[6_full_article]・削除[0_delete]のいずれかの
+ladder水準が使われた、(b) このcycleで2件以上のclaimをRewriteした、
+(c) paired(J-1、JA・EN双方変更)が使われた、(d) deterministic floor由来
+のclaimが含まれる、(e) Safety fixture(instance_idが"safety_"始まり)。
+
+条件の根拠(disclosure §1-4-5実測): iter6の55 instance-run中、cycleが
+2以上ある11 instance-runのclaim識別子をcycle間で追跡した結果、**4件
+(うち3件Safety群)で全文Recheckがcycle1のRewrite対象とは別のLedger
+fact由来の新規BLOCKING claimを検出した実績がある**(`safety_A2A3`×2run、
+`safety_A5`×1run、`meta_run03_standard`sample2×1run)。上記(e)は
+`safety_A2A3`/`safety_A5`を含むSafety fixture全体を対象外とすることで
+この実測4件のうち3件(Safety群分)を確実に捕捉する。`meta_run03_
+standard`sample2の1件は(b)(fact_id複数箇所=複数claim同時Rewriteに
+なりやすい)で概ね捕捉される設計とした(条件は保守的[狭い]側に倒し、
+局所QAで代替できるのは「単一claim・単一文水準・非floor・非Safety」の
+狭い範囲のみに限定した)。それ以外(9/13 instance-run)は既出claimの
+再検出のみで、局所QAでも同等に検出できた可能性が高いとdisclosureは
+報告しているが、実際の削減効果はrep9実測(REPORT§18)で確認する。
+
+**C. Escalation 2 run是正(2-3(a)(b)、`meta_run03_standard`両sample)**:
+
+- **(a) sample1型(J-1が被フラグ文自体を変えず隣接文のみ変更)**: iter6は
+  委任_16のJ-1ラダー化(§5-8)より**前**のコード(`ladder_level_used=
+  "paired_j1_not_laddered"`)で実行されたものであり、現行コードは既に
+  `level_guard_ok`条件(`claim_text.strip() not in candidate_en`、
+  §5-8既存)を各ladder水準で満たさない限り次水準へ進む設計になっている
+  ため、被フラグ文が変更されないままでは水準4[段落]も含め全段が
+  guard失敗し、既存のJA全文フォールバック(⑥相当)へ落ちる設計に
+  **既に**なっている(新規コード追加なし、既存のEvidence。rep9の
+  `meta_run03_standard`実測でSTAGE4_ESCALATIONに至らないことを確認する)。
+- **(b) sample2型(同一fact_idが記事内の複数箇所・異なる文言で分散)**:
+  `run_instance`のcycle上限判定(`cycle > MAX_CYCLES`)に、「blocking件数が
+  厳密に減少していなくても、その中に過去cycleで一度でもBLOCKINGとして
+  見たfact_idの新しい箇所(claim本文は既にfind_matching_prior_recordで
+  別物と判定済み)が含まれていれば、cycle上限3(`HARD_MAX_CYCLES`、
+  無変更)を超えない範囲で1回だけ追加cycleを許可する」
+  (`same_fact_id_new_location`)条件を追加した。既存の「blocking件数が
+  厳密に減少していれば1回だけ追加cycleを許可する」条件(委任_11 作業
+  B-3、§3-3)とはORで結合し、いずれかを満たせば従来どおり1回だけ
+  (`extra_cycle_granted`フラグで多重付与を防止)。
+
+**D. unittest(¥0、新規24件、`TestResolvePrecheckTargetSentence`/
+`TestBuildPrecheckFloorClaimsLocatability`/`TestTargetNotLocatableEarly
+Return`/`TestDegenerateRewriteGuard`/`TestDegenerateRewriteHardBlock
+Wiring`/`TestApplyDisclosureGapDowngrade`/`TestApplyDisclosureGap
+DowngradeWiredIntoStage2`/`TestFullRecheckRequired`/`TestFindSentence
+Context`/`TestLocalQaFastpathWiring`/`TestBuildLedgerExcerpt`)**:
+既存154件(er052系4ファイル合計)+新規24件、全件PASS(詳細REPORT§18)。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 

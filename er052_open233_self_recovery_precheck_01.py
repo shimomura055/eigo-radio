@@ -270,6 +270,13 @@ def check_number_mismatch(fact: dict, article_text: str,
         "article_evidence": f"{kind_label} values found in article not matching any ledger fact: {sorted(foreign_observed)}",
         "kind": "number_mismatch",
         "detected_by": "precheck",
+        # 委任_18 2-1(a): article_evidence(上記、診断用の合成文字列)は記事
+        # 本文に一言一句存在しない(precheckの内部表現そのもの)。呼び出し側
+        # (er052_open233_self_recovery_flow_runner_01.resolve_precheck_
+        # target_sentence)がこの生の数値集合を使って記事本文中の実文へ
+        # 解決できるよう、生値を別フィールドとして併記する(既存
+        # article_evidence文字列は後方互換のため変更しない)。
+        "foreign_values": sorted(foreign_observed),
     }
 
 
@@ -420,6 +427,9 @@ def check_date_mismatch(fact: dict, article_text: str,
         "article_evidence": f"different date(s) found in article not matching any ledger fact: {other_dates}",
         "kind": "date_mismatch",
         "detected_by": "precheck",
+        # 委任_18 2-1(a): number_mismatchと同様、呼び出し側が記事本文中の
+        # 実文へ解決できるよう生の日付tuple集合を併記する。
+        "other_dates_raw": list(other_dates),
     }
 
 
@@ -624,6 +634,10 @@ def check_comparison_marker(fact: dict, article_text: str) -> dict | None:
                         "article_evidence": f"antonym '{antonym}' phrase found verbatim in article",
                         "kind": "comparison_marker",
                         "detected_by": "precheck",
+                        # 委任_18 2-1(a): stripped(antonym置換後の全文、小文字化
+                        # 済み)は実際に記事本文へ(大小文字を問わず)verbatim一致
+                        # することが確認済みの文言。呼び出し側の実文解決に使う。
+                        "matched_phrase": stripped,
                     }
     return None
 

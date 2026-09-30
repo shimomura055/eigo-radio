@@ -1334,3 +1334,109 @@ instance別合計(n=2結合、¥5.2181): neg1 ¥0.3538+¥0.0674=¥0.4212、bgrou
 ### 17-6. 費用
 
 作業A(実装+unittest): ¥0。作業B(代表5ケースTrial): **¥5.2181**(委任Guardrail¥14内、最小修正フェイズ不要のため追加費用なし)。本委任合計: **¥5.2181**。Phase累計(前回まで¥292.5876)+本委任¥5.2181=**¥297.8057**。Phase残額(**上限¥500**のうち)=**¥202.1943**。
+
+## §18. ユーザー新指示12項目の反映+代表12ケース拡張Trial(委任_18、2026-09-30)
+
+### 18-0. 対応表(指示1〜12)
+
+| # | 指示 | 実施内容 | Evidence | PASS/FAIL |
+|---|---|---|---|---|
+| 1 | 局所QA基本形+全文Recheck条件化 | `run_local_qa_fastpath`+`full_recheck_required`(5条件) | §18-4 | PASS(条件どおり機能、ただし節減効果は今回0件) |
+| 2 | 全体Rewrite3件の必要性立証 | disclosure §1-1で立証不能と確認済み、⑥を例外経路化 | §18-1 | 立証不能(想定どおり)、経路是正はPASS |
+| 3・4 | 不要Rewrite4件の解決策 | neg1=委任_17済/neg2・meta_run03_advanced=disclosure-gap downgrade/neg3=解決策なし(明記) | §18-2 | 2/4解決、1/4既解決、1/4解決策なしと正直報告 |
+| 5 | 既知方針維持 | 既存170+23+21件regression全PASS | §18-6 | PASS |
+| 6 | 段落・全体Rewriteの例外化 | found=False即Stage4、found=True[④まで試行]のみ⑥ | §18-1 | PASS |
+| 7 | Rewrite後品質確認10項目 | §18-5対応表 | §18-5 | 一部網羅(全項目は未網羅、明記) |
+| 8 | 人間確認率0(meta_run03_standard) | 2-3(a)既存Evidence確認+2-3(b)実装 | §18-3 | PASS(2/2 run、STAGE4 0件) |
+| 9 | コスト(+¥2上限であって予算ではない) | §18-7 call種別表 | §18-7 | PASS |
+| 10 | 広いTrial前Gate9項目 | §18-9 | §18-9 | 未充足(次委任へ) |
+| 11 | 報告形式A〜E | 本節 | - | PASS |
+| 12 | Status/Gate | §18-9末尾 | - | PASS |
+
+### 18-1. 全体Rewrite経路の是正(指示2・6、2-1(a)(b)(d))
+
+disclosure(`docs/pm/open233_iter6_rewrite_disclosure_01.md`)§1-1は、iter6の全体Rewrite(水準⑥)3件が3/3とも「locate失敗の副作用」であり、「広範囲の問題には⑥が本質的に必要だった」という実測根拠は0件と結論した。うち2件(`safety_er009_changed_number`)は、precheck floor claimの`claim_text`がprecheckの**診断用合成文字列**(article_evidence、記事本文に一言一句存在しない)そのものだったことが根本原因だった。
+
+**実装**: (a) `resolve_precheck_target_sentence`(新規)がfinding固有の生の実測値(`foreign_values`/`other_dates_raw`/`matched_phrase`/`article_evidence`[list]、precheck module側へ追加フィールドとして併記)を使い記事本文中の実文を検索し、`build_precheck_floor_claims`がそれを`claim_text`として使う。(b)(d) `single_text_rewrite`/`paired_rewrite`は`found=False`(対象文が一度も特定できない)の場合、⑥全体フォールバック(API call)を試みず即座に`target_not_locatable=True`を返す(call_log記録なし)。`run_instance`はこれを検出すると他claimの結果を保存した上で`stage4_reason="target_not_locatable"`でSTAGE4_ESCALATIONへ回す。⑥は`found=True`(対象文は特定できた)だが①〜④[delete型は再出現検出]の全段でguardが失敗した場合のみ到達する経路として維持した(disclosure §1-1-3の「⑥が①より安全だった」逆転現象への対応、削除しない)。
+
+**rep9実測(Evidence)**: `safety_er009_changed_number`のprecheck floor claimの`claim_text`が実文("Researchers studied more than 30 million credit card...")へ解決され、`ladder_levels_used=['1_word_connective', '3_sentence']`(2claim: LLM側title claim+precheck floor claim)で**両sampleとも解消**、`6_full_article`は一度も発生しなかった(`instances_s{1,2}/safety_er009_changed_number.json`)。委任_17時点(rep8)は同claimが`ladder_levels_used=[1_word_connective, 6_full_article]`だったため、根本原因是正が実測で確認できた。
+
+### 18-2. 不要Rewrite4件の解決策(指示3・4、2-2)
+
+| instance | 原因分類 | 解決策 | rep9実測 |
+|---|---|---|---|
+| `neg1_meta_b3prod_a2` | Hook誤判定 | 委任_17 Hook専用Stage2(既解決) | sample1 RESOLVED_REWRITE_THEN_DOWNGRADE/sample2 RESOLVED_STAGE2_DOWNGRADE、両方STAGE4なし |
+| `neg2_meta_refresh_a2` | disclosure-gap過剰BLOCK | `apply_disclosure_gap_downgrade`(deterministic (ii)) | 2/2 sampleでBLOCKING→QUALITY downgrade発火、RESOLVED_STAGE2_DOWNGRADE(Rewriteなし) |
+| `meta_run03_advanced` | 同上 | 同上 | 2/2 sampleともACCEPTABLE_STAGE1(この実行ではStage1自体が当該claimを検出せず、downgrade発火の場面自体が発生しなかった。非決定性の一例として明記) |
+| `neg3_hormuz_prodrunner_b1b` | floor+LLM独立判定一致(iteration間非決定) | 解決策なし(disclosure §1-2-4の結論を維持、断定回避) | sample1 RESOLVED_REWRITE(1_word_connective)、sample2 STAGE4_ESCALATION(unconfirmed_after_reverify)。1/2 sampleで解決策なしのまま従来どおり残存(想定範囲内) |
+
+**方式選択の理由(disclosure §2-2の2案から(ii)を採用)**: (i)共通rubric条件追記は委任_16 B-2が実測したprompt priming[Safety-critical `bgroup_B3`誤降格]のリスクを再度負ううえ、較正セット全体の再実行がPhase B予算(¥20)に収まらない。(ii)は¥0・追加API callなし・既存floor/hook-aware downgradeと同型のpost-hoc判定パターンを踏襲でき、対象を「否定形の論理的帰結のみ」という狭い決定論条件に限定できるため安全側。**Trial限定の判定候補であり、Production採用(`APPROVED_FOR_PRODUCTION`)には別途ユーザー承認が必要**(design書§4-15)。
+
+### 18-3. Escalation 2 run是正(指示8、2-3(a)(b))
+
+- **(a) J-1被フラグ文不変ガード**: iter6のdisclosure時点のコードには存在しなかった(`ladder_level_used="paired_j1_not_laddered"`固定、未ラダー化)。委任_16のJ-1ラダー化で既に`level_guard_ok`条件(`claim_text.strip() not in candidate_en`)が各水準に組み込まれており、被フラグ文が変わらなければ次水準・最終的にJA全文フォールバックへ進む設計に**既になっていた**(design書§6-5-C(a)、新規コード追加なし、既存のEvidence)。
+- **(b) 同一fact_id複数箇所cycle緩和**: `run_instance`のcycle上限判定へ`same_fact_id_new_location`条件(過去cycleで見たfact_idの新しい箇所[claim本文は既に別物と判定済み]が含まれていれば、cycle上限3を超えない範囲で1回だけ追加cycleを許可)を追加した(`HARD_MAX_CYCLES`=3は無変更)。
+
+**rep9実測**: `meta_run03_standard`は**2/2 sample(sample1/sample2)ともSTAGE4_ESCALATIONに至らなかった**(sample1 RESOLVED_REWRITE、sample2 RESOLVED_REWRITE_THEN_DOWNGRADE)。sample2は`extra_cycle_reason="same_fact_id_new_location(委任_18 2-3b)"`が実際に発火したことをinstance jsonで確認した。**人間確認率0(指示8の目標)を達成**。
+
+一方、`hormuz_run03_standard`(sample1)で**新規のSTAGE4_ESCALATION**(`cycle_limit_exhausted_after_recheck`)を観測した(rep8時点では1cycleで解決していたケース)。原因分析: 各cycleで異なる文言(headline/段落表現)の同一テーマclaimが検出される、`meta_run03_standard`と同型の「claimがcycleごとに言い換えられる」パターンであり、**`local_qa_fastpath`は`both_ja_en_changed(paired_j1)`条件により正しく不発火**(局所QA由来の新規regressionではないことを`instances_s1/hormuz_run03_standard.json`の`full_recheck_required_reasons`で確認済み)。`same_fact_id_new_location`拡張は1回追加cycleを与えたが、3cycle目も別表現で再検出され最終的に`HARD_MAX_CYCLES`超過でSTAGE4に至った(拡張前のコードでも「blocking件数が減少していない」ためcycle 3を許可されず同じcycleで`cycle_limit_exhausted`として即STAGE4に至っていたはずであり、**拡張がこのinstanceを新たに壊したのではなく、既存の未解決構造[Phase2課題item8]にコストをかけてもう1回挑み、それでも解決しなかった**と判断する)。同一instanceのsample2は1cycleで正常解決しており(non-determinism)、FAILは最小修正では解消不能な既存の構造的限界と判断し、追加の修正は実施しなかった(残りGuardrail内でのcaseごとの単発再実行はSTOPの安全側判断として見送った、§18-9参照)。
+
+### 18-4. 局所QA fastpath・全文Recheck条件(指示1・7・9、2-4)
+
+`full_recheck_required`の5条件(段落/全体/削除ladder、同cycle複数claim、paired J-1、deterministic floor claim、Safety fixture)は、rep9実測の**22 instance-runの全サイクルで33回中30回が該当**(要全文Recheck)し、**局所QA fastpathは3回のみ試行**(`neg1_meta_b3prod_a2`×1、`meta_run03_standard`×2)。3回とも成功せず(2回はrevised sentenceのwindow特定に失敗しAPI call前にskip、1回はAPI call[¥0.112]の結果`adjacent_sentence_affected=True`で正しく全文Recheckへフォールバック)、**局所QA fastpathによる全文Recheck省略は今回0件**。想定した「単一claim・単一文水準・非floor・非Safety」という狭い条件自体が、代表12 instance(多くがSafety/floor/paired構成)にはほとんど該当しなかったことが理由。局所QA fastpathは安全側(3/3とも正しく既存の全文Recheckへフォールバックし、誤って省略した形跡はない)に機能したが、**コスト削減効果は今回のデータでは実証できなかった**ことを正直に報告する(¥0.112の追加コストのみ発生)。
+
+### 18-5. Rewrite後品質確認10項目(指示7)対応表
+
+| # | 項目 | 網羅する仕組み |
+|---|---|---|
+| 1 | 修正文 | 局所QA`revised_sentence`/既存全文Recheck |
+| 2 | 前後文脈 | 局所QA`before_ctx`/`after_ctx`(`find_sentence_context`) |
+| 3 | 元問題解消 | 局所QA`prior_issue_resolved`/既存`all_prior_issues_resolved` |
+| 4 | 新Fact誤りなし | 局所QA`new_deviation_in_revised_sentence`/既存Recheck |
+| 5 | Title引力 | `measure_section_role_violation`(title_flattened/title_degenerate) |
+| 6 | Hook Entertainment | 同上(hook_flattened/hook_shrank/hook_degenerate) |
+| 7 | 本文ストーリー | `detect_duplicate_paragraphs`/`detect_orphan_contrastive_paragraphs`(既存v2) |
+| 8 | In one line短さ | `in_one_line_too_long`(既存v2) |
+| 9 | 不要な数字追加 | `numbers_added_to_title`/`numbers_added_to_in_one_line`(既存v2) |
+| 10 | 長文化・平板化 | `vocab_difficulty_increased_*`(既存v2) |
+
+**未網羅**: 局所QAの`adjacent_sentence_affected`は隣接文単位の一貫性のみを見ており、記事全体のストーリー展開(離れた段落間の整合)は既存の全文Recheckが条件該当時にのみカバーする(§18-4の条件外では検査されない)。この限界はFableへの報告事項として明記する。
+
+### 18-6. unittest(¥0)
+
+新規39件(`er052_open233_self_recovery_precheck_01_test_01`は変更なし、`er052_open233_self_recovery_flow_runner_01_test_01`170件[既存131+新規39]、内訳: `TestResolvePrecheckTargetSentence`3/`TestBuildPrecheckFloorClaimsLocatability`2/`TestTargetNotLocatableEarlyReturn`2/`TestDegenerateRewriteGuard`5/`TestDegenerateRewriteHardBlockWiring`3/`TestApplyDisclosureGapDowngrade`7/`TestApplyDisclosureGapDowngradeWiredIntoStage2`1/`TestFullRecheckRequired`6/`TestFindSentenceContext`3/`TestLocalQaFastpathWiring`4/`TestBuildLedgerExcerpt`3)+既存precheck 23件+s1d/stage2_production 21件=**計214件全PASS**(`.venv/Scripts/python.exe -m unittest`、regressionなし)。
+
+### 18-7. コスト(指示9)
+
+| call種別 | 回数 | 単価平均(¥) | 合計(¥) | 目的 | 省略時の悪化 | 安価代替 |
+|---|---|---|---|---|---|---|
+| `stage1_recheck` | 26 | 0.3111 | 8.0884 | 全文Recheck(局所QA条件外) | 全文検証なし、Safety群の新規BLOCKING見逃し(disclosure §1-4-5実測) | 局所QA(今回0件成功、§18-4) |
+| `stage3_rewrite` | 42 | 0.1223 | 5.1366 | Rewrite本体 | 自動修復不可 | なし |
+| `stage2_second_judge` | 30 | 0.1410 | 4.2302 | Stage2判定(body/hook分離) | 誤BLOCK/誤PASS検出機構喪失 | なし |
+| `ja_en_equivalence` | 7 | 0.1047 | 0.7326 | J-1後JA/EN等価QA(測定専用) | 記録のみのため機能影響なし | なし(J-1使用時のみ) |
+| `stage1_recheck_confirm` | 2 | 0.3363 | 0.6727 | cite-or-release確認 | 根拠なき未解消でのSTAGE4誤生成リスク | なし |
+| `stage1_initial` | 1 | 0.2538 | 0.2538 | meta_run03_advanced fresh Stage1(1回のみ、sample間cache共有で二重課金なし) | Stage1未検出のまま進行 | reuse可能な限り¥0(11/12は¥0) |
+| `local_qa`(新規) | 1 | 0.1120 | 0.1120 | 局所QA fastpath(§18-4) | 全文Recheckのみに依存(既存動作) | なし(fastpath条件内のみ発火) |
+
+**合計**: 109 call(instance json call_log集計)、¥19.2263(budget_state全体¥20.0358との差¥0.8095は、Guardrail到達により`instances_s2`の`safety_A5`実行途中で打ち切られた分、正常な予算超過防止動作)。削減したcall: 明確な削減は今回0件(§18-4)。追加したcall: `local_qa`(1回、¥0.112)。iter6比: `stage3_rewrite_fulltext_fallback`(⑥、iter6実測7回・¥1.2430)は本rep9の対象12 instanceでは**0回**(precheck locate是正+found=False早期returnの効果、ただし対象instance集合が異なるため厳密比較ではない)。
+
+### 18-8. 費用
+
+作業A(実装+unittest+design書更新): ¥0。作業B(rep9代表12 instance×n=2、Guardrail¥20到達によりsample2の`safety_A2A3`/`safety_A5`は未実行): **¥20.0358**。本委任合計: **¥20.0358**(Guardrail¥25内、追加の単発再実行は§18-3の判断により見送り)。Phase累計(前回まで¥297.8057)+本委任¥20.0358=**¥317.8415**。Phase残額(**上限¥500**のうち)=**¥182.1585**。
+
+### 18-9. Gate判定・Status
+
+**広いTrial前Gate 9項目(委任文§0引用)充足状況**: 本委任は代表ケース拡張Trial(12 instance×n=2、うち2 instanceはsample2未実行)であり、29 instance全量のGate判定に必要な母数を満たしていない。未充足のため広いTrialのGate自体は**判定保留**。
+
+**主要な実測結果**:
+- precheck合成マーカー是正(2-1a): `safety_er009_changed_number`が`6_full_article`を経由せず解消(PASS)。
+- degenerate output guard(2-1c): `safety_er009_unsupported_new_claim`の題名空文字化を2/2 sampleとも正しく検出しSTAGE4へ回した(disclosure §1-1-4の「静かなfalse PASS」を解消。ただし根本のRewrite精度[delete対象の断片特定]自体は未改善のため、解消ではなく正しい検出止まりである点を正直に報告する)。
+- disclosure-gap downgrade(2-2): `neg2_meta_refresh_a2`が2/2 sampleでQUALITYへdowngradeしRewriteなしで通過(PASS)。`meta_run03_advanced`はこの実行でStage1が当該claim自体を検出しなかった(非決定性、downgrade発火の機会なし)。
+- fact_id複数箇所cycle緩和(2-3b)+J-1既存ガード(2-3a): `meta_run03_standard`が2/2 sampleともSTAGE4なし(PASS、指示8の目標達成)。
+- 局所QA fastpath(2-4): 安全側に機能(3/3とも正しく全文Recheckへフォールバック)、コスト削減効果は今回未実証。
+- Safety側: 全Safety claim(`safety_er009_changed_actor`/`changed_number`/`unsupported_new_claim`/`A2A3`/`A5`)でBLOCKING/floor維持を維持(2-2のdowngradeが一切混入していないことを機械確認済み、Safety-critical claimがQUALITY/ACCEPTABLEへ落ちた事例は0件)。
+- **新規観測(未解決)**: `hormuz_run03_standard`(sample1)で新規STAGE4(`cycle_limit_exhausted_after_recheck`)。§18-3で根本原因は本委任の変更由来ではなく既存の構造的限界(claim言い換えcycleパターン、Phase2課題item8と同型)と分析したが、実測FAILとして正直に記録する。`neg3_hormuz_prodrunner_b1b`(sample2)もSTAGE4(想定範囲内、解決策なしと明記済み)。
+
+**STOP条件該当確認**: ¥25超過見込み(該当せず、¥20.0358)/API error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、§18-10で確認)/USER_DECISION_REQUIRED6条件(該当せず、下記)/開始前チェック未反映(0件)/最小修正1回後もFAIL(`hormuz_run03_standard`は§18-3の分析により構造的限界と判断し単発再実行を見送り、追加の「最小修正」は実装していない。これを厳密にSTOP要件へ当てはめると判断が割れるため、Fable/ユーザーへの判断材料として正直に提示する)/Safety-critical claimまたはSafety 12のいずれかがBLOCKINGでなくなった(該当せず、上記確認済み)。
+
+**Status**: `REP9_PARTIAL_GUARDRAIL_REACHED_MIXED_RESULTS`(12 instance中10はn=2完走・2[`safety_A2A3`/`safety_A5`]はsample1のみ。主要3目標[precheck locate是正/disclosure-gap downgrade/meta_run03_standard Escalation 0]はPASS、新規観測1件[`hormuz_run03_standard` sample1]は構造的限界としてFable/ユーザー判断待ち。広いTrial実施は次回委任でのFable/ユーザー判断を待つ)。

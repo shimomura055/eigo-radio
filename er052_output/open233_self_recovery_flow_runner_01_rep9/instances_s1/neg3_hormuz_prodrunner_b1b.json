@@ -1,0 +1,306 @@
+{
+  "instance_id": "neg3_hormuz_prodrunner_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+            "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "BLOCKING",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_time",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(exact_substring)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "in_one_line",
+          "target_not_locatable": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.06,
+          "difficult_word_ratio": 0.1401,
+          "word_count": 307
+        },
+        "stats_after": {
+          "avg_sentence_len": 17.71,
+          "difficult_word_ratio": 0.1429,
+          "word_count": 301
+        },
+        "sentence_len_increase": -0.35,
+        "difficulty_ratio_increase": 0.0028,
+        "fragment_stats_before": {
+          "avg_sentence_len": 18.0,
+          "difficult_word_ratio": 0.1111,
+          "word_count": 18
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.1667,
+          "word_count": 12
+        },
+        "fragment_sentence_len_increase": -6.0,
+        "fragment_difficulty_ratio_increase": 0.0556,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+-6.0,difficult_ratio+0.0556)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": -0.3333,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 36,
+        "hook_word_count_after": 36,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 11,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.06,
+          "difficult_word_ratio": 0.1401,
+          "word_count": 307
+        },
+        "stats_after": {
+          "avg_sentence_len": 17.71,
+          "difficult_word_ratio": 0.1429,
+          "word_count": 301
+        },
+        "sentence_len_increase": -0.35,
+        "difficulty_ratio_increase": 0.0028,
+        "fragment_stats_before": {
+          "avg_sentence_len": 18.0,
+          "difficult_word_ratio": 0.1111,
+          "word_count": 18
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.1667,
+          "word_count": 12
+        },
+        "fragment_sentence_len_increase": -6.0,
+        "fragment_difficulty_ratio_increase": 0.0556,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+-6.0,difficult_ratio+0.0556)"
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": -0.3333,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 36,
+        "hook_word_count_after": 36,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 11,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 17,
+        "sentence_count_after": 17,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 3,
+        "hedge_word_count_after": 3,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 2,
+        "sentence_count_after": 2,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 10,
+        "paragraph_count_after": 10,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return\n\nOil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.\n\n### The proposed fee enters, then exits\n\nOn July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.\n\n### The price refuses to follow\n\nTrump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.\n\nThat return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.\n\nDuring that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.\n\n## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "en_text_after_rewrite": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return\n\nOil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.\n\n### The proposed fee enters, then exits\n\nOn July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.\n\n### The price refuses to follow\n\nTrump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.\n\nThat return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.\n\nDuring that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.\n\n## In one line\n\nThe fee plan left the stage, but the prices themselves quickly returned.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_confirm_overall_status": "LEDGER_COMPLIANT",
+      "recheck_confirm_all_prior_issues_resolved": true,
+      "recheck_confirm_cite_or_release_released_count": 0,
+      "recheck_reconfirmed": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1472,
+      "usage": {
+        "input_tokens": 6025,
+        "cached_input_tokens": 0,
+        "output_tokens": 671,
+        "reasoning_tokens": 621
+      },
+      "elapsed_seconds": 8.495,
+      "prompt_sha256": "4140dbf819af600a43edd7d75c4c2ed8d54afcd3213b3cea01c86cdced2c9471"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_fact:HF-009_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0867,
+      "usage": {
+        "input_tokens": 3576,
+        "cached_input_tokens": 0,
+        "output_tokens": 390,
+        "reasoning_tokens": 370
+      },
+      "elapsed_seconds": 5.871,
+      "prompt_sha256": "5f84e2db851cb93de21b98fdbdc8b50dc36e235d699d3e5411a81241358825cd"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_fact:HF-009_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0867,
+      "usage": {
+        "input_tokens": 3628,
+        "cached_input_tokens": 0,
+        "output_tokens": 380,
+        "reasoning_tokens": 360
+      },
+      "elapsed_seconds": 5.333,
+      "prompt_sha256": "1f336bea175a002f516792241579874cd49b2da095b9df194b4f7b5146234210"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2313,
+      "usage": {
+        "input_tokens": 6690,
+        "cached_input_tokens": 0,
+        "output_tokens": 1611,
+        "reasoning_tokens": 1441
+      },
+      "elapsed_seconds": 16.872,
+      "prompt_sha256": "56c6c391612539096bd17d5fea1f4bd27022cc5fcbd91d798ada489d74e39a66",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_recheck_confirm",
+      "recovery_stage": "stage1_recheck_confirm",
+      "cost_jpy": 0.2648,
+      "usage": {
+        "input_tokens": 7101,
+        "cached_input_tokens": 0,
+        "output_tokens": 1956,
+        "reasoning_tokens": 1762
+      },
+      "elapsed_seconds": 24.473,
+      "prompt_sha256": "be0afcc301151368d49dcf894075f0b0bf69c9e8bb9b38b44e88914e2ac738be",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true,
+      "cite_or_release_released_count": 0
+    }
+  ],
+  "total_cost_jpy": 0.8167,
+  "total_calls": 5,
+  "elapsed_seconds": 61.096
+}

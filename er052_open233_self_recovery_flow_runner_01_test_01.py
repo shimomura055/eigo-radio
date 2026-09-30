@@ -1501,5 +1501,412 @@ class TestHookOnlyStage2Separation(unittest.TestCase):
         self.assertEqual(out[0]["materiality"], "BLOCKING")
 
 
+# ============================================================
+# 委任_18(OPEN-233-SELF-RECOVERY-TRIAL-01委任_18)regression test。
+# 2-1(precheck合成マーカー是正・target_not_locatable・degenerate guard)、
+# 2-2(disclosure-gap downgrade)、2-3(b)(同一fact_id別箇所cycle緩和)、
+# 2-4(局所QA fastpath条件判定)を対象とする(¥0、API呼び出しなし)。
+# ============================================================
+class TestResolvePrecheckTargetSentence(unittest.TestCase):
+    """委任_18 2-1(a): precheckの合成マーカー(article_evidence)ではなく
+    記事本文中の実文へclaim_textを解決できることを確認する。"""
+
+    def test_number_mismatch_resolves_to_real_sentence_not_synthetic_marker(self):
+        article = ("# Card Study\n\nResearchers studied more than 30 million credit card "
+                    "payments last year.\n\nThey found a clear pattern.\n")
+        finding = {"kind": "number_mismatch", "field": "F-002",
+                    "article_evidence": "count values found in article not matching any ledger fact: [30000000.0]",
+                    "foreign_values": [30000000.0]}
+        sentence, method = runner.resolve_precheck_target_sentence(article, finding)
+        self.assertIsNotNone(sentence)
+        self.assertIn("30 million", sentence)
+        self.assertEqual(method, "precheck_number_locate")
+        # 合成マーカーそのものは記事本文に存在しないことの確認(前提の検証)。
+        self.assertNotIn(finding["article_evidence"], article)
+
+    def test_number_mismatch_not_locatable_when_value_not_in_any_sentence(self):
+        article = "# T\n\nNothing numeric here at all.\n"
+        finding = {"kind": "number_mismatch", "field": "F-002",
+                    "article_evidence": "count values found in article not matching any ledger fact: [30000000.0]",
+                    "foreign_values": [30000000.0]}
+        sentence, method = runner.resolve_precheck_target_sentence(article, finding)
+        self.assertIsNone(sentence)
+        self.assertEqual(method, "not_locatable")
+
+    def test_actor_missing_resolves_via_candidate_list(self):
+        article = "# T\n\nSmithCo announced the rival device last week.\n"
+        finding = {"kind": "actor_missing", "field": "F-001",
+                    "article_evidence": ["SmithCo"]}
+        sentence, method = runner.resolve_precheck_target_sentence(article, finding)
+        self.assertIsNotNone(sentence)
+        self.assertIn("SmithCo", sentence)
+        self.assertEqual(method, "precheck_actor_locate")
+
+
+class TestBuildPrecheckFloorClaimsLocatability(unittest.TestCase):
+    def test_locatable_finding_uses_real_sentence_as_claim_text(self):
+        article = "# T\n\nResearchers studied more than 30 million payments last year.\n"
+        ledger = "[VERIFIED] fact_id: F-002 | claim: a study of card payments | numeric_value: 13 million"
+        fixture = {"article_text": article, "ledger_text": ledger}
+        with mock.patch.object(runner.precheck, "run_precheck", return_value=[{
+                "field": "F-002", "kind": "number_mismatch", "ledger_value": "13 million",
+                "article_evidence": "count values found in article not matching any ledger fact: [30000000.0]",
+                "foreign_values": [30000000.0], "detected_by": "precheck"}]):
+            claims = runner.build_precheck_floor_claims(fixture, set())
+        self.assertEqual(len(claims), 1)
+        self.assertTrue(claims[0]["precheck_target_locatable"])
+        self.assertIn("30 million", claims[0]["claim_text"])
+        self.assertNotIn("count values found in article", claims[0]["claim_text"])
+
+    def test_unlocatable_finding_flags_precheck_target_locatable_false(self):
+        article = "# T\n\nNothing numeric here.\n"
+        fixture = {"article_text": article, "ledger_text": "(ledger)"}
+        with mock.patch.object(runner.precheck, "run_precheck", return_value=[{
+                "field": "F-002", "kind": "number_mismatch", "ledger_value": "13 million",
+                "article_evidence": "count values found in article not matching any ledger fact: [30000000.0]",
+                "foreign_values": [30000000.0], "detected_by": "precheck"}]):
+            claims = runner.build_precheck_floor_claims(fixture, set())
+        self.assertEqual(len(claims), 1)
+        self.assertFalse(claims[0]["precheck_target_locatable"])
+
+
+class TestTargetNotLocatableEarlyReturn(unittest.TestCase):
+    """委任_18 2-1(b)(d): found=Falseの場合、⑥全体フォールバック(API call)
+    を試みずtarget_not_locatable=Trueで即returnすることを確認する
+    (client=Noneでも例外が起きなければAPI callが発生していない証拠)。"""
+
+    def test_single_text_rewrite_returns_target_not_locatable_without_api_call(self):
+        fixture = {"article_text": "# T\n\nSomething unrelated entirely.\n", "ledger_text": "(ledger)"}
+        claim_rec = {"claim_text": "This exact sentence is nowhere in the article body text at all.",
+                     "rewrite_kind": "replace_with_ledger_value", "materiality": "BLOCKING",
+                     "basis": "x", "dev": {}, "rewrite_hint": ""}
+        call_log = []
+        res = runner.single_text_rewrite(None, None, [0], call_log, "lbl", fixture, "article_text", claim_rec)
+        self.assertTrue(res["target_not_locatable"])
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(call_log, [])
+        self.assertEqual(res["updated_text"], fixture["article_text"])
+
+    def test_paired_rewrite_returns_target_not_locatable_when_both_sides_unlocatable(self):
+        fixture = {"article_text": "# T\n\nSomething unrelated entirely.\n",
+                    "source_article_text": "# T\n\n全く関係のない文章です。\n", "ledger_text": "(ledger)"}
+        claim_rec = {"claim_text": "This exact sentence is nowhere in either article body text at all.",
+                     "rewrite_kind": "replace_with_ledger_value", "materiality": "BLOCKING",
+                     "basis": "x", "dev": {}, "rewrite_hint": ""}
+        call_log = []
+        res = runner.paired_rewrite(None, None, [0], call_log, "lbl", fixture, claim_rec)
+        self.assertTrue(res["target_not_locatable"])
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(call_log, [])
+
+
+class TestDegenerateRewriteGuard(unittest.TestCase):
+    """委任_18 2-1(c)(disclosure §1-1-4是正): タイトル/hookの空文字・
+    極端短縮(語数<3)を検出できることを確認する。"""
+
+    def test_title_emptied_is_degenerate(self):
+        before = "# The Same New York City Taxi Researchers Also Found Something\n\nHook para.\n"
+        after = "# \n\nHook para.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["title_degenerate"])
+        self.assertTrue(result["section_role_violated"])
+
+    def test_title_shrunk_below_3_words_is_degenerate(self):
+        before = "# The Same New York City Taxi Researchers Also Found Something\n\nHook para.\n"
+        after = "# Taxi Study\n\nHook para.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["title_degenerate"])
+
+    def test_title_unchanged_short_title_is_not_flagged(self):
+        text = "# Taxi Study\n\nHook para.\n"
+        result = runner.measure_section_role_violation(text, text)
+        self.assertFalse(result["title_degenerate"])
+        self.assertFalse(result["section_role_violated"])
+
+    def test_hook_emptied_is_degenerate(self):
+        before = "# T\n\nA long hook paragraph describing the scene in detail here.\n"
+        after = "# T\n\n\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["hook_degenerate"])
+
+    def test_title_changed_but_still_healthy_is_not_degenerate(self):
+        before = "# The Old Title Here Now\n\nHook para.\n"
+        after = "# A New But Still Healthy Title\n\nHook para.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertFalse(result["title_degenerate"])
+
+
+class TestDegenerateRewriteHardBlockWiring(unittest.TestCase):
+    """degenerate guardがrun_instanceのcycleループで無条件STAGE4へ
+    配線されていることをソース検査で確認する(¥0)。"""
+
+    def test_run_instance_source_contains_degenerate_hard_block(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("degenerate_rewrite_output", src)
+        self.assertIn('final_section_role.get("title_degenerate")', src)
+        self.assertIn('final_section_role.get("hook_degenerate")', src)
+
+    def test_run_instance_source_contains_target_not_locatable_escalation(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn('stage4_reason = "target_not_locatable"', src)
+        self.assertIn("unlocatable_records", src)
+
+    def test_run_instance_source_contains_same_fact_id_new_location_extension(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("same_fact_id_new_location", src)
+        self.assertIn("current_fact_ids & prior_fact_ids", src)
+
+
+class TestApplyDisclosureGapDowngrade(unittest.TestCase):
+    """委任_18 2-2: MUSE-HC-012パターン(開示不備→気づけなかった、否定形の
+    論理的帰結)のみを対象とした決定論downgradeを確認する。"""
+
+    LEDGER = ("[VERIFIED] MUSE-HC-012: The AI test began without a clear disclosure to callers.\n"
+              "  related_actors: Meta\n")
+
+    def test_negative_disclosure_gap_inference_downgrades_to_quality(self):
+        claim = "They enjoyed the ease of AI. But they did not know that a human was on the other end."
+        dev = {"unsupported_new_claim": True, "changed_certainty": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "BLOCKING", dev, None, claim, self.LEDGER)
+        self.assertEqual(materiality, "QUALITY")
+        self.assertEqual(reason, "disclosure_gap_negative_inference_downgrade(委任_18 2-2)")
+
+    def test_affirmative_claim_not_downgraded_direction_guard(self):
+        # neg1型(肯定形の主観断定、"驚いた"/"realized"相当)は対象外(§1-2-5)。
+        claim = "The caller was surprised to realize a human was on the other end."
+        dev = {"unsupported_new_claim": True, "changed_certainty": True, "changed_fact": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "BLOCKING", dev, None, claim, self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_floor_already_triggered_is_not_touched(self):
+        claim = "They did not know that a human was on the other end."
+        dev = {"unsupported_new_claim": True, "changed_number": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "BLOCKING", dev, "deterministic_floor:changed_number", claim, self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_disqualifying_flag_present_blocks_downgrade(self):
+        claim = "They did not know that a human was on the other end."
+        dev = {"unsupported_new_claim": True, "changed_number": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "BLOCKING", dev, None, claim, self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_new_proper_noun_introduced_blocks_downgrade(self):
+        claim = "They did not know that Jonathan Carter was on the other end."
+        dev = {"unsupported_new_claim": True, "changed_certainty": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "BLOCKING", dev, None, claim, self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_non_blocking_input_passthrough(self):
+        claim = "They did not know that a human was on the other end."
+        dev = {"unsupported_new_claim": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "QUALITY", dev, None, claim, self.LEDGER)
+        self.assertEqual(materiality, "QUALITY")
+        self.assertIsNone(reason)
+
+    def test_safety_critical_style_claim_with_changed_number_never_downgrades(self):
+        """Safety-critical claim(数値改竄+否定形が偶然含まれていても)は
+        floorが対象外に含まれるためdowngradeされないことを確認する
+        (mock、Safety-critical 10 claim・Safety 12のfloor不変を保証)。"""
+        claim = "Researchers did not know that more than 30 million payments were studied."
+        dev = {"unsupported_new_claim": True, "changed_number": True}
+        materiality, reason = runner.apply_disclosure_gap_downgrade(
+            "BLOCKING", dev, None, claim, self.LEDGER)
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+
+class TestApplyDisclosureGapDowngradeWiredIntoStage2(unittest.TestCase):
+    """run_stage2内でhook downgradeの直後にdisclosure-gap downgradeが
+    呼ばれることをmock経由で確認する(body経路、floor不発火時のみ)。"""
+
+    @staticmethod
+    def _base_state():
+        return {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+
+    def test_body_claim_muse_hc012_pattern_downgrades_via_run_stage2(self):
+        claim_text = "They enjoyed the ease of AI. But they did not know that a human was on the other end."
+        article_text = f"# T\n\nIntro hook.\n\n{claim_text}\n\n## In one line\nSummary.\n"
+        ledger = TestApplyDisclosureGapDowngrade.LEDGER
+        fixture = {"article_text": article_text, "ledger_text": ledger, "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": "MUSE-HC-012",
+                   "dev": {"unsupported_new_claim": True, "changed_certainty": True},
+                   "detected_by": "stage1_llm"}]
+
+        def fake_body_batch(client, ledger_text, source, cl, rubric_text, model=None):
+            return {"prompt_sha256": "d1", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": "BLOCKING", "basis": "unsupported_relationship",
+                 "rewrite_kind": "delete", "rewrite_hint": "x"}]},
+                    "model": "gpt-6-luna", "response_id": "rd1", "usage": {},
+                    "cost_jpy": 0.01, "elapsed_seconds": 0.01}
+
+        state = self._base_state()
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2c, "run_stage2_batch_variant", fake_body_batch):
+            out = runner.run_stage2(None, state, [0], call_log, "disclosure_test", fixture, claims)
+
+        self.assertEqual(out[0]["stage2_route"], "body")
+        self.assertEqual(out[0]["llm_materiality"], "BLOCKING")
+        self.assertEqual(out[0]["materiality"], "QUALITY")
+        self.assertEqual(out[0]["floor_reason"], "disclosure_gap_negative_inference_downgrade(委任_18 2-2)")
+
+
+class TestFullRecheckRequired(unittest.TestCase):
+    """委任_18 2-4: 全文Recheckを残す5条件(a)〜(e)の判定を確認する。"""
+
+    def test_no_escalation_condition_returns_false(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "neg2_meta_refresh_a2")
+        self.assertFalse(required)
+        self.assertEqual(reasons, [])
+
+    def test_paragraph_level_requires_full_recheck(self):
+        rewrite_records = [{"ladder_level_used": "4_paragraph", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "bgroup_B3")
+        self.assertTrue(required)
+        self.assertIn("paragraph_or_full_or_delete_rewrite", reasons)
+
+    def test_multiple_claims_same_cycle_requires_full_recheck(self):
+        rewrite_records = [
+            {"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"},
+            {"ladder_level_used": "3_sentence", "mechanism": "single_text_local(E-2)"},
+        ]
+        blocking_claims = [{"floor_reason": None}, {"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "bgroup_B4")
+        self.assertTrue(required)
+        self.assertIn("multiple_claims_rewritten_same_cycle", reasons)
+
+    def test_paired_j1_requires_full_recheck(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "paired_ja_en(J-1)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "meta_run03_standard")
+        self.assertTrue(required)
+        self.assertIn("both_ja_en_changed(paired_j1)", reasons)
+
+    def test_deterministic_floor_claim_requires_full_recheck(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": "deterministic_floor:changed_number"}]
+        required, reasons = runner.full_recheck_required(rewrite_records, blocking_claims, "b_group_test")
+        self.assertTrue(required)
+        self.assertIn("deterministic_floor_claim", reasons)
+
+    def test_safety_fixture_always_requires_full_recheck(self):
+        rewrite_records = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2)"}]
+        blocking_claims = [{"floor_reason": None}]
+        required, reasons = runner.full_recheck_required(
+            rewrite_records, blocking_claims, "safety_er009_changed_actor")
+        self.assertTrue(required)
+        self.assertIn("safety_fixture", reasons)
+
+
+class TestFindSentenceContext(unittest.TestCase):
+    def test_locates_before_and_after_context(self):
+        text = "First sentence here. Second sentence here. Third sentence here."
+        before, target, after = runner.find_sentence_context(text, "Second sentence here.")
+        self.assertEqual(target, "Second sentence here.")
+        self.assertEqual(before, "First sentence here.")
+        self.assertEqual(after, "Third sentence here.")
+
+    def test_returns_none_when_not_found(self):
+        text = "First sentence here. Second sentence here."
+        before, target, after = runner.find_sentence_context(text, "Not present anywhere.")
+        self.assertIsNone(target)
+        self.assertIsNone(before)
+        self.assertIsNone(after)
+
+    def test_empty_needle_returns_none(self):
+        before, target, after = runner.find_sentence_context("Some text.", "")
+        self.assertIsNone(target)
+
+
+class TestLocalQaFastpathWiring(unittest.TestCase):
+    """局所QA fastpathがrun_instanceのcycleループへ配線され、全文Recheckが
+    局所QA成功時にスキップされる(run_recheckが呼ばれない)ことをソース検査
+    +mockベースの動作確認で行う(¥0)。"""
+
+    def test_run_instance_source_contains_local_qa_fastpath_wiring(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("run_local_qa_fastpath", src)
+        self.assertIn("full_recheck_required(", src)
+        self.assertIn('local_qa_outcome["success"]', src)
+
+    def test_run_local_qa_fastpath_success_when_all_claims_resolved(self):
+        fixture = {"ledger_text": "[VERIFIED] fact_id: F-1 | claim: x", "article_text": "irrelevant"}
+        current_en_text = "Before ctx. The revised sentence is here. After ctx."
+        blocking_claims = [{"dev": {"related_fact_id": "F-1", "issue": "issue text"},
+                             "claim_text": "orig"}]
+        before_after_pairs = [{"before": "orig sentence", "after": "The revised sentence is here."}]
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner, "run_local_qa", return_value={
+                 "prior_issue_resolved": True, "new_deviation_in_revised_sentence": False,
+                 "adjacent_sentence_affected": False, "_api_failure": False}):
+            outcome = runner.run_local_qa_fastpath(
+                None, None, [0], call_log, "lbl", fixture, current_en_text, blocking_claims, before_after_pairs)
+        self.assertTrue(outcome["success"])
+
+    def test_run_local_qa_fastpath_fails_when_new_deviation_detected(self):
+        fixture = {"ledger_text": "[VERIFIED] fact_id: F-1 | claim: x", "article_text": "irrelevant"}
+        current_en_text = "Before ctx. The revised sentence is here. After ctx."
+        blocking_claims = [{"dev": {"related_fact_id": "F-1", "issue": "issue text"},
+                             "claim_text": "orig"}]
+        before_after_pairs = [{"before": "orig sentence", "after": "The revised sentence is here."}]
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner, "run_local_qa", return_value={
+                 "prior_issue_resolved": True, "new_deviation_in_revised_sentence": True,
+                 "adjacent_sentence_affected": False, "_api_failure": False}):
+            outcome = runner.run_local_qa_fastpath(
+                None, None, [0], call_log, "lbl", fixture, current_en_text, blocking_claims, before_after_pairs)
+        self.assertFalse(outcome["success"])
+
+    def test_run_local_qa_fastpath_skips_when_after_fragment_unknown(self):
+        fixture = {"ledger_text": "(ledger)", "article_text": "irrelevant"}
+        blocking_claims = [{"dev": {"related_fact_id": "F-1", "issue": "issue"}, "claim_text": "orig"}]
+        before_after_pairs = [{"before": "orig", "after": None}]
+        call_log = []
+        outcome = runner.run_local_qa_fastpath(
+            None, None, [0], call_log, "lbl", fixture, "text", blocking_claims, before_after_pairs)
+        self.assertFalse(outcome["success"])
+        self.assertEqual(outcome["results"][0]["skipped_reason"], "after_fragment_unknown")
+        self.assertEqual(call_log, [])
+
+
+class TestBuildLedgerExcerpt(unittest.TestCase):
+    def test_extracts_only_matching_fact(self):
+        ledger = ("[VERIFIED] F-1: alpha claim.\n  numeric_value: 10%\n\n"
+                  "[VERIFIED] F-2: beta claim.\n  numeric_value: 20%\n")
+        excerpt = runner.build_ledger_excerpt(ledger, "F-1")
+        self.assertIn("F-1", excerpt)
+        self.assertIn("alpha claim", excerpt)
+        self.assertNotIn("beta claim", excerpt)
+
+    def test_missing_fact_id_falls_back_to_full_ledger(self):
+        ledger = "[VERIFIED] F-1: alpha claim.\n  numeric_value: 10%\n"
+        excerpt = runner.build_ledger_excerpt(ledger, "F-999")
+        self.assertEqual(excerpt, ledger)
+
+    def test_empty_fact_id_falls_back_to_full_ledger(self):
+        ledger = "[VERIFIED] F-1: alpha claim.\n  numeric_value: 10%\n"
+        excerpt = runner.build_ledger_excerpt(ledger, "")
+        self.assertEqual(excerpt, ledger)
+
+
 if __name__ == "__main__":
     unittest.main()

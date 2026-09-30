@@ -14641,3 +14641,101 @@ iteration7 Trialは本委任のスコープ外のため未実施、次回委任�
 `er052_open233_self_recovery_stage2_hook_01.py`、新規`er052_open233_
 self_recovery_flow_runner_01_rep8_representative_01.py`、`er052_output/
 open233_self_recovery_flow_runner_01_rep8/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: ユーザー新指示12項目の反映(局所QA統合
+・全体Rewrite経路是正・不要Rewrite4件の解決策・Escalation 2 run是正)+
+代表12ケース拡張Trial(委任_18、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_18、委任_18a[read-only全件
+開示、`docs/pm/open233_iter6_rewrite_disclosure_01.md`]の分析結果に基づく)。
+
+**背景**: 委任_18a(¥0、read-only)がiter6の全体Rewrite3件・不要Rewrite4件
+・real_run Escalation2件・局所QA未統合の全件を開示し、いずれも「①〜④の
+ladderが一度も試行されずに⑥へ落ちる」「同一fact_idの別箇所が複数cycleに
+分散する」等の構造的原因を機械確認した。委任_18はこの開示に基づき、
+コード修正+代表ケース拡張Trialを実施した。
+
+**実装(2-1)**: precheck floor claimの`claim_text`が診断用合成文字列
+(記事本文に存在しない)だった根本原因を`resolve_precheck_target_
+sentence`(新規)で是正し、実文へ解決してから既存locateの通常経路(①〜④
+ladder)へ渡す。`found=False`(対象文が一度も特定できない)の場合は⑥
+全体フォールバックを試みず`target_not_locatable`でStage4へ回す(⑥は
+`found=True`で①〜④を実際に試行した場合のみの例外経路として維持、
+disclosure §1-1-3の「⑥が①より安全だった」逆転現象を尊重)。削除型
+Rewriteでtitle/hookが空文字・極端短縮(語数<3)になる場合を検出する
+`title_degenerate`/`hook_degenerate`ガードを`measure_section_role_
+violation`へ追加し、再生成後も解消しなければ無条件でSTAGE4へ回す(既存
+の「1回再生成を試みるが結果が同じでも通過してしまう」ガード漏れを是正)。
+
+**実装(2-2)**: neg2/meta_run03_advanced(MUSE-HC-012パターン、Ledgerが
+確認済みの「開示不備」から『利用者はその時点で知る手段がなかった』という
+論理的帰結[否定形のみ]を新規主観断定と誤BLOCKする問題)に対し、
+deterministic post-Stage2条件(`apply_disclosure_gap_downgrade`、floor
+不発火+否定形パターン+新規数値・固有名詞なし、¥0)を実装した。disclosure
+提示の2方式のうち、委任_16 B-2が実測したprompt primingリスクを避け
+Guardrail内に収まる(ii)deterministic方式を採用(Trial限定、Production
+採用には別途ユーザー承認が必要)。neg3(floor+LLM独立判定一致、iteration
+間で非決定的)は解決策を実装せず、disclosure §1-2-4の結論(解決策なし)を
+維持した。
+
+**実装(2-3)**: J-1被フラグ文不変ガード(a)は委任_16のJ-1ラダー化で既に
+実装済みと確認(新規コード追加なし、design書§6-5-Cに既存Evidence記載)。
+同一fact_idの複数箇所分散(b)には、cycle上限判定へ`same_fact_id_new_
+location`条件(過去cycleで見たfact_idの新しい箇所が含まれていれば、
+cycle上限3を超えない範囲で1回だけ追加cycleを許可)を追加した。
+
+**実装(2-4)**: Production局所QA(`er010_ledger_local_rewrite_09.extract_
+point_context`/`classify_deviation_role`/`evaluate_target_sentence_
+status`、決定論の純粋関数、read-only importで再利用しProduction自体は
+無変更)の設計思想を踏襲し、「最小修正→修正文+前後1文確認→問題解消・
+周辺影響なしなら終了」の基本形(`run_local_qa_fastpath`)を実装した。
+全文Recheckを残す5条件(段落/全体/削除ladder、同cycle複数claim、paired
+J-1、deterministic floor claim、Safety fixture)のいずれにも該当しない
+場合のみ局所QA 1 callを試し、成功時のみ全文Recheckを省略する。
+
+**unittest**: 新規39件(`TestResolvePrecheckTargetSentence`/`TestBuild
+PrecheckFloorClaimsLocatability`/`TestTargetNotLocatableEarlyReturn`/
+`TestDegenerateRewriteGuard`/`TestDegenerateRewriteHardBlockWiring`/
+`TestApplyDisclosureGapDowngrade`/`TestApplyDisclosureGapDowngradeWired
+IntoStage2`/`TestFullRecheckRequired`/`TestFindSentenceContext`/`Test
+LocalQaFastpathWiring`/`TestBuildLedgerExcerpt`)+既存170+23+21=**計
+214件全PASS**(regressionなし)。design書§4-15/§5-9/§6-5新設。
+
+**rep9代表12ケース拡張Trial**(新規`er052_open233_self_recovery_flow_
+runner_01_rep9_representative_01.py`、¥20.0358、Guardrail¥20到達に
+より`safety_A2A3`/`safety_A5`のsample2は未実行、n=2、OUT_DIR=`er052_
+output/open233_self_recovery_flow_runner_01_rep9`): 主要3目標を達成
+した——(1)`safety_er009_changed_number`が`6_full_article`を経由せず
+`1_word_connective`/`3_sentence`で解消(precheck locate是正の実測
+確認)、(2)`neg2_meta_refresh_a2`が2/2 sampleでBLOCKING→QUALITY
+downgradeしRewriteなしで通過、(3)`meta_run03_standard`が2/2 sample
+ともSTAGE4_ESCALATIONに至らなかった(人間確認率0達成)。
+`safety_er009_unsupported_new_claim`の題名空文字化はdegenerate output
+guardが2/2 sampleとも正しく検出しSTAGE4へ回した(disclosure §1-1-4の
+「静かなfalse PASS」を解消、ただし根本Rewrite精度は未改善)。局所QA
+fastpathは3回試行され3回とも安全側にフォールバックしたが、コスト
+削減効果は今回のデータでは実証できなかった(正直に報告)。**新規観測
+(未解決)**: `hormuz_run03_standard`(sample1)で新規STAGE4
+(`cycle_limit_exhausted_after_recheck`)を観測。根本原因分析により
+本委任の変更由来ではなく既存の構造的限界(claim言い換えcycleパターン、
+Phase2課題item8と同型)と判断したが、実測FAILとして正直に記録し、
+追加の単発再実行は残りGuardrailの安全側判断として見送った。Safety
+側は全Safety claimでBLOCKING/floor維持を確認(disclosure-gap
+downgradeの誤混入なし)。
+
+**Gate判定**: 12 instance×n=2のうち10はn=2完走・2はsample1のみのため、
+29 instance全量のGate判定に必要な母数を満たしておらず**広いTrialの
+Gateは判定保留**。USER_DECISION_REQUIRED非該当(6条件いずれも、
+`hormuz_run03_standard`の扱いはFable/ユーザーへの判断材料として提示)。
+費用¥20.0358、Phase累計¥297.8057+¥20.0358=**¥317.8415**/総枠¥500、
+残¥182.1585。Status=`REP9_PARTIAL_GUARDRAIL_REACHED_MIXED_RESULTS`
+(次回委任でのFable/ユーザー判断待ち、広いTrial実施の要否・
+`hormuz_run03_standard`の扱いを含む)。詳細: `docs/pm/design_open233_
+self_recovery_flow_01.md`§4-15/§5-9/§6-5/冒頭Status、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§18、`docs/pm/
+open233_iter6_rewrite_disclosure_01.md`、`docs/pm/delegation_log/
+2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_18.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_open233_self_recovery_precheck_01.py`、新規`er052_open233_
+self_recovery_flow_runner_01_rep9_representative_01.py`、`er052_output/
+open233_self_recovery_flow_runner_01_rep9/`。
