@@ -1279,3 +1279,58 @@ VALIDATED条件(機構起因Escalation 0/n=2・Safety12+critical10でfalse-negat
 ### 16-8. 費用
 
 作業A(governance明文化)・B(実装)・B-3(チェック表): ¥0。作業C: 1回目実行¥8.1229+最小修正後再実行¥0.1928+安全復帰後再検証¥1.0703=**¥9.386**(委任Guardrail¥15内)。本委任合計: **¥9.386**。Phase累計(前回まで¥283.2016)+本委任¥9.386=**¥292.5876**。Phase残額(**上限¥500**のうち)=**¥207.4124**。
+
+## §17. Hook専用Stage2実装+代表5ケースTrial再実行(委任_17、2026-09-30)
+
+### 17-1. 前回ユーザー指示への対応表(委任_17§1、委任_16と同一のユーザー指示セット)
+
+| # | 指示 | 反映先 | 実際の動作 | Evidence | 判定 |
+|---|---|---|---|---|---|
+| A Hook-aware | Title/Hook/場面描写/attention grabberを通常Fact文と同基準で過剰BLOCKしない。確認済みFactから自然に導ける演出は許容、新しい具体的Factの発明のみNG | 新規`er052_open233_self_recovery_stage2_hook_01.py`(Hook専用Stage2、title/hookのclaimのみ別Prompt・別call)+`run_stage2`分岐実装(design書§4-14) | 代表ケース1(neg1)で実測、Hook専用StageがQUALITY/ACCEPTABLEと判定しRewriteなしで通過(n=2両方) | `er052_output/open233_self_recovery_flow_runner_01_rep8/summary_rep8.json` | **PASS**(委任_16でFAILしていたケースが解消) |
+| B 数値丸め | 通常の四捨五入は一致扱い | `precheck.is_natural_rounding`(既存、変更なし) | 既存23例のunittestが引き続き全PASS(regressionなし) | `TestIsNaturalRoundingDirect`等 | 既存維持(PASS) |
+| C 最小変更第一 | ①語・接続詞②文の一部③1文④段落⑤広範囲⑥全体 | `single_text_rewrite`/`paired_rewrite`ラダー(既存、変更なし) | 代表ケース2〜5で全てladder_level_used=1_word_connective(一部6_full_articleのprecheck floor併用)、段落単位0件 | summary_rep8.json | 既存維持(PASS) |
+| D B3型 | so→while/Meanwhile/文分割を先に試す | Cと同一機構(paired ladder)。本委任の主眼はB3がHook専用Stage2を経由しないことの確認 | `bgroup_B3`はsection_type="in_one_line"としてbody経路(既存RUBRIC_R3_TRIPLE_PRIME)を通り、`ladder_level_used=1_word_connective`で解消。Hook専用Stage2(s2h)は一度も呼ばれていない(stage2_route="body") | instance json(`bgroup_B3.json`)のstage2_results | **PASS**(誤降格regressionは再現せず) |
+| E セクション役割維持 | Title/Hook/本文/In one lineの役割をRewrite後も維持 | `measure_section_role_violation`(既存、変更なし) | 5 instance×n=2の全10 instance-runでsection_role_violation 0件 | summary_rep8.json | **PASS**(委任_16のneg1 hook_shrank違反も解消、そもそもRewrite自体が発生しなかったため) |
+| F Rewrite後QA | 既存資産の再利用・二重実装禁止・再利用可否明示 | 委任_14監査A-2(既存)を維持 | 新規実装なし(既存監査の結論どおり) | `docs/pm/audit_hook_aware_and_rewrite_qa_open233_01.md`§A-2 | 既存維持(変更なし) |
+| 進行順 | 少数代表ケース→広いTrial | 本委任の構造そのもの | 5 instanceのみ実行、29 instance全量再実行はしていない | §17-3 | 遵守 |
+| 再発防止 | PM_GOVERNANCE.md22節のTrial開始前/終了前チェック・次工程Gate | `docs/pm/ACTIVE_TASK_C233T.md`(開始前チェック表、A〜F未反映0件を確認) | 本委任自体もこのチェックに従って実行 | `docs/pm/ACTIVE_TASK_C233T.md` | 反映済み |
+
+### 17-2. §2原因是正の実装(作業A、¥0、unittest 131件+precheck 23件=154件全PASS)
+
+委任_16 B-2は「Hook演出許容原則」を既存Stage2 rubric(`RUBRIC_R3_TRIPLE_PRIME`)へ追記し、title/hook/body/in_one_lineの全claimを**同一batch call**で判定したため、Safety-critical claim(`bgroup_B3`)がQUALITYへ誤降格するprompt priming(原則文がプロンプト中に存在するだけで、条件上は無関係なclaimの判定にも寛容化バイアスが波及する現象)が発生し、適用対象をtitle/hookの2種のみへ限定する最小修正1回後も再現したためSTOP条件に該当した(REPORT§16)。
+
+委任_17は原則文の追記ではなく、**title/hookに位置するclaimの再評価を完全に別のPrompt・別のAPI call(Hook専用Stage2)へ分離**した(design書§4-14)。実装:
+
+- **A-1 セクション判定**: 既存`detect_claim_section_type`(変更なし)。title/hook/in_one_line/bodyの4区分の判定基準・境界例(hookが2段落にまたがる場合の既知の限界)を設計書§4-14へ明記した。
+- **A-2 Hook専用Stage2**: 新規`er052_open233_self_recovery_stage2_hook_01.py`(s2h)。入力=Ledger全文+source context+タイトル・hook段落のみ(`build_title_hook_context`、対象claimを含む段落±1段落のような広い文脈は渡さない)+対象claim配列。schema=materiality/basis/rewrite_kind/rewrite_hint(既存`_ITEM_PROPS`を再利用)。rubric(`HOOK_RUBRIC`)は委任文§2の原則文どおり、tie-breakを「発明の有無」に固定。
+- **A-3 runner分岐**: `run_stage2`をhook群(title/hook)とbody群(body/in_one_line)へ分割し、各群を独立のAPI callで判定する(`HOOK_ONLY_STAGE2_SECTION_TYPES`)。body群は既存`s2c.run_stage2_batch_variant`+`RUBRIC_R3_TRIPLE_PRIME`(iteration4〜6・rep7と同一プロンプト内容、不変)。いずれかの群が空ならそのAPI callは発火しない(追加コストは実際に該当claimがある場合のみ)。各群は独立にMAX_RETRIES_PER_CALL回まで再試行し、失敗時はその群のclaimのみfail-closedでBLOCKING確定(§6-1の既存fail-closed原則をgroup単位へ拡張、上限回数・厳しさは変更なし)。各claimへ`stage2_route`(body/hook/フェイルクローズ理由)をEvidenceとして記録。
+- deterministic floor(`apply_floor`)・pre-check floor・既存post-hoc downgrade(`apply_hook_aware_downgrade`、changed_scope単独限定)はいずれも変更せず、Hook専用Stage2の判定結果に対しても引き続き同一ロジックで適用される(Safety側の安全装置は一切回避・弱体化していない)。
+- **A-4 unittest**: `TestHookOnlyStage2Separation`(新規4件)。(1)neg1のhook claimがmockでQUALITY→body Stage2(`s2c.run_stage2_batch_variant`)が一切呼ばれないことを`MagicMock.assert_not_called()`で確認、(2)`bgroup_B3`の因果claim(section_type="in_one_line")がbody経路を通りHook専用Stage2が一切呼ばれないことを確認しつつBLOCKING維持を確認、(3)`changed_actor`floorを持つhook区分claimにHook専用StageがQUALITYを返してもfloorにより最終的にBLOCKINGへ強制されることを確認、(4)hookに新しい具体的事実を発明した合成claimに対しHook専用StageがBLOCKINGを返す基本疎通を確認。既存127件(委任_16時点)+新規4件=131件+`er052_open233_self_recovery_precheck_01_test_01.py`23件、計**154件全PASS**(`.venv/Scripts/python.exe`実行、regressionなし)。
+
+### 17-3. 代表5ケースTrial実測(作業B、¥5.2181、n=2)
+
+新規`er052_open233_self_recovery_flow_runner_01_rep8_representative_01.py`で、委任_16 rep7と同一の5 instance(全てstage1_mode=reuse、Stage1コスト¥0)をn=2実行した(OUT_DIR=`er052_output/open233_self_recovery_flow_runner_01_rep8`、Guardrail¥14)。
+
+| ケース | instance | section_type | stage2_route | 実測結果 | 判定 |
+|---|---|---|---|---|---|
+| 1 Meta Hook | `neg1_meta_b3prod_a2` | hook | hook | materiality=QUALITY(sample1、Stage2 2-of-2安定化[既存機構]が発火し1回目BLOCKING→2回目QUALITYで降格)/ACCEPTABLE(sample2、1回目でACCEPTABLE)。final_state=RESOLVED_STAGE2_DOWNGRADE、Rewriteなし(ladder=[]、role_violations=[]) | **PASS**(委任_16でFAILしていたケースが解消) |
+| 2/3 B3丸め+因果 | `bgroup_B3` | in_one_line | body(2/2ともHook専用Stage2は未呼び出し) | materiality=BLOCKING維持(2/2)、`ladder_level_used=1_word_connective`(so→while相当)で解消、role_violations=[] | **PASS**(委任_16の誤降格regressionは再現せず) |
+| 4 Hormuz scope | `hormuz_run03_standard` | body | body | BLOCKING→`ladder_level_used=1_word_connective`で解消、recheck_all_prior_issues_resolved=True(EN/JA両方LEDGER_COMPLIANT)、役割違反0件 | **PASS** |
+| 5a Safety actor | `safety_er009_changed_actor` | title | hook(LLM判定もBLOCKING、floorも維持) | `floor_reason=deterministic_floor:changed_actor`維持→`ladder_level_used=1_word_connective`で解消、recheck all_prior_issues_resolved=True | **PASS** |
+| 5b Safety number | `safety_er009_changed_number` | title(1claim)+body(precheck floor claim1件) | hook+precheck_floor_bypass | `floor_reason=deterministic_floor:changed_number`/`precheck_floor`維持→`ladder_levels_used=[1_word_connective, 6_full_article]`で解消、recheck all_prior_issues_resolved=True | **PASS** |
+
+**5/5ケース全てPASS(n=2両方一致)**。最小修正1回のフェイズは発動しなかった(1回目の実行で全PASS)。STAGE4到達0件・API error 0件・section_role_violation 0件。
+
+**Hook専用Stage2の発火状況(Evidence)**: `bgroup_B3`のinstance json(`er052_output/open233_self_recovery_flow_runner_01_rep8/instances_s{1,2}/bgroup_B3.json`)のstage2_resultsで、対象claimに`"stage2_route": "body"`が記録されており、call_logにも`stage2_variant="hook"`のエントリが一切存在しないことを機械的に確認した(Hook専用Stage2がこのclaimに対して一度も呼ばれていない直接証拠)。Hook専用Stage2の発火は5 instance×n=2中、neg1(sample1で2回[2-of-2安定化]+sample2で1回=計3回)・safety_actor(1回×2)・safety_number(1回×2)の計7回、単価¥0.0342〜¥0.3538。
+
+### 17-4. コスト内訳(参考値)
+
+instance別合計(n=2結合、¥5.2181): neg1 ¥0.3538+¥0.0674=¥0.4212、bgroup_B3 ¥0.68+¥0.4168=¥1.0968、hormuz ¥1.4009+¥1.0565=¥2.4574、safety_actor ¥0.3463+¥0.2043=¥0.5506、safety_number ¥0.4215+¥0.2706=¥0.6921。委任Guardrail¥14に対し実測¥5.2181(37.3%)。正式なコスト5分割測定は29 instance全量Trial(iteration7、未実施)で行う(委任_16と同じ位置づけ、参考値にとどめる)。
+
+### 17-5. Gate判定
+
+5/5ケース全てPASS(Safety側もSafety維持側も両方成立)。**広いTrial(iteration7全量)は本委任のスコープ外のため未実施**。**Status=`REP8_ALL_5_CASES_PASS_HOOK_SEPARATION_CONFIRMED`**。次回委任でのユーザー判断・Fable判定を経て、広いiteration7 Trial実施の要否・タイミングを決める(J-1ラダー[委任_16でPASS]・Hook専用Stage2[本委任でPASS]の両方が代表ケースで有効性を確認できた状態)。
+
+### 17-6. 費用
+
+作業A(実装+unittest): ¥0。作業B(代表5ケースTrial): **¥5.2181**(委任Guardrail¥14内、最小修正フェイズ不要のため追加費用なし)。本委任合計: **¥5.2181**。Phase累計(前回まで¥292.5876)+本委任¥5.2181=**¥297.8057**。Phase残額(**上限¥500**のうち)=**¥202.1943**。

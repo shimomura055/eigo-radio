@@ -75,6 +75,7 @@ import er052_open233_self_recovery_phase1_step3_stage1_compare_01 as step3cmp
 import er052_open233_self_recovery_precheck_01 as precheck
 import er052_open233_self_recovery_s1d_trial_01 as s1d
 import er052_open233_self_recovery_stage2_calibration_01 as s2c
+import er052_open233_self_recovery_stage2_hook_01 as s2h
 import er052_open233_self_recovery_stage2_production_01 as s2p
 import er052_open233_self_recovery_stage3_rewrite_trial_01 as s3rt
 
@@ -121,9 +122,15 @@ OUT_DIR_ITER6 = "er052_output/open233_self_recovery_flow_runner_01_iter6"
 # する(委任文§3-C、29 instance全量再実行は本委任スコープ外)。出力は
 # 新規ディレクトリ(`_rep7`)へ書く。
 OUT_DIR_REP7 = "er052_output/open233_self_recovery_flow_runner_01_rep7"
-OUT_DIR = OUT_DIR_REP7
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233s_16.json"
-TOTAL_BUDGET_JPY = 15.0  # 委任_16 Guardrail(委任文§0「本委任Guardrail¥15」)
+# 委任_17(2026-09-30): 既存iteration1〜6・rep7の出力(OUT_DIR_ITER1〜6/
+# OUT_DIR_REP7)は変更しない。Hook専用Stage2(s2h、title/hookのclaimのみを
+# 別Prompt・別callで判定し、既存body Stage2[R3''']とは完全に分離する)の
+# 反映後、代表5ケースのみをn=2で再実行する(委任文§3-B、広いTrialは
+# スコープ外)。出力は新規ディレクトリ(`_rep8`)へ書く。
+OUT_DIR_REP8 = "er052_output/open233_self_recovery_flow_runner_01_rep8"
+OUT_DIR = OUT_DIR_REP8
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233t_17.json"
+TOTAL_BUDGET_JPY = 14.0  # 委任_17 Guardrail(委任文§0「本委任Guardrail¥14」)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -1189,6 +1196,47 @@ def detect_claim_section_type(claim_text: str, full_text: str) -> str:
     return "body"
 
 
+# ------------------------------------------------------------
+# Hook専用Stage2(委任_17、§2原因是正: Hook演出許容を共通rubricから分離)。
+# detect_claim_section_typeの判定基準(既存、変更なし):
+# - title: 記事先頭行(`_paragraph_title`、Markdown見出し記号を含む生の
+#   1行)とのJaccard類似度[閾値0.4]または部分文字列一致。
+# - hook: 本文第1段落(`_first_body_paragraph`=`_split_paragraphs_
+#   nonheading`が返す最初の段落。「#」始まりの見出し行は除外される)との
+#   類似度[閾値0.3]。**境界例**: hookが実質2段落以上にまたがる記事
+#   (例: 場面描写が2段落連続する構成)であっても、本判定は常に
+#   `paras[0]`(最初の1段落)のみをhook候補として扱う。2段落目以降の
+#   場面描写は本判定では「body」に分類される(既知の限界、Hook専用Stage2
+#   の対象外のまま本文Stage2[R3''']で判定される。iteration1〜6・rep7の
+#   fixture群では該当例は確認されていない)。
+# - in_one_line: 「## In one line」見出し直後の1段落(`_extract_in_one_
+#   line_text`)との類似度[閾値0.4]。**in_one_lineはHook専用Stage2の対象
+#   外**(下記HOOK_ONLY_STAGE2_SECTION_TYPESに含まれない、§5-7の役割定義
+#   どおり「短く圧縮して締める」機能でありHook演出とは役割が異なる。
+#   委任_16でbgroup_B3がin_one_line区分に分類されたままHook-aware原則の
+#   適用対象から除外されていたにもかかわらず誤降格したため[prompt
+#   priming]、委任_17ではAPI call自体を分離することで構造的に遮断する)。
+# - 上記いずれにも該当しなければ「body」。
+#
+# HOOK_ONLY_STAGE2_SECTION_TYPES(title/hookの2種のみ)に該当するclaimは
+# Hook専用Stage2(er052_open233_self_recovery_stage2_hook_01、別Prompt・
+# 別call)へ、それ以外(body/in_one_line)は既存Stage2
+# (s2c.RUBRIC_R3_TRIPLE_PRIME、変更なし)へ振り分ける(run_stage2参照)。
+# ------------------------------------------------------------
+HOOK_ONLY_STAGE2_SECTION_TYPES = frozenset({"title", "hook"})
+
+
+def build_title_hook_context(full_text: str) -> str:
+    """Hook専用Stage2(委任_17 A-2)の入力用に、Title(見出し行)とHook段落
+    (本文第1段落)のみを抽出して返す(¥0、決定論)。既存のローカル文脈
+    ±1段落(`s2p.build_local_context`)とは異なり、対象範囲をTitle/Hookのみ
+    へ意図的に限定する(委任文§3 A-2「入力=Ledger全文+source context+
+    タイトル・hook段落+対象claim」)。"""
+    title = _paragraph_title(full_text)
+    hook = _first_body_paragraph(full_text)
+    return f"タイトル: {title}\n\nHook段落(本文第1段落): {hook}"
+
+
 def apply_hook_aware_downgrade(materiality: str, dev: dict, section_type: str, floor_reason) -> tuple:
     """floor適用後のmaterialityに対し、Hook section×changed_scope単独×
     floor不発火の場合のみBLOCKING->QUALITYへpost-hoc downgradeする
@@ -1228,79 +1276,105 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         claim_records.append({**c, "local_context": local_context, "fallback_used": fallback,
                                "section_type": section_type})
     claim_records_for_stage2 = [{k: v for k, v in c.items() if k != "section_type"} for c in claim_records]
-    last_err = None
-    result = None
-    for _ in range(1 + MAX_RETRIES_PER_CALL):
-        try:
-            # 委任_13(iteration5): RUBRIC_R3_PRIME -> RUBRIC_R3_TRIPLE_PRIME
-            # へ切替(§4-8)。Opus L2レビュー#3論点1・2により、R3_PRIMEの
-            # 「内心の断定」「scope一般化」の2追記が例示ベースで広すぎ、
-            # B4-d(驚きという一般的反応)・B1-c(市場の見方)を過剰にBLOCKING
-            # へ倒していたことが実測された(委任_12較正較差)。RUBRIC_R3_
-            # DOUBLE_PRIME(R3'')は同じ2項目を「開示・認識の有無そのもの」
-            # 「Ledger観測値そのもののscope」という原則へ限定したが、単体
-            # 較正でB4-dが2/2ともBLOCKINGのまま残った(未達)。RUBRIC_R3_
-            # TRIPLE_PRIME(R3''')は項目1をさらに「特定の個別の事実として
-            # 断定しているか、Ledgerが既に一般的な傾向として記録している
-            # 内容の抽象的な言い換えか」で絞り込み、単体較正でSafety-critical
-            # 10claim(A2A3-0/A4-0/A4-1/A5-0/A5-1/Meta-1/Meta-2/hormuz-HF009/
-            # B3/B4-a)誤降格0・B4-d/B1-c QUALITY 2/2・正解一致率93.48%
-            # (R3'の80.43%を上回る)を達成したため採用する(較正実測:
-            # er052_output/open233_self_recovery_r3dprime_calibration_01/
-            # summary_r3tripleprime_calibration.json)。
-            # 委任_16 B-2で一旦RUBRIC_R3_TRIPLE_PRIME -> RUBRIC_R4_HOOK_AWARE
-            # (Title/Hook/場面描写の演出許容原則を追記した新規rubric)へ
-            # 切替を試みたが、代表ケースTrial(作業C、ケース2/3=bgroup_B3)で
-            # Safety-critical 10claimの1つ(B3、SAFETY_CRITICAL_SUB_IDS)が
-            # QUALITYへ誤降格する実測結果を得た。原因調査のため適用対象を
-            # title/hook/in_one_line/bodyからtitle/hookの2種のみへ限定する
-            # 最小修正(RUBRIC_R4_HOOK_AWARE本体を修正、詳細s2c.py該当コメント
-            # 参照)を1回行い再実行したが、in_one_line/bodyを明示的に適用対象
-            # 外としたにもかかわらず同じ誤降格が再現した(QUALITY 2/2、
-            # `er052_output/open233_self_recovery_flow_runner_01_rep7/
-            # summary_rep7_b3_refix.json`)。これはHook-aware原則文が
-            # プロンプト中に存在するだけで、条件上は無関係なsection_type
-            # (in_one_line)の判定にも寛容化バイアスが波及した疑いが強い
-            # (ルール条件のバグではなくLLMのprompt priming効果の疑い)。
-            # 委任文§5(STOP条件「代表ケースが最小修正1回後もFAIL」)に該当
-            # するため、RUBRIC_R4_HOOK_AWAREは実配線せず、実測で安全性が
-            # 確認されているRUBRIC_R3_TRIPLE_PRIMEへ復帰する(既存iteration
-            # 4/5/6の安全な挙動を維持)。RUBRIC_R4_HOOK_AWARE自体・
-            # section_type入力機構は次回委任向けにコードとして残す(削除
-            # しない、Phase2課題として報告、詳細REPORT§17/DECISION_LOG参照)。
-            result = s2c.run_stage2_batch_variant(
-                client, fixture["ledger_text"], fixture.get("source_article_text"),
-                claim_records_for_stage2, s2c.RUBRIC_R3_TRIPLE_PRIME, model=MODEL,
-            )
-            break
-        except Exception as e:  # noqa: BLE001
-            last_err = f"{type(e).__name__}: {e}"
-            time.sleep(1.0)
-    if result is None:
-        call_log.append({"label": label, "recovery_stage": "stage2_second_judge", "error": last_err})
-        record_call(state, consecutive_errors, label, 0.0, False, "stage2_second_judge")
-        # 判断不能はfail-closedでBLOCKING確定(§6-1)
-        out = []
-        for c in claim_records:
-            out.append({**c, "materiality": "BLOCKING", "basis": "none", "rewrite_kind": "replace_with_ledger_value",
-                        "rewrite_hint": "", "floor_reason": "stage2_api_failure_failclosed"})
-        return out
-    call_log.append({"label": label, "recovery_stage": "stage2_second_judge", "cost_jpy": result["cost_jpy"],
-                      "usage": result["usage"], "elapsed_seconds": result["elapsed_seconds"],
-                      "prompt_sha256": result["prompt_sha256"]})
-    record_call(state, consecutive_errors, label, result["cost_jpy"], True, "stage2_second_judge", result["usage"])
-    judgments = result["parsed"].get("judgments", [])
+
+    # ------------------------------------------------------------
+    # 委任_17(§2原因是正): 委任_16 B-2はHook-aware原則文をRUBRIC_R3_
+    # TRIPLE_PRIME本体へ追記し同一batch call内へtitle/hook/body/in_one_line
+    # の全claimを混在させたため、Safety-critical claim(bgroup_B3)がQUALITY
+    # へ誤降格するprompt priming(原則文がプロンプト中に存在するだけで
+    # section_type条件上は無関係なclaimの判定にも寛容化バイアスが波及する
+    # 現象)が実測され、実配線をRUBRIC_R3_TRIPLE_PRIMEへ復帰した(旧コメント
+    # 参照、REPORT§16)。委任_17は原則文の追記ではなく、**title/hookに
+    # 位置するclaimのみを完全に別のPrompt・別のAPI call(Hook専用Stage2、
+    # er052_open233_self_recovery_stage2_hook_01=s2h)へ分離**することで
+    # priming経路そのものを構造的に遮断する。body/in_one_lineのclaimは
+    # 既存どおりs2c.RUBRIC_R3_TRIPLE_PRIME(本文は一切変更しない、iteration
+    # 4/5/6と同一のプロンプト内容)で判定する。2グループの判定は互いに
+    # 別のcallであるため、一方のprompt文言が他方の判定へ波及する経路が
+    # 存在しない(REPORT§17)。
+    # ------------------------------------------------------------
+    hook_indices = [i for i, c in enumerate(claim_records)
+                    if c["section_type"] in HOOK_ONLY_STAGE2_SECTION_TYPES]
+    body_indices = [i for i, c in enumerate(claim_records) if i not in hook_indices]
+
+    judgments_by_index: dict = {}
+    failclosed_indices: set = set()
+    stage2_route_by_index: dict = {}
+
+    def _run_stage2_group(group_indices: list, group_kind: str, call_fn) -> None:
+        if not group_indices:
+            return
+        group_claims = [claim_records_for_stage2[i] for i in group_indices]
+        group_label = f"{label}_stage2_{group_kind}"
+        last_err = None
+        result = None
+        for _ in range(1 + MAX_RETRIES_PER_CALL):
+            try:
+                result = call_fn(group_claims)
+                break
+            except Exception as e:  # noqa: BLE001
+                last_err = f"{type(e).__name__}: {e}"
+                time.sleep(1.0)
+        if result is None:
+            call_log.append({"label": group_label, "recovery_stage": "stage2_second_judge",
+                              "stage2_variant": group_kind, "error": last_err})
+            record_call(state, consecutive_errors, group_label, 0.0, False, "stage2_second_judge")
+            for i in group_indices:
+                failclosed_indices.add(i)
+                stage2_route_by_index[i] = f"{group_kind}_api_failure_failclosed"
+            return
+        call_log.append({"label": group_label, "recovery_stage": "stage2_second_judge",
+                          "stage2_variant": group_kind, "cost_jpy": result["cost_jpy"],
+                          "usage": result["usage"], "elapsed_seconds": result["elapsed_seconds"],
+                          "prompt_sha256": result["prompt_sha256"]})
+        record_call(state, consecutive_errors, group_label, result["cost_jpy"], True,
+                    "stage2_second_judge", result["usage"])
+        judgments = result["parsed"].get("judgments", [])
+        for local_idx, global_idx in enumerate(group_indices):
+            match = next((j for j in judgments if j.get("claim_index") == local_idx), None)
+            if match is None:
+                failclosed_indices.add(global_idx)
+                stage2_route_by_index[global_idx] = f"{group_kind}_schema_index_mismatch_failclosed"
+            else:
+                judgments_by_index[global_idx] = match
+                stage2_route_by_index[global_idx] = group_kind
+
+    # body/in_one_line: 既存Stage2(R3'''、プロンプト内容は不変)
+    _run_stage2_group(
+        body_indices, "body",
+        lambda cl: s2c.run_stage2_batch_variant(
+            client, fixture["ledger_text"], fixture.get("source_article_text"),
+            cl, s2c.RUBRIC_R3_TRIPLE_PRIME, model=MODEL,
+        ),
+    )
+    # title/hook: Hook専用Stage2(s2h、別Prompt・別call。入力はLedger全文+
+    # source context+タイトル・hook段落のみ、対象claimを含む段落±1段落の
+    # ような広い文脈は渡さない)
+    title_hook_text = build_title_hook_context(fixture["article_text"]) if hook_indices else ""
+    _run_stage2_group(
+        hook_indices, "hook",
+        lambda cl: s2h.run_stage2_hook_batch(
+            client, fixture["ledger_text"], fixture.get("source_article_text"),
+            title_hook_text, cl, model=MODEL,
+        ),
+    )
+
     out = []
     for i, c in enumerate(claim_records):
-        match = next((j for j in judgments if j.get("claim_index") == i), None)
-        if match is None:
+        if i in failclosed_indices:
             materiality, basis, rewrite_kind, rewrite_hint = (
                 "BLOCKING", "none", "replace_with_ledger_value", "")
-            floor_reason = "schema_index_mismatch_failclosed"
+            floor_reason = "stage2_api_failure_failclosed"
         else:
-            materiality, basis, rewrite_kind = match["materiality"], match["basis"], match["rewrite_kind"]
-            rewrite_hint = match.get("rewrite_hint", "") or ""
-            floor_reason = None
+            match = judgments_by_index.get(i)
+            if match is None:
+                materiality, basis, rewrite_kind, rewrite_hint = (
+                    "BLOCKING", "none", "replace_with_ledger_value", "")
+                floor_reason = "schema_index_mismatch_failclosed"
+            else:
+                materiality, basis, rewrite_kind = match["materiality"], match["basis"], match["rewrite_kind"]
+                rewrite_hint = match.get("rewrite_hint", "") or ""
+                floor_reason = None
         detected_by = c.get("detected_by", "stage1_llm")
         # 委任_14 B-1: floor評価直前にchanged_numberの丸め誤検出を除去する
         # (precheck floor[detected_by=="precheck"]は既に丸め対応済みの
@@ -1335,6 +1409,11 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                     "rewrite_kind": rewrite_kind if rewrite_kind != "none" else "replace_with_ledger_value",
                     "rewrite_hint": rewrite_hint, "floor_reason": floor_reason,
                     "section_type": section_type,
+                    # 委任_17: このclaimがStage2のどちらの経路(body=s2c.
+                    # RUBRIC_R3_TRIPLE_PRIME/hook=s2h Hook専用Stage2)を
+                    # 通ったかのEvidence(¥0、call_logのlabel/stage2_variant
+                    # と同じ情報をclaim単位でも直接確認できるようにする)。
+                    "stage2_route": stage2_route_by_index.get(i, "unknown"),
                     "floor_cited_materiality": cited_materiality, "floor_cited_reason": cited_floor_applied})
     return out
 
@@ -2387,6 +2466,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                     "rewrite_hint": hint, "floor_reason": "precheck_floor",
                                     "section_type": detect_claim_section_type(
                                         pc["claim_text"], working_fixture["article_text"]),
+                                    # 委任_17: precheck floor claimはStage2自体を経由しない
+                                    # (run_stage2を呼ばない)ため、stage2_route
+                                    # (body/hook振り分け)は該当なし。
+                                    "stage2_route": "precheck_floor_bypass",
                                     "floor_cited_materiality": "BLOCKING", "floor_cited_reason": "precheck_floor"})
 
         # 委任_13(iteration5、Stage2 2-of-2安定化): precheck floor claim

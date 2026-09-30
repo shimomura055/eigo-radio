@@ -130,7 +130,22 @@ claim[bgroup_B3]の誤降格regressionを起こし、最小修正1回後もFAIL�
 安全なRUBRIC_R3_TRIPLE_PRIMEへ復帰(再実測でBLOCKING復帰を確認)。
 広いiteration7 Trialへは進んでいない(Gate判定はiteration6の
 REJECTEDのまま)。USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細
-§9-1⑫、REPORT§16。Production実装は未着手)。
+§9-1⑫、REPORT§16。Production実装は未着手)。→ **[委任_17更新]**
+`REP8_ALL_5_CASES_PASS_HOOK_SEPARATION_CONFIRMED`(Hook演出許容を共通
+rubricから分離した「Hook専用Stage2」[title/hookのclaimのみ別Prompt・
+別call、§4-14]を新規実装し、委任_16と同一の代表5 instanceをn=2で
+再実行した[¥5.2181、Guardrail¥14内、rep8]。**5ケース全てPASS**:
+neg1[Meta Hook]がHook専用Stage2でQUALITY/ACCEPTABLE(n=2両方)と判定され
+Rewriteなしで通過(委任_16でFAILしていたケースが解消)、`bgroup_B3`は
+section_type="in_one_line"としてbody経路(既存RUBRIC_R3_TRIPLE_PRIME、
+Hook専用Stage2を一切経由せず)でBLOCKING維持のままladder_level_used=
+1_word_connectiveで解消(prompt priming疑いのregressionは再現せず)、
+hormuz_run03_standard/safety_er009系2件も従来どおりfloor/BLOCKING維持
+→minimal resolutionで解消。role_violation 0件・STAGE4到達0件・API error
+0件。最小修正は不要だった(1回目実行で全PASS)。広いiteration7 Trialへは
+本委任のスコープ外のため未実施(次回委任でのユーザー判断待ち)。
+USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細§9-1⑬、REPORT§17。
+Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -953,6 +968,114 @@ floor-citedは判定不能[非発火]扱いになった)では、明確な引用
 未解消のため、floor-strict(現行)を既定のまま維持し、floor-citedは
 「より広い測定を継続すべき候補」として記録するにとどめる(独自に
 採用判断はしない、Fable/ユーザーへの提示材料)。
+
+### 4-14. セクション判定・Hook専用Stage2(委任_17、§2原因是正)
+
+**注記**: 委任文では本節を「§4-16」と指定していたが、本書§4は§4-13
+までしか存在せず(§4-14/§4-15は未使用)、間に空番を作らないため
+新規追加分は本書の実採番どおり§4-14として追記する(§6-3の前例と
+同じ方針、既存クロスリファレンスへの影響なし)。
+
+**背景**: 委任_16 B-2はTitle/Hook演出許容原則を既存Stage2 rubric
+(`RUBRIC_R3_TRIPLE_PRIME`)へ追記し、body/in_one_line/title/hookの
+全claimを**同一batch call**内で判定した。代表ケースTrial実測により、
+Safety-critical claim(`bgroup_B3`、section_type="in_one_line")が
+QUALITYへ誤降格するprompt priming(原則文がプロンプト中に存在するだけで、
+条件上は無関係なclaimの判定にも寛容化バイアスが波及する現象)が確認され、
+適用対象をtitle/hookの2種のみへ限定する最小修正1回後も再現したため
+(§6-4、REPORT§16)、委任文§5のSTOP条件に該当し実配線を撤回した。
+
+**Fable判定・修正方針(委任文§2)**: 原則文を共通rubricへ追記する方式では
+なく、**title/hookに位置するclaimの再評価を完全に別のPrompt・別のAPI
+callへ分離する**(Hook専用Stage2)。body/in_one_lineのclaimは既存Stage2
+(`RUBRIC_R3_TRIPLE_PRIME`、本文は一切変更しない)のまま判定する。2群が
+別々のAPI callであるため、一方のprompt文言(Hook演出許容原則)が他方の
+判定コンテキストへ物理的に混入する経路が存在せず、prompt primingを
+構造的に遮断する。
+
+**A-1 セクション判定(既存`detect_claim_section_type`、変更なし)**:
+claimが記事のどこに位置するかを、既存`locate_best_sentence`を再利用した
+決定論的Jaccard類似度判定で以下の4区分に分類する(¥0)。
+
+- **title**: 記事先頭行(`_paragraph_title`、Markdown見出し記号を含む
+  生の1行)との類似度[閾値0.4]または部分文字列一致。
+- **hook**: 本文第1段落(`_first_body_paragraph`=`_split_paragraphs_
+  nonheading`が返す最初の段落、「#」始まりの見出し行は除外)との
+  類似度[閾値0.3]。
+- **in_one_line**: 「## In one line」見出し直後の1段落(`_extract_in_
+  one_line_text`)との類似度[閾値0.4]。
+- 上記いずれにも該当しなければ**body**。
+
+**境界例(既知の限界、委任文§3 A-1要求)**: hookが実質2段落以上に
+またがる構成(例: 場面描写が2段落連続する記事)であっても、本判定は
+常に`paras[0]`(最初の1段落)のみをhook候補として扱う。2段落目以降の
+場面描写は本判定では「body」に分類され、Hook専用Stage2の対象外の
+まま既存Stage2(body経路)で判定される。iteration1〜6・rep7のfixture群
+ではこの境界例に該当する記事は確認されていない(将来fixtureで該当例が
+出た場合、body経路[fail-closed寄りの既存rubric]で判定されるため安全側
+に倒れる、Hook演出許容が及ばずBLOCKINGへ倒れやすい方向の限界であり
+Safety側のリスクではない)。
+
+**A-2 Hook専用Stage2**(新規`er052_open233_self_recovery_stage2_hook_01`
+=s2h、既存`stage2_production_01`/`stage2_calibration_01`は変更しない):
+
+- 対象: `HOOK_ONLY_STAGE2_SECTION_TYPES = {title, hook}`のみ(in_one_line
+  は対象外。§6-4の既存post-hoc downgrade用`HOOK_SECTION_TYPES`
+  [title/hook/in_one_line]とは別の定数であり、Hook専用Stage2の入力
+  ルーティングにのみ使う)。
+- 入力: Ledger全文+source context(JA原文、参考)+タイトル・hook段落
+  のみ(`build_title_hook_context`、既存のローカル文脈±1段落
+  [`s2p.build_local_context`]は使わない、意図的な縮小)+対象claim配列。
+  対象claimを含む段落±1段落のような広い文脈は渡さない。
+- schema: materiality/basis/rewrite_kind/rewrite_hint(既存Stage2
+  productionの`_ITEM_PROPS`をそのまま再利用、フィールド自体は変更
+  しない)。
+- rubric: 「Title/Hookは読者を引きつける演出の場。確認済みのFactから
+  人間が自然に導ける情景描写・呼びかけ・比喩・誇張のない強調はQUALITY/
+  ACCEPTABLEとしてRewriteしない。BLOCKINGは(a)新しい具体的な人物・数字・
+  出来事・行動・仕組みの発明、(b)Ledgerとの矛盾、(c)逆方向の因果、
+  (d)actor・number・negation・comparison・timeの重大な変更、のみ」
+  (`HOOK_RUBRIC`)。tie-break: 迷う場合は「発明の有無」で判定し、発明が
+  なければQUALITYとする(委任文§2どおり明記)。
+
+**A-3 runnerの分岐実装(`run_stage2`)**: Stage2対象claimを
+`detect_claim_section_type`の結果でhook群(title/hook)とbody群
+(body/in_one_line)へ分割し、body群は既存`s2c.run_stage2_batch_variant`
++`RUBRIC_R3_TRIPLE_PRIME`(iteration4〜6・rep7と同一プロンプト内容、
+不変)、hook群のみ`s2h.run_stage2_hook_batch`(別call)を呼ぶ。いずれかの
+群が空ならそのAPI callは発火しない(該当claimが無ければ追加コスト
+0)。各群の呼び出しは独立にMAX_RETRIES_PER_CALL回まで再試行し、
+リトライを使い切って失敗した場合は**その群のclaimのみ**
+fail-closedでBLOCKING確定とする(§6-1の既存fail-closed原則を、group
+単位へ自然に拡張したもの。他方の群が成功していれば、その群の判定は
+そのまま活かす。既存の上限回数・fail-closedの厳しさそのものは一切
+緩めていない)。各claimの出力へ`stage2_route`(body/hook/
+{group}_api_failure_failclosed/{group}_schema_index_mismatch_
+failclosed/precheck_floor_bypass)をEvidenceとして記録し、どちらの
+経路を通ったかをinstance json上で直接確認できるようにする。
+
+**deterministic floor/pre-checkの維持**: Hook専用Stage2の判定結果
+(`materiality`)は、既存どおり`apply_floor`/`apply_floor_cited`
+(§4-3/§4-13、FLOOR_FLAGS=changed_actor/number/negation/comparison/
+time)を経由する。pre-check floor(`detected_by=="precheck"`)は
+Stage2自体を経由しない既存経路(§3-1)のままであり、いずれもHook専用
+Stage2の新設によって回避・弱体化されていない(委任文§3「Safety 12は
+改竄fixtureなのでfloorで止まる」の要求どおり)。既存の§6-4 post-hoc
+downgrade(`apply_hook_aware_downgrade`、changed_scope単独限定)も
+変更せず、Hook専用Stage2の判定結果に対して引き続き同一ロジックで
+適用される。
+
+**A-4 unittest(¥0、`er052_open233_self_recovery_flow_runner_01_
+test_01.TestHookOnlyStage2Separation`、4件)**: (1) neg1のhook claim
+(“Ring, ring. …”)をmock Hook専用StageでQUALITYと判定させ、body群
+(`s2c.run_stage2_batch_variant`)が一切呼ばれない(`MagicMock.assert_
+not_called()`)ことを確認、(2) `bgroup_B3`の因果claim(section_type=
+"in_one_line")がbody経路(`RUBRIC_R3_TRIPLE_PRIME`)を通り、Hook専用
+Stage2(`s2h.run_stage2_hook_batch`)が一切呼ばれないことを確認しつつ
+BLOCKING維持を確認、(3) `changed_actor`floorを持つhook区分claimに
+Hook専用StageがQUALITYを返しても、floorにより最終的にBLOCKINGへ
+強制されることを確認、(4) hookに新しい具体的事実を発明した合成claim
+に対しHook専用StageがBLOCKINGを返すケースの基本疎通を確認。
 
 ## 5. Stage 3 Automatic Rewrite設計
 
@@ -2809,6 +2932,47 @@ Rewriteで解消、hook_shrank違反[28→13語]を検出)。**Status=
 `ITER7REP_STOPPED_SAFETY_REGRESSION_REVERTED`**(広いiteration7 Trialへは
 進んでいない、Gate判定はiteration6のREJECTEDのまま変更なし)。詳細
 REPORT§16(委任_16再発防止ルール明文化)/§17(代表ケースTrial結果)。
+
+**⑬ Hook専用Stage2実装+代表5ケースTrial再実行(委任_17、§2原因是正:
+共通rubric混在→API call分離)**: §4-14で確定したHook専用Stage2(title/
+hookのclaimのみ別Prompt・別call、body/in_one_lineは既存Stage2
+[`RUBRIC_R3_TRIPLE_PRIME`、本文不変]のまま)を実装した後、PM_GOVERNANCE.md
+22節のTrial開始前チェック(`docs/pm/ACTIVE_TASK_C233T.md`、A〜F+関連項目
+すべて反映済みを確認)通過後、委任_16と同一の5 instance(`neg1_
+meta_b3prod_a2`/`bgroup_B3`/`hormuz_run03_standard`/`safety_er009_
+changed_actor`/`safety_er009_changed_number`、全てstage1_mode=reuse)を
+n=2で実行した(新規`er052_open233_self_recovery_flow_runner_01_
+rep8_representative_01.py`、Guardrail¥14、OUT_DIR=`er052_output/
+open233_self_recovery_flow_runner_01_rep8`、実測費用¥5.2181)。
+
+**結果: 5/5ケース全てPASS(n=2両方一致)**:
+
+| ケース | instance | section_type | stage2_route | 実測結果 | 判定 |
+|---|---|---|---|---|---|
+| 1 Meta Hook | `neg1_meta_b3prod_a2` | hook | hook(Hook専用Stage2) | materiality=QUALITY(sample1、2-of-2で1回目BLOCKING→2回目降格)/ACCEPTABLE(sample2)。final_state=RESOLVED_STAGE2_DOWNGRADE、Rewriteなし(ladder=[]、role_violations=[]) | **PASS**(委任_16でFAILしていたケースが解消) |
+| 2/3 B3丸め+因果 | `bgroup_B3` | in_one_line | body(既存Stage2、Hook専用Stage2は一切呼ばれず) | materiality=BLOCKING維持(2/2)、ladder_level_used=1_word_connective(so→while相当)で解消、role_violations=[] | **PASS**(誤降格regressionは再現せず) |
+| 4 Hormuz scope | `hormuz_run03_standard` | body | body | BLOCKING→ladder_level_used=1_word_connectiveで解消、recheck_all_prior_issues_resolved=True(JA/EN両方LEDGER_COMPLIANT) | **PASS** |
+| 5a Safety actor | `safety_er009_changed_actor` | title | hook(Hook専用Stage2、LLM判定もBLOCKING) | floor(`deterministic_floor:changed_actor`)維持→ladder_level_used=1_word_connectiveで解消、recheck all_prior_issues_resolved=True | **PASS** |
+| 5b Safety number | `safety_er009_changed_number` | title/body(2claim) | hook+precheck_floor_bypass | floor(`deterministic_floor:changed_number`/`precheck_floor`)維持→ladder=[1_word_connective, 6_full_article]で解消、recheck all_prior_issues_resolved=True | **PASS** |
+
+**Evidence(§2原因是正の直接確認)**: `bgroup_B3`のstage2_results
+(instance json)で`stage2_route="body"`が記録されており、Hook専用
+Stage2(s2h.run_stage2_hook_batch)がこのclaimに対して一度も呼ばれて
+いないこと(call_logにstage2_variant="hook"のエントリが存在しないこと)を
+機械的に確認した(n=2両方)。Hook専用Stage2の発火回数はneg1(2回[2-of-2]
++1回)・safety_actor(1回×2)・safety_number(1回×2)の計7回、単価
+¥0.0342〜¥0.3538(2-of-2発火時は2倍)。committing_16のprompt priming
+regression(§6-4、共通rubricへの原則文追記が原因)は、API call自体を
+分離した本実装では再現しなかった。
+
+**最小修正は不要だった**(1回目の実行で5/5全てPASS、委任文§3-C「FAILが
+あれば最小修正1回」の分岐は発火しなかった)。unittest(`TestHookOnlyStage2
+Separation`4件含む131件+precheck 23件=154件)全PASS、`git diff --stat`で
+Production(er003/er006/er009/er010/er012/er019)・既存iteration1〜6・
+rep7証跡への差分なしを確認済み。**Status=
+`REP8_ALL_5_CASES_PASS_HOOK_SEPARATION_CONFIRMED`**(広いiteration7
+Trialは本委任のスコープ外のため未実施、次回委任でのユーザー判断・
+Fable判定待ち)。詳細REPORT§17。
 
 ## 10. リスク
 

@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import unittest
+from unittest import mock
 
 import er052_open233_self_recovery_flow_runner_01 as runner
 
@@ -1350,6 +1351,154 @@ class TestCostBreakdown5Way(unittest.TestCase):
         self.assertEqual(out["rewrite_rate"], round(2 / 3, 4))
         self.assertEqual(out["overall_avg_cost_jpy"], round(8.0 / 3, 4))
         self.assertEqual(out["worst_cost_jpy"], 5.0)
+
+
+class TestHookOnlyStage2Separation(unittest.TestCase):
+    """委任_17 A-4: Hook専用Stage2(title/hookに位置するclaimのみ別Prompt・
+    別callで判定し、body/in_one_lineは既存Stage2[R3''']のまま)のルーティング
+    ・fail-closed floor維持・prompt priming遮断をunittest化する(¥0、
+    client.responses.createは呼ばず、s2c.run_stage2_batch_variant/
+    s2h.run_stage2_hook_batchをmonkeypatchする。record_callも
+    budget_state.jsonへの実書き込みを避けるためno-opへ差し替える)。"""
+
+    NEG1_HOOK_TEXT = (
+        "# When a Robot Voice Answered the Phone\n\n"
+        "Ring, ring. A call seemed to come from an AI agent, and the person picking up "
+        "the phone had to guess who was really on the line.\n\n"
+        "## In one line\nMeta ran a test about AI phone calls.\n"
+    )
+    B3_BODY_TEXT = (
+        "# Oil Prices Recover\n\n"
+        "Traders watched the region closely as the week began.\n\n"
+        "## In one line\n"
+        "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on "
+        "July 14, so the flashy 20% plan left the stage.\n"
+    )
+
+    @staticmethod
+    def _base_state():
+        return {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+
+    def test_neg1_hook_claim_routes_to_hook_stage2_and_quality_passes_without_rewrite(self):
+        claim_text = ("Ring, ring. A call seemed to come from an AI agent, and the person "
+                       "picking up the phone had to guess who was really on the line.")
+        fixture = {"article_text": self.NEG1_HOOK_TEXT, "ledger_text": "(ledger)",
+                   "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": None,
+                   "dev": {}, "detected_by": "stage1_llm"}]
+
+        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None):
+            self.assertEqual(len(cl), 1)
+            self.assertIn("When a Robot Voice Answered the Phone", title_hook_text)
+            return {"prompt_sha256": "h", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": "QUALITY", "basis": "none",
+                 "rewrite_kind": "none", "rewrite_hint": ""}]},
+                    "model": "gpt-6-luna", "response_id": "r1", "usage": {},
+                    "cost_jpy": 0.01, "elapsed_seconds": 0.01}
+
+        mock_body_fn = mock.MagicMock()
+        state = self._base_state()
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2h, "run_stage2_hook_batch", fake_hook_batch), \
+             mock.patch.object(runner.s2c, "run_stage2_batch_variant", mock_body_fn):
+            out = runner.run_stage2(None, state, [0], call_log, "neg1_test", fixture, claims)
+
+        mock_body_fn.assert_not_called()
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["section_type"], "hook")
+        self.assertEqual(out[0]["stage2_route"], "hook")
+        self.assertEqual(out[0]["materiality"], "QUALITY")
+        self.assertIsNone(out[0]["floor_reason"])
+
+    def test_b3_causal_claim_routes_to_body_stage2_not_hook_and_stays_blocking(self):
+        claim_text = ("Concerns about US-Iran attacks, the sea blockade, and tanker safety "
+                       "continued on July 14, so the flashy 20% plan left the stage.")
+        fixture = {"article_text": self.B3_BODY_TEXT, "ledger_text": "(ledger)",
+                   "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "ja_source", "related_fact_id": "HF-007",
+                   "dev": {}, "detected_by": "stage1_llm"}]
+
+        # bgroup_B3実例と同じく、In one line欄に集約されたclaimはsection_type
+        # ="in_one_line"に分類される(委任_16でこの分類がHook-aware原則の
+        # 誤降格を招いた対象そのもの)ことを先に確認する。
+        section_type = runner.detect_claim_section_type(claim_text, self.B3_BODY_TEXT)
+        self.assertEqual(section_type, "in_one_line")
+
+        def fake_body_batch(client, ledger, source, cl, rubric_text, model=None):
+            self.assertIs(rubric_text, runner.s2c.RUBRIC_R3_TRIPLE_PRIME)
+            return {"prompt_sha256": "b", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": "BLOCKING", "basis": "notes_for_writer",
+                 "rewrite_kind": "delete", "rewrite_hint": "delete the causal clause"}]},
+                    "model": "gpt-6-luna", "response_id": "r2", "usage": {},
+                    "cost_jpy": 0.02, "elapsed_seconds": 0.02}
+
+        mock_hook_fn = mock.MagicMock()
+        state = self._base_state()
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2c, "run_stage2_batch_variant", fake_body_batch), \
+             mock.patch.object(runner.s2h, "run_stage2_hook_batch", mock_hook_fn):
+            out = runner.run_stage2(None, state, [0], call_log, "b3_test", fixture, claims)
+
+        mock_hook_fn.assert_not_called()
+        self.assertEqual(len(out), 1)
+        self.assertEqual(out[0]["section_type"], "in_one_line")
+        self.assertEqual(out[0]["stage2_route"], "body")
+        self.assertEqual(out[0]["materiality"], "BLOCKING")
+
+    def test_safety_changed_actor_floor_blocks_even_if_hook_stage2_says_quality(self):
+        # deterministic floor/pre-checkはHook専用Stage2でも維持される
+        # (委任文§3「Safety 12は改竄fixtureなのでfloorで止まる」)ことを
+        # Hook専用Stage2がQUALITYと誤って判定した場合でも確認する。
+        claim_text = "The company said its rival built the device."
+        article_text = f"# T\n\n{claim_text}\n\n## In one line\nSummary.\n"
+        fixture = {"article_text": article_text, "ledger_text": "(ledger)",
+                   "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": "HF-001",
+                   "dev": {"changed_actor": True}, "detected_by": "stage1_llm"}]
+
+        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None):
+            return {"prompt_sha256": "h2", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": "QUALITY", "basis": "none",
+                 "rewrite_kind": "none", "rewrite_hint": ""}]},
+                    "model": "gpt-6-luna", "response_id": "r3", "usage": {},
+                    "cost_jpy": 0.01, "elapsed_seconds": 0.01}
+
+        state = self._base_state()
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2h, "run_stage2_hook_batch", fake_hook_batch):
+            out = runner.run_stage2(None, state, [0], call_log, "safety_test", fixture, claims)
+
+        self.assertEqual(out[0]["stage2_route"], "hook")
+        self.assertEqual(out[0]["llm_materiality"], "QUALITY")
+        self.assertEqual(out[0]["materiality"], "BLOCKING")
+        self.assertTrue(out[0]["floor_reason"].startswith("deterministic_floor"))
+
+    def test_hook_claim_with_invented_specifics_stays_blocking_when_hook_stage2_says_blocking(self):
+        claim_text = "A secret new AI feature was launched by the company that week."
+        article_text = f"# T\n\n{claim_text}\n\n## In one line\nSummary.\n"
+        fixture = {"article_text": article_text, "ledger_text": "(ledger)",
+                   "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": None,
+                   "dev": {}, "detected_by": "stage1_llm"}]
+
+        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None):
+            return {"prompt_sha256": "h3", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": "BLOCKING", "basis": "unsupported_relationship",
+                 "rewrite_kind": "delete", "rewrite_hint": "delete the invented feature claim"}]},
+                    "model": "gpt-6-luna", "response_id": "r4", "usage": {},
+                    "cost_jpy": 0.01, "elapsed_seconds": 0.01}
+
+        state = self._base_state()
+        call_log = []
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2h, "run_stage2_hook_batch", fake_hook_batch):
+            out = runner.run_stage2(None, state, [0], call_log, "hook_blocking_test", fixture, claims)
+
+        self.assertEqual(out[0]["stage2_route"], "hook")
+        self.assertEqual(out[0]["materiality"], "BLOCKING")
 
 
 if __name__ == "__main__":

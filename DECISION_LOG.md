@@ -14559,3 +14559,85 @@ Hook-aware rubricの再設計またはpost-hoc限定方式への回帰を検討)
 `er052_open233_self_recovery_stage2_calibration_01.py`、新規
 `er052_open233_self_recovery_flow_runner_01_rep7_representative_01.py`、
 `er052_output/open233_self_recovery_flow_runner_01_rep7/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Hook専用Stage2実装(共通rubric混在→
+API call分離)+代表5ケースTrial再実行、5/5ケース全PASS(委任_17、
+2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_17)。
+
+**背景**: 委任_16 B-2はHook演出許容原則を既存Stage2 rubric
+(`RUBRIC_R3_TRIPLE_PRIME`)へ追記し、title/hook/body/in_one_lineの全claim
+を同一batch callで判定したため、Safety-critical claim(`bgroup_B3`)が
+QUALITYへ誤降格するprompt priming(原則文がプロンプト中に存在するだけで
+無関係なclaimの判定にも寛容化バイアスが波及する現象)が発生し、最小修正
+1回後も再現しSTOP条件に該当した(REPORT§16)。
+
+**是正**: 原則文の追記ではなく、title/hookに位置するclaimの再評価を
+**完全に別のPrompt・別のAPI call**(Hook専用Stage2、新規`er052_open233_
+self_recovery_stage2_hook_01.py`)へ分離した。body/in_one_lineのclaimは
+既存Stage2(`RUBRIC_R3_TRIPLE_PRIME`、本文は一切変更せず)のまま別callで
+判定する。`run_stage2`をhook群(title/hook)とbody群(body/in_one_line)へ
+分割し、各群を独立のAPI callで処理する(`HOOK_ONLY_STAGE2_SECTION_
+TYPES`)。deterministic floor・pre-check floor・既存post-hoc downgrade
+(changed_scope単独限定)はいずれも変更せず、既存の安全装置を独自判断で
+回避・弱体化していない。設計書§4-14。
+
+**unittest**: `TestHookOnlyStage2Separation`(新規4件、¥0、mockベース)。
+neg1のhook claimがmockでQUALITYの場合にbody Stage2が一切呼ばれない
+こと・`bgroup_B3`の因果claim(section_type="in_one_line")がbody経路を
+通りHook専用Stage2が一切呼ばれないことをそれぞれ`MagicMock.assert_
+not_called()`で確認、`changed_actor`floorがHook専用StageのQUALITY判定を
+上書きしBLOCKINGへ強制することを確認。既存127件(委任_16時点)+新規4件=
+131件+precheck 23件=**計154件全PASS**(regressionなし)。
+
+**代表5ケースTrial実測**(新規`er052_open233_self_recovery_flow_runner_
+01_rep8_representative_01.py`、¥5.2181、Guardrail¥14、n=2、OUT_DIR=
+`er052_output/open233_self_recovery_flow_runner_01_rep8`): 委任_16と
+同一の5 instance(`neg1_meta_b3prod_a2`/`bgroup_B3`/`hormuz_run03_
+standard`/`safety_er009_changed_actor`/`safety_er009_changed_number`)を
+再実行した。**5/5ケース全てPASS(n=2両方一致)**:
+
+1. `neg1_meta_b3prod_a2`(Meta Hook): Hook専用StageがQUALITY(sample1)/
+   ACCEPTABLE(sample2)と判定しRewriteなしで通過(委任_16でFAILしていた
+   ケースが解消)。
+2/3. `bgroup_B3`(B3丸め+因果): section_type="in_one_line"としてbody
+   経路(既存Stage2、Hook専用Stage2は一切呼ばれず=stage2_route="body"を
+   instance jsonで確認)を通り、BLOCKING維持のまま`ladder_level_used=
+   1_word_connective`で解消(誤降格regressionは再現せず)。
+4. `hormuz_run03_standard`: BLOCKING→`1_word_connective`で解消、Recheck
+   all_prior_issues_resolved=True。
+5a/5b. `safety_er009_changed_actor`/`_number`: floor維持(`deterministic_
+   floor:changed_actor`/`changed_number`/`precheck_floor`)→minimal
+   resolutionで解消、Recheck all_prior_issues_resolved=True。
+
+STAGE4到達0件・API error 0件・section_role_violation 0件。**最小修正
+フェイズは不要だった**(1回目実行で全PASS)。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(6条件いずれも非該当)。
+
+**費用**: 作業A(実装+unittest)¥0+作業B(代表5ケースTrial)¥5.2181=
+**¥5.2181**(委任Guardrail¥14内)。Phase累計¥292.5876+¥5.2181=
+**¥297.8057**/**総枠¥500**、残¥202.1943。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1〜6・rep7
+証跡に差分なし。本委任の出力は新規`er052_output/open233_self_recovery_
+flow_runner_01_rep8/`のみ。変更対象は`er052_open233_self_recovery_
+flow_runner_01.py`(+test)・新規`er052_open233_self_recovery_stage2_
+hook_01.py`・新規`er052_open233_self_recovery_flow_runner_01_rep8_
+representative_01.py`・`docs/pm/design_open233_self_recovery_flow_01.md`
+・`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`・`OPEN_ITEMS.md`のみ。API
+keyは環境変数のみ、保存jsonはprompt_sha256のみ記録。既存unittest全154件
+PASS(regression確認、新規4件追加)。
+
+Status=`REP8_ALL_5_CASES_PASS_HOOK_SEPARATION_CONFIRMED`(広い
+iteration7 Trialは本委任のスコープ外のため未実施、次回委任でのユーザー
+判断・Fable判定待ち)。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-14/§9-1⑬/冒頭Status、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§17、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+17.md`、`er052_open233_self_recovery_flow_runner_01.py`(+test)、新規
+`er052_open233_self_recovery_stage2_hook_01.py`、新規`er052_open233_
+self_recovery_flow_runner_01_rep8_representative_01.py`、`er052_output/
+open233_self_recovery_flow_runner_01_rep8/`。
