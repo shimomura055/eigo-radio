@@ -1,0 +1,174 @@
+{
+  "instance_id": "bgroup_B2_hormuz",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "same_claim_fact_id_reblocked",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "issue": "撤回後に一時的な上げ幅縮小と回復が観測されたことを、料金案の消失が大幅かつ持続的な下落を引き起こさなかったという因果的な結論として表現している。Ledgerは、この値動きだけから撤回が価格を上昇させた、または下落させなかったと因果推論しないよう求めている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "HF-009が保証するのは撤回後の一時的な上げ幅縮小とその後の高水準への回復という観測であり、記事はそれを撤回の非因果的な結果として断定している。",
+            "related_fact_id": "HF-011",
+            "origin": "ja_source",
+            "auto_downgraded": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "notes_for_writer",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-011",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_pair_not_located",
+          "guard_ok": false
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "issue": "因果関係を推論している。Ledgerが確認しているのは撤回後に上げ幅が一時縮小し、その後回復したという値動きであり、料金案の消失が大幅で持続的な下落を引き起こさなかったとは断定できない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "価格の観測を、料金案の消失が下落を引き起こさなかったという因果的結論に変えており、HF-011の限定事項に反する。",
+            "related_fact_id": "HF-011",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long.",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-011",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "repeat_claim_ids": [
+        "fact:HF-011"
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": true,
+  "call_log": [
+    {
+      "label": "bgroup_B2_hormuz_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1155,
+      "usage": {
+        "input_tokens": 4733,
+        "cached_input_tokens": 0,
+        "output_tokens": 526,
+        "reasoning_tokens": 477
+      },
+      "elapsed_seconds": 5.711,
+      "prompt_sha256": "9f779e31f6b781a38e19876cfdb23017c62f9f0459acba551e186fc672e849e1"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3702,
+      "usage": {
+        "input_tokens": 6560,
+        "cached_input_tokens": 0,
+        "output_tokens": 3408,
+        "reasoning_tokens": 2945
+      },
+      "elapsed_seconds": 27.56,
+      "prompt_sha256": "6c12947a4b4d5a8a5662f54530ce858d7f9f69fdeaea0b98037e0aa6fc8dd9ab",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3838,
+      "usage": {
+        "input_tokens": 6709,
+        "cached_input_tokens": 0,
+        "output_tokens": 3551,
+        "reasoning_tokens": 2746
+      },
+      "elapsed_seconds": 30.66,
+      "prompt_sha256": "1a4d88880f2f8c91096ecb24d266fb26b582ce31dcc522c8527b8752932d3074",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "bgroup_B2_hormuz_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2075,
+      "usage": {
+        "input_tokens": 4733,
+        "cached_input_tokens": 4730,
+        "output_tokens": 2550,
+        "reasoning_tokens": 2502
+      },
+      "elapsed_seconds": 21.729,
+      "prompt_sha256": "9f779e31f6b781a38e19876cfdb23017c62f9f0459acba551e186fc672e849e1"
+    }
+  ],
+  "total_cost_jpy": 1.077,
+  "total_calls": 4,
+  "elapsed_seconds": 85.693
+}

@@ -1,0 +1,114 @@
+{
+  "instance_id": "safety_er009_changed_certainty",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+            "issue": "Ledgerでは著者のメカニズム説明として述べられている社会的圧力を、すべての顧客に生じることが証明済みの因果効果として断定している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-008はデジタル画面による社会的圧力を著者の議論として記し、実証的な因果効果ではないとしている。記事は因果関係を断定し（changed_causality）、証明済みと確実性を強め（changed_certainty）、対象を画面を見たすべての顧客に拡張している（changed_scope）。この普遍的な因果主張はLedgerにないため、changed_factとunsupported_new_claimもtrue。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "F-008",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:88e4de364b3395b6",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_certainty_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0973,
+      "usage": {
+        "input_tokens": 4885,
+        "cached_input_tokens": 0,
+        "output_tokens": 264,
+        "reasoning_tokens": 216
+      },
+      "elapsed_seconds": 3.132,
+      "prompt_sha256": "b5b69766cef0ef5c3bf1f818fdf5e6d82416b00f0d0719f67ae4e60268245232"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_claim:88e4de364b3395_e2_rewrite",
+      "cost_jpy": 0.08,
+      "usage": {
+        "input_tokens": 4172,
+        "cached_input_tokens": 0,
+        "output_tokens": 185,
+        "reasoning_tokens": 150
+      },
+      "elapsed_seconds": 3.882,
+      "prompt_sha256": "7bbca01ff5b1587fcfd3a20fced01ff6e014660526101f6a8d1354e787f296c6",
+      "output_text": "One policy brief argues that digital tip screens can create social pressure when employees can see customers choosing a tip, describing this as “guilt tipping.”"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1202,
+      "usage": {
+        "input_tokens": 6301,
+        "cached_input_tokens": 0,
+        "output_tokens": 272,
+        "reasoning_tokens": 167
+      },
+      "elapsed_seconds": 3.797,
+      "prompt_sha256": "2428bcaa211a772035e4b2e8aa30edf3b43152664b8bd676a37fff603ab85717",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.2975,
+  "total_calls": 3,
+  "elapsed_seconds": 10.823
+}

@@ -1,0 +1,273 @@
+{
+  "instance_id": "safety_A2A3",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "same_claim_fact_id_reblocked",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+            "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It adds a specific payer and presents that detail as part of the proposal, despite HF-003 stating that the payer was unspecified. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“The idea was that”",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-003",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+            "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "delete",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_pair_not_located",
+          "guard_ok": false
+        },
+        {
+          "claim_identity": "fact:HF-006",
+          "rewrite_kind": "delete",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_pair_not_located",
+          "guard_ok": false
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+            "issue": "The article identifies cargo carriers as the payers, but the Ledger says the proposal did not specify who would be liable to pay.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It adds cargo carriers as a specific payer, expanding the proposal’s stated scope and assigning an actor not specified in HF-003.",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "The idea was that ... would repay",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_actor"
+        },
+        {
+          "claim_text": "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+            "issue": "The article asserts downstream effects on gasoline prices and goods-transport costs that the Ledger does not verify.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It extends the verified oil-market and shipping concerns to gasoline and logistics costs, asserting a causal link not established by the Ledger.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "delete",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "repeat_claim_ids": [
+        "fact:HF-003",
+        "fact:HF-006"
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_A2A3_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1171,
+      "usage": {
+        "input_tokens": 4930,
+        "cached_input_tokens": 0,
+        "output_tokens": 507,
+        "reasoning_tokens": 438
+      },
+      "elapsed_seconds": 5.534,
+      "prompt_sha256": "a4cfe9642bb7d2ba97e2fc7089b05c5c716625a66c8fd0af9b76ad83e9e8d1b0"
+    },
+    {
+      "label": "safety_A2A3_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4487,
+      "usage": {
+        "input_tokens": 6628,
+        "cached_input_tokens": 0,
+        "output_tokens": 4395,
+        "reasoning_tokens": 3775
+      },
+      "elapsed_seconds": 36.78,
+      "prompt_sha256": "a99936a9c8669213002e18fc1ed1b49a9439d844f8ad9f966d9e6ca8cb21acba",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A2A3_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.7193,
+      "usage": {
+        "input_tokens": 6822,
+        "cached_input_tokens": 0,
+        "output_tokens": 7806,
+        "reasoning_tokens": 6443
+      },
+      "elapsed_seconds": 64.112,
+      "prompt_sha256": "e4e2ddcafad806083f5e3890f0248c3e4b1402ad338c0e0cb42e088c89075e5b",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A2A3_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1232,
+      "usage": {
+        "input_tokens": 4928,
+        "cached_input_tokens": 0,
+        "output_tokens": 585,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 6.356,
+      "prompt_sha256": "bbb705a1e256b2494ac6bc4b47dac62f49bab00957a9b42ad5b164265785afe6"
+    }
+  ],
+  "total_cost_jpy": 1.4083,
+  "total_calls": 4,
+  "elapsed_seconds": 112.825
+}

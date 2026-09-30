@@ -1,0 +1,158 @@
+{
+  "instance_id": "safety_er009_changed_number",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": true,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "F-002",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": "deterministic_floor:changed_number"
+        },
+        {
+          "claim_text": "count values found in article not matching any ledger fact: [30000000.0]",
+          "origin": null,
+          "related_fact_id": "F-002",
+          "dev": {
+            "claim_in_article": "count values found in article not matching any ledger fact: [30000000.0]",
+            "issue": "precheck detected number_mismatch vs ledger_value=1,300万件超",
+            "explanation": "deterministic precheck finding (kind=number_mismatch)",
+            "related_fact_id": "F-002",
+            "origin": null,
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "precheck",
+          "materiality": "BLOCKING",
+          "llm_materiality": null,
+          "basis": "precheck_floor",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": "precheck_floor"
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:23aa52539d91306b",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:F-002",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "target_not_found+fulltext_fallback",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_number_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0921,
+      "usage": {
+        "input_tokens": 4905,
+        "cached_input_tokens": 0,
+        "output_tokens": 193,
+        "reasoning_tokens": 142
+      },
+      "elapsed_seconds": 4.167,
+      "prompt_sha256": "6906fde769292acfcef4f6d61b854ffacb16b5e9f61ad89739382c4e5028781b"
+    },
+    {
+      "label": "safety_er009_changed_number_c1_claim:23aa52539d9130_e2_rewrite",
+      "cost_jpy": 0.0746,
+      "usage": {
+        "input_tokens": 4200,
+        "cached_input_tokens": 0,
+        "output_tokens": 111,
+        "reasoning_tokens": 76
+      },
+      "elapsed_seconds": 4.332,
+      "prompt_sha256": "2cd0086fea33973675a509cb80e3c5b5b6654f64202978a266e99b3d869980d8",
+      "output_text": "Researchers studied more than 13 million credit card transactions in New York City taxis and found that higher suggested tip rates led passengers to leave more money."
+    },
+    {
+      "label": "safety_er009_changed_number_c1_fact:F-002_fulltext_fallback",
+      "cost_jpy": 0.0842,
+      "usage": {
+        "input_tokens": 4139,
+        "cached_input_tokens": 0,
+        "output_tokens": 245,
+        "reasoning_tokens": 215
+      },
+      "elapsed_seconds": 3.47,
+      "prompt_sha256": "520c4350fc2c5863f0072f03f686413cea395d9d5f9f8da9991b29fb71723f5d",
+      "output_text": "Researchers studied credit card transactions in New York City taxis and found that higher suggested tip rates led passengers to leave more money."
+    },
+    {
+      "label": "safety_er009_changed_number_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1261,
+      "usage": {
+        "input_tokens": 6352,
+        "cached_input_tokens": 0,
+        "output_tokens": 337,
+        "reasoning_tokens": 170
+      },
+      "elapsed_seconds": 3.806,
+      "prompt_sha256": "172c5ae3a700e516add35bb5b4996b657d70ada2b0cfc078d3f6d68f827bad53",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.377,
+  "total_calls": 4,
+  "elapsed_seconds": 15.784
+}

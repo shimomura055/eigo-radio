@@ -1,0 +1,180 @@
+{
+  "instance_id": "neg2_meta_refresh_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "same_claim_fact_id_reblocked",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“They enjoyed the ease of AI. But they did not know that a human was on the other end.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“They enjoyed the ease of AI. But they did not know that a human was on the other end.”",
+            "issue": "記事は利用者が実際にAIの利便性を享受し、人間が電話していると知らなかったと断定しているが、Ledgerが確認するのは適切な開示なしにテストが始まったことまでで、利用者の認識や反応は確認していない。原文の条件付き・比喩的な表現を、翻訳で実際に起きた事実のように強めている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerにない利用者の反応・認識を事実として追加し、原文の留保を弱めているため。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "直前の文に “If this was not explained clearly” という条件があるが、対象の2文では利用者の反応・認識を断定している。",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The problem was not that humans made the calls. The problem was how users were told who was speaking.\n\nPeople who asked Muse to make a call might think AI was doing it. But sometimes, a human was speaking instead. If this was not explained clearly, users could not know if it was AI or a person. They enjoyed the ease of AI. But they did not know that a human was on the other end. This was happening behind the scenes.\n\nAlso, a call might need user information to continue. That information might then be shared by mistake with contract workers at a call center. Meta employees raised this inside the company as a privacy concern.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(sequence_matcher(ratio=0.78))",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "They enjoyed the ease of AI.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They enjoyed the ease of AI.",
+            "issue": "ユーザーがAIの利便性を実際に享受したという反応はLedgerで確認されていません。原文の条件的・比喩的な表現が、英語記事では事実の断定になっています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "ユーザーの実際の反応はLedgerにない具体的主張です。新規の未裏付け主張としてchanged_factとunsupported_new_claimをtrueにしました。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "直前の文に “might think AI was doing it” があり、続く文にも “If this was not explained clearly” があります。ただし、どちらもユーザーが利便性を享受したという断定を限定していません。",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The problem was not that humans made the calls. The problem was how users were told who was speaking.\n\nPeople who asked Muse to make a call might think AI was doing it. But sometimes, a human was speaking instead. If this was not explained clearly, users could not know if it was AI or a person. They enjoyed the ease of AI. But the test began without appropriate disclosure that contract staff would make some calls. This was happening behind the scenes.\n\nAlso, a call might need user information to continue. That information might then be shared by mistake with contract workers at a call center. Meta employees raised this inside the company as a privacy concern.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "delete",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "repeat_claim_ids": [
+        "fact:MUSE-HC-012"
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "neg2_meta_refresh_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1281,
+      "usage": {
+        "input_tokens": 4936,
+        "cached_input_tokens": 0,
+        "output_tokens": 646,
+        "reasoning_tokens": 598
+      },
+      "elapsed_seconds": 5.617,
+      "prompt_sha256": "a89910ad640676061c769fb8be514a33561aa883f839a776ee2d7bfdbc8ed84e"
+    },
+    {
+      "label": "neg2_meta_refresh_a2_c1_fact:MUSE-HC-012_e2_rewrite",
+      "cost_jpy": 0.063,
+      "usage": {
+        "input_tokens": 3353,
+        "cached_input_tokens": 0,
+        "output_tokens": 132,
+        "reasoning_tokens": 111
+      },
+      "elapsed_seconds": 2.359,
+      "prompt_sha256": "71f9317e8f4bc2c0024f26b50b91772c4963fd7aed8dc8e162c56a9bcdb23bcb",
+      "output_text": "But the test began without appropriate disclosure that contract staff would make some calls."
+    },
+    {
+      "label": "neg2_meta_refresh_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4859,
+      "usage": {
+        "input_tokens": 6768,
+        "cached_input_tokens": 0,
+        "output_tokens": 4841,
+        "reasoning_tokens": 4342
+      },
+      "elapsed_seconds": 33.79,
+      "prompt_sha256": "54e9eac154e0f5e40bab848092a978d9c874b995950810d30888ddaa5eb1dea2",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "neg2_meta_refresh_a2_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.119,
+      "usage": {
+        "input_tokens": 4922,
+        "cached_input_tokens": 0,
+        "output_tokens": 533,
+        "reasoning_tokens": 487
+      },
+      "elapsed_seconds": 4.78,
+      "prompt_sha256": "6a0b6d65a83bf46633d4b508934cc3be0dcdaf4de0c4b1ba5b0b58f129820f4e"
+    }
+  ],
+  "total_cost_jpy": 0.796,
+  "total_calls": 4,
+  "elapsed_seconds": 46.575
+}

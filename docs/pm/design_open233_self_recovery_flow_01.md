@@ -26,7 +26,23 @@ Stage2較正リスク[Real-but-fixable群のQUALITY誤降格]を新規発見・
 未解消[drift 1件検出]**。採用案: narrow_scope=J-1、
 replace_with_ledger_value=E-2第一候補(E-1はfallback)。実測費用
 ¥6.208[Guardrail¥45のうち、Phase累計¥21.4963]。⑥[統合dry-run]は
-次回委任予定、Production実装は未着手)。
+次回委任予定、Production実装は未着手)。→ **[委任_09更新]**
+`PHASE1_DONE_IMPROVEMENT_NEEDED`(⑥統合dry-run完了: 新規runner
+`er052_open233_self_recovery_flow_runner_01.py`で29 instance・92 call・
+¥16.7806・0 errorを実測[§9-1⑥]。Self-Recovery 6項目実測[Initial
+BLOCK23/Rewrite自動解消13/Final STOP9]、Escalation率9/29[Wilson
+95%CI 17.3〜49.2%]、worst caseコスト¥2.2721でCap[+¥3]未超過。
+**新規発見(いずれも報告のみ・独断で修正せず)**: (1) Stage1(V4A)
+recall missを3instanceで実測(うち1件は現行Production STOP実例
+hormuz_run02_advancedそのもの、Self-Recovery Flow到達前の見逃し)、
+(2) Stage2出力schemaに`rewrite_hint`欠落がRewrite失敗の主要因、
+(3) J-1汎用対象文特定の失敗率63.6%(委任_08手動アンカー実験との
+乖離)、(4) **委任_08のnegative群R2測定[87.5%]がplaceholder文字列
+[claim_text="(claim not found in baseline)"]に対する測定であり
+無効、実クレーム文言での実測は0/4(0%)**。Phase 1計画①〜⑥完了、
+Phase 2着手前に上記改善優先順位[§9-2]の解消を推奨。実測費用
+¥16.7806[Guardrail¥45のうち、Phase累計¥38.2769]。USER_DECISION_
+REQUIRED非該当[7条件いずれも]。Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -1329,10 +1345,158 @@ value型(er009_changed_actor/changed_number、E-1 vs E-2)・narrow_scope
 replace_with_ledger_value=E-2第一候補(E-1はfallback)。詳細は§5-4-補2。
 費用¥3.0363(18 call、Guardrail¥30のうち)。
 
-**⑥ 統合dry-run(小規模、費用は④⑤に準じる)**: ①〜⑤の結果を踏まえ、
-①〜⑤の設計変更を反映したStage 1→2→3→Recheckの一連の流れを、
-代表fixture数件で通しで実行し、A1(`all_prior_issues_resolved`)・A5
-(同一claim再発)・A7(Stage4条件表)が意図どおり機能するかを確認する。
+**⑥ 統合dry-run実測(委任_09完了)**: ①〜⑤の確定設計(V4A Stage1・R2
+rubric+floor・narrow_scope=J-1/replace=E-2・cycle上限2・A1/A5/A7)を
+1本のTrial runner(`er052_open233_self_recovery_flow_runner_01.py`+
+test)へ統合し、29 instance(Hormuz run_01/run_02 Advanced各1[現行
+Production STOP実例、Standardは同run内で未生成のため対象外]・run_03
+Advanced/Standard、Meta run_03 Advanced/Standard、B群4[B1/B2_hormuz/
+B3/B4]、negative候補7、Safety群12[er009 9種+A2A3/A4/A5])で通し実行
+した(92 call、¥16.7806、0 error、Guardrail¥45の約37%)。
+
+**Self-Recovery 6項目(instance単位)**: Initial BLOCK=23/29、
+Re-screening自動解消=1(hormuz_run01_advanced、HF-006「一般的な経済
+連動性の言及」をStage2がACCEPTABLEへ正しく降格、Rewrite不要で現行
+Production STOPを自動回避=設計が目指す典型的成功例)、Rewrite進行=22、
+Rewrite自動解消=13(RESOLVED_REWRITE=11[`all_prior_issues_resolved=
+True`確認済み]+RESOLVED_REWRITE_THEN_DOWNGRADE=2)、Final STOP=9、
+USER_DECISION_REQUIRED(Stage4到達)=9(全件到達理由=
+`same_claim_fact_id_reblocked`、cycle 2で同一fact_id再BLOCKingを検出
+し即STOPというA5設計どおりの動作)。
+
+**0件の内訳(A13)**: 真の解消(`all_prior_issues_resolved=True`)=11、
+QUALITY通過=0(本評価セットでQUALITY止まりのまま継続したclaimは無く、
+全BLOCKING-candidateがRewrite対象化または非BLOCKING降格のいずれかへ
+分岐)、`all_prior_issues_resolved`未確認=0、誤PASS候補=0(全件Recheck
+で明示確認、無言消滅なし)。
+
+**重大Fact見逃し(Stage1 recall、Safety観点で最重要の発見)**: V4A単発
+実行(n=1)で、Real-but-fixable/Safety隣接群のうちB2_hormuz・B3・
+**hormuz_run02_advanced(現行Production STOP実例そのもの)**の
+3 instanceで、既知のBLOCKING claim(HF-011/HF-007/HF-011相当)が**一切
+検出されずLEDGER_COMPLIANTとなった**(§10/§14既知の「Stage1 recall
+欠落」リスクが、統合dry-runで実データ3件同時に再現)。B2_hormuz/B3は
+`baseline_parsed`(実Production V0、既にMAJOR検出済み)へ代替して
+Stage2/3経路自体は検証したが(代替の事実を`stage1_recall_miss_
+substituted=true`として明記)、**hormuz_run02_advancedは代替を適用
+せず、素の結果としてACCEPTABLE_STAGE1で完結した**(Self-Recovery
+Flow自体が発火する前にStage1が見逃したため、Stage2/3では捕捉不可能な
+既知の構造的限界の実例)。floor機構自体はfloor適用対象48 BLOCKING
+claim中0件のfalse-negativeを維持したが、**Stage1自体の検出漏れは本
+設計の範囲外であり未解決のまま**。
+
+**QCD(instance単位)**: 総call数92、総費用¥16.7806、平均追加cost/
+instance=¥0.5786(全29)/¥0.7118(BLOCKING発生23件のみ)、P50=¥0.377
+(全29)/¥0.5918(BLOCKING23)、P95=¥1.9421、worst=¥2.2721(safety_A4、
+3claim分のJ-1/E-2 rewrite)。**worst caseでも+¥3/記事Capを下回った**
+(§13-7のCap判定を実測で裏付け)。latency P50=17.27秒/P95=143.5秒。
+completion率=69.0%(20/29、Stage4未到達)。retry率=75.9%(22/29で
+Rewrite発火)。loop率=41.4%(12/29でcycle上限2まで消費)。
+
+**現行Productionとの対比(Hormuz 3記事)**: run_01 Advanced=現行STOP→
+本フローはRewrite不要でRe-screening自動解消(ACCEPTABLE)。run_02
+Advanced=現行STOP→本フローは**Stage1 recall missによりACCEPTABLE_
+STAGE1**(見かけ上「解消」だがStage1が見逃しただけでありSelf-Recovery
+Flowの機能とは無関係、上記重大Fact見逃し参照)。run_03 Standard
+(HF-009)=現行STOP→本フローは**STAGE4_ESCALATION**(cycle2で同一
+fact_id再BLOCKing、J-1汎用ロケータが対象文特定に失敗
+[`j1_pair_not_located`]、委任_08の手動アンカー実験[J-1が100%解消]を
+汎用実装では再現できず)。
+
+**事象(claim)単位の段階別成功率**: floor後BLOCKING確定claim48件
+(cycle1+cycle2合計)のうちRewrite実行33件、初回cycleで再発せず解消=
+20/33(60.6%)。機構別: `deterministic_delete`=1/1(100%)、
+`e2_generic_rewrite`(単一言語E-2)=13/18(72.2%)、`target_not_found+
+fulltext_fallback`=3/3(100%、全文最小編集フォールバックが有効に機能)、
+`paired_ja_en(J-1)`全体=3/11(27.3%)、うち`j1_paired_rewrite`(対象文
+特定に成功した場合)=2/3(66.7%)、`j1_pair_not_located`(対象文特定
+失敗)=1/7(14.3%)。**J-1機構の対象文特定(汎用JA/EN文分割・対応付け)
+が本統合runで最大の失敗要因**(11回中7回[63.6%]が対象文特定自体に
+失敗)。Escalation率のWilson 95%上限(instance単位9/29=31.0%、
+95%CI=[17.3%, 49.2%])。
+
+**Stage4到達9件の原因分類**:
+(a) **J-1対象文特定失敗**(汎用ロケータの限界、§5-4既知の限界の実測
+裏付け)= safety_A2A3(2claim)・bgroup_B2_hormuz(1)・bgroup_B4(2/4claim)
+・meta_run03_standard(1/2claim)・hormuz_run03_standard(1claim)の計
+5 instance。
+(b) **局所編集は実行された(guard_ok=True)がRecheckが引き続き
+LEDGER_DEVIATION**(Rewrite内容が実質的にLedger適合しなかった)=
+safety_A4(3claim中2claim再発)・bgroup_B1(1claim)・neg1/neg2(各1claim)
+の計4 instance。
+
+**(b)の根本原因(新規発見、報告のみ・独断で修正せず)**: **Stage2出力
+schema(`er052_open233_self_recovery_stage2_production_01.py::
+_ITEM_PROPS`)に、design書§4-5が要求する`rewrite_hint`(自由記述、
+BLOCKING時必須)フィールドが実装されていない**。本runnerはやむを得ず
+`rewrite_hint`代替として`f"materiality={...}, basis={...}"`という
+空疎なplaceholderをE-2 Promptへ渡しており、実際に「何をどう直すべきか」
+という具体的指示がRewrite LLMへ渡っていなかった。既存個別実験
+(委任_08のstage3_rewrite_trial)は各fixtureのrewrite_hintを人手で
+作文していたため、この欠落は独立実験では顕在化せず、**統合dry-runで
+初めて発見された**。次回実装候補: Stage2 batch schemaへ
+`rewrite_hint`(string、BLOCKING時必須)を追加し、Stage3 Prompt側で
+実際に使用する。
+
+**[最重要の是正発見]negative群R2 Productivity評価のやり直し**: 委任_08
+のStage2較正Trial(`er052_open233_self_recovery_stage2_calibration_01.
+py::build_eval_groups()`)のnegative群4 fixture(neg1/neg2/neg3/neg5)
+は、`fx["baseline_parsed"]["deviations"]`(実Production V0の記録、
+これらのfixtureは定義上`deviations=[]`=LEDGER_COMPLIANT)からclaim_
+textを取得しようとしたため`devs`が空となり、**`claim_text="(claim
+not found in baseline)"`という無意味なplaceholder文字列がStage2へ
+渡っていた**(該当コード行確認済み)。この結果、既報告の「negative群
+R2で7/8(87.5%)が非BLOCKINGへ復帰」は、**実際にV4Aが誤検出した本物の
+claim文言ではなく、空のplaceholder文字列に対するStage2判定を測定して
+いた**ため、Productivity評価として妥当性を欠く。本統合dry-runは
+(Stage1のreuse元がV4Aの実出力そのものであるため)実際の誤検出claim
+文言をStage2へ正しく渡しており、**同じ4 fixture(neg1/neg2/neg3/
+neg5)の実測結果は「Stage2単独でBLOCKING非該当へ降格した件数=
+0/4(0%)」**(全4件がBLOCKING確定、うち2件[neg3/neg5]はRewriteで
+自動解消、2件[neg1/neg2]はStage4へ到達)。**既存DECISION_LOG/
+REPORT§7/本設計書§4-8のnegative群測定値(87.5%)は撤回・訂正しない
+(履歴改変禁止、既存エントリはそのまま保持)が、本節で実測に基づく
+訂正値を明記し、Phase 2計画・Opus L2 #2論点へ引き継ぐ**(新しい仕様
+変更の実装はしない、報告のみ)。
+
+**その他観測**: negative群7件中3件(neg4/neg6/neg7)はStage1(V4A)自体
+でACCEPTABLE(過剰検出なし)、残り4件(neg1/neg2/neg3/neg5)全件が
+Stage1で過剰BLOCKされ、そのうちStage2も全件BLOCKING確定(over-block
+是正0%)。Stage2出力の`basis`は"unsupported_relationship"に強く偏り
+(BLOCKING確定48件中28件[58.3%])、`rewrite_kind`は"narrow_scope"に
+強く偏る(33件/48件[68.8%])。rewrite_hint欠落と合わせ、Stage2較正
+(R2)の出力多様性そのものにも改善余地がある(Phase 2候補)。
+
+**実装上の不具合発見・修正(報告)**: 統合runの実行中、
+`er052_open233_self_recovery_stage3_rewrite_trial_01.py`(委任_08
+既存資産)の`simple_llm_call`をそのまま呼び出すと、そのモジュール自身
+の`save_budget_state`が**既存委任_08の証跡ファイル(`budget_state_
+c233l_b.json`)を上書きする**実害を検出した(`git diff`で発覚、
+`git checkout`で復元済み、既存証跡データの実質破損なし)。本runner
+自身の独立した`simple_llm_call`実装へ差し替え、再発防止のregression
+test(`er052_open233_self_recovery_flow_runner_01_test_01.py::
+TestNoCrossModuleBudgetStateContamination`)を追加した(この修正は
+Stage1/2/3の判定ロジック自体には影響しない。実測結果[92 call・
+¥16.7806・0 error]はこの修正前後で同一)。
+
+**スコープ上の限界(既存委任_08と同一、再掲)**: J-1/J-2型のJA Fact
+Check/EN RecheckはV4A variant checker代用、汎用JA文分割は簡易実装の
+まま(§5-4-補2)。E-1 fallback(replace_with_ledger_value型)は本統合
+runでは未実装(§5-4-補2でE-2を第一候補・E-1をfallbackと確定したが、
+fixture横断的なper-claim機械検証[verify_fn]が個別実装を要するため、
+全文Recheckのfail-closed判定に委ねる設計とした。次回実装候補)。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+worst case実測¥2.2721は+¥3/記事Cap未超過[条件3]。Stage1 recall
+miss・negative群Productivity訂正はいずれもSafety「緩和」ではなく既知
+リスクの実測確認・既存測定の透明な訂正であり条件2には該当しない
+[Safetyはfloor機構により48件中0件のfalse-negativeを維持]。Rewrite
+mechanism改善提案はいずれも未実装のTrial改善候補でありProduction
+採用[条件4]には未到達)。
+
+詳細ログ: `er052_output/open233_self_recovery_flow_runner_01/
+summary_flow_runner.json`、`er052_output/open233_self_recovery_
+flow_runner_01/instances/*.json`(29件)。
 
 **費用見積(概算、要実測)**: 公式単価gpt-6-luna(In $0.10/Cached
 $0.01/Out $0.50、為替¥156.88/$換算)を基準に、①¥0+②¥0〜¥2+
@@ -1360,6 +1524,11 @@ Guardrail¥12)。⑤=¥3.0363(18 call、Guardrail¥30、見積り¥8〜22の
 未発火だったため)。委任_08合計=**¥6.208**。①〜⑤累計=
 **¥21.4963**(Phase累計、Guardrail¥400のうち、残¥378.5037)。
 ⑥(統合dry-run)は本委任(委任_08)未実施(次回委任で実施予定)。
+
+**[委任_09実測]** ⑥統合dry-run(29 instance、92 call)=**¥16.7806**
+(Guardrail¥45、約37%使用、0 error)。①〜⑥累計=**¥38.2769**(Phase
+累計、Guardrail¥400のうち、残¥361.7231)。Phase 1計画(§9-1冒頭)の
+①〜⑥全項目が完了。
 
 - **モデル**: gpt-6-luna(前Phase Trial資産との直接比較のため統一、
   §4-6参照)。Production Stage 1のgpt-5.6-lunaとの差異は既知の
@@ -1389,6 +1558,29 @@ Flow込みで10〜20記事規模実行し、Primary KPI(USER_DECISION_REQUIRED
 =0件、Safety見逃し0件)を測定する。Production Stage 1のモデル
 (gpt-5.6-luna)とStage 2/3で使うモデルの整合確認もここで行う。詳細
 計画は本書の対象外(次のCheckpoint前に別途設計)。
+
+**[委任_09追記]Phase 1⑥の結果を踏まえた改善優先順位(Phase 2着手前に
+解消すべき既知課題、実装せず提案のみ)**:
+1. **Stage2出力schemaへの`rewrite_hint`追加**(§9-1⑥(b)根本原因、
+   最優先)。現状Stage3へ渡る情報が`materiality`/`basis`のみで
+   具体的な修正方針が無く、Rewriteの60.6%成功率(claim単位)の主要な
+   下押し要因になっている。
+2. **JA/EN paired local rewrite(J-1)の汎用対象文特定**(§5-4既知の
+   限界、実測ではlocate失敗率63.6%[7/11]が最大の失敗要因)。委任_08
+   のhormuz手動アンカー実験(100%解消)と本統合runの汎用ロケータ
+   (27.3%)の差は、汎用実装の成熟度不足であり設計の限界ではない
+   ことを示唆する。
+3. **negative群Productivity評価の再測定**(§9-1⑥「最重要の是正発見」
+   参照、既存87.5%は無効な測定に基づく。実測0/4[0%]を前提に、
+   Stage2 R2 rubricのover-block是正力を再評価する必要がある)。
+4. **Stage1(V4A) recallの底上げ**(3/複数instanceで既知BLOCKINGを
+   n=1で見逃した。§9-1②の「独立Stage2診断3/3検出」知見をどう
+   Production設計へ組み込むか[全記事2nd runのコスト増との比較]を
+   Phase 2設計に含める)。
+5. **新規記事のテーマ選定**: Phase 2で新規Family X記事を生成する場合、
+   テーマは複数候補(英語・日本語・理由付き)を提示しユーザーが選択
+   する(PM_GOVERNANCE.md§13「新規記事テーマ選定ルール」準拠。既存
+   Hormuz/Meta run再開[regenerate]であればこの制約は適用されない)。
 
 ## 10. リスク
 

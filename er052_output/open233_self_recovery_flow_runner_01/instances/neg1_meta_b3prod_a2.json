@@ -1,0 +1,221 @@
+{
+  "instance_id": "neg1_meta_b3prod_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "same_claim_fact_id_reblocked",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(sequence_matcher(ratio=0.52))",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "“We Thought It Was AI” / “A call seemed to come from an AI agent… It was a person. Meta had run a test that caused exactly this surprise.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“We Thought It Was AI” / “A call seemed to come from an AI agent… It was a person. Meta had run a test that caused exactly this surprise.”",
+            "issue": "記事は、人が電話を担当したという事実に加え、利用者がAIだと思い込み、実際に人だと気づいて驚いた出来事があったと受け取れる形で述べている。Ledgerはそのような利用者の認識や発見を確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "一部の電話を人間が担当した事実から、利用者がAIだと思っていた／驚いたという未確認の体験を、起きたこととして加えている。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”; “some calls”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But some calls were handled by trained human contractors, not AI. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+          "fallback_used": true,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“A human can handle situations that AI alone finds difficult. As a system, this may even be useful.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“A human can handle situations that AI alone finds difficult. As a system, this may even be useful.”",
+            "issue": "人間がAIだけでは難しい状況を処理できるという能力・役割が述べられているが、Ledgerは人間が担当した電話についてその理由やAIの困難さを確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "AIが難しい状況を人間が処理するという主張はLedgerにない。隣接する“may even be useful”は有用性への留保であり、この能力主張を裏付けない。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“may even be useful”",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "repeat_claim_ids": [
+        "fact:MUSE-HC-006"
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "neg1_meta_b3prod_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1125,
+      "usage": {
+        "input_tokens": 4746,
+        "cached_input_tokens": 0,
+        "output_tokens": 485,
+        "reasoning_tokens": 437
+      },
+      "elapsed_seconds": 7.215,
+      "prompt_sha256": "bb91ea6f23c157cd28903bd98eb805eb9e839d5f8b1f2c071433ad8a394afccd"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_fact:MUSE-HC-006_e2_rewrite",
+      "cost_jpy": 0.06,
+      "usage": {
+        "input_tokens": 3298,
+        "cached_input_tokens": 0,
+        "output_tokens": 105,
+        "reasoning_tokens": 86
+      },
+      "elapsed_seconds": 1.818,
+      "prompt_sha256": "3aca1c804bc9fdeb636277b6f7fd82114b898af159e58d5a39f317c4abcf3b6f",
+      "output_text": "But some calls were handled by trained human contractors, not AI."
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5619,
+      "usage": {
+        "input_tokens": 6628,
+        "cached_input_tokens": 0,
+        "output_tokens": 5838,
+        "reasoning_tokens": 5178
+      },
+      "elapsed_seconds": 43.75,
+      "prompt_sha256": "b4d971d0559060578401d56789cda833172ab6098b2400b8f0c7efede785320e",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.145,
+      "usage": {
+        "input_tokens": 5280,
+        "cached_input_tokens": 0,
+        "output_tokens": 792,
+        "reasoning_tokens": 721
+      },
+      "elapsed_seconds": 8.944,
+      "prompt_sha256": "286398d25ab9fe5ad4243c43c4c760657824daa37600b94f2d4251570bd516ef"
+    }
+  ],
+  "total_cost_jpy": 0.8794,
+  "total_calls": 4,
+  "elapsed_seconds": 61.76
+}

@@ -1,0 +1,122 @@
+{
+  "instance_id": "neg3_hormuz_prodrunner_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+            "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_time"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [],
+      "blocking_count": 0,
+      "non_blocking_count": 0
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1351,
+      "usage": {
+        "input_tokens": 4869,
+        "cached_input_tokens": 0,
+        "output_tokens": 748,
+        "reasoning_tokens": 700
+      },
+      "elapsed_seconds": 6.361,
+      "prompt_sha256": "b53553cae9046d267269054fdd6bb85cc53c40748e8333eeca8bc6c965c2d3c4"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_fact:HF-009_e2_rewrite",
+      "cost_jpy": 0.061,
+      "usage": {
+        "input_tokens": 3254,
+        "cached_input_tokens": 0,
+        "output_tokens": 127,
+        "reasoning_tokens": 89
+      },
+      "elapsed_seconds": 3.524,
+      "prompt_sha256": "dfbcaa9ef63e877235f13370faaba9241f719595f531e3656d7e6e72120bf249",
+      "output_text": "The fee plan was withdrawn, while concerns over attacks, the blockade and tanker safety continued; Brent briefly pared gains before returning to near its pre-announcement level."
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2878,
+      "usage": {
+        "input_tokens": 6708,
+        "cached_input_tokens": 0,
+        "output_tokens": 2327,
+        "reasoning_tokens": 2142
+      },
+      "elapsed_seconds": 17.619,
+      "prompt_sha256": "91283476fcf251ada4ff9af53152d5682c91bd72996458d2cacd05784ad89a24",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 0.4839,
+  "total_calls": 3,
+  "elapsed_seconds": 27.531
+}

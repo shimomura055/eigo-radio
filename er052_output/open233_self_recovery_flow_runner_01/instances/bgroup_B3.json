@@ -1,0 +1,211 @@
+{
+  "instance_id": "bgroup_B3",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.",
+            "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "同日に生じた政策転換と市場の値動き、および継続する懸念を、接続語「so」により因果関係として結び付けている。",
+            "related_fact_id": "HF-007",
+            "origin": "ja_source",
+            "auto_downgraded": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+            "issue": "precheck detected number_mismatch vs ledger_value=約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)",
+            "explanation": "deterministic precheck finding (kind=number_mismatch)",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "precheck",
+          "materiality": "BLOCKING",
+          "llm_materiality": null,
+          "basis": "precheck_floor",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": "precheck_floor"
+        },
+        {
+          "claim_text": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+          "origin": null,
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+            "issue": "precheck detected number_mismatch vs ledger_value=$84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)",
+            "explanation": "deterministic precheck finding (kind=number_mismatch)",
+            "related_fact_id": "HF-011",
+            "origin": null,
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "precheck",
+          "materiality": "BLOCKING",
+          "llm_materiality": null,
+          "basis": "precheck_floor",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": "precheck_floor"
+        }
+      ],
+      "blocking_count": 3,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "target_not_found+fulltext_fallback",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:HF-011",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "target_not_found+fulltext_fallback",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_COMPLIANT"
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": true,
+  "call_log": [
+    {
+      "label": "bgroup_B3_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0969,
+      "usage": {
+        "input_tokens": 4508,
+        "cached_input_tokens": 0,
+        "output_tokens": 334,
+        "reasoning_tokens": 286
+      },
+      "elapsed_seconds": 5.327,
+      "prompt_sha256": "1ffd2f024b59536762d02a46b6a19455e0cf6973c99550e467924d1c5225911f"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-007_j1_paired_rewrite",
+      "cost_jpy": 0.0892,
+      "usage": {
+        "input_tokens": 3408,
+        "cached_input_tokens": 0,
+        "output_tokens": 456,
+        "reasoning_tokens": 304
+      },
+      "elapsed_seconds": 4.712,
+      "prompt_sha256": "020593041e4118b8f2e1f1164fd7c4a6044a8dc6c836bab8b071ef9e04a6062a",
+      "output_text": "{\"ja_revised\":\"## In one line\\n\\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. Trump replaced the flashy 20% plan with Gulf-state trade and investment deals, citing “very productive” talks; separately, Brent briefly narrowed its gains after the announcement before returning near pre-announcement levels.\",\"en_revised\":\"## In one line\\n\\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. Trump replaced the flashy 20% plan with Gulf-state trade and investment deals, citing “very productive” talks; separately, Brent briefly narrowed its gains after the announcement before returning near pre-announcement levels.\"}"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-009_fulltext_fallback",
+      "cost_jpy": 0.1543,
+      "usage": {
+        "input_tokens": 3682,
+        "cached_input_tokens": 0,
+        "output_tokens": 1231,
+        "reasoning_tokens": 773
+      },
+      "elapsed_seconds": 9.24,
+      "prompt_sha256": "93d5c641755a6068252b035158839c7bdb9c518330a21dd5f6b54c5b21e943a9",
+      "output_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. Trump replaced the flashy 20% plan with Gulf-state trade and investment deals, citing “very productive” talks; separately, Brent briefly narrowed its gains after the announcement before returning near pre-announcement levels."
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-011_fulltext_fallback",
+      "cost_jpy": 0.1054,
+      "usage": {
+        "input_tokens": 3684,
+        "cached_input_tokens": 0,
+        "output_tokens": 607,
+        "reasoning_tokens": 147
+      },
+      "elapsed_seconds": 5.751,
+      "prompt_sha256": "849db019ae879f02123ca927839affd16de56e2e3f427ef99f5a59e585be32ef",
+      "output_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. Trump replaced the flashy 20% plan with Gulf-state trade and investment deals, citing “very productive” talks; separately, Brent briefly narrowed its gains after the announcement before returning near pre-announcement levels."
+    },
+    {
+      "label": "bgroup_B3_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1684,
+      "usage": {
+        "input_tokens": 6677,
+        "cached_input_tokens": 0,
+        "output_tokens": 812,
+        "reasoning_tokens": 586
+      },
+      "elapsed_seconds": 7.369,
+      "prompt_sha256": "1d8ba396bc08939a0a6e0126d90ea459ac689339731e608284dd5439fda9f890",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "bgroup_B3_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.163,
+      "usage": {
+        "input_tokens": 6703,
+        "cached_input_tokens": 0,
+        "output_tokens": 737,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 6.19,
+      "prompt_sha256": "ebfbc607f0f963361ae618d8995b1ca5fee5631aca5834f40de97b9836af3d1d",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.7772,
+  "total_calls": 6,
+  "elapsed_seconds": 38.638
+}

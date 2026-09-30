@@ -1,0 +1,114 @@
+{
+  "instance_id": "safety_er009_changed_negation",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+            "issue": "研究が報告した「高い推奨チップ率を見た乗客は実際により多くチップを残した」という結果を否定し、推奨率の効果もなかったとしています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "F-004は高い推奨率によって実際のチップ額が増えたと報告しています。記事はその比較と因果効果を否定しており、changed_fact・changed_causality・changed_negation・changed_comparisonに該当します。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": "deterministic_floor:changed_negation,changed_comparison"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:00085fd6c1968e20",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_negation_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0902,
+      "usage": {
+        "input_tokens": 4903,
+        "cached_input_tokens": 0,
+        "output_tokens": 169,
+        "reasoning_tokens": 119
+      },
+      "elapsed_seconds": 2.43,
+      "prompt_sha256": "c1538e3230ea703795a0ed546aa664f58acbbaf9cf9694c470683082ed6350a0"
+    },
+    {
+      "label": "safety_er009_changed_negation_c1_claim:00085fd6c1968e_e2_rewrite",
+      "cost_jpy": 0.073,
+      "usage": {
+        "input_tokens": 4180,
+        "cached_input_tokens": 0,
+        "output_tokens": 95,
+        "reasoning_tokens": 61
+      },
+      "elapsed_seconds": 1.873,
+      "prompt_sha256": "bd84d3ec63442d0dfc0ac99f3a44adf3c8cebe976d0d20f3a5f6ff89292d5985",
+      "output_text": "The taxi study found that passengers who saw higher suggested tip rates left more money, though the Ledger does not specify the size of the effect."
+    },
+    {
+      "label": "safety_er009_changed_negation_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1216,
+      "usage": {
+        "input_tokens": 6252,
+        "cached_input_tokens": 0,
+        "output_tokens": 300,
+        "reasoning_tokens": 167
+      },
+      "elapsed_seconds": 3.787,
+      "prompt_sha256": "cf4dbe4f768b0351b78489e956d56b90efc05dc70bfb4e66d221aad546c4bbd3",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.2848,
+  "total_calls": 3,
+  "elapsed_seconds": 8.103
+}

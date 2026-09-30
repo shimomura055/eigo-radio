@@ -1,0 +1,114 @@
+{
+  "instance_id": "safety_er009_changed_scope",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "issue": "タクシー研究の結果が全米のレストランでも直接確認され、レストラン画面の高い推奨率が客により多くチップを残させると因果的に断定している。Ledgerはレストランでのそのような因果確認を示していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-004の因果結果はニューヨーク市タクシーのクレジットカード利用者に関するもの。レストラン全国への拡張、レストラン客への主体の置き換え、およびレストラン画面の因果効果の断定はLedgerにない。F-011〜F-017の調査結果も自己申告等の記述的結果であり、直接の因果確認を裏付けない。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_actor,changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:09388af908c4b5bc",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_scope_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0991,
+      "usage": {
+        "input_tokens": 4925,
+        "cached_input_tokens": 0,
+        "output_tokens": 279,
+        "reasoning_tokens": 231
+      },
+      "elapsed_seconds": 3.305,
+      "prompt_sha256": "74a7d73209d5d2292eb3a1b69ce903d79a94b64a3ddc6b66dd25558e0116651a"
+    },
+    {
+      "label": "safety_er009_changed_scope_c1_claim:09388af908c4b5_e2_rewrite",
+      "cost_jpy": 0.0735,
+      "usage": {
+        "input_tokens": 4213,
+        "cached_input_tokens": 0,
+        "output_tokens": 94,
+        "reasoning_tokens": 69
+      },
+      "elapsed_seconds": 2.3,
+      "prompt_sha256": "3f7dbc8c9b68817d0a14092cc958d1bc5cc67d4cbf052172100b0250a37fc458",
+      "output_text": "In the New York City taxi study, higher suggested tip rates caused customers to leave more money."
+    },
+    {
+      "label": "safety_er009_changed_scope_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1288,
+      "usage": {
+        "input_tokens": 6318,
+        "cached_input_tokens": 0,
+        "output_tokens": 379,
+        "reasoning_tokens": 268
+      },
+      "elapsed_seconds": 4.056,
+      "prompt_sha256": "a90426bedbf0fc03c1c8b4449494806c48b3ac648aa15576c06ae3322fce9550",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3014,
+  "total_calls": 3,
+  "elapsed_seconds": 9.693
+}

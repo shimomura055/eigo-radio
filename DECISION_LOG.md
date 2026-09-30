@@ -13830,3 +13830,100 @@ recovery_flow_01.md`§4-8[新設]/§5-4-補2[新設]/§9-1⑤/§13-11[新設]/
 `docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
 08.md`、`er052_output/open233_self_recovery_stage2_calibration_01/`、
 `er052_output/open233_self_recovery_stage3_rewrite_trial_01/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Phase 1 ⑥ 統合dry-run実測完了
+(Self-Recovery Flow最初の実Trial、negative群測定訂正+recall miss発見、
+委任_09、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_09)。
+
+**目的**: ①〜⑤(§9-1)で確定した設計(V4A Stage1・R2 rubric+floor・
+narrow_scope=J-1/replace=E-2・cycle上限2・A1/A5/A7)を1本のTrial
+runner(新規`er052_open233_self_recovery_flow_runner_01.py`+test)へ
+統合し、代表fixture 29 instance(Hormuz run_01/run_02 Advanced[現行
+Production STOP実例]・run_03 Advanced/Standard、Meta run_03
+Advanced/Standard、B群4、negative候補7、Safety群12)で通し実行した
+(Phase 1計画の最終項目)。
+
+**実測**: 92 call・¥16.7806・0 error(Guardrail¥45の約37%)。
+Self-Recovery 6項目: Initial BLOCK=23/29、Re-screening自動解消=1、
+Rewrite進行=22、Rewrite自動解消=13、Final STOP=9、
+USER_DECISION_REQUIRED=9(全件`same_claim_fact_id_reblocked`)。
+0件の内訳=真の解消11/QUALITY通過0/未確認0/誤PASS候補0。QCD:
+平均¥0.5786/instance(全29)・¥0.7118(BLOCKING23件)、P95=¥1.9421、
+worst=¥2.2721(+¥3/記事Cap未超過)。completion率69.0%・retry率
+75.9%・loop率41.4%。事象単位: floor後BLOCKING確定claim48件中Rewrite
+実行33件、初回cycle解消20/33(60.6%)。Escalation率(instance単位)
+9/29=31.0%(Wilson 95%CI=[17.3%, 49.2%])。
+
+**【最重要】重大Fact見逃し(Safety観点)**: V4A単発実行(n=1)で
+B2_hormuz・B3・**hormuz_run02_advanced(現行Production STOP実例
+そのもの)**の3 instanceが既知BLOCKING claimを検出できずLEDGER_
+COMPLIANTとなった(Stage1 recall miss、§10/§14既知リスクの実データ
+再現)。floor機構自体は48 BLOCKING claim中0件のfalse-negativeを
+維持したが、**Stage1自体の検出漏れは本設計の範囲外であり未解決**。
+
+**【最重要】negative群Productivity測定の訂正**: 委任_08のStage2
+較正Trial(negative群4 fixture: neg1/neg2/neg3/neg5)は、これらの
+fixtureが実Production V0で`deviations=[]`(定義上)であるため
+`claim_text="(claim not found in baseline)"`という**無意味な
+placeholder文字列**に対してStage2判定を測定していたことが判明した
+(該当コード行確認済み)。既報告「negative群R2で87.5%が非BLOCKING
+へ復帰」はこの無効な入力に基づく測定であり、実際のV4A誤検出claim
+文言による本統合dry-runの実測では**Stage2単独でのBLOCKING非該当
+降格は0/4(0%)**だった(全4件BLOCKING確定、2件Rewrite自動解消・
+2件Final STOP)。**既存エントリ(本ログ2026-09-30`OPEN-233-SELF-
+RECOVERY-TRIAL-01`委任_08エントリ)・design書§4-8・REPORT§7は
+履歴改変せずそのまま保持し、本エントリで訂正値を記録する**。
+
+**Stage4到達9件の原因分類**: (a) J-1(paired local rewrite)の汎用
+対象文特定失敗=5 instance(11回中7回[63.6%]が対象文特定自体に失敗、
+委任_08の手動アンカー実験[J-1が100%解消]との乖離)。(b) 局所編集は
+実行された(guard_ok=True)がRecheckが引き続きLEDGER_DEVIATION=
+4 instance。**(b)の根本原因**: Stage2出力schema(`er052_open233_
+self_recovery_stage2_production_01.py::_ITEM_PROPS`)にdesign書§4-5
+が要求する`rewrite_hint`フィールドが未実装であり、Stage3が具体的な
+修正方針を受け取れていない(新規発見、報告のみ、既存Trial infraの
+改修は次回委任の判断)。
+
+**実装上の不具合発見・修正**: 統合runの実行中、既存`er052_open233_
+self_recovery_stage3_rewrite_trial_01.py`(委任_08既存資産)の
+`simple_llm_call`をそのまま呼び出すと、そのモジュール自身の
+`save_budget_state`が既存委任_08の証跡ファイル(`budget_state_
+c233l_b.json`)を上書きする実害を検出した(`git diff`で発覚、
+`git checkout`で復元済み、既存証跡データの実質破損なし)。本runner
+自身の独立した`simple_llm_call`実装へ差し替え、再発防止regression
+testを追加した(判定ロジック自体には影響しない、実測結果は同一)。
+
+**Opus L2 #2論点(5〜7個)提案**: (1) `rewrite_hint`追加によるRewrite
+成功率改善の見込みと質の検証方法、(2) J-1汎用対象文特定失敗率63.6%を
+踏まえたProduction投資判断、(3) negative群R2実測0/4を踏まえた
+rubric再較正の要否、(4) Stage1(V4A) recall missへの対応方針(2nd
+run併用コスト vs 見逃しリスク)、(5) claim identity tracking(fact_id
+依存)の脆弱性補強、(6) Phase 2着手前の改善実装要否、(7) `rewrite_
+hint`追加によるprompt長増加のCap余裕への影響試算。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+Stage1 recall miss・negative群測定訂正はSafety「緩和」ではなく既知
+リスクの実測確認・既存測定の透明な訂正[Safetyはfloor機構により
+0件のfalse-negativeを維持]。worst case実測¥2.2721はCap未超過
+[条件3]。改善提案は未実装のTrial改善候補でありProduction採用
+[条件4]には未到達)。
+
+**費用**: 今回¥16.7806(92 call、0 error)。Phase累計¥38.2769/総枠
+¥400、残¥361.7231。Guardrail¥45に対し約37%、超過なし。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存`er051_*`/既存
+`er052_*`(precheck/stage2_production/stage2_calibration/stage3_
+rewrite_trial/phase1_step3_stage1_compare)に差分なし(新規
+`er052_open233_self_recovery_flow_runner_01.py`+testのみ追加)。API
+keyは環境変数のみ、保存jsonはprompt_sha256のみ記録。既存unittest
+全110件PASS(regression確認、新規17件追加)。
+
+Status=`PHASE1_DONE_IMPROVEMENT_NEEDED`。詳細: `docs/pm/design_
+open233_self_recovery_flow_01.md`§9-1⑥[実測反映]/§9-2[改善優先
+順位]/冒頭Status、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§8、
+`docs/pm/delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_
+09.md`、`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_output/open233_self_recovery_flow_runner_01/`。

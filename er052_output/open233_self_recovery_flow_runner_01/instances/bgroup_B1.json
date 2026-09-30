@@ -1,0 +1,218 @@
+{
+  "instance_id": "bgroup_B1",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "same_claim_fact_id_reblocked",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "「市場が見ているのは『言葉』より海の安全」「投資家が気にしているのは、20％の料金案が残るかどうかだけではない」とし、海上の危険がBrent価格の反発を説明するかのように述べている。",
+            "issue": "Ledgerは、撤回発表後にBrentが一時的に上げ幅を縮小し、その後発表前に近い高水準へ戻ったことと、攻撃・封鎖・タンカー安全上の懸念が続いていたことを記録している。一方、市場参加者が政策発言より海上の安全を重視していたことや、それが価格回復の理由だったことまでは確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "市場参加者の注目点と価格回復の因果関係をLedgerにない形で付け加えている。なお、一時的な縮小と回復という観測自体とは矛盾しない。",
+            "related_fact_id": "HF-009",
+            "qualifier_present": true,
+            "qualifier_text": "「20％の料金案が残るかどうかだけではない」",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "撤回しても下がらない原油価格――市場が見ているのは「言葉」より海の安全\n\nこれ、ちょっと面白くない？　トランプ氏が新しい負担を打ち出したのに、取り下げても原油価格がほとんど下がらなかった。\n\n7月13日、トランプ氏は、米国がホルムズ海峡の安全を守る費用として、海峡を通るすべての貨物に20％を求めると発表した。ホルムズ海峡は、中東から原油を運ぶ船が多く通る重要な海の道だ。そこに大きな料金をかける、という案だった。\n\nところが翌14日、トランプ氏はこの20％案をやめると発表した。代わりに、湾岸諸国が米国との貿易や投資を増やす形にするという。中東の指導者たちと「非常に生産的な協議」をしたことが、判断の背景にあると説明した。\n\n普通なら、負担がなくなれば「では原油価格も下がるのでは」と思う。実際、発表の直後には、代表的な原油価格であるBrent先物の上げ幅が少し縮まった。\n\nしかし、その動きは長く続かなかった。Brent先物はすぐに、発表前に近い高い水準へ戻った。報道時点では約2.6％高で、1バレル85ドルを超えていた。\n\nここで大事なのは、市場が見ているものだ。投資家が気にしているのは、20％の料金案が残るかどうかだけではない。米国とイランの間で攻撃が続いていること、海が封鎖される心配があること、タンカーが安全に航行できるか不安が残っていることだ。\n\nつまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+          "fallback_used": true,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "「原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。」",
+            "issue": "原油価格の高止まりがガソリンや輸送費などの価格に影響するという具体的な波及効果は、Verified Fact Ledgerに記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerにない価格波及の事実を追加している。「高い状態が続けば」という条件付き表現はあるが、影響の主張自体はLedgerで確認されていない。",
+            "related_fact_id": "HF-009",
+            "qualifier_present": true,
+            "qualifier_text": "「原油価格が高い状態が続けば」",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "つまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+          "fallback_used": false,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(sequence_matcher(ratio=0.54))",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "「市場が見ているのは『言葉』より海の安全」とし、海上の危険が消えていないため「原油を運べるのか」という問題が残ると説明している。",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "「市場が見ているのは『言葉』より海の安全」とし、海上の危険が消えていないため「原油を運べるのか」という問題が残ると説明している。",
+            "issue": "Ledgerは、撤回後にBrent先物の上げ幅が一時縮小してから発表前に近い高水準へ戻ったこと、および攻撃・海上封鎖・タンカー安全上の懸念が続いていたことを記録している。しかし、市場が政策発言より海上の安全を重視していたことや、それが価格の戻りを説明することまでは確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "観測された値動きと継続中の懸念を、市場の注目点および価格回復の説明として結び付けている。市場の注目点・因果関係はLedgerにないため、changed_fact、changed_causality、unsupported_new_claimが該当する。",
+            "related_fact_id": "HF-009",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "撤回しても下がらない原油価格――市場が見ているのは「言葉」より海の安全\n\nこれ、ちょっと面白くない？　トランプ氏が新しい負担を打ち出したのに、取り下げても原油価格がほとんど下がらなかった。\n\n7月13日、トランプ氏は、米国がホルムズ海峡の安全を守る費用として、海峡を通るすべての貨物に20％を求めると発表した。ホルムズ海峡は、中東から原油を運ぶ船が多く通る重要な海の道だ。そこに大きな料金をかける、という案だった。\n\nところが翌14日、トランプ氏はこの20％案をやめると発表した。代わりに、湾岸諸国が米国との貿易や投資を増やす形にするという。中東の指導者たちと「非常に生産的な協議」をしたことが、判断の背景にあると説明した。\n\n普通なら、負担がなくなれば「では原油価格も下がるのでは」と思う。実際、発表の直後には、代表的な原油価格であるBrent先物の上げ幅が少し縮まった。\n\nしかし、その動きは長く続かなかった。Brent先物はすぐに、発表前に近い高い水準へ戻った。報道時点では約2.6％高で、1バレル85ドルを超えていた。\n\nここで大事なのは、市場が見ているものだ。撤回発表後、Brent先物は一時上げ幅を縮小したものの、ほどなく発表前に近い高水準へ戻り、攻撃や海上封鎖、タンカーの安全を巡る懸念も続いていた。米国とイランの間で攻撃が続いていること、海が封鎖される心配があること、タンカーが安全に航行できるか不安が残っていることだ。\n\nつまり、料金案は消えても、海そのものの危険は消えていない。市場から見ると、「請求書の形」は変わっても、「原油を運べるのか」という問題はそのままなのだ。\n\n遠い中東の海の話に見えるが、原油価格が高い状態が続けば、ガソリンや輸送費など、私たちの身近な価格にも影響する。今回の動きは、ニュースの見出しが変わっても、現実のリスクが残れば市場は簡単には安心しない、ということをよく示している。",
+          "fallback_used": true,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "repeat_claim_ids": [
+        "fact:HF-009"
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "bgroup_B1_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.127,
+      "usage": {
+        "input_tokens": 4806,
+        "cached_input_tokens": 0,
+        "output_tokens": 658,
+        "reasoning_tokens": 589
+      },
+      "elapsed_seconds": 7.241,
+      "prompt_sha256": "25e7834cdfba4388c29440433886db856a237a92abbd08a0fbeef6edf3a8ca52"
+    },
+    {
+      "label": "bgroup_B1_c1_fact:HF-009_e2_rewrite",
+      "cost_jpy": 0.0683,
+      "usage": {
+        "input_tokens": 3307,
+        "cached_input_tokens": 0,
+        "output_tokens": 209,
+        "reasoning_tokens": 141
+      },
+      "elapsed_seconds": 3.11,
+      "prompt_sha256": "a64482010858e29e2f92005ceba82f189e4405fef0f7a4f776e4af71a344ae19",
+      "output_text": "撤回発表後、Brent先物は一時上げ幅を縮小したものの、ほどなく発表前に近い高水準へ戻り、攻撃や海上封鎖、タンカーの安全を巡る懸念も続いていた。"
+    },
+    {
+      "label": "bgroup_B1_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2977,
+      "usage": {
+        "input_tokens": 6020,
+        "cached_input_tokens": 0,
+        "output_tokens": 2591,
+        "reasoning_tokens": 2070
+      },
+      "elapsed_seconds": 21.503,
+      "prompt_sha256": "29e49f997d724d432c5cdea1d856ad56bf2a0e35ef3b177c0834b869c897c761",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "bgroup_B1_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1055,
+      "usage": {
+        "input_tokens": 4610,
+        "cached_input_tokens": 0,
+        "output_tokens": 423,
+        "reasoning_tokens": 375
+      },
+      "elapsed_seconds": 5.444,
+      "prompt_sha256": "a4c4f9cf0b6801cf94c82016f183b8973373e91f136ebec5a26ca6c6f65afadc"
+    }
+  ],
+  "total_cost_jpy": 0.5985,
+  "total_calls": 4,
+  "elapsed_seconds": 37.322
+}

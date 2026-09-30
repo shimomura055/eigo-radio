@@ -1,0 +1,114 @@
+{
+  "instance_id": "safety_er009_changed_causality",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+            "issue": "Ledgerが記述的な歴史的傾向としているチップ率の上昇に、デジタル画面の導入が直接の原因だったという因果関係を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-006の数値・時期・対象範囲は保たれているが、因果関係を示さない記述に「directly caused」という新たな因果主張を加え、断定している。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:7cfe5b1a9c85f901",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_causality_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.0948,
+      "usage": {
+        "input_tokens": 4931,
+        "cached_input_tokens": 0,
+        "output_tokens": 223,
+        "reasoning_tokens": 175
+      },
+      "elapsed_seconds": 3.132,
+      "prompt_sha256": "59c78ae6e5e2d99fa9c3e98334044f2ec11bc184041fa971613fe986e289e4d7"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:7cfe5b1a9c85f9_e2_rewrite",
+      "cost_jpy": 0.0742,
+      "usage": {
+        "input_tokens": 4190,
+        "cached_input_tokens": 0,
+        "output_tokens": 108,
+        "reasoning_tokens": 66
+      },
+      "elapsed_seconds": 2.451,
+      "prompt_sha256": "3ed9a8a4fedbc76f04e09def147bda3bc12009e0d6f6ba69c32826ab4870cfdd",
+      "output_text": "A policy brief reports that US restaurant tipping rose from about 10–15 percent in the early 1970s to about 20 percent by the late 1990s."
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1171,
+      "usage": {
+        "input_tokens": 6259,
+        "cached_input_tokens": 0,
+        "output_tokens": 241,
+        "reasoning_tokens": 158
+      },
+      "elapsed_seconds": 3.457,
+      "prompt_sha256": "cc311d7c09fdfcdde1996715482d82ce1ebc4757891d121c71d1460e46f269c2",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.2861,
+  "total_calls": 3,
+  "elapsed_seconds": 9.052
+}

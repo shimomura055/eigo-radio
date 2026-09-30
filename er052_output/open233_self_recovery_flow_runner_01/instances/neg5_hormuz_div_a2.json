@@ -1,0 +1,116 @@
+{
+  "instance_id": "neg5_hormuz_div_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage.”",
+          "origin": "translation",
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage.”",
+            "issue": "The word “So” implies that the continuing concerns caused the 20% plan to be withdrawn. The Ledger does not establish that causal link; it records Trump’s explanation that the replacement decision followed discussions with Middle Eastern leaders.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "“So” turns the juxtaposition into a causal claim not supported by the Ledger. This is a new factual relationship as well as a changed causality and unsupported new claim.",
+            "related_fact_id": "HF-007",
+            "origin": "translation",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage. But the chart pulled back only briefly before recovering. The policy turn and the oil chart’s “not over yet” move happened that same day.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(sequence_matcher(ratio=0.76))",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "neg5_hormuz_div_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1106,
+      "usage": {
+        "input_tokens": 4820,
+        "cached_input_tokens": 0,
+        "output_tokens": 446,
+        "reasoning_tokens": 398
+      },
+      "elapsed_seconds": 4.686,
+      "prompt_sha256": "2a154aa722d5d5b970f56cb14dd027b2263ab6d3c58df9e64719e5f94ba74ae8"
+    },
+    {
+      "label": "neg5_hormuz_div_a2_c1_fact:HF-007_e2_rewrite",
+      "cost_jpy": 0.0572,
+      "usage": {
+        "input_tokens": 3249,
+        "cached_input_tokens": 0,
+        "output_tokens": 80,
+        "reasoning_tokens": 57
+      },
+      "elapsed_seconds": 2.768,
+      "prompt_sha256": "db103ab5916793ae344dc1d092a8ee94dbf7b5e78df4ddccc1950215b08f319e",
+      "output_text": "On July 14, Trump said the replacement decision followed discussions with Middle Eastern leaders."
+    },
+    {
+      "label": "neg5_hormuz_div_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1731,
+      "usage": {
+        "input_tokens": 6717,
+        "cached_input_tokens": 0,
+        "output_tokens": 863,
+        "reasoning_tokens": 775
+      },
+      "elapsed_seconds": 7.671,
+      "prompt_sha256": "8b582ea0c1ff9fe8e702ecbd350af181672920de2bd91cd134149c2ef29005e5",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3409,
+  "total_calls": 3,
+  "elapsed_seconds": 15.153
+}

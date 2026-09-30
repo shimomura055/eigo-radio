@@ -1,0 +1,90 @@
+{
+  "instance_id": "hormuz_run01_advanced",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+          "origin": "ja_source",
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+            "issue": "原油価格とガソリン価格・運送費の連動関係は、Verified Fact Ledgerに記載・確認されていない具体的な主張です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerにない具体的事実を追加しているため、changed_factとunsupported_new_claimをtrueとしました。Ledgerの観測と矛盾する内容ではありませんが、Ledgerによる裏付けはありません。",
+            "related_fact_id": "",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Attacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+          "fallback_used": false,
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "hormuz_run01_advanced_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4824,
+      "usage": {
+        "input_tokens": 6241,
+        "cached_input_tokens": 0,
+        "output_tokens": 4902,
+        "reasoning_tokens": 4660
+      },
+      "elapsed_seconds": 47.141,
+      "prompt_sha256": "e71e2c6bebd59c29a7606a6fe2bacfca490083dfb6fd1723ca9b6b843ea22d0e"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1094,
+      "usage": {
+        "input_tokens": 4686,
+        "cached_input_tokens": 0,
+        "output_tokens": 457,
+        "reasoning_tokens": 411
+      },
+      "elapsed_seconds": 6.278,
+      "prompt_sha256": "a3613152c3166e00fec701f54d8445f5d55112d28b5c0218147ff6e4e3cb4089"
+    }
+  ],
+  "total_cost_jpy": 0.5918,
+  "total_calls": 2,
+  "elapsed_seconds": 53.433
+}

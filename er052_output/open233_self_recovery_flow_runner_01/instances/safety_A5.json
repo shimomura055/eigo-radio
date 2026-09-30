@@ -1,0 +1,116 @@
+{
+  "instance_id": "safety_A5",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "call_log": [
+    {
+      "label": "safety_A5_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1072,
+      "usage": {
+        "input_tokens": 4757,
+        "cached_input_tokens": 0,
+        "output_tokens": 415,
+        "reasoning_tokens": 365
+      },
+      "elapsed_seconds": 4.944,
+      "prompt_sha256": "71f3c147b93fda739593fee6b6458f05def65206eafc4e781e40499c0bdd4312"
+    },
+    {
+      "label": "safety_A5_c1_fact:MUSE-HC-012_e2_rewrite",
+      "cost_jpy": 0.0636,
+      "usage": {
+        "input_tokens": 3292,
+        "cached_input_tokens": 0,
+        "output_tokens": 152,
+        "reasoning_tokens": 131
+      },
+      "elapsed_seconds": 2.592,
+      "prompt_sha256": "2249f878f4ca87d8e89a28b7607866e8830cec097525332095ec93c7e3757107",
+      "output_text": "They temporarily rolled back the human-concierge feature, not Muse itself."
+    },
+    {
+      "label": "safety_A5_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.299,
+      "usage": {
+        "input_tokens": 6509,
+        "cached_input_tokens": 0,
+        "output_tokens": 2510,
+        "reasoning_tokens": 2418
+      },
+      "elapsed_seconds": 22.162,
+      "prompt_sha256": "44ba6d872b29dbd1dc6658b98462c44b23147685f453b5fa9e11161156e34f31",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.4698,
+  "total_calls": 3,
+  "elapsed_seconds": 29.714
+}

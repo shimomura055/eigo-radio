@@ -582,3 +582,156 @@ recovery_flow_01.md`(§4-8[新設]/§5-4-補2[新設]/§9-1⑤/§13-11[新設]/
 `er052_output/open233_self_recovery_stage2_calibration_01/`、
 `er052_output/open233_self_recovery_stage3_rewrite_trial_01/`。
 入力: 委任文全文(2026-09-30、委任_08)。
+
+## §8. Phase 1 ⑥ 統合dry-run(委任_09、2026-09-30、Self-Recovery Flow
+統合runnerによる最初の実Trial、Checkpoint B Evidence取得)
+
+**目的**: ①〜⑤で確定した設計(V4A Stage1・R2 rubric+floor・
+narrow_scope=J-1/replace=E-2・cycle上限2・A1/A5/A7)を1本のTrial
+runnerへ統合し(`er052_open233_self_recovery_flow_runner_01.py`+
+test)、代表fixture 29 instanceで通し実行する(Phase 1計画の最終項目)。
+
+**対象・実測規模**: Hormuz run_01/run_02 Advanced各1(現行Production
+STOP実例、Standardは同run内で未生成のため対象外)・run_03
+Advanced/Standard、Meta run_03 Advanced/Standard、B群4
+(B1/B2_hormuz/B3/B4)、negative候補7、Safety群12(er009 9種+
+A2A3/A4/A5)=計29 instance。92 call・¥16.7806・0 error
+(Guardrail¥45の約37%)。
+
+**【対象/instance数と期待経路 vs 実経路の突合表(要旨)】**
+
+| 分類 | instance数 | 実際の到達状態 |
+|---|---|---|
+| Hormuz run_01 Advanced(現行STOP実例) | 1 | Re-screening自動解消(ACCEPTABLE、Rewrite不要) |
+| Hormuz run_02 Advanced(現行STOP実例) | 1 | **Stage1(V4A) recall miss**でACCEPTABLE_STAGE1(Self-Recovery Flow未発火) |
+| Hormuz run_03 Advanced/Standard | 2 | Advanced=ACCEPTABLE_STAGE1、Standard=STAGE4_ESCALATION(J-1汎用ロケータ失敗) |
+| Meta run_03 Advanced/Standard | 2 | Advanced=ACCEPTABLE_STAGE1、Standard=STAGE4_ESCALATION |
+| B群4(B1/B2_hormuz/B3/B4) | 4 | B3=RESOLVED_REWRITE(Stage1 recall miss代替後)、他3件=STAGE4_ESCALATION |
+| negative候補7(Normal群) | 7 | 3件=ACCEPTABLE_STAGE1(正しく無検出)、4件=Stage1過剰BLOCK→**Stage2でも全件BLOCKING確定(0/4是正)**、うち2件Rewrite自動解消・2件STAGE4 |
+| Safety群12(er009 9種+A2A3/A4/A5) | 12 | 9件=RESOLVED_REWRITE(またはREWRITE_THEN_DOWNGRADE)、A2A3/A4=STAGE4_ESCALATION(floor維持、false-negativeなし) |
+
+**【Self-Recovery 6項目】** Initial BLOCK=23/29、Re-screening自動
+解消=1、Rewrite進行=22、Rewrite自動解消=13(RESOLVED_REWRITE=11+
+RESOLVED_REWRITE_THEN_DOWNGRADE=2)、Final STOP=9、
+USER_DECISION_REQUIRED=9(全件`same_claim_fact_id_reblocked`)。
+
+**【0件の内訳】** 真の解消(`all_prior_issues_resolved=True`)=11、
+QUALITY通過=0、未確認=0、誤PASS候補=0(全件Recheckで明示確認)。
+
+**【重大Fact見逃し(最重要の安全性所見)】** V4A単発実行(n=1)で、
+B2_hormuz・B3・**hormuz_run02_advanced(現行Production STOP実例)**の
+3 instanceが既知BLOCKING claimを検出できず(Stage1 recall miss、
+§10/§14既知リスクの実データ再現)。B2_hormuz/B3は実Production
+baselineへ代替してStage2/3経路自体は検証(結果に代替の事実を明記)、
+hormuz_run02_advancedは代替せず素の結果=ACCEPTABLE_STAGE1で完結
+(Self-Recovery Flowが発火する前の見逃しであり、Stage2/3では捕捉
+不可能)。floor機構自体はfloor対象48 BLOCKING claim中0件のfalse-
+negativeを維持。
+
+**【QCD】** 総call92・総費用¥16.7806・平均¥0.5786/instance(全29)、
+¥0.7118/instance(BLOCKING23件のみ)。P50=¥0.377(全29)/¥0.5918
+(BLOCKING23)、P95=¥1.9421、worst=¥2.2721(safety_A4)。**worst case
+でも+¥3/記事Cap未超過**。latency P50=17.27秒/P95=143.5秒。
+completion率69.0%、retry率75.9%、loop率41.4%。
+
+**【現行Productionとの対比(Hormuz 3記事)】** run_01=現行STOP→
+Re-screening自動解消。run_02=現行STOP→Stage1 recall miss(見かけ上
+解消だがSelf-Recovery Flowの機能とは無関係)。run_03 Standard=現行
+STOP→STAGE4_ESCALATION(J-1汎用ロケータ失敗)。
+
+**【事象単位成功率とEscalation率推定上限】** floor後BLOCKING確定
+claim48件のうちRewrite実行33件、初回cycleで再発せず解消=20/33
+(60.6%)。機構別: `deterministic_delete`=100%(1/1)、
+`e2_generic_rewrite`=72.2%(13/18)、`target_not_found+fulltext_
+fallback`=100%(3/3)、`paired_ja_en(J-1)`全体=27.3%(3/11、うち
+locate成功時`j1_paired_rewrite`=66.7%[2/3]、locate失敗`j1_pair_not_
+located`=14.3%[1/7])。**J-1対象文特定の失敗(11回中7回=63.6%)が
+最大の失敗要因**。Escalation率(instance単位)9/29=31.0%、Wilson
+95%CI=[17.3%, 49.2%]。
+
+**【Stage4到達9件の原因分類】** (a) J-1対象文特定失敗=5 instance
+(safety_A2A3・bgroup_B2_hormuz・bgroup_B4・meta_run03_standard・
+hormuz_run03_standard)。(b) 局所編集は実行された(guard_ok=True)が
+Recheckが引き続きLEDGER_DEVIATION=4 instance(safety_A4・bgroup_B1・
+neg1・neg2)。**(b)の根本原因**: Stage2出力schema
+(`er052_open233_self_recovery_stage2_production_01.py::_ITEM_PROPS`)
+に設計書§4-5が要求する`rewrite_hint`フィールドが未実装であり、
+Stage3が具体的な修正方針を受け取れていない(新規発見、報告のみ、
+既存Trial infraの改修は次回委任の判断へ)。
+
+**【最重要の是正発見】** 委任_08のStage2較正Trial(negative群4
+fixture: neg1/neg2/neg3/neg5)は、これらのfixtureが定義上
+`deviations=[]`(実Production V0でLEDGER_COMPLIANT)であるため
+`claim_text="(claim not found in baseline)"`という**無意味な
+placeholder文字列**に対してStage2判定を測定していたことが判明した
+(該当コード行確認済み)。既報告の「negative群R2で87.5%が非BLOCKING
+へ復帰」はこの無効な入力に基づく測定であり、実際のV4A誤検出claim
+文言では**Stage2単独でのBLOCKING非該当への降格は0/4(0%)**だった
+(実測、本統合dry-run)。既存DECISION_LOG/REPORT§7/design書§4-8の
+数値は履歴改変せず保持するが、本節で訂正値を明記する。
+
+**Opus L2 #2に問うべき論点案(5〜7個)**:
+1. Stage2出力へ`rewrite_hint`を追加した場合、Rewrite成功率(現状
+   claim単位60.6%)がどの程度改善し得るか、また`rewrite_hint`自体の
+   質(具体性)をどう機械的に検証するか。
+2. J-1(JA/EN paired local rewrite)の汎用対象文特定失敗率63.6%は、
+   Production採用を検討する上でどの程度の実装投資(汎用JA文分割
+   モジュール)を正当化するか。人手アンカーに頼らない設計は現実的か。
+3. negative群R2の実測Productivity(0/4)を踏まえ、R2 rubricの
+   over-block是正力そのものを再較正すべきか(Safety群100%維持との
+   トレードオフ)。
+4. Stage1(V4A)のrecall miss(本runで3/複数instance発生)を、
+   Production導入判断においてどう扱うべきか(2nd run併用のコスト
+   増 vs 見逃しリスクの許容)。
+5. cycle上限2・同一claim/fact_id再発検出(A5)は今回9/9のFinal STOPで
+   正しく機能したが、`related_fact_id`をLLMが毎回一貫して報告しない
+   可能性(claim identity trackingの脆弱性)をどう補強すべきか。
+6. Phase 2(10〜20記事)の設計において、上記1〜5の改善を先に実装
+   すべきか、未改善のまま生データを追加取得すべきか。
+7. +¥3/記事Capは本実測(worst¥2.2721)で余裕があるが、`rewrite_hint`
+   追加によるprompt長増加がCap余裕をどの程度圧迫するかの試算。
+
+**Phase 2計画の要点**: 記事数10〜20規模(既存Hormuz/Meta run再開、
+または新規テーマ)。新規テーマの場合はPM_GOVERNANCE.md§13により
+複数候補提示+ユーザー選択が必要(Fable/Claude単独決定不可)。費用は
+Phase 1実測(¥0.58〜0.71/instance平均)から外挿すると10〜20記事×
+Advanced+Standard(各1 instance)=20〜40 instance相当で概算¥12〜28
+(Stage1固定費除く条件付き費用のみ)、Guardrailは想定の1.5〜2倍
+(¥40〜60程度)を次回委任で個別設定する。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当。
+Stage1 recall miss・negative群Productivity訂正はSafety「緩和」では
+なく既知リスクの実測確認・既存測定の透明な訂正[Safetyはfloor機構に
+より0件のfalse-negativeを維持]。worst case実測¥2.2721はCap未超過
+[条件3]。改善提案はいずれも未実装のTrial改善候補でありProduction
+採用[条件4]には未到達)。
+
+**実装上の不具合発見・修正**: 統合runの実行中、`er052_open233_self_
+recovery_stage3_rewrite_trial_01.py`(委任_08既存資産)の
+`simple_llm_call`をそのまま呼び出すと、そのモジュール自身の
+`save_budget_state`が既存委任_08の証跡ファイル(`budget_state_
+c233l_b.json`)を上書きする実害を検出した(`git diff`で発覚、
+`git checkout`で復元済み、既存証跡データの実質破損なし)。本runner
+自身の独立した`simple_llm_call`実装へ差し替え、再発防止のregression
+testを追加した(この修正はStage1/2/3の判定ロジック自体には影響
+しない。実測結果はこの修正前後で同一)。
+
+**費用**: 今回¥16.7806(92 call、0 error)。Phase累計¥38.2769/総枠
+¥400、残¥361.7231。Guardrail¥45に対し約37%。
+
+**Production/API安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存`er051_*`/既存
+`er052_*`(precheck/stage2_production/stage2_calibration/stage3_
+rewrite_trial/phase1_step3_stage1_compare)ファイルに差分なし
+(新規`er052_open233_self_recovery_flow_runner_01.py`+testのみ追加。
+上記budget_state誤上書きは検出後即復元)。API keyは環境変数のみ、
+保存jsonにはprompt本体ではなくprompt_sha256のみ記録。既存unittest
+全110件PASS(regression確認、新規17件追加)。
+
+Status=`PHASE1_DONE_IMPROVEMENT_NEEDED`。Evidence: `docs/pm/design_
+open233_self_recovery_flow_01.md`(§9-1⑥[実測反映]/§9-2[改善優先
+順位追記]/冒頭Status)、`er052_open233_self_recovery_flow_runner_01.py`
+(+test)、`er052_output/open233_self_recovery_flow_runner_01/`
+(`summary_flow_runner.json`+`instances/*.json`29件)。入力: 委任文
+全文(2026-09-30、委任_09)。
+入力: 委任文全文(2026-09-30、委任_08)。
