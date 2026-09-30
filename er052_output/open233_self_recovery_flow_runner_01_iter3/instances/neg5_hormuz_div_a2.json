@@ -1,0 +1,122 @@
+{
+  "instance_id": "neg5_hormuz_div_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage.”",
+          "origin": "translation",
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage.”",
+            "issue": "The word “So” implies that the continuing concerns caused the 20% plan to be withdrawn. The Ledger does not establish that causal link; it records Trump’s explanation that the replacement decision followed discussions with Middle Eastern leaders.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "“So” turns the juxtaposition into a causal claim not supported by the Ledger. This is a new factual relationship as well as a changed causality and unsupported new claim.",
+            "related_fact_id": "HF-007",
+            "origin": "translation",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage. But the chart pulled back only briefly before recovering. The policy turn and the oil chart’s “not over yet” move happened that same day.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "該当箇所：「海上封鎖、タンカーの安全への懸念は続いていました。派手な20％案は舞台から消えましたが」。翻訳文の「So」は、懸念の継続が20％案の撤回・置換の理由だったという関係を加えているため、因果を示す接続を外し、両方の事実を独立して記述してください。撤回・置換の説明には、HF-007にある中東指導者との協議を根拠として示してください。参照: HF-007",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(sequence_matcher(ratio=0.76))",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg5_hormuz_div_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2111,
+      "usage": {
+        "input_tokens": 5014,
+        "cached_input_tokens": 0,
+        "output_tokens": 1689,
+        "reasoning_tokens": 1498
+      },
+      "elapsed_seconds": 12.32,
+      "prompt_sha256": "5d1ca64d9c49608a13420df28fc108cc21c55d8a8f7269e89ed413a12e3d58e6"
+    },
+    {
+      "label": "neg5_hormuz_div_a2_c1_fact:HF-007_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0853,
+      "usage": {
+        "input_tokens": 3378,
+        "cached_input_tokens": 0,
+        "output_tokens": 412,
+        "reasoning_tokens": 352
+      },
+      "elapsed_seconds": 4.581,
+      "prompt_sha256": "1ef09e695e634d82df064a296105b2b2e20c67cf6017102e664abcfb894b6162"
+    },
+    {
+      "label": "neg5_hormuz_div_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2447,
+      "usage": {
+        "input_tokens": 6754,
+        "cached_input_tokens": 0,
+        "output_tokens": 1769,
+        "reasoning_tokens": 1632
+      },
+      "elapsed_seconds": 21.171,
+      "prompt_sha256": "3c2c7661ffb06d9c90b76e56c3ae795bd91cd4c1dfd55fcb149479720ec7788d",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.5411,
+  "total_calls": 3,
+  "elapsed_seconds": 38.126
+}

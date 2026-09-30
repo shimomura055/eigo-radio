@@ -1,0 +1,317 @@
+{
+  "instance_id": "safety_A5",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "該当箇所: 「人間が電話を担当する機能を、当面はいったん元に戻しました。Museそのものを止めたわけではありません。」「元に戻しました」は機能を再導入したとの意味にも読め、Ledgerの記述と逆です。人間コンシェルジュ機能を当面ロールバックした、と修正してください。Muse自体は停止していないという記述は維持できます。参照: MUSE-HC-012。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(exact_substring)",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "But people did not know who was actually handling the work they had asked AI to do.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "But people did not know who was actually handling the work they had asked AI to do.",
+            "issue": "The article asserts that people actually did not know who handled their requests. The Ledger reports that the test began without appropriate disclosure, but does not establish that people generally—or users specifically—were unaware.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This turns inadequate disclosure into a definite claim about people’s actual awareness, and broadens the affected group beyond the test context. The nearby qualification concerns whether a leak was confirmed, not whether people knew who was calling.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "There was no confirmation that a large-scale information leak had taken place.",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.\n\nThis is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily rolled back the feature in which humans handled the calls. They did not stop Muse itself.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象文：「ただ、AIに頼んだ仕事を、実際には誰が担当しているのか分からない。」一般の利用者について断定せず、Metaの人間コンシェルジュ機能のテストで、適切な開示なしに契約スタッフが電話を担当していた、と範囲を狭めてください。参照Ledger: MUSE-HC-012",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "Going forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-014",
+          "dev": {
+            "claim_in_article": "Going forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+            "issue": "In context, “the feature” refers to the human-handled calls. The Ledger describes conditional public rollout of the phone function, possibly including human concierge operations, but does not establish a definite plan to make the human-concierge feature available.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The conditional wording is present, but it does not resolve the shift from a phone-function rollout that may include human concierge to a definite plan to release the human-handled feature.",
+            "related_fact_id": "MUSE-HC-014",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "only when preparations are complete and it can clearly explain who will make the calls",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-014",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily rolled back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.\n\nEven in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "対象文：「今後は、準備が整い、誰が電話をするのかをきちんと説明できる場合にだけ、公開する方針です。」「誰が電話をするのかをきちんと説明できる」をLedgerの条件である「適切な開示が整う」に置き換え、電話機能は準備が整い適切な開示ができる場合にのみ公開展開すると記述してください。参照Ledger: MUSE-HC-014",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite_paragraph",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-014",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite_paragraph",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_COMPLIANT"
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A5_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.13,
+      "usage": {
+        "input_tokens": 4951,
+        "cached_input_tokens": 0,
+        "output_tokens": 667,
+        "reasoning_tokens": 498
+      },
+      "elapsed_seconds": 5.477,
+      "prompt_sha256": "fb466546a75436558a56b360c0ae43e8ae79ef2e74cfc013da6f9dc133253344"
+    },
+    {
+      "label": "safety_A5_c1_fact:MUSE-HC-012_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0694,
+      "usage": {
+        "input_tokens": 3483,
+        "cached_input_tokens": 0,
+        "output_tokens": 188,
+        "reasoning_tokens": 146
+      },
+      "elapsed_seconds": 2.538,
+      "prompt_sha256": "e921c3963ada10806e46a9ac57125528bf7932670a2d51c22c5a9d847ff70b3c"
+    },
+    {
+      "label": "safety_A5_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.6129,
+      "usage": {
+        "input_tokens": 6515,
+        "cached_input_tokens": 0,
+        "output_tokens": 6510,
+        "reasoning_tokens": 5827
+      },
+      "elapsed_seconds": 56.849,
+      "prompt_sha256": "9a3ea30be730c15e40aa4aa1afefaa1d9e458a58250bac32a5404eb6c8eab1a1",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_A5_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1974,
+      "usage": {
+        "input_tokens": 5125,
+        "cached_input_tokens": 0,
+        "output_tokens": 1491,
+        "reasoning_tokens": 1206
+      },
+      "elapsed_seconds": 10.944,
+      "prompt_sha256": "3c2913adfe90be28fe5e8aa8bb547ecd4c860b5fb25733ae4b7c171c4fcbd376"
+    },
+    {
+      "label": "safety_A5_c2_fact:MUSE-HC-012_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.088,
+      "usage": {
+        "input_tokens": 3554,
+        "cached_input_tokens": 0,
+        "output_tokens": 411,
+        "reasoning_tokens": 228
+      },
+      "elapsed_seconds": 4.633,
+      "prompt_sha256": "705d1d21f43f995894055d78c2ef354bd6cce4ea22f6368dd0d4b15518739b4a"
+    },
+    {
+      "label": "safety_A5_c2_fact:MUSE-HC-014_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0769,
+      "usage": {
+        "input_tokens": 3501,
+        "cached_input_tokens": 0,
+        "output_tokens": 280,
+        "reasoning_tokens": 204
+      },
+      "elapsed_seconds": 3.083,
+      "prompt_sha256": "7db722175e2c2c960580f7901bf6dbe3cf5dbc8daa6c9e3a83806e17937a08a0"
+    },
+    {
+      "label": "safety_A5_c2_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.0928,
+      "usage": {
+        "input_tokens": 1525,
+        "cached_input_tokens": 0,
+        "output_tokens": 878,
+        "reasoning_tokens": 751
+      },
+      "elapsed_seconds": 9.54,
+      "prompt_sha256": "494c970242f56a21817393e2a0c0af40c83e6e31c1c549ad1a4a5a80e315b231",
+      "verdict": "REVIEW_REQUIRED"
+    },
+    {
+      "label": "safety_A5_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.428,
+      "usage": {
+        "input_tokens": 6658,
+        "cached_input_tokens": 0,
+        "output_tokens": 4125,
+        "reasoning_tokens": 3699
+      },
+      "elapsed_seconds": 35.629,
+      "prompt_sha256": "4ee1396f79ff9c9a68e69adea5e6835af1ff0933222497a190752b4e29f806e1",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_A5_c2_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2076,
+      "usage": {
+        "input_tokens": 6896,
+        "cached_input_tokens": 0,
+        "output_tokens": 1268,
+        "reasoning_tokens": 1105
+      },
+      "elapsed_seconds": 11.566,
+      "prompt_sha256": "de91e2751a9a6e784126f13577df1e1a22b9e68a018aafaaee65a144f1515edd",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.903,
+  "total_calls": 9,
+  "elapsed_seconds": 140.309
+}

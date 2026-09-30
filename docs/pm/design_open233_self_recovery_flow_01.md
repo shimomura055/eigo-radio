@@ -55,7 +55,22 @@ advanced=現行Production STOP実例そのもの]を全件捕捉しRewriteで解
 副作用あり)。R2'rubric較正はSafety誤降格1件+Productivity改善0件で
 不採用(既存R2維持)。実測費用¥29.4279[Guardrail¥50のうち、Phase累計
 ¥67.7048]。USER_DECISION_REQUIRED非該当[7条件いずれも]。S1-U variant
-のPhase 2デフォルト採用可否はユーザー判断)。
+のPhase 2デフォルト採用可否はユーザー判断)。→ **[委任_11更新]**
+`ITER3_DONE_IMPROVEMENT_NEEDED`(Opus L2レビュー#2[docs/pm/opus_l2_
+review_open233_self_recovery_02.md]の是正1-8を実装[バグA/B修正・
+停止判定是正・段落単位Rewrite拡張・測定是正・Rewrite由来逸脱検出・
+S1-U安価代替比較]、regression test19件追加・既存含め55件PASS。
+29 instance再実行[iter3、178 call・¥36.9585]でSTAGE4件数7→5件へ
+改善、測定是正で誤った「誤PASS候補0」を訂正[真にunconfirmed3件を
+特定・是正6で解消]。実run6 instanceのうちfresh 3件についてn=2追加
+実行[23 call・¥5.8944]し、単発run[n=1]でのEscalation率測定が
+不十分であることを実測確認[hormuz_run02_advancedがsample間で
+final_state不一致]。S1-U安価代替3案[2xV4-A union/S1-D effort=medium
+/low]はいずれも採否条件未達のため不採用、S1-U[effort=high]維持。
+残るSTAGE4は主にangle起因[段落単位Rewriteのmethod-limitation]。
+詳細§9-1⑧・§16。実測費用¥47.9886[作業C¥5.136+作業D¥42.8526、
+Guardrail¥5+¥45のうち]。USER_DECISION_REQUIRED非該当[7条件いずれ
+も]。Production実装は未着手)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -1742,6 +1757,51 @@ output/open233_self_recovery_flow_runner_01_iter2/instances/*.json`
   個別設定する(委任文の慣例どおり、想定費用の1.5〜2倍程度を上限とし、
   超過見込みでSTOP)。
 
+**⑧ iteration 3実測(委任_11完了)**: Opus L2レビュー#2(全文は
+docs/pm/opus_l2_review_open233_self_recovery_02.md)の是正1-8を実装
+(バグA/B修正・停止判定是正・段落単位Rewrite拡張・測定是正・Rewrite
+由来逸脱検出・S1-U安価代替比較)。regression test 19件追加、既存
+含め55件PASS。OUT_DIRをer052_output/open233_self_recovery_flow_
+runner_01_iter3/へ変更(iter1/iter2証跡は無変更)。作業C(S1-U安価
+代替比較、7 instance対象・21 call・Y5.136、Y5 Guardrail内)→作業D
+(29 instance再実行・178 call・Y36.9585、Y45 Guardrailのうち)の順に
+実施。さらに実run6 instanceのうちstage1_mode=freshの3件についてn=2
+追加実行(23 call・Y5.8944、累計Y42.8526、Y45 Guardrail内で完走)。
+
+主な改善結果: bgroup_B4/neg1_meta_b3prod_a2/safety_A2A3/meta_run03_
+standardの4件がiter2 STAGE4からiter3で解消(RESOLVED_REWRITE系)。
+STAGE4件数は7件(iter2)から5件(iter3主run)へ減少。測定是正により
+escalation_zero_breakdownの分母をRESOLVED_REWRITE_THEN_DOWNGRADE
+含む21件へ拡張し、真にunconfirmedな3件(neg2_meta_refresh_a2/
+neg3_hormuz_prodrunner_b1b/safety_er009_unsupported_new_claim)を
+特定、iter3ではこの3件が是正6(_recheck_confirm)によりunconfirmed_
+after_reverifyでSTAGE4へ正しくfail-closed escalationするように
+なった(neg2/neg3は主runで確認、safety_er009_unsupported_new_claim
+はiter3でRESOLVED_REWRITEまで到達し確認成功)。
+
+n=2実測(hormuz_run01_advanced/hormuz_run02_advanced/meta_run03_
+advanced)では3件全てでsample1とsample2のfinal_stateが不一致。特に
+hormuz_run02_advanced(実Production STOP実例)はsample1でV4A本体・
+S1-U双方が見逃した既知recall missが、sample2ではV4A本体が検出し
+fail-closedでSTAGE4へ到達した。単発run(n=1)によるEscalation率・
+recall率の測定は不十分であることを実測で確認(詳細はOPEN-233-
+SELF-RECOVERY-TRIAL-01_REPORT.md §11-4)。
+
+S1-U安価代替比較(作業C)は2xV4-A union・S1-D effort=medium/lowの
+いずれも採否条件(既知recall miss3件全捕捉かつ負例false BLOCK1件
+以下)を満たさず、iteration3のStage1 union構成はS1-U(effort=high)
+を維持する結論(Trial内部限定、Production default変更はユーザー
+判断事項)。
+
+残るSTAGE4の原因分類は、多くが「1 claimが記事内3箇所以上に跨って
+反復される」構造による段落単位Rewriteのmethod-limitation(angle
+起因、B1型)であり、neg2/neg3は是正6の意図通りの安全側STAGE4
+(機構起因だが正しい安全装置作動)。詳細な差分表・群別Escalation率・
+記事単位コスト・S1-U真偽内訳・JA/EN等価QA結果・遡及監査5件・
+原因分類表はOPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md §11参照。
+Opus L2 #2への採否判断の詳細は§16参照。本委任合計費用Y47.9886
+(作業C Y5.136+作業D Y42.8526)。
+
 ### 9-3. Stage別usage記録要件(委任_02追加、2026-09-30ユーザー追加指示)
 
 Phase 1 Trial harnessは、全API callのusageログへ以下を必須で付与する
@@ -2586,3 +2646,49 @@ S1-Dは「検出とmateriality判定を同一callで行う一体型」である�
 **設計書での扱い**: 上記3点は§12(USER_DECISION_REQUIRED条件)へ追記
 済み。現行KPI文言はそのまま維持し、事象単位推定・Escalation0件内訳を
 追加報告項目として併記する(§12/§12-1/§8-1)。
+
+## 16. Opus L2レビュー#2(委任_11)への対応(採否・反映節、[委任_11新設])
+
+**位置づけ**: `docs/pm/opus_l2_review_open233_self_recovery_02.md`
+(Opus L2批判的レビュー#2、read-only、runtime evidence: 実行モデル
+`claude-opus-5[1m]`)の指摘への、Fable判定(採用/不採用/ユーザー判断
+送り)と反映節の対応表。Fable判定=「Opus総合1〜5をすべて採用。やらない
+こと: rubric再精緻化R2''・changed_certainty floor緩和・Stage2省略」
+(委任_11委任文§2)。
+
+### 16-1. 採用(iteration 3実装済み)
+
+| # | Opus所見(論点) | Fable判定 | 反映節/実装箇所 |
+|---|---|---|---|
+| B1 | 論点1推奨1: `j1_pair_not_located`が全文fallbackへ到達せず無編集のまま再検出 | 採用。early returnを廃止し、locate失敗時も必ずJA全文fallbackへ配線 | §5(paired_rewrite)、`er052_open233_self_recovery_flow_runner_01.py::paired_rewrite` |
+| B2 | 論点1推奨2/論点4推奨1: JA全文fallback後にEN側が無編集のまま残りJA/EN記事対が乖離 | 採用。EN側も同一rewrite_hintで必ず1 call編集(en_target特定時はE-2局所編集、未特定時はEN全文fallback) | 同上 |
+| B3 | 論点1推奨3: 停止判定がfact_id単独一致で、兄弟文カスケード(別文だが同fact_id)を「同一claim再発」と誤判定 | 採用。`find_matching_prior_record`でfact_id+正規化claim本文の近似一致を要求。別claimはblocking件数厳密減少を条件にcycle3を1回だけ許可(上限`HARD_MAX_CYCLES`=3) | §3-3、`claim_identity`/`find_matching_prior_record` |
+| B4 | 論点1推奨4: Rewrite対象単位が引用文1文のみでタイトル/hook文の兄弟文カスケードに未到達 | 採用。`locate_paragraph_block`で段落ブロック(直前の見出し専用blockを含む)を特定し、E2_PARAGRAPH/J1_PARAGRAPHプロンプトで段落単位Rewriteへ拡張 | §5、`locate_paragraph_block`/`E2_PARAGRAPH_PROMPT_TEMPLATE`/`J1_PARAGRAPH_PROMPT_TEMPLATE` |
+| B5 | 論点7推奨1/2/4: `escalation_zero_breakdown`が`RESOLVED_REWRITE`限定でiter2の5 instance(`RESOLVED_REWRITE_THEN_DOWNGRADE`)が未検査のまま「誤PASS候補0」と報告 | 採用。分母を`RESOLVED_*`全体へ拡張。`s1u_caught_recall_miss`を`s1u_additional_block`へ改名し正解ラベル照合の真偽列(`s1u_additional_block_label`)を追加 | §8、`aggregate_measurements` |
+| B6 | 論点7推奨2: `LEDGER_COMPLIANT`かつ`all_prior_issues_resolved=False`という自己矛盾応答が次cycleの空deviationsで静かに降格していた(fail-openの継ぎ目) | 採用。追加1 call(`_recheck_confirm`)で再確認し、再確認でも解消未確認ならfail-closedで`STAGE4_ESCALATION`(理由`unconfirmed_after_reverify`)。iteration 3で有効化 | §3-0/§6-1、`run_instance`のen_ambiguous分岐 |
+| B7 | 論点5推奨: 群別Escalation率(合成Safety/B群/negativeを実runの分母に混ぜない)が未算出 | 採用。`group_escalation_rates`+`real_run`(実run6 instance限定)を追加 | §8、`aggregate_measurements` |
+| B8 | 論点6推奨2/3: 記事単位(Standard+Advanced合算)のコスト・合否・worstが未算出 | 採用。`ARTICLE_GROUPS`+`article_level`(aggregates/worst_cost_jpy)を追加 | §8/§13、`aggregate_measurements` |
+| B9 | 論点4推奨1/2/3: Rewrite由来の新規逸脱(narrowingによるactor付け替え等)を検出する層が無い | 採用。(a)決定論precheck再実行(`detect_rewrite_new_precheck_findings`、¥0)、(b)paired rewrite後のJA↔EN等価チェック1 call(既存Production翻訳忠実性QA資産`er003_ja_to_en_translation.py`のPrompt/Schemaをread-only借用、`run_ja_en_equivalence_check`)を追加。verdict記録のみでflow制御には使わない(既存Recheckとの権限重複回避) | §4/§5、`run_instance`のcycle内追加 |
+| B10 | 論点1/2/7: iter2の5 instance(`RESOLVED_REWRITE_THEN_DOWNGRADE`で未検査)の遡及監査 | 採用(¥0、既存json読み直しのみ、iter2出力は無変更)。3件(`safety_er009_unsupported_new_claim`/`neg2_meta_refresh_a2`/`neg3_hormuz_prodrunner_b1b`)が`LEDGER_COMPLIANT`+`all_prior_issues_resolved=False`の自己矛盾(=B6是正の対象そのもの)、2件(`hormuz_run01_advanced`/`hormuz_run03_standard`)は`all_prior_issues_resolved=True`が確認できる真の解消だった(監査結果は§9-1⑧に記録) | §9-1⑧ |
+| B11 | 論点2推奨1/2: S1-Uの安価代替(2×V4-A union、S1-D effort=medium/low)の実測比較 | 採用(実装・実測、新規`er052_open233_self_recovery_s1u_alt_compare_01.py`)。結果は§9-1⑧参照(受入条件未達のため既存S1-U[effort=high]をiteration 3でも維持) | §9-1⑧ |
+
+### 16-2. 不採用(理由付き、Fable判定「やらないこと」に整合)
+
+| Opus所見(論点) | 内容 | 不採用理由 |
+|---|---|---|
+| 論点1推奨5(裏返し)/論点3 | Stage2 narrow_scopeをQUALITY扱いにする、または`changed_certainty` floorを緩和する | Opus自身が非推奨と明記(§7-0正解ラベルとの衝突、B4-d保護根拠の希薄化)。委任文で明示的に「やらないこと」指定 |
+| 論点3推奨2(rubric手順精緻化) | ACCEPTABLE節の対象範囲を1文追加するrubric再較正(R2'') | 委任文で明示的に「やらないこと」指定(R2'既に不採用実績があり、投資対効果が低いというOpus自身の分析[論点3]とも整合) |
+| 論点1推奨6(全文must-fix retry 1回許可) | cycle2で同一claim再BLOCK時に全文must-fixを許可 | Opus自身が「次善」止まりで、Advanced/Standard再生成(§13-6)を伴いCap割れの懸念を指摘。B3(段落単位Rewrite)を先に試す方針を優先 |
+
+### 16-3. ユーザー判断事項として提示(Fableが決めない)
+
+| 論点 | 内容 | 該当条件 |
+|---|---|---|
+| 論点5 | KPI判定方法の再定義(「記事単位0件」→「(a)重大Fact見逃し0件維持、(b)core-framing型[B1型]Escalationのみ許容し件数・理由コード報告、(c)それ以外の機構起因Escalationを0件」への変更提案) | 条件1(KPI変更) |
+| 論点2 | S1-U(または安価代替)のPhase 2デフォルト採用・Production配線可否 | 条件4(Production採用・配線) |
+| 論点6 | 新規テーマでPhase 2記事を作る場合のテーマ選定(既存run再利用を第一候補とする提案だが、新規が必要な場合はユーザー選定) | CLAUDE.md新規記事テーマ選定ルール |
+| 論点1推奨6 | 全文must-fix retry 1回許可案(Cap超過の可能性) | 条件3(Cap超過の可能性) |
+
+**設計書での扱い**: 上記4点は§12(USER_DECISION_REQUIRED条件)への
+追記対象として記録し、RESULT_PACKET/REPORTへ引き継ぐ(現行KPI文言は
+維持、iteration 3実測結果[§9-1⑧]を添えてユーザーへ提示する)。

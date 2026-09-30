@@ -1,0 +1,323 @@
+{
+  "instance_id": "neg1_meta_b3prod_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所: “A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.” Ledgerが確認している範囲に狭め、「Muse経由の電話の一部を、訓練を受けた人間の契約スタッフが担当した」とし、相手がAIだと思っていたことや、その事実が会話中に明らかになって驚きを生んだことは断定しない。参照: MUSE-HC-006。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "“Meta had run a test that caused exactly this surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“Meta had run a test that caused exactly this surprise.”",
+            "issue": "The source describes a test that suggested this kind of scenario, but the article says the test caused the surprise. The Ledger establishes that trained contractors handled some calls, not that the test caused recipients to experience a reveal or surprise.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It changes the source’s suggestive framing into a causal, asserted event that is not established by the Ledger.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“Some calls placed through Muse were handled by trained human contractors.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Ring, ring. Some calls placed through Muse were handled by trained human contractors.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.”",
+            "issue": "The article frames the test as a human takeover for situations AI finds difficult and suggests this is how the system may work. The Ledger reports that contractors made some calls, but does not establish that AI first encountered difficulty or handed those calls over for that reason.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It generalizes beyond the reported test and adds an unverified reason or mechanism for human involvement; the same implication is present in the Japanese source.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“not always”; “can”; “may”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "記事本文の引用：「AIだけでは難しい場面を、人が引き継ぐ。仕組みとしては、むしろ便利そうです。」AIだけでは難しい場面を人が対応したという比較・能力の主張は削り、Ledgerで確認されている範囲に置き換えてください。例：「Muse経由の一部の電話では、訓練を受けた人間の契約スタッフが電話を担当した。」参照Ledger: MUSE-HC-006。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.98))",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite_paragraph",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [],
+      "blocking_count": 0,
+      "non_blocking_count": 0
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg1_meta_b3prod_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1399,
+      "usage": {
+        "input_tokens": 4940,
+        "cached_input_tokens": 0,
+        "output_tokens": 796,
+        "reasoning_tokens": 619
+      },
+      "elapsed_seconds": 6.12,
+      "prompt_sha256": "5e59ed7a34b99d3f0530c005d93bbfdccb1cdc401f46a47eeab9d0e5108400d2"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_fact:MUSE-HC-006_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0678,
+      "usage": {
+        "input_tokens": 3529,
+        "cached_input_tokens": 0,
+        "output_tokens": 159,
+        "reasoning_tokens": 126
+      },
+      "elapsed_seconds": 3.938,
+      "prompt_sha256": "ff6271e4533f160fd6d1eda4c97279b159f85b753ad8e5c45090b11dd9cff8b2"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5482,
+      "usage": {
+        "input_tokens": 6606,
+        "cached_input_tokens": 0,
+        "output_tokens": 5668,
+        "reasoning_tokens": 5002
+      },
+      "elapsed_seconds": 45.39,
+      "prompt_sha256": "237a52eb66bec7e1b7acaf70bfe36abdfa9ff3a52d4b76d1997cba29a3e08172",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2339,
+      "usage": {
+        "input_tokens": 5067,
+        "cached_input_tokens": 0,
+        "output_tokens": 1969,
+        "reasoning_tokens": 1774
+      },
+      "elapsed_seconds": 14.445,
+      "prompt_sha256": "41b64882e14d28f514ef9b83adce662d1eec98150a2f8a1c9ea1422b59fd0bf4"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_fact:MUSE-HC-006_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0603,
+      "usage": {
+        "input_tokens": 3352,
+        "cached_input_tokens": 0,
+        "output_tokens": 98,
+        "reasoning_tokens": 79
+      },
+      "elapsed_seconds": 1.796,
+      "prompt_sha256": "9ee2b79e7a0841b829f7cbdee91dfecbd2800137748c510bcefd0d22ce5f8c8e"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_fact:MUSE-HC-006_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0919,
+      "usage": {
+        "input_tokens": 3536,
+        "cached_input_tokens": 0,
+        "output_tokens": 464,
+        "reasoning_tokens": 385
+      },
+      "elapsed_seconds": 4.878,
+      "prompt_sha256": "50909fce8dc584ec13adb8e09950ae9624800b6eccb0f8c3bbbe8da4c490407c"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.0864,
+      "usage": {
+        "input_tokens": 1546,
+        "cached_input_tokens": 0,
+        "output_tokens": 792,
+        "reasoning_tokens": 595
+      },
+      "elapsed_seconds": 7.568,
+      "prompt_sha256": "19cf602dda383b0611fa9ff540f7d3482aaa66593f4665d1666aa07947a43e3f",
+      "verdict": "REVIEW_REQUIRED"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2876,
+      "usage": {
+        "input_tokens": 6662,
+        "cached_input_tokens": 0,
+        "output_tokens": 2334,
+        "reasoning_tokens": 2221
+      },
+      "elapsed_seconds": 21.046,
+      "prompt_sha256": "bacc869a625f59590fb5eb93a77a277f3f71becc56f9de6c30df9355ca02455c",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c2_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3855,
+      "usage": {
+        "input_tokens": 6889,
+        "cached_input_tokens": 0,
+        "output_tokens": 3537,
+        "reasoning_tokens": 3012
+      },
+      "elapsed_seconds": 30.175,
+      "prompt_sha256": "1ea9ebac776f255ffb99459292f29ef7726ff9003c4dd78f4cd87a46d8310e97",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 1.9015,
+  "total_calls": 9,
+  "elapsed_seconds": 135.438
+}

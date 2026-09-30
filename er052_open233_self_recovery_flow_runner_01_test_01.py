@@ -305,5 +305,198 @@ class TestNoCrossModuleBudgetStateContamination(unittest.TestCase):
         self.assertNotIn("s3rt.save_budget_state", src)
 
 
+class TestLocateParagraphBlock(unittest.TestCase):
+    """委任_11 作業B-4(§5段落単位Rewriteへの拡張)のregression test。"""
+
+    def test_finds_paragraph_containing_target_sentence(self):
+        text = ("Intro paragraph sentence one. Intro paragraph sentence two.\n\n"
+                "The market reacted very strongly to the news today. Another sentence in same block.\n\n"
+                "Outro paragraph.")
+        block, idx = runner.locate_paragraph_block(
+            "The market reacted very strongly to the news today.", text)
+        self.assertIn("Another sentence in same block.", block)
+        self.assertEqual(idx, (1, 1))
+
+    def test_includes_preceding_heading_only_block(self):
+        text = ("# Meta had run a test that produced exactly this kind of surprise\n\n"
+                "The body text explains further details about the surprise.\n\n"
+                "Outro paragraph.")
+        block, idx = runner.locate_paragraph_block(
+            "The body text explains further details about the surprise.", text)
+        self.assertIn("# Meta had run a test", block)
+        self.assertIn("The body text explains", block)
+        self.assertEqual(idx, (0, 1))
+
+    def test_returns_none_when_not_found(self):
+        block, idx = runner.locate_paragraph_block("nothing matches here", "Some unrelated text.")
+        self.assertIsNone(block)
+        self.assertIsNone(idx)
+
+    def test_returns_none_for_empty_target(self):
+        block, idx = runner.locate_paragraph_block(None, "Some text.\n\nMore text.")
+        self.assertIsNone(block)
+        self.assertIsNone(idx)
+
+
+class TestFindMatchingPriorRecord(unittest.TestCase):
+    """委任_11 作業B-3(§3-3停止判定の是正)のregression test。"""
+
+    def test_same_fact_id_and_similar_claim_text_matches(self):
+        dev = {"related_fact_id": "MUSE-HC-006",
+               "claim_in_article": "Meta had run a test that caused exactly this surprise."}
+        prior = [{"identity": "fact:MUSE-HC-006", "fact_id": "MUSE-HC-006",
+                  "claim_text_norm": runner.normalize_claim_text(
+                      "Meta had run a test that produced exactly this kind of surprise.")}]
+        match = runner.find_matching_prior_record(dev, prior)
+        self.assertIsNotNone(match)
+
+    def test_same_fact_id_but_different_sentence_does_not_match(self):
+        # bgroup_B4型の兄弟文カスケード: 同一fact_idでも別文(hook文/タイトル)
+        # は「同一claim再発」として扱わない(is正後の挙動)。
+        dev = {"related_fact_id": "MUSE-HC-006",
+               "claim_in_article": "We Thought It Was AI, But There Was a Person All Along"}
+        prior = [{"identity": "fact:MUSE-HC-006", "fact_id": "MUSE-HC-006",
+                  "claim_text_norm": runner.normalize_claim_text(
+                      "Meta had run a test that produced exactly this kind of surprise.")}]
+        match = runner.find_matching_prior_record(dev, prior)
+        self.assertIsNone(match)
+
+    def test_different_fact_id_does_not_match(self):
+        dev = {"related_fact_id": "HF-002", "claim_in_article": "Some claim text"}
+        prior = [{"identity": "fact:HF-001", "fact_id": "HF-001", "claim_text_norm": "some claim text"}]
+        self.assertIsNone(runner.find_matching_prior_record(dev, prior))
+
+    def test_no_fact_id_requires_exact_hash_identity_match(self):
+        dev1 = {"related_fact_id": "", "claim_in_article": "Alpha claim text"}
+        prior = [{"identity": runner.claim_identity(dev1), "fact_id": "",
+                  "claim_text_norm": runner.normalize_claim_text("Alpha claim text")}]
+        self.assertIsNotNone(runner.find_matching_prior_record(dev1, prior))
+        dev2 = {"related_fact_id": "", "claim_in_article": "Completely different beta claim"}
+        self.assertIsNone(runner.find_matching_prior_record(dev2, prior))
+
+
+class TestDetectRewriteNewPrecheckFindings(unittest.TestCase):
+    """委任_11 作業B-6(§4 Rewrite由来新規逸脱検出)のregression test。"""
+
+    LEDGER = ("[VERIFIED] F001: Alice announced a plan.\n"
+              "  numeric_value: 20%\n")
+
+    def test_new_finding_not_in_baseline_is_detected(self):
+        baseline = []  # 元記事にはprecheck findingが無かったとする
+        updated_text = "Bob announced a plan. The article mentions 45% instead."
+        new_findings = runner.detect_rewrite_new_precheck_findings(self.LEDGER, baseline, updated_text)
+        self.assertTrue(len(new_findings) >= 1)
+
+    def test_finding_already_in_baseline_is_not_reported_again(self):
+        updated_text = "Bob announced a plan. The article mentions 45% instead."
+        baseline = runner.precheck.run_precheck(self.LEDGER, updated_text)
+        new_findings = runner.detect_rewrite_new_precheck_findings(self.LEDGER, baseline, updated_text)
+        self.assertEqual(new_findings, [])
+
+
+class TestAggregateMeasurementsResolvedStatesAndGroups(unittest.TestCase):
+    """委任_11 作業B-5是正(§8測定是正、Opus L2 #2論点5/6/7)のregression test。"""
+
+    def _instance(self, instance_id, group, final_state, cycles=None, cost=0.1, stage4_reason=None):
+        return {
+            "instance_id": instance_id, "group": group, "expected_group_label": "x",
+            "final_state": final_state, "stage4_reason": stage4_reason,
+            "cycles": cycles or [], "stage1_call_used": False,
+            "total_cost_jpy": cost, "total_calls": 1, "elapsed_seconds": 1.0,
+        }
+
+    def test_resolved_rewrite_then_downgrade_counts_toward_breakdown(self):
+        results = [
+            self._instance("x1", "test", "RESOLVED_REWRITE_THEN_DOWNGRADE",
+                            cycles=[{"rewrite_records": [{"mechanism": "x"}],
+                                     "recheck_all_prior_issues_resolved": True,
+                                     "stage2_results": []},
+                                    {"stage2_results": []}]),
+        ]
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["escalation_zero_breakdown"]["true_resolved_all_prior_issues_resolved_true"], 1)
+
+    def test_resolved_rewrite_then_downgrade_without_confirmation_is_unconfirmed(self):
+        results = [
+            self._instance("x2", "test", "RESOLVED_REWRITE_THEN_DOWNGRADE",
+                            cycles=[{"rewrite_records": [{"mechanism": "x"}],
+                                     "recheck_all_prior_issues_resolved": False,
+                                     "stage2_results": []},
+                                    {"stage2_results": []}]),
+        ]
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["escalation_zero_breakdown"]["all_prior_issues_resolved_unconfirmed"], 1)
+
+    def test_group_escalation_rates_separate_groups(self):
+        results = [
+            self._instance("s1", "safety", "STAGE4_ESCALATION", stage4_reason="x"),
+            self._instance("s2", "safety", "RESOLVED_REWRITE"),
+            self._instance("n1", "negative", "RESOLVED_REWRITE"),
+        ]
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["group_escalation_rates"]["safety"]["n"], 2)
+        self.assertEqual(agg["group_escalation_rates"]["safety"]["escalated"], 1)
+        self.assertEqual(agg["group_escalation_rates"]["negative"]["escalated"], 0)
+
+    def test_real_run_escalation_only_counts_real_run_ids(self):
+        results = [
+            self._instance("hormuz_run02_advanced", "hormuz", "STAGE4_ESCALATION", stage4_reason="x"),
+            self._instance("bgroup_B1", "b_group", "STAGE4_ESCALATION", stage4_reason="x"),
+        ]
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["real_run"]["n"], 1)
+        self.assertEqual(agg["real_run"]["escalated"], 1)
+
+    def test_article_level_aggregates_sum_cost_across_variants(self):
+        results = [
+            self._instance("meta_run03_standard", "meta", "RESOLVED_REWRITE", cost=1.0),
+            self._instance("meta_run03_advanced", "meta", "RESOLVED_REWRITE", cost=1.5),
+        ]
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["article_level"]["aggregates"]["meta_run03"]["total_cost_jpy"], 2.5)
+        self.assertFalse(agg["article_level"]["aggregates"]["meta_run03"]["escalated"])
+        self.assertEqual(agg["article_level"]["worst_cost_jpy"], 2.5)
+
+    def test_s1u_variant_key_renamed_and_labeled(self):
+        results = [
+            self._instance("hormuz_run02_advanced", "hormuz", "RESOLVED_REWRITE"),
+        ]
+        results[0]["s1u_screen_used"] = True
+        results[0]["s1u_additional_block"] = True
+        results[0]["s1u_additional_block_label"] = "true_positive"
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["s1u_variant"]["additional_block_count"], 1)
+        self.assertEqual(agg["s1u_variant"]["additional_block_true_positive_count"], 1)
+        self.assertEqual(agg["s1u_variant"]["additional_block_false_positive_count"], 0)
+
+    def test_unconfirmed_after_reverify_counted(self):
+        results = [
+            self._instance("x3", "test", "STAGE4_ESCALATION", stage4_reason="unconfirmed_after_reverify"),
+        ]
+        agg = runner.aggregate_measurements(results)
+        self.assertEqual(agg["rewrite_deviation_qa"]["unconfirmed_after_reverify_count"], 1)
+
+
+class TestJ1BugFixesSourceInspection(unittest.TestCase):
+    """委任_11 作業B-1/B-2(バグ修正2件、Opus L2 #2論点1推奨1/2)の
+    read-only regression test。ネットワーク呼び出しを伴う完全なpaired_
+    rewrite()実行はできないため(API課金が必要)、ソーステキスト検査で
+    「j1_pair_not_locatedの早期returnが無い」「EN側フォールバック編集の
+    分岐が実装されている」ことを機械確認する。"""
+
+    def test_no_early_return_on_pair_not_located(self):
+        import inspect
+        src = inspect.getsource(runner.paired_rewrite)
+        self.assertNotIn('"method": "j1_pair_not_located"', src)
+
+    def test_en_side_is_edited_after_ja_fulltext_fallback(self):
+        import inspect
+        src = inspect.getsource(runner.paired_rewrite)
+        self.assertIn("en_local_edit", src)
+        self.assertIn("en_fulltext_fallback", src)
+        # 旧バグ(EN側を無条件でen_fullのまま残す一行)が復活していないことを確認
+        self.assertNotIn('updated_en = en_full  # EN側はcycle 2のEN Recheckで再評価に委ねる', src)
+
+
 if __name__ == "__main__":
     unittest.main()

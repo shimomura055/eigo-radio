@@ -14031,3 +14031,96 @@ delegation_log/2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_10.md`、
 open233_self_recovery_r2prime_recalibration_01.py`、`er052_output/
 open233_self_recovery_flow_runner_01_iter2/`、`er052_output/
 open233_self_recovery_r2prime_recalibration_01/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: iteration 3実測完了(Opus L2 #2
+バグ修正+停止判定是正+段落単位Rewrite+測定是正、委任_11、2026-09-30)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_11)。
+
+**目的**: Opus L2レビュー#2(全文はdocs/pm/opus_l2_review_open233_
+self_recovery_02.md)を逐語保存し、委任_10報告の訂正2点を記録した
+うえで、指摘された是正1-8をer052_open233_self_recovery_flow_
+runner_01.pyへ実装し、S1-U安価代替比較(作業C)と29 instance再実行
+(作業D)で改善効果を実測する。
+
+**訂正2点(委任_10報告への)**: (1) meta_run03_advancedのiter2 STAGE4
+はS1-U由来ではなくV4-A本体のrun間recall変動だった(S1U screen不発火
+がjsonで確認済み)。(2)「誤PASS候補0」はbreakdown分母がRESOLVED_
+REWRITE限定(16件)だったための誤りで、RESOLVED_REWRITE_THEN_
+DOWNGRADE5件が未検査だった。遡及監査の結果、21件中3件
+(neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1b/safety_er009_
+unsupported_new_claim)が真にunconfirmedだった。
+
+**実装(是正1-8)**: (1)(2) paired_rewriteのバグ2件修正(j1_pair_not_
+locatedを全文fallbackへ配線、JA全文fallback後にEN側も必ず編集)。
+(3) find_matching_prior_recordによる停止判定是正(fact_id+近似
+claim一致、blocking件数厳密減少時のみcycle3を1回許可)。(4)
+locate_paragraph_blockによる段落単位Rewrite拡張。(5) aggregate_
+measurementsの測定是正(RESOLVED_*全体への分母拡張、群別Escalation
+率、real_run/article_level集計、s1u_additional_block改名+真偽
+ラベル)。(6) 決定論precheck再実行+既存Production翻訳忠実性QA資産
+read-only借用によるJA/EN等価QAでRewrite由来新規逸脱を検出。(7)
+en_ambiguous自己矛盾応答時の追加確認call(_recheck_confirm)。(8)
+遡及監査5件+regression test19件追加(既存含め55件PASS)。
+
+**実測**: 作業C(S1-U安価代替比較、7 instance対象)=21 call・
+¥5.136(Guardrail¥5内)。3案(2xV4-A union/S1-D effort=medium/low)
+いずれも採否条件(既知recall miss3件全捕捉かつ負例false BLOCK1件
+以下)未達のため不採用、S1-U(effort=high)を維持。作業D(29 instance
+再実行)=178 call・¥36.9585(Guardrail¥45のうち)。さらに実run6
+instanceのうちstage1_mode=freshの3件(hormuz_run01_advanced/
+hormuz_run02_advanced/meta_run03_advanced)をn=2追加実行=23 call・
+¥5.8944(累計¥42.8526、Guardrail¥45内で完走)。
+
+**【iteration 2→3主要差分】**: STAGE4件数7→5件。bgroup_B4/neg1_
+meta_b3prod_a2/safety_A2A3/meta_run03_standardの4件がSTAGE4から
+解消。escalation_zero_breakdown分母を16→21件へ是正、真にunconfirmed
+3件を是正6により正しくSTAGE4(unconfirmed_after_reverify)へ変換。
+群別Escalation率(iter3主run): safety8.3%・b_group25%・meta0%・
+hormuz25%・negative28.6%、real_run16.67%。記事単位worst costは
+¥2.5819(iter2)→¥3.0853(iter3、meta_run03)。
+
+**【n=2実測、最重要】**: fresh-mode3件全てでsample1↔sample2の
+final_stateが不一致。特にhormuz_run02_advanced(現行Production
+STOP実例)はsample1でV4A本体・S1-U双方が見逃し(ACCEPTABLE_STAGE1)
+たが、sample2ではV4A本体が検出しfail-closedでSTAGE4(cycle_limit_
+exhausted)へ到達した。単発run(n=1)によるEscalation率・recall率の
+測定が不十分であることを直接実証した(Opus論点「V4AのPASS/
+DEVIATIONがrun間で反転する」の裏付け)。
+
+**残るSTAGE4の原因分類**: bgroup_B1/hormuz_run03_standard/safety_A4
+/hormuz_run01_advanced_n2はangle起因(同一fact_idまたは兄弟claimが
+記事内3箇所以上に反復、段落単位Rewriteのmethod-limitation、B1型)。
+neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1bは機構起因だが
+是正6が意図通り動作した結果の正しい安全側STAGE4。
+
+**USER_DECISION_REQUIRED該当有無**: 該当なし(7条件いずれも非該当)。
+将来課題として2点を提案のみ記録(実装なし): (a) fact_id単位での
+マルチ箇所一括Rewriteの要否、(b) JA/EN等価QAのREVIEW_REQUIRED多発
+を踏まえたProduction翻訳忠実性QA閾値調整の要否(Production仕様
+変更のためユーザー承認が必要)。
+
+**費用**: 今回¥5.136+¥42.8526=**¥47.9886**(202 call、0 error)。
+Phase累計¥67.7048+¥47.9886=**¥115.6934**/総枠¥400、残¥284.3066。
+
+**Production安全性確認**: `git diff --stat`で`er003_*`/`er006_*`/
+`er009_*`/`er010_*`/`er012_*`/`er019_*`および既存iteration1・
+iteration2証跡・委任_08証跡に差分なし。iteration3出力は別ディレクトリ
+(`er052_output/open233_self_recovery_flow_runner_01_iter3/`+新規
+`er052_open233_self_recovery_s1u_alt_compare_01/`)。変更対象は
+`er052_open233_self_recovery_flow_runner_01.py`(+test)・新規
+`er052_open233_self_recovery_s1u_alt_compare_01.py`・新規`er052_
+open233_self_recovery_flow_runner_01_n2_realrun_01.py`のみ。API key
+は環境変数のみ、保存jsonはprompt_sha256のみ記録。既存unittest全55件
+PASS(regression確認、新規19件追加)。
+
+Status=`ITER3_DONE_IMPROVEMENT_NEEDED`。詳細: `docs/pm/design_
+open233_self_recovery_flow_01.md`§9-1⑧/§16/冒頭Status、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§10/§11、`docs/pm/
+opus_l2_review_open233_self_recovery_02.md`、`docs/pm/delegation_log/
+2026-09-30_OPEN-233-SELF-RECOVERY-TRIAL-01_11.md`、`er052_open233_
+self_recovery_flow_runner_01.py`(+test)、`er052_open233_self_
+recovery_s1u_alt_compare_01.py`、`er052_open233_self_recovery_
+flow_runner_01_n2_realrun_01.py`、`er052_output/open233_self_
+recovery_flow_runner_01_iter3/`、`er052_output/open233_self_
+recovery_s1u_alt_compare_01/`。

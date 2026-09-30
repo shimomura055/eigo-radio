@@ -1,0 +1,211 @@
+{
+  "instance_id": "neg6_smallbag_div_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+          "origin": null,
+          "related_fact_id": "F004, F005, F006",
+          "dev": {
+            "claim_in_article": "“Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.”",
+            "origin": null,
+            "related_fact_id": "F004, F005, F006",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load\n\nLooking at fashion for 2026, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut this is not a takeover, with mini bags pushing large bags out. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用：「バッグ売り場なら、「そんなに小さくて大丈夫？」と聞きたくなるサイズが、ランウェイやファッション報道で目立っています。」「all over」という広範な表現を避け、ELLEが挙げた選定例やVogueが報じた小ぶりなポーチなど、確認された報道・ランウェイ例に範囲を限定してください。参照: F004, F006。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“They mainly hold the basics: a phone, wallet, keys, and lip products.”",
+          "origin": null,
+          "related_fact_id": "F007",
+          "dev": {
+            "claim_in_article": "“They mainly hold the basics: a phone, wallet, keys, and lip products.”",
+            "origin": null,
+            "related_fact_id": "F007",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### ELLE’s small-bag examples\n\nELLE listed mini bags as one of the trends in fall and winter 2026 styling. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mainly hold the basics: a phone, wallet, keys, and lip products. They do not challenge roomy bags on storage. Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”\n\nThe season’s picture becomes clearer when we look at what appeared beside them.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用：「入るのは、携帯電話、財布、鍵、リップ用品など、最低限の必需品が中心。」これらの特定バッグが実際に品目を収納できるという断定を避け、ELLEが非常に小さなバッグの魅力を限られた必需品の持ち運びと結び付けた、という説明に限定してください。参照: F007。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“Even so, the way trends look has changed. Bags are no longer in a game where one size alone sits on the throne.”",
+          "origin": null,
+          "related_fact_id": "F003, F004",
+          "dev": {
+            "claim_in_article": "“Even so, the way trends look has changed. Bags are no longer in a game where one size alone sits on the throne.”",
+            "origin": null,
+            "related_fact_id": "F003, F004",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": true,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Vogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands. This lineup matters: large bags had not vanished. Small and large bags were appearing in the same season.\n\nWhat we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways. Even so, the way trends look has changed. Bags are no longer in a game where one size alone sits on the throne. Large bags are the luggage crew, carrying what we need. Mini bags are the stage crew, drawing the eye and setting the mood. In 2026, the runway is proudly showing this division of labor.\n\n## In one line",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用：「それでも、流行の見え方は変わりました。バッグはもう、一つのサイズが王座を独占するゲームではない。」業界全体で以前は一つのサイズが優勢だった、または状況が変化したという主張を避け、選定されたランウェイで小型と大型のバッグが同じシーズンに見られた、と範囲を限定してください。参照: F003, F004。",
+          "floor_reason": "deterministic_floor:changed_comparison,changed_time,changed_certainty"
+        }
+      ],
+      "blocking_count": 3,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F004, F005, F006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.99))",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:F007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.99))",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:F003, F004",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.76))",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 3,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "false_positive",
+  "call_log": [
+    {
+      "label": "neg6_smallbag_div_b1b_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.6468,
+      "usage": {
+        "input_tokens": 5266,
+        "cached_input_tokens": 0,
+        "output_tokens": 7193,
+        "reasoning_tokens": 6681
+      },
+      "elapsed_seconds": 59.221,
+      "prompt_sha256": "0ea8cb570e55f219d307b3ebcca0cfb31002770e1b32ae13ce815e36ab89abc3"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.3374,
+      "usage": {
+        "input_tokens": 5154,
+        "cached_input_tokens": 0,
+        "output_tokens": 3270,
+        "reasoning_tokens": 2858
+      },
+      "elapsed_seconds": 23.634,
+      "prompt_sha256": "e010777b9a66265085c00b26488c48b7009e653f12ee8cfa91b653bcd421e226"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_fact:F004, F005, F00_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1,
+      "usage": {
+        "input_tokens": 3301,
+        "cached_input_tokens": 0,
+        "output_tokens": 615,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 5.756,
+      "prompt_sha256": "5bd2d8684029fa57bd5db1950a33e16dc571eae95c81d86c37f7eb2990f1f677"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_fact:F007_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1187,
+      "usage": {
+        "input_tokens": 3295,
+        "cached_input_tokens": 0,
+        "output_tokens": 854,
+        "reasoning_tokens": 747
+      },
+      "elapsed_seconds": 7.629,
+      "prompt_sha256": "aace96627e38091124cd175bb102ad87c8c73388cb8fd09c89a1f87fd0ed1a60"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_fact:F003, F004_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.107,
+      "usage": {
+        "input_tokens": 3316,
+        "cached_input_tokens": 0,
+        "output_tokens": 701,
+        "reasoning_tokens": 615
+      },
+      "elapsed_seconds": 8.379,
+      "prompt_sha256": "e6d023dd0fea0e5d05e15af5cc7292da05c4b7fee176212a46c234ce5e9f86b0"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2667,
+      "usage": {
+        "input_tokens": 6372,
+        "cached_input_tokens": 0,
+        "output_tokens": 2126,
+        "reasoning_tokens": 1889
+      },
+      "elapsed_seconds": 19.984,
+      "prompt_sha256": "6b3a7e0768a6b682cad06d21893103a8c6a7eca6fa0fc53a31bf3b6388ecdae1",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.5766,
+  "total_calls": 6,
+  "elapsed_seconds": 124.684
+}

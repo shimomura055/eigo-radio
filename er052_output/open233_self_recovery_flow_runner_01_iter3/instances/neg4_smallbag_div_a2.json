@@ -1,0 +1,218 @@
+{
+  "instance_id": "neg4_smallbag_div_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.”",
+          "origin": null,
+          "related_fact_id": "F004; F006",
+          "dev": {
+            "claim_in_article": "“Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.”",
+            "origin": null,
+            "related_fact_id": "F004; F006",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Bags Split the Job: Mini Bags Catch the Eye, Large Bags Carry the Load\n\nIn 2026 fashion, mini bags are having a big moment. Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports. Some are so small that you might ask, “Can you really fit anything in that?”\n\nBut mini bags are not taking over. They are not pushing large bags away. In 2026, the two sizes seem to have different jobs. One carries what we need. The other helps create the look.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “Palm-sized clutches, small pouches, and eye-catching minaudières fill runways and fashion reports.” 「fill」と広範な出現を示す表現を避け、ELLEが挙げたKhaiteのクラッチやChanelのミナウディエール、Vogueが報じた複数ブランドの小ぶりなポーチなど、確認された選定例に限定してください。参照: F004、F006。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        },
+        {
+          "claim_text": "“Their job is visual. They add a special feeling. They say, ‘This is today’s mood.’” Also: “Large bags are the luggage crew. They carry what we need. Mini bags are the stage crew. They catch the eye and set the mood. In 2026, the runway proudly shows this split in their work.”",
+          "origin": null,
+          "related_fact_id": "F005; F007",
+          "dev": {
+            "claim_in_article": "“Their job is visual. They add a special feeling. They say, ‘This is today’s mood.’” Also: “Large bags are the luggage crew. They carry what we need. Mini bags are the stage crew. They catch the eye and set the mood. In 2026, the runway proudly shows this split in their work.”",
+            "origin": null,
+            "related_fact_id": "F005; F007",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### ELLE’s small-bag examples\n\nELLE included mini bags among its fall and winter 2026 style trends. Its examples included Khaite’s palm-sized evening clutch and Chanel’s novelty minaudière. They mostly hold the basics: a phone, wallet, keys, and lip products. They cannot compete with roomy bags for storage. Their job is visual. They add a special feeling. They say, “This is today’s mood.”\n\nWe see the season more clearly by looking at bags beside them.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “Large bags are the luggage crew. They carry what we need. Mini bags are the stage crew. They catch the eye and set the mood.” 大小のバッグが一律に役割分担している、またはミニバッグがムードを伝えると断定せず、ELLEがミニバッグの魅力を収納力よりも場面性や視覚的インパクトに結び付けて説明したことに限定してください。大型バッグについては、Vogueが報じた機能的な例として記述してください。参照: F005、F007。",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F004; F006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:F005; F007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 4,
+      "rewrite_new_precheck_findings": [
+        {
+          "field": "F002",
+          "ledger_value": [
+            "Jil Sander",
+            "Miu Miu",
+            "The Row",
+            "Vogue's Spring"
+          ],
+          "article_evidence": [
+            "In ELLE's Fall"
+          ],
+          "kind": "actor_missing",
+          "detected_by": "precheck"
+        },
+        {
+          "field": "F013",
+          "ledger_value": [
+            "Trendalytics"
+          ],
+          "article_evidence": [
+            "In ELLE's Fall"
+          ],
+          "kind": "actor_missing",
+          "detected_by": "precheck"
+        },
+        {
+          "field": "F015",
+          "ledger_value": [
+            "Fashionphile's",
+            "Who What Wear"
+          ],
+          "article_evidence": [
+            "In ELLE's Fall"
+          ],
+          "kind": "actor_missing",
+          "detected_by": "precheck"
+        },
+        {
+          "field": "F016",
+          "ledger_value": [
+            "Bottega Veneta",
+            "DeVain",
+            "Valentino's",
+            "Vogue's Spring"
+          ],
+          "article_evidence": [
+            "In ELLE's Fall"
+          ],
+          "kind": "actor_missing",
+          "detected_by": "precheck"
+        }
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 2,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "false_positive",
+  "call_log": [
+    {
+      "label": "neg4_smallbag_div_a2_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.9662,
+      "usage": {
+        "input_tokens": 5258,
+        "cached_input_tokens": 0,
+        "output_tokens": 11266,
+        "reasoning_tokens": 10967
+      },
+      "elapsed_seconds": 91.663,
+      "prompt_sha256": "16564feca8f3c483b449c5f614b01a526ca8b61fbf7b393b6fcbaa3d534ffd81"
+    },
+    {
+      "label": "neg4_smallbag_div_a2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2494,
+      "usage": {
+        "input_tokens": 4966,
+        "cached_input_tokens": 0,
+        "output_tokens": 2186,
+        "reasoning_tokens": 1872
+      },
+      "elapsed_seconds": 15.359,
+      "prompt_sha256": "29813ff5ffc0e7c2da4d54074ee86116ece94c9f6ea664fd6e3bc81faf581b20"
+    },
+    {
+      "label": "neg4_smallbag_div_a2_c1_fact:F004; F006_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1153,
+      "usage": {
+        "input_tokens": 3293,
+        "cached_input_tokens": 0,
+        "output_tokens": 811,
+        "reasoning_tokens": 715
+      },
+      "elapsed_seconds": 7.556,
+      "prompt_sha256": "e4c46650c4df6ac86b3e115a9edb4f56a34197fc9d9c4547877e174ab5a0e4c5"
+    },
+    {
+      "label": "neg4_smallbag_div_a2_c1_fact:F005; F007_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1173,
+      "usage": {
+        "input_tokens": 3394,
+        "cached_input_tokens": 0,
+        "output_tokens": 816,
+        "reasoning_tokens": 709
+      },
+      "elapsed_seconds": 7.726,
+      "prompt_sha256": "be5d1197db797d0ede0c8751d3e278d8378dbf9874107212f597f7330ef2921a"
+    },
+    {
+      "label": "neg4_smallbag_div_a2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4773,
+      "usage": {
+        "input_tokens": 6379,
+        "cached_input_tokens": 0,
+        "output_tokens": 4809,
+        "reasoning_tokens": 4636
+      },
+      "elapsed_seconds": 40.7,
+      "prompt_sha256": "7756d37ba86822511cbd2347628d2272249c46fc56042e61ed460cd332ed991a",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.9255,
+  "total_calls": 5,
+  "elapsed_seconds": 163.069
+}

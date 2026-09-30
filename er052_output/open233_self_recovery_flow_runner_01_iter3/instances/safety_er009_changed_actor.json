@@ -1,0 +1,120 @@
+{
+  "instance_id": "safety_er009_changed_actor",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerが示す研究者はKareem HaggagとGiovanni Paciで、Harvard Business Schoolとの関係は確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Harvard Business School所属というLedgerにない具体的事実を加え、研究主体を置き換えているため、changed_fact・changed_actor・unsupported_new_claimがtrueです。取引件数と研究結果の記述はLedgerと一致します。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis”. 「Harvard Business School」という所属の断定を削除し、13 million超の取引と高い推奨メニューを見た乗客のチップ増加に範囲を限定してください。参照: F-002、F-004。",
+          "floor_reason": "deterministic_floor:changed_actor"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:7b2fca543a4fc34a",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(rewrite_hint_quote)",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_actor_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.128,
+      "usage": {
+        "input_tokens": 5109,
+        "cached_input_tokens": 0,
+        "output_tokens": 610,
+        "reasoning_tokens": 476
+      },
+      "elapsed_seconds": 4.985,
+      "prompt_sha256": "8e043ace13b361165e77b4eb0bb40e828052f57c2fd0bdf9bc36ed4312a8a3fc"
+    },
+    {
+      "label": "safety_er009_changed_actor_c1_claim:7b2fca543a4fc3_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0764,
+      "usage": {
+        "input_tokens": 4329,
+        "cached_input_tokens": 0,
+        "output_tokens": 108,
+        "reasoning_tokens": 69
+      },
+      "elapsed_seconds": 2.11,
+      "prompt_sha256": "14e8664236e9b0a5dc785b98d2ad36f153806c74f82daf04825d49cc07ba7f75"
+    },
+    {
+      "label": "safety_er009_changed_actor_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.118,
+      "usage": {
+        "input_tokens": 6254,
+        "cached_input_tokens": 0,
+        "output_tokens": 253,
+        "reasoning_tokens": 158
+      },
+      "elapsed_seconds": 3.907,
+      "prompt_sha256": "fb8e56a01f86fa2f73d131a372d4a15142286aff2cb29d8cb1381a14049b1329",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3224,
+  "total_calls": 3,
+  "elapsed_seconds": 11.014
+}

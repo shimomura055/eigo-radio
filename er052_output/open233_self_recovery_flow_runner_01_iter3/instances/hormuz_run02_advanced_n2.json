@@ -1,0 +1,403 @@
+{
+  "instance_id": "hormuz_run02_advanced_n2",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "cycle_limit_exhausted",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Other factors remained on that same stage. So the price reacted once, then returned to a high level.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "“Other factors remained on that same stage. So the price reacted once, then returned to a high level.”",
+            "issue": "The article presents the continuing factors as the reason the price returned to a high level. The Ledger records the temporary narrowing and recovery, and notes that other concerns continued, but does not establish that those factors caused the recovery.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The causal link is stated with “So,” although the Ledger supports the observed price movement and concurrent conditions, not that causal conclusion. The same causal link is also present in the Japanese source.",
+            "related_fact_id": "HF-009",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“Of course, this price movement alone cannot tell us that there was just one reason for the price.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# A Big Twist in the 20 Percent Fee, But Crude Oil Does Not Leave the Stage\n\nThis news story looks like a short drama if we look only at how it unfolded.\n\nThe first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.\n\nIt looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.\n\nThen came the second act, just one day later.\n\nTrump withdrew the 20 percent fee plan. In its place came trade and investment deals between Gulf countries and the United States. He explained that this followed “very productive talks” with leaders from the Middle East.\n\nA story about charging ships suddenly changed into a story about trade and investment. It was as if the main actor had changed costumes—and roles—in the middle of the play.\n\nNow for the third act: crude oil prices appeared.\n\nWhen the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.\n\n## In one line\nTrump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+          "fallback_used": true,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "対象箇所：「But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level.」「So」が、残っていた他の要因が価格の回復を引き起こしたという因果関係を追加しています。因果を示さず、撤回発表後に上げ幅が一時縮小し、その後発表前に近い高水準へ戻ったという観測に範囲を狭めてください（HF-009）。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite_paragraph",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_COMPLIANT"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+            "issue": "The summary links prices staying high to the continuing tensions and tanker fears. The Ledger reports both the price movement and the concurrent concerns, but does not establish that those concerns caused prices to stay high.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "“As” implies a causal link between the ongoing concerns and prices staying high; that link is not established by the Ledger.",
+            "related_fact_id": "HF-009",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Of course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. After the withdrawal announcement, Brent futures temporarily pared their gains, but soon returned to a high level close to where they had been before the announcement. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.\n\n## In one line\nTrump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "該当箇所：「料金案が消えたからといって、価格がそのまま大きく下がる展開にはなりませんでした。」原油価格全般ではなく、HF-009の確認範囲であるBrent先物に限定し、撤回発表後に一時上げ幅を縮小したものの、ほどなく発表前に近い高水準へ戻った、と記述してください。参照Ledger: HF-009。",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_paired_rewrite_paragraph",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_COMPLIANT"
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+          "origin": "translation",
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "issue": "This asserts that the withdrawal did not cause a sustained price fall. The Ledger reports the observed price movement but explicitly cautions against inferring from it that the withdrawal did not lower prices.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The causal conclusion is not established by the observed price movement and conflicts with HF-011's factual constraint against that inference. The Japanese source describes the price movement but does not make this causal claim; the claim is new in the translation.",
+            "related_fact_id": "HF-011",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“large, lasting” and the nearby sentence, “this price movement alone cannot tell us that there was just one reason for the price.” These do not establish the causal conclusion.",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-011",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. After the withdrawal announcement, Brent futures temporarily pared their gains, but soon returned to a high level close to where they had been before the announcement. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "notes_for_writer",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “The disappearance of the fee plan did not lead to a large, lasting fall in prices.” 修正: この因果的な結論は削り、観測された値に範囲を狭めて「7月14日のBrentは1.7％高の84.73ドルで清算された」とする。この清算値だけから撤回が価格下落を防いだとは推論しない。参照: HF-011。",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "After the announcement, Brent futures briefly pared their gains but soon returned to a high level close to where they had been before it, as tensions and tanker fears remained.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "After the announcement, Brent futures briefly pared their gains but soon returned to a high level close to where they had been before it, as tensions and tanker fears remained.",
+            "issue": "The wording “as tensions and tanker fears remained” links those continuing concerns to Brent’s return to a high level. The Ledger reports the concurrent concerns and price movement, but does not establish that causal link.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The price movement and continuing concerns are supported, but the sentence presents the concerns as an explanation for the price returning to a high level. The Japanese source does not make that connection; it is added in the translation.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“briefly pared their gains,” “soon returned,” and “close to where they had been before it” qualify the price movement, but do not qualify or establish the causal link in “as tensions and tanker fears remained.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Of course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. After the withdrawal announcement, Brent futures temporarily pared their gains, but soon returned to a high level close to where they had been before the announcement. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.\n\n## In one line\nTrump’s proposed Hormuz fee vanished overnight. After the announcement, Brent futures briefly pared their gains but soon returned to a high level close to where they had been before it, as tensions and tanker fears remained.",
+          "fallback_used": false,
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "hormuz_run02_advanced_n2_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.3798,
+      "usage": {
+        "input_tokens": 6234,
+        "cached_input_tokens": 6231,
+        "output_tokens": 4717,
+        "reasoning_tokens": 4453
+      },
+      "elapsed_seconds": 41.091,
+      "prompt_sha256": "870b5a61e34b363297ccabc47f25e0f7d2e8d37fc8aa8104a7f72849b6e32056"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.1507,
+      "usage": {
+        "input_tokens": 5202,
+        "cached_input_tokens": 0,
+        "output_tokens": 881,
+        "reasoning_tokens": 707
+      },
+      "elapsed_seconds": 7.997,
+      "prompt_sha256": "3bcf6ca719946e1217c126436a65391cccf48ffc9bf6e00a5ddf2cacdadb635b"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c1_fact:HF-009_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1336,
+      "usage": {
+        "input_tokens": 3558,
+        "cached_input_tokens": 0,
+        "output_tokens": 992,
+        "reasoning_tokens": 761
+      },
+      "elapsed_seconds": 7.869,
+      "prompt_sha256": "197efd584cce86e28521a5684283a879c970e19c4600693e33a53057e6bfc71d"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c1_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.1612,
+      "usage": {
+        "input_tokens": 1581,
+        "cached_input_tokens": 0,
+        "output_tokens": 1739,
+        "reasoning_tokens": 1502
+      },
+      "elapsed_seconds": 15.445,
+      "prompt_sha256": "95cde52cf45f8a83636f697d49b6259e58534df7d061f49c5a3940049f3a1327",
+      "verdict": "REVIEW_REQUIRED"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.307,
+      "usage": {
+        "input_tokens": 6526,
+        "cached_input_tokens": 0,
+        "output_tokens": 2608,
+        "reasoning_tokens": 2259
+      },
+      "elapsed_seconds": 28.761,
+      "prompt_sha256": "6a2f5701ca129559dbc5580b93e66d5fa7b966877c099f084b7d191dc4c27305",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2098,
+      "usage": {
+        "input_tokens": 6680,
+        "cached_input_tokens": 0,
+        "output_tokens": 1339,
+        "reasoning_tokens": 1226
+      },
+      "elapsed_seconds": 14.458,
+      "prompt_sha256": "81e1a9de4429dd22f9b12a4d98ec8db87e1cbc19a34dab0bde83510b34daaa5d",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c2_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.3024,
+      "usage": {
+        "input_tokens": 4884,
+        "cached_input_tokens": 0,
+        "output_tokens": 2879,
+        "reasoning_tokens": 2719
+      },
+      "elapsed_seconds": 23.834,
+      "prompt_sha256": "90940b0f4a8f8f85879f7afbdee6a52d99d1e2fa4a0814066f52581196817c96"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c2_fact:HF-009_j1_paired_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1055,
+      "usage": {
+        "input_tokens": 3457,
+        "cached_input_tokens": 0,
+        "output_tokens": 654,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 6.259,
+      "prompt_sha256": "7a72c9352d38ec77b62b25afd9fb4b9304c110d9db339689370630b15ac64c0e"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c2_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.186,
+      "usage": {
+        "input_tokens": 1612,
+        "cached_input_tokens": 0,
+        "output_tokens": 2049,
+        "reasoning_tokens": 1723
+      },
+      "elapsed_seconds": 15.037,
+      "prompt_sha256": "5bfea7cbc7385bbd5dc5bed7bf2aab725200a875c40f8bfb4b83d49fff9e985e",
+      "verdict": "REVIEW_REQUIRED"
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.6047,
+      "usage": {
+        "input_tokens": 6539,
+        "cached_input_tokens": 0,
+        "output_tokens": 6401,
+        "reasoning_tokens": 5656
+      },
+      "elapsed_seconds": 59.812,
+      "prompt_sha256": "42fb9ec112a613bb521f01a37cb37954e596cdabff0c794e14edcb7a61ca6390",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c2_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2415,
+      "usage": {
+        "input_tokens": 6684,
+        "cached_input_tokens": 0,
+        "output_tokens": 1742,
+        "reasoning_tokens": 1626
+      },
+      "elapsed_seconds": 18.97,
+      "prompt_sha256": "68215a26e0320630542626deccab026c27c838f3b461d462764a47d68144b51d",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "hormuz_run02_advanced_n2_c3_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2808,
+      "usage": {
+        "input_tokens": 5179,
+        "cached_input_tokens": 0,
+        "output_tokens": 2544,
+        "reasoning_tokens": 2365
+      },
+      "elapsed_seconds": 21.117,
+      "prompt_sha256": "b81576c14afcbf2fc1af1a4058719ad2172cb753a5d81ac60596112ef4888477"
+    }
+  ],
+  "total_cost_jpy": 3.063,
+  "total_calls": 12,
+  "elapsed_seconds": 260.774
+}

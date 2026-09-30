@@ -837,3 +837,130 @@ self_recovery_flow_01.md`(§3-1/§4-5/§4-8/§5-4/§9-1⑦/§9-2/§13-11/
 (`summary_flow_runner.json`+`instances/*.json`29件)、`er052_output/
 open233_self_recovery_r2prime_recalibration_01/summary_r2prime_
 recalibration.json`。入力: 委任文全文(2026-09-30、委任_10)。
+
+## §10. Opus L2 #2と報告訂正(委任_11、2026-09-30)
+
+**位置づけ**: Opus L2レビュー#2(read-only、`claude-opus-5[1m]`、
+request id `req_011CfYtRLufxFRkDoga2oVg7`で`claude-opus-5-5`が400と
+なったための起動時オーバーライド)の全文は`docs/pm/opus_l2_review_
+open233_self_recovery_02.md`に逐語保存済み。Fable判定は「総合1〜5を
+すべて採用」(設計書§16に採否・反映節を新設)。
+
+**委任_10報告の訂正2点(履歴改変せず、本節で新規記述として記録)**:
+
+1. **`meta_run03_advanced`のStage4はS1-U由来ではなくV4-A本体のrun間
+   変動だった**。委任_10報告(RESULT_PACKET_C233N.md、本REPORT§9)は
+   「S1-Uが新規捕捉したが2 cycle以内に解消できずSTAGE4到達(副作用)」
+   と記述していたが、iter2の該当instance json(`er052_output/
+   open233_self_recovery_flow_runner_01_iter2/instances/meta_run03_
+   advanced.json:122-125`)を確認すると`stage1_call_used: true,
+   s1u_screen_used: false`であり、**V4-A本体のfresh call自体が
+   LEDGER_DEVIATIONを検出していた**(S1-Uのunion screenは発火して
+   いない)。iter1では同一fixtureへの同一promptのfresh callが
+   ACCEPTABLE(PASS)だった(`er052_output/open233_self_recovery_
+   flow_runner_01/instances/meta_run03_advanced.json`)。すなわち
+   これは**V4-Aのrun間recall変動の実例**であり、S1-Uのコストとして
+   計上すべきではなかった。
+2. **「誤PASS候補0」はbreakdownの分母が`RESOLVED_REWRITE`限定だった
+   ため、`RESOLVED_REWRITE_THEN_DOWNGRADE`(iter2で21件中5件)が
+   未検査のまま「0」に数えられていた**。旧集計コード(`er052_
+   open233_self_recovery_flow_runner_01.py`の`aggregate_
+   measurements`、iter2時点)は`true_resolved`/`quality_pass`/
+   `unresolved_unknown`いずれも`final_state == "RESOLVED_REWRITE"`
+   条件のみで、`RESOLVED_REWRITE_THEN_DOWNGRADE`はどのバケットにも
+   算入されていなかった(rewrite_auto_resolved=21のうちbreakdown
+   合計は16+0+0=16、差分5 instance)。遡及監査の結果は§11参照。
+
+## §11. iteration 3実測(委任_11、2026-09-30)
+
+実施内容: Opus L2 #2の是正1-8を er052_open233_self_recovery_flow_runner_01.py へ実装(regression test 19件追加、既存含め55件PASS)。OUT_DIRを er052_output/open233_self_recovery_flow_runner_01_iter3/ (iter1/iter2とは別ディレクトリ、既存証跡は無変更)。作業C(S1-U安価代替比較、Y5 Guardrail)から作業D(29 instance再実行、Y45 Guardrail)の順に実施。作業Dは主run(29 instance、n=1)実施後、実run6 instanceのうちstage1_mode=fresh の3件(hormuz_run01_advanced/hormuz_run02_advanced/meta_run03_advanced)についてn=2追加実行(_n2、同一budget_stateで累計管理)。
+
+### 11-1. 是正1-8の反映結果(チェックポイント12項目)
+
+1. Bug A(j1_pair_not_located早期return)修正: bgroup_B4がiter2 STAGE4(same_claim_fact_id_reblocked)からiter3 RESOLVED_REWRITEへ改善。
+2. Bug B(JA fallback後にEN未編集)修正: paired_rewrite の全経路でEN側も必ず1 call編集する構成へ変更。JA/EN分岐は解消。
+3. 停止判定是正(find_matching_prior_record、fact_id+近似一致、cycle3を1回だけ許可): neg1_meta_b3prod_a2がiter2 STAGE4からiter3 RESOLVED_REWRITE_THEN_DOWNGRADEへ改善。一方hormuz_run01_advanced_n2では2 cycle目に同一fact_id(HF-009)・同一claim文がほぼ同文で再出現し、是正後の判定でも正しくsame_claim_fact_id_reblockedでSTAGE4(誤判定ではなく真に同一claim再ブロック、11-4参照)。
+4. 段落単位Rewrite拡張(locate_paragraph_block+段落テンプレート): safety_A2A3がiter2 STAGE4からiter3 RESOLVED_REWRITE_THEN_DOWNGRADEへ、meta_run03_standardがiter2 STAGE4からiter3 RESOLVED_REWRITEへ改善。
+5. 測定是正(分母拡張・群別率・real_run・article_level・s1u_additional_block改名): 11-2/11-3参照。
+6. Rewrite由来新規逸脱検出(precheck再実行+JA/EN等価QA): 稼働確認(11-5参照、新規機構バグは検出されず)。
+7. 遡及監査5件: 11-6参照。
+8. regression test 19件追加、既存36件+新規19件=55件PASS(.venv/Scripts/python.exe -m unittest er052_open233_self_recovery_flow_runner_01_test_01)。
+
+### 11-2. 訂正後の0件内訳(§10訂正2点への対応)
+
+iter2データを是正後aggregate_measurementsで再集計(Y0、iter2出力は無変更・読み直しのみ)した結果: RESOLVED_REWRITE(16)+RESOLVED_REWRITE_THEN_DOWNGRADE(5)=21件中、all_prior_issues_resolved=True確認済みが18件、真にunconfirmed(LEDGER_COMPLIANTかつall_prior_issues_resolved=False、再確認機構が存在しなかった)が3件: neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1b/safety_er009_unsupported_new_claim。Opusが併せて疑義提示したhormuz_run01_advanced/hormuz_run03_standardは、iter2内の別cycleにall_prior_issues_resolved=Trueが実在し、正当に確認済みと判定(誤PASSではない)。iter3ではこの3件全てが是正6(_recheck_confirm)によりunconfirmed_after_reverifyでSTAGE4へ正しくfail-closed escalationするようになった(neg2_meta_refresh_a2/neg3_hormuz_prodrunner_b1bは主run、safety_er009_unsupported_new_claimはiter3でRESOLVED_REWRITEまで到達し確認成功、11-6参照)。
+
+### 11-3. iteration2-3差分表(6指標)
+
+| 指標 | iter2 | iter3(主run n=1) |
+|---|---|---|
+| escalation_zero_breakdown分母 | 16(RESOLVED_REWRITE限定、誤り) | 21(RESOLVED_*全体) |
+| unconfirmed件数 | 未測定(0と誤記) | 主runのSTAGE4は全て解決済み分類外(11-2の3件相当がiter3ではSTAGE4に移行) |
+| STAGE4件数/29 | 7 | 5 |
+| avg_cost_jpy/instance | (委任_10報告値) | 1.2744 |
+| completion_rate | (委任_10報告値) | 0.8276 |
+| loop_rate | (委任_10報告値) | 0.3103 |
+
+群別Escalation率(iter3主run): safety 1/12=8.3%、b_group 1/4=25%、meta 0/2=0%、hormuz 1/4=25%、negative 2/7=28.6%。real_run(実run6 instance限定) 1/6=16.67%。参考(iter2、是正後再集計): safety 2/12=16.7%、b_group 2/4=50%、meta 2/2=100%、hormuz 0/4=0%、negative 1/7=14.3%、real_run 2/6=33.3%。
+
+記事単位(Standard+Advanced合算)コスト/worst: iter3はmeta_run03(advanced+standard合算)Y3.0853が最悪、hormuz_run03 Y3.0839で僅差2位(worst_cost_jpy=Y3.0853)。iter2はmeta_run03 Y2.5819が最悪(委任_10報告値)。
+
+S1-U(additional_block改名後)真偽内訳: screen_used 8件、additional_block 6件、true_positive 2件・false_positive 3件(残り1件はlabel対象外)、追加コストY4.3449。既知recall miss3件(B2_hormuz/B3/hormuz_run02_advanced)中、主run単発ではhormuz_run02_advancedをS1-Uも本体V4-Aも捕捉できず(11-4参照)。
+
+Rewrite由来逸脱QA: precheck再実行での新規finding4件(全てneg4_smallbag_div_a2、ブランド名の一般名詞化による新規逸脱、実害は軽微=一般化方向でむしろ安全側)。JA/EN等価QA 10 call実施、内訳: FAIL 1件・REVIEW_REQUIRED 9件・完全PASS 0件(11-5参照、測定専用でフロー制御には未使用)。
+
+### 11-4. 実run6 instanceのn=2実測(run間分散の把握)
+
+stage1_mode=reuse の3件(hormuz_run03_advanced/hormuz_run03_standard/meta_run03_standard)はStage1固定artifact再利用のためn=2対象外(既知の限界)。stage1_mode=fresh の3件についてn=2実行(_n2、同一budget_state共有、追加Y5.8944・23 call・エラー0、累計Y42.8526/Y45 Guardrail内で完走):
+
+| instance | sample1(主run) | sample2(n2) |
+|---|---|---|
+| hormuz_run01_advanced | RESOLVED_STAGE2_DOWNGRADE | STAGE4_ESCALATION(same_claim_fact_id_reblocked) |
+| hormuz_run02_advanced | ACCEPTABLE_STAGE1(既知recall miss、S1-Uも不発) | STAGE4_ESCALATION(cycle_limit_exhausted、V4A本体が検出) |
+| meta_run03_advanced | ACCEPTABLE_STAGE1 | RESOLVED_REWRITE_THEN_DOWNGRADE |
+
+結論: 3件全てでsample1とsample2のfinal_stateが一致しなかった。特にhormuz_run02_advancedは実Production STOP実例であり、sample1ではV4A本体・S1-U追加screen双方が見逃した(既知recall missが1発サンプルの運では再現し得ることを実証)一方、sample2ではV4A本体が検出しfail-closedでSTAGE4へ到達した。これはOpus論点(V4AのPASS/DEVIATIONがrun間で反転する)を直接裏付ける実測であり、単発run(n=1)のEscalation率・recall率は測定として不十分であることを再確認した。fresh-mode3件限定でのEscalation率はsample1=0/3(0%)・sample2=2/3(66.7%)で、2標本合算では2/6(33.3%)、iter2実測値(2/6=33.3%)と近似する。
+
+### 11-5. Rewrite由来逸脱・JA/EN等価QA詳細
+
+detect_rewrite_new_precheck_findingsによるRewrite後precheck再実行(Y0)で新規finding4件を検出、全てneg4_smallbag_div_a2(Rewrite中に実在ブランド名が一般名詞へ置換された副作用)。実害判定: 一般化は確信度を下げる方向であり実害なし(安全側の副作用)。run_ja_en_equivalence_check(既存Production翻訳忠実性QA資産read-only借用、10 call)は完全PASSが0件、REVIEW_REQUIRED9件・FAIL1件。Rewrite後のJA/EN不一致が測定上高頻度で検出されたが、これは既存の翻訳忠実性QAが軽微な言い回し差にも敏感な既知傾向であり、flow制御には使用していない(測定専用)。FAIL1件の内容は次回反復での要精査事項として記録するに留める(今回のTrial scope外)。
+
+### 11-6. 遡及監査5件の結果(iter2既存jsonのみ、Y0)
+
+| instance | iter2 final_state | 実害有無 |
+|---|---|---|
+| safety_er009_unsupported_new_claim | RESOLVED_REWRITE_THEN_DOWNGRADE(unconfirmed) | 実害なし(iter3でRESOLVED_REWRITEまで到達し確認成功、11-2) |
+| hormuz_run01_advanced | RESOLVED_REWRITE_THEN_DOWNGRADE(確認済み) | 実害なし(誤PASSではない) |
+| hormuz_run03_standard | RESOLVED_REWRITE_THEN_DOWNGRADE(確認済み) | 実害なし(誤PASSではない) |
+| neg2_meta_refresh_a2 | RESOLVED_REWRITE_THEN_DOWNGRADE(unconfirmed) | 実害あり(iter3でunconfirmed_after_reverifyによりSTAGE4へ是正、iter2は誤ってPASS扱いだった) |
+| neg3_hormuz_prodrunner_b1b | RESOLVED_REWRITE_THEN_DOWNGRADE(unconfirmed) | 実害あり(同上) |
+
+### 11-7. S1-U安価代替比較(作業C)と採用案
+
+対象7 instance(iter2でS1-U適用済み)で(a)2xV4-A union、(b)S1-D effort=medium、(c)S1-D effort=lowを比較(21 call・Y5.136、Y5 Guardrail内)。既知recall miss3件(B2_hormuz/B3/hormuz_run02_advanced)の捕捉数: 3案とも2/3(いずれか1件を取り逃す組み合わせが異なる)。負例group内の追加false BLOCK: v4a_union 2件、s1d_medium 3件、s1d_low 3件。採否条件(3件全捕捉かつ負例false BLOCK 1件以下)を満たす案は無し。よってiteration3のStage1 union構成はS1-U(effort=high、単価Y0.45/call)を維持する(Trial内部限定の結論。Production defaultの変更はユーザー判断事項、11-9参照)。
+
+### 11-8. 残るStage4の原因分類(機構起因 vs angle起因)
+
+主run+n2合計7件のSTAGE4を分類:
+
+| instance | 原因分類 | 根拠 |
+|---|---|---|
+| bgroup_B1 | angle起因(method-limitation、B1型) | 同一fact_id(HF-009)が3 cycle通じて記事内の複数箇所に再出現、段落単位Rewriteの1 cycle=1段落という設計上、3箇所以上に跨るclaimはcycle上限(3)内で解消しきれない |
+| hormuz_run03_standard | angle起因(B1型と同系) | 同上、HF-009が見出し含む複数段落に反復 |
+| safety_A4 | angle起因(sibling cascadeの拡大版) | MUSE-HC-006/010/012という別々のfact_idを持つ兄弟claimが3 cycleにわたり順番に検出される構造、段落単位Rewriteは1 cycleにつき1 fact_idしか解消できない |
+| neg2_meta_refresh_a2 | 機構起因(是正6が意図通り動作した結果) | _recheck_confirmで解消確認できずfail-closed(11-2/11-6、安全側の正しいSTAGE4) |
+| neg3_hormuz_prodrunner_b1b | 機構起因(同上) | 同上 |
+| hormuz_run01_advanced_n2 | angle起因(B1型と同系) | 2 cycle目に同一fact_id・同一claim文がほぼ同文で再出現、find_matching_prior_recordが正しくsame_claim_fact_id_reblockedと判定 |
+| hormuz_run02_advanced_n2 | 機構起因ではなく検出成功側(参考記載) | sample1で見逃した既知recall missをV4A本体がsample2で検出しcycle上限まで解消できずSTAGE4(fail-closedとして機能、11-4) |
+
+まとめ: 残存STAGE4のうち多数(bgroup_B1/hormuz_run03_standard/safety_A4/hormuz_run01_advanced_n2)は「1 claimが記事内の3箇所以上に跨って反復される」構造(angle起因、段落単位Rewriteでも解消しきれないmethod-limitation)であり、コード側のバグではなく現行の「paragraph単位でのローカル編集」という設計選択そのものの限界。neg2/neg3は是正6の意図通りの安全側STAGE4(機構起因だが「バグ」ではなく「正しい安全装置作動」)。
+
+### 11-9. USER_DECISION_REQUIRED該当有無
+
+7条件(ループ上限到達/Production採用判断/仕様拡大/既存安全装置の無効化・変更/Production・既存証跡ファイルの変更/累計予算超過/3連続API error)いずれも非該当。ただし以下2点は次回反復以前にユーザー判断を仰ぐ価値がある将来課題として記録(実装はしていない、提案のみ):
+(a) 「1 claimが記事内3箇所以上に跨るケース」への対応として、段落単位を超えた「fact_id単位でのマルチ箇所一括Rewrite」の要否。
+(b) JA/EN等価QAがREVIEW_REQUIRED多発である実態を踏まえ、Production翻訳忠実性QAの閾値自体をこのTrial向けに調整すべきか(現状は既存Production資産をread-onlyで借用したのみで変更不可、閾値変更はProduction仕様変更のためユーザー承認が必要)。
+
+### 11-10. 費用
+
+作業C: Y5.136(21 call、Guardrail Y5内)。作業D主run: Y36.9585(178 call)。作業D n=2追加: Y5.8944(23 call、累計Y42.8526、Guardrail Y45内)。本委任合計: Y5.136+Y42.8526=Y47.9886。Phase累計・残額はdocs/pm/RESULT_PACKET_C233O.md参照。

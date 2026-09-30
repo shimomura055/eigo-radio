@@ -1,0 +1,165 @@
+{
+  "instance_id": "bgroup_B2_hormuz",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“It looked like a very large fee would appear every time a ship passed through the strait.”",
+          "origin": null,
+          "related_fact_id": "HF-002, HF-003",
+          "dev": {
+            "claim_in_article": "“It looked like a very large fee would appear every time a ship passed through the strait.”",
+            "origin": null,
+            "related_fact_id": "HF-002, HF-003",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first act came on July 13. Trump proposed a 20 percent fee on all cargo passing through the Strait of Hormuz. The stated reason was to recover the money the United States spends to keep the strait safe.\n\nIt looked like a very large fee would appear every time a ship passed through the strait. But no details were given about the system, such as who would pay or how the money would be collected. The fee was not actually being collected yet. It was still only at the stage of announcing the policy.\n\nThen came the second act, just one day later.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "該当箇所：「船が海峡を通るたびに、かなり大きな料金が登場する。そんな話に見えました。」船の通航ごとに料金が課される仕組みまでは確認されていないため、その含意を削り、「すべての貨物に20％の償還を求める案を提案した」と範囲を狭めてください。参照: HF-002, HF-003",
+          "floor_reason": null
+        },
+        {
+          "claim_text": "“The disappearance of the fee plan did not lead to a large, lasting fall in prices.”",
+          "origin": null,
+          "related_fact_id": "HF-009, HF-011",
+          "dev": {
+            "claim_in_article": "“The disappearance of the fee plan did not lead to a large, lasting fall in prices.”",
+            "origin": null,
+            "related_fact_id": "HF-009, HF-011",
+            "severity": "MAJOR",
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "changed_certainty": true
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.",
+          "fallback_used": false,
+          "materiality": "BLOCKING",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_certainty"
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-002, HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.99))",
+          "guard_ok": true
+        },
+        {
+          "claim_identity": "fact:HF-009, HF-011",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(sequence_matcher(ratio=0.99))",
+          "guard_ok": true
+        }
+      ],
+      "rewrite_new_precheck_findings_count": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": true,
+  "s1u_additional_blocking_count": 2,
+  "s1u_additional_block": true,
+  "s1u_additional_block_label": "true_positive",
+  "call_log": [
+    {
+      "label": "bgroup_B2_hormuz_s1u_screen",
+      "recovery_stage": "stage1_union_screen",
+      "cost_jpy": 0.702,
+      "usage": {
+        "input_tokens": 5410,
+        "cached_input_tokens": 0,
+        "output_tokens": 7867,
+        "reasoning_tokens": 7402
+      },
+      "elapsed_seconds": 66.587,
+      "prompt_sha256": "c3ad376c388a4f1214e0d6ba46cfce195da15b302f30c62b714609b008fe5ed1"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_stage2",
+      "recovery_stage": "stage2_second_judge",
+      "cost_jpy": 0.2782,
+      "usage": {
+        "input_tokens": 5110,
+        "cached_input_tokens": 0,
+        "output_tokens": 2525,
+        "reasoning_tokens": 2339
+      },
+      "elapsed_seconds": 18.399,
+      "prompt_sha256": "66dc4bc8999cea2b4623f7b327742c5dc5ac84a5957c7b39de6e61398dcd6533"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_fact:HF-002, HF-003_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0702,
+      "usage": {
+        "input_tokens": 3428,
+        "cached_input_tokens": 0,
+        "output_tokens": 209,
+        "reasoning_tokens": 142
+      },
+      "elapsed_seconds": 2.3,
+      "prompt_sha256": "0042600b4d252b72aa237a985b5781a9340fcfcfadd3eef11f0be735f0a0a871"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_fact:HF-009, HF-011_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0691,
+      "usage": {
+        "input_tokens": 3307,
+        "cached_input_tokens": 0,
+        "output_tokens": 220,
+        "reasoning_tokens": 163
+      },
+      "elapsed_seconds": 2.603,
+      "prompt_sha256": "0cf1dba32e724a0dbc88422ecdd5c69d41ad20748d3bcfefc02e51e586833b49"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2521,
+      "usage": {
+        "input_tokens": 6462,
+        "cached_input_tokens": 0,
+        "output_tokens": 1921,
+        "reasoning_tokens": 1774
+      },
+      "elapsed_seconds": 17.743,
+      "prompt_sha256": "1cb7c31d7aabe4afdb0707f2b2747f610c5d4d45c60ed70a2ae4136355f70975",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.3716,
+  "total_calls": 5,
+  "elapsed_seconds": 107.693
+}
