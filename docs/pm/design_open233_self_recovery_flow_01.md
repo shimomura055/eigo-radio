@@ -1838,6 +1838,64 @@ delete型Rewriteの対象がセクション全体(title/hook)と一致し、削�
 (locate自体は成功するため)。§6-5の`title_degenerate`/`hook_degenerate`
 guardで別途対応する。
 
+### 5-10. ⑥(全体Rewrite/削除)の標準ラダーからの除外(委任_23 B-2、
+REPORT§23 B)
+
+**背景(iter7実測)**: 広いTrial iteration 7(29 instance全量)で初めて
+⑥(`6_full_article`)が7件(`safety_A2A3`×2・`safety_A4`×4・`bgroup_B4`
+×1)発生し、worst instance cost¥8.9545(`safety_A4`、iter6の¥5.7883から
+悪化)という新たなtail riskが判明した(委任_22時点で報告済み)。
+
+**⑥ 7件の試行記録表(委任_23 B-1、REPORT§23 B詳細)**: 7件全てについて
+①〜④/delete試行ログ(call_log)を確認した結果、**7/7とも①〜④/delete
+全段でguardが失敗した後に⑥を試み、⑥使用後も最終的にSTAGE4_ESCALATIONへ
+到達していた**(⑥使用がそのまま解消[RESOLVED_REWRITE系]に至った例は
+**0/7**)。「⑥が必要だった」Evidence(⑥がなければ解消しなかったはず、
+という反実仮想を裏付ける実測)は0件であり、⑥の合計費用(iter7、7件分の
+fulltext_fallback call)がworst costの主因と特定した。
+
+**是正(既定OFF、コード削除なし)**: `ENABLE_LADDER_LEVEL_6_FULL_REWRITE`
+(feature flag、既定False)を新設した。無効時、`single_text_rewrite`/
+`paired_rewrite`は①〜④/delete全段でguardが失敗した時点で⑥のAPI call
+(`FULL_TEXT_FALLBACK_PROMPT_TEMPLATE`)を試みず、`ladder_exhausted_
+without_full_rewrite=True`を返す。呼び出し側`run_instance`は
+`target_not_locatable`と同じパターンでこれを検出し、直ちに
+`stage4_reason="ladder_exhausted_without_full_rewrite"`でSTAGE4_
+ESCALATIONへ回す(⑤を未試行のまま追加cycleへ進まない、既存の安全装置
+[HARD_MAX_CYCLES等]は無変更)。flagをTrueへ戻せばiter7以前と同じ①〜⑥の
+挙動に完全復元する(コードは削除せず保持、**再有効化はユーザー判断**)。
+
+**⑤(より広い範囲)の扱い**: §5-7(委任_14 B-3/B-4)の時点で、②(文の
+一部)・⑤(より広い範囲)はAPI呼び出し回数を無制限に増やさないため
+実務的に①・④へ統合済みであり、コード上「5_」という独立したladder
+水準は**そもそも存在しない**(grep確認済み)。よって「⑤の成功件数」は
+定義上0件であり、これは委任_23での新規の失敗ではなく既存設計どおりの
+統合結果である。⑤単独の無効化は対象が存在しないため実装しない。
+
+**rep14実測での検証(`safety_A4`×n=1、¥1.5084、REPORT§23 D参照)**:
+iter7で本fixtureのworst costだった原因(4回の⑥試行)が、本是正後は
+1件の`ladder_exhausted_without_full_rewrite`(claim MUSE-HC-012)で
+直ちにSTAGE4_ESCALATIONへ回り、**コスト¥1.5084**(iter7の同fixture
+worst¥8.9545から**83%減**)となった。Safety floor(floor_reason=
+`deterministic_floor:changed_actor`)は本是正後もstage2_results上で
+引き続き`materiality=BLOCKING`(floor-strict、Production実際の挙動)を
+維持しており、最終的にfalse PASSではなくSTAGE4_ESCALATION(human
+review)へ正しくfail-closedした。`floor_variant_comparison.safety_
+group_hard_gate_passed=false`(false_negative_candidates_safety_group=1)
+が本runで記録されたが、これは`llm_materiality`(Stage2のLLM独自判定、
+floor無しでの仮想判定)の run間非決定性によるものであり
+本節の変更(Stage3のみに影響)とは無関係(§4-12/§4-13の「floor-cited
+variant」という**採用されていない設計案**の反実仮想比較指標であり、
+実際に稼働しているfloor-strict自体はこのrunでも正しくBLOCKINGを
+維持した。iter7の同一metricは0件だったため次回委任での追加観測対象と
+する)。
+
+**unittest**: `TestLadderExhaustedWithoutFullRewriteWiring`(新規2件)、
+`single_text_rewrite`の既存⑥テストを「既定OFF時はladder_exhausted_
+without_full_rewriteを返す」新テストへ更新し、「flagを明示的にTrueへ
+戻すと従来どおり⑥で解消する」regressionテストを別途追加(コード削除
+なしを実証)。
+
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
 ### 6-1. Escalation条件
@@ -2467,6 +2525,85 @@ QUALITY、blocking_count=0)は2/2とも`RESOLVED_STAGE2_DOWNGRADE`。2回目
 維持)で完了した。**4/4 instance-run全てSTAGE4に至らず**(rep12の2/2
 STAGE4から改善)、false PASSでもない(実際のRecheckが真に解消を確認した
 場合のみ通過させる設計どおり)。
+
+### 6-12. `hormuz_run03_standard` real_run Escalation真因是正(委任_23 A-2、
+REPORT§23 A)
+
+**背景(iter7で残った未達1)**: iteration7(委任_22)はreal_run Escalation
+2/10(`hormuz_run03_standard` n=2とも)がKPI目標(0)未達のまま残った。
+
+**真因A(§6-11の残存過剰保守、iter7 sample1型)**: `hormuz_run03_standard`
+instances_s1(iter7)のcycle0は、BLOCKING claim(HF-009、body)を①(単語・
+接続詞)水準で解消し、全文Recheck(EN/JA双方)が`LEDGER_COMPLIANT`かつ
+`all_prior_issues_resolved=True`と**既に確認済み**だったにも関わらず、
+`ja_en_equivalence_verdict=REVIEW_REQUIRED`(JA側言語は`is_predominantly_
+ja`判定で正常[determinate])のみを根拠に§6-11のgatingが`ja_ok`を
+無条件でFalseへ倒し、`ja_pending_deviation`が残ってSTAGE4_ESCALATION
+(`ja_deviation_unresolved`)へ強制到達していた。`ja_en_equivalence_
+verdict`は元々(委任_11)「flow制御には使わない、測定・報告専用」と
+明記されていたcheckであり、委任_20 W1(ii)が`FAIL`の実測(rep10、JA
+破損と一致)を根拠にgatingへ昇格したが、rep10自体もja_recheck側が
+独立に`LEDGER_DEVIATION`だったため(§6-7)、「`ja_ok`が既にTrueの状況で
+この追加gatingが実際に真の見逃しを捕捉した実測」は一度も存在しない。
+
+**是正A(¥0、`resolve_ja_ok_after_equivalence_gating`拡張)**:
+`verdict=="REVIEW_REQUIRED"`かつJA側言語が正常でも、`ja_ok`(入力、
+全文Recheckの確定判定)が既にTrueの場合はgatingしない(信頼できる
+独立確認[EN/JA双方のLedger Recheck]を弱い根拠[equivalence REVIEW_
+REQUIRED]で上書きしない)。`ja_ok`が既にFalseの場合は元々no-opであり
+挙動は変わらない。`FAIL`分岐は変更しない(rep10実測の唯一の根拠が
+FAILであり安全側を維持)。JA fail-openガード(§6-7(iii)、本関数とは
+独立に適用)は無変更のまま機能し続けるため、rep10型の実際のJA破損は
+引き続き検出される(実測で価値が一度も確認されなかった層のみを縮小)。
+詳細は`resolve_ja_ok_after_equivalence_gating`のdocstring参照。
+
+**真因B(reuse fixtureのsame_fact_id列挙欠如、iter7 sample2型)**:
+`hormuz_run03_standard`は`stage1_mode=reuse`(§6-8「reuse fixtureへの
+安全側fallback」対象、29 instance中26/29)であり、Stage1初回json(`er051_
+output/open233_checker_trial_01/trial_02/step3/hormuz_run03_standard/
+V4A/run_1.json`)は委任_20 W2で新設した`same_fact_id_locations`
+フィールドを持たない。そのためcycle0のStage1初回はbody側claim(HF-009)
+しか検出できず、in_one_line側の同一fact言及はcycle1の全文Recheck
+(fresh LLM call、列挙可)まで発見されない。body/in_one_line2箇所を2
+cycleに分けて処理する形になり、HARD_MAX_CYCLES(3)を消費し尽くした後も
+解消しないままSTAGE4_ESCALATIONに至っていた(iter7 instances_s2)。
+
+**是正B(¥0、`deterministic_same_fact_id_location_fallback`新設)**:
+reuse fixtureのdeviationについて、`claim_in_article`中の数値・金額・%
+トークン(1件でも一致)、またはstopword除外後の非stopword単語重複
+(閾値3件以上、hormuz_run03_standard実データで較正・REPORT§23 A参照)を
+手掛かりに、記事内の他文(`split_sentences_generic`、見出し行除外は
+既知の限界)を候補化し、既存`expand_same_fact_id_locations`(fail-closed、
+逐語実在確認)へ渡してcycle0の時点で独立claimへ展開する(新しいRewrite
+機構は作らない、委任_20 W2の枠組みをreuse fixtureへも拡張)。過剰候補化
+(閾値が低すぎる場合)はStage2(独立LLM materiality判定)がACCEPTABLEで
+screenするため安全側(コスト増のみ、Safety regressionではない)。
+
+**unittest**: `TestResolveJaOkAfterEquivalenceGating`(既存6件の一部更新
++新規2件)、`TestDeterministicSameFactIdLocationFallback`(新規5件)、
+`TestLadderExhaustedWithoutFullRewriteWiring`関連(後述§5-10)。既存
+208件のうち2件を新挙動へ更新+新規10件=**計218件全PASS**。
+
+**rep14実測(REPORT§23 D参照、`hormuz_run03_standard`×n=2、¥3.8461)**:
+是正A・Bとも実際に発火することを確認した(sample2でgating実際に
+`ja_equivalence_review_required_not_gated_already_confirmed_resolved=
+True`が記録され、両sampleともcycle0でbody+in_one_line2claimを同時に
+検出・Rewrite)。**しかし2/2ともSTAGE4_ESCALATIONは解消しなかった**
+(stage4_reasonが`ja_deviation_unresolved`から`same_claim_fact_id_
+reblocked`へ変化)。cycle1の全文Recheckがbody claimを①水準Rewrite後も
+なお同一claim本文に近い形でBLOCKINGと再検出し(`find_matching_prior_
+record`の近似一致閾値0.75以上)、§3-3の「同一claim再発=Rewriteが
+効かなかったことの実証」という既存の安全網が正しく発火した。**正直な
+結論**: 真因A・Bはいずれも実際に存在し、是正も実際に機能した(A-1は
+gatingの過剰保守を解消、A-2はreuse enumeration欠如を解消)ことをrep14
+実測で確認したが、`hormuz_run03_standard`のEscalationは**別の第三の
+限界**(word-level[①]のみのRewriteでは当該body claimの実質的な問題を
+解消しきれない、Stage3 Rewrite品質の限界)により残存している。これは
+本委任のA-2で診断対象とした三択(a/b/c)のいずれにも完全には一致しない
+新規の発見であり、budget制約(委任文Guardrail¥6、rep14実測後残¥0.6455)
+のため本委任内でのさらなる追加修正・再実行は行わない(STOP条件
+「¥6超え見込み」「最小修正1回後もFAIL」に該当、Fable/ユーザー判断待ち
+として次回委任へ持ち越す)。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
@@ -3677,6 +3814,24 @@ STAGE4で正しくfail-closedしており、false PASSではない)。**Status=
 `A1_EQUIVALENCE_GATING_FIXED_REP13_4_OF_4_NO_STAGE4_ITER7_38_OF_38_
 COMPLETE_FALSE_PASS_ZERO_WORST_COST_TAIL_RISK_INCREASED`**。詳細
 REPORT§22。
+
+**⑮ iter7未達2点の原因特定・設計修正・少数ケース確認(委任_23、本書
+§5-10/§6-12参照)**: real_run Escalation(`hormuz_run03_standard`
+2/10)の真因を2点特定・是正した(A: §6-11の等価QA gating過剰保守を
+`resolve_ja_ok_after_equivalence_gating`拡張で解消、B: reuse fixtureの
+same_fact_id列挙欠如を`deterministic_same_fact_id_location_fallback`
+新設で解消)。⑥(全体Rewrite/削除)は、iter7実測で7/7が最終的にSTAGE4
+だった(「⑥が必要だった」Evidence 0件)ため、feature flag(既定OFF)で
+標準ラダーから除外した。rep14実測(`hormuz_run03_standard`×n=2+
+`safety_A4`×n=1、¥5.3545)で、是正A・Bとも実際に発火することを確認
+したが、**`hormuz_run03_standard`は2/2ともSTAGE4_ESCALATIONのまま**
+(理由が`ja_deviation_unresolved`から`same_claim_fact_id_reblocked`
+[word-level Rewriteの質的限界という第三の要因]へ変化)だった。
+`safety_A4`はworst cost¥8.9545→¥1.5084(83%減)を確認し、Safety
+floor-strictの維持・false PASS 0件・unittest218件全PASS・Production
+無変更を確認した。**Status=`A2_GATING_AND_ENUMERATION_FIXED_VALIDATED_
+LADDER6_DISABLED_COST_REDUCED_HORMUZ_STILL_ESCALATES_NEW_THIRD_CAUSE_
+FOUND`**。詳細REPORT§23。
 
 ## 10. リスク
 

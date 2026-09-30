@@ -15072,3 +15072,88 @@ Status=`A1_EQUIVALENCE_GATING_FIXED_REP13_4_OF_4_NO_STAGE4_ITER7_38_OF_
 `er052_open233_self_recovery_rewrite_compare_page_iter7_01.py`、
 `er052_output/open233_self_recovery_flow_runner_01_rep13/`、
 `er052_output/open233_self_recovery_flow_runner_01_iter7/`。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: iter7未達2点の原因特定・設計修正・少数
+ケース確認(委任_23、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_23: iter7の未達2点[real_run
+Escalation非ゼロ・⑥使用増加によるworst cost悪化]の原因特定・設計修正・
+少数ケース確認。Phase 2は含めない)。
+
+**背景**: iteration7(委任_22)はreal_run Escalation 2/10(`hormuz_run03_
+standard` n=2とも)と、⑥(全体Rewrite/削除)使用7件・worst instance cost
+¥8.9545(`safety_A4`)という2点が未達のまま残った。
+
+**A. `hormuz_run03_standard` real_run Escalation真因是正**: iter7実データ
+を精査し、真因A(§6-11の`resolve_ja_ok_after_equivalence_gating`が、全文
+Recheckで`ja_ok`が既にTrueと確認済みでも`ja_en_equivalence_verdict=
+REVIEW_REQUIRED`[JA側言語determinate]だけで無条件にFalseへ倒す過剰保守
+だった。`FAIL`分岐の唯一の実測根拠[rep10]はja_recheck自体も独立に
+`LEDGER_DEVIATION`だったため、`ja_ok`が既にTrueの状況でこの追加gatingが
+真の見逃しを捕捉した実測は一度も存在しない)と、真因B(reuse fixture
+[29 instance中26/29]は`same_fact_id_locations`フィールドを持たず、
+Stage1初回がbody claimしか検出できず、in_one_line側の同一fact言及が
+cycle1の全文Recheckまで発見されない構造的欠落)の2点を特定した。
+
+**A是正(¥0)**: `resolve_ja_ok_after_equivalence_gating`の`REVIEW_
+REQUIRED`+JA側言語正常分岐を、`ja_ok`(入力)既にTrueなら gatingしない
+よう変更(`FAIL`分岐は無変更)。`deterministic_same_fact_id_location_
+fallback`(新設)で、reuse fixtureのdeviationについて数値/金額/%トークン
+一致または非stopwordキーワード重複(閾値3件以上、実データ較正)による
+候補文を列挙し、既存`expand_same_fact_id_locations`(fail-closed)へ
+渡してcycle0時点で独立claimへ展開する。unittest計218件全PASS(既存208件
+中2件更新+新規10件)。
+
+**B. ⑥(全体Rewrite/削除)の標準ラダーからの除外**: iter7の⑥使用7件全て
+について①〜④試行記録を精査した結果、**7/7とも最終的にSTAGE4_
+ESCALATIONへ到達しており「⑥が必要だった」Evidence(⑥使用が最終解消に
+至った例)は0/7**と確定した(`safety_A2A3`×2・`safety_A4`×4・
+`bgroup_B4`×1)。⑤(より広い範囲)は既に①・④へ統合済み(§5-7)でコード上
+独立水準が存在しないため対象外。
+
+**B是正**: `ENABLE_LADDER_LEVEL_6_FULL_REWRITE`(feature flag、既定
+False)を新設。無効時、①〜④/delete全段でguard失敗した時点で⑥のAPI call
+を試みず、`stage4_reason="ladder_exhausted_without_full_rewrite"`で
+直ちにSTAGE4_ESCALATIONへ回す(`target_not_locatable`と同じパターン)。
+コードは削除せず、flagをTrueへ戻せばiter7以前の①〜⑥挙動に復元できる
+(再有効化はユーザー判断)。
+
+**C. OPEN_ITEMS記録是正**: `OPEN_ITEMS.md`のOPEN-233行で、委任_21
+(2026-10-01)の追記パラグラフ(1118文字)が誤って「種類」列(短い分類タグ
+が入るべき列)の末尾に混入していたことを確認した。当該パラグラフを一字
+一句変更せず(履歴改変なし)、本来の位置(「内容」列、委任_20エントリと
+委任_22エントリの間の時系列順)へ移動した。`git diff --stat`で本行のみ
+1箇所の変更であることを確認済み。
+
+**D. rep14実測**(`hormuz_run03_standard`×n=2[¥3.8461]+`safety_A4`×n=1
+[¥1.5084]、計¥5.3545、Guardrail¥6内): A・Bとも実際に発火することを
+確認した(hormuz sample2で`not_gated_already_confirmed_resolved=True`が
+実発火、両sampleともcycle0でbody+in_one_line2claimを同時検出)。
+**しかし`hormuz_run03_standard`は2/2ともSTAGE4_ESCALATIONのまま**
+(理由が`ja_deviation_unresolved`から`same_claim_fact_id_reblocked`へ
+変化。cycle1の全文Recheckが、①水準でRewrite済みのbody claimを近似一致
+でなお同一claimとして再検出し、§3-3の既存安全網が正しく発火した)。
+正直な結論: 真因A・Bは実在し是正も機能したが、Escalationは**第三の要因**
+(word-level[①]のみのRewriteでは当該claimの実質的問題を解消しきれない
+というStage3 Rewrite品質の限界)により残存する。一方`safety_A4`は
+worst cost¥8.9545→¥1.5084(83%減)を確認し、Safety floor-strict維持・
+false PASS 0件を確認した。予算制約(残¥0.6455)のため、hormuzへの
+追加の最小修正・再実行は本委任では行わずSTOPする。
+
+**STOP条件確認**: ¥6超え見込み(該当せず、実測¥5.3545)/API error 3連続
+(該当せず、0 error)/Production・既存証跡変更(該当せず)/6条件該当
+(非該当)/開始前チェック未反映(0件)/最小修正1回後もFAIL(**該当**:
+hormuz。予算制約のため追加再実行はせずSTOPし本記録で報告)/Safety-
+critical/Safety 12がBLOCKINGでなくなった(該当せず)/false PASS 1件以上
+(該当せず、0/3)。
+
+費用: A・B実装¥0+rep14¥5.3545=本委任合計**¥5.3545**/Guardrail¥6、
+残**¥0.6455**(Phase予算[総枠¥500]とは別枠のGuardrail管理)。
+Status=`A2_GATING_AND_ENUMERATION_FIXED_VALIDATED_LADDER6_DISABLED_
+COST_REDUCED_HORMUZ_STILL_ESCALATES_NEW_THIRD_CAUSE_FOUND`。詳細:
+`docs/pm/design_open233_self_recovery_flow_01.md`§5-10/§6-12/§9-1⑮、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§23、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-TRIAL-01_23.md`、
+`er052_open233_self_recovery_flow_runner_01.py`(+test)、
+`er052_output/open233_self_recovery_flow_runner_01_rep14/`、
+`OPEN_ITEMS.md`(OPEN-233行是正)。

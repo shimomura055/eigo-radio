@@ -170,9 +170,21 @@ OUT_DIR_REP13 = "er052_output/open233_self_recovery_flow_runner_01_rep13"
 # Part B(委任文§2、広いTrial iteration 7、29 instance)の出力は別ディレクト
 # リ(`_iter7`)へ書く。
 OUT_DIR_ITER7 = "er052_output/open233_self_recovery_flow_runner_01_iter7"
-OUT_DIR = OUT_DIR_ITER7
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233z_22_repB.json"
-TOTAL_BUDGET_JPY = 45.0  # 委任_22 Guardrail(委任文§0「Part B ≤¥45」)
+# 委任_23(2026-10-01、iter7未達2点の原因特定・設計修正・少数ケース確認):
+# 既存iteration1〜7・rep7〜13の出力は変更しない。A-2(hormuz_run03_standard
+# real_run Escalation真因是正: JA/EN等価gatingの過剰保守[determinate JA
+# でも既に確認済みのja_okをREVIEW_REQUIREDだけで覆していた]+reuse fixture
+# 向けsame_fact_id決定論フォールバック)/B-2(⑥[全体Rewrite/削除]を標準
+# ラダーから外す、iter7実測で7/7が最終STAGE4だった=Evidence 0件のため
+# feature flag既定OFF)の反映後、`hormuz_run03_standard`×n=2+`safety_A4`
+# ×n=1の少数ケースを再実行する(委任文§2 D、budget_stateパス明示)。
+# 出力は新規ディレクトリ(`_rep14`)へ書く。
+OUT_DIR_REP14 = "er052_output/open233_self_recovery_flow_runner_01_rep14"
+OUT_DIR = OUT_DIR_REP14
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233aa_23_rep14.json"
+TOTAL_BUDGET_JPY = 6.0  # 委任_23 全体Guardrail(委任文§0「本委任Guardrail¥6」、
+# rep14単体は≤¥5を目標とするが、TrialAbortの技術的上限は全体Guardrailで
+# 設定し、hormuz(¥3.8461)+safety_A4の合計が想定内かは実測後にREPORTへ記録する)
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -182,6 +194,19 @@ MAX_CYCLES = 2
 # 場合だけcycle 3を1回許可する(上限3、Opus L2 #2論点1推奨3)。
 HARD_MAX_CYCLES = MAX_CYCLES + 1
 CLAIM_TEXT_SIMILARITY_THRESHOLD = 0.75
+
+# 委任_23 B-2(iter7実測、29 instance全量規模): ⑥(全体Rewrite/削除、
+# `6_full_article`)が7件(18.4%)発生したが、①〜⑤([委任_14既定で②⑤は
+# ①④へ統合済み]・delete含む)の試行記録を精査した結果、7件とも最終的に
+# STAGE4_ESCALATIONへ到達しており(worst_cost内訳の主因、safety_A4は
+# 7 rewrite operations)「⑥が必要だった」Evidence(⑥使用がそのまま
+# 解消[RESOLVED_REWRITE]に至った例)が0/7だった(REPORT§23 B参照)。
+# ①〜④/delete全段でguardが失敗した場合、⑥を試みず直ちにStage4
+# (stage4_reason="ladder_exhausted_without_full_rewrite")へ回す。
+# コードは削除せずfeature flag(既定OFF)として残す。Trueに戻すと
+# iter7以前と同じ①〜⑥の挙動に戻る(再有効化はFable/ユーザー判断、
+# 設計書§5-10参照)。
+ENABLE_LADDER_LEVEL_6_FULL_REWRITE = False
 
 # 委任_12(iteration4、§4-3改訂): changed_certaintyをfloorから除外する。
 # 理由(ユーザー指示・自然な解釈基準への是正): ユーザーNG列挙5項目
@@ -875,6 +900,111 @@ def expand_same_fact_id_locations(deviations: list, article_text: str) -> list:
             new_dev["enumeration_source_claim"] = (d.get("claim_in_article") or "").strip()
             out.append(new_dev)
             seen_texts.add(loc_s)
+    return out
+
+
+# ------------------------------------------------------------
+# 委任_23 A-2(b)(iter7実測`hormuz_run03_standard`の真因是正): §6-8で
+# 「reuse fixtureへの安全側fallback」として明記されていたとおり、
+# stage1_mode=reuseのinstance(29 instance中26/29)は`same_fact_id_
+# locations`フィールドを持たない旧jsonをそのまま読み込むため、LLMベースの
+# 列挙(委任_20 W2、fresh instance限定)が一切効かない。`hormuz_run03_
+# standard`はcycle0のStage1初回がbodyのclaim(HF-009)しか検出できず、
+# in_one_line側の同一fact言及は**cycle1のRecheck(fresh call、既に
+# 列挙済み)**まで発見されないため、cycle0とcycle1で2回に分けてRewrite
+# する形になり、HARD_MAX_CYCLES(3)を消費し尽くした後もja_pending_
+# deviationが解消しないままSTAGE4_ESCALATIONへ至っていた(REPORT§23 A)。
+# 本フォールバックは、reuse fixtureのdeviationについてclaim_in_articleの
+# 数値・金額・%トークン、および文分割(split_sentences_generic、見出し行
+# [#始まり]は除外=既知の限界)した記事内の他文とのキーワード重複を¥0・
+# 決定論で計算し、cycle0の時点でbody+in_one_line等の複数箇所をまとめて
+# claimへ追加する(既存`expand_same_fact_id_locations`と同じfail-closed
+# 方針[逐語substring実在確認]を経由させ、新しいRewrite機構は作らない)。
+# ------------------------------------------------------------
+_NUMERIC_TOKEN_RE = re.compile(r"\$?\d[\d,]*\.?\d*%?")
+_KEYWORD_WORD_RE = re.compile(r"[A-Za-z][A-Za-z\-']{2,}")
+_KEYWORD_STOPWORDS_EN = frozenset("""
+a an the and or but if then so to of in on at for with by from as is was were are
+be been being it its this that these those he she they his her their after before
+than not no did do does had has have about into over across up down out would could
+should will shall may might one also
+""".split())
+# 委任_23 A-2(b): キーワード一致の最低必要数(この値以上の非stopword
+# 共有語があれば候補とする)。実データ(hormuz_run03_standard cycle0
+# en_text_before_rewrite、claim="Oil prices did not fall across the whole
+# market after the plan was withdrawn.")で較正した: 閾値3は、実際に
+# cycle1のRecheck(fresh LLM enumeration)が検出したin_one_line文
+# ("The fee plan vanished, but oil prices stayed high...")を正しく
+# 候補化しつつ、無関係な本文文(例: "Trump said he would drop the 20
+# percent fee plan."、共有語1語のみ)を誤って候補化しない(REPORT§23 A)。
+# 閾値2は同記事で5件中4件が無関係な過剰候補化(共有語2語のみの文が多数
+# 一致)、閾値4は真陽性のin_one_line文まで取りこぼす(0件)ため、いずれも
+# 採用しなかった。この較正は1 fixtureの実データによるものであり、他
+# fixtureへの一般化は未検証(§9-1既知の限界と同じ性質、既知の限界として
+# 記録する)。
+_KEYWORD_OVERLAP_MIN_SHARED = 3
+
+
+def extract_distinctive_numeric_tokens(text: str) -> frozenset:
+    """決定論・¥0。テキスト中の数値・金額・%表記トークンをそのまま抽出する
+    (changed_number/changed_time等、数値差分が本質の逸脱型の手掛かり)。"""
+    return frozenset(_NUMERIC_TOKEN_RE.findall(text or ""))
+
+
+def extract_distinctive_keywords_en(text: str) -> frozenset:
+    """決定論・¥0。EN文中の非stopword・3文字以上の単語を小文字化して抽出
+    する(changed_actor等、数値を伴わない逸脱型の手掛かり)。"""
+    words = {w.lower() for w in _KEYWORD_WORD_RE.findall(text or "")}
+    return frozenset(w for w in words if w not in _KEYWORD_STOPWORDS_EN)
+
+
+def deterministic_same_fact_id_location_fallback(deviations: list, article_text: str) -> list:
+    """委任_23 A-2(b): `same_fact_id_locations`フィールドを持たないreuse
+    fixture向けの¥0決定論フォールバック。既にフィールドを持つdeviation
+    (fresh instanceのLLMベース列挙)は上書きしない。数値/金額/%トークンが
+    1つでも一致、またはstopword除外後の非stopword単語が
+    `_KEYWORD_OVERLAP_MIN_SHARED`件以上一致する記事内の他文
+    (`split_sentences_generic`、見出し行除外は既知の限界)を候補として
+    `same_fact_id_locations`へ設定する(実際の追加・重複排除・逐語実在
+    確認は呼び出し側が既存`expand_same_fact_id_locations`へ渡して行う、
+    二重処理を避ける)。
+
+    既知の限界(正直に記録): (a) 見出し行(#始まり、記事タイトル)は
+    `split_sentences_generic`が除外するため候補化されない(実データでは
+    title側は該当claimがACCEPTABLE判定だったため実害は確認されていない)。
+    (b) LLMによる意味理解を伴わないため、数値もキーワード重複も乏しい
+    paraphraseは検出できない。(c) 閾値の選び方はこの1 fixtureの実データ
+    (§6-6既知の限界、REPORT§23 A)による較正であり、他fixtureへの一般化は
+    未検証。過剰候補化の場合もStage2(独立LLM materiality判定)がACCEPTABLE
+    として screen するため安全側(Stage2 API call増による¥コスト増のみ、
+    Safety regressionではない)。"""
+    out = []
+    for d in deviations:
+        if isinstance(d.get("same_fact_id_locations"), list):
+            out.append(d)
+            continue
+        claim_text = (d.get("claim_in_article") or "").strip()
+        d2 = dict(d)
+        if not claim_text:
+            d2["same_fact_id_locations"] = []
+            out.append(d2)
+            continue
+        numeric_tokens = extract_distinctive_numeric_tokens(claim_text)
+        keywords = extract_distinctive_keywords_en(claim_text)
+        locations = []
+        for s in split_sentences_generic(article_text):
+            s_stripped = s.strip()
+            if not s_stripped or s_stripped == claim_text:
+                continue
+            s_numeric = extract_distinctive_numeric_tokens(s_stripped)
+            s_keywords = extract_distinctive_keywords_en(s_stripped)
+            numeric_match = bool(numeric_tokens & s_numeric)
+            keyword_match = len(keywords & s_keywords) >= _KEYWORD_OVERLAP_MIN_SHARED
+            if numeric_match or keyword_match:
+                locations.append(s_stripped)
+        d2["same_fact_id_locations"] = locations
+        d2["same_fact_id_locations_source"] = "deterministic_fallback_c233_23"
+        out.append(d2)
     return out
 
 
@@ -2281,6 +2411,18 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                 "ladder_level_used": None, "target_not_locatable": True}
     if not guard_ok:
         after_fragment = None
+        # 委任_23 B-2: ⑥を標準ラダーから外す(既定OFF、iter7実測で7/7が
+        # ⑥使用後も最終的にSTAGE4に至り「⑥が必要だった」Evidenceが0件
+        # だったため)。target_not_locatableと同じパターンで、呼び出し側
+        # run_instanceへladder_exhausted_without_full_rewriteを返し、
+        # ⑥のAPI callを試みず直ちにStage4へ回す(feature flag、既定OFF)。
+        if not ENABLE_LADDER_LEVEL_6_FULL_REWRITE:
+            return {"updated_text": full_text, "method": (method_used or "") + "+ladder6_disabled",
+                    "guard_ok": False, "target_sentence": target_sentence, "locate_method": locate_method,
+                    "delete_reoccurrence_detected": delete_reoccurrence_detected,
+                    "before_fragment": target_sentence, "after_fragment": None,
+                    "ladder_level_used": None, "target_not_locatable": False,
+                    "ladder_exhausted_without_full_rewrite": True}
         # guard抵触(ラダー全段で置換後も同じclaim文言が残存、またはdelete
         # 再出現検出) -> 全文最小編集フォールバック(水準⑥、§5-2/§5-4の
         # フォールバック段2に相当。found=Trueで①〜④[delete型は0]を実際に
@@ -2451,6 +2593,18 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     en_after_fragment = en_revised if (guard_ok and not use_paragraph and en_located and ja_located) else None
 
     if not guard_ok:
+        # 委任_23 B-2: ⑥を標準ラダーから外す(既定OFF、iter7実測で7/7が
+        # ⑥使用後も最終的にSTAGE4に至り「⑥が必要だった」Evidenceが0件
+        # だったため)。single_text_rewriteと同一パターンで、⑥(JA全文
+        # フォールバック→EN側対応)のAPI callを試みず直ちにStage4へ回す
+        # (feature flag、既定OFF)。
+        if not ENABLE_LADDER_LEVEL_6_FULL_REWRITE:
+            return {"updated_en_text": en_full, "updated_ja_text": ja_full,
+                    "method": (method or "") + "+ladder6_disabled", "guard_ok": False,
+                    "en_target": en_target, "ja_target": ja_target,
+                    "before_fragment": en_target, "after_fragment": None,
+                    "ladder_level_used": None, "target_not_locatable": False,
+                    "ladder_exhausted_without_full_rewrite": True}
         # 委任_11 作業B-1(バグA是正、Opus L2 #2論点1推奨1): 従来はen_target/
         # ja_targetのいずれかが特定できない(j1_pair_not_located)場合、この
         # 全文フォールバックへ到達せず早期returnしていたため、テキストが
@@ -2545,7 +2699,11 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
                 "ja_text": res["updated_ja_text"], "method": res["method"], "guard_ok": res["guard_ok"],
                 "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
                 "ladder_level_used": res.get("ladder_level_used"),
-                "target_not_locatable": res.get("target_not_locatable", False)}
+                "target_not_locatable": res.get("target_not_locatable", False),
+                # 委任_23 B-2: ⑥ feature flag(既定OFF)時、①〜④/delete全段で
+                # guardが失敗した場合に立つ(呼び出し側run_instanceがSTAGE4へ回す)。
+                "ladder_exhausted_without_full_rewrite": res.get(
+                    "ladder_exhausted_without_full_rewrite", False)}
     else:
         res = single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture,
                                    "article_text", claim_rec)
@@ -2553,7 +2711,9 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
                 "ja_text": current_ja_text, "method": res["method"], "guard_ok": res["guard_ok"],
                 "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
                 "target_not_locatable": res.get("target_not_locatable", False),
-                "ladder_level_used": res.get("ladder_level_used")}
+                "ladder_level_used": res.get("ladder_level_used"),
+                "ladder_exhausted_without_full_rewrite": res.get(
+                    "ladder_exhausted_without_full_rewrite", False)}
 
 
 # ============================================================
@@ -2698,9 +2858,33 @@ def resolve_ja_ok_after_equivalence_gating(ja_ok: bool, ja_equivalence_verdict: 
     全文Recheckの実際の判定をそのまま使う(STAGE4直行を強制しない、
     `full_recheck_required`の(h)条件により全文Recheck自体は既に維持
     されているため安全側は保たれる)。`REVIEW_REQUIRED`かつJA側言語が
-    正常(判定可能)の場合は従来どおりgatingする(理由を記録)。"""
+    正常(判定可能)の場合は従来どおりgatingする(理由を記録)。
+
+    委任_23 A-2是正(iter7実データで判明した新たなKPI後退、
+    `hormuz_run03_standard` real_run Escalation 2/10のうち1件の真因、
+    REPORT§23 A参照): 上記「JA側言語が正常な場合は従来どおりgating」は、
+    `ja_ok`(引数、この全文RecheckがEN/JA双方ともLEDGER_COMPLIANTかつ
+    all_prior_issues_resolved=Trueと**既に確認した**結果)がTrueの場合も
+    無条件でFalseへ倒しており、`full_recheck_required`の(h)条件により
+    このcycleで**実際に実行された**全文Recheckの確定的な判定結果を、
+    より弱い根拠(`ja_en_equivalence_verdict`はその作成時[委任_11]の
+    docstringで「flow制御には使わない、測定・報告専用」と明記されていた
+    check。委任_20 W1(ii)は`FAIL`の実測[rep10、JA破損と一致]を根拠に
+    gatingへ昇格したが、rep10のja_recheck自体も独立に`LEDGER_DEVIATION`
+    だったため[§6-7]、`ja_ok`が既にTrueの状況でこの追加gatingが実際に
+    真の見逃しを捕捉した実測は一度も存在しない)で上書きしてしまう
+    構造的な過剰保守だった。是正: `REVIEW_REQUIRED`かつJA側言語が正常
+    (判定可能)でも、`ja_ok`(入力、全文Recheckの確定判定)が既にTrueの
+    場合はgatingしない(信頼できる独立確認[EN/JA双方のLedger Recheck]が
+    既に得られているため)。`ja_ok`が既にFalseの場合はgating自体が
+    no-op(元々False)であり挙動は変わらない。`FAIL`分岐は変更しない
+    (rep10実測の唯一の根拠がFAILであり安全側を維持する)。JA fail-open
+    ガード(§6-7(iii)、本関数とは独立に`run_instance`側で適用)は本是正
+    後も無変更のまま機能し続けるため、rep10型の実際のJA破損(指摘文が
+    逐語残存/段落外JA文の理由なき消失)は引き続き検出される(二重の
+    安全網のうち、実測で価値が一度も確認されなかった層のみを縮小する)。"""
     result = {"ja_ok": ja_ok, "blocked_by_equivalence": False, "lang_indeterminate": None,
-              "not_gated_indeterminate_lang": False}
+              "not_gated_indeterminate_lang": False, "not_gated_already_confirmed_resolved": False}
     if ja_equivalence_verdict == "FAIL":
         if ja_ok:
             result["ja_ok"] = False
@@ -2711,8 +2895,10 @@ def resolve_ja_ok_after_equivalence_gating(ja_ok: bool, ja_equivalence_verdict: 
         if lang_indeterminate:
             result["not_gated_indeterminate_lang"] = True
         elif ja_ok:
-            result["ja_ok"] = False
-            result["blocked_by_equivalence"] = True
+            # 委任_23 A-2: 全文Recheckが既にEN/JA双方の解消を確認済み
+            # (ja_ok=True入力)の場合は、根拠の弱いequivalence REVIEW_
+            # REQUIREDだけでこれを覆さない(上記docstring参照)。
+            result["not_gated_already_confirmed_resolved"] = True
     return result
 
 
@@ -3229,6 +3415,19 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     if inst["stage1_mode"] == "reuse":
         stage1_parsed = stage1_reuse(inst["stage1_source"])
         stage1_call_used = False
+        # 委任_23 A-2(b): reuse fixtureは`same_fact_id_locations`フィールド
+        # を持たないため(§6-8「reuse fixtureへの安全側fallback」)、¥0
+        # 決定論フォールバックで数値/キーワード一致による同一fact言及箇所の
+        # 候補列挙を試み、既存`expand_same_fact_id_locations`(fail-closed、
+        # 逐語実在確認)で実際に追加する。fresh instance(LLMベース列挙
+        # フィールドを既に持つ)は`deterministic_same_fact_id_location_
+        # fallback`内部でスキップされ上書きしない。
+        if stage1_parsed.get("overall_status") == "LEDGER_DEVIATION" and isinstance(
+                stage1_parsed.get("deviations"), list):
+            enumerated = deterministic_same_fact_id_location_fallback(
+                stage1_parsed["deviations"], fixture["article_text"])
+            stage1_parsed = dict(stage1_parsed)
+            stage1_parsed["deviations"] = expand_same_fact_id_locations(enumerated, fixture["article_text"])
     else:
         # 委任_13(iteration5、n=2実行): Stage1(fresh mode)はcycle1の入力
         # (ledger_text+article_text+source_article_text)が同一である限り、
@@ -3522,7 +3721,12 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                  "section_type": c.get("section_type"),
                                  # 委任_18 2-1(b): 対象文が一度も特定できずRewrite自体を
                                  # 試みなかったclaim(呼び出し側run_instanceがStage4へ回す)。
-                                 "target_not_locatable": r.get("target_not_locatable", False)})
+                                 "target_not_locatable": r.get("target_not_locatable", False),
+                                 # 委任_23 B-2: ⑥ feature flag(既定OFF)時、①〜④/delete
+                                 # 全段でguardが失敗したclaim(呼び出し側run_instanceが
+                                 # STAGE4へ回す)。
+                                 "ladder_exhausted_without_full_rewrite": r.get(
+                                     "ladder_exhausted_without_full_rewrite", False)})
                 pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
             return en_out, ja_out, records, pairs
 
@@ -3542,6 +3746,22 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cycle_record["rewrite_records"] = rewrite_records
             cycle_record["unlocatable_claim_ids"] = sorted(
                 {r["claim_identity"] for r in unlocatable_records})
+            cycles_log.append(cycle_record)
+            break
+
+        # 委任_23 B-2: ⑥ feature flag(既定OFF)時、①〜④/delete全段でguardが
+        # 失敗したclaimが1件でもあれば、target_not_locatableと同じパターンで
+        # この記事のcycleを打ち切り、直ちにStage4(ladder_exhausted_without_
+        # full_rewrite)へ回す(⑥を未試行のまま追加cycleへ進まない、iter7実測
+        # で⑥使用7件全てが最終的にSTAGE4だった=⑥が必要だったEvidenceが
+        # 0件だったため)。
+        ladder_exhausted_records = [r for r in rewrite_records if r.get("ladder_exhausted_without_full_rewrite")]
+        if ladder_exhausted_records:
+            final_state = "STAGE4_ESCALATION"
+            stage4_reason = "ladder_exhausted_without_full_rewrite"
+            cycle_record["rewrite_records"] = rewrite_records
+            cycle_record["ladder_exhausted_claim_ids"] = sorted(
+                {r["claim_identity"] for r in ladder_exhausted_records})
             cycles_log.append(cycle_record)
             break
 
@@ -3732,6 +3952,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cycle_record["ja_ok_blocked_by_equivalence"] = True
         if gating_result["not_gated_indeterminate_lang"]:
             cycle_record["ja_equivalence_review_required_not_gated_indeterminate_lang"] = True
+        if gating_result["not_gated_already_confirmed_resolved"]:
+            cycle_record["ja_equivalence_review_required_not_gated_already_confirmed_resolved"] = True
         # 委任_20 W1(iii): JA fail-openガード不通過はja_okをFalseへ倒す
         # (全文Recheckがself-contradictionなく「解消」を返した場合でも、
         # ¥0決定論ガードが指摘JA文の逐語残存/対象段落外JA文消失を検出した

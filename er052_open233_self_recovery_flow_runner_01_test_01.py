@@ -2065,7 +2065,12 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
         self.assertEqual(result["ladder_level_used"], "4_paragraph")
         self.assertEqual(calls, ["test_e2_paragraph_rewrite"])
 
-    def test_single_text_rewrite_falls_back_to_level6_when_paragraph_level_guard_fails_and_escalated(self):
+    def test_single_text_rewrite_stops_at_ladder_exhausted_when_paragraph_level_guard_fails_and_level6_disabled(
+            self):
+        """委任_23 B-2: ⑥は既定OFF(ENABLE_LADDER_LEVEL_6_FULL_REWRITE=False)
+        のため、①〜④全段でguardが失敗した場合は⑥のAPI callを試みず、
+        ladder_exhausted_without_full_rewrite=Trueを返す(呼び出し側
+        run_instanceがSTAGE4へ回す)。"""
         from unittest import mock
 
         full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
@@ -2081,14 +2086,45 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
         def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
             calls.append(label)
             if label.endswith("_e2_paragraph_rewrite"):
-                # guard抵触(元claim文言がそのまま残る)を再現し、⑥全体
-                # フォールバックへ落ちることを確認する。
+                # guard抵触(元claim文言がそのまま残る)を再現する。
+                return "Some sentence with a problem in it. Another sentence follows, unchanged."
+            raise AssertionError(f"⑥ disabled by default, should not call {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertIsNone(result["ladder_level_used"])
+        self.assertFalse(result["guard_ok"])
+        self.assertTrue(result["ladder_exhausted_without_full_rewrite"])
+        self.assertEqual(calls, ["test_e2_paragraph_rewrite"])
+
+    def test_single_text_rewrite_level6_still_works_when_feature_flag_reenabled(self):
+        """委任_23 B-2: ⑥はコード削除せずfeature flagで残す。flagを明示的に
+        Trueへ戻すと、iter7以前と同じ①〜⑥の挙動(⑥で解消)に戻ることを
+        確認する(再有効化はユーザー判断だが、機構自体は壊れていない)。"""
+        from unittest import mock
+
+        full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
+                     "## In one line\nA plan changed.\n")
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "problem"}, "escalate_to_paragraph": True,
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e2_paragraph_rewrite"):
                 return "Some sentence with a problem in it. Another sentence follows, unchanged."
             if label.endswith("_fulltext_fallback"):
                 return "Some sentence without the problem. Another sentence follows."
             raise AssertionError(f"unexpected call to {label}")
 
-        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm), \
+                mock.patch.object(runner, "ENABLE_LADDER_LEVEL_6_FULL_REWRITE", True):
             result = runner.single_text_rewrite(
                 None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
                 [], [], "test", fixture, "article_text", claim_rec)
@@ -2125,6 +2161,22 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
                 [], [], "test", fixture, claim_rec)
         self.assertEqual(result["ladder_level_used"], "4_paragraph")
         self.assertEqual(calls, ["test_j1_paired_rewrite_paragraph"])
+
+
+class TestLadderExhaustedWithoutFullRewriteWiring(unittest.TestCase):
+    """委任_23 B-2: run_instanceのメインループが、⑥ feature flag(既定OFF)
+    によりladder_exhausted_without_full_rewriteが立ったclaimを、
+    target_not_locatableと同じパターンで即座にSTAGE4_ESCALATIONへ回す
+    ことをソース検査で確認する(¥0)。"""
+
+    def test_run_instance_source_contains_ladder_exhausted_wiring(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("ladder_exhausted_records", src)
+        self.assertIn('stage4_reason = "ladder_exhausted_without_full_rewrite"', src)
+
+    def test_enable_ladder_level_6_full_rewrite_defaults_to_false(self):
+        self.assertFalse(runner.ENABLE_LADDER_LEVEL_6_FULL_REWRITE)
 
 
 class TestRepeatFactIdWiring(unittest.TestCase):
@@ -2302,6 +2354,110 @@ class TestExpandSameFactIdLocations(unittest.TestCase):
         self.assertEqual(len(out), 1)
 
 
+HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE = (
+    '# The Fee Plan Leaves, But High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared. '
+    'It would charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\n'
+    'Trump said the fee would pay for the United States keeping the strait safe. It would cover '
+    'all cargo passing through the strait. But important details were still missing. These '
+    'included who would collect the fee, who would pay it, and how its amount would be '
+    'decided.\n\nIn other words, no one had actually started collecting the fee. What appeared '
+    'on stage was not a finished fee system. It was a proposal with the number 20 percent.\n\n'
+    'Then, the next day, the story suddenly changed. Trump said he would drop the 20 percent fee '
+    'plan. He would replace it with trade and investment deals between Gulf countries and the '
+    'United States. He said this decision followed “very productive talks” with Middle '
+    'Eastern leaders.\n\nHe also told reporters that no one should charge fees to ships passing '
+    'through the Strait of Hormuz. He said he did not like the idea of fees. The 20 percent plan '
+    'left the stage about one day after it appeared.\n\nNow, let us point the camera toward the '
+    'oil market. The next scene begins.\n\nAfter the fee plan was withdrawn and replaced, Brent '
+    'crude oil futures briefly lost some of their gains. Prices seemed ready to fall. But they '
+    'soon returned to a high level near their earlier level. At the time of reporting, they were '
+    'up about 2.6 percent, above 85 dollars a barrel.\n\nOil prices did not fall across the whole '
+    'market after the plan was withdrawn. At the same time, attacks by the United States and Iran '
+    'continued. So did a sea blockade and worries about tanker safety.\n\nThe fee plan '
+    'disappeared. But news about tensions around the strait stayed on stage. Political statements '
+    'changed greatly. Oil prices moved briefly, then returned to a high level. The interesting '
+    'point this time was simple. One headline alone could not decide how the story would end.\n\n'
+    '## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the '
+    'Strait of Hormuz continued.'
+)
+
+
+class TestDeterministicSameFactIdLocationFallback(unittest.TestCase):
+    """委任_23 A-2(b、REPORT§23 A): reuse fixture(`same_fact_id_locations`
+    フィールドを持たない)向けの¥0決定論フォールバック。iter7実データ
+    (`hormuz_run03_standard` instances_s2 cycle0、HF-009のbody claim)を
+    fixtureとして使い、cycle1のfresh Recheck(LLMベース列挙)が実際に
+    検出したin_one_line文を、cycle0の時点で候補化できることを確認する。"""
+
+    CLAIM_TEXT = "Oil prices did not fall across the whole market after the plan was withdrawn."
+
+    def test_finds_in_one_line_restatement_via_keyword_overlap(self):
+        deviations = [{"claim_in_article": self.CLAIM_TEXT, "severity": "MAJOR",
+                        "related_fact_id": "HF-009"}]
+        out = runner.deterministic_same_fact_id_location_fallback(
+            deviations, HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE)
+        self.assertEqual(len(out), 1)
+        locations = out[0]["same_fact_id_locations"]
+        self.assertIn(
+            "The fee plan vanished, but oil prices stayed high as tensions around the Strait of "
+            "Hormuz continued.", locations)
+
+    def test_does_not_flag_unrelated_sentence_with_two_shared_words(self):
+        # "Prices seemed ready to fall." はclaimと{prices, fall}の2語のみを
+        # 共有する(閾値3未満)ため候補化されない(過剰候補化防止の実測、
+        # REPORT§23 A)。
+        deviations = [{"claim_in_article": self.CLAIM_TEXT, "severity": "MAJOR"}]
+        out = runner.deterministic_same_fact_id_location_fallback(
+            deviations, HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE)
+        locations = out[0]["same_fact_id_locations"]
+        self.assertNotIn("Prices seemed ready to fall.", locations)
+        self.assertNotIn("Trump said he would drop the 20 percent fee plan.", locations)
+
+    def test_expand_same_fact_id_locations_adds_verbatim_independent_claims(self):
+        # 本フォールバック+既存expand_same_fact_id_locationsを連結した
+        # 実際のrun_instance配線と同じ経路で、独立claimへ展開されることを
+        # 確認する(fail-closed: 逐語実在確認込み)。閾値3では、in_one_line
+        # 文に加え、共有語3語("plan"/"oil"/"withdrawn")の本文文1件も
+        # 候補化される(既知の限界、過剰候補化はStage2が独立にACCEPTABLE
+        # 判定でscreenする設計、REPORT§23 A)。
+        deviations = [{"claim_in_article": self.CLAIM_TEXT, "severity": "MAJOR",
+                        "related_fact_id": "HF-009"}]
+        enumerated = runner.deterministic_same_fact_id_location_fallback(
+            deviations, HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE)
+        out = runner.expand_same_fact_id_locations(
+            enumerated, HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE)
+        self.assertEqual(len(out), 3)
+        claim_texts = {o["claim_in_article"] for o in out}
+        self.assertIn(
+            "The fee plan vanished, but oil prices stayed high as tensions around the Strait of "
+            "Hormuz continued.", claim_texts)
+        for o in out[1:]:
+            self.assertEqual(o["related_fact_id"], "HF-009")
+            self.assertTrue(o["detected_by_enumeration"])
+
+    def test_existing_same_fact_id_locations_field_is_not_overwritten(self):
+        # fresh instance(委任_20 W2のLLMベース列挙)は既にフィールドを
+        # 持つため、本フォールバックはスキップし上書きしない。
+        deviations = [{"claim_in_article": self.CLAIM_TEXT, "severity": "MAJOR",
+                        "same_fact_id_locations": ["already enumerated by LLM"]}]
+        out = runner.deterministic_same_fact_id_location_fallback(
+            deviations, HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE)
+        self.assertEqual(out[0]["same_fact_id_locations"], ["already enumerated by LLM"])
+
+    def test_empty_claim_text_returns_no_locations(self):
+        deviations = [{"claim_in_article": "", "severity": "MAJOR"}]
+        out = runner.deterministic_same_fact_id_location_fallback(
+            deviations, HORMUZ_RUN03_STANDARD_CYCLE0_EN_TEXT_BEFORE_REWRITE)
+        self.assertEqual(out[0]["same_fact_id_locations"], [])
+
+    def test_run_instance_source_wires_fallback_into_reuse_path(self):
+        # 委任_23 A-2(b): reuse mode(stage1_mode=="reuse")の分岐内で本
+        # フォールバックが呼ばれていることをソース検査で確認する(¥0)。
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("deterministic_same_fact_id_location_fallback", src)
+
+
 class TestJaPendingDeviationSafetyNet(unittest.TestCase):
     """委任_20 W1(i): run_instanceのソースにJA未解消フラグ(ja_pending_
     deviation)とSTAGE4安全網(ja_deviation_unresolved)、JA recheck
@@ -2433,15 +2589,30 @@ class TestResolveJaOkAfterEquivalenceGating(unittest.TestCase):
         self.assertTrue(result["not_gated_indeterminate_lang"])
         self.assertFalse(result["blocked_by_equivalence"])
 
-    def test_review_required_with_normal_ja_lang_still_gates(self):
-        # 真のJAテキスト(rep10 hormuz実データ)の場合は、REVIEW_REQUIREDの
-        # 無条件gating(従来どおり)を維持する(regression確認)。
+    def test_review_required_with_normal_ja_lang_and_confirmed_resolved_no_longer_gates(self):
+        # 委任_23 A-2是正(REPORT§23 A、`hormuz_run03_standard` real_run
+        # Escalation真因): 真のJAテキスト(rep10 hormuz実データ)でも、
+        # ja_ok=True(全文RecheckがEN/JA双方の解消を既に確認済み)の場合は
+        # equivalence REVIEW_REQUIREDだけでja_okを覆さない(旧挙動から変更、
+        # rep10のFAIL実例はja_recheck自体が独立にLEDGER_DEVIATIONだった
+        # ため本変更の影響を受けない、§6-7参照)。
         result = runner.resolve_ja_ok_after_equivalence_gating(
             True, "REVIEW_REQUIRED", REP10_JA_TEXT_AFTER_REWRITE)
-        self.assertFalse(result["ja_ok"])
+        self.assertTrue(result["ja_ok"])
         self.assertFalse(result["lang_indeterminate"])
-        self.assertTrue(result["blocked_by_equivalence"])
+        self.assertFalse(result["blocked_by_equivalence"])
         self.assertFalse(result["not_gated_indeterminate_lang"])
+        self.assertTrue(result["not_gated_already_confirmed_resolved"])
+
+    def test_review_required_with_normal_ja_lang_and_unconfirmed_ja_ok_stays_false(self):
+        # 委任_23 A-2: ja_ok=False(全文Recheckが既に未解消と判定)の場合は
+        # gating自体がno-op(元々False)であり、この是正後も挙動は変わらない
+        # (二重の安全網のうち、ja_recheck自体の判定は無変更のまま機能する)。
+        result = runner.resolve_ja_ok_after_equivalence_gating(
+            False, "REVIEW_REQUIRED", REP10_JA_TEXT_AFTER_REWRITE)
+        self.assertFalse(result["ja_ok"])
+        self.assertFalse(result["blocked_by_equivalence"])
+        self.assertFalse(result["not_gated_already_confirmed_resolved"])
 
     def test_fail_verdict_always_blocks_even_with_indeterminate_lang(self):
         # FAIL(等価チェックが実際に不一致を検出)は、JA側言語判定に関わらず
