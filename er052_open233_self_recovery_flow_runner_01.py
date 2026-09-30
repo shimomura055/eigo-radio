@@ -218,6 +218,104 @@ CLAIM_TEXT_SIMILARITY_THRESHOLD = 0.75
 # 設計書§5-10参照)。
 ENABLE_LADDER_LEVEL_6_FULL_REWRITE = False
 
+# 委任_27 Part1-1(design書§0-4/§5-11、ユーザー上位原則「重大誤解原則」の
+# 明文化に伴う是正): §6-6 A-2で導入した`escalate_to_paragraph`(同一
+# fact_idのclaimが別文言・別箇所で再出現した場合、①単語・接続詞/③1文を
+# 飛ばし④段落水準から試す「同じFactが再登場したら段落Rewrite」ルール)を
+# 廃止する。上位原則は「各箇所は独立に初期単位から判断する」であり、
+# 再出現という事実だけでラダーの開始水準を引き上げるのは原則と整合しない。
+# コードは削除せず、本flag(既定OFF)でガードする(再有効化時の参照用)。
+# 同一fact_id再発の検出・記録自体(`prior_blocking_records`・
+# `same_claim_reblocked_escalated_to_paragraph`ログ・§3-3の
+# `same_claim_fact_id_reblocked`STAGE4判定)は無変更(Rewriteが効かな
+# かったことの実証によるfail-closedという別の安全機構であり、本委任の
+# スコープ外)。
+ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP = False
+
+# 委任_27 Part1-2(design書§0-4/§5-11): 問題種類→初期Rewrite単位の写像。
+# Stage1のdeterministic floor flag(dev)から決定論(¥0、LLM呼び出しなし)
+# で問題種類を分類し、ラダーの開始水準を決める。devにfloor flagが一つも
+# 無い場合(既存fixture互換)は`unspecified`とし、既存の挙動(①から開始)
+# を維持する(後方互換、既存unittestの結果を変えない)。
+LADDER_LEVEL_RANK = {"1_word_connective": 1, "3_sentence": 2, "4_paragraph": 3}
+PROBLEM_KIND_INITIAL_RANK = {
+    "term_scope": 1, "causality": 1, "actor": 1, "time": 1, "unspecified": 1,
+    "sentence_logic": 2, "multi_sentence": 3,
+    "rounding": 0,  # 0 = Rewriteを試行しない(levels=[]、§0-4「原則Rewriteなし」)
+}
+# §4-3既存の残り5種(term_scope/causality/actor/time以外でfloor対象の
+# floor flag)。このうち1個だけ該当すれば1文水準(sentence_logic)、2個
+# 以上同時該当すれば段落水準(multi_sentence、複数文の整合崩れ)とする。
+_LOGIC_FLOOR_FLAGS = (
+    "changed_negation", "changed_comparison", "changed_certainty",
+    "changed_fact", "unsupported_new_claim",
+)
+
+
+def classify_problem_kind(dev: dict) -> str:
+    """委任_27 Part1-2: Stage1 deterministic floor flag(dev)から問題種類を
+    分類する(¥0、決定論)。優先順位はterm_scope→rounding→causality→
+    actor→timeの順(dev flagが複数同時に立つ場合、より限定的な初期単位を
+    優先する)。"""
+    if not isinstance(dev, dict):
+        dev = {}
+    if dev.get("changed_scope"):
+        return "term_scope"
+    if dev.get("changed_number") and dev.get("changed_number_suppressed_reason"):
+        return "rounding"
+    if dev.get("changed_causality"):
+        return "causality"
+    if dev.get("changed_actor"):
+        return "actor"
+    if dev.get("changed_time"):
+        return "time"
+    logic_hits = [f for f in _LOGIC_FLOOR_FLAGS if dev.get(f)]
+    if len(logic_hits) >= 2:
+        return "multi_sentence"
+    if len(logic_hits) == 1:
+        return "sentence_logic"
+    return "unspecified"
+
+
+def filter_levels_by_problem_kind(levels: list, dev: dict) -> list:
+    """levels(①→③→④の順に構築済み)を、classify_problem_kindが決めた
+    初期水準未満のlevelを除外して返す。初期水準より上位への昇段(guard
+    失敗時のfallback)は妨げない(「初期単位」は開始点であり上限では
+    ない)。rounding(初期rank0)のみ例外的に空listを返す(Rewrite不試行、
+    §0-4「原則Rewriteなし」)。"""
+    initial_rank = PROBLEM_KIND_INITIAL_RANK.get(classify_problem_kind(dev), 1)
+    if initial_rank <= 0:
+        return []
+    return [lv for lv in levels if LADDER_LEVEL_RANK.get(lv["name"], 1) >= initial_rank]
+
+
+# 委任_27 Part1-3(design書§0-5): 主体・対象の置換ガード。Rewrite後に
+# 新しく現れた一般的な役割名詞(主体語)が、Ledger本文(fact本文全体を
+# 含むledger_text、¥0・決定論の部分文字列一致)に一語も含まれない場合は
+# Rewriteを却下する(未確認の具体主体への置換防止)。新しい主体語が
+# 一つも導入されていない場合(既存語の保持・削除のみ)は常にTrueを返す
+# (このガードの対象外)。
+_ACTOR_NOUN_PATTERN = re.compile(
+    r"\b(users?|employees?|workers?|staff|contractors?|agents?|executives?|"
+    r"customers?|clients?|spokespeople|spokesperson|engineers?|managers?|"
+    r"officials?|residents?|drivers?|passengers?|patients?|students?|teachers?|"
+    r"analysts?|traders?|investors?|shareholders?)\b",
+    re.IGNORECASE,
+)
+
+
+def extract_actor_nouns(text: str) -> set:
+    return {m.group(0).lower() for m in _ACTOR_NOUN_PATTERN.finditer(text or "")}
+
+
+def actor_rewrite_guard_ok(before_text: str, after_text: str, ledger_text: str) -> bool:
+    new_actors = extract_actor_nouns(after_text) - extract_actor_nouns(before_text)
+    if not new_actors:
+        return True
+    ledger_lower = (ledger_text or "").lower()
+    return all(a in ledger_lower for a in new_actors)
+
+
 # 委任_12(iteration4、§4-3改訂): changed_certaintyをfloorから除外する。
 # 理由(ユーザー指示・自然な解釈基準への是正): ユーザーNG列挙5項目
 # (actor/number/negation/comparison/time)にchanged_certaintyは含まれず、
@@ -836,7 +934,9 @@ def run_ja_en_equivalence_check(client, state, consecutive_errors, call_log, lab
     cost = round(s2p.official_cost_jpy(usage), 4)
     call_log.append({"label": label, "recovery_stage": "ja_en_equivalence", "cost_jpy": cost, "usage": usage,
                       "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt),
-                      "verdict": parsed.get("verdict")})
+                      "verdict": parsed.get("verdict"),
+                      # 委任_27 Part1-4(¥0): 判定理由文もcall_logへ保存する。
+                      "notes": parsed.get("notes")})
     record_call(state, consecutive_errors, label, cost, True, "ja_en_equivalence", usage)
     return {"verdict": parsed.get("verdict"), "api_failure": False, "raw": parsed}
 
@@ -2383,8 +2483,14 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
             # 局所ラダーが既に効果不足と実証されたとみなし、④段落水準
             # から試す(該当ブロックが無ければ levels が空になり、既存の
             # ⑥全体フォールバックへ自然に委ねる、新しいNG経路は作らない)。
-            if claim_rec.get("escalate_to_paragraph"):
+            if ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP and claim_rec.get("escalate_to_paragraph"):
                 levels = [lv for lv in levels if lv["name"] not in ("1_word_connective", "3_sentence")]
+            # 委任_27 Part1-2(§0-4/§5-11): 問題種類→初期Rewrite単位の写像
+            # (escalate_to_paragraphの再出現ベース判断とは独立の、問題種類
+            # ベースの初期水準選択。初期水準より上位への昇段は妨げない)。
+            problem_kind = classify_problem_kind(dev)
+            claim_rec["problem_kind"] = problem_kind
+            levels = filter_levels_by_problem_kind(levels, dev)
 
             for lv in levels:
                 revised = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
@@ -2397,6 +2503,12 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                     continue
                 candidate = full_text.replace(lv["target"], revised, 1)
                 if candidate != full_text and claim_text.strip() not in candidate:
+                    # 委任_27 Part1-3(§0-5): 主体置換ガード(problem_kind=
+                    # "actor"のclaimのみ)。未確認の具体主体への置換を防ぐ。
+                    if problem_kind == "actor" and not actor_rewrite_guard_ok(
+                            lv["target"], revised, fixture["ledger_text"]):
+                        method_used = f"{lv['tag']}_actor_guard_rejected({locate_method})"
+                        continue
                     updated_text = candidate
                     method_used = f"{lv['tag']}({locate_method})"
                     ladder_level_used = lv["name"]
@@ -2577,8 +2689,12 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
         # ①単語・接続詞/③1文を飛ばし④段落水準から試す。該当ブロックが
         # 両言語で特定できなければlevelsが空になり、既存のJA全文
         # フォールバック(⑥相当)へ自然に委ねる。
-        if claim_rec.get("escalate_to_paragraph"):
+        if ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP and claim_rec.get("escalate_to_paragraph"):
             levels = [lv for lv in levels if lv["name"] not in ("1_word_connective", "3_sentence")]
+        # 委任_27 Part1-2(single_text_rewriteと同一原則、§0-4/§5-11)。
+        problem_kind = classify_problem_kind(dev)
+        claim_rec["problem_kind"] = problem_kind
+        levels = filter_levels_by_problem_kind(levels, dev)
 
         for lv in levels:
             raw = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
@@ -2596,6 +2712,10 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                 and candidate_ja != ja_full and candidate_en != en_full
                 and claim_text.strip() not in candidate_en
             )
+            # 委任_27 Part1-3(§0-5): 主体置換ガード(problem_kind="actor"のみ)。
+            if level_guard_ok and problem_kind == "actor" and not actor_rewrite_guard_ok(
+                    lv["en_target"], en_revised, fixture["ledger_text"]):
+                level_guard_ok = False
             if level_guard_ok:
                 updated_ja, updated_en = candidate_ja, candidate_en
                 guard_ok = True
@@ -3918,6 +4038,17 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}_ja_en_equivalence",
                 current_ja_text, current_en_text)
             cycle_record["ja_en_equivalence_verdict"] = eq_result.get("verdict")
+            # 委任_27 Part1-4(¥0): 等価QAの判定理由文(verdict単独ではなく
+            # 根拠)をjsonへ保存する。従来はverdict文字列のみが記録され、
+            # なぜFAIL/REVIEW_REQUIREDになったかの実文が失われていた。
+            eq_raw = eq_result.get("raw") or {}
+            cycle_record["ja_en_equivalence_reason"] = {
+                "notes": eq_raw.get("notes"),
+                "meaning_changes": eq_raw.get("meaning_changes"),
+                "important_omissions": eq_raw.get("important_omissions"),
+                "unsupported_additions": eq_raw.get("unsupported_additions"),
+                "number_name_negation_issues": eq_raw.get("number_name_negation_issues"),
+            }
 
         # 委任_18 2-4(局所QA fastpath)/委任_19 A-1(f新設)/委任_20 W3:
         # 全文Recheckを残す条件(a)〜(h)に該当しない場合のみ、局所QA 1

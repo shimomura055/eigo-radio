@@ -1934,3 +1934,204 @@ design書§6-12を参照。真因A(`resolve_ja_ok_after_equivalence_gating`の�
 | 8 | (A2A3/A4/A5相当) | hormuz/meta | 各trial変種(concreteness_control等) | あり | 同上、独立記事ではない |
 
 **結論(正直な報告、新規テーマは作っていない)**: 真に独立した記事は#1〜6の6件(うち#1・2・5は現行Productionで既にb1b段完了済み、#3・4・6は既にOPEN-233 harnessで繰り返し検証済み)であり、**10本には届かない**。#7・8は同じhormuz/meta素材の再利用であり「別の記事」としてカウントすると水増しになるため候補数に含めなかった。Phase 2で真に10本規模のProduction相当検証を行うには、(a)PM_GOVERNANCE §13「新規記事テーマ選定ルール」に従いユーザーが新規テーマを複数候補から選定する、または(b)既存Hormuz/Meta run(#1〜6)を許容される範囲で再利用しつつ実際の新規Family X記事生成を追加実行する、のいずれかをFable/ユーザーが判断する必要がある(本委任では新規テーマを提案・選定していない)。
+
+## §25. 上位原則「重大誤解原則」の明文化とHormuz要素Trial A(委任_27、2026-10-01)
+
+### 25-0. 対応表(委任文§1〜§3)
+
+| # | 項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| 0 | 上位原則の明文化 | design書§0(重大誤解原則、許容/BLOCK候補表、問題種類→初期単位表、主体置換ガード方針、Fable PMレビュー7観点)を新設。PM_GOVERNANCE.md 23節・PM_BRIEF.md参照1行を追加 | 本節25-1 |
+| 1-1 | escalate_to_paragraph廃止 | 新設フラグENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP(既定False)でガード。コードは削除せず残す | 本節25-2 |
+| 1-2 | 問題種類→初期単位写像 | classify_problem_kind+filter_levels_by_problem_kindを新設し配線 | 本節25-2 |
+| 1-3 | 主体置換ガード | actor_rewrite_guard_okを新設、neg1 cycle2実データで却下を確認 | 本節25-2 |
+| 1-4 | 等価QA理由文の保存 | ja_en_equivalence_reasonをcycle_record/call_logへ追加 | 本節25-2 |
+| 1-5 | 重大誤解原則のrubric追加 | Stage2 body/Hook/Stage1(V4A)へ新定数として追加。Stage2 bodyのみ実配線・実測、Stage1/Hookは未配線(開示) | 本節25-3/25-4 |
+| 2 | Hormuz要素Trial A | 許容5/NG5/Safety2をn=2で実測、最小修正1回後に全群PASS | 本節25-3 |
+| A-2 | 決定論名詞句置換 | NG2件+原文2を決定論置換、diff+局所QA1callで確認 | 本節25-5 |
+
+### 25-1. 上位原則の明文化(design書§0)
+
+ユーザー上位原則(2026-10-01、委任_27委任文§1)を、design書§0として
+明文化した。要旨は「OPEN-233は英語学習者に記事の本質について重大な
+誤解を与えるものだけを止めるプロジェクトであり、厳密な一致を求める
+ものではない」。許容候補(Brent futures→oil prices等)・BLOCK候補
+(gasoline prices/world energy prices等への一般化、方向反転、主体
+入れ替え、継続→消失→復活、未確認追加、因果逆転)・問題種類→初期
+Rewrite単位の写像表・主体置換ガード方針・Fable PMレビュー7観点を
+記載した(既存ユーザー意図の明文化、新規承認不要)。PM_GOVERNANCE.md
+23節・PM_BRIEF.mdは要約+参照のみとし、正式SSOTはdesign書§0に一本化
+した(重複記載回避)。
+
+### 25-2. Part1是正4点(¥0、er052_open233_self_recovery_flow_runner_01.py)
+
+**1-1**: escalate_to_paragraphによるladder skip(levels配列から
+1_word_connective/3_sentenceを除外する処理)を、新設フラグ
+ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP(既定False)でガードした。
+同一fact_id再発の検出・記録・STAGE4判定自体(§6-6 A-2/§3-3の
+same_claim_fact_id_reblocked)は無変更(別の安全機構のため)。
+
+**1-2**: classify_problem_kind(dev)を新設し、Stage1 deterministic
+floor flag(changed_scope/changed_number+丸め抑制済み/
+changed_causality/changed_actor/changed_time、および
+changed_negation/changed_comparison/changed_certainty/changed_fact/
+unsupported_new_claim)から決定論(¥0)で問題種類を分類する。
+filter_levels_by_problem_kindで初期ladder水準未満のlevelを除外する
+(初期水準より上位への昇段は妨げない)。devにfloor flagが無い既存
+fixtureはunspecified(①開始)に分類され、既存挙動と完全に後方互換。
+
+**1-3**: actor_rewrite_guard_ok(before_text, after_text, ledger_text)
+を新設した。Rewrite後にのみ新しく現れた主体語(一般的な役割名詞)が
+Ledger本文に一語も含まれない場合はRewriteを却下する。
+docs/pm/open233_evidence_disclosure_neg1_neg3_hormuz_01.md §1の
+neg1 cycle2実データ(MUSE-HC-012、users→employees、floor_reason=
+deterministic_floor:changed_actor)をfixtureとしたunittestで、
+employeesがMUSE-HC-012のledger_text(JA本文のみ)に含まれないため
+却下されることを確認した。
+
+**1-4**: ja_en_equivalence_verdictに加え、raw(notes/meaning_changes/
+important_omissions/unsupported_additions/
+number_name_negation_issues)をcycle_record・call_logへ保存するよう
+にした(¥0、既存呼び出しの戻り値を捨てずに使うのみ)。
+
+**unittest**: TestClassifyProblemKind(9件)・
+TestFilterLevelsByProblemKind(5件)・TestActorRewriteGuard(3件)・
+TestEscalateToParagraphDisabledByDefault(2件)を新設し、既存
+TestEscalateToParagraphLadderSkip(4件)を「既定OFF時は発火しない」
+「flag再有効化時は旧来どおり発火する」という新しい前提に合わせて
+書き換えた(旧テストが検証していた「escalate_to_paragraph=Trueなら
+必ず4直行」という挙動自体が、本委任の是正対象だったため)。既存222件+
+新規19件=**計241件全PASS**(.venv/Scripts/python.exe -m unittest
+er052_open233_self_recovery_flow_runner_01_test_01実行)。
+
+### 25-3. Part1-5(重大誤解原則のrubric追加)+Hormuz要素Trial A
+
+er052_open233_self_recovery_stage2_calibration_01.pyへ
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE(既存
+RUBRIC_R3_TRIPLE_PRIME本文は無変更、新定数として追加)を新設した。
+同様にer052_open233_self_recovery_stage2_hook_01.pyへ
+HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE、
+er051_open233_checker_trial_variant_01.pyへ
+V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE(+
+run_trial_deviation_checkにdeveloper_message_override引数[既定
+None]を追加、既存9箇所の呼び出しは無変更で動作)を追加した。
+
+**Hormuz要素Trial A**(新規er052_open233_element_trial_hormuz_terms_
+01.py、Stage2 body rubricのみ、実データのみ使用):
+
+| 群 | claim(実データ出典) | n=2結果(初回rubric) |
+|---|---|---|
+| 許容 | accept-1: "Oil prices did not fall across the whole market after the plan was withdrawn."(実文1、hormuz_run03_standard) | **BLOCKING 2/2(false BLOCK)** |
+| 許容 | accept-2: "Political statements changed greatly. Oil prices moved briefly, then returned to a high level."(実文2) | QUALITY 2/2(PASS) |
+| 許容 | accept-3: "The fee plan vanished, but oil prices stayed high..."(実文3、In one line) | QUALITY 2/2(PASS) |
+| 許容 | accept-4: "Crude prices briefly lost some of their gains..."(Brent crude futures→crude prices構成) | QUALITY/ACCEPTABLE(PASS) |
+| 許容 | accept-5: "...up about 3 percent, about 85 dollars a barrel."(2.6%→about 3%/above 85→about 85丸め構成) | ACCEPTABLE 2/2(PASS) |
+| NG | ng-1: gasoline prices | BLOCKING 2/2(正しくBLOCK) |
+| NG | ng-2: world energy prices | BLOCKING 2/2 |
+| NG | ng-3: all crude benchmarks | BLOCKING 2/2 |
+| NG | ng-4: 方向反転(fell sharply) | BLOCKING 2/2 |
+| NG | neg3: 継続→消失→復活(実文、neg3_hormuz_prodrunner_b1b) | BLOCKING 2/2 |
+| Safety | B3因果(実fixture、HF-007) | BLOCKING 2/2 |
+| Safety | er009 changed_scope(実fixture、taxi→restaurants nationwide) | BLOCKING 2/2 |
+
+判定文逐語引用(accept-1、2回とも同旨): 「"Oil prices did not fall
+across the whole market after the plan was withdrawn."を、Brent先物の
+値動きに範囲を限定してください。撤回後に一時上げ幅を縮小し、その後
+高い水準に戻ったと記述し、市場全体については述べないでください」
+(basis: ledger_scope)。
+
+**原因分析**: LLMは「across the whole market」という強調表現を、
+「Brent先物という同じ対象内での一般化」ではなく「無関係な範囲への
+拡張」と解釈していた。NG群(gasoline/world energy/all crude
+benchmarks)・Safety対照群(B3/er009 changed_scope)はいずれも初回から
+正しくBLOCKING(false PASS 0件)であり、rubric自体が緩すぎたのではなく
+accept-1特有の閾値設定の問題だった。
+
+**最小修正1回**: RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_
+V2を新設し、「Brent先物の値動きを『market全体』『oil prices全般』の
+ように、同じ原油(oil)という対象のままより一般的な言い方に置き換えて
+いるだけの場合は許容する。一方、別の商品や石油を超えた対象、複数指標
+の一括一般化は引き続きBLOCKING」という明確化を1回追加した。V2での
+再実測(n=2、計2回の独立run)は、許容群5件・NG群5件・Safety群2件**全て
+でfalse PASS/false BLOCK 0件**を確認した。
+
+**コスト**: 初回n=2(¥1.05)+V2再実測2回(各n=1、¥0.5814+¥0.4026=
+¥0.9836)=**¥2.0336**(Part2全体ではTrial A-2と合わせ¥2.2597)。
+
+### 25-4. Stage1(V4A)・Hook専用rubricの未配線(既知の限界、正直な開示)
+
+予算(Part2 Guardrail¥25、実績¥2.2597)の範囲では、Hormuz要素は全て
+body claim(title/hookではない)であり、Stage1(V4A)の再実行は別途
+コストを要するため、本委任で実際にAPIへ配線・実測できたのは**Stage2
+body rubricのみ**だった。Stage1(V4A)・Hook専用rubricの新定数は
+コードとして実装済みだが、実際の判定への配線・実測は次回委任_28
+(Meta要素Trial)またはその後の広いTrialへ引き継ぐ。
+
+### 25-5. Trial A-2(決定論名詞句置換、¥0.1261)
+
+新規er052_open233_element_trial_a2_deterministic_rewrite_01.pyで、
+以下3件を決定論(Python文字列置換、LLM Rewrite callを使わない)で実施
+した:
+
+1. **ng-1(EN単体)**: "Gasoline prices did not fall across the whole
+   market after the plan was withdrawn." → "**Brent futures** did
+   not fall across the whole market after the plan was withdrawn."
+2. **ng-2(EN単体)**: "World energy prices did not fall after the plan
+   was withdrawn, and stayed high across all energy markets." →
+   "**Brent futures** did not fall after the plan was withdrawn, and
+   stayed high across all energy markets."
+3. **原文2(JA/EN対、実記事hormuz_run03_standard)**:
+   - EN Before: "Political statements changed greatly. **Oil
+     prices** moved briefly, then returned to a high level."
+   - EN After: "Political statements changed greatly. **Brent
+     futures** moved briefly, then returned to a high level."
+   - JA Before: 「政治の発言が大きく変わっても、**原油価格**は
+     一度揺れたあと、高い水準へ戻った。」
+   - JA After: 「政治の発言が大きく変わっても、**Brent先物**は
+     一度揺れたあと、高い水準へ戻った。」
+
+word-level diff(全3件)は対象名詞句のみの置換(replace操作1件のみ、
+他は全てequal)であることを機械確認した。2については記事全文
+(EN 2058字/JA 812字)への埋め込みでfull_article_unchanged_elsewhere
+=True(対象文以外は完全不変)を確認した。既存Production資産(翻訳
+忠実性QA、er003_ja_to_en_translation.py)を借用した局所QA 1 call
+(記事全文のJA/EN pairに対して実行)の結果:
+
+- verdict: REVIEW_REQUIRED
+- notes(逐語): 「日付、数値、人名、否定表現、原油価格の推移、記事の
+  結論および一言まとめは概ね維持されています。指摘箇所はいずれも
+  重大な中心事実の変更ではありません。」
+- meaning_changes(逐語、唯一の指摘): 「『湾岸諸国によるアメリカ向け』
+  の貿易・投資案件が、英語では湾岸諸国とアメリカの『間の』案件と
+  なっており、方向性がやや曖昧になっています。」
+
+この唯一の指摘は、本委任の置換(Oil prices→Brent futures/原油価格→
+Brent先物)とは**無関係な既存箇所**(記事の別段落、湾岸諸国-アメリカ間
+投資案件の記述)であり、対象の名詞句置換自体が新たな意味変化・周辺
+影響を生んでいないことが確認された。段落Rewriteへは進んでいない
+(§0-4「用語の範囲違い→名詞句だけ置換」の初期単位を超えていない)。
+
+### 25-6. hormuz-HF009の再ラベルとSafety-critical listとの不整合(開示)
+
+design書§7-0-iter27のとおり、hormuz-HF009の「Oil prices」型scope
+一般化claim(本委任のaccept-1と同一claim)を、上位原則に基づき正解
+ラベルBLOCKINGからACCEPTABLE/QUALITYへ再ラベルした。これは
+er052_open233_self_recovery_r3dprime_calibration_01.pyの
+SAFETY_CRITICAL_SUB_IDS(既存10件、hormuz-HF009を含む)との直接的な
+矛盾を生む。本委任では同定数自体は変更していない(既存iteration証跡
+の再現性維持のため)。Hormuz要素Trial AのSafety対照群では、hormuz-
+HF009の代わりにB3(因果)+er009 changed_scope(別記事・別領域への
+scope拡張、真にBLOCKINGな対照)を使用した。このリスト自体の編集
+要否は、Fable/ユーザー確認事項として提示する(USER_DECISION_REQUIRED
+には該当しないと判断するが、既存Safety-critical定義への変更を伴う
+ため、独断での定数編集は行わなかった)。
+
+### 25-7. 費用・Git・Status
+
+Part1(¥0)+Part2主実測(¥2.0336)+Trial A-2(¥0.1261)=本委任合計
+**¥2.2597**(Guardrail¥25のうち)。Phase累計¥393.2155+¥2.2597=
+**¥395.4752**/総枠¥600(2026-10-01ユーザー拡張)、残**¥204.5248**。
+`git diff --stat`でProduction(er003/er006/er009/er010/er012/er019)・
+既存rep/iteration証跡への差分なしを確認した。
+Status=`ELEMENT_TRIAL_MISCONCEPTION_PRINCIPLE_CODIFIED_HORMUZ_TRIAL_A_
+PASSED_AFTER_ONE_MINOR_FIX`。Meta要素Trialは次回委任_28。

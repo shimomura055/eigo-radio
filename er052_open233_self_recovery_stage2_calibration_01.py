@@ -296,6 +296,66 @@ in_one_lineまたはbodyの場合は本項目を適用せず、上記の通常�
 Hook/Titleの演出許容とは役割が異なります)。"""
 
 
+# ------------------------------------------------------------
+# 委任_27 Part1-5(OPEN-233-SELF-RECOVERY-TRIAL-01、design書§0/§4-18):
+# ユーザー上位原則「重大誤解原則」(2026-10-01)をStage2 body判定の最初の
+# 問いとして追加する変種。RUBRIC_R3_TRIPLE_PRIME本文は変更せず(既存
+# iteration証跡の再現性維持、委任_13/16の教訓どおり)、新定数として追加
+# する。priming再測定の要件(委任_16の教訓): 本変種を実際にStage2判定へ
+# 配線する場合は、Safety-critical 10 claim + Safety 12 fixtureを必ず
+# 同時に対照群として測定し、1件でも誤降格すれば不採用とする(design書
+# §4-18・§9-1⑰)。
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT = """
+【重大誤解原則(2026-10-01ユーザー指示、最初の問い)】
+まず「この違いは英語学習者に記事の本質について重大な誤解を与えるか」を
+判断してください。主要な意味・主体・方向・規模・時間軸を誤認させる場合
+のみBLOCKINGとしてください。用語の近似・一般化(例: Brent futures→
+oil prices、Brent crude futures→crude prices)・数値丸め(例: 2.6%→
+about 3%、above 85 dollars→about 85 dollars)・確認済みFactから自然に
+導ける解釈や演出は、厳密には違うというだけの理由でBLOCKINGにしないで
+ください。一方、以下のような違いは記事の本質的な誤解を招くため明確に
+BLOCKINGとしてください: 特定の指標(例: Brent futures)を無関係な
+商品(例: gasoline prices)や世界全体の価格(world energy prices)へ
+一般化する、1企業の株価を株式市場全体の動きとして述べる、方向を反転
+させる(上昇→下落)、主体を別の主体へ入れ替える、継続していた出来事を
+一度消えて戻った出来事として述べる、未確認の人物・行動・動機・具体的な
+数字を追加する、因果関係を逆転させる。"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT
+)
+
+# ------------------------------------------------------------
+# 委任_27 Part2(Hormuz要素Trial A実測、最小修正1回、design書§9-1⑰):
+# 初回実測(n=2)でaccept-1("Oil prices did not fall across the whole
+# market after the plan was withdrawn.")が2/2ともBLOCKING(false
+# BLOCK)のままだった。rewrite_hintを確認すると、LLMは「market全体」を
+# 「Brent先物という同じ対象内での一般化」ではなく「無関係な範囲への
+# 拡張」と解釈していた。NG群(gasoline/world energy/all crude
+# benchmarks)・Safety対照群(B3因果/er009 changed_scope)はいずれも
+# 正しくBLOCKING(false PASS 0件)のままだったため、区別の閾値だけを
+# 明確化する最小修正を1回行う(rubric本文・MISCONCEPTION_PRINCIPLE_
+# TEXT自体は変更せず、新定数として追加し初回実測との再現性を保つ)。
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT_V2 = MISCONCEPTION_PRINCIPLE_TEXT + """
+
+【追加明確化(委任_27 Part2、Trial A実測でのfalse BLOCK是正、最小修正
+1回)】
+Brent先物の値動きを「market全体」「oil prices全般」のように、同じ
+原油(oil)という対象のままより一般的な言い方に置き換えているだけの
+場合は、これも許容される一般化に含めてください(例: "Oil prices did
+not fall across the whole market" は、石油という同じ対象内での一般化
+であり許容されます)。一方、別の商品(gasoline等)や石油を超えた対象
+(world energy全体)へ範囲を広げる場合、または複数の指標をまとめて
+「どれも同じだった」のように一般化する場合は、引き続きBLOCKINGと
+してください。"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V2 = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V2
+)
+
+
 class TrialAbort(RuntimeError):
     pass
 

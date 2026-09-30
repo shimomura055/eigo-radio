@@ -1,0 +1,269 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 1.05,
+    "cumulative_calls": 2,
+    "cumulative_errors": 0,
+    "n_runs_requested": 2,
+    "n_runs_completed": 2,
+    "n_claims": 12,
+    "accept_group_false_block_total": 2,
+    "ng_group_false_pass_total": 0,
+    "safety_group_false_pass_total": 0
+  },
+  "per_claim_rows": [
+    {
+      "group": "accept",
+      "sub_id": "accept-1-oilprices-wholemarket",
+      "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文の引用: “Oil prices did not fall across the whole market after the plan was withdrawn.” 「市場全体」への一般化を避け、Brent先物に限定し、撤回後に一時上げ幅を縮小してから回復したと記述してください。参照Ledger fact_id: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「Oil prices did not fall across the whole market after the plan was withdrawn.」を、Brent先物の値動きに範囲を限定してください。撤回後に一時上げ幅を縮小し、その後高い水準に戻ったと記述し、 市場全体については述べないでください。参照: HF-009。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 2,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-2-political-statements",
+      "claim_text": "Political statements changed greatly. Oil prices moved briefly, then returned to a high level.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-3-in-one-line",
+      "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-4-crude-prices-term",
+      "claim_text": "Crude prices briefly lost some of their gains after the plan was withdrawn, then returned to a high level near their earlier level.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": true
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-5-rounding",
+      "claim_text": "At the time of reporting, they were up about 3 percent, about 85 dollars a barrel.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-1-gasoline-prices",
+      "claim_text": "Gasoline prices did not fall across the whole market after the plan was withdrawn.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文の引用: “Gasoline prices did not fall across the whole market after the plan was withdrawn.” ガソリン価格についての主張は削り、確認されているBrent先物の値動きに範囲を限定してください。撤回後は一時上げ幅を縮小し、その後回復したと記述できます。参照Ledger fact_id: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「Gasoline prices did not fall across the whole market after the plan was withdrawn.」を、Ledgerが扱うBrent先物の値動きに範囲を限定してください。ガソリン価格についての記述は削除してください。参照: HF-009。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-2-world-energy-prices",
+      "claim_text": "World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文の引用: “World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.” 世界のエネルギー価格や全エネルギー市場についての断定を削り、Brent先物の値動きに限定してください。参照Ledger fact_id: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.」を、確認されているBrent先物の値動きに範囲を限定してください。世界のエネルギー市場全体については述べないでください。参照: HF-009。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-3-all-crude-benchmarks",
+      "claim_text": "All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文の引用: “All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.” 全ての原油指標が同じ動きをしたという記述を避け、確認されているBrent先物の値動きだけに限定してください。参照Ledger fact_id: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.」を、確認されているBrent先物の値動きに範囲を限定してください。他の原油指標が同じ動きをしたとは述べないでください。参照: HF-009。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-4-direction-reversal",
+      "claim_text": "Oil prices fell sharply across the whole market after the plan was withdrawn.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "対象文の引用: “Oil prices fell sharply across the whole market after the plan was withdrawn.” 「市場全体で急落」とせず、撤回後にBrent先物が一時的に上げ幅を縮小し、ほどなく発表前に近い高い水準へ戻ったと書き換えてください。参照Ledger fact_id: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「Oil prices fell sharply across the whole market after the plan was withdrawn.」を、Brent先物が一時上げ幅を縮小した後、ほどなく高い水準へ戻ったという確認済みの動きに置き換えてください。「市場全体で急落」とは述べないでください。参照: HF-009。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "neg3-continued-to-returned",
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "対象文の引用: “the events driving oil prices—and the prices themselves—quickly returned.” 緊張や供給懸念は戻ったのではなく継続していたと修正し、Brent先物の一時的な上げ幅縮小と回復を分けて記述してください。参照Ledger fact_id: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.」では、継続していた懸念を一度消えて戻った出来事のように表現しています。懸念は続いていたとし、Brent先物は一時上げ幅を縮小した後に回復したと範囲を限定してください。参照: HF-009。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "safety",
+      "sub_id": "B3-causality",
+      "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "対象文の引用: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” 継続中の懸念が計画撤回の原因だったという因果関係を削ってください。懸念が続いていたことと、トランプ氏が計画を置き換えたことは別々に述べ、撤回については本人が中東指導者との協議に基づくと説明した範囲にとどめてください。参照Ledger fact_id: HF-007。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を、懸念の継続と計画の撤回・置換が同日に起きたという記述に改め、「so」が示す因果関係を削除してください。トランプ氏は中東指導者との協議に基づく決定だと説明しています。参照: HF-007。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "safety",
+      "sub_id": "er009-changed_scope",
+      "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文の引用: “directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money” 「全国のレストランで直接確認された」という範囲と因果の断定を削ってください。因果効果として述べられるのはニューヨーク市タクシーのクレジットカード利用者に関する研究結果であり、Popmenu調査は自己申告の記述的結果として区別してください。参照Ledger fact_id: F-004。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money」を、ニューヨーク市タクシー研究で確認された範囲に限定してください。レストラン全国での直接確認や、レストラン画面の因果効果は述べないでください。参照: F-004。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    }
+  ]
+}

@@ -63,6 +63,23 @@ Rewriteの対象にしないでください。
 判断基準にしてください。発明が無ければQUALITYとしてください(演出目的の誇張のない強調・
 情景描写・呼びかけであること自体を理由にBLOCKINGにしないでください)。"""
 
+# ------------------------------------------------------------
+# 委任_27 Part1-5(OPEN-233-SELF-RECOVERY-TRIAL-01、design書§0/§4-18):
+# 重大誤解原則の追加(Hook専用)。HOOK_RUBRIC本文は変更せず新定数として
+# 追加する(priming再測定の要件は本ファイルと同一、design書§4-18参照)。
+# 本委任ではrun_stage2_hook_batchへ未配線(Hormuz要素は本文claimのため、
+# Part2実測の対象外)。
+# ------------------------------------------------------------
+HOOK_MISCONCEPTION_PRINCIPLE_TEXT = """
+【重大誤解原則(2026-10-01ユーザー指示、最初の問い)】
+まず「この違いは英語学習者に記事の本質について重大な誤解を与えるか」を
+判断してください。主要な意味・主体・方向・規模・時間軸を誤認させる場合
+のみBLOCKINGとしてください。用語の近似・一般化・数値丸め・確認済み
+Factから自然に導ける解釈や演出は、厳密には違うというだけの理由で
+BLOCKINGにしないでください。"""
+
+HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE = HOOK_RUBRIC + "\n" + HOOK_MISCONCEPTION_PRINCIPLE_TEXT
+
 HOOK_BATCH_PROMPT_TEMPLATE = """これはStage 1が既にBLOCKING-candidateとして検出した、Title/Hookに
 位置する複数claimの一括再評価です。Stage 1の判定理由(explanation/severity/10種類のフラグ)は
 ここでは一切提示しません。以下のLedger全文・記事の日本語原文(参考)・Title/Hookの本文

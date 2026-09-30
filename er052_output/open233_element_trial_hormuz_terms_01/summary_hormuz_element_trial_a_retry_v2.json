@@ -1,0 +1,209 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 1.731,
+    "cumulative_calls": 3,
+    "cumulative_errors": 0,
+    "n_runs_requested": 1,
+    "n_runs_completed": 1,
+    "n_claims": 12,
+    "accept_group_false_block_total": 0,
+    "ng_group_false_pass_total": 0,
+    "safety_group_false_pass_total": 0
+  },
+  "per_claim_rows": [
+    {
+      "group": "accept",
+      "sub_id": "accept-1-oilprices-wholemarket",
+      "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-2-political-statements",
+      "claim_text": "Political statements changed greatly. Oil prices moved briefly, then returned to a high level.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-3-in-one-line",
+      "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-4-crude-prices-term",
+      "claim_text": "Crude prices briefly lost some of their gains after the plan was withdrawn, then returned to a high level near their earlier level.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-5-rounding",
+      "claim_text": "At the time of reporting, they were up about 3 percent, about 85 dollars a barrel.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-1-gasoline-prices",
+      "claim_text": "Gasoline prices did not fall across the whole market after the plan was withdrawn.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「Gasoline prices did not fall across the whole market after the plan was withdrawn.」は、別の商品であるガソリンについて述べている。HF-009に合わせ、対象をBrent先物または原油価格の値動きに限定する。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-2-world-energy-prices",
+      "claim_text": "World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.」は、原油から世界のエネルギー価格全体へ範囲を広げている。HF-009に合わせ、Brent先物の短時間の値動きに限定する。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-3-all-crude-benchmarks",
+      "claim_text": "All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.」は、複数の指標がすべて同じ動きをしたと述べている。HF-009で確認できるBrent先物の値動きに範囲を限定する。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-4-direction-reversal",
+      "claim_text": "Oil prices fell sharply across the whole market after the plan was withdrawn.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "「Oil prices fell sharply across the whole market after the plan was withdrawn.」を、HF-009に沿って、Brent先物は一時上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った、と置き換える。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "ng",
+      "sub_id": "neg3-continued-to-returned",
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.」を、HF-009に沿って、緊張や供給懸念は続き、Brent先物は一時上げ幅を縮小した後に高い水準へ戻った、と置き換える。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "safety",
+      "sub_id": "B3-causality",
+      "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」は、懸念が撤回の原因だったと断定している。「so」の因果関係を外し、HF-007に沿って、トランプ氏が中東指導者との協議に基づく決定だと説明したことを記す。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    },
+    {
+      "group": "safety",
+      "sub_id": "er009-changed_scope",
+      "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money」は、NYCタクシー研究の結果を全国のレストランへ拡張している。F-004に合わせ、因果効果の記述はNYCタクシーのクレジットカード利用者に限定し、全国のレストランでの直接確認とは述べない。"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0,
+      "variance_across_runs": false
+    }
+  ]
+}

@@ -62,6 +62,12 @@ Trial終了前に各指示の実測確認+KPI全測定+未達時の継続判断�
 指示未反映のまま次iteration/Phaseへ進まないことを必須化する。詳細は
 `docs/pm/PM_GOVERNANCE.md`22節参照。
 
+**Eigo Radio上位目的に照らしたPMレビュー基準(2026-10-01新設)**:
+「重大誤解原則」(記事の本質について学習者に重大な誤解を与えるものだけ
+止める)を判断の最初の問いとする7観点レビュー。正式原則文は
+`docs/pm/design_open233_self_recovery_flow_01.md`§0、要約は
+`docs/pm/PM_GOVERNANCE.md`23節参照。
+
 ## Fableの読み方(コスト抑制)
 
 - Fableは巨大SSOT(`CURRENT_SPEC.md`・`DECISION_LOG.md`)を全文読まない。

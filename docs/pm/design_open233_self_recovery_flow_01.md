@@ -164,7 +164,23 @@ after_recheck`)、根本原因は既存の構造的限界(claim言い換えcycle
 パターン)と分析したが実測FAILとして記録し追加の単発再実行は見送った
 (§18-3/§18-9)。29 instance全量ではないため広いTrialのGateは判定保留。
 USER_DECISION_REQUIRED非該当[6条件いずれも]。詳細§18。Production実装は
-未着手)。
+未着手)。→ **[委任_27更新]** `ELEMENT_TRIAL_MISCONCEPTION_PRINCIPLE_
+CODIFIED_HORMUZ_TRIAL_A_PASSED_AFTER_ONE_MINOR_FIX`(ユーザー上位原則
+「重大誤解原則」[2026-10-01]を§0として明文化し、PM_GOVERNANCE.md 23節・
+PM_BRIEF.mdへ参照を追加。¥0是正4点[§5-11 escalate_to_paragraph廃止・
+問題種類→初期単位写像・主体置換ガード・等価QA理由文保存]を実装し
+unittest 19件追加[計261件、既存含め全PASS]。Hormuz要素Trial A[Stage2
+body rubricのみ、¥2.1336]で許容群5・NG対照群5・Safety対照群2[B3因果+
+er009 changed_scope、hormuz-HF009自身は本委任の再ラベル対象のため対照
+から除外]を実測し、初回accept-1[「market全体」表現]が2/2 false BLOCK
+だったため最小修正1回[rubric追加明確化]を実施、再実測n=2で全群
+false PASS/false BLOCK 0件を確認した。Trial A-2[決定論名詞句置換、
+¥0.1261]でNG 2件+原文②の用語置換が文の語順・ストーリーを保持した
+まま解消することをdiff・局所QA 1callで確認した(唯一のREVIEW_REQUIRED
+指摘は置換と無関係な既存箇所)。Stage1[V4A]・Hook専用rubricへの原則文
+追加は定数として実装済みだが本委任では未配線(予算制約、§4-18に開示)。
+本委任費用¥2.2597[Guardrail¥25のうち]。USER_DECISION_REQUIRED非該当。
+詳細§9-1⑰、REPORT§25、Meta要素Trialは次回委任_28)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -172,6 +188,79 @@ claim候補16件、claim単位gold候補表)を踏まえ、目標を「Checker�
 過剰品質率改善」から「**Production運用全体としてLedger/Deviation Check
 起因のUSER_DECISION_REQUIREDを実質ゼロにするSelf-Recovery Flow**」へ
 転換した新Phaseの設計書である。
+
+---
+
+## 0. 上位原則(重大誤解原則、2026-10-01ユーザー指示の明文化、委任_27)
+
+**位置づけ**: 本節は新しいProduct原則の新設ではなく、2026-10-01の
+ユーザー指示(委任_27委任文§1)をSSOTへ明文化したものである(既存
+ユーザー意図の明文化、新規承認不要)。既存の許容線(§4-9〜§4-12、
+R3系rubric)と矛盾するように見える場合は**本節が上位原則として優先**
+する。PM_GOVERNANCE.md 23節に要約+本節への参照を置く(重複記載はしない)。
+
+### 0-1. 最上位原則
+
+OPEN-233は「Ledgerとの差異を全部直す」プロジェクトではない。目的は
+「**英語学習者に記事の本質について重大な誤解を与えるものだけを止め、
+それ以外はできるだけ元記事を守ること**」である。Eigo Radioは投資家
+向けレポート・学術論文・政府発表・Fact Sheetではない。判断の最初の
+問いは常に「**この違いは英語学習者に深刻な誤解を与えるか?**」である。
+
+### 0-2. 用語の近似・一般化への適用(許容候補/BLOCK候補)
+
+**原則許容候補**(「厳密には違う」というだけではBLOCKしない):
+Brent futures→oil prices/Brent crude futures→crude prices/2.6%→
+about 3%/1.7%→about 2%/確認済みFactから自然に導けるHook演出。
+
+**BLOCK候補**(記事の主要な意味・主体・方向・規模・時間軸を誤認させる
+場合): Brent futures→gasoline prices/Brent futures→世界全体の
+energy prices/1企業の株価→株式市場全体/上昇→下落(方向反転)/主体A→
+別主体B/継続していた出来事→一度消えて戻った出来事/未確認の人物・
+行動・動機・数字の追加/因果の逆転。
+
+判断基準は常に「記事の主要な意味・主体・方向・規模・時間軸を誤認させる
+か」であり、「厳密には違う」というだけでBLOCKしない。
+
+### 0-3. Rewriteは品質リスクという認識
+
+「軽微な不正確さを残すリスク」と「Rewriteで記事品質を壊すリスク」を
+比較し、後者が大きければRewriteしない。
+
+### 0-4. 問題種類→初期Rewrite単位(委任_27 Part1-1/1-2、実装は§5-11)
+
+| 問題の種類 | 初期Rewrite単位 |
+|---|---|
+| 用語の範囲違い | 名詞句だけ置換 |
+| 数値丸め | 原則Rewriteなし |
+| 誤因果 | 接続詞だけ |
+| 主体違い | 主体だけ(Ledgerに明記された主体のみ) |
+| 時間表現 | 時制・時間副詞・短い節だけ |
+| 文全体の論理破綻 | 1文 |
+| 複数文の整合崩れ | 初めて段落候補 |
+
+「同じFactが再登場したら段落Rewrite」ルール(旧`escalate_to_paragraph`、
+§6-6 A-2)は**廃止**する。各箇所は独立に初期単位から判断する(§5-11)。
+
+### 0-5. 主体・対象の置換ガード
+
+主体・対象の置換はLedgerに明示された主体・対象にのみ行う。不明な場合は
+対象語を削除する/一般的な表現へ弱める/元文を維持する。未確認の具体
+主体への置換は禁止する(実装: §5-11、`actor_rewrite_guard_ok`)。
+
+### 0-6. Fable PMレビュー観点(7点、Trial設計・指示・レビューに適用)
+
+厳密一致のためだけのRewriteになっていないか/重大誤解でないものを
+止めていないか/小さく直せる問題を大きくRewriteしていないか/Rewrite
+による品質劣化の方が大きくないか/学習者にとって本当に問題か/Human
+Reviewを安易な逃げ道にしていないか/不要call・Recheck・Rewriteを
+増やしていないか。
+
+### 0-7. コスト方針
+
+上限¥600(2026-10-01ユーザー承認)は目標額ではない。不要な広域Trial・
+全文Recheck・段落/全文Rewrite・同じEvidenceの再取得・惰性の反復は
+禁止する。KPI平均+¥2/記事以内(§13)は維持する。
 
 ---
 
@@ -1227,6 +1316,52 @@ tie-break文言の明確化(「会話中の気づき」のような物語的展�
 明示的に含めるか)の要否は、Fable/ユーザー判断としてOPEN_ITEMSへ記録
 する(本委任のスコープ外、コード変更を伴うため)。
 
+### 4-18. 重大誤解原則の追加(委任_27 Part1-5、§0参照)
+
+Stage1(V4A checker、`er051_open233_checker_trial_variant_01.py`)・
+Stage2 body rubric(`RUBRIC_R3_TRIPLE_PRIME`)・Hook専用rubric
+(`HOOK_RUBRIC`)それぞれに、判定の**最初の問い**として§0-1/§0-2の
+原則文(逐語)を追加する。実装は既存rubric本文を書き換えず(既存
+iteration証跡の再現性維持、委任_13/16の教訓どおり)、新定数として
+追加する:
+
+- Stage2 body: `RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE`
+  (`er052_open233_self_recovery_stage2_calibration_01.py`、
+  `RUBRIC_R3_TRIPLE_PRIME`+原則文+§0-2の許容/BLOCK候補リスト)。
+- Hook: `HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE`
+  (`er052_open233_self_recovery_stage2_hook_01.py`、`HOOK_RUBRIC`+
+  同原則文の短縮版)。
+- Stage1(V4A): `V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE`
+  (`er051_open233_checker_trial_variant_01.py`、`vfl01.DEVIATION_
+  DEVELOPER_MESSAGE`[Production定数、読み取り専用参照]+原則文)。
+  `run_trial_deviation_check()`へ`developer_message_override`引数
+  (既定None、既存9箇所の呼び出しは無変更で動作)を追加した。
+
+**deterministic floorは維持する**(`changed_scope`はfloorに含まれ
+ないため無変更、floor対象の8種は本原則の影響を受けない設計のまま)。
+
+**priming再測定の要件(委任_16の教訓)**: 共通rubricへの原則文追記は
+過去にprompt priming(無関係なclaimまで寛容化)を起こした実例がある
+ため、本原則文を実際にStage2判定へ配線する場合は、Safety-critical
+claim + Safety fixtureを必ず同時に対照群として測定し、1件でも誤降格
+(non-BLOCKINGへ変化)すればその変種は不採用とする(§9-1⑰で実測)。
+
+**本委任での実配線範囲(予算制約による正直な開示)**: ¥25 Guardrail
+(Part2実績¥2.2597)内で実測できたのは**Stage2 body rubricのみ**
+(Hormuz要素とSafety対照群、§9-1⑰)。Stage1(V4A)・Hook専用rubricへの
+原則文追加は本節の定数として追加済みだが、**実際のStage2/Stage1
+呼び出しへの配線・実測は未実施**(次回委任_28[Meta要素Trial]または
+その後の広いTrialへ引き継ぐ、既知の未検証事項)。
+
+**Trial A実測での最小修正1回(§9-1⑰詳細)**: 初回rubric
+(`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE`)でhormuz
+accept-1("Oil prices did not fall across the whole market after the
+plan was withdrawn.")が2/2 false BLOCKだったため、「Brent先物を
+同じoilという対象のままより一般的な言い方に置き換えるだけの場合は
+許容する」明確化を追加した`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_
+PRINCIPLE_V2`を新設し、再実測n=2で全群(許容5・NG5・Safety2)の
+false PASS/false BLOCKが0件になることを確認した(詳細REPORT§25)。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -1895,6 +2030,84 @@ variant」という**採用されていない設計案**の反実仮想比較指
 without_full_rewriteを返す」新テストへ更新し、「flagを明示的にTrueへ
 戻すと従来どおり⑥で解消する」regressionテストを別途追加(コード削除
 なしを実証)。
+
+### 5-11. 問題種類→初期Rewrite単位の写像+escalate_to_paragraphの廃止(委任_27 Part1-1/1-2)
+
+**背景**: §6-6 A-2で導入した`escalate_to_paragraph`(同一fact_idの
+claimが別文言・別箇所で再出現した場合、①単語・接続詞/③1文を飛ばし
+④段落水準から試す)は、§0-4の上位原則(各箇所は独立に初期単位から
+判断する)と整合しない。「同じFactが再登場したら段落Rewrite」という
+再出現ベースの判断ではなく、**問題の種類**(用語範囲/数値丸め/因果/
+主体/時間/文全体/複数文)に基づいて初期単位を決めるべきである。
+
+**是正1(廃止、§1-1)**: `escalate_to_paragraph`によるladder skip
+(levels配列から`1_word_connective`/`3_sentence`を除外する処理、
+`single_text_rewrite`/`paired_rewrite`双方)を、新設フラグ
+`ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP`(既定`False`)でガードする。
+コード自体は削除せず残すが(再有効化時の参照用)、既定では発火しない
+(経路削除相当)。同一fact_id再発の検出・記録自体(`prior_blocking_
+records`・`same_claim_reblocked_escalated_to_paragraph`ログ・§3-3の
+`same_claim_fact_id_reblocked`STAGE4判定)は変更しない(これは
+「Rewriteが効かなかったことの実証によるfail-closed」という別の安全
+機構であり、本委任のスコープ[初期単位の選び方]とは独立)。
+
+**是正2(問題種類分類、§1-2)**: Stage1のdeterministic floor flag
+(`changed_scope`/`changed_number`+丸め抑制済み/`changed_causality`/
+`changed_actor`/`changed_time`、および§4-3既存の`changed_negation`/
+`changed_comparison`/`changed_certainty`/`changed_fact`/
+`unsupported_new_claim`)から、決定論(¥0、LLM呼び出しなし)で問題種類
+を分類する関数`classify_problem_kind(dev)`を新設する:
+
+| 分類 | 判定条件(dev flag、優先順位は上から) | 初期ladder水準 |
+|---|---|---|
+| `term_scope` | `changed_scope` | ①(word/connective、名詞句置換を含む) |
+| `rounding` | `changed_number`かつ`changed_number_suppressed_reason` | Rewriteなし(levels=[]) |
+| `causality` | `changed_causality` | ① |
+| `actor` | `changed_actor` | ①(§1-3ガード併用) |
+| `time` | `changed_time` | ① |
+| `sentence_logic` | 上記非該当かつ`changed_negation`/`changed_comparison`/`changed_certainty`/`changed_fact`/`unsupported_new_claim`のうち1個のみ該当 | ③(1文) |
+| `multi_sentence` | 上記が2個以上同時該当 | ④(段落) |
+| `unspecified` | 上記いずれにも非該当(既存fixtureの後方互換、devにfloor flagが無い場合) | ①(既存挙動を維持) |
+
+既存levels配列(①→③→④の順で構築、guardを満たした最初の水準で停止
+する既存ロジックは無変更)に対し、`filter_levels_by_problem_kind`で
+初期水準未満のlevelを除外する。**初期水準より上位への昇段(guard失敗
+時のfallback)は妨げない**(「初期単位」は開始点であり上限ではない、
+§0-4の表はあくまで「まずどこから試すか」を定めるもの)。`rounding`の
+みは例外的にlevels=[]としRewriteを試行しない(§0-4「原則Rewrite
+なし」)。既存test(devにfloor flagを持たないfixture)は`unspecified`
+(①開始)に分類され、既存の結果(①で停止/③へ昇段)と完全に後方互換
+(委任_27実測、既存222件+新規19件=241件全PASS)。
+
+**是正3(主体置換ガード、§1-3)**: `actor_rewrite_guard_ok(before_text,
+after_text, ledger_text)`を新設する。Rewrite後にのみ新しく現れた主体語
+(一般的な役割名詞、`_ACTOR_NOUN_PATTERN`)が、Ledger本文(fact本文
+全体を含むledger_text、¥0・決定論の部分文字列一致)に一語も含まれない
+場合はRewriteを却下する。新しい主体語が一つも導入されていない場合
+(既存語の保持・削除のみ)は常にTrue(このガードの対象外)。
+`single_text_rewrite`/`paired_rewrite`双方で、problem_kind=="actor"
+の場合のみ適用する。**unittest(neg1 cycle2実データ)**:
+`docs/pm/open233_evidence_disclosure_neg1_neg3_hormuz_01.md`§1の
+MUSE-HC-012実データ(`users`→`employees`、floor_reason=
+`deterministic_floor:changed_actor`)を fixtureとして使い、`employees`が
+MUSE-HC-012のledger_text(JA本文のみ)に含まれないため却下される
+ことを確認した(`TestActorRewriteGuard`)。
+
+**是正4(等価QA理由文の保存、§1-4)**: `ja_en_equivalence_verdict`
+(verdict文字列のみ)に加え、`ja_en_equivalence_reason`
+(`notes`/`meaning_changes`/`important_omissions`/
+`unsupported_additions`/`number_name_negation_issues`)をcycle_record・
+call_logへ保存する(¥0、既存呼び出しの戻り値`raw`を捨てずに使うのみ)。
+
+**是正5(重大誤解原則の追加、§1-5)**: §4-18参照。
+
+**既知の限界**: `rounding`分類のclaimが(floor抑制をすり抜けて)
+Stage2 LLM判定単独でBLOCKINGになった場合、levels=[]によりRewrite失敗
+扱いとなり既存のfail-closed経路(Stage4)へ進む。「Rewriteなしで黙って
+通過させる」という新しいaccept経路は作らない(既存Safety設計
+[fail-closed]を独断で緩めない、§1原則「Safety対照群は常にBLOCKING
+維持」と矛盾しないための意図的な保守設計)。Hormuz要素Trial A(§9-1⑰)
+では`rounding`分類のclaimがBLOCKINGに至る事例は観測されなかった。
 
 ## 6. Stage 4 Escalation条件と人間への提示情報
 
@@ -2705,6 +2918,42 @@ R3TRIPLEPRIME`、既存`build_eval_groups()`の機械コピー由来ラベル自
 Meta-1/Meta-2/hormuz-HF009/B3/B4-a)の降格0件へ限定する
 (`SAFETY_CRITICAL_SUB_IDS`)。A2A3-1/A4-2はQUALITYへ再ラベルされた
 ため、自然にこのリストから除外される。
+
+### 7-0-iter27. 上位原則「重大誤解原則」によるhormuz-HF009再ラベル(委任_27 Part1、§0参照)
+
+**再ラベル**: hormuz-HF009の「Oil prices」型scope一般化claim(実データ、
+`hormuz_run03_standard`本文①②③、"Oil prices did not fall across the
+whole market after the plan was withdrawn." 等、Brent先物→oil prices
+[同じ原油という対象内での一般化])は、§0-2の原則許容候補
+「Brent futures→oil prices」に該当するため、**正解ラベルをBLOCKING
+からACCEPTABLE/QUALITY(Rewrite不要)へ改める**(2026-10-01ユーザー
+指示、委任_27委任文§2)。Hormuz要素Trial A(§9-1⑰)で実測確認済み。
+
+**SAFETY_CRITICAL_SUB_IDSとの関係(重要、要Fable/ユーザー確認)**:
+`hormuz-HF009`は§7-0-iter5で確定したSafety-critical claim 10件
+(`er052_open233_self_recovery_r3dprime_calibration_01.py`)の1つで
+あり、本再ラベルはこのリストとの直接的な矛盾を生む(同一claimが
+「必ずBLOCKING維持」と「ACCEPTABLE/QUALITYが正解」の両方に属せない)。
+**本委任では`SAFETY_CRITICAL_SUB_IDS`自体(既存calibrationスクリプトの
+定数)は変更しない**(既存iteration証跡の再現性維持のため)。Hormuz
+要素Trial A(§9-1⑰)のSafety対照群では、hormuz-HF009の代わりに
+**B3(因果、HF-007)+er009 changed_scope(別記事・別領域へのscope
+拡張、taxi→restaurants nationwide、真にBLOCKINGな対照)**を使用した。
+`SAFETY_CRITICAL_SUB_IDS`から`hormuz-HF009`を除外する編集自体は、
+過去iterationの較正証跡(iter4/5/6等)の解釈に影響するため、Fable/
+ユーザー判断を仰ぐ(USER_DECISION_REQUIRED候補ではなく、次回委任での
+確認事項として記録)。
+
+**BLOCK候補への対応付け監査(§1指示、変更はしない)**: Safety-critical
+10件+Safety12(er009 9フラグ)の各claimが、§0-2のBLOCK候補(主体/
+方向/規模/時間軸/未確認追加/逆因果のいずれか)に対応付けられるかを
+確認した。hormuz-HF009を除く9件(A2A3-0/A4-0/A4-1/A5-0/A5-1/Meta-1/
+Meta-2/B3/B4-a)・er009 9フラグ全てが明確に対応する(A2A3-0/A4-0/
+A4-1/A5-0/A5-1=事実・方向の誤認、Meta-1/Meta-2=主体・認識の誤認、
+B3=因果の逆転、B4-a=未確認の仕組みの追加、er009 9種=floor対象flagの
+定義どおり)。**hormuz-HF009のみが対応しない**(§0-2の原則許容候補
+「Brent futures→oil prices」そのものに該当するため)。他に見直し
+候補は無い。
 
 ### 7-1. Safety群(Stage 1/2で必ずBLOCKING維持、その後Rewrite→PASSが期待到達経路)
 
@@ -3871,6 +4120,37 @@ n=2だけで使い切った直接原因のため、`bgroup_B4`×1・`safety_A2A3
 `LADDER_ESCALATION_ORDER_FIXED_VALIDATED_HORMUZ_NO_LONGER_PREMATURE_
 REBLOCK_BUT_SEPARATE_EQUIVALENCE_GATE_ESCALATES_COST_INCREASED_B4_
 A2A3_UNTESTED_BUDGET_EXHAUSTED`**。詳細REPORT§24。
+
+**⑰ 上位原則「重大誤解原則」の明文化+Hormuz要素Trial A(委任_27、
+本書§0/§4-18/§5-11/§7-0-iter27参照)**: ユーザー上位原則(2026-10-01)を
+§0として明文化し、¥0是正4点(escalate_to_paragraph廃止・問題種類→
+初期単位写像・主体置換ガード・等価QA理由文保存)を実装した(unittest
+既存222件+新規19件=241件全PASS、`git diff --stat`でProduction・既存
+rep/iteration証跡への差分なしを確認済み)。Hormuz要素Trial A(Stage2
+body rubricのみ、`er052_open233_element_trial_hormuz_terms_01.py`、
+¥2.1336)で、許容群5件(実文①②③+term/rounding各1合成)・NG対照群5件
+(gasoline/world energy/all crude benchmarks/方向反転/neg3)・Safety
+対照群2件(B3因果+er009 changed_scope、hormuz-HF009自身は本委任の
+再ラベル対象のため除外[§7-0-iter27])をn=2で実測した。初回rubric
+(`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE`)でaccept-1
+("Oil prices did not fall across the whole market...")が2/2 false
+BLOCKとなったため、「Brent先物を同じoilという対象のままより一般的な
+言い方に置き換えるだけの場合は許容する」明確化を1回追加した
+(`..._V2`)。V2での再実測(n=2)は許容群5件・NG群5件・Safety群2件の
+全てでfalse PASS/false BLOCK 0件を確認した。Trial A-2(決定論名詞句
+置換、`er052_open233_element_trial_a2_deterministic_rewrite_01.py`、
+¥0.1261)で、NG 2件(gasoline/world energy→Brent futures)+原文②
+(JA/EN対、Oil prices→Brent futures/原油価格→Brent先物)の名詞句
+置換を実施し、word-level diffで対象名詞句以外が不変であること
+(`full_article_unchanged_elsewhere=True`)を確認、局所QA 1callの
+verdictは`REVIEW_REQUIRED`だったが、指摘された唯一の`meaning_changes`
+(湾岸諸国-アメリカ間の投資案件の方向性)は本置換と無関係な既存箇所
+であり、本置換自体は「日付、数値、人名、否定表現、原油価格の推移、
+記事の結論および一言まとめは概ね維持」とnotesで確認された。**本委任
+費用¥2.2597**(Guardrail¥25のうち)。Stage1(V4A)・Hook専用rubricへの
+原則文追加は定数として実装済みだが未配線(§4-18)。**Status=
+`ELEMENT_TRIAL_MISCONCEPTION_PRINCIPLE_CODIFIED_HORMUZ_TRIAL_A_PASSED_
+AFTER_ONE_MINOR_FIX`**。詳細REPORT§25。Meta要素Trialは次回委任_28。
 
 ## 10. リスク
 

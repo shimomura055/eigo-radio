@@ -2053,13 +2053,47 @@ class TestFindSentenceContextFuzzyFallback(unittest.TestCase):
 
 
 class TestEscalateToParagraphLadderSkip(unittest.TestCase):
-    """委任_19 A-2(hormuz_run03_standard cycle枯渇是正): claim_recに
-    `escalate_to_paragraph=True`が付与された場合、①単語・接続詞/③1文を
-    飛ばし④段落水準から直接試すことを、API呼び出しをmockして確認する
-    (¥0)。段落ブロックが見つからない場合はlevelsが空になり既存の⑥
-    フォールバックへ委ねる(新しいNG経路は作らない)ことも確認する。"""
+    """委任_19 A-2(hormuz_run03_standard cycle枯渇是正)で導入し、委任_27
+    Part1-1(design書§0-4/§5-11)で既定OFFへ変更した`escalate_to_paragraph`
+    ladder skip機構のregression test(¥0)。**委任_27以降、既定
+    (ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP=False)ではこの機構は発火
+    しない**(各箇所は独立に初期単位から判断する、上位原則)。コード自体は
+    削除していないため、flagを明示的にTrueへ戻すと旧来の挙動(①③飛ばし
+    ④直行)に戻ることも確認する。"""
 
-    def test_single_text_rewrite_skips_to_paragraph_level_when_escalated(self):
+    def test_single_text_rewrite_does_not_skip_by_default_even_with_flag_set_on_claim(self):
+        """claim_recに`escalate_to_paragraph=True`が付与されていても、
+        ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIPが既定Falseのため①から
+        試す(devにfloor flagが無いためclassify_problem_kindはunspecified
+        =①開始)。"""
+        from unittest import mock
+
+        full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
+                     "## In one line\nA plan changed.\n")
+        claim_rec = {
+            "claim_text": "Some sentence with a problem in it.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "problem"}, "escalate_to_paragraph": True,
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e1_minimal_word"):
+                return "Some sentence without the problem. Another sentence follows."
+            raise AssertionError(f"should not escalate past level 1, but called {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertEqual(result["ladder_level_used"], "1_word_connective")
+        self.assertEqual(calls, ["test_e1_minimal_word"])
+
+    def test_single_text_rewrite_skips_to_paragraph_level_when_flag_reenabled(self):
+        """flagを明示的にTrueへ戻すと、旧来どおり①③を飛ばし④段落水準から
+        直接試す(コード自体は壊れていない、再有効化はFable/ユーザー判断)。"""
         from unittest import mock
 
         full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
@@ -2078,7 +2112,8 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
                 return "Some sentence without the problem. Another sentence follows."
             raise AssertionError(f"should skip directly to paragraph level, but called {label}")
 
-        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm), \
+                mock.patch.object(runner, "ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP", True):
             result = runner.single_text_rewrite(
                 None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
                 [], [], "test", fixture, "article_text", claim_rec)
@@ -2090,7 +2125,8 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
         """委任_23 B-2: ⑥は既定OFF(ENABLE_LADDER_LEVEL_6_FULL_REWRITE=False)
         のため、①〜④全段でguardが失敗した場合は⑥のAPI callを試みず、
         ladder_exhausted_without_full_rewrite=Trueを返す(呼び出し側
-        run_instanceがSTAGE4へ回す)。"""
+        run_instanceがSTAGE4へ回す)。escalate_to_paragraph flagを明示的に
+        再有効化した状態(④直行)で確認する。"""
         from unittest import mock
 
         full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
@@ -2110,7 +2146,8 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
                 return "Some sentence with a problem in it. Another sentence follows, unchanged."
             raise AssertionError(f"⑥ disabled by default, should not call {label}")
 
-        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm), \
+                mock.patch.object(runner, "ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP", True):
             result = runner.single_text_rewrite(
                 None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
                 [], [], "test", fixture, "article_text", claim_rec)
@@ -2122,7 +2159,8 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
     def test_single_text_rewrite_level6_still_works_when_feature_flag_reenabled(self):
         """委任_23 B-2: ⑥はコード削除せずfeature flagで残す。flagを明示的に
         Trueへ戻すと、iter7以前と同じ①〜⑥の挙動(⑥で解消)に戻ることを
-        確認する(再有効化はユーザー判断だが、機構自体は壊れていない)。"""
+        確認する(再有効化はユーザー判断だが、機構自体は壊れていない)。
+        escalate_to_paragraph flagも明示的に再有効化した状態で確認する。"""
         from unittest import mock
 
         full_text = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
@@ -2144,14 +2182,15 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
             raise AssertionError(f"unexpected call to {label}")
 
         with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm), \
-                mock.patch.object(runner, "ENABLE_LADDER_LEVEL_6_FULL_REWRITE", True):
+                mock.patch.object(runner, "ENABLE_LADDER_LEVEL_6_FULL_REWRITE", True), \
+                mock.patch.object(runner, "ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP", True):
             result = runner.single_text_rewrite(
                 None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
                 [], [], "test", fixture, "article_text", claim_rec)
         self.assertEqual(result["ladder_level_used"], "6_full_article")
         self.assertEqual(calls, ["test_e2_paragraph_rewrite", "test_fulltext_fallback"])
 
-    def test_paired_rewrite_skips_to_paragraph_level_when_escalated(self):
+    def test_paired_rewrite_skips_to_paragraph_level_when_flag_reenabled(self):
         from unittest import mock
 
         en_full = ("# Title\n\nSome sentence with a problem in it. Another sentence follows.\n\n"
@@ -2175,7 +2214,8 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
                         '"en_revised": "Some sentence without the problem. Another sentence follows."}')
             raise AssertionError(f"should skip directly to paragraph level, but called {label}")
 
-        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm), \
+                mock.patch.object(runner, "ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP", True):
             result = runner.paired_rewrite(
                 None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
                 [], [], "test", fixture, claim_rec)
@@ -2699,6 +2739,152 @@ class TestResolveJaOkAfterEquivalenceGating(unittest.TestCase):
             False, "REVIEW_REQUIRED", REP10_JA_TEXT_AFTER_REWRITE)
         self.assertFalse(result["ja_ok"])
         self.assertFalse(result["blocked_by_equivalence"])
+
+
+class TestClassifyProblemKind(unittest.TestCase):
+    """委任_27 Part1-2: Stage1 deterministic floor flag(dev)から問題種類を
+    分類するclassify_problem_kind()のregression test(¥0)。"""
+
+    def test_no_flags_is_unspecified(self):
+        self.assertEqual(runner.classify_problem_kind({}), "unspecified")
+        self.assertEqual(runner.classify_problem_kind({"issue": "x"}), "unspecified")
+
+    def test_changed_scope_is_term_scope(self):
+        self.assertEqual(runner.classify_problem_kind({"changed_scope": True}), "term_scope")
+
+    def test_changed_number_with_suppressed_reason_is_rounding(self):
+        dev = {"changed_number": True, "changed_number_suppressed_reason": "natural_rounding(委任_14 B-1)"}
+        self.assertEqual(runner.classify_problem_kind(dev), "rounding")
+
+    def test_changed_number_without_suppression_is_not_rounding(self):
+        # floorが維持されたままのchanged_number(自然な丸めと判定されな
+        # かった場合)はterm_scope等の他カテゴリにも該当しないため
+        # unspecified(既存の①開始挙動を維持、丸め専用分類はしない)。
+        self.assertEqual(runner.classify_problem_kind({"changed_number": True}), "unspecified")
+
+    def test_changed_causality_is_causality(self):
+        self.assertEqual(runner.classify_problem_kind({"changed_causality": True}), "causality")
+
+    def test_changed_actor_is_actor(self):
+        self.assertEqual(runner.classify_problem_kind({"changed_actor": True}), "actor")
+
+    def test_changed_time_is_time(self):
+        self.assertEqual(runner.classify_problem_kind({"changed_time": True}), "time")
+
+    def test_single_logic_flag_is_sentence_logic(self):
+        self.assertEqual(runner.classify_problem_kind({"changed_negation": True}), "sentence_logic")
+        self.assertEqual(runner.classify_problem_kind({"unsupported_new_claim": True}), "sentence_logic")
+
+    def test_two_logic_flags_is_multi_sentence(self):
+        self.assertEqual(
+            runner.classify_problem_kind({"changed_negation": True, "changed_certainty": True}),
+            "multi_sentence")
+
+    def test_priority_scope_over_logic_flags(self):
+        # changed_scopeが立っていれば、他のlogic flagが同時に立っていても
+        # term_scopeを優先する(より限定的な初期単位を優先、§5-11)。
+        dev = {"changed_scope": True, "changed_negation": True, "changed_certainty": True}
+        self.assertEqual(runner.classify_problem_kind(dev), "term_scope")
+
+
+class TestFilterLevelsByProblemKind(unittest.TestCase):
+    """委任_27 Part1-2: 初期Rewrite単位の写像でlevelsを絞り込む
+    filter_levels_by_problem_kind()のregression test(¥0)。"""
+
+    def _levels(self):
+        return [{"name": "1_word_connective"}, {"name": "3_sentence"}, {"name": "4_paragraph"}]
+
+    def test_unspecified_keeps_all_levels(self):
+        result = runner.filter_levels_by_problem_kind(self._levels(), {})
+        self.assertEqual([lv["name"] for lv in result], ["1_word_connective", "3_sentence", "4_paragraph"])
+
+    def test_actor_keeps_all_levels_starting_from_word(self):
+        result = runner.filter_levels_by_problem_kind(self._levels(), {"changed_actor": True})
+        self.assertEqual([lv["name"] for lv in result], ["1_word_connective", "3_sentence", "4_paragraph"])
+
+    def test_sentence_logic_starts_at_level3(self):
+        result = runner.filter_levels_by_problem_kind(self._levels(), {"changed_negation": True})
+        self.assertEqual([lv["name"] for lv in result], ["3_sentence", "4_paragraph"])
+
+    def test_multi_sentence_starts_at_level4(self):
+        dev = {"changed_negation": True, "changed_comparison": True}
+        result = runner.filter_levels_by_problem_kind(self._levels(), dev)
+        self.assertEqual([lv["name"] for lv in result], ["4_paragraph"])
+
+    def test_rounding_returns_empty(self):
+        dev = {"changed_number": True, "changed_number_suppressed_reason": "natural_rounding"}
+        result = runner.filter_levels_by_problem_kind(self._levels(), dev)
+        self.assertEqual(result, [])
+
+
+class TestActorRewriteGuard(unittest.TestCase):
+    """委任_27 Part1-3: 主体置換ガードactor_rewrite_guard_ok()の
+    regression test(¥0)。neg1 cycle2実データ(users→employees却下)を
+    fixtureとして使う(docs/pm/open233_evidence_disclosure_neg1_neg3_
+    hormuz_01.md §1、MUSE-HC-012)。"""
+
+    def test_neg1_cycle2_users_to_employees_is_rejected(self):
+        # 実データ(disclosure §1): EN Beforeは"users"/"user"、EN Afterは
+        # "employees"。MUSE-HC-012のledger_textはJA本文のみで英語の
+        # "employees"という語を含まない(実際のfixture、捏造ではない)。
+        before = ("Here was the reveal. The test began without clearly telling users "
+                  "that contract workers would make the calls.")
+        after = ("Here was the reveal. The test began without clearly telling employees "
+                 "that contract workers would make the calls.")
+        ledger_text = ("[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、"
+                       "適切な開示なしに契約スタッフが電話をかけるテストを開始したことを"
+                       "「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。")
+        self.assertFalse(runner.actor_rewrite_guard_ok(before, after, ledger_text))
+
+    def test_no_new_actor_noun_is_always_ok(self):
+        before = "Some users were not told."
+        after = "Some users were not clearly told."
+        self.assertTrue(runner.actor_rewrite_guard_ok(before, after, "[VERIFIED] X: ..."))
+
+    def test_new_actor_noun_present_in_ledger_is_ok(self):
+        before = "Some people were not told."
+        after = "Some contractors were not told."
+        ledger_text = "[VERIFIED] X: contractors handled the calls."
+        self.assertTrue(runner.actor_rewrite_guard_ok(before, after, ledger_text))
+
+
+class TestEscalateToParagraphDisabledByDefault(unittest.TestCase):
+    """委任_27 Part1-1: escalate_to_paragraphのladder skipが既定で発火
+    しないこと(ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP=False)を確認
+    する(¥0、API呼び出しはmock)。"""
+
+    def test_flag_defaults_to_false(self):
+        self.assertFalse(runner.ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP)
+
+    def test_escalate_flag_on_claim_no_longer_skips_level1_and_3(self):
+        full_text = ("# Title\n\nConcerns continued on July 14. So the flashy 20% plan left "
+                     "the stage.\n\n## In one line\nA plan changed.\n")
+        claim_rec = {
+            "claim_text": "So the flashy 20% plan left the stage.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "", "dev": {"issue": "wrong causal link"},
+            # 旧機構が有効だった場合はここでlevel1/3がskipされ、いきなり
+            # level4(段落)が試される。既定OFFでは、levelは通常どおり
+            # level1から試す(classify_problem_kindはdevにfloor flagが
+            # 無いためunspecified=level1開始)。
+            "escalate_to_paragraph": True,
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            if label.endswith("_e1_minimal_word"):
+                return "Concerns continued on July 14, while the flashy 20% plan left the stage."
+            raise AssertionError(f"should not escalate past level 1, but called {label}")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+        self.assertEqual(result["ladder_level_used"], "1_word_connective")
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(result["guard_ok"])
 
 
 if __name__ == "__main__":

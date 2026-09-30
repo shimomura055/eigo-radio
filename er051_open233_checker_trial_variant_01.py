@@ -35,6 +35,34 @@ import er003_v1_en_direct_vfl_01_generate as vfl01
 OUT_DIR = "er051_output/open233_checker_trial_variant_01"
 
 # ------------------------------------------------------------
+# 委任_27 Part1-5(OPEN-233-SELF-RECOVERY-TRIAL-01、design書§0/§4-18):
+# ユーザー上位原則「重大誤解原則」(2026-10-01)をStage1(V4A)判定の最初の
+# 問いとして追加する変種。vfl01.DEVIATION_DEVELOPER_MESSAGE(Production
+# 定数)自体は変更せず、読み取り専用で参照して新しい文字列を作るのみ
+# (Production非接続)。**本委任ではrun_trial_deviation_checkへ未配線**
+# (予算制約、design書§4-18に既知の未検証事項として記載)。
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT = """
+【重大誤解原則(2026-10-01ユーザー指示、最初の問い)】
+まず「この違いは英語学習者に記事の本質について重大な誤解を与えるか」を
+判断してください。主要な意味・主体・方向・規模・時間軸を誤認させる場合
+のみBLOCKINGとしてください。用語の近似・一般化(例: Brent futures→
+oil prices、Brent crude futures→crude prices)・数値丸め(例: 2.6%→
+about 3%、above 85 dollars→about 85 dollars)・確認済みFactから自然に
+導ける解釈や演出は、厳密には違うというだけの理由でBLOCKINGにしないで
+ください。一方、以下のような違いは記事の本質的な誤解を招くため明確に
+BLOCKINGとしてください: 特定の指標(例: Brent futures)を無関係な
+商品(例: gasoline prices)や世界全体の価格(world energy prices)へ
+一般化する、1企業の株価を株式市場全体の動きとして述べる、方向を反転
+させる(上昇→下落)、主体を別の主体へ入れ替える、継続していた出来事を
+一度消えて戻った出来事として述べる、未確認の人物・行動・動機・具体的な
+数字を追加する、因果関係を逆転させる。"""
+
+V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE = (
+    vfl01.DEVIATION_DEVELOPER_MESSAGE + "\n" + MISCONCEPTION_PRINCIPLE_TEXT
+)
+
+# ------------------------------------------------------------
 # post-hoc v2: deterministic昇格ルール(ユーザー決定2)
 # ------------------------------------------------------------
 # changed_actor/changed_number/changed_negation/changed_comparisonの
@@ -307,13 +335,22 @@ def filter_ledger_notes_by_classification(ledger_text: str, classification: dict
 # Phase A(本委任)ではテストから一切呼び出さない(ネットワーク呼び出しなし)。
 # ------------------------------------------------------------
 def run_trial_deviation_check(client, verified_ledger_text: str, article_text: str, model: str, variant: str,
-                               include_related_fact_id: bool = False, source_article_text: str | None = None) -> dict:
+                               include_related_fact_id: bool = False, source_article_text: str | None = None,
+                               developer_message_override: str | None = None) -> dict:
     """V2/V3用: Trial Prompt/schemaでvfl01と同形式のResponses API呼び出しを
     行う(vfl01.run_deviation_check()はPrompt差し替えを受け付けないため、
     Trial専用に薄いラッパーとして実装。vfl01の関数・定数は読み取り専用で
     使うのみ)。V0/V1で新規API呼び出しは不要(既存er050_output/の
     raw_parsedをclassify_parsed_result_trial()へ再適用するだけで計算できる、
-    設計書§4)。"""
+    設計書§4)。
+
+    委任_27 Part1-5(design書§4-18): `developer_message_override`(既定
+    None)を追加した。Noneの場合は従来どおり`vfl01.DEVIATION_DEVELOPER_
+    MESSAGE`(Production定数、読み取り専用参照)をそのまま使う(既存呼び
+    出し元9箇所は全て無変更のまま動作する)。値を渡した場合のみ、その
+    文字列をdeveloper roleへ使う(例:
+    `V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE`、重大誤解原則の
+    追加検証用、本委任では未配線)。"""
     prompt_template = build_trial_prompt_template(variant)
     prompt = prompt_template.format(verified_ledger_text=verified_ledger_text, article_text=article_text)
     include_origin = source_article_text is not None
@@ -323,6 +360,7 @@ def run_trial_deviation_check(client, verified_ledger_text: str, article_text: s
         prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=source_article_text)
 
     schema = build_trial_deviation_schema(variant, include_related_fact_id, include_origin)
+    developer_message = developer_message_override or vfl01.DEVIATION_DEVELOPER_MESSAGE
 
     t0 = time.time()
     response = client.responses.create(
@@ -330,7 +368,7 @@ def run_trial_deviation_check(client, verified_ledger_text: str, article_text: s
         reasoning={"effort": vfl01.REASONING_EFFORT},
         text={"format": {"type": "json_schema", **schema}},
         input=[
-            {"role": "developer", "content": vfl01.DEVIATION_DEVELOPER_MESSAGE},
+            {"role": "developer", "content": developer_message},
             {"role": "user", "content": prompt},
         ],
     )
