@@ -1,0 +1,534 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 9.6748,
+    "cumulative_calls": 28,
+    "cumulative_errors": 0,
+    "trial_b_false_block_total": 5,
+    "trial_b_false_pass_total": 0,
+    "trial_c_still_blocking_run_count": 0,
+    "_note_委任_29_scoring_bug_fix": "初回実行時(委任_29 Part2)の旧集計ロジックに符号反転バグがあり、ng群のBLOCKING(正しい)をfalse_passへ、accept/boundary群の非BLOCKING(正しい)をfalse_blockへ、それぞれ誤って計上していた。本ファイルのtally_hook_rows()是正後の値へ出力jsonのみ更新(生judgmentデータ・API呼び出し履歴は無変更)。"
+  },
+  "trial_b": {
+    "stage1_rows": [
+      {
+        "sub_id": "accept-1-original-hook",
+        "group": "accept",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_COMPLIANT",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": false,
+            "match_explanation": "特定の通話でAIだと思われ、会話中に正体が明らかになり、驚きが生じたという具体的な経過は未確認です。「seemed」は当初の印象を限定しますが、実際の発覚・驚きや、テストがそれを引き起こしたという記述までは限定していません。"
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": true,
+            "match_explanation": null
+          },
+          {
+            "run": 3,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "The definite, specific call-and-reveal scenario is not established by the Ledger. This adds an unsupported event and presents the source’s hypothetical user impression as an actual one; the central reveal may therefore mislead readers about what was reported."
+          }
+        ]
+      },
+      {
+        "sub_id": "accept-2-experience-para-1",
+        "group": "accept",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_COMPLIANT",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": false,
+            "match_explanation": null
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": true,
+            "match_explanation": null
+          }
+        ]
+      },
+      {
+        "sub_id": "accept-3-experience-para-2",
+        "group": "accept",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": true,
+            "match_explanation": null
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_COMPLIANT",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": false,
+            "match_explanation": null
+          }
+        ]
+      },
+      {
+        "sub_id": "accept-4-scene-depiction",
+        "group": "accept",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 2,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": true,
+            "match_explanation": null
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "The claim adds an unsupported act of concealment and assigns it to “neither side,” rather than limiting the point to the test’s lack of appropriate disclosure (changed_fact, changed_actor, unsupported_new_claim)."
+          }
+        ]
+      },
+      {
+        "sub_id": "accept-5-conversational-restatement",
+        "group": "accept",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_COMPLIANT",
+            "n_deviations": 0,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": false,
+            "match_explanation": null
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_COMPLIANT",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": false,
+            "any_blocking_in_article": false,
+            "match_explanation": null
+          }
+        ]
+      },
+      {
+        "sub_id": "boundary-1-dramatization",
+        "group": "boundary",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "「通話の途中」という具体的な時点は裏付けられていないため、changed_fact・changed_time・unsupported_new_claimに該当する。"
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "The specific halfway-through-the-call detail is absent from the Ledger, so this is an unsupported new factual claim. No existing Ledger timing is changed, so changed_time is false."
+          }
+        ]
+      },
+      {
+        "sub_id": "ng-1-unconfirmed-person",
+        "group": "ng",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 2,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "発信者をLedgerが示す契約スタッフとは別の人物に置き換え、確認されていない行為を加えています。「some」は件数を限定しますが、人物の置き換えは解消しません。"
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "This adds an unsupported claim about who made the calls and changes the reported actor from trained contract staff to Zuckerberg."
+          }
+        ]
+      },
+      {
+        "sub_id": "ng-2-unconfirmed-action",
+        "group": "ng",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 2,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "秘密の台本と隠蔽の意図という具体的事実を追加しています。人間が一部の電話を担当したという確認済みFactを超えています。"
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "秘密の台本や身元を隠す意図はLedgerにありません。新たな具体的主張の追加に当たります。原文記事にもこの主張はなく、英語版で加わっています。"
+          }
+        ]
+      },
+      {
+        "sub_id": "ng-3-unconfirmed-number",
+        "group": "ng",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "約40%という数値は未確認で、従業員への機能有効化と電話件数の割合を混同しています。changed_fact・changed_scope・changed_number・unsupported_new_claimに該当します。"
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "Ledgerにない具体的な割合を提示しており、テスト中の一部の電話という範囲も一般のMuse通話へ拡張しています。数値と範囲の変更に基づく判定です。"
+          }
+        ]
+      },
+      {
+        "sub_id": "ng-4-fact-reversal",
+        "group": "ng",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "「すべて」として対象範囲を拡張し、一部の電話を人間が担当したという事実と矛盾する。また、Metaがそのように述べたという新たな主張も加えている。"
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "matched_own_claim_blocking": true,
+            "any_blocking_in_article": true,
+            "match_explanation": "MUSE-HC-006は電話の一部を人間の契約スタッフが担当したと確認しています。「every call was fully AI」はその事実を否定するためchanged_fact・changed_scope・changed_negationがtrueであり、Metaがそう述べたという帰属もLedgerにないためunsupported_new_claimもtrueです。"
+          }
+        ]
+      }
+    ],
+    "hook_stage2_rows": [
+      {
+        "sub_id": "accept-1-original-hook",
+        "group": "accept",
+        "claim_text": "A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "ledger_claim"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 1,
+        "false_pass_count": 0,
+        "variance_across_runs": true
+      },
+      {
+        "sub_id": "accept-2-experience-para-1",
+        "group": "accept",
+        "claim_text": "You pick up. The voice sounds human—because it is.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "accept-3-experience-para-2",
+        "group": "accept",
+        "claim_text": "The person on the other end of the line was real, not artificial—even though the call began just like any other call through Muse.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": true
+      },
+      {
+        "sub_id": "accept-4-scene-depiction",
+        "group": "accept",
+        "claim_text": "Ring, ring. The phone connects, and for a moment neither side lets on who is really speaking.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 2,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "accept-5-conversational-restatement",
+        "group": "accept",
+        "claim_text": "Imagine getting a call from Muse and finding a real person on the line.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "boundary-1-dramatization",
+        "group": "boundary",
+        "claim_text": "The surprise came halfway through the call.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 2,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-1-unconfirmed-person",
+        "group": "ng",
+        "claim_text": "Mark Zuckerberg himself made some of the calls.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-2-unconfirmed-action",
+        "group": "ng",
+        "claim_text": "Workers read from a secret script to hide that they were human.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-3-unconfirmed-number",
+        "group": "ng",
+        "claim_text": "About 40% of Muse calls were made by humans.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-4-fact-reversal",
+        "group": "ng",
+        "claim_text": "Meta said every call was fully AI.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      }
+    ],
+    "false_block_total": 5,
+    "false_pass_total": 0
+  },
+  "trial_c": {
+    "actor_claim_rows": [
+      {
+        "run": 1,
+        "overall_status": "LEDGER_COMPLIANT",
+        "matched": false,
+        "matched_severity_final": null,
+        "matched_dev": null
+      },
+      {
+        "run": 2,
+        "overall_status": "LEDGER_COMPLIANT",
+        "matched": false,
+        "matched_severity_final": null,
+        "matched_dev": null
+      }
+    ],
+    "ng_control_rows": [
+      {
+        "run": 1,
+        "overall_status": "LEDGER_DEVIATION",
+        "matched": true,
+        "matched_severity_final": "BLOCKING",
+        "matched_dev": {
+          "claim_in_article": "“Meta's CEO admitted the mistake.”",
+          "issue": "ミスを認めた主体をMetaのCEOとしていますが、LedgerではMetaのSuperintelligence Labs部門の副社長です。",
+          "severity": "MAJOR",
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true,
+          "explanation": "発言主体を副社長からCEOに置き換えた新しい具体的主張です。changed_actor、changed_fact、unsupported_new_claimに該当します。",
+          "related_fact_id": "MUSE-HC-012",
+          "origin": "translation",
+          "qualifier_present": false,
+          "qualifier_text": "",
+          "ledger_field_basis": "ledger_fact",
+          "observation_consistent": false,
+          "matched_notes_id": "",
+          "auto_downgraded": false,
+          "severity_final": "BLOCKING",
+          "action": "STOP",
+          "basis": "ledger_fact",
+          "rule_id": "existing_major_v2"
+        }
+      },
+      {
+        "run": 2,
+        "overall_status": "LEDGER_DEVIATION",
+        "matched": true,
+        "matched_severity_final": "BLOCKING",
+        "matched_dev": {
+          "claim_in_article": "Meta's CEO admitted the mistake.",
+          "issue": "発言者がMetaの副社長からCEOに置き換わっている。",
+          "severity": "MAJOR",
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true,
+          "explanation": "Ledgerでは、適切な開示なしにテストを始めたことをミスと認めたのはMetaのSuperintelligence Labs部門の副社長。記事はCEOとし、発言主体を変更した新たな具体的主張になっている。",
+          "related_fact_id": "MUSE-HC-012",
+          "origin": "translation",
+          "qualifier_present": false,
+          "qualifier_text": "",
+          "ledger_field_basis": "ledger_fact",
+          "observation_consistent": false,
+          "matched_notes_id": "",
+          "auto_downgraded": false,
+          "severity_final": "BLOCKING",
+          "action": "STOP",
+          "basis": "ledger_fact",
+          "rule_id": "existing_major_v2"
+        }
+      }
+    ],
+    "still_blocking_run_count": 0,
+    "stage3_rewrite_result": null,
+    "local_qa_result": null
+  }
+}

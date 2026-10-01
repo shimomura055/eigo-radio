@@ -1,0 +1,32 @@
+{
+  "label": "partA_V4_Meta_run03_standard_run1",
+  "prompt_sha256": "3e9c1c40b198e096e16afbb7f3208bdccc0b90781e5f054c586162f745d4f229",
+  "parsed": {
+    "judgments": [
+      {
+        "claim_index": 0,
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "rewrite_kind": "narrow_scope",
+        "rewrite_hint": "対象文: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” 「一部の電話で実際に情報が必要だった」と断定せず、「電話の遂行にユーザー情報が必要となる場合には、その情報が契約スタッフに意図せず共有される可能性がある」と条件付きにしてください。参照Ledger fact_id: MUSE-HC-010。"
+      },
+      {
+        "claim_index": 1,
+        "materiality": "BLOCKING",
+        "basis": "unsupported_relationship",
+        "rewrite_kind": "narrow_scope",
+        "rewrite_hint": "対象文: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” 実際に情報が必要だったと断定せず、必要となる場合の可能性として条件付きにするか、削除してください。関連づけられたMUSE-HC-012は機能のロールバックを記録しており、電話にユーザー情報が必要だったことは示していません。参照Ledger fact_id: MUSE-HC-012。"
+      }
+    ]
+  },
+  "model": "gpt-6-luna",
+  "response_id": "resp_0df7a69b8316927a006abdad277bbc87d097703fa2e79b651f",
+  "usage": {
+    "input_tokens": 7294,
+    "cached_input_tokens": 7291,
+    "output_tokens": 2679,
+    "reasoning_tokens": 2388
+  },
+  "cost_jpy": 0.2216,
+  "elapsed_seconds": 22.212
+}

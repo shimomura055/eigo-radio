@@ -402,6 +402,54 @@ RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V3 = (
     RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V3
 )
 
+# ------------------------------------------------------------
+# 委任_29 Part1(Safety対照群の安定化、Fableラベル判定の反映):
+# V3公式測定(n=2)で、A5-1(“Meta executives admitted…”)がさらに
+# ACCEPTABLEへ悪化し、新規にMeta-1/Meta-2(“Also, some calls needed
+# user information to continue.”)がQUALITYへfalse downgradeした
+# (er052_output/open233_element_trial_safety_control_01/
+# summary_safety_control.json)。
+#
+# Fableラベル判定(委任_29委任文§1、本委任で確定):
+# - A5-1は役職の同一対象内一般化であり、正解ラベルはQUALITY(非BLOCKING)。
+#   SAFETY_CRITICAL_SUB_IDSから除外済み(r3dprime_calibration_01.py)の
+#   ため、本rubric側では追加の是正をしない(ACCEPTABLE/QUALITYいずれに
+#   振れても対照群としては扱わない)。
+# - Meta-1/Meta-2(実質1claim重複、related_fact_id=MUSE-HC-010)は、
+#   Ledgerの実際の記録(逐語): 「電話の遂行にユーザー情報が必要になる
+#   可能性がある」という条件付きの可能性(conditions参照)であるのに対し、
+#   記事は「Also, some calls needed user information to continue.」と、
+#   条件を外して実際に起きた出来事として断定している
+#   (Stage1実測のissue逐語: 「条件付きの可能性を、実際に発生した事実へ
+#   強めているため」、changed_fact=true・changed_certainty=true)。これは
+#   §0-2の「未確認の人物・行動・動機・数字の追加」に該当する誤解であり、
+#   役職・用語の同一対象内一般化(A5-1型、許容)とは別物として区別する
+#   必要がある。V2/V3は「当事者関係の取り違え」と「役職の一般化」の
+#   2区分のみで、「条件付きの可能性→既成事実への断定(certainty強化)」
+#   を明示的に区別していなかったため、誤ってQUALITYへ寛容化したと判断
+#   する。
+# 是正(最小修正1回、新しい例示は追加せず、原則文の区別のみを追加):
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT_V4 = MISCONCEPTION_PRINCIPLE_TEXT_V3 + """
+
+【追加明確化(委任_29 Part1、Safety対照群実測でのfalse downgrade是正、
+最小修正1回)】
+Ledgerが「〜する可能性がある」「〜の場合には起こり得る」のように、ある
+出来事・行動を未確定・条件付きの可能性としてのみ記録しているのに、記事が
+その条件を外し、その出来事・行動が実際に起きたこととして断定している
+場合は、用語の近似・一般化や役職の言い換えとは別のものとして扱い、
+未確認の出来事・行動を既成事実として追加していることを理由にBLOCKINGと
+してください。これは確認済みFactからの自然な解釈ではなく、Ledgerが
+明示的に条件付きとした内容の確実性を強めている(certaintyの強化)ため、
+許容される一般化の対象にはなりません。一方、Ledgerが既に確定した事実
+として記録している内容を、同じ主体・同じ出来事の範囲内でより一般的な
+役職・用語に言い換えるだけの場合は、引き続き許容される一般化として
+ACCEPTABLE/QUALITYとしてください。"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4 = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V4
+)
+
 
 class TrialAbort(RuntimeError):
     pass

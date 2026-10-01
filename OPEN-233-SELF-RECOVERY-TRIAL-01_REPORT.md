@@ -2280,3 +2280,121 @@ hook_01.py`を実装済みだが、本委任では実行していない)。
 原則の設定なし)。Status=`SAFETY_CONTROL_AUDIT_STOPPED_AFTER_ONE_
 MINOR_FIX_STILL_FAILING`。Meta要素Trial(Hook/Actor)・A5-1/Meta-1・
 Meta-2の扱いはFable/ユーザー判断待ちとして次回へ引き継ぐ。
+
+## §27. Safety対照群の安定化(Fableラベル判定反映)でPASS+Meta要素Trial B/C実施、境界群1件のみ残存(委任_29、2026-10-01)
+
+### 27-0. 対応表
+
+| # | 項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| 1 | Fableラベル判定の反映 | A5-1→QUALITY(`SAFETY_CRITICAL_SUB_IDS`から除外、9件→8件)、Meta-1/Meta-2→BLOCKING維持 | 27-1 |
+| Part1 | Safety対照群の安定化 | V4(最小修正1回)で、Safety-critical 8+Safety12+Hormuz許容5/NG5がn=1予備・n=2公式とも全件PASS | 27-2 |
+| Part2 | Meta要素Trial B(Hook) | 初実行、集計バグ発見・是正。NG4/4 BLOCKING、許容群はV3是正後に元Hook/accept-4が解消、boundary-1のみ残存 | 27-3〜27-4 |
+| Part3 | Meta要素Trial C(Actor) | neg1 cycle2実データで「社内テスト誤読」解消(期待1で解消、期待2は未検証) | 27-5 |
+
+### 27-1. Fableラベル判定の反映(§1根拠はDECISION_LOG参照)
+
+A5-1(“Meta executives admitted that starting the test without a
+proper explanation was a mistake.”)は役職の同一対象内一般化
+(hormuz-HF009型)のため正解ラベルをQUALITYへ改め、
+`SAFETY_CRITICAL_SUB_IDS`から除外(9件→8件:
+A2A3-0/A4-0/A4-1/A5-0/Meta-1/Meta-2/B3/B4-a)、
+`CORRECT_LABEL_OVERRIDES_R3DPRIME["A5-1"]="QUALITY"`を追加した
+(`er052_open233_self_recovery_r3dprime_calibration_01.py`)。
+A4-0(カウンターパート取り違え)・Meta-1/Meta-2(条件付き可能性→既成
+事実への断定)はBLOCKING維持。
+
+### 27-2. Part1: 要素記録表(Safety対照群安定化)
+
+| 対象 | 変えたこと | 理由 | 許容/NG実測結果 | 誤PASS/誤BLOCK(n=1予備→n=2公式) | 揺れ | コスト |
+|---|---|---|---|---|---|---|
+| Safety-critical 8claim | `SAFETY_CRITICAL_SUB_IDS`を9→8件化(A5-1除外)、rubricをV3→V4 | A5-1はFableラベル判定で非Safety化、Meta-1/2はV3で残存したfalse downgradeの是正 | 8/8全てBLOCKING(n=1・n=2とも) | 0→0 | なし | 込み |
+| Safety12(er009 9フラグ) | rubricをV3→V4(Stage2直接判定のみ、Stage1 fresh再測定は省略) | V4での影響有無を確認 | 9/9全てBLOCKING(n=1・n=2とも) | 0→0 | なし | 込み |
+| Hormuz許容5/NG5 | 既存Stage1出力(claim定義)を再利用、rubricをV2→V4でStage2のみ再実行 | V4の原則追記が無関係claimへprompt primingを起こしていないかの確認(委任_16の教訓) | 許容5件は非BLOCKING(QUALITY/ACCEPTABLE)、NG5件はBLOCKING(n=2) | 0/0 | accept-1/2がACCEPTABLE⇄QUALITYで揺れたが非BLOCKING自体は不変 | 込み |
+| 合計 | — | — | — | — | — | n=1予備¥1.8626+n=2公式(ABC込み)¥4.9438(累計、n=1分を含む) |
+| A5-1(参考、Safety-critical対象外) | — | 再ラベル整合の確認 | ACCEPTABLE(n=1・n=2とも) | — | — | 込み |
+
+### 27-3. Part2: Meta要素Trial B(Hook)集計バグの発見・是正
+
+初回実行(V2、Stage1 fresh 21 call+Hook Stage2 3 call)で、
+`run_trial_b()`内の集計ロジックに符号反転バグがあることが判明した:
+旧実装は`if c["group"] == "ng": wrong = [m for m in observed if m ==
+"BLOCKING"]`(ng群でBLOCKING=正しい判定を"wrong"とみなす)、`else:
+wrong = [m for m in observed if m != "BLOCKING"]`(accept/boundary群で
+非BLOCKING=正しい判定を"wrong"とみなす)という誤りがあり、
+`false_block_count`/`false_pass_count`へ逆の値を代入していた
+(委任_28時点ではコード未実行のため発覚しなかった、生judgmentデータ・
+API呼び出し自体は正常)。`tally_hook_rows()`として是正し
+(`er052_open233_element_trial_hormuz_terms_01.run_batch()`と同じ
+正しい集計方式へ統一)、unittest
+(`TestMetaHookTallyScoringBugFix`2件)で再発防止した。
+
+是正後の真の値(V2実測):
+
+| sub_id | group | 観測(materiality) | 判定 |
+|---|---|---|---|
+| accept-1-original-hook | accept | QUALITY, BLOCKING, ACCEPTABLE | 1/3 false block |
+| accept-2〜3, 5 | accept | 全てACCEPTABLE/QUALITY | 0 false block |
+| accept-4-scene-depiction | accept | BLOCKING, BLOCKING | 2/2 false block |
+| boundary-1-dramatization | boundary | BLOCKING, BLOCKING | 2/2 false block |
+| ng-1〜4 | ng | 全てBLOCKING, BLOCKING | 0 false pass(良好) |
+
+rewrite_hint逐語(false block 3件の原因):
+- accept-1: 「会話の進行中に人間だと判明した出来事まで描写しています。
+  そのタイミングや驚きが実際にあったとは確認できないため…」
+- accept-4: 「双方が意図的に身元を隠したという未確認の描写は避け…」
+- boundary-1: 「驚きが通話の途中で起きたという未確認の時点描写を
+  削り…」
+
+### 27-4. Part2: 最小修正1回(V3)と再Trial結果
+
+`HOOK_TIEBREAK_TEXT_V3`(確認済みの中心的な出来事を自然な時間経過
+[「しばらくの間」「会話が進むうちに」等]として描写する演出は、具体的な
+新事実発明が無い限り許容する旨を追加)でHook Stage2のみ再実行
+(`er052_open233_element_trial_meta_hook_01.py --hook_stage2_v3_only`、
+Stage1 freshは再測定せず、¥1.9481)。
+
+| sub_id | group | 観測(materiality) | 判定 |
+|---|---|---|---|
+| accept-1-original-hook | accept | ACCEPTABLE, ACCEPTABLE, QUALITY | 0 false block(**解消**) |
+| accept-4-scene-depiction | accept | QUALITY, ACCEPTABLE | 0 false block(**解消**) |
+| boundary-1-dramatization | boundary | BLOCKING, BLOCKING | 2/2 false block(**残存**) |
+| ng-1〜4 | ng | 全てBLOCKING | 0 false pass(維持) |
+
+委任文STOP条件は「元Hook誤BLOCKまたはNG誤PASSが小修正後も残る」のみを
+明記しており、boundary-1(境界群、元Hookでもngでもない)単独の残存は
+明記されたSTOP条件に該当しない。よって追加のrubric修正は行わず、
+STOPもせず残課題として次回へ引き継ぐ。
+
+### 27-5. Part3: Meta要素Trial C(未確認actor置換の抑止)結果
+
+| 対象claim | 実測 |
+|---|---|
+| actor claim(“The test began without clearly telling users that contract workers would make the calls.”、neg1 cycle2実データ) | n=2ともoverall_status=`LEDGER_COMPLIANT`(deviation自体が検出されない、matched=False) |
+| NG対照(VP→CEO主体入替、“Meta's CEO admitted the mistake...”) | n=2とも`LEDGER_DEVIATION`・matched_severity_final=`BLOCKING` |
+
+対象claimが重大誤解原則配線後のStage1(V4A)でn=2とも
+`LEDGER_COMPLIANT`となったため、委任文「期待1(社内テスト誤読の解消)」
+どおりに解消したことを確認した。NG対照は引き続きBLOCKINGを維持し、
+actor置換ガード自体は健在(真の主体入替は引き続き検出される)。「期待
+1」で解消したため、BLOCKING経路を強制した場合のStage3
+`actor_rewrite_guard_ok`挙動(「期待2」)は本委任では発火せず未検証の
+まま(`stage3_rewrite_result`/`local_qa_result`ともNone)。
+
+### 27-6. 費用・Git・Status
+
+Part1(¥4.9438)+Part2/3(V2実測込み¥9.6748→V3再Trial後¥10.8919、
+Part2/3純増分¥10.8919)=本委任合計**¥15.8357**(Guardrail¥25のうち、
+Part1≤¥10/Part2〜3≤¥15の内訳いずれも超過なし)。Phase累計
+¥402.5625+¥15.8357=**¥418.3982**/総枠¥600、残**¥181.6018**。
+unittest discoverで既存295件+新規11件(`TestSafetyCriticalSubIdsA5_
+1Exclusion`3件・`TestMisconceptionPrincipleRubricV4`3件・
+`TestHookRubricV3`3件・`TestMetaHookTallyScoringBugFix`2件)=
+**306件全PASS**。`git diff --stat`でProduction
+(er003/er006/er009/er010/er012/er019)・既存rep/iteration証跡への
+差分なしを確認した。USER_DECISION_REQUIRED 5条件(design書§12)は
+いずれも非該当。
+Status=`SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_B_PARTIAL_BOUNDARY_
+RESIDUAL_TRIAL_C_RESOLVED`。boundary-1(境界群)の残存false blockの
+扱い(追加rubric修正要否)・広いTrialへ進む可否はFable/ユーザー判断
+待ちとして次回へ引き継ぐ。

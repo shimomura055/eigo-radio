@@ -192,22 +192,42 @@ def run_trial_b(client, state, consecutive_errors, meta_fixture) -> dict:
         stage1_rows.append({"sub_id": c["sub_id"], "group": c["group"], "runs": run_records})
 
     # --- Hook Stage2(全claimを1 batchにまとめ、run数=max_n) ---
-    batch_claims = [{"claim_text": c["claim_text"], "origin": "translation",
-                      "related_fact_id": "MUSE-HC-006"} for c in HOOK_CLAIMS]
+    batch_claims = build_hook_batch_claims()
     title_hook_text = f"{TITLE}\n\n{NEG1_ORIGINAL_HOOK}"
+    hook_runs = run_hook_stage2_batch_variant(
+        client, state, consecutive_errors, meta_fixture, batch_claims, title_hook_text,
+        max_n, s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2, "V2", "partB_hookstage2",
+        f"{OUT_DIR}/trialB_hookstage2")
+
+    hook_rows = tally_hook_rows(hook_runs)
+
+    return {
+        "stage1_rows": stage1_rows, "hook_stage2_rows": hook_rows,
+        "false_block_total": sum(r["false_block_count"] for r in hook_rows),
+        "false_pass_total": sum(r["false_pass_count"] for r in hook_rows),
+    }
+
+
+def build_hook_batch_claims() -> list:
+    return [{"claim_text": c["claim_text"], "origin": "translation",
+             "related_fact_id": "MUSE-HC-006"} for c in HOOK_CLAIMS]
+
+
+def run_hook_stage2_batch_variant(client, state, consecutive_errors, meta_fixture, batch_claims,
+                                   title_hook_text, n_runs, rubric_text, rubric_tag,
+                                   label_prefix, save_dir) -> list:
     hook_runs = []
-    for run_idx in range(1, max_n + 1):
+    for run_idx in range(1, n_runs + 1):
         check_budget(state)
-        label = f"partB_hookstage2_run{run_idx}"
-        save_path = f"{OUT_DIR}/trialB_hookstage2/run_{run_idx}.json"
+        label = f"{label_prefix}_{rubric_tag}_run{run_idx}"
+        save_path = f"{save_dir}_{rubric_tag}/run_{run_idx}.json"
         last_err = None
         result = None
         for _ in range(1 + MAX_RETRIES_PER_CALL):
             try:
                 result = s2h.run_stage2_hook_batch(
                     client, meta_fixture["ledger_text"], meta_fixture.get("source_article_text"),
-                    title_hook_text, batch_claims, model=s2p.MODEL,
-                    hook_rubric_text=s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2)
+                    title_hook_text, batch_claims, model=s2p.MODEL, hook_rubric_text=rubric_text)
                 break
             except Exception as e:  # noqa: BLE001
                 last_err = f"{type(e).__name__}: {e}"
@@ -219,7 +239,10 @@ def run_trial_b(client, state, consecutive_errors, meta_fixture) -> dict:
         else:
             record(state, consecutive_errors, label, 0.0, False)
             save_json(save_path, {"error": last_err})
+    return hook_runs
 
+
+def tally_hook_rows(hook_runs: list) -> list:
     hook_rows = []
     for idx, c in enumerate(HOOK_CLAIMS):
         labels = []
@@ -231,22 +254,48 @@ def run_trial_b(client, state, consecutive_errors, meta_fixture) -> dict:
             if match is not None:
                 labels.append({"materiality": match["materiality"], "basis": match.get("basis")})
         observed = [lb["materiality"] for lb in labels]
+        # 委任_29 Part2是正(本委任の初回実行で発覚したバグ): 旧実装は
+        # ng群で「BLOCKING(=正しい)」をfalse_pass側へ、accept/boundary群で
+        # 「非BLOCKING(=正しい)」をfalse_block側へ、それぞれ誤って集計して
+        # いた(符号が反転していた、委任_28時点ではコード未実行のため発覚
+        # しなかった)。er052_open233_element_trial_hormuz_terms_01.
+        # run_batch()の正しい集計方式(expected=="PASS"ならBLOCKING観測数=
+        # false_block、BLOCK期待ならnon-BLOCKING観測数=false_pass)に合わせて
+        # 修正する(API呼び出し自体・生judgmentデータは無変更、集計式のみ是正)。
         if c["group"] == "ng":
-            wrong = [m for m in observed if m == "BLOCKING"]
-            correct_count = len(observed) - len(wrong)
+            false_pass_observed = [m for m in observed if m != "BLOCKING"]
+            false_block_observed = []
         else:
-            wrong = [m for m in observed if m != "BLOCKING"]
-            correct_count = len(wrong)
+            false_block_observed = [m for m in observed if m == "BLOCKING"]
+            false_pass_observed = []
         hook_rows.append({
             "sub_id": c["sub_id"], "group": c["group"], "claim_text": c["claim_text"],
             "hook_stage2_labels": labels, "expected_non_blocking": c["group"] != "ng",
-            "false_block_count": (len(wrong) if c["group"] != "ng" else 0),
-            "false_pass_count": (len(wrong) if c["group"] == "ng" else 0),
+            "false_block_count": len(false_block_observed),
+            "false_pass_count": len(false_pass_observed),
             "variance_across_runs": len(set(observed)) > 1 if observed else False,
         })
+    return hook_rows
 
+
+# ------------------------------------------------------------
+# 委任_29 Part2: V2実測でaccept-4/boundary-1が毎回false block、
+# accept-1が1/3 variance(本ファイル上部コメント参照)。Hook rubric
+# 小修正1回(HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3)の再Trial。
+# Stage1 fresh(V4A配線の確認)は委任_28で既に安定確認済み・rubric非
+# 依存のため再実行しない(コスト節約、委任文Guardrail≤¥3の範囲内)。
+# ------------------------------------------------------------
+def run_trial_b_hook_stage2_v3(client, state, consecutive_errors, meta_fixture) -> dict:
+    batch_claims = build_hook_batch_claims()
+    title_hook_text = f"{TITLE}\n\n{NEG1_ORIGINAL_HOOK}"
+    max_n = max(c["n_runs"] for c in HOOK_CLAIMS)
+    hook_runs = run_hook_stage2_batch_variant(
+        client, state, consecutive_errors, meta_fixture, batch_claims, title_hook_text,
+        max_n, s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3, "V3", "partB_hookstage2",
+        f"{OUT_DIR}/trialB_hookstage2")
+    hook_rows = tally_hook_rows(hook_runs)
     return {
-        "stage1_rows": stage1_rows, "hook_stage2_rows": hook_rows,
+        "hook_stage2_rows": hook_rows,
         "false_block_total": sum(r["false_block_count"] for r in hook_rows),
         "false_pass_total": sum(r["false_pass_count"] for r in hook_rows),
     }
@@ -358,6 +407,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--skip_b", action="store_true")
     parser.add_argument("--skip_c", action="store_true")
+    parser.add_argument("--hook_stage2_v3_only", action="store_true",
+                         help="委任_29 Part2是正1回限りの再Trial: Hook Stage2のみを"
+                              "HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3で再実行する"
+                              "(Stage1 fresh・Trial Cは再実行しない)。")
     args = parser.parse_args()
 
     client = vfl01.get_client()
@@ -368,14 +421,33 @@ def main():
     stopped, stop_reason = False, None
     trial_b = {}
     trial_c = {}
+    trial_b_v3 = {}
     try:
-        if not args.skip_b:
-            trial_b = run_trial_b(client, state, consecutive_errors, meta_fixture)
-        if not args.skip_c:
-            trial_c = run_trial_c(client, state, consecutive_errors, meta_fixture)
+        if args.hook_stage2_v3_only:
+            trial_b_v3 = run_trial_b_hook_stage2_v3(client, state, consecutive_errors, meta_fixture)
+        else:
+            if not args.skip_b:
+                trial_b = run_trial_b(client, state, consecutive_errors, meta_fixture)
+            if not args.skip_c:
+                trial_c = run_trial_c(client, state, consecutive_errors, meta_fixture)
     except TrialAbort as e:
         stopped = True
         stop_reason = str(e)
+
+    if args.hook_stage2_v3_only:
+        summary = {
+            "stopped": stopped, "stop_reason": stop_reason,
+            "cumulative_jpy": round(state["cumulative_jpy"], 4),
+            "cumulative_calls": state["cumulative_calls"],
+            "cumulative_errors": state["cumulative_errors"],
+            "trial_b_v3_false_block_total": trial_b_v3.get("false_block_total"),
+            "trial_b_v3_false_pass_total": trial_b_v3.get("false_pass_total"),
+        }
+        save_json(f"{OUT_DIR}/summary_meta_hook_trialb_v3.json", {
+            "summary": summary, "trial_b_v3": trial_b_v3,
+        })
+        print(json.dumps(summary, ensure_ascii=False, indent=2))
+        return
 
     summary = {
         "stopped": stopped, "stop_reason": stop_reason,

@@ -1398,6 +1398,66 @@ rubricへの重大誤解原則配線は、本書時点では依然としてSafet
 解消しておらず、Production採用はもちろんさらなるTrial拡大の前提にも
 できない**(詳細REPORT§26、Fable/ユーザー確認事項)。
 
+(§4-19/§4-20は本書では欠番。委任_29委任文が§4-21/§4-22を明示的に
+指定したため、その番号のまま追加する。)
+
+### 4-21. Stage2 body rubric V4(Meta-1/Meta-2 false downgrade是正、委任_29 Part1)
+
+委任_28のSTOP原因のうち、A5-1はFableラベル判定により再ラベル
+(§7-0-iter29、Safety-criticalから除外)で解消する一方、Meta-1/Meta-2
+(“Also, some calls needed user information to continue.”)は
+Safety-critical維持のまま、rubric側の最小修正1回で是正する対象とした。
+Ledgerの実際の記録(related_fact_id=MUSE-HC-010、conditions:
+「電話の遂行にユーザー情報が必要となる場合」という条件付きの可能性)を、
+記事がその条件を外し「実際に起きた」と断定している(changed_fact=true・
+changed_certainty=true)。これは§0-2の「未確認の人物・行動・動機・
+数字の追加」に該当する誤解であり、A5-1型(役職の同一対象内一般化、
+許容)とは別物として明示的に区別する必要がある。V2/V3は「当事者関係の
+取り違え」と「役職の一般化」の2区分のみで、「条件付きの可能性→既成
+事実への断定(certainty強化)」を独立した原則として扱っていなかった
+ため、誤ってQUALITYへ寛容化していたと判断する。
+
+是正: `MISCONCEPTION_PRINCIPLE_TEXT_V4`(`er052_open233_self_recovery_
+stage2_calibration_01.py`、V3へ1段落を追加するのみ、新しい例示は
+追加しない)。`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4`
+として実測(新規`er052_open233_element_trial_safety_control_02.py`、
+既存`..._01`は不変)し、Safety-critical 8claim(A5-1除外後)+
+Safety12(er009 9フラグ)+Hormuz許容5/NG5の全てでn=1予備測定・n=2
+公式測定ともmisdowngrade/false PASS/false BLOCK 0件を確認した
+(§7-0-iter29・§9-1⑲、費用¥4.9438)。
+
+### 4-22. Hook専用rubric V3(scene-depiction/dramatization false block是正、委任_29 Part2)
+
+委任_28で実装済み・未実行だった`er052_open233_element_trial_meta_
+hook_01.py`を本委任で初めて実行したところ、集計コード自体に符号反転
+バグがあることが判明した(ng群のBLOCKING[正しい]をfalse_passへ、
+accept/boundary群の非BLOCKING[正しい]をfalse_blockへ、誤って計上)。
+`tally_hook_rows()`として是正し(API呼び出し・生judgmentデータは
+無変更、集計式のみ是正)、unittest(`TestMetaHookTallyScoringBugFix`)で
+再発防止した。
+
+是正後の真の値(V2、`HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2`):
+NG群4/4は全run BLOCKING(false pass 0件)。一方、accept-4
+(“Ring, ring. The phone connects, and for a moment neither side lets
+on who is really speaking.”)・boundary-1(“The surprise came halfway
+through the call.”)が毎回false block、元Hook(accept-1、実際の公開
+記事本文)も1/3 runでfalse blockした。rewrite_hint逐語が示す原因は、
+確認済みの中心的な出来事(AIだと思っていたら実は人間だった)を読者に
+体験させるための自然な時間経過・雰囲気描写を、「具体的で未確認の新しい
+行動・タイミングの発明」と誤認していたことである。
+
+是正(最小修正1回): `HOOK_TIEBREAK_TEXT_V3`
+(`er052_open233_self_recovery_stage2_hook_01.py`、既存`HOOK_TIEBREAK_
+TEXT`へ1段落追加のみ)で、確認済みの出来事を自然な時間経過として描写
+する演出(「しばらくの間」「会話が進むうちに」等のおおまかな時間経過・
+雰囲気描写)は、Ledgerに無い具体的な人物・数字・仕組みを発明しない
+限り許容する旨を明記した。Hook Stage2のみ再実行(Stage1 fresh再測定は
+rubric非依存のため省略、¥1.9481)したところ、**元Hook(3/3)・accept-4は
+解消したが、boundary-1(境界群)は2/2 false blockのまま残存**した。
+委任文STOP条件(「元Hook誤BLOCKまたはNG誤PASSが小修正後も残る」)には
+該当しないため、境界群単独の残存はSTOPせず残課題として記録する
+(§9-1⑲、Fable/ユーザー確認事項)。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -2997,7 +3057,52 @@ A4-1/A5-0/A5-1=事実・方向の誤認、Meta-1/Meta-2=主体・認識の誤認
 B3=因果の逆転、B4-a=未確認の仕組みの追加、er009 9種=floor対象flagの
 定義どおり)。**hormuz-HF009のみが対応しない**(§0-2の原則許容候補
 「Brent futures→oil prices」そのものに該当するため)。他に見直し
-候補は無い。
+候補は無い。**委任_29追記**: 上記は委任_27時点の記録であり、A5-1も
+同様にhormuz-HF009と同種の「対応しない」側(役職の同一対象内一般化)で
+あることが委任_29で確定し、`SAFETY_CRITICAL_SUB_IDS`から除外した
+(9件→8件、§7-0-iter29参照)。残る8件(A2A3-0/A4-0/A4-1/A5-0/Meta-1/
+Meta-2/B3/B4-a)は引き続き§0-2のBLOCK候補に明確に対応する。
+
+### 7-0-iter29. A5-1再ラベル+Meta-1/Meta-2 false downgrade是正(委任_29 Part1、§0参照)
+
+**再ラベル(Fableラベル判定、委任_29委任文§1)**: A5-1(“Meta executives
+admitted that starting the test without a proper explanation was a
+mistake.”、related_fact_id=MUSE-HC-012)は、Ledgerが「特定のMeta副社長」
+の発言としているのに対し、記事は「Meta executives」というより一般的な
+役職名で言い換えているだけであり、発言内容・責任主体(Metaという同一
+組織)自体は変えていない。これはhormuz-HF009(§7-0-iter27)と同種の、
+同一対象内での役職・用語の一般化であり、**正解ラベルをBLOCKINGから
+QUALITY(非BLOCKING)へ改める**。`SAFETY_CRITICAL_SUB_IDS`から除外し
+(9件→8件)、`CORRECT_LABEL_OVERRIDES_R3DPRIME`へ`"A5-1": "QUALITY"`を
+追加した(`er052_open233_self_recovery_r3dprime_calibration_01.py`、
+既存A2A3-1/A4-2/B1-c/B4-dと同じ「機械コピー由来ラベルの是正」の前例を
+踏襲、Safety原則自体の変更ではない)。
+
+**Meta-1/Meta-2 false downgrade是正(最小修正1回、V4)**: 委任_28の
+V3公式測定でfalse downgradeしたMeta-1/Meta-2(“Also, some calls needed
+user information to continue.”、related_fact_id=MUSE-HC-010)は、
+Ledgerの実際の記録(conditions: 「電話の遂行にユーザー情報が必要と
+なる場合」)が条件付きの可能性であるのに対し、記事はその条件を外し
+「実際に起きた」と断定している(Stage1実測issue逐語:「条件付きの
+可能性を、実際に発生した事実へ強めているため」、changed_fact=true・
+changed_certainty=true)。これはA5-1型(役職の同一対象内一般化、許容)
+とは別物の「未確認の出来事・行動を既成事実として断定」(§0-2のBLOCK
+候補)であり、V2/V3は両者を明示的に区別していなかった。
+`MISCONCEPTION_PRINCIPLE_TEXT_V4`(最小修正1回、新しい例示は追加せず、
+「条件付きの可能性→既成事実への断定」を独立した原則として追加)で是正
+した(`er052_open233_self_recovery_stage2_calibration_01.py`)。
+
+**n=1予備測定→n=2公式測定(V4、`er052_open233_element_trial_safety_
+control_02.py`、新規出力ディレクトリ、既存`..._01`は不変)**: Safety-
+critical 8claim(A5-1除外後)+Safety12(er009 9フラグ)+Hormuz許容5/
+NG5(委任_27 Trial Aのclaim定義を再利用、Stage2のみ)を対照測定した。
+結果: Safety-critical 8/8・Safety12 9/9が、n=1予備測定・n=2公式測定の
+いずれでも全てBLOCKING(misdowngrade 0件)。Hormuz許容5件は非BLOCKING
+(ACCEPTABLE/QUALITY)・NG5件はBLOCKINGを維持(false PASS/false BLOCK
+0件)。A5-1自身(参考測定、Safety-critical対象外)はACCEPTABLE
+(n=2とも)となり、再ラベルと整合した。**1回の最小修正(V4)でSTOP
+条件(Safety対照群のいずれかが小修正1回後もBLOCKINGに戻らない)を
+解消し、PASSした**(費用¥4.9438、Guardrail¥10のうち)。詳細REPORT§27。
 
 ### 7-1. Safety群(Stage 1/2で必ずBLOCKING維持、その後Rewrite→PASSが期待到達経路)
 
@@ -4248,6 +4353,60 @@ C)は未実施のまま本委任を終える。A5-1・Meta-1/Meta-2の扱い(§7
 ¥7.0873(予備測定¥2.7022+V3公式測定¥4.3851、Guardrail¥9のうち)。
 **Status=`SAFETY_CONTROL_AUDIT_STOPPED_AFTER_ONE_MINOR_FIX_STILL_
 FAILING`**。詳細REPORT§26。
+
+**⑲ Safety対照群の安定化(Fableラベル判定反映)PASS+Meta要素Trial B/C
+実施(委任_29、本書§0/§7-0-iter29参照)**: Fable(§1)が、A5-1は
+hormuz-HF009と同種の役職一般化のためSafety-criticalから除外(QUALITY)、
+Meta-1/Meta-2は「条件付きの可能性→既成事実への断定」でありBLOCKING
+維持が妥当と判定した。この判定を反映し、`SAFETY_CRITICAL_SUB_IDS`を
+8件化、`MISCONCEPTION_PRINCIPLE_TEXT_V4`(最小修正1回)を追加して
+新規`er052_open233_element_trial_safety_control_02.py`
+(Safety-critical 8claim+Safety12+Hormuz許容5/NG5)で対照測定した
+結果、**n=1予備測定・n=2公式測定のいずれもmisdowngrade/false PASS/
+false BLOCK 0件でPASS**(§7-0-iter29、費用¥4.9438)。
+
+Part1 PASS後、委任_28で実装済み・未実行だった
+`er052_open233_element_trial_meta_hook_01.py`(Meta要素Trial B[Hook
+許容基準]・Trial C[未確認actor置換の抑止])を初めて実行した。**Trial B
+初回実行(V2)で、集計コード自体に符号反転バグがあることが判明した**
+(ng群のBLOCKING[正しい]をfalse_passへ、accept/boundary群の非
+BLOCKING[正しい]をfalse_blockへ、それぞれ誤って計上。委任_28時点では
+未実行のため発覚しなかった。`tally_hook_rows()`として是正し、
+unittest[`TestMetaHookTallyScoringBugFix`]で再発防止)。是正後の実測
+(真の値): NG群4/4は全run BLOCKING(false pass 0件、良好)。一方、
+許容群のうちaccept-4(“Ring, ring...”)・boundary-1(“The surprise came
+halfway through the call.”)が毎回false block、元Hook(accept-1、
+実際の公開記事本文)も1/3 runでfalse blockした(rewrite_hint逐語:
+「未確認の具体的なタイミング・行動の発明」という誤認)。委任文が許容
+する最小修正1回(`HOOK_TIEBREAK_TEXT_V3`、確認済みの中心的な出来事を
+自然な時間経過として描写する演出は、具体的な新事実発明が無い限り許容
+する旨を追加)をHook Stage2のみ再実行(Stage1 fresh再測定はrubric非
+依存のため省略、¥1.9481)したところ、元Hook(3/3)・accept-4は解消した
+が、**boundary-1(境界群、“演出強め”)は2/2 false blockのまま残存**。
+委任文STOP条件は「元Hook誤BLOCKまたはNG誤PASSが小修正後も残る」のみを
+明記しており、境界群単独の残存はSTOP条件に明記されていないため、
+STOPはせず残課題として記録する(追加のrubric変更はせず、Fable/
+ユーザー判断を仰ぐ)。
+
+Trial C(未確認actor置換の抑止、neg1 cycle2実データ)は、重大誤解原則
+配線後のStage1(V4A)で、対象claim(“The test began without clearly
+telling users that contract workers would make the calls.”)が
+**n=2ともoverall_status=LEDGER_COMPLIANT(deviation自体が検出されない)
+となり、委任文「期待1(社内テスト誤読の解消)」どおりに解消した**。
+NG対照(VP→CEOの主体入替)はn=2ともBLOCKINGを維持し、actor置換ガード
+自体は健在であることを確認した。「期待1」で解消したため、BLOCKING
+経路を強制した場合のStage3 actor_rewrite_guard挙動(「期待2」)は本
+委任では発火せず未検証のまま。
+
+本委任費用(Part1+Part2+3)合計¥15.8357(Guardrail¥25のうち、Part1
+¥4.9438+Part2/3¥10.8919)。Phase累計¥402.5625+¥15.8357=
+**¥418.3982**/総枠¥600、残**¥181.6018**。`git diff --stat`で
+Production(er003/er006/er009/er010/er012/er019)・既存rep/iteration
+証跡への差分なしを確認済み(新規出力は`er052_output/
+open233_element_trial_safety_control_02/`[新設]・
+`er052_output/open233_element_trial_meta_hook_01/`[新規実行]のみ)。
+**Status=`SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_B_PARTIAL_BOUNDARY_
+RESIDUAL_TRIAL_C_RESOLVED`**。詳細REPORT§27。
 
 ## 10. リスク
 

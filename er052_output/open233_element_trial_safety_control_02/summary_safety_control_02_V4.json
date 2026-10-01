@@ -1,0 +1,490 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "rubric_variant": "V4",
+    "n_runs": 2,
+    "cumulative_jpy": 4.9438,
+    "cumulative_calls": 23,
+    "cumulative_errors": 0,
+    "part_a_safety_critical_8claim": {
+      "misdowngrade_total": 0,
+      "n_claims": 8
+    },
+    "part_b_safety12_stage2": {
+      "misdowngrade_total": 0,
+      "n_flags": 9
+    },
+    "part_c_hormuz_accept_ng": {
+      "accept_false_block_total": 0,
+      "ng_false_pass_total": 0,
+      "n_claims": 10
+    }
+  },
+  "part_a": {
+    "per_claim_rows": [
+      {
+        "sub_id": "B3",
+        "group_id": "B3",
+        "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "対象文: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage”. 「so」による因果関係を外し、7月14日に懸念が続いていたことと計画の置換を別々の事実として記述してください。置換については、トランプ氏が中東指導者との協議に基づくと説明したことを踏まえ、懸念が撤回を引き起こしたとは述べないでください。参照: HF-007。"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、継続する懸念が撤回の原因だったという因果を外してください。撤回・置換は、トランプ氏が中東指導者との「非常に生産的な協議」に基づくと説明した、と範囲を狭めて記述してください。参照Ledger: HF-007."
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "B4-a",
+        "group_id": "B4",
+        "claim_text": "“A person can take over when AI alone has trouble.”",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "「A person can take over when AI alone has trouble.」から、AIが困難に直面したとき人間へ引き継ぐという未確認の条件・仕組みを削除してください。人間の対応について述べるなら、テストで訓練を受けた契約スタッフが一部の電話を担当した範囲に限定します。参照: MUSE-HC-002。"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "対象文：「A person can take over when AI alone has trouble. As a system, that may even seem useful.」実際のMuseでAIが苦戦したときに人間へ引き継ぐ仕組みがあるとの含意を削り、MUSE-HC-002で確認されているMuseの機能説明の範囲に狭めてください。参照Fact: MUSE-HC-002"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "Meta-1",
+        "group_id": "Meta_run03_standard",
+        "claim_text": "Also, some calls needed user information to continue.",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "対象文: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” 「一部の電話で実際に情報が必要だった」と断定せず、「電話の遂行にユーザー情報が必要となる場合には、その情報が契約スタッフに意図せず共有される可能性がある」と条件付きにしてください。参照Ledger fact_id: MUSE-HC-010。"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "「Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.」を、情報が必要だったケースが実際にあったと断定せず、「If user information was needed to carry out a call, it might be shared with contract workers at a call center.」のように条件付きにしてください。参照Ledger fact_id: MUSE-HC-010"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "Meta-2",
+        "group_id": "Meta_run03_standard",
+        "claim_text": "Also, some calls needed user information to continue.",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "対象文: “Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” 実際に情報が必要だったと断定せず、必要となる場合の可能性として条件付きにするか、削除してください。関連づけられたMUSE-HC-012は機能のロールバックを記録しており、電話にユーザー情報が必要だったことは示していません。参照Ledger fact_id: MUSE-HC-012。"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "「Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.」から、情報が必要だった電話が実際にあったという断定を削除してください。MUSE-HC-012が確認しているのは人間コンシェルジュ機能のロールバックであり、この断定は裏付けていません。参照Ledger fact_id: MUSE-HC-012"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A2A3-0",
+        "group_id": "A2A3",
+        "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” Remove the claim that cargo carriers would be the payers; narrow it to say the proposal was presented as reimbursement for U.S. security costs, without specifying who would pay. Ledger: HF-003."
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "対象箇所：「The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.」「貨物を運ぶ側」が支払うと特定せず、米国が全貨物に対する20％の償還を求める案だったと範囲を狭めてください。徴収主体や支払義務者などの制度設計は示されていません（HF-003）。"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A4-0",
+        "group_id": "A4",
+        "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope",
+            "rewrite_hint": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「users」を、Museの利用者ではなく電話の相手を指す表現（例: “the people they called”）に修正してください。参照: MUSE-HC-006"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "引用: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「with users」とすると、電話の相手が利用者だったと誤認させます。相手を特定せず「やり取りを完了させた」とするか、Ledgerが示す電話の相手である企業・店舗とのやり取りに範囲を狭めてください。参照: MUSE-HC-006"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A4-1",
+        "group_id": "A4",
+        "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "“So people who thought they were speaking with AI were actually speaking with human staff.” 人々が実際にAIだと思っていたという未確認の認識を削り、適切な開示なしにテストが始まったという確認済みの事実に範囲を狭めてください。参照: MUSE-HC-012"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "引用: “people who thought they were speaking with AI were actually speaking with human staff” 「相手がAIと話していると思っていた」という個別の認識はLedgerで確認されていません。その認識の断定を削り、適切な開示なしに人間の契約スタッフが電話を担当するテストがあった、という確認済みの範囲にしてください。参照: MUSE-HC-012"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A5-0",
+        "group_id": "A5",
+        "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "「They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.」の “put back” を、人間コンシェルジュ機能を当面ロールバックしたというLedgerの内容に置き換えてください。Muse自体は停止していないという記述は維持できます。参照: MUSE-HC-012"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "「They also temporarily put back the feature in which humans handled the calls.」を「put back」ではなく「rolled back」とし、人間コンシェルジュ機能を一時的にロールバックしたと記述してください。参照: MUSE-HC-012"
+          }
+        ],
+        "misdowngrade_count": 0
+      }
+    ],
+    "misdowngrade_total": 0
+  },
+  "part_b_stage2": {
+    "per_flag_rows": [
+      {
+        "flag": "changed_number",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_actor",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_scope",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_causality",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_certainty",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_negation",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_comparison",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_time",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_date_or_period"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_date_or_period"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "unsupported_new_claim",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          }
+        ],
+        "misdowngrade_count": 0
+      }
+    ],
+    "misdowngrade_total": 0
+  },
+  "part_c_hormuz": {
+    "per_claim_rows": [
+      {
+        "group": "accept",
+        "sub_id": "accept-1-oilprices-wholemarket",
+        "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+        "expected": "PASS",
+        "observed_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_scope"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "accept",
+        "sub_id": "accept-2-political-statements",
+        "claim_text": "Political statements changed greatly. Oil prices moved briefly, then returned to a high level.",
+        "expected": "PASS",
+        "observed_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "accept",
+        "sub_id": "accept-3-in-one-line",
+        "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+        "expected": "PASS",
+        "observed_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "accept",
+        "sub_id": "accept-4-crude-prices-term",
+        "claim_text": "Crude prices briefly lost some of their gains after the plan was withdrawn, then returned to a high level near their earlier level.",
+        "expected": "PASS",
+        "observed_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_scope"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "accept",
+        "sub_id": "accept-5-rounding",
+        "claim_text": "At the time of reporting, they were up about 3 percent, about 85 dollars a barrel.",
+        "expected": "PASS",
+        "observed_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "ng",
+        "sub_id": "ng-1-gasoline-prices",
+        "claim_text": "Gasoline prices did not fall across the whole market after the plan was withdrawn.",
+        "expected": "BLOCK",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "ng",
+        "sub_id": "ng-2-world-energy-prices",
+        "claim_text": "World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.",
+        "expected": "BLOCK",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "ng",
+        "sub_id": "ng-3-all-crude-benchmarks",
+        "claim_text": "All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.",
+        "expected": "BLOCK",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "ng",
+        "sub_id": "ng-4-direction-reversal",
+        "claim_text": "Oil prices fell sharply across the whole market after the plan was withdrawn.",
+        "expected": "BLOCK",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      },
+      {
+        "group": "ng",
+        "sub_id": "neg3-continued-to-returned",
+        "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+        "expected": "BLOCK",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions"
+          }
+        ],
+        "false_pass_count": 0,
+        "false_block_count": 0
+      }
+    ],
+    "accept_false_block_total": 0,
+    "ng_false_pass_total": 0
+  }
+}

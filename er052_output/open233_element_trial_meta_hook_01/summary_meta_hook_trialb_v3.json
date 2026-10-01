@@ -1,0 +1,211 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 10.8919,
+    "cumulative_calls": 31,
+    "cumulative_errors": 0,
+    "trial_b_v3_false_block_total": 2,
+    "trial_b_v3_false_pass_total": 0
+  },
+  "trial_b_v3": {
+    "hook_stage2_rows": [
+      {
+        "sub_id": "accept-1-original-hook",
+        "group": "accept",
+        "claim_text": "A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": true
+      },
+      {
+        "sub_id": "accept-2-experience-para-1",
+        "group": "accept",
+        "claim_text": "You pick up. The voice sounds human—because it is.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "accept-3-experience-para-2",
+        "group": "accept",
+        "claim_text": "The person on the other end of the line was real, not artificial—even though the call began just like any other call through Muse.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "accept-4-scene-depiction",
+        "group": "accept",
+        "claim_text": "Ring, ring. The phone connects, and for a moment neither side lets on who is really speaking.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": true
+      },
+      {
+        "sub_id": "accept-5-conversational-restatement",
+        "group": "accept",
+        "claim_text": "Imagine getting a call from Muse and finding a real person on the line.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "boundary-1-dramatization",
+        "group": "boundary",
+        "claim_text": "The surprise came halfway through the call.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_date_or_period"
+          }
+        ],
+        "expected_non_blocking": true,
+        "false_block_count": 2,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-1-unconfirmed-person",
+        "group": "ng",
+        "claim_text": "Mark Zuckerberg himself made some of the calls.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-2-unconfirmed-action",
+        "group": "ng",
+        "claim_text": "Workers read from a secret script to hide that they were human.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-3-unconfirmed-number",
+        "group": "ng",
+        "claim_text": "About 40% of Muse calls were made by humans.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      },
+      {
+        "sub_id": "ng-4-fact-reversal",
+        "group": "ng",
+        "claim_text": "Meta said every call was fully AI.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "expected_non_blocking": false,
+        "false_block_count": 0,
+        "false_pass_count": 0,
+        "variance_across_runs": false
+      }
+    ],
+    "false_block_total": 2,
+    "false_pass_total": 0
+  }
+}

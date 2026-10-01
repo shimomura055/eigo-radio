@@ -2988,9 +2988,27 @@ class TestSafetyCriticalSubIdsHormuzExclusion(unittest.TestCase):
     def test_hormuz_hf009_excluded(self):
         self.assertNotIn("hormuz-HF009", r3d.SAFETY_CRITICAL_SUB_IDS)
 
-    def test_other_nine_still_present(self):
-        expected = {"A2A3-0", "A4-0", "A4-1", "A5-0", "A5-1", "Meta-1", "Meta-2", "B3", "B4-a"}
+    def test_other_eight_still_present(self):
+        # 委任_29 Part1でA5-1もこのリストから除外されたため、期待集合を
+        # 8件(A5-1除く)へ更新する(TestSafetyCriticalSubIdsA5_1Exclusion参照)。
+        expected = {"A2A3-0", "A4-0", "A4-1", "A5-0", "Meta-1", "Meta-2", "B3", "B4-a"}
         self.assertEqual(set(r3d.SAFETY_CRITICAL_SUB_IDS), expected)
+
+
+class TestSafetyCriticalSubIdsA5_1Exclusion(unittest.TestCase):
+    """委任_29 Part1: SAFETY_CRITICAL_SUB_IDSからA5-1を除外し、
+    CORRECT_LABEL_OVERRIDES_R3DPRIMEでQUALITYへ上書きしたことの
+    regression test(¥0、Fableラベル判定の反映)。"""
+
+    def test_a5_1_excluded_from_safety_critical(self):
+        self.assertNotIn("A5-1", r3d.SAFETY_CRITICAL_SUB_IDS)
+
+    def test_a5_1_correct_label_is_quality(self):
+        self.assertEqual(r3d.CORRECT_LABEL_OVERRIDES_R3DPRIME.get("A5-1"), "QUALITY")
+
+    def test_a5_0_still_safety_critical(self):
+        # A5-0(同一グループの別claim)はSafety-critical扱いのまま。
+        self.assertIn("A5-0", r3d.SAFETY_CRITICAL_SUB_IDS)
 
 
 class TestStage1FreshWithMisconceptionPrincipleDoesNotTouchSharedBudgetFile(unittest.TestCase):
@@ -3020,6 +3038,99 @@ class TestStage1FreshWithMisconceptionPrincipleDoesNotTouchSharedBudgetFile(unit
         self.assertEqual(result["overall_status"], "LEDGER_COMPLIANT")
         self.assertEqual(state["cumulative_calls"], 1)
         self.assertGreater(state["cumulative_jpy"], 0.0)
+
+
+class TestMisconceptionPrincipleRubricV4(unittest.TestCase):
+    """委任_29 Part1: RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4
+    (Meta-1/Meta-2のfalse downgrade是正)のregression test(¥0)。
+    既存V3定数は変更していないことも併せて確認する。"""
+
+    def test_v4_extends_v3_with_new_clarification_only(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(
+            s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4.startswith(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V3))
+        self.assertIn("条件付きの可能性", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4)
+        self.assertIn("certaintyの強化", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4)
+
+    def test_v3_unchanged(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertIn("当事者関係(カウンターパート)の取り違え", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V3)
+        self.assertNotIn("条件付きの可能性", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V3)
+
+    def test_rubric_v4_combines_base_and_text(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(
+            s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4.startswith(
+                s2c.RUBRIC_R3_TRIPLE_PRIME))
+        self.assertIn(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4,
+                       s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4)
+
+
+class TestHookRubricV3(unittest.TestCase):
+    """委任_29 Part2: HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3
+    (accept-1/accept-4のfalse block是正)のregression test(¥0)。"""
+
+    def test_v3_extends_v2_with_new_clarification_only(self):
+        self.assertTrue(
+            s2h.HOOK_TIEBREAK_TEXT_V3.startswith(s2h.HOOK_TIEBREAK_TEXT))
+        self.assertIn("自然な時間の流れ", s2h.HOOK_TIEBREAK_TEXT_V3)
+
+    def test_v2_unchanged(self):
+        self.assertNotIn("自然な時間の流れ", s2h.HOOK_TIEBREAK_TEXT)
+
+    def test_rubric_v3_combines_base_and_text(self):
+        self.assertTrue(
+            s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3.startswith(
+                s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE))
+        self.assertIn(s2h.HOOK_TIEBREAK_TEXT_V3, s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3)
+
+
+class TestMetaHookTallyScoringBugFix(unittest.TestCase):
+    """委任_29 Part2: er052_open233_element_trial_meta_hook_01.tally_hook_rows()
+    の符号反転バグ是正のregression test(¥0、本委任の初回実行で発覚)。
+    旧実装は、ng群でBLOCKING(正しい)をfalse_passへ、accept/boundary群で
+    非BLOCKING(正しい)をfalse_blockへ、それぞれ誤って計上していた。"""
+
+    def _tally(self, accept_materiality_pairs, ng_materiality_pairs):
+        import er052_open233_element_trial_meta_hook_01 as meta_hook
+
+        # HOOK_CLAIMSの実claim群と同じ件数・group順を使い、n_runsぶんの
+        # fake runを合成する(claim_indexはHOOK_CLAIMSの並び順と一致させる)。
+        n_runs = max(c["n_runs"] for c in meta_hook.HOOK_CLAIMS)
+        accept_idx = [i for i, c in enumerate(meta_hook.HOOK_CLAIMS) if c["group"] != "ng"]
+        ng_idx = [i for i, c in enumerate(meta_hook.HOOK_CLAIMS) if c["group"] == "ng"]
+        runs = []
+        for run_idx in range(n_runs):
+            judgments = []
+            for pos, idx in enumerate(accept_idx):
+                judgments.append({"claim_index": idx,
+                                   "materiality": accept_materiality_pairs[pos % len(accept_materiality_pairs)],
+                                   "basis": None})
+            for pos, idx in enumerate(ng_idx):
+                judgments.append({"claim_index": idx,
+                                   "materiality": ng_materiality_pairs[pos % len(ng_materiality_pairs)],
+                                   "basis": None})
+            runs.append({"parsed": {"judgments": judgments}})
+        return meta_hook.tally_hook_rows(runs)
+
+    def test_all_correct_gives_zero_false_block_and_pass(self):
+        # accept/boundary群が全てACCEPTABLE(正しい)、ng群が全てBLOCKING
+        # (正しい)の場合、false_block/false_passは両方とも0でなければ
+        # ならない(旧バグでは逆に非ゼロになっていた)。
+        rows = self._tally(["ACCEPTABLE"], ["BLOCKING"])
+        self.assertEqual(sum(r["false_block_count"] for r in rows), 0)
+        self.assertEqual(sum(r["false_pass_count"] for r in rows), 0)
+
+    def test_all_wrong_gives_nonzero_false_block_and_pass(self):
+        # accept/boundary群が全てBLOCKING(誤り)、ng群が全てACCEPTABLE
+        # (誤り)の場合、false_block/false_passは両方とも観測件数
+        # (claimごとのn_runs合計)と一致する。
+        import er052_open233_element_trial_meta_hook_01 as meta_hook
+        rows = self._tally(["BLOCKING"], ["ACCEPTABLE"])
+        n_accept_runs = sum(c["n_runs"] for c in meta_hook.HOOK_CLAIMS if c["group"] != "ng")
+        n_ng_runs = sum(c["n_runs"] for c in meta_hook.HOOK_CLAIMS if c["group"] == "ng")
+        self.assertEqual(sum(r["false_block_count"] for r in rows), n_accept_runs)
+        self.assertEqual(sum(r["false_pass_count"] for r in rows), n_ng_runs)
 
 
 if __name__ == "__main__":

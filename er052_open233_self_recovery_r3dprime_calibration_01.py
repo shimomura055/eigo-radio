@@ -54,6 +54,8 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
     "B4-d": "QUALITY",   # 委任_12から継承(R3較正で確定済み)
     "A2A3-1": "QUALITY",  # 新規是正(委任_13、Opus L2 #3論点1)
     "A4-2": "QUALITY",   # 新規是正(委任_13、Opus L2 #3論点1)
+    "A5-1": "QUALITY",   # 新規是正(委任_29、上記SAFETY_CRITICAL_SUB_IDS
+                         # コメント参照。役職の同一対象内一般化のためQUALITY)
 }
 
 # 委任_13 論点1(是正2): 「Safety側誤降格0件」を、名指しした10claimへ限定。
@@ -68,8 +70,22 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
 # 変更ではない)。過去iteration較正証跡(iter4/5/6等のsummary json)は
 # 保存済みの値のまま不変であり、本変更は以後の新規実行にのみ影響する。
 # 根拠はDECISION_LOG.md(OPEN-233-SELF-RECOVERY-TRIAL-01、委任_28)参照。
+#
+# 委任_29 Part1(Fableラベル判定の反映): `A5-1`("Meta executives admitted
+# that starting the test without a proper explanation was a mistake."、
+# related_fact_id=MUSE-HC-012)も、hormuz-HF009と同じ理由でこのリストから
+# 除外する(9件→8件)。Ledgerは「特定のMeta副社長(a specific Meta vice
+# president)」の発言としているのに対し、記事は「Meta executives」という
+# より一般的な役職名で言い換えているだけであり、発言内容・責任主体(Meta
+# という同一組織)自体は変えていない。これは§0-2の「Brent futures→oil
+# prices」と同種の、同一対象内での役職・用語の一般化であり、重大誤解原則に
+# 照らしてSafety-critical(BLOCKING維持必須)には当たらない。正解ラベルは
+# QUALITY(非BLOCKING)とし、`CORRECT_LABEL_OVERRIDES_R3DPRIME`へ追加する
+# (Safety原則自体の変更ではなく、既存A2A3-1/A4-2/B1-c/B4-dと同じ「機械
+# コピー由来ラベルの是正」の前例を踏襲するのみ)。根拠はDECISION_LOG.md
+# (OPEN-233-SELF-RECOVERY-TRIAL-01、委任_29)参照。
 SAFETY_CRITICAL_SUB_IDS = frozenset({
-    "A2A3-0", "A4-0", "A4-1", "A5-0", "A5-1", "Meta-1", "Meta-2",
+    "A2A3-0", "A4-0", "A4-1", "A5-0", "Meta-1", "Meta-2",
     "B3", "B4-a",
 })
 
