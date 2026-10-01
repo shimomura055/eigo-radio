@@ -659,6 +659,46 @@ open233_self_recovery_flow_01.md`§6-16/§9-1㉕、`OPEN-233-SELF-
 RECOVERY-TRIAL-01_REPORT.md`§33。meta_run03_standardの(b)Stage1
 fresh enumeration非決定性そのものの改善要否、Phase 2新規テーマ選定
 (PM_GOVERNANCE§13)はFable/ユーザー判断事項として継続。
+**2026-10-01追記(委任_36、rep20 sample2の`ladder_exhausted_without_
+full_rewrite`根本原因特定と小修正)**: claim_textが記事中の非隣接2文を
+“…” and “…”で結合した合成claimの場合、既存`locate_target()`が1文
+fuzzy match(SequenceMatcher)しか試みず一方の断片しか捕捉しない
+(もう一方がladder①〜④いずれの編集対象にも入らない)ことを、API呼び出し
+非依存の決定論的再現スクリプトで特定した(¥0)。`extract_all_quoted_
+fragments`/`locate_multi_quote_span`(2つ以上の独立した引用断片が
+同一段落内・600文字以内で全文に逐語実在する場合のみ発火、fail-closed)
+を新設し、`locate_target`へ組み込み、`run_paired_local_rewrite`の
+ja_target決定も`en_target`がmulti_quote_span時は位置写像を優先する
+よう変更した(unittest13件新規、既存304件は非回帰、計317件PASS)。
+rep19/rep20と同一のfrozen fixtureを`er052_open233_self_recovery_
+flow_runner_01_rep21_representative_01.py`(OUT_DIR_REP21新設)でn=2+
+Safety対照(changed_number、n=1)で再実行した結果、sample2(本委任の
+修正対象)は`RESOLVED_REWRITE_THEN_DOWNGRADE`(2cycle、¥1.2052)で
+STAGE4を解消した(本run自体では2断片合成claimの形は非決定性により
+再現せず、修正の有効性はrep20実データを使った決定論的unittest
+`test_reproduces_rep20_sample2_cycle2_fix`で確認)。sample1は逆に
+新規`STAGE4_ESCALATION`(`cycle_limit_exhausted`)となったが、該当
+claim_textの断片は1つのみで`locate_multi_quote_span`は`not_multi_
+quote`を返し新規コードパスが不発火のまま(修正前後でコード経路が
+完全同一)であることを決定論的に確認し、本委任の修正とは無関係な別の
+非決定性(変種(e)、1つの引用が複数文にまたがる場合にrewrite_hintが
+空だと1文SequenceMatcher fallbackが先頭文しか捕捉しない既知の限界)と
+特定した。false PASSではない(STAGE4_ESCALATIONは安全側のfail-closed)。
+変種(e)の修正は本委任のスコープ外として報告のみに留めた。Safety対照
+(changed_number)はfloorが引き続き正しく発火(`RESOLVED_REWRITE`、
+downgrade0件)。`detect_safety_critical_misdowngrades`該当0件。
+project-wide regression(`run_project_regression.py`、collected=4284)
+でも本委任由来の新規failureなしを確認した(failed=6・errors=5は
+いずれも`er052_open233`対象外の既存failure)。実測¥3.561
+(Guardrail¥7内)。Phase累計¥482.3665+¥3.561=**¥485.9275**/総枠¥600、
+残**¥114.0725**。Status=`MULTI_QUOTE_LOCATE_FIX_IMPLEMENTED_REP21_
+SAMPLE2_RESOLVED_SAMPLE1_SEPARATE_PREEXISTING_VARIANT_E_FOUND_NO_
+SAFETY_DOWNGRADE`。詳細: `DECISION_LOG.md`2026-10-01`OPEN-233-SELF-
+RECOVERY-TRIAL-01`委任_36エントリ、`docs/pm/design_open233_self_
+recovery_flow_01.md`§6-17/§9-1㉖、`OPEN-233-SELF-RECOVERY-TRIAL-01_
+REPORT.md`§34。変種(e)の修正要否、meta_run03_standardの(b)Stage1
+fresh enumeration非決定性そのものの改善要否、Phase 2新規テーマ選定
+(PM_GOVERNANCE§13)はいずれもFable/ユーザー判断事項として継続。
 旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
 B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
 Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は

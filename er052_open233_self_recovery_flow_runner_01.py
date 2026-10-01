@@ -252,11 +252,23 @@ OUT_DIR_REP19 = "er052_output/open233_self_recovery_flow_runner_01_rep19"
 # Safety-critical 8のStage2のみn=1)も同じOUT_DIR_REP20・同じbudget
 # stateで実行する。出力は新規ディレクトリ(`_rep20`)へ書く。
 OUT_DIR_REP20 = "er052_output/open233_self_recovery_flow_runner_01_rep20"
-OUT_DIR = OUT_DIR_REP20
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233al_35_rep20.json"
-TOTAL_BUDGET_JPY = 9.0  # 委任_35 Guardrail¥10のうち、¥1をhard margin
-# として残し、本runnerのAPI呼び出し全体(rep20本体+Safety対照)を¥9で
-# 自己停止する。
+# 委任_36(rep21、2026-10-01、委任文§2 C): 既存iteration1〜8・rep7〜20の
+# 出力(OUT_DIR_ITER1〜8/OUT_DIR_REP7〜20)は変更しない。rep20 sample2
+# cycle2のladder_exhausted_without_full_rewrite根本原因(claim_textが
+# 同一fact_idの非隣接2文を“…” and “…”で結合した合成claimの場合、
+# locate_target()が1文fuzzy matchしか試みず断片の一方を見落とす、§6-18)の
+# 是正(locate_multi_quote_span新設+locate_target/run_paired_local_rewriteの
+# ja_target決定への組み込み)後、rep19/rep20と同じfrozen fixture
+# (`stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`、
+# OUT_DIR_REP19から読み込む、再freezeしない)をn=2で再検証する。Safety
+# 対照(changed_number fixture1件full flow n=1)も同じOUT_DIR_REP21・同じ
+# budget stateで実行する。出力は新規ディレクトリ(`_rep21`)へ書く。
+OUT_DIR_REP21 = "er052_output/open233_self_recovery_flow_runner_01_rep21"
+OUT_DIR = OUT_DIR_REP21
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233am_36_rep21.json"
+TOTAL_BUDGET_JPY = 6.5  # 委任_36 Guardrail¥7のうち、¥0.5をhard marginとして
+# 残し、本runnerのAPI呼び出し全体(rep21本体+Safety対照)を¥6.5で自己停止
+# する。
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -2329,6 +2341,70 @@ def extract_quoted_fragment_present_in(hint: str, text: str) -> str | None:
     return max(present, key=len)
 
 
+# ------------------------------------------------------------
+# 委任_36(§6-18、meta_run03_standard sample2 rep20 cycle2根本原因是正)
+# ------------------------------------------------------------
+# rep20 sample2 cycle2で実測した非収束パターン: Stage2 LLMがsame_fact_id_
+# locations(複数箇所)を1つのclaimへ要約する際、claim_textが
+# “They could not tell if it was AI or a person” and “They did not realize
+# it.”のように、記事中の非隣接2文を“…”断片として"and"で結合した合成文に
+# なった。この場合、従来のlocate_target()はclaim_text全体に対する1文
+# fuzzy match(locate_best_sentence)しか試みないため、2断片のうち一方
+# (ratio最大の1文)しか捕捉できず、もう一方の問題文がladder①〜④の
+# いずれでも編集対象に入らないまま(guard_ok=False)ladder_exhausted_
+# without_full_rewriteへ至った(sample1では同じfactが毎cycle単一文の
+# claim_textとして現れ、既存のdisclosure_gap_negative_inference_downgrade
+# floorでQUALITYへ降格されたため、この経路を踏まなかった)。
+# 本修正は、claim_text自体が2つ以上のbracket-quote断片を含み、かつ全断片が
+# full_text中に逐語で実在する場合に限り、それらを包含する最小スパンを
+# 返す(いずれかの断片が不在・2段落以上に跨る・max_span_charsを超える場合は
+# Noneを返し、既存のlocate_best_sentence経路へfail-closedで委ねる。単一
+# 断片[従来通りextract_quoted_fragmentが拾う最長1件のみ]の場合は
+# not_multi_quoteで即return Noneとし、既存の全既知ケース[test_01.py既存
+# TestLocateTarget等]の挙動には一切影響しない)。
+def extract_all_quoted_fragments(text: str) -> list:
+    """`extract_quoted_fragment`の複数版。text中のbracket-quote断片
+    (“”/「」/『』、_BRACKET_QUOTE_PATTERNS共用)を出現順にすべて返す
+    (直引用符"の分割抽出は複数断片では既知のペアリング曖昧性[委任_10]が
+    あるため対象外とし、安全側に絞る)。"""
+    if not text:
+        return []
+    found = []
+    for pat in _BRACKET_QUOTE_PATTERNS:
+        for m in pat.finditer(text):
+            frag = m.group(1).strip()
+            if frag and frag not in found:
+                found.append(frag)
+    return found
+
+
+def locate_multi_quote_span(claim_text: str, full_text: str, max_span_chars: int = 600) -> tuple:
+    """claim_textが2つ以上のbracket-quote断片を結合した合成claimであり、
+    かつ全断片がfull_text中に逐語で実在する場合のみ、それらを包含する
+    最小スパン(最初の断片の開始〜最後の断片の終了)を返す。空行(段落区切り)
+    を跨ぐ場合・max_span_charsを超える場合・断片が1つ以下・いずれかの断片が
+    不在の場合はNoneを返す(fail-closed、呼び出し側は既存経路へ委ねる)。"""
+    fragments = extract_all_quoted_fragments(claim_text)
+    if len(fragments) < 2:
+        return None, "not_multi_quote"
+    positions = []
+    for frag in fragments:
+        idx = full_text.find(frag)
+        if idx < 0:
+            return None, "fragment_not_present"
+        positions.append((idx, idx + len(frag)))
+    span_start = min(p[0] for p in positions)
+    span_end = max(p[1] for p in positions)
+    if span_end <= span_start:
+        return None, "invalid_span"
+    span_text = full_text[span_start:span_end]
+    if (span_end - span_start) > max_span_chars:
+        return None, "span_too_long"
+    if "\n\n" in span_text:
+        return None, "span_crosses_paragraph"
+    return span_text, "multi_quote_span"
+
+
 def split_sentences_generic(text: str) -> list:
     """見出し行(#開始)を除いた本文を句点等(全角。！？/半角.!?)で分割する
     汎用関数(JA/EN共通、位置比計算用)。"""
@@ -2372,13 +2448,19 @@ def is_predominantly_ja(text: str, threshold: float = 0.15) -> bool:
 
 def locate_target(claim_text: str, rewrite_hint: str, full_text: str) -> tuple:
     """対象文特定の統合ロケータ(委任_10、§5-4): 第一キー=rewrite_hintの
-    引用断片(exact substring)、第二キー=claim_textによるlocate_best_
-    sentence(exact/SequenceMatcher)、第三キー=er010.locate_target_sentence
-    (英語word-overlap、read-only借用)。いずれも失敗(またはambiguous)の
-    場合はNoneを返し、呼び出し側の全文フォールバックに委ねる。"""
+    引用断片(exact substring)、第二キー(委任_36追加)=claim_text自体が
+    複数bracket-quote断片を結合した合成claimの場合の包含スパン
+    (locate_multi_quote_span、§6-18)、第三キー=claim_textによる
+    locate_best_sentence(exact/SequenceMatcher)、第四キー=
+    er010.locate_target_sentence(英語word-overlap、read-only借用)。
+    いずれも失敗(またはambiguous)の場合はNoneを返し、呼び出し側の全文
+    フォールバックに委ねる。"""
     hint_fragment = extract_quoted_fragment(rewrite_hint)
     if hint_fragment and hint_fragment in full_text:
         return hint_fragment, "rewrite_hint_quote"
+    multi_span, multi_method = locate_multi_quote_span(claim_text, full_text)
+    if multi_span:
+        return multi_span, multi_method
     target, method = locate_best_sentence(claim_text, full_text)
     if target is not None:
         return target, method
@@ -2863,9 +2945,20 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     # EN対象文のen_full内での文位置比をJA全文へ写像する構造的近似
     # (対訳記事がほぼ同順序で対応するという仮定、locate_ja_counterpart_
     # by_position)。
+    # 委任_36追加(§6-18): en_targetがmulti_quote_span(複合引用claim、上記
+    # locate_target参照)で特定された場合、rewrite_hintの引用断片は
+    # Stage2 LLMが生成した別文言の言い換えであることが多く、en_targetの
+    # スパンと無関係な箇所をja_full中から拾ってしまうリスクがある(rep20
+    # sample2 cycle2実測: hint_fragmentがen_targetスパンより前の別文に対応
+    # するJA文を拾い、EN/JAが不整合なまま3段のladderが全てguard失敗した)。
+    # この場合はhint_fragment一致より位置写像(既存第四キー)を優先する
+    # (失敗時は以下の既存優先順位へfail-closedで委ねる、非multi_quote_span
+    # の既存経路は一切変更しない)。
     ja_target, ja_method = None, "not_attempted"
+    if en_method == "multi_quote_span" and en_target is not None:
+        ja_target, ja_method = locate_ja_counterpart_by_position(en_target, en_full, ja_full)
     hint_fragment = extract_quoted_fragment(rewrite_hint)
-    if hint_fragment and hint_fragment in ja_full:
+    if ja_target is None and hint_fragment and hint_fragment in ja_full:
         ja_target, ja_method = hint_fragment, "rewrite_hint_quote"
     if ja_target is None:
         ja_target, ja_method = locate_best_sentence(claim_text, ja_full)

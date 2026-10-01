@@ -16094,3 +16094,88 @@ rep20_representative_01.py`、`er052_output/open233_self_recovery_
 flow_runner_01_rep20/`(新規)、`OPEN_ITEMS.md`(OPEN-233行更新)。
 Production code(er003/er006/er009/er010/er012/er019)・既存
 iteration1〜8・rep7〜19・rep19 frozen fixtureは無変更。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: rep20 sample2の`ladder_exhausted_without_full_rewrite`根本原因を「claim_textが複数の独立した引用断片を結合した合成claimの場合、locateが一部しか捕捉しない」ことと特定・小修正、rep21でsample2のSTAGE4が解消(委任_36、2026-10-01)
+
+**区分**: Implementation Hardening(Checker/Self-Recovery Flow Trial側
+のロジック修正。Production/共通Prompt・schema・routingは無変更)。
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_36: rep20 sample2の
+`ladder_exhausted_without_full_rewrite`の原因特定と小修正1回。広い
+Trialは含めない)。
+
+**内容**: rep20 sample2 cycle2で発生した`ladder_exhausted_without_
+full_rewrite`の根本原因を特定した。claim_text(`“They could not tell
+if it was AI or a person” and “They did not realize it.”`)が記事中の
+非隣接2文を“…” and “…”で結合した合成claimであり、両断片とも全文に逐語で
+実在するにもかかわらず、既存`locate_target()`はclaim_text全体への1文
+fuzzy match(`locate_best_sentence`、SequenceMatcher)しか試みないため、
+ratio最大の1断片のみが`en_target`に入り、もう一方の断片がladder①〜④
+いずれの編集対象にも入らないまま残っていたことを、API呼び出し非依存の
+決定論的再現スクリプトで特定した(¥0)。
+
+**修正**: `extract_all_quoted_fragments`/`locate_multi_quote_span`
+(`er052_open233_self_recovery_flow_runner_01.py`)を新設し、claim_textが
+2つ以上の独立した引用断片を含み、かつ全断片が同一段落内(`\n\n`を跨がない)
+・600文字以内でfull_textに逐語実在する場合のみ、それらを包含する最小
+スパンを返すようにした(条件を満たさない場合は`not_multi_quote`等を
+返しfail-closedで既存の`locate_best_sentence`経路へ委ねる)。
+`locate_target()`へ第二キー(rewrite_hint引用の次)として組み込み、
+`run_paired_local_rewrite()`のJA側target決定は、`en_target`が
+`multi_quote_span`で特定された場合に限り位置写像(`locate_ja_
+counterpart_by_position`)をrewrite_hint引用より優先するよう変更した。
+
+**結果**: rep19/rep20と同一のfrozen fixtureをn=2+Safety対照
+(changed_number fixture、full flow n=1)で再実行した
+(`er052_open233_self_recovery_flow_runner_01_rep21_representative_
+01.py`、`OUT_DIR_REP21`新設)。sample2(本委任の修正対象)は`RESOLVED_
+REWRITE_THEN_DOWNGRADE`(2cycle、¥1.2052)でSTAGE4へ至らなかった。ただし
+本run自体ではStage2 LLMの非決定性により2断片合成claimの形自体は
+再現せず、修正の有効性は決定論的unittest(rep20実データをそのまま使った
+回帰ロックテスト`test_reproduces_rep20_sample2_cycle2_fix`)で確認した。
+sample1は逆にrep20(RESOLVED)からrep21で`STAGE4_ESCALATION`
+(`cycle_limit_exhausted`)へ転じたが、該当claim_textは断片1つのみ
+(`locate_multi_quote_span`は`not_multi_quote`を返し新規コードパス不発火、
+修正前後でコード経路が完全同一であることを決定論的に確認)であり、
+原因は本委任の修正と無関係な別の非決定性(cycle1でStage2 LLMが
+rewrite_hintを空で返したことによる、1つの引用が複数文にまたがる場合の
+既存1文SequenceMatcher fallbackの既知の限界、変種(e))と特定した。
+false PASSではなく(STAGE4_ESCALATIONは安全側のfail-closed)、変種(e)の
+修正は本委任のスコープ外として報告のみに留めた。Safety対照
+(changed_number)はfloorが引き続き正しく発火(`RESOLVED_REWRITE`、
+downgrade0件)。
+
+**採用理由**: locate対象の特定漏れは、Rewrite対象文の選定という実装上の
+決定論的な不備であり、修正範囲を「2つ以上の独立した引用断片が同一段落内に
+逐語実在する場合」に限定したfail-closed追加に留めることで、既存の判定
+基準(guard・floor・ladder構成)を一切変更せずに対応できた。
+
+**比較した選択肢**: locate_best_sentenceの閾値やSequenceMatcherの比較
+対象を変更する案(不採用、既存の広範な既存テスト群[TestLocateBestSentence
+等]への影響範囲が予測しづらく、「小修正1回」の範囲を超えるため)。
+変種(e)(1つの引用が複数文にまたがる場合)も同時に修正する案(不採用、
+委任文が指定した対象[rep20 sample2 cycle2]はそれではなく、スコープ拡大は
+Fable/ユーザー判断を経ずに行わないため)。
+
+**却下理由**: 上記2案は委任文が指定した「rep20 sample2の原因特定と小修正
+1回」の範囲を超えるため採用しなかった。
+
+**Status**: `MULTI_QUOTE_LOCATE_FIX_IMPLEMENTED_REP21_SAMPLE2_
+RESOLVED_SAMPLE1_SEPARATE_PREEXISTING_VARIANT_E_FOUND_NO_SAFETY_
+DOWNGRADE`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§34、
+`docs/pm/design_open233_self_recovery_flow_01.md`§6-17/§9-1㉖、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-TRIAL-01_
+36.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_flow_runner_01.py`
+(`extract_all_quoted_fragments`/`locate_multi_quote_span`新設、
+`locate_target`/`run_paired_local_rewrite`のja_target決定への組み込み、
+`OUT_DIR_REP21`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`新設、既存
+`OUT_DIR_REP20`等は無変更)。`er052_open233_self_recovery_flow_runner_
+01_test_01.py`(新規unittest13件)。新規`er052_open233_self_recovery_
+flow_runner_01_rep21_representative_01.py`、`er052_output/open233_
+self_recovery_flow_runner_01_rep21/`(新規)、`OPEN_ITEMS.md`(OPEN-233
+行更新)。Production code(er003/er006/er009/er010/er012/er019)・既存
+iteration1〜8・rep7〜20・rep19 frozen fixtureは無変更。

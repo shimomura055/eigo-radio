@@ -3546,3 +3546,207 @@ Safety12の違反文またはSafety-critical 8がBLOCKINGでなくなる(該当�
 33-3参照、downgrade0件)/false PASS 1件以上(該当せず、0件)/小修正1回
 後もFAIL(該当せず、1回の小修正でrep20が成功)。STOP条件非該当のため
 継続作業として記録・commit・push・回帰確認まで完了。
+
+## §34. rep20 sample2の`ladder_exhausted_without_full_rewrite`根本原因特定と小修正(委任_36、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_36: rep20 sample2の
+`ladder_exhausted_without_full_rewrite`の原因特定と小修正1回。広い
+Trialは含めない)。
+
+### 34-0. 上位目的整合チェック(7観点、design書§0-6/PM_GOVERNANCE§23)
+
+| # | 観点 | 本委任での確認結果 |
+|---|---|---|
+| 1 | 厳密一致のためだけのRewriteになっていないか | 修正対象は対象文特定(locate)の範囲であり、Rewrite方式自体・guard判定基準は無変更 |
+| 2 | 重大誤解でないものを止めていないか | 本修正はfail-closed追加(断片2つ以上かつ全断片実在時のみ発火)のみで、既存の「止める」判定基準は一切緩めていない |
+| 3 | 小さく直せる問題を大きくRewriteしていないか | 新設スパンはmax_span_chars=600・同一段落内限定(空行を跨ぐ場合は不採用)とし、際限なく広い範囲を対象化しない |
+| 4 | Rewriteによる品質劣化の方が大きくないか | rep21 sample2は単語置換のみで解消(34-2)、段落・記事全体への拡大Rewriteは発生せず |
+| 5 | 学習者にとって本当に問題か | 対象claim(MUSE-HC-012の確実性強化)は実際にLedgerにない断定を含み、修正により是正対象として適切に扱われた |
+| 6 | Human Reviewを安易な逃げ道にしていないか | 本修正はHuman Review回避のための判定緩和ではなく、Rewrite対象の特定漏れという実装上の不備の是正。sample1の新規STAGE4は判定を緩めず安全側に倒れたまま(34-2) |
+| 7 | 不要call・Recheck・Rewriteを増やしていないか | rep21(n=2+Safety対照n=1)で¥3.561(Guardrail¥7のうち約51%)、rep20(¥6.0782)より総コスト減 |
+
+### 34-1. 原因特定(¥0、API呼び出しなし)
+
+rep20 sample2 cycle2のinstance json(`er052_output/open233_self_
+recovery_flow_runner_01_rep20/instances_s2/meta_run03_standard.json`)を
+逐語確認した。cycle1はMUSE-HC-011(`changed_number`、"calls"→"These
+calls"の複数形)が`deterministic_floor:changed_number`でBLOCKING、
+`e1_minimal_word_edit`(ladder①)で解消(guard_ok=True)。cycle2の
+Recheckが新規claim(MUSE-HC-012、claim_text=`“They could not tell if it
+was AI or a person” and “They did not realize it.”`、`llm_materiality
+=BLOCKING`、floor非適用[LLM独立判定]、`changed_certainty=True`かつ
+`changed_scope=True`)を検出した。sample1では同じfact(MUSE-HC-012)の
+類似claimが`disclosure_gap_negative_inference_downgrade`floor
+(`apply_disclosure_gap_downgrade`、`changed_scope`を含むdisqualifying
+flagsがいずれも立っていない場合のみ発火)でQUALITYへ降格されるが、
+sample2 cycle2のこのclaimは`changed_scope=True`が立っており、floorの
+適用条件3(`DISCLOSURE_GAP_DISQUALIFYING_FLAGS`に`changed_scope`を含む)
+により降格対象外のままBLOCKINGに残った(Stage2 LLMの非決定性、§6-14の
+(b)と同系統)。
+
+このBLOCKINGなclaim_textを決定論的に再現スクリプトで解析したところ、
+claim_textが記事中の非隣接2文(「They could not tell if it was AI or a
+person.」と「They did not realize it.」)を“…” and “…”の形で結合した
+合成claimであり、両断片とも`en_full`(cycle1の`en_text_after_rewrite`)に
+逐語で実在することを確認した。一方、既存`locate_target()`
+(`er052_open233_self_recovery_flow_runner_01.py`)は、rewrite_hintの
+引用断片(第一キー、本caseはJA文のためen_targetには不一致)に失敗すると
+claim_text全体に対する1文fuzzy match(`locate_best_sentence`、
+SequenceMatcher)のみを試みるため、2断片のうち一方(「They could not
+tell if it was AI or a person.」、ratio=0.74)しか`en_target`に入らず、
+もう一方の「They did not realize it.」がladder①(単語・接続詞)→③
+(1文)→④(段落)のいずれの編集対象にも一度も入らないまま残った
+(`er052_open233_self_recovery_flow_runner_01_rep20_representative_01.py`
+を経由せず、`locate_target`/`locate_best_sentence`を直接呼ぶ独立の
+再現スクリプトで確認、API呼び出しなし・¥0)。JA側も、rewrite_hintの
+引用断片(`けれど、その一部では人間が話していた。しかも、適切な説明が
+ないままなら、利用者は相手がAIなのか人間なのかを知ることができません。」`)
+が、EN側の(修正前の)1文target「They could not tell if it was AI or a
+person.」とは対応しない広い範囲(2文分)を拾っており、EN/JA双方で
+対象範囲が食い違っていた。
+
+ladder各段(①〜④)でguardが通らなかった理由(各段のLLM応答内容そのもの)
+は保存済みjsonに含まれず(prompt本体・応答本体はsha256のみ記録する
+既存の設計制約、§0参照)、API呼び出しなしでは再現できないため、本件は
+「対象文の特定漏れ」という決定論的に再現可能な一次原因までを根本原因
+として特定した(ladder各段のLLM応答内容そのものの検証は本委任の
+Guardrail¥7の範囲外、必要であれば別途API呼び出しを伴う追加委任で検証)。
+
+### 34-2. 修正(1回、fail-closed新規追加のみ)
+
+design書§6-17参照。`extract_all_quoted_fragments`/`locate_multi_quote_
+span`の2関数を新設し、`locate_target()`へ第二キー(rewrite_hint引用の
+次、既存`locate_best_sentence`の前)として組み込んだ。`run_paired_local_
+rewrite()`のJA側target決定は、`en_target`が`multi_quote_span`で特定
+された場合に限り、rewrite_hintのJA引用断片より位置写像
+(`locate_ja_counterpart_by_position`)を優先するよう変更した。
+multi_quote_span以外の既存経路(claim_textが単一断片・断片なし・断片が
+full_textに不在・段落を跨ぐ・600文字超)はいずれもfail-closedで既存の
+`locate_best_sentence`経路へそのまま委ねる(新規コードパスは「2つ以上の
+断片が同一段落内に逐語で実在する」場合のみ発火)。
+
+unittest: 開始前チェック(既存304件、API呼び出し前に再確認、全PASS)
+→新規13件(`TestExtractAllQuotedFragments`5件・`TestLocateMultiQuoteSpan`
+5件・`TestLocateTargetMultiQuoteIntegration`3件)→計317件、全PASS(¥0、
+API呼び出し前)。うち`test_reproduces_rep20_sample2_cycle2_fix`は、
+rep20 sample2 cycle2の実データ(claim_text/en_full、上記34-1)をそのまま
+使い、修正後は`en_target`が両断片を含むスパンを返すこと、旧実装
+(`locate_best_sentence`単体)は「did not realize it」を含まない1文しか
+返さないことを両方確認する回帰ロックテストである。
+
+### 34-3. rep21実測(frozen fixture再検証、n=2+Safety対照changed_number n=1)
+
+rep19/rep20と同一のfrozen fixture(`er052_output/open233_self_recovery_
+flow_runner_01_rep19/stage1_fixtures/meta_run03_standard_iter8_cycle1_
+frozen.json`、再freezeせず読み込むのみ)を`er052_open233_self_recovery_
+flow_runner_01_rep21_representative_01.py`(新規、`OUT_DIR_REP21`新設)で
+再実行した。
+
+| run | final_state | stage4_reason | cycle数 | 費用 |
+|---|---|---|---|---|
+| sample1 | `STAGE4_ESCALATION` | `cycle_limit_exhausted` | 3 | ¥2.1567 |
+| sample2 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | ¥1.2052 |
+| Safety(changed_number) | `RESOLVED_REWRITE` | - | 1 | ¥0.1991 |
+
+**sample2(本委任の修正対象)**: cycle1でMUSE-HC-011(`changed_number`)が
+`e1_minimal_word_edit`で解消。cycle2はMUSE-HC-012「They enjoyed...」
+claimのみ再検出されたが、今回は`changed_scope=False`で`disclosure_gap_
+negative_inference_downgrade`floorが正しく発火しQUALITYへ降格、
+blocking_count 0で`RESOLVED_REWRITE_THEN_DOWNGRADE`。STAGE4へは至らず、
+本委任の修正対象そのものは解消した。ただし本run自体では、rep20で観測
+された2断片合成claim(`changed_scope=True`で降格対象外になるケース)は
+Stage2 LLMの非決定性により再現しなかった(34-1で述べた本来の修正対象
+ケースの直接再現ではない)。本修正の有効性は34-2の決定論的unittest
+(API呼び出し非依存)で確認済みであり、rep21はSafety側のregression確認
+(他claimを誤ってdowngradeしていないこと)として位置づける。
+
+**sample1(新規STAGE4、本委任のスコープ外)**: rep20では3cycleで
+`RESOLVED_REWRITE_THEN_DOWNGRADE`だったが、rep21では`STAGE4_ESCALATION`
+(`cycle_limit_exhausted`)となった。原因を追跡し、本委任の修正とは
+**無関係**であることを決定論的に確認した: 該当claim_text(`“It said
+human staff made inappropriate comments about race during calls. These
+calls were about trying to lower internet or cable fees.”`)は
+bracket-quote断片が1つのみ(2文が1つの“…”で囲まれている)であり、
+`locate_multi_quote_span`はこの入力に対し`not_multi_quote`を返して
+即座に既存経路(`locate_best_sentence`)へ委ねる(本修正の新規コードパス
+は不発火、修正前後でこのcaseのコード経路は完全に同一であることを
+独立の再現スクリプトで確認)。実際の原因は、cycle1でStage2 LLMが
+`rewrite_hint`を空文字列で返したこと(rep20では引用断片入りの
+rewrite_hintを返していた、API応答のrun間非決定性)により、
+`locate_target`の第一キー(rewrite_hint引用)が不発火となり、1文
+SequenceMatcher fallbackが2文結合quoteのうち1文(「...during calls.」)
+しか捕捉できず、未捕捉側(「These calls were...fees.」)がcycle2以降も
+再検出され続け、cycle上限(3)に達したことによる。これは本委任が修正した
+「2つの独立した引用断片」パターンとは別の、「1つの引用が複数文へ
+またがる」という近縁だが別個の既知の限界であり、変種(e)として記録する
+(34-4)。false PASSではない(STAGE4_ESCALATIONは安全側のfail-closedで
+あり、判定を緩めて通過させたわけではない)。
+
+**Safety対照(changed_number fixture1件、full flow n=1)**: 引き続き
+`deterministic_floor:changed_number`でBLOCKING→`e1_minimal_word_edit`で
+Rewrite→`RESOLVED_REWRITE`(¥0.1991)。floorが弱まっていないことを確認。
+
+`detect_safety_critical_misdowngrades`: 該当行なし(0件)。false PASS:
+0件(STAGE4_ESCALATION/RESOLVED_REWRITE_THEN_DOWNGRADE/RESOLVED_REWRITE
+のみ、PASS系で未検査のまま通過したケースなし)。
+
+### 34-4. 残課題(次委任候補、本委任では未修正)
+
+変種(e)「1つの引用文字列が複数文にまたがり、かつrewrite_hintが空の
+場合、SequenceMatcherベースの1文fallbackが先頭文しか捕捉しない」は、
+本委任が修正した「複数の独立した引用断片」パターンと症状は同系統だが
+トリガー条件が異なる別個の限界であり、委任文が指定した「rep20 sample2
+の原因特定と小修正1回」の範囲を超えるため、本委任では修正しなかった
+(範囲拡大の勝手な判断は行わず報告のみ)。修正要否・次委任での対応は
+Fable/ユーザー判断事項とする。
+
+meta_run03_standardの(b)Stage1 fresh enumeration非決定性そのものの
+改善要否(委任_33から継続)、Phase 2新規テーマ選定(PM_GOVERNANCE§13)も
+引き続きFable/ユーザー判断事項として継続。
+
+### 34-5. 費用・unittest・project-wide regression・Git
+
+本委任費用: 分析(34-1)¥0+修正実装(34-2)¥0+rep21(Part B本体¥3.3619
+[sample1¥2.1567+sample2¥1.2052]+Safety対照A¥0.1991)=**¥3.561**
+(Guardrail¥7のうち約51%)。Phase累計¥482.3665+¥3.561=**¥485.9275**/
+総枠¥600、残**¥114.0725**。
+
+コード変更: `er052_open233_self_recovery_flow_runner_01.py`
+(`extract_all_quoted_fragments`/`locate_multi_quote_span`新設、
+`locate_target`/`run_paired_local_rewrite`のja_target決定への組み込み、
+`OUT_DIR_REP21`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`新設、既存
+`OUT_DIR_REP7`〜`REP20`等は無変更)。`er052_open233_self_recovery_flow_
+runner_01_test_01.py`(新規unittest13件)。新規`er052_open233_self_
+recovery_flow_runner_01_rep21_representative_01.py`、`er052_output/
+open233_self_recovery_flow_runner_01_rep21/`(新規)。**Production
+code(er003/er006/er009/er010/er012/er019)・既存iteration1〜8・
+rep7〜20・rep19 frozen fixtureは一切変更していない**(rep21はrep19の
+frozen fixtureを読み込むのみ)。
+
+unittest317件(既存304+新規13)全PASS(API呼び出し前、¥0)。project-wide
+regression(`run_project_regression.py`)も実行し、collected=4284
+(既存4271+新規13)・failed=6・errors=5。失敗/エラー計11件は以下の
+test moduleのみで、いずれも本委任が変更した`er052_open233_self_
+recovery_flow_runner_01.py`/`er052_open233_self_recovery_flow_runner_
+01_test_01.py`を経由しない(`er052_open233_self_recovery_flow_runner_
+01_test_01`単独実行317件全PASSで別途確認済み): `er003_test_bad`
+(`test_case_0`)、`er003_test_p2j_investigate`(`test_per_file_counts_
+sum_matches_pattern_discovery`/`test_combined_equals_sum_of_er002_
+and_er003`/`test_p2h_reported_count_matches_er002_plus_er003_at_
+that_time`/`test_p2i_reported_count_matches_er003_at_p2i_era`)、
+`er015_standard_a2_6000_generation_first_trial_01_test_01`
+(loaderエラー)、`er025_pronunciation_resolution_phase3_b1b_en_
+wiring_01_test_01`、`er040_tts_fixed_shell_master_champion_trial_
+01_test_01`、`er043_tts_fixed_shell_master_champion_trial_02_test_
+01`、`er011_open112_trend_synthesis_mode_production_wiring_01_
+test_01`(`TestBuildCommonBlockDefaultByteParity`系3件)。本委任由来の
+新規failureはない。
+
+**STOP条件該当確認**: ¥7超え見込み(該当せず、累計¥3.561/¥7)/API
+error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず)/
+USER_DECISION_REQUIRED 5条件(該当せず)/開始前チェック未反映(0件)/
+Safety12の違反文またはSafety-critical 8がBLOCKINGでなくなる(該当せず、
+34-3参照、downgrade0件)/false PASS 1件以上(該当せず、0件)/小修正1回
+後もFAIL(該当せず、本委任の修正対象[sample2 cycle2のladder枯渇]は34-2
+の決定論的unittestで解消を確認)。STOP条件非該当のため継続作業として
+記録・commit・push・回帰確認まで完了。

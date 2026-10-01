@@ -238,6 +238,139 @@ class TestLocateTarget(unittest.TestCase):
         self.assertIsNone(target)
 
 
+class TestExtractAllQuotedFragments(unittest.TestCase):
+    # 委任_36(§6-18): extract_quoted_fragment(最長1件のみ)の複数版。
+    def test_extracts_multiple_fragments_in_order(self):
+        text = "“first fragment here” and “second fragment here”"
+        frags = runner.extract_all_quoted_fragments(text)
+        self.assertEqual(frags, ["first fragment here", "second fragment here"])
+
+    def test_single_fragment_returns_one_item(self):
+        text = "“only one fragment present”"
+        self.assertEqual(runner.extract_all_quoted_fragments(text), ["only one fragment present"])
+
+    def test_no_fragment_returns_empty_list(self):
+        self.assertEqual(runner.extract_all_quoted_fragments("no quotes here"), [])
+
+    def test_empty_text_returns_empty_list(self):
+        self.assertEqual(runner.extract_all_quoted_fragments(""), [])
+
+    def test_deduplicates_identical_fragments(self):
+        text = "“same phrase” appears twice: “same phrase”"
+        self.assertEqual(runner.extract_all_quoted_fragments(text), ["same phrase"])
+
+
+class TestLocateMultiQuoteSpan(unittest.TestCase):
+    # 委任_36(§6-18、rep20 sample2 cycle2根本原因是正): claim_textが2文以上の
+    # bracket-quote断片を結合した合成claimの場合の包含スパン特定。
+    def test_spans_both_fragments_when_both_present_same_paragraph(self):
+        full_text = (
+            "Intro sentence. They could not tell if it was AI or a person. "
+            "They enjoyed the convenience, but a human was on the other end. "
+            "They did not realize it. Outro sentence."
+        )
+        claim_text = (
+            "“They could not tell if it was AI or a person” and "
+            "“They did not realize it.”"
+        )
+        span, method = runner.locate_multi_quote_span(claim_text, full_text)
+        self.assertEqual(method, "multi_quote_span")
+        self.assertIn("They could not tell if it was AI or a person", span)
+        self.assertIn("They did not realize it.", span)
+
+    def test_single_fragment_claim_returns_not_multi_quote(self):
+        full_text = "Intro. The only quoted sentence is here. Outro."
+        claim_text = "“The only quoted sentence is here.”"
+        span, method = runner.locate_multi_quote_span(claim_text, full_text)
+        self.assertIsNone(span)
+        self.assertEqual(method, "not_multi_quote")
+
+    def test_fragment_not_present_returns_none(self):
+        full_text = "Intro. Something completely different. Outro."
+        claim_text = "“First fragment missing” and “Second fragment missing”"
+        span, method = runner.locate_multi_quote_span(claim_text, full_text)
+        self.assertIsNone(span)
+        self.assertEqual(method, "fragment_not_present")
+
+    def test_fragments_crossing_paragraph_break_returns_none(self):
+        full_text = (
+            "First paragraph has the opening fragment here.\n\n"
+            "Second paragraph has the closing fragment here."
+        )
+        claim_text = (
+            "“First paragraph has the opening fragment here.” and "
+            "“Second paragraph has the closing fragment here.”"
+        )
+        span, method = runner.locate_multi_quote_span(claim_text, full_text)
+        self.assertIsNone(span)
+        self.assertEqual(method, "span_crosses_paragraph")
+
+    def test_span_too_long_returns_none(self):
+        filler = "x" * 700
+        full_text = f"“start fragment” {filler} “end fragment”"
+        claim_text = "“start fragment” and “end fragment”"
+        span, method = runner.locate_multi_quote_span(claim_text, full_text)
+        self.assertIsNone(span)
+        self.assertEqual(method, "span_too_long")
+
+
+class TestLocateTargetMultiQuoteIntegration(unittest.TestCase):
+    # 委任_36(§6-18): locate_targetへのlocate_multi_quote_span統合。
+    def test_locate_target_prefers_multi_quote_span_over_single_sentence_match(self):
+        full_text = (
+            "Intro sentence. They could not tell if it was AI or a person. "
+            "They enjoyed the convenience, but a human was on the other end. "
+            "They did not realize it. Outro sentence."
+        )
+        claim_text = (
+            "“They could not tell if it was AI or a person” and "
+            "“They did not realize it.”"
+        )
+        target, method = runner.locate_target(claim_text, "", full_text)
+        self.assertEqual(method, "multi_quote_span")
+        self.assertIn("They did not realize it.", target)
+
+    def test_rewrite_hint_quote_still_takes_priority_over_multi_quote_span(self):
+        # 第一キー(rewrite_hintのexact substring)は従来通り維持される
+        # (multi_quote_spanは第二キーとして追加されただけで優先順位を
+        # 崩さない、既存TestLocateTarget.test_uses_rewrite_hint_quote_as_
+        # first_keyと同一原則)。
+        full_text = "Intro sentence. The exact target phrase appears here. Outro sentence."
+        claim_text = "“fragment one unrelated” and “fragment two unrelated”"
+        target, method = runner.locate_target(
+            claim_text,
+            'rewrite: replace "The exact target phrase appears here." per ledger',
+            full_text,
+        )
+        self.assertEqual(target, "The exact target phrase appears here.")
+        self.assertEqual(method, "rewrite_hint_quote")
+
+    def test_reproduces_rep20_sample2_cycle2_fix(self):
+        # rep20 sample2 cycle2で実測した非収束パターンの再現(委任_36
+        # 根本原因): claim_textが'They could not tell...'と'They did not
+        # realize it.'という記事中の非隣接2文を結合した合成claimであり、
+        # 旧実装ではlocate_best_sentenceが前者1文しか捕捉できなかった。
+        en_full_fragment = (
+            "People asking Muse to call might think AI was calling. But sometimes, "
+            "a human was speaking instead. If no one explained this clearly, users "
+            "could not know. They could not tell if it was AI or a person. They "
+            "enjoyed AI’s convenience, but a human was on the other end. They did "
+            "not realize it. That was happening behind the scenes."
+        )
+        claim_text = (
+            "“They could not tell if it was AI or a person” and "
+            "“They did not realize it.”"
+        )
+        target, method = runner.locate_target(claim_text, "", en_full_fragment)
+        self.assertEqual(method, "multi_quote_span")
+        self.assertIn("They could not tell if it was AI or a person", target)
+        self.assertIn("They did not realize it.", target)
+        # 旧実装(locate_best_sentenceのみ)は'did not realize it'を含まない
+        # 単一文しか返さなかった(回帰確認)。
+        old_target, _ = runner.locate_best_sentence(claim_text, en_full_fragment)
+        self.assertNotIn("did not realize it", old_target)
+
+
 class TestSplitSentencesGeneric(unittest.TestCase):
     def test_splits_on_period_and_ignores_headers(self):
         text = "# Heading\nFirst sentence. Second sentence! Third one?"

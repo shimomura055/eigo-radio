@@ -3290,6 +3290,108 @@ critical_misdowngrades`による自動検知)も0件。false PASSは0件
 ¥6.0782=**¥6.0782**(Guardrail¥10のうち約61%)。Phase累計¥476.2883+
 ¥6.0782=**¥482.3665**/総枠¥600、残**¥117.6335**。詳細REPORT§33。
 
+### 6-17. rep20 sample2の`ladder_exhausted_without_full_rewrite`根本原因特定と小修正(委任_36、REPORT§34)
+
+**課題**: rep20 sample2 cycle2で、同一fact(MUSE-HC-012)に対する新規BLOCKING
+claim(`“They could not tell if it was AI or a person” and “They did not
+realize it.”`)が、ladder①単語・接続詞→③1文→④段落のいずれでも解消
+できず`ladder_exhausted_without_full_rewrite`(⑥全文Rewrite不使用、fail-
+closed)でSTAGE4へ至った。sample1では同じfact(MUSE-HC-012)が
+`disclosure_gap_negative_inference_downgrade`floorで毎cycle QUALITYの
+まま維持され、この経路を踏まなかった(同じfactでも表現が割れた)。
+
+**原因特定(¥0、API呼び出しなし、決定論的な再現スクリプトのみ)**:
+claim_textが記事中の非隣接2文(「They could not tell if it was AI or a
+person.」と「They did not realize it.」)を“…” and “…”の形で結合した
+合成claimであり、全断片がfull_text中に逐語で実在することを確認した。
+一方、既存`locate_target()`はclaim_text全体に対する1文fuzzy match
+(`locate_best_sentence`、SequenceMatcher)しか試みないため、2断片の
+うち一方(ratio最大の「They could not tell...」1文のみ、ratio=0.74)しか
+`en_target`に入らず、もう一方の「They did not realize it.」がladder①〜④
+いずれの編集対象にも入らないまま残った(決定論的に再現・確認済み、
+unittest`test_reproduces_rep20_sample2_cycle2_fix`参照)。JA側も
+rewrite_hintの引用断片(`けれど、その一部では人間が話していた。しかも、
+適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ること
+ができません。」`)が、EN側の(修正前の)1文targetとは対応しない広い範囲を
+拾っていた。
+
+**修正(1回、fail-closed新規追加のみ、既存経路は無変更)**:
+`er052_open233_self_recovery_flow_runner_01.py`へ以下2点を追加した。
+
+1. `extract_all_quoted_fragments(text)`: 既存`extract_quoted_fragment`
+   (最長1件のみ返す)の複数版。`_BRACKET_QUOTE_PATTERNS`
+   (“”/「」/『』)でtext中の全断片を出現順に返す(直引用符"の分割抽出は
+   複数断片では既知のペアリング曖昧性[委任_10]があるため対象外)。
+2. `locate_multi_quote_span(claim_text, full_text, max_span_chars=600)`:
+   claim_textが2つ以上の断片を含み、かつ全断片がfull_text中に逐語で
+   実在する場合のみ、それらを包含する最小スパン(最初の断片の開始〜
+   最後の断片の終了)を返す。断片が1つ以下・いずれかが不在・空行
+   (`\n\n`、段落区切り)を跨ぐ・600文字を超える場合はNoneを返し
+   (fail-closed)、既存の`locate_best_sentence`経路へそのまま委ねる。
+3. `locate_target()`: 第一キー(rewrite_hintのexact substring)の次、
+   第二キーとして`locate_multi_quote_span`を追加(失敗時は既存の
+   `locate_best_sentence`→er010 word-overlapへ従来通りfall through)。
+   `single_text_rewrite`/`run_paired_local_rewrite`の両方が本関数を
+   共有するため、両経路に同時に適用される。
+4. `run_paired_local_rewrite()`のJA側target決定: `en_target`が
+   `multi_quote_span`で特定された場合に限り、rewrite_hintのJA引用断片
+   より位置写像(既存`locate_ja_counterpart_by_position`)を優先する
+   (rep20 sample2 cycle2実測で、rewrite_hintのJA引用がen_targetスパンと
+   無関係な箇所を拾っていたため)。multi_quote_span以外の既存経路は
+   一切変更しない。
+
+unittest: 開始前チェック(既存317件相当の前提、実際は既存304件)→新規
+13件(`TestExtractAllQuotedFragments`5件・`TestLocateMultiQuoteSpan`5件・
+`TestLocateTargetMultiQuoteIntegration`3件[うち1件はrep20 sample2
+cycle2の実データ[claim_text/en_full]をそのまま使った回帰ロック
+テスト])→計317件、全PASS。
+
+**rep21実測(frozen fixture再検証、n=2+Safety対照changed_number n=1)**:
+rep19/rep20と同一のfrozen fixtureを`er052_open233_self_recovery_flow_
+runner_01_rep21_representative_01.py`(新規、`OUT_DIR_REP21`新設)で
+再実行した。
+
+| run | final_state | stage4_reason | cycle数 | 費用 |
+|---|---|---|---|---|
+| sample1 | `STAGE4_ESCALATION` | `cycle_limit_exhausted` | 3 | ¥2.1567 |
+| sample2 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | ¥1.2052 |
+| Safety(changed_number) | `RESOLVED_REWRITE` | - | 1 | ¥0.1991 |
+
+sample2(本委任の修正対象そのもの)はSTAGE4へ至らず解消した。ただし
+このrun自体ではcycle2のStage2 LLM出力が単一claim(MUSE-HC-012「They
+enjoyed...」、floorでQUALITY)のみとなり、rep20で観測された2断片合成
+claimの形自体は再現しなかった(Stage2のLLM非決定性、既知の限界)。
+本修正の有効性は、rep20実データをそのまま使った決定論的unittest
+(上記)で確認している。
+
+**新規発見(委任_36のスコープ外、報告のみ・未修正)**: sample1がrep20
+(RESOLVED、3cycle)から一転し`STAGE4_ESCALATION`
+(`cycle_limit_exhausted`)となった。原因を追跡したところ、本委任の
+修正とは**無関係**であることを決定論的に確認した(該当claim_textの
+断片数は1[curly quoteで2文をまとめて1つに囲んだ形]であり、
+`locate_multi_quote_span`は`not_multi_quote`を返して即座に既存経路へ
+委ねるため、修正前後でコード経路は完全に同一)。実際の原因は、cycle1で
+Stage2 LLMが`rewrite_hint`を空文字列で返したこと(rep20では引用断片
+入りのrewrite_hintを返していた、非決定性)により、`locate_target`の
+第一キー(rewrite_hint引用)が不発火となり、1文SequenceMatcher
+fallbackが「It said...during calls. These calls were...fees.」という
+2文結合quoteのうち1文しか捕捉できず、「These calls were...」側が
+cycle2以降も再検出され続けたことによる(本修正が対象とした断片分割
+パターンとは別の、1つのquoteが複数文にまたがる場合の既知の限界、
+変種(e)として記録)。false PASSではない(STAGE4は安全側のfail-closed)。
+変種(e)の修正要否はFable/ユーザー判断事項として次委任へ持ち越す
+(本委任は委任文が指定した「rep20 sample2の原因特定と小修正1回」の
+範囲に留め、新たな根本原因の追加修正は行わない)。
+
+Safety対照(changed_number fixture1件full flow n=1)は引き続き
+`deterministic_floor:changed_number`でBLOCKING→Rewrite→`RESOLVED_
+REWRITE`(floorが弱まっていないことを確認)。
+`detect_safety_critical_misdowngrades`は0件。false PASSは0件。
+
+実測費用: analysis(Part A)¥0+rep21(Part B本体¥3.3619+Safety対照A
+¥0.1991)=**¥3.561**(Guardrail¥7のうち約51%)。Phase累計¥482.3665+
+¥3.561=**¥485.9275**/総枠¥600、残**¥114.0725**。詳細REPORT§34。
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず
@@ -5067,6 +5169,26 @@ full flow n=1×2+Safety-critical 8claimのうち検出可能な6claim)は
 BLOCKINGからのdowngrade0件。実測¥6.0782(Guardrail¥10内)。
 Phase累計¥476.2883+¥6.0782=**¥482.3665**/総枠¥600、残**¥117.6335**。
 詳細REPORT§33。
+
+**㉖ rep20 sample2の`ladder_exhausted_without_full_rewrite`根本原因
+特定と小修正(委任_36、本書§6-17参照)**: claim_textが記事中の非隣接2文を
+“…” and “…”で結合した合成claimの場合、既存`locate_target()`が1文fuzzy
+matchしか試みず一方の断片しか捕捉しないことを決定論的に特定し(¥0)、
+`extract_all_quoted_fragments`/`locate_multi_quote_span`を新設して
+`locate_target`/`run_paired_local_rewrite`のja_target決定へ組み込んだ
+(unittest13件新規、既存304件は非回帰、計317件PASS)。rep19/rep20と
+同一のfrozen fixtureをn=2+Safety対照(changed_number、n=1)で再実行した
+結果、sample2(本委任の修正対象)は`RESOLVED_REWRITE_THEN_DOWNGRADE`
+(2cycle、¥1.2052)でSTAGE4を解消した(本run自体では2断片合成claimの
+形は非決定性により再現せず、修正の有効性は決定論的unittestで確認)。
+sample1は逆に新規`STAGE4_ESCALATION`(`cycle_limit_exhausted`)と
+なったが、本委任の修正とは無関係(新規コードパス不発火を決定論的に
+確認)な別の非決定性(変種(e)、1つの引用が複数文にまたがる場合の既知の
+限界)と特定し、修正は本委任のスコープ外として報告のみに留めた。
+Safety対照はfloorが引き続き正しく発火(downgrade0件)。project-wide
+regression(`run_project_regression.py`)でも本委任由来の新規failure
+なしを確認した。実測¥3.561(Guardrail¥7内)。Phase累計¥482.3665+
+¥3.561=**¥485.9275**/総枠¥600、残**¥114.0725**。詳細REPORT§34。
 
 ## 10. リスク
 
