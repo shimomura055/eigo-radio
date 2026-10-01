@@ -57,15 +57,20 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
 - 上記「Git運用ルール」は維持する。ただしサンドイッチ導入・更新作業では、
   今回変更した対象ファイルだけを明示的に`git add`し、`git add -A`は使用しない。
 - ループ上限: Sonnet委任は1管理IDあたり初回+Fableからの修正・再生成指示
-  最大3回(合計最大4回)、Opusは診断目的で最大1回まで。上限到達時は
+  最大3回(合計最大4回)、Opusは、難問診断が1管理IDあたり最大1回まで、
+  任意レビューがFable裁量で1日2回まで(必須のOpus独立技術レビューは
+  回数上限の対象外、次項)。上限到達時は
   `USER_DECISION_REQUIRED`としてSTOPする(詳細は`docs/pm/PM_GOVERNANCE.md`
   11節)。
 - Opus独立技術レビューGate(2026-10-02ユーザー決定): 新しい構造・処理フロー
   の設計(条件A)、同じ問題へ2回修正しても再発した場合の3回目パッチ前
   (条件B)、重要変更のProduction採用提案前(条件C)、QCDが大きく悪化した
   とき(条件D)は、Opus独立レビューを入れる。条件・観点・不要例の正本は
-  `docs/pm/PM_GOVERNANCE.md` 11-3節(ここへは複製しない)。Opusレビュー後も
-  Production採用は人間ユーザーだけが承認する。
+  `docs/pm/PM_GOVERNANCE.md` 11-3節(ここへは複製しない)。必須レビューは
+  回数上限の対象外。同じ内容は重複レビューせず、内容が変われば再レビュー
+  する。Opusレビュー後は、Fableが照合のうえ、11-3節のSTOP条件に該当しなけ
+  ればFable判断で次工程へ進む(Opusレビュー自体をユーザー承認Gateにしない)。
+  Opusレビュー後もProduction採用は人間ユーザーだけが承認する。
 - Production採用(`APPROVED_FOR_PRODUCTION`)は人間ユーザーだけが承認できる。
 - PM運用Gate(Gate 1〜7)・PM Closeout Mandatory Check・1記事ずつ完結原則・
   安全≠成功原則の正式SSOTは`docs/pm/PM_GOVERNANCE.md`(2026-09-05、

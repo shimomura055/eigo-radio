@@ -45,8 +45,9 @@
 
 **Opus Escalation 3段階(2026-09-27ユーザー承認)**: 必須Opusレビュー
 (L2、発火条件(i)〜(iv)該当時は案件別事前承認不要の包括承認)/任意Opus
-レビュー(Fable裁量、1日2回まで)/Sonnet・Fableのみ、の3段階運用。上限は
-L2 1回+L3 1回/管理ID。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。
+レビュー(Fable裁量、1日2回まで)/Sonnet・Fableのみ、の3段階運用。上限
+(L2 1回+L3 1回/管理ID)は任意レビュー・難問診断にのみ適用し、必須レビュー
+は回数上限の対象外(2026-10-02更新、11-3節)。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。
 
 **Opus独立技術レビューGate(2026-10-02ユーザー決定)**: Opusを重要な技術
 設計の独立レビュー役として使う。条件A(新構造・処理フロー設計、実装前、
@@ -55,8 +56,12 @@ L2 1回+L3 1回/管理ID。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。
 条件D(QCD大幅悪化時、追加Trial前)。Fableはレビュー結果を鵜呑みにせず最終
 PM評価を行う。条件・観点・不要例の正本は`docs/pm/PM_GOVERNANCE.md`11-3節、
 観点文言は`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`。回数上限等
-との競合K1〜K6は11-3節に記載(ユーザー判断待ち、暫定運用: 省略も上限超過も
-せずSTOPして`USER_DECISION_REQUIRED`)。
+との競合K1〜K6は2026-10-02ユーザー決定により解消済み(11-3節): 必須
+レビューは回数上限の対象外/任意レビュー枠(Fable裁量、1日2回まで)は存続/
+同じ内容は重複レビューせず、Production採用提案前のレビューは配線完了判定
+でも再利用可(内容が変われば再レビュー)/Opusレビュー後はFableが照合し、
+STOP条件(11-3節)に該当しなければFable判断で次工程へ進む(Opusレビュー
+自体をユーザー承認Gateにしない)。
 
 **Existing Spec / Prior Trial Check Gate(2026-09-27ユーザー決定)**: 新仕様
 提案前・新Trial起票前・`USER_DECISION_REQUIRED`提示前・Production修正
@@ -204,8 +209,11 @@ Fableは全委任文を`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`に
 - Sonnetへの委任は1管理IDあたり初回+Fableからの修正・再生成指示最大3回
   (合計最大4回)。1回で足りれば1回で止める(詳細は
   `docs/pm/PM_GOVERNANCE.md` 11節)
-- Opusは診断目的で最大1回まで
-- Opus診断の後、Sonnetを自動的に再実行しない
+- Opusの難問診断は1管理IDあたり最大1回まで。診断の後、Sonnetを自動的に
+  再実行しない
+- Opusの必須レビュー(11-3節条件A〜D、11-2節必須)は回数上限の対象外。
+  任意レビューはFable裁量で1日2回まで。レビュー後は11-3節の進行判断
+  (STOP条件に該当しなければFable判断で次工程へ)に従う
 - 上記いずれかの上限に到達したら`USER_DECISION_REQUIRED`としてSTOPする
 
 ## ACTIVE_TASK固定ヘッダ(compact復帰用索引)

@@ -16446,3 +16446,302 @@ Opus指定は`.claude/agents/opus-consultant.md`:5の`claude-opus-5-5`のみ。
 Claude Code 2.1.287で`claude-opus-5-5`として実行されることをprobeで確認、
 `opus`エイリアスも同日時点で`claude-opus-5-5`へ解決。**モデル指定は変更して
 いない。**
+
+
+## PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02: 既存ルールとの競合K1〜K6の解消(2026-10-02ユーザー決定、委任_02)
+
+**区分**: PM/開発運用ルール(文書)の正式反映(ユーザー決定済み事項の反映)。
+Production仕様のStatus(`VALIDATED`/`APPROVED_FOR_PRODUCTION`/
+`PRODUCTION_WIRED`)には関与しない。コード・Prompt・Production path・
+`CURRENT_SPEC.md`・モデル指定(`.claude/agents/*.md`の`name`/`tools`/`model`)は
+無変更。費用¥0。Opus独立技術レビューGate(11-3)の該当判定: 非該当(ドキュメント
+更新)。
+
+管理ID: PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02(委任_02、Fableからの
+修正・追加指示1回目。同日初回エントリ[上記]で「ユーザー判断待ち」とした競合
+K1〜K6の解消方針をユーザーが決定したことを受けた正式反映)。
+
+**(1)ユーザー原文(2026-10-02、逐語全文)**:
+
+> Opus独立技術レビューGateの既存ルールとの競合について、以下の方針で正式に整理・反映してください。
+>
+> ## 1. 必須Opusレビューの回数上限
+>
+> 条件A〜Dによる**必須Opusレビューは、従来の回数上限の対象外**としてください。
+>
+> 従来の、
+>
+> - 1管理IDにつき設計レビュー1回
+> - 難問診断1回
+>
+> 等の上限は、任意レビュー・難問診断側にのみ適用してください。
+>
+> 理由は、必須条件が発火しているのに回数上限によってレビューできない状態を避けるためです。
+>
+> ただし、同じ内容を無意味に何度もレビューさせることは避けてください。
+>
+> ## 2. Fable裁量の任意Opusレビュー枠
+>
+> 現行の、
+>
+> **Fable裁量で1日2回まで**
+>
+> の任意レビュー枠は残してください。
+>
+> 必須条件A〜Dとは別枠です。
+>
+> 単純な実装確認等でOpusを多用しないことも維持してください。
+>
+> ## 3. 古い説明文
+>
+> Fable本体・Opus側の既存説明にある、
+>
+> > Opusは難問診断だけに使う
+>
+> 等、新ルールと矛盾する古い説明文は、新しいOpus独立技術レビューGateに合わせて修正してください。
+>
+> ただし、
+>
+> - モデル指定
+> - Fable本体の役割
+> - 他の既存仕様
+>
+> は不要に変更しないでください。
+>
+> 今回変更するのは、**新ルールとの矛盾を解消するために必要な説明部分だけ**です。
+>
+> ## 4. Production採用前とProduction配線完了前のレビュー重複
+>
+> 同じ変更・同じ設計内容について、Opusレビューを機械的に2回実施しないでください。
+>
+> 原則として、
+>
+> **Production採用提案前に実施したOpusレビューを、その後のProduction配線完了判定でも再利用可能**
+>
+> としてください。
+>
+> ただし、その後に以下があれば再レビューしてください。
+>
+> - 設計変更
+> - 実装方針の重要変更
+> - retry / fallback等への新しい配線
+> - 新しい重大リスクの発見
+> - Opusレビュー時の前提が崩れた場合
+>
+> つまり、
+>
+> **内容が変わっていなければ重複レビューしない。内容が変われば再レビューする。**
+>
+> としてください。
+>
+> ## 5. Opusレビュー後のユーザーSTOP条件
+>
+> ここは現行ルールを変更します。
+>
+> 今後は、
+>
+> **Opusレビューが入ったという理由だけで、毎回ユーザー判断待ちにしないでください。**
+>
+> 以下の場合は、Fable判断で次工程へ進んで構いません。
+>
+> - Claude案とOpusレビューが実質的に一致している
+> - 既存のユーザー承認済み仕様の範囲内
+> - 新しいProduct原則を追加しない
+> - Safety/QCD上の新しい重大トレードオフがない
+> - Production正式採用判断ではない
+> - 予算・Scope等の既存Guardrail内
+> - USER_DECISION_REQUIREDに該当する未決事項がない
+>
+> 一方、以下の場合は必ずSTOPしてユーザー判断を求めてください。
+>
+> - Claude案とOpusで重要な結論が対立
+> - 新しい仕様・Product原則の採用が必要
+> - Safety/QCD上の明確なトレードオフが発生
+> - Production正式採用判断が必要
+> - 既存のユーザー承認内容を変更する必要
+> - 予算・Scope・運用方針を変更する必要
+> - Opusレビューによって新しいUSER_DECISION_REQUIREDが発生
+>
+> つまり、
+>
+> **Opusレビューは技術品質を上げるためのGateであり、それ自体をユーザー承認Gateにはしない**
+>
+> という整理です。
+>
+> ## 6. Fableの責務
+>
+> Opusレビュー後は、Fableが必ず、
+>
+> - Claude案
+> - Opusレビュー
+> - CURRENT_SPEC
+> - DECISION_LOG
+> - OPEN_ITEMS
+> - ユーザー承認済み内容
+> - QCD
+> - PM強制Gate
+>
+> を照合してください。
+>
+> Opusの意見を自動採用するのではなく、PMとして次工程へ進めてよいか判断してください。
+>
+> ## 7. 既存文書への正式反映
+>
+> 上記方針を、
+>
+> - PM_GOVERNANCE
+> - DECISION_LOG
+> - Fable / Opusの説明文
+> - 必要な委任テンプレート
+> - Production採用・配線Gate
+>
+> 等へ整合的に反映してください。
+>
+> 重複定義は増やさず、SSOTを明確にしてください。
+>
+> 反映後、
+>
+> - 変更ファイル
+> - 5項目それぞれをどう解消したか
+> - 新旧ルール間に残る競合の有無
+> - 実際にどの条件でユーザーSTOPになるか
+> - commit / push結果
+>
+> を報告してください。
+>
+> ## 8. OPEN-233について
+>
+> OPEN-233のRewrite対象受け渡し設計は、今回の運用ルール反映とは別作業のまま継続してください。
+>
+> 今回すでに明示している通り、
+>
+> - Checkerは違反箇所を原文逐語で返す
+> - 複数文なら複数文のまま返す
+> - その範囲をそのままRewriteへ渡す
+> - 記事へ戻すために必要な後段処理だけ残す
+> - 後段処理がCheckerの違反範囲を勝手に縮小・再解釈しない
+>
+> という基本線でClaudeが設計し、その設計をOpusが独立レビューしてください。
+>
+> このOPEN-233については、今回特別に、設計＋Opusレビュー結果が出た時点で一度ユーザーへ報告してください。
+>
+> まだ実装・Trialへは進まないでください。
+
+**(2)K1〜K6の解消内容**(正本は`docs/pm/PM_GOVERNANCE.md` 11-3節):
+- K1(回数上限): 必須レビュー(11-3条件A〜D・11-2必須)は回数上限の対象外。従来の
+  上限(L2 1回+L3 1回/管理ID)は任意レビュー・難問診断にのみ適用。
+- K2(任意レビュー): 「Fable裁量1日2回まで」の枠は存続(必須条件とは別枠)。
+- K3(Fable本体定義の旧記述): `sandwich-pm.md`のdescription・手順7・手順8を新ルール
+  に合わせて修正(モデル指定・役割は不変)。
+- K4(実施タイミングの重なり): Production採用提案前(条件C)のレビューは、その後の
+  Production配線完了判定(Gate 3・11-2必須L2)でも再利用可。再レビューは5条件
+  (設計変更/実装方針の重要変更/retry・fallback等への新しい配線/新しい重大リスク
+  の発見/レビュー時の前提が崩れた)に該当する場合のみ。
+- K5(レビュー後の実装着手): 「毎回ユーザー判断待ち」を変更。進行条件7つ・STOP条件
+  7つを11-3節に新設(Opusレビューは技術品質のGateでありユーザー承認Gateではない)。
+- K6(`opus-consultant`の役割記述): `opus-consultant.md`のdescription・本文を独立
+  技術レビュー役に合わせて修正(`name`・`tools`・`model`は不変)。
+
+**(3)Fableの解釈(ユーザー決定に明記のない境界の扱い)**:
+- 解釈1: 11-2節の必須Opusレビュー(発火条件(i)〜(iv))も「必須」である以上、回数上限
+  の対象外として扱う。従来の「L2 1回+L3 1回/管理ID」は、任意レビュー(L2相当)と
+  難問診断(L3)に適用。任意レビューの「Fable裁量1日2回まで」は別途そのまま有効。
+- 解釈2: 難問診断(L3)の後の扱い(Sonnetを自動再実行しない、実装が必要ならユーザー
+  判断)は、ユーザー決定に言及がないため従来どおり変更しない。新しい進行/STOP条件
+  はOpusレビュー(11-3条件A〜D、11-2必須、任意)の後に適用する。
+- 解釈3: 原文§1「同じ内容を無意味に何度もレビューさせない」と§4「内容が変わって
+  いなければ重複レビューしない」を、必須レビュー全般の原則として11-3節に1箇所だけ
+  書く。再レビュー条件は原文§4の5つ。
+- (11-3節の「ユーザーが個別案件で報告・STOPを明示指示している場合はその指示を優先」
+  の1文は、原文§8[OPEN-233]を踏まえ、22節「ユーザー指示優先」と同旨として明記した
+  もの。新しい条件・例外ではない。)
+
+**(4)変更ファイルと、直接置き換えた文の変更前文言(逐語)**:
+
+変更ファイル: `docs/pm/PM_GOVERNANCE.md`(11-3節の段落新設・書き換え、11-2節・
+11節・1節・Gate 3・変更履歴ヘッダ・末尾変更履歴への日付付き注記/追記。既存の歴史的
+記述は削除・書き換えせず注記のみ)/`.claude/agents/sandwich-pm.md`/
+`.claude/agents/opus-consultant.md`/`CLAUDE.md`/`docs/pm/PM_BRIEF.md`/
+`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`/
+`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`/
+`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`/`DECISION_LOG.md`(本エントリ)/
+`OPEN_ITEMS.md`(OPEN-233行の追記のみ)/`docs/pm/REPORT_LEDGER.md`(本管理ID行の
+備考)/`docs/pm/delegation_log/2026-10-02_PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-
+2026-10-02_02.md`(+`_check.json`)。
+
+直接置き換えた文の変更前文言:
+
+- `.claude/agents/sandwich-pm.md` description(frontmatter 3行目):
+  `description: "Fable PM窓口。タスクを整理し、通常作業をsonnet-workerへ、難問の診断だけをopus-consultantへ委任し、Gateと受入判定を行う。"`
+- `.claude/agents/sandwich-pm.md` 手順7:
+  「7. 差し戻しても解決しない難問についてのみ、opus-consultantへ診断を依頼する
+  (L3診断、最大1回まで、診断目的のみ)。これとは別に、ユーザーが事前に
+  承認した高リスク案件(HIGH、論点限定)については、Sonnet差し戻し前の
+  段階でもopus-consultantへL2設計レビューを依頼してよい(L2+L3合計で
+  1管理IDあたり最大1回、2026-09-10ユーザー承認、`docs/pm/PM_GOVERNANCE.md`
+  11節)。全文再レビューではなく重要論点にスコープを絞って委任する
+  (Opus自身の追加探索は妨げない)。」
+- `.claude/agents/sandwich-pm.md` 手順8:
+  「8. opus-consultant(L2/L3いずれも)の結果を受け取った後、Sonnetを自動的に
+  再実行しない。実装が必要な場合は人間ユーザーの判断を仰ぐ。」
+- `.claude/agents/opus-consultant.md` description:
+  `description: Sonnetで解決できなかった難問について、原因・選択肢・影響範囲を読み取り専用で診断する。`
+- `.claude/agents/opus-consultant.md` 本文1行目:
+  「あなたはFableサンドイッチ方式の難問診断層(Opus)である。以下を厳守すること。」
+  (「以下を厳守すること。」は不変)
+- `.claude/agents/opus-consultant.md` 「## 役割」1項目目:
+  「- sandwich-pm(Fable)から渡された難問について、原因・選択肢・影響範囲・
+  リスク・推奨案を整理する。」
+- `.claude/agents/opus-consultant.md` 「## 独立技術レビュー」節の最終項目末尾:
+  「…採用判断は人間ユーザーのみ)。診断・レビュー後に実装を自動開始しない
+  制約も変更しない。」
+- `CLAUDE.md` ループ上限項目の一部:
+  「…最大3回(合計最大4回)、Opusは診断目的で最大1回まで。上限到達時は…」
+- `CLAUDE.md` Opus独立技術レビューGate項目の末尾:
+  「…`docs/pm/PM_GOVERNANCE.md` 11-3節(ここへは複製しない)。Opusレビュー後も
+  Production採用は人間ユーザーだけが承認する。」
+- `docs/pm/PM_BRIEF.md` Opus Escalation 3段階段落:
+  「…の3段階運用。上限は
+  L2 1回+L3 1回/管理ID。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。」
+- `docs/pm/PM_BRIEF.md` Opus独立技術レビューGate段落末尾:
+  「…回数上限等
+  との競合K1〜K6は11-3節に記載(ユーザー判断待ち、暫定運用: 省略も上限超過も
+  せずSTOPして`USER_DECISION_REQUIRED`)。」
+- `docs/pm/PM_BRIEF.md` 「## ループ上限(サンドイッチ運用)」:
+  「- Opusは診断目的で最大1回まで」「- Opus診断の後、Sonnetを自動的に再実行しない」
+- `docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md` 使用上の注意:
+  「- 既存の`opus-consultant`の制約(読み取り専用・Production採用可否を判断しない・
+  診断後にSonnetを自動再実行しない)は変更しない。」
+- `docs/pm/MODEL_ROUTING_TRIAL_LOG.md`(L2/L3定義部の前回追記):
+  「(2026-10-02追記)Opus独立技術レビューGate(条件A〜D)は
+  `docs/pm/PM_GOVERNANCE.md` 11-3節を参照(本定義は変更しない。回数上限との
+  競合は同節K1)。」
+- `docs/pm/PM_GOVERNANCE.md` 11-3節の「既存ルールとの関係」「Fableの役割」「未解決の
+  競合」「暫定運用」「OPEN-233への当てはめ」の変更前文言は、同日初回エントリ(上記
+  (5)(6)および11-3節初版)に記載のとおり(「Fableの役割」は「Claude案・Opusレビュー・
+  `CURRENT_SPEC.md`・ユーザー承認内容・QCD・PM Gateを照合」の6項目、「既存ルールとの
+  関係」は「『Opus結果を受けてSonnetを自動再実行しない』は維持する」)。
+
+**(5)変更していないもの**: モデル指定(`name`/`tools`/`model`、`sonnet-worker.md`・
+`haiku-worker.md`は未編集)、Fable本体の役割(`sandwich-pm.md`の委任先の制限・
+自分ではしないこと・手順1〜6・上限到達時・報告の各節)、Sonnet委任のループ上限
+(初回+修正3回)、難問診断(L3)の上限(1管理IDあたり最大1回)と診断後の扱い、任意
+レビュー枠(Fable裁量1日2回まで)、context packet方式、Opus入力限定、Production採用は
+人間ユーザーのみ、`CURRENT_SPEC.md`、コード・Prompt・Production path。
+PM_GOVERNANCE 11節・11-2節等の既存の歴史的記述は削除・書き換えせず、日付付き注記
+のみ追記。
+
+**(6)残存競合の確認結果**: 作業後に運用文書(`*.md`、`er0*_output/`・
+`docs/pm/delegation_log/`・`docs/pm/transcripts/`・`DECISION_LOG*.md`・
+`OPEN_ITEMS*.md`・個別REPORT等を除く)と`.claude/agents/*.md`を
+`難問の診断だけ|難問についてのみ|診断目的で最大1回|L2\+L3合計|自動的に再実行しない|
+自動再実行しない|最大1回|1日2回|未解決の競合|暫定運用`でGrepし、各ヒットを(ア)新
+ルールと整合/(イ)歴史的記述で注記済み/(ウ)未対応の矛盾に分類した。分類結果の一覧
+は`docs/pm/RESULT_PACKET.md`(一時)および最終報告に記載。
+
+**(7)OPEN-233の扱い(原文§8)**: 運用ルール反映とは別作業のまま継続。基本線(Checker
+は違反箇所を原文逐語で返す/複数文なら複数文のまま/その範囲をそのままRewriteへ渡す/
+戻すために必要な後段処理だけ残す/後段処理がCheckerの違反範囲を縮小・再解釈しない)で
+Claudeが設計し、Opusが独立レビューする。設計+Opusレビュー結果が出た時点でユーザー
+へ一度報告する(ユーザー明示指示のため11-3節の進行/STOP条件より優先)。実装・Trialへ
+は進まない。本管理IDではOPEN-233の技術変更・設計をしていない。
