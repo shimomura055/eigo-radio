@@ -225,9 +225,19 @@ OUT_DIR_REP17 = "er052_output/open233_self_recovery_flow_runner_01_rep17"
 # 配線前の出力のため使わない。Safety 12 fixtureのみ構造上の理由で
 # reuseのまま、詳細はREPORT§30参照)。出力は新規ディレクトリ(`_iter8`)へ書く。
 OUT_DIR_ITER8 = "er052_output/open233_self_recovery_flow_runner_01_iter8"
-OUT_DIR = OUT_DIR_ITER8
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ai_32_iter8.json"
-TOTAL_BUDGET_JPY = 50.0
+# 委任_33(rep18、2026-10-01、design書§4-25/§9-1): 既存iteration1〜8・
+# rep7〜17の出力(OUT_DIR_ITER1〜8/OUT_DIR_REP7〜17)は変更しない。body
+# rubric V6(委任_32で検出したB3[HF-007]/A2A3-0[HF-003]誤降格の是正)の
+# full flow確認として、`bgroup_B3`(Stage1 fresh・n=2)・`safety_A2A3`
+# (Stage1 reuse・n=2)・`meta_run03_standard`(Stage1 fresh)をfull flowで
+# 再実行する(委任文Guardrail¥13の一部、詳細はREPORT§31参照)。出力は
+# 新規ディレクトリ(`_rep18`)へ書く。
+OUT_DIR_REP18 = "er052_output/open233_self_recovery_flow_runner_01_rep18"
+OUT_DIR = OUT_DIR_REP18
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233aj_33_rep18.json"
+TOTAL_BUDGET_JPY = 11.0  # 委任_33 rep18 Guardrail¥13のうち、Part A/C/Hook
+# (別budget state、er052_open233_element_trial_safety_control_04.py)分の
+# 余裕を残して本rep18自身は¥11で自己停止する。
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -281,9 +291,18 @@ ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP = False
 # `er052_open233_element_trial_safety_control_03.py`)で誤降格0件を確認
 # 済み(priming再測定の要件どおり)。Falseに戻すと重大誤解原則配線前
 # (iteration1〜7・rep7〜15と同一)の挙動に戻る。
+#
+# 委任_33(design書§4-25/§7-0-iter32): 広いTrial iteration8(委任_32)で
+# full flow(Stage1→Stage2→Rewrite→Recheck)実行時にB3(HF-007)/A2A3-0
+# (HF-003)の誤降格を新規検出したため、V5からV6(既存BLOCKING列挙(d)/(b)の
+# 許容/NG対比例示を追加、新しい判定基準の追加ではない)へ昇格する。rep18
+# (`er052_open233_self_recovery_rep18_v6_confirm_01.py`)でSafety-critical
+# 8claim/Hormuz許容5・NG5/bgroup_B3・safety_A2A3のfull flow再確認を実施
+# 済み(詳細はREPORT§31)。Falseに戻すと重大誤解原則配線前(iteration1〜7・
+# rep7〜15と同一)の挙動に戻る。
 ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT = True
 BODY_RUBRIC_DEFAULT = (
-    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5
+    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6
     if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2c.RUBRIC_R3_TRIPLE_PRIME
 )
 HOOK_RUBRIC_DEFAULT = (
@@ -4470,10 +4489,86 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
 
 # ------------------------------------------------------------
+# 委任_33(design書§8-x、REPORT§31): `silent_pass_candidate`自動検知の実装。
+# 委任_32(REPORT§30-3C)で、`escalation_zero_breakdown.silent_pass_
+# candidate`は常に0を返す非稼働プレースホルダであり、B3/A2A3-0の誤降格
+# 2件はSAFETY_CRITICAL_SUB_IDS(r3d、8claim名指しリスト)との手動照合で
+# 初めて検出できたことが判明した。本関数は、各instanceのcycle別
+# stage2_results(claim_text/related_fact_id/materiality、既存run_instance
+# が既に保存している実測値)と、Safety-critical 8claimの正本定義
+# (`SAFETY_CRITICAL_CLAIM_DEFS`、s2c.build_eval_groups()/g6フィクスチャの
+# 実データから書き起こした固定の(instance_id, related_fact_id,
+# 逐語核心句)の組)とを自動照合し、最終materiality(floor/hook/disclosure-
+# gap適用後の実効値)がBLOCKING以外になった箇所を機械的に検出する。
+# related_fact_idはinstance内で複数sub_idが共有し得るため(例:
+# safety_A5のA5-0/A5-1はともにMUSE-HC-012)、claim_textの逐語核心句との
+# 併せ技で誤マッチを避ける(新規fixture捏造なし、既存実データからの
+# 逐語引用のみ)。
+SAFETY_CRITICAL_CLAIM_DEFS = {
+    "bgroup_B3": [
+        {"sub_id": "B3", "related_fact_id": "HF-007", "text_substring": "flashy 20% plan"},
+    ],
+    "safety_A2A3": [
+        {"sub_id": "A2A3-0", "related_fact_id": "HF-003", "text_substring": "repay the money"},
+    ],
+    "safety_A4": [
+        {"sub_id": "A4-0", "related_fact_id": "MUSE-HC-006",
+         "text_substring": "completed the exchanges with users"},
+        {"sub_id": "A4-1", "related_fact_id": "MUSE-HC-012",
+         "text_substring": "actually speaking with human staff"},
+    ],
+    "safety_A5": [
+        {"sub_id": "A5-0", "related_fact_id": "MUSE-HC-012",
+         "text_substring": "temporarily put back the feature"},
+    ],
+    "meta_run03_standard": [
+        {"sub_id": "Meta-1", "related_fact_id": "MUSE-HC-010",
+         "text_substring": "needed user information to continue"},
+        {"sub_id": "Meta-2", "related_fact_id": "MUSE-HC-012",
+         "text_substring": "needed user information to continue"},
+    ],
+    "bgroup_B4": [
+        {"sub_id": "B4-a", "related_fact_id": "MUSE-HC-002",
+         "text_substring": "take over when AI alone has trouble"},
+    ],
+}
+
+
+def detect_safety_critical_misdowngrades(instance_results: list) -> list:
+    """SAFETY_CRITICAL_CLAIM_DEFSに登録されたinstanceのみを対象に、cycleご
+    とのstage2_results実測値から、最終materiality(floor/hook/disclosure-gap
+    適用後)がBLOCKING以外になった箇所を機械的に検出する(¥0、新規API呼び
+    出しなし、既存run_instance結果jsonへの後処理のみ)。"""
+    rows = []
+    for r in instance_results:
+        defs = SAFETY_CRITICAL_CLAIM_DEFS.get(r.get("instance_id"))
+        if not defs:
+            continue
+        for cycle_idx, c in enumerate(r.get("cycles", [])):
+            for sr in c.get("stage2_results", []):
+                fact_id = (sr.get("related_fact_id") or "").strip()
+                text = sr.get("claim_text") or ""
+                for d in defs:
+                    if d["related_fact_id"] != fact_id or d["text_substring"] not in text:
+                        continue
+                    if sr.get("materiality") != "BLOCKING":
+                        rows.append({
+                            "instance_id": r["instance_id"], "sub_id": d["sub_id"],
+                            "cycle_index": cycle_idx, "materiality": sr.get("materiality"),
+                            "llm_materiality": sr.get("llm_materiality"),
+                            "floor_reason": sr.get("floor_reason"),
+                            "claim_text": text,
+                        })
+    return rows
+
+
+# ------------------------------------------------------------
 # 測定集計(§8-1/§8-2/§8-3/§8-4)
 # ------------------------------------------------------------
 def aggregate_measurements(instance_results: list) -> dict:
     n = len(instance_results)
+    # 委任_33: silent_pass_candidate自動検知(¥0、詳細は関数定義コメント参照)。
+    safety_critical_misdowngrade_rows = detect_safety_critical_misdowngrades(instance_results)
     initial_block = sum(1 for r in instance_results if r["final_state"] != "ACCEPTABLE_STAGE1")
     rescreen_auto_resolved = sum(1 for r in instance_results if r["final_state"] == "RESOLVED_STAGE2_DOWNGRADE")
     rewrite_progressed = sum(1 for r in instance_results
@@ -4601,7 +4696,14 @@ def aggregate_measurements(instance_results: list) -> dict:
             "true_resolved_all_prior_issues_resolved_true": true_resolved,
             "quality_pass": quality_pass,
             "all_prior_issues_resolved_unconfirmed": unresolved_unknown,
-            "silent_pass_candidate": 0,
+            # 委任_33(design書§8-x): 旧実装は常に0固定の非稼働プレース
+            # ホルダだった(委任_32 REPORT§30-3Cで開示)。
+            # SAFETY_CRITICAL_CLAIM_DEFSとの自動照合に置換する。
+            "silent_pass_candidate": len({
+                (row["instance_id"], row["sub_id"])
+                for row in safety_critical_misdowngrade_rows
+            }),
+            "silent_pass_candidate_rows": safety_critical_misdowngrade_rows,
         },
         "quality_claims": quality_claims,
         "qcd": {

@@ -3093,3 +3093,148 @@ Production採用判断のいずれも実施していない)/開始前チェッ�
 (ただし「小修正1回」は候補を検討した上で安全側に不採用と判断した
 結果であり、コードは変更していない。該当するためSTOPし、本§30で
 Fable/ユーザーへ報告する)。
+
+## §31. iter8未達3点の原因特定・body rubric V6小修正・限定再確認(委任_33、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_33: iter8未達3点の原因
+特定・小修正・限定再確認。広いTrialは含めない)。
+
+### 31-0. 上位目的整合チェック(7観点、design書§0-6/PM_GOVERNANCE§23)
+
+| # | 観点 | 本委任での確認結果 |
+|---|---|---|
+| 1 | 厳密一致のためだけのRewriteになっていないか | B3のRewriteは`so`→`while`の1語のみ(①水準)。厳密一致目的ではなく、別の原因を断定しないための最小修正 |
+| 2 | 重大誤解でないものを止めていないか | Hormuz許容5/Hook accept-1・boundary-1はいずれも非BLOCKING維持(31-2参照)、過剰停止の新規発生なし |
+| 3 | 小さく直せる問題を大きくRewriteしていないか | B3は①水準のみで解消。A2A3-0はRewrite自体が未完了だがladder水準を飛ばして段落/全文へ強制昇段してはいない |
+| 4 | Rewriteによる品質劣化の方が大きくないか | B3の1語置換(so→while)はタイトル・構成・他段落を一切変更していない(31-1 Before/After参照) |
+| 5 | 学習者にとって本当に問題か | B3/A2A3-0とも「Ledgerが異なる具体的内容を明示しているのに記事が断定する」パターンであり、学習者に誤った因果・主体を学ばせるリスクが高い。V6はこのリスクを正しくBLOCKING側へ戻した |
+| 6 | Human Reviewを安易な逃げ道にしていないか | A2A3-0はRewriteが未完了のままSTAGE4(fail-closed)へ倒れたが、これはBLOCKING判定自体が正しく維持された結果であり、判定を緩めて通過させる「逃げ道」ではない |
+| 7 | 不要call・Recheck・Rewriteを増やしていないか | rep18は3 instance×n=2のみに限定(広いTrialは含めない、委任文どおり)。実測¥6.4033(Guardrail¥15の約43%) |
+
+### 31-1. iter8→本委任の対応表(3点)
+
+| # | iter8の未達 | 本委任の対応 | 結果 |
+|---|---|---|---|
+| 1 | B3(HF-007)が2/2 QUALITYへ誤降格 | body rubric V6(許容/NG対比例示、最小修正1回) | **解消**: rep18で2/2ともBLOCKING維持→1語Rewrite(so→while)でRESOLVED_REWRITE |
+| 2 | A2A3-0(HF-003)が1/2 QUALITYへ誤降格 | 同上 | **誤降格は解消**: rep18で2/2ともBLOCKING維持。ただしRewrite自体がladder exhaustedで未完了、fail-closedでSTAGE4(安全側、31-3参照) |
+| 3 | meta_run03_standardが2/2 STAGE4(人間確認率0%→20%) | 原因三択の確定(コード変更は見送り、design書§6-14) | 原因は(b)Stage1 fresh enumeration非決定性と確定。rep18では2/2ともACCEPTABLE_STAGE1(同一fixtureで結果が一変、非決定性の直接証拠)。rubric/コード修正は不要と判断、実装せず |
+
+**B3判定文逐語(V5誤降格時[委任_32実測]→V6後[本委任実測])**:
+V5時(§7-0-iter32逐語): `issue="The sentence implies that the
+continuing security concerns caused the 20% plan to be withdrawn. The
+Ledger reports that Trump said the replacement decision was based on
+discussions with Middle Eastern leaders; it does not establish the
+cause asserted here."`で**Stage1は正しくBLOCKING根拠を記録済み**
+だったが、Stage2 LLM判定(V5)が`materiality=QUALITY`へ誤降格していた。
+V6後(本委任rep18実測、sample1/2とも): `materiality=BLOCKING`
+(`llm_materiality=BLOCKING`、`floor_reason=None`)で維持され、Rewrite
+(①水準)により`so`→`while`の1語修正のみで`RESOLVED_REWRITE`に到達。
+
+**A2A3-0判定文(V6後)**: sample1/2とも`HF-003`クレーム
+(“The idea was that those carrying the cargo would repay the money the
+United States spends to keep the strait safe.”)は全cycleを通じて
+`materiality=BLOCKING`のまま(誤降格は再現しなかった)。ただし
+Rewriteが`stage4_reason=ladder_exhausted_without_full_rewrite`で
+未完了のままSTAGE4へ到達した(Safety-critical要件[BLOCKING維持]は
+満たすが、Rewrite成功率は別課題として残存、Fable/ユーザーへ開示)。
+
+### 31-2. rep18 + Part A/C/Hook 結果表
+
+**Part A/C/Hook(Stage2のみ、n=1、`er052_open233_element_trial_safety_
+control_04.py`、実測¥2.0061・8 call・error 0)**:
+
+| 系統 | 件数 | 結果 |
+|---|---|---|
+| Safety-critical 8claim(B3/A2A3-0含む) | 8 | 8/8 BLOCKING維持、誤降格0件 |
+| Hormuz許容5 | 5 | 5/5非BLOCKING(QUALITY×4/ACCEPTABLE×1)、false block 0 |
+| Hormuz NG5 | 5 | 5/5 BLOCKING、false pass 0 |
+| Hook(accept-1-original-hook/boundary-1-dramatization) | 2 | 2/2 QUALITY(非BLOCKING維持、body V6の影響なし、非回帰確認) |
+
+**rep18(full flow、n=2、`er052_open233_self_recovery_flow_runner_01_
+rep18_representative_01.py`、OUT_DIR_REP18新設、実測¥4.3972・29 call・
+error 0)**:
+
+| instance | sample1 final_state | sample2 final_state | 備考 |
+|---|---|---|---|
+| `bgroup_B3`(Stage1 fresh) | RESOLVED_REWRITE | RESOLVED_REWRITE | so→while 1語のみ、2/2解消 |
+| `safety_A2A3`(Stage1 reuse) | STAGE4_ESCALATION(`ladder_exhausted_without_full_rewrite`) | 同左 | HF-003は2/2ともBLOCKING維持(誤降格0)、Rewrite未完了でfail-closed |
+| `meta_run03_standard`(Stage1 fresh) | ACCEPTABLE_STAGE1 | ACCEPTABLE_STAGE1 | iter8は2/2 STAGE4(claim検出6件)、本委任は2/2ともclaim検出0件(非決定性、31-3参照) |
+
+自動検知(`detect_safety_critical_misdowngrades`、design書§8-8新設):
+rep18全体で`safety_critical_misdowngrade_count_distinct=0`(誤降格0件)。
+
+### 31-3. meta_run03_standardの原因三択(design書§6-14、既存iter8データ+rep18再実行の両方で確認、追加¥0)
+
+委任文の三択(a)escalate_to_paragraph廃止による多箇所反復未収束/
+(b)Stage1 fresh検出の非決定性/(c)disclosure-gap型でBLOCKING不要、を
+以下のとおり確定した。
+
+| 選択肢 | 判定 | 根拠 |
+|---|---|---|
+| (a) 複数箇所独立ladderの不備 | **不成立** | iter8実データのcycle別`stage2_results`で、同一cycle内の複数blocking claimが独立に処理されていることを確認済み(`blocking_claims`ループ)。機構自体は正しく機能 |
+| (b) Stage1 fresh非決定性 | **成立(確定原因)** | rep18で同一fixture・同一コードを再実行した結果、iter8の「2/2ともSTAGE4、cycle0で6claim検出」から「2/2ともACCEPTABLE_STAGE1、claim検出0件」へ劇的に変化。この激変はcycle機構の不備では説明できず、Stage1 enumeration自体の非決定性の直接証拠 |
+| (c) disclosure-gap型でBLOCKING不要 | **不成立** | 繰り返し検出されたMUSE-HC-011は「Ledgerが複数件と記録する事実を記事が単数へ歪曲」する数値・規模の歪曲であり、disclosure-gap型(MUSE-HC-012パターン)とは性質が異なる。重大誤解原則下でもBLOCKING維持が正しい |
+
+**対応**: (b)の根本改善(Stage1サンプリング設定見直し・S1-U union screen
+既定化等)は根本設計変更に該当するためスコープ外とし、本委任では
+コード変更を行わない。既知の残存リスクとしてFable/ユーザー判断へ
+委ねる(§7 STOP条件「cycle上限の単純拡大や段落直行の復活はしない」)。
+
+### 31-4. VALIDATED最低条件7項目の再評価(iter8実測+rep18で置き換わる項目を明示、判定はFableへ委ねる)
+
+| # | 条件 | iter8実測(委任_32) | 本委任(rep18)で置き換わる実測 | 充足 |
+|---|---|---|---|---|
+| 1 | 重大Fact見逃し0 | B3/A2A3-0誤降格2件(未充足) | rep18で2 instance×n=2とも誤降格0件(31-2) | **充足(置換)** |
+| 2 | false PASS 0 | 自動測定0/38だが手動照合で2件の実質誤降格(未充足) | 自動検知(§8-8新設)実装後、rep18で0件・iter8データへ適用し2件を正しく自動検出(design書§8-8) | **充足(置換、かつ自動測定自体の信頼性も向上)** |
+| 3 | 実記事人間確認0 | 2/10(20%、meta_run03_standard、未充足) | rep18のmeta_run03_standardは2/2ともACCEPTABLE_STAGE1(0%相当)。ただし原因はStage1非決定性であり、同一fixtureでも再現しない可能性がある(31-3) | **部分充足(非決定性のため恒常的な解消ではない、要継続観察)** |
+| 4 | 不要Rewrite許容水準 | 11.11%(改善傾向) | 本委任は対象外(rep18はB3/A2A3-0/meta_run03_standardのみ、不要Rewrite率の再測定は実施していない) | 変更なし(iter8値を維持) |
+| 5 | Rewrite最小範囲中心 | ①水準15件中心(充足) | B3は①水準(1語)のみで解消、A2A3-0は未完了(ladder exhausted) | 維持(充足) |
+| 6 | 平均≤+¥2/記事 | ¥0.6975/instance-run(充足) | rep18 3 instance平均は¥0.7329/instance-run(¥4.3972/6 instance-run) | 維持(充足) |
+| 7 | Meta・Hormuz Regressionなし | B3/A2A3-0誤降格+meta人間確認率悪化で未充足 | B3/A2A3-0の誤降格は解消。meta_run03_standardは今回非回帰(ACCEPTABLE_STAGE1)だが非決定性由来のため恒常的解消と断定しない | **部分充足(B3/A2A3-0は解消、meta群は非決定性の残存リスクとして開示)** |
+
+7項目中、置換後は4項目充足・2項目部分充足(非決定性由来の残存リスク
+明示)・1項目iter8値維持。**Status**:
+`B3_A2A3-0_MISDOWNGRADE_RESOLVED_VIA_RUBRIC_V6_META_STANDARD_ROOT_
+CAUSE_CONFIRMED_AS_STAGE1_ENUMERATION_NONDETERMINISM_NO_CODE_FIX_
+APPLIED`。
+
+### 31-5. 費用・unittest・Git
+
+本委任費用: Part A/C/Hook ¥2.0061+rep18 ¥4.3972=**¥6.4033**
+(Guardrail¥15のうち、見込み¥15の約43%)。Phase累計
+¥462.6236+¥6.4033=**¥469.0269**/総枠¥600、残**¥130.9731**。
+
+コード変更: `er052_open233_self_recovery_stage2_calibration_01.py`
+(`MISCONCEPTION_PRINCIPLE_TEXT_V6`/`RUBRIC_R3_TRIPLE_PRIME_WITH_
+MISCONCEPTION_PRINCIPLE_V6`新設)、`er052_open233_self_recovery_flow_
+runner_01.py`(`BODY_RUBRIC_DEFAULT`をV6へ昇格、`OUT_DIR_REP18`新設、
+`SAFETY_CRITICAL_CLAIM_DEFS`/`detect_safety_critical_misdowngrades`
+新設、`silent_pass_candidate`を実装へ置換)。新規:
+`er052_open233_element_trial_safety_control_04.py`(Part A/C/Hook V6
+priming確認)・`er052_open233_self_recovery_flow_runner_01_rep18_
+representative_01.py`(bgroup_B3/safety_A2A3/meta_run03_standardの
+full flow再確認)。
+
+unittest: 既存281件+新規11件(`TestMisconceptionPrincipleRubricV6`3件・
+`TestSafetyCriticalMisdowngradeDetection`8件[うち1件はiter8実データへの
+適用確認])=**計292件全PASS**
+(`.venv/Scripts/python.exe -m unittest er052_open233_self_recovery_
+flow_runner_01_test_01`)。`run_project_regression.py`実行結果:
+collected=4259・passed=4248・failed=6・errors=5(失敗11件はいずれも
+er052/OPEN-233と無関係なモジュール[`er003_test_bad`/
+`er003_test_p2j_investigate`/`er015`/`er025`/`er040`/`er043`]であり、
+本委任の変更前から存在する既知のbaseline/件数ドリフト系issueと判断する
+[本委任のスコープ外、新規に発生させたものではない])。`git diff --stat`
+(対象4ファイルのみ): 489 insertions(+)・10 deletions(-)。既存
+iteration1〜8・rep7〜17証跡・Production code(er003/er006/er009/er010/
+er012/er019)は無変更(`git status --porcelain er052_output/`で新規
+`rep18`/`element_trial_safety_control_04`ディレクトリ以外の差分なし)。
+
+**STOP条件該当確認**: ¥15超え見込み(該当せず、実測¥6.4033)/API error
+3連続(該当せず、0 error)/Production・既存証跡変更(該当せず)/
+USER_DECISION_REQUIRED 5条件(該当せず、新Product原則/Safety原則変更/
+¥600超過/根本設計変更の実施/Production採用判断のいずれも実施して
+いない)/開始前チェック未反映(0件)/Safety-critical誤降格が小修正1回後も
+残る(**該当せず、V6是正1回でB3/A2A3-0の誤降格はrep18で再現せず解消**)/
+false PASS 1件以上(該当せず、自動検知0件)/Hormuz許容群の誤BLOCK再発
+(該当せず、Part C実測で5/5非BLOCKING)。**STOPなし**。

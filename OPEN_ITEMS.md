@@ -577,6 +577,33 @@ STANDARD_HUMAN_REVIEW_REGRESSION_FOUND`。詳細:
 §7-0-iter32/§9-1㉒、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§30。
 B3/A2A3-0誤降格への対応要否(根本設計変更の是非)はFable/ユーザー
 判断事項。
+**2026-10-01追記(委任_33、iter8未達3点の原因特定・小修正・限定再確認)**:
+body rubric V6(既存BLOCKING列挙(d)/(b)への許容/NG対比例示、最小修正
+1回)を追加し、priming再測定(Safety-critical 8claim/Hormuz許容5・
+NG5/Hook、Stage2のみn=1、¥2.0061)を経て`BODY_RUBRIC_DEFAULT`をV6へ
+昇格、full flow再確認(`bgroup_B3`[Stage1 fresh]・`safety_A2A3`
+[Stage1 reuse]・`meta_run03_standard`[Stage1 fresh]、各n=2、
+¥4.3972)を実施した。結果: (1)B3は2/2ともBLOCKING維持→1語Rewrite
+(`so`→`while`)で解消(誤降格は再現せず)。(2)A2A3-0は2/2とも
+BLOCKING維持(誤降格は再現せず)、ただしRewrite自体が`ladder_
+exhausted_without_full_rewrite`で未完了のままSTAGE4(fail-closed、
+安全側)。(3)`meta_run03_standard`は2/2ともACCEPTABLE_STAGE1(iter8の
+2/2 STAGE4から一変)。同一fixture・同一コードでの結果の激変が、原因
+三択のうち「Stage1 fresh enumerationの非決定性」を裏付け、(a)複数
+箇所独立ladderの不備・(c)disclosure-gap型でBLOCKING不要はいずれも
+不成立と確定した(design書§6-14)。非決定性の根本改善は根本設計変更に
+該当するためスコープ外としコード変更せず。`silent_pass_candidate`
+(旧実装は常に0固定の非稼働プレースホルダ)をSAFETY_CRITICAL_SUB_IDS
+との自動照合実装へ置換(design書§8-8)、rep18では誤降格0件。
+unittest既存281件+新規11件=計292件全PASS。Phase累計
+¥462.6236+¥6.4033=¥469.0269/総枠¥600、残¥130.9731。Status=
+`B3_A2A3-0_MISDOWNGRADE_RESOLVED_VIA_RUBRIC_V6_META_STANDARD_ROOT_
+CAUSE_CONFIRMED_AS_STAGE1_ENUMERATION_NONDETERMINISM_NO_CODE_FIX_
+APPLIED`。詳細: `DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-
+TRIAL-01`委任_33エントリ、`docs/pm/design_open233_self_recovery_
+flow_01.md`§4-25/§6-14/§8-8/§9-1㉓、`OPEN-233-SELF-RECOVERY-
+TRIAL-01_REPORT.md`§31。meta_run03_standardの非決定性そのものの
+改善要否はFable/ユーザー判断事項として継続。
 旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
 B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
 Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は

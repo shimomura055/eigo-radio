@@ -475,6 +475,67 @@ RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5 = (
 )
 
 
+# ------------------------------------------------------------
+# 委任_33(OPEN-233-SELF-RECOVERY-TRIAL-01、design書§4-25、2026-10-01):
+# 広いTrial iteration8(委任_32、REPORT§30/design書§7-0-iter32)で検出した
+# Safety-critical 2claimの誤降格の是正(最小修正1回、新しい原則区分は
+# 追加せず、既存のBLOCKING列挙(d)[別の特定の原因の断定]・(b)[Ledgerに
+# 無い具体的な主体の新規追加]に対する「許容/NG対比例示」のみを追加する)。
+#
+# 1. B3(HF-007、§7-0-iter32(1)): “Concerns about US-Iran attacks, the sea
+#    blockade, and tanker safety continued on July 14, so the flashy 20%
+#    plan left the stage...”。Ledger(HF-007 conditions)は「中東指導者との
+#    『非常に生産的な協議』に基づく決定」と撤回・置換の理由を明示している
+#    のに、記事は継続する安全保障上の懸念を原因として接続詞"so"で断定して
+#    いる。2/2で安定して誤りなくQUALITYへ誤降格(deterministic floor非該当、
+#    FLOOR_FLAGSのどれにも該当しないため保護を受けない)。
+# 2. A2A3-0(HF-003、§7-0-iter32(2)): “The idea was that those carrying the
+#    cargo would repay the money the United States spends to keep the
+#    strait safe.”。Ledger(HF-003)は支払義務者を明示的に未提示としている
+#    のに、記事は「貨物を運ぶ側」という具体的な主体を追加している。1/2で
+#    揺れてQUALITYへ誤降格。
+#
+# 根本原因(design書§7-0-iter32で確定済み): 両claimとも、確認済みFact同士の
+# 「自然な接続」を許容するtie-break原則(RUBRIC_R3_NATURAL_INTERPRETATION
+# 冒頭)がLLM判定を寛容化側へ引っ張り、Ledgerが既に矛盾する具体的内容
+# (別の理由/不特定の主体)を記録している既存BLOCKING列挙(d)/(b)に本来
+# 該当することを見落としている。候補floor(`matched_notes_id`+
+# `observation_consistent=False`)はhormuz-HF009等29件の正当なQUALITY/
+# ACCEPTABLE claimを巻き込むため不採用のまま(§7-0-iter32既存結論を変更
+# しない)。本V6はrubric文言側のみで、この2パターンを「自然な接続」の
+# 対比例として明示する(新しい判定基準の追加ではなく、既存(d)/(b)の
+# 適用対象であることをモデルに気づかせるための対比例示)。
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT_V6 = MISCONCEPTION_PRINCIPLE_TEXT_V5 + """
+
+【追加明確化(委任_33、広いTrial iteration8で検出したB3[HF-007]/A2A3-0
+[HF-003]誤降格の是正、最小修正1回、新しい原則区分は追加せず既存(d)/(b)の
+対比例示のみを追加)】
+許容される「確認済みFact同士の自然な接続」の例: 市場が海上輸送のリスクを
+重視していたために価格が戻った、という程度の記述は、二つの確認済みFact
+(リスクの継続/価格の回復)を人間が自然に読める範囲でつないだ解釈であり
+許容してください。
+一方、以下の2種類は、この「自然な接続」には当たらず、明確にBLOCKINGと
+してください:
+1. Ledgerがある決定・出来事の理由を特定の内容として明示しているのに、
+   記事がそれとは異なる理由を断定している場合(例: Ledgerが「中東の
+   指導者との協議に基づく決定」と記録しているのに、記事が「継続していた
+   安全保障上の懸念が原因で撤回された」のように、別の特定の理由を事実
+   として述べる場合)。これはLedgerに無い因果関係の新規追加(上記(d))に
+   該当し、「確認済みFactを自然につないだだけ」の解釈ではありません。
+2. Ledgerが特定していない主体(誰が支払うか・誰が行ったか等)を、記事が
+   具体的な主体として特定している場合(例: Ledgerが「支払義務者は未提示」
+   としているのに、記事が「貨物を運ぶ側が支払う」のように具体的な主体を
+   追加する場合)。これはLedgerに無い具体的な主体の新規追加(上記(b))に
+   該当します。
+上記2種類に該当するかどうかを、tie-breakでQUALITYへ倒す前に必ず先に
+確認してください。"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6 = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V6
+)
+
+
 class TrialAbort(RuntimeError):
     pass
 

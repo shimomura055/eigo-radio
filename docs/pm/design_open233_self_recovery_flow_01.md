@@ -1580,6 +1580,69 @@ caused exactly this surprise.」→「Meta had run a test.」のRewrite)は、
 既存iteration1〜7・rep7〜16の出力(OUT_DIR_ITER1〜7/OUT_DIR_REP7〜16)は
 変更しない。実記事での検証(neg1/neg3のn=2再実行)は§9-1㉑参照。
 
+### 4-25. body rubric V6(B3/A2A3-0誤降格是正、許容/NG対比例示、委任_33)
+
+委任_32(広いTrial iteration8、§7-0-iter32)がfull flowで新規検出した
+Safety-critical誤降格2件(B3[HF-007]が2/2、A2A3-0[HF-003]が1/2)に対し、
+最小修正1回としてbody rubric V6(`RUBRIC_R3_TRIPLE_PRIME_WITH_
+MISCONCEPTION_PRINCIPLE_V6`、`er052_open233_self_recovery_stage2_
+calibration_01.py`)を追加した。新しい判定基準・原則区分は追加せず、
+既存BLOCKING列挙(d)[Ledgerと逆方向/別の因果の断定]・(b)[Ledgerに無い
+具体的事実の追加]について、「確認済みFact同士の自然な接続」として
+tie-breakでQUALITYへ寛容化されやすい2パターンを対比例示として明示した
+(詳細な文面はコード内コメント・§7-0-iter32参照)。
+
+**確認した事項(¥0、新規API呼び出しなし)**: Stage2入力(`verified_ledger_
+text`)には、既にLedgerの`conditions`/`notes_for_writer`/`causal_strength`
+を含む全文が渡されている(`er050_gpt6_checker_comparison_trial_01.
+load_audit_fixture`がaudit jsonのprompt文字列から`{verified_ledger_text}`
+マーカー間を機械的に抽出する既存実装、§4-4確定版どおり)。B3/A2A3-0の
+誤降格は入力不足ではなく、rubric文言側のtie-break原則がLLM判定を
+寛容化側へ誘導していたことが原因であり(§7-0-iter32根本原因節)、
+V6はこの1点のみを是正する。
+
+**priming再測定(委任_16の教訓どおり)**: `BODY_RUBRIC_DEFAULT`をV5から
+V6へ昇格する前に、以下3系統をn=1(Stage2のみ、`er052_open233_element_
+trial_safety_control_04.py`、実測¥2.0061)で確認した。
+(A) Safety-critical 8claim: 8/8 BLOCKING維持(誤降格0件、B3/A2A3-0含む)。
+(C) Hormuz許容5/NG5: 許容5件は全てQUALITY/ACCEPTABLE(false block 0)、
+NG5件は全てBLOCKING(false pass 0)。
+(Hook) neg1実Hook(accept-1-original-hook)・境界例(boundary-1-
+dramatization)のHook専用Stage2(rubric本体は無変更): 両方ともQUALITY
+(非回帰、body V6が独立したHook rubricへ波及していないことを確認)。
+
+**full flow確認(`er052_open233_self_recovery_flow_runner_01_rep18_
+representative_01.py`、実測¥4.3972、OUT_DIR_REP18新設)**: `bgroup_B3`
+(Stage1 fresh・n=2)・`safety_A2A3`(Stage1 reuse・n=2)・
+`meta_run03_standard`(Stage1 fresh・n=2)を再実行した。
+
+1. `bgroup_B3`: **2/2ともBLOCKING維持→RESOLVED_REWRITE**(誤降格は
+   再現しなかった)。Rewriteは①水準(`1_word_connective`)のみで、
+   実際の差分は`so`→`while`の1語のみ(ユーザー指示D[B3の修正はso→while
+   の1語]と一致、§1参照)。
+2. `safety_A2A3`: **2/2ともHF-003(A2A3-0)がBLOCKING維持**(誤降格
+   再現せず)。ただしRewriteがladder各水準で完了しきらず
+   `stage4_reason=ladder_exhausted_without_full_rewrite`でSTAGE4
+   (fail-closed、Safety-critical要件[BLOCKING維持]は満たすが、
+   Rewrite自体の成功率は別課題として残る)。
+3. `meta_run03_standard`: **2/2ともACCEPTABLE_STAGE1**(委任_32 iter8の
+   同一instanceは2/2ともSTAGE4だった)。同じ既定構成・同じfixtureで
+   Stage1 freshの検出結果が「6→11→9claim検出」から「0claim検出」へ
+   劇的に変化しており、§6-14(meta_run03_standardの原因三択確定)で
+   詳述するとおり、根本原因はStage1 fresh enumeration(検出網羅性)の
+   **非決定性**であることが実測で裏付けられた(本V6はこの原因に対して
+   無関係であり、コード修正は行っていない)。
+
+自動検知(`detect_safety_critical_misdowngrades`、§8-4新設)による
+Safety-critical誤降格件数: rep18 2 instance×n=2(計4 instance-run)で
+**0件**(`safety_critical_misdowngrade_count_distinct`)。
+
+`BODY_RUBRIC_DEFAULT`をV6へ昇格した(`ENABLE_MISCONCEPTION_PRINCIPLE_
+DEFAULT=True`は維持、Falseに戻すと重大誤解原則配線前の挙動に戻る)。
+既存iteration1〜8・rep7〜17の出力は変更しない。unittest
+`TestMisconceptionPrincipleRubricV6`3件・`TestSafetyCriticalMisdowngrade
+Detection`8件を追加(§8-4参照)。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -3052,6 +3115,57 @@ gatingの過剰保守を解消、A-2はreuse enumeration欠如を解消)こと�
 
 **unittest**: `TestFindMatchingPriorRecord.test_multiple_prior_records_same_fact_id_returns_most_recent`(新規1件)、`TestSameClaimReblockedLadderEscalationWiring`(新規3件、source inspection)。既存218件+新規4件=**計222件全PASS**。
 
+### 6-14. `meta_run03_standard`人間確認率悪化の原因三択確定(委任_33、REPORT§31)
+
+**背景**: 委任_32(iter8)で`meta_run03_standard`が2/2ともSTAGE4に到達し
+(iter7のStage1 reuseでは0/4だった)、実記事6種10 runの人間確認率が
+0%→20%へ悪化した(§7-0-iter32は別claimのSafety-critical誤降格、本節は
+この実記事固有の悪化の原因分析)。委任文§1で提示した三択は、(a)
+`escalate_to_paragraph`廃止により多箇所反復がcycle上限内に収まらない、
+(b)Stage1 fresh検出の非決定性、(c)当該claim自体がdisclosure-gap型で
+BLOCKINGにすべきでない、の3つ。
+
+**iter8実データの再分析(¥0、既存`er052_output/open233_self_recovery_
+flow_runner_01_iter8/instances_s{1,2}/meta_run03_standard.json`の
+cycle別`stage2_results`を精査)**: cycle0〜2で繰り返しBLOCKINGのまま
+残ったのは一貫して`related_fact_id=MUSE-HC-011`(floor_reason=
+`deterministic_floor:changed_number`、Ledgerが複数件の契約社員からの
+報告と記録している事実を、記事が「one employee's report」のように
+単数化して繰り返し言及している)で、cycle0の3箇所→cycle1の5箇所→
+cycle2の6箇所と**出現数が増加**した。一方、同一cycle内の複数箇所は
+`blocking_claims`ループ(`for c in blocking_claims:`、line付近3973)で
+独立に処理されており、委任_18の複数箇所独立ladder機構自体は正しく
+機能していた(各箇所が個別に①水準Rewriteを試行、の意味で(a)の
+「仕組みが壊れている」は不成立)。
+
+**(c)の判定**: MUSE-HC-011は「Ledgerが複数件と記録する事実を記事が
+単数へ歪曲する」という**数値・規模の歪曲**であり、§0-2のBLOCK候補
+(「未確認の人物・行動・動機・具体的な数字の追加」寄りの事例)に明確に
+該当する。disclosure-gap型(§6-?既存の`apply_disclosure_gap_downgrade`
+対象、MUSE-HC-012「開示なし」パターン)とは性質が異なり、重大誤解原則の
+下でもBLOCKING維持が正しい。**(c)は不成立**(rubric修正は不要、
+実装していない)。
+
+**rep18実測による(a)/(b)の決着(`er052_open233_self_recovery_flow_
+runner_01_rep18_representative_01.py`、§4-25参照)**: iter8と全く同じ
+fixture・既定構成で`meta_run03_standard`をStage1 fresh・n=2で再実行した
+ところ、**2/2ともACCEPTABLE_STAGE1**(claim検出0件)となり、iter8の
+「2/2ともSTAGE4(cycle0だけで6claim検出)」から**劇的に異なる結果**に
+変化した。同一fixture・同一rubric・同一コードでここまで結果が変わる
+ことは、「①で検出した箇所を②③④へ反復して昇段しきれない」という
+cycle機構の不備((a))では説明できず、**Stage1 fresh(V4A+重大誤解原則)
+のclaim検出(enumeration)自体が強い非決定性を持つ((b))**ことの
+直接証拠である。
+
+**結論・対応**: 原因は(b)(Stage1 fresh enumeration非決定性)。(a)の
+機構自体(複数箇所独立ladder)は正しく機能しており修正不要、(c)も
+不成立のためrubric修正は不要。Stage1検出の非決定性そのものの改善
+(例: temperature/サンプリング設定の見直し、複数回Stage1呼び出しによる
+union screen[S1-U、既存§3-1機構]の既定化等)は根本設計変更に該当する
+ため、本委任ではコード変更を行わず、既知の残存リスクとしてFable/
+ユーザー判断へ委ねる(§7 STOP条件「cycle上限の単純拡大や段落直行の
+復活はしない」に従い、その種の回避策も実装していない)。
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず
@@ -3494,6 +3608,43 @@ BLOCKINGでなかった)件数をSafety群/全群別に報告する。
 にも`iter6_additional_measures_combined`として統合した(n=2結合値、
 両sampleのinstance_resultsを単純連結して集計、既存article_level
 [Standard+Advanced合算]集計とは別枠のinstance粒度集計)。
+
+### 8-8. `silent_pass_candidate`自動検知への置換(委任_33、REPORT§31)
+
+委任_32(iter8、§7-0-iter32)で、`aggregate_measurements`内の
+`escalation_zero_breakdown.silent_pass_candidate`が常に`0`を返す
+非稼働プレースホルダであり、B3/A2A3-0の誤降格2件はSAFETY_CRITICAL_
+SUB_IDS(r3d、8claim名指しリスト)との**手動照合**で初めて検出できた
+ことが開示された。本委任で、この手動照合を機械的な後処理関数
+(`detect_safety_critical_misdowngrades`、`er052_open233_self_recovery_
+flow_runner_01.py`)へ置き換えた。
+
+**実装**: `SAFETY_CRITICAL_CLAIM_DEFS`(instance_id→[{sub_id,
+related_fact_id, text_substring}]の固定マップ、r3d.SAFETY_CRITICAL_
+SUB_IDSの8claim全件をg6フィクスチャの実データ[`s2c.build_eval_groups()`
+・各fixtureのV4A rerun結果]から書き起こした逐語データ)と、各instanceの
+cycle別`stage2_results`(claim_text/related_fact_id/materiality、
+既存run_instanceが既に保存している実測値)とを自動照合し、最終
+materiality(floor/hook/disclosure-gap適用後の実効値)がBLOCKING以外に
+なった箇所を機械的に検出する(¥0、新規API呼び出しなし、既存結果json
+への後処理のみ)。related_fact_idがinstance内で複数sub_idに共有される
+ケース(`safety_A5`のA5-0/A5-1がともにMUSE-HC-012)があるため、
+claim_textの逐語核心句との併せ技で誤マッチを防ぐ(unittest
+`test_no_false_positive_for_unrelated_fact_id_same_instance`で確認)。
+
+`escalation_zero_breakdown.silent_pass_candidate`は、検出行を
+`(instance_id, sub_id)`で重複排除した件数を返すよう置き換えた
+(`silent_pass_candidate_rows`に詳細行も併記)。委任_32のiter8実データ
+(`er052_output/open233_self_recovery_flow_runner_01_iter8/`)へ本関数を
+適用すると、B3(`bgroup_B3`、2/2)・A2A3-0(`safety_A2A3`、sample2のみ)が
+自動検出されることをunittest(`test_iter8_real_data_detects_exactly_
+two_misdowngrades`)で確認した。rep18(§4-25)のfull flow再実行では
+`safety_critical_misdowngrade_count_distinct=0`(誤降格再現なし)。
+
+unittest: `TestSafetyCriticalMisdowngradeDetection`(8件、合成
+instance_resultsによるregression + iter8実データでの実測確認)。
+既存281件+本委任新規11件(V6 rubric 3件+misdowngrade detection 8件)=
+**計292件全PASS**。
 
 ## 9. Trial計画
 
@@ -4742,6 +4893,23 @@ floor claimをより多くの箇所で検出するようになったこと[enume
 **Status**: `ITER8_BROAD_STABILITY_TRIAL_COMPLETE_COST_AND_UNNECESSARY_
 REWRITE_IMPROVED_BUT_B3_A2A3-0_SAFETY_CRITICAL_MISDOWNGRADE_AND_META_
 STANDARD_HUMAN_REVIEW_REGRESSION_FOUND`。詳細REPORT§30。
+
+**㉓ iter8未達3点の原因特定・小修正(body rubric V6)・限定再確認
+(委任_33、本書§4-25/§6-14/§8-8参照)**: body rubric V6(許容/NG対比例示、
+最小修正1回)を追加し、priming再測定(Safety-critical 8claim/Hormuz
+許容5・NG5/Hook、Stage2のみn=1、¥2.0061)とfull flow再確認
+(`bgroup_B3`/`safety_A2A3`/`meta_run03_standard`、n=2、¥4.3972)を
+実施した。結果: (1)B3は2/2ともBLOCKING維持→1語[so→while]のRewriteで
+RESOLVED_REWRITE(誤降格解消)。(2)A2A3-0は2/2ともBLOCKING維持
+(誤降格は再現しなかったが、Rewrite自体はladder各水準を使い切り
+`ladder_exhausted_without_full_rewrite`でSTAGE4、fail-closed)。
+(3)meta_run03_standardは2/2ともACCEPTABLE_STAGE1(iter8の2/2 STAGE4
+から一変)。同一fixture・同一コードでの結果の激変が、原因三択のうち
+(b)Stage1 fresh enumeration非決定性を裏付けた(§6-14)。自動検知
+(`silent_pass_candidate`、§8-8新設)による誤降格0件。
+`BODY_RUBRIC_DEFAULT`をV6へ昇格した。実測合計¥6.4033(Guardrail¥15内)。
+Phase累計¥462.6236+¥6.4033=**¥469.0269**/総枠¥600、残**¥130.9731**。
+詳細REPORT§31。
 
 ## 10. リスク
 

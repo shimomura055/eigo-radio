@@ -15874,3 +15874,79 @@ TRIAL-01_32.md`。
 01_iter8/`(新規)、`user_test/open233_rewrite_compare_01/index.html`
 更新(`index_rep17.html`に旧版保存)、`OPEN_ITEMS.md`(OPEN-233行
 追記)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: body rubric V6でB3/A2A3-0のSafety-critical誤降格を解消、meta_run03_standardの原因をStage1 enumeration非決定性と確定(委任_33、2026-10-01)
+
+**区分**: Implementation Hardening(Trial測定+rubric文言の小修正のみ、
+Production/共通Prompt・schema・routingは無変更)。
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_33: iter8[委任_32]未達
+3点の原因特定・小修正・限定再確認。広いTrialは含めない)。
+
+**内容**: 委任_32(iter8)が新規検出したSafety-critical誤降格2件
+(B3[HF-007]が2/2・A2A3-0[HF-003]が1/2でQUALITYへ誤降格)に対し、
+最小修正1回としてbody rubric V6(`RUBRIC_R3_TRIPLE_PRIME_WITH_
+MISCONCEPTION_PRINCIPLE_V6`、既存BLOCKING列挙(d)[別の因果の断定]・
+(b)[Ledgerに無い具体的主体の追加]への許容/NG対比例示を追加、新しい
+判定基準は追加せず)を導入した。priming再測定(Safety-critical 8claim/
+Hormuz許容5・NG5/Hook、Stage2のみn=1、¥2.0061)で全件非回帰を確認後、
+`BODY_RUBRIC_DEFAULT`をV6へ昇格し、full flow再確認(`bgroup_B3`
+[Stage1 fresh]・`safety_A2A3`[Stage1 reuse]・`meta_run03_standard`
+[Stage1 fresh]、各n=2、¥4.3972)を実施した。
+
+**結果**: (1)B3は2/2ともBLOCKING維持→1語Rewrite(`so`→`while`)で
+`RESOLVED_REWRITE`(誤降格解消)。(2)A2A3-0は2/2ともBLOCKING維持
+(誤降格は再現せず)、ただしRewrite自体が`ladder_exhausted_without_
+full_rewrite`で未完了のままSTAGE4(fail-closed、安全側)。
+(3)`meta_run03_standard`は2/2ともACCEPTABLE_STAGE1(iter8は2/2
+STAGE4)。同一fixture・同一コードでの結果の激変が、委任文提示の原因
+三択のうち「(b)Stage1 fresh enumeration非決定性」を直接裏付けた
+(design書§6-14。(a)複数箇所独立ladードの不備は不成立[機構は正しく
+機能]、(c)disclosure-gap型でBLOCKING不要も不成立[数値・規模の歪曲で
+あり重大誤解原則下でもBLOCKING維持が正しい]と判定)。(b)の根本改善
+(Stage1サンプリング見直し等)は根本設計変更のためスコープ外とし、
+コード変更は行っていない。
+
+**合わせて実装**: `aggregate_measurements`内の`silent_pass_candidate`
+(常に`0`を返す非稼働プレースホルダ、委任_32で開示)を、SAFETY_
+CRITICAL_SUB_IDS(8claim)の名指しリストと実測stage2_resultsを自動照合
+する`detect_safety_critical_misdowngrades`へ置換した(design書§8-8)。
+委任_32のiter8実データへ適用すると、B3(2/2)・A2A3-0(1/2、sample2)が
+正しく自動検出されることをunittestで確認した。rep18ではこの自動検知で
+誤降格0件。
+
+**採用理由**: V5で残っていた2件のSafety-critical誤降格は、ユーザー
+指示(B3の修正はso→whileの1語)どおりの最小修正で解消でき、既存の
+正当なQUALITY/ACCEPTABLE claim(hormuz-HF009等)を巻き込まないことを
+Stage2単体・full flowの両方で確認できたため採用した。
+
+**比較した選択肢**: (a)B3/A2A3-0専用のrubric対比例示追加(V6、採用) vs
+(b)委任_32で不採用済みのfloor拡張案の再検討(不採用を維持、hormuz-
+HF009等を巻き込むデータが既に確定済みのため再検討の必要なし)。
+
+**却下理由**: floor拡張案は引き続き不採用(委任_32の結論を維持)。
+meta_run03_standardのcycle上限拡大・escalate_to_paragraph部分復活は
+根本設計変更に該当するため却下(§7 STOP条件に従いFable/ユーザー判断
+へ委ねる)。
+
+**Status**: `B3_A2A3-0_MISDOWNGRADE_RESOLVED_VIA_RUBRIC_V6_META_
+STANDARD_ROOT_CAUSE_CONFIRMED_AS_STAGE1_ENUMERATION_NONDETERMINISM_
+NO_CODE_FIX_APPLIED`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§31、
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-25/§6-14/§8-8/
+§9-1㉓、`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-
+TRIAL-01_33.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_stage2_
+calibration_01.py`(`MISCONCEPTION_PRINCIPLE_TEXT_V6`/`RUBRIC_R3_
+TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6`新設)、`er052_open233_
+self_recovery_flow_runner_01.py`(`BODY_RUBRIC_DEFAULT`をV6へ昇格、
+`OUT_DIR_REP18`新設、`SAFETY_CRITICAL_CLAIM_DEFS`/`detect_safety_
+critical_misdowngrades`新設)、`er052_open233_self_recovery_flow_
+runner_01_test_01.py`(新規unittest11件)、新規`er052_open233_
+element_trial_safety_control_04.py`・`er052_open233_self_recovery_
+flow_runner_01_rep18_representative_01.py`、`er052_output/open233_
+element_trial_safety_control_04/`・`er052_output/open233_self_
+recovery_flow_runner_01_rep18/`(新規)、`OPEN_ITEMS.md`(OPEN-233行
+更新)。

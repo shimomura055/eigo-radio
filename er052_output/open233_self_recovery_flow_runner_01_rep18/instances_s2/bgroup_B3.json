@@ -1,0 +1,277 @@
+{
+  "instance_id": "bgroup_B3",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "issue": "The word “so” presents the continuing concerns as the cause of the plan’s withdrawal. The Ledger says Trump attributed the replacement to discussions with Middle Eastern leaders, and does not establish this causal link.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds an unsupported causal claim about why the plan was withdrawn, changing the explanation of a central event; the same causal claim already appears in the source article.",
+            "related_fact_id": "HF-007",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、懸念の継続が計画撤回の理由だったという因果を削除してください。撤回・置換は、トランプ氏が中東指導者との「非常に生産的な協議」に基づくと説明した、と記述し、懸念の継続とは別の事実として並べてください。参照: HF-007",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_e1_minimal_word",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "in_one_line",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 14.91,
+          "difficult_word_ratio": 0.1108,
+          "word_count": 343
+        },
+        "stats_after": {
+          "avg_sentence_len": 14.91,
+          "difficult_word_ratio": 0.1108,
+          "word_count": 343
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 21.0,
+          "difficult_word_ratio": 0.1429,
+          "word_count": 21
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 21.0,
+          "difficult_word_ratio": 0.1429,
+          "word_count": 21
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 28,
+        "hook_word_count_after": 28,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 23,
+        "sentence_count_after": 23,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 24,
+        "sentence_count_after": 24,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+      "en_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+      "ja_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+      "ja_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nAbout 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+      "ja_fail_open_guard": {
+        "ok": true,
+        "violations": [],
+        "checked": true,
+        "indeterminate": false
+      },
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+      "ja_en_equivalence_reason": {
+        "notes": "The core sequence, policy change, stated concerns, and one-line summary are preserved. The differences are chiefly loss of exact timing, attribution, and numerical precision, rather than a major change in meaning.",
+        "meaning_changes": [],
+        "important_omissions": [
+          "The exact timing of the July 14 announcement—11:04 a.m., about 24 hours and 48 minutes after the July 13 post—is replaced with “The next day.”",
+          "The explicit attribution to Reuters for the explanation of the July 13 oil-price rise is omitted."
+        ],
+        "unsupported_additions": [],
+        "number_name_negation_issues": [
+          "The July 13 Brent rise and settlement are rounded from 9.59% and $83.30 to “about 10%” and “about $83.”",
+          "The reported intraday rise is rounded from about 2.6% to about 3%; the final settlement is rounded from $84.73 and a 1.7% increase to about $85 and about 2%."
+        ]
+      },
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "short_section_no_window(title_hook_in_one_line)",
+        "ja_en_equivalence_not_pass"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "ja_recheck_overall_status": "LEDGER_COMPLIANT",
+      "ja_equivalence_lang_indeterminate": true,
+      "ja_equivalence_review_required_not_gated_indeterminate_lang": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "bgroup_B3_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0749,
+      "usage": {
+        "input_tokens": 7537,
+        "cached_input_tokens": 7534,
+        "output_tokens": 803,
+        "reasoning_tokens": 628
+      },
+      "elapsed_seconds": 8.141,
+      "prompt_sha256": "6302519f74e3c2477cffec0803548f3d805f7507e2028601e4059d29f5fb4d43"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-007_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0711,
+      "usage": {
+        "input_tokens": 3674,
+        "cached_input_tokens": 0,
+        "output_tokens": 171,
+        "reasoning_tokens": 92
+      },
+      "elapsed_seconds": 4.359,
+      "prompt_sha256": "a3892b58bdb9eb0730da663c9f2bb2e677625dec8888ca944814d4ccfb38a827"
+    },
+    {
+      "label": "bgroup_B3_c1_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.0689,
+      "usage": {
+        "input_tokens": 1407,
+        "cached_input_tokens": 1404,
+        "output_tokens": 850,
+        "reasoning_tokens": 623
+      },
+      "elapsed_seconds": 8.513,
+      "prompt_sha256": "6072b154a5114168b0e0f7ac2bbb234d49faf3fe4ce9a4e334143e7237dfd566",
+      "verdict": "REVIEW_REQUIRED",
+      "notes": "The core sequence, policy change, stated concerns, and one-line summary are preserved. The differences are chiefly loss of exact timing, attribution, and numerical precision, rather than a major change in meaning."
+    },
+    {
+      "label": "bgroup_B3_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.0875,
+      "usage": {
+        "input_tokens": 6506,
+        "cached_input_tokens": 6503,
+        "output_tokens": 985,
+        "reasoning_tokens": 885
+      },
+      "elapsed_seconds": 8.843,
+      "prompt_sha256": "8cc72f57ef0d3a7dfbfd75de7f6bb06789bd6e1cf2a8109521e90d864f039437",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "bgroup_B3_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.0546,
+      "usage": {
+        "input_tokens": 6536,
+        "cached_input_tokens": 6533,
+        "output_tokens": 565,
+        "reasoning_tokens": 476
+      },
+      "elapsed_seconds": 5.018,
+      "prompt_sha256": "7928b6bfd306817f52b5ecfede91fe4bf8e151efb99aac15f6164070bc4f1347",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.357,
+  "total_calls": 5,
+  "elapsed_seconds": 34.923
+}

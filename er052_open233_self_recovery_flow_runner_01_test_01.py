@@ -7,6 +7,8 @@
 # floor dedup/測定集計ロジックのread-only regression testのみ。
 from __future__ import annotations
 
+import json
+import os
 import unittest
 from unittest import mock
 
@@ -3279,6 +3281,152 @@ class TestMisconceptionPrincipleRubricV5(unittest.TestCase):
                        s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5)
 
 
+class TestMisconceptionPrincipleRubricV6(unittest.TestCase):
+    """委任_33(design書§4-25): RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_
+    PRINCIPLE_V6(広いTrial iteration8で検出したB3[HF-007]/A2A3-0[HF-003]
+    誤降格是正、許容/NG対比例示の追加)のregression test(¥0)。既存V5定数は
+    変更していないことも併せて確認する。"""
+
+    def test_v6_extends_v5_with_new_clarification_only(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(
+            s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6.startswith(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5))
+        self.assertIn("自然な接続", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6)
+        self.assertIn("支払義務者は未提示", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6)
+
+    def test_v5_unchanged(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertIn("受け手(読者・利用者)側の", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5)
+        self.assertNotIn("支払義務者は未提示", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5)
+
+    def test_rubric_v6_combines_base_and_text(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(
+            s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6.startswith(
+                s2c.RUBRIC_R3_TRIPLE_PRIME))
+        self.assertIn(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6,
+                       s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6)
+
+
+class TestSafetyCriticalMisdowngradeDetection(unittest.TestCase):
+    """委任_33(design書§8-x): `detect_safety_critical_misdowngrades`/
+    `aggregate_measurements`の`silent_pass_candidate`自動検知のregression
+    test(¥0、ネットワーク呼び出しなし、合成instance_resultsのみ使用)。
+    旧実装は常に0を返す非稼働プレースホルダだった(委任_32 REPORT§30-3C)。"""
+
+    def _fake_instance(self, instance_id, cycles):
+        return {
+            "instance_id": instance_id, "group": "test", "expected_group_label": "",
+            "final_state": "RESOLVED_STAGE2_DOWNGRADE", "stage4_reason": None,
+            "cycles": cycles, "stage1_call_used": False, "stage1_recall_miss_substituted": False,
+            "s1u_screen_used": False, "s1u_additional_blocking_count": 0,
+            "s1u_additional_block": False, "s1u_additional_block_label": None,
+            "call_log": [], "total_cost_jpy": 0.0, "total_calls": 0, "elapsed_seconds": 0.0,
+        }
+
+    def test_detects_b3_misdowngrade(self):
+        r = self._fake_instance("bgroup_B3", [{"stage2_results": [
+            {"claim_text": "...so the flashy 20% plan left the stage...",
+             "related_fact_id": "HF-007", "materiality": "QUALITY",
+             "llm_materiality": "QUALITY", "floor_reason": None},
+        ]}])
+        rows = runner.detect_safety_critical_misdowngrades([r])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["sub_id"], "B3")
+        self.assertEqual(rows[0]["instance_id"], "bgroup_B3")
+
+    def test_detects_a2a3_0_misdowngrade(self):
+        r = self._fake_instance("safety_A2A3", [{"stage2_results": [
+            {"claim_text": "The idea was that those carrying the cargo would repay the money.",
+             "related_fact_id": "HF-003", "materiality": "QUALITY",
+             "llm_materiality": "QUALITY", "floor_reason": None},
+        ]}])
+        rows = runner.detect_safety_critical_misdowngrades([r])
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["sub_id"], "A2A3-0")
+
+    def test_no_false_positive_when_blocking_maintained(self):
+        r = self._fake_instance("bgroup_B3", [{"stage2_results": [
+            {"claim_text": "...so the flashy 20% plan left the stage...",
+             "related_fact_id": "HF-007", "materiality": "BLOCKING",
+             "llm_materiality": "BLOCKING", "floor_reason": None},
+        ]}])
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([r]), [])
+
+    def test_no_false_positive_for_unrelated_fact_id_same_instance(self):
+        # safety_A5のA5-1(MUSE-HC-012、非Safety-critical)がA5-0と同じ
+        # related_fact_idを共有するため、text_substringでの区別が必須
+        # (混同するとA5-1の正当なQUALITY/ACCEPTABLEを誤検出する)。
+        r = self._fake_instance("safety_A5", [{"stage2_results": [
+            {"claim_text": "Meta executives admitted that starting the test "
+                            "without a proper explanation was a mistake.",
+             "related_fact_id": "MUSE-HC-012", "materiality": "QUALITY",
+             "llm_materiality": "QUALITY", "floor_reason": None},
+        ]}])
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([r]), [])
+
+    def test_instance_not_in_defs_is_ignored(self):
+        r = self._fake_instance("neg1_meta_b3prod_a2", [{"stage2_results": [
+            {"claim_text": "irrelevant claim text", "related_fact_id": "HF-007",
+             "materiality": "QUALITY", "llm_materiality": "QUALITY", "floor_reason": None},
+        ]}])
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([r]), [])
+
+    def test_aggregate_measurements_silent_pass_candidate_counts_distinct_claims(self):
+        r1 = self._fake_instance("bgroup_B3", [{"stage2_results": [
+            {"claim_text": "...so the flashy 20% plan left the stage...",
+             "related_fact_id": "HF-007", "materiality": "QUALITY",
+             "llm_materiality": "QUALITY", "floor_reason": None},
+        ]}])
+        r2 = self._fake_instance("safety_A2A3", [{"stage2_results": [
+            {"claim_text": "The idea was that those carrying the cargo would repay the money.",
+             "related_fact_id": "HF-003", "materiality": "QUALITY",
+             "llm_materiality": "QUALITY", "floor_reason": None},
+        ]}])
+        measurements = runner.aggregate_measurements([r1, r2])
+        self.assertEqual(measurements["escalation_zero_breakdown"]["silent_pass_candidate"], 2)
+        self.assertEqual(
+            len(measurements["escalation_zero_breakdown"]["silent_pass_candidate_rows"]), 2)
+
+    def test_aggregate_measurements_silent_pass_candidate_zero_when_safe(self):
+        r1 = self._fake_instance("bgroup_B3", [{"stage2_results": [
+            {"claim_text": "...so the flashy 20% plan left the stage...",
+             "related_fact_id": "HF-007", "materiality": "BLOCKING",
+             "llm_materiality": "BLOCKING", "floor_reason": None},
+        ]}])
+        measurements = runner.aggregate_measurements([r1])
+        self.assertEqual(measurements["escalation_zero_breakdown"]["silent_pass_candidate"], 0)
+
+    def test_iter8_real_data_detects_exactly_two_misdowngrades(self):
+        # 委任_32実データ(er052_output/open233_self_recovery_flow_runner_01_
+        # iter8/)に本関数を適用し、報告済みの2件(B3 2/2、A2A3-0 1/2)が
+        # 自動検出されることを実データで確認する(¥0、新規API呼び出しなし)。
+        base = "er052_output/open233_self_recovery_flow_runner_01_iter8"
+        instance_results = []
+        for sub in ("instances_s1", "instances_s2"):
+            for iid in ("bgroup_B3", "safety_A2A3"):
+                path = os.path.join(base, sub, f"{iid}.json")
+                if os.path.exists(path):
+                    with open(path, encoding="utf-8") as f:
+                        instance_results.append(json.load(f))
+        self.assertEqual(len(instance_results), 4)
+        rows = runner.detect_safety_critical_misdowngrades(instance_results)
+        distinct = {(row["instance_id"], row["sub_id"]) for row in rows}
+        self.assertIn(("bgroup_B3", "B3"), distinct)
+        self.assertIn(("safety_A2A3", "A2A3-0"), distinct)
+        b3_rows = [row for row in rows if row["sub_id"] == "B3"]
+        self.assertEqual(len(b3_rows), 2)  # sample1・sample2の両方(2/2)
+        a2a3_rows = [row for row in rows if row["sub_id"] == "A2A3-0"]
+        # sample2のcycle0内に同一claim(引用符付き/なし)が2回出現するため
+        # raw行は2件(いずれもsample2由来、sample1は2件ともBLOCKINGで
+        # 検出されない)。本番経路ではsample1/sample2は別々に
+        # aggregate_measurements()へ渡される(本testのようにinstance_id
+        # が同じ2サンプルを1リストへ混在させることはない)ため、報告済みの
+        # 「1/2」はsample単位の集計で確認される(REPORT§30-3C)。
+        self.assertEqual(len(a2a3_rows), 2)
+        self.assertTrue(all(row["materiality"] == "QUALITY" for row in a2a3_rows))
+
+
 class TestHookRubricV3(unittest.TestCase):
     """委任_29 Part2: HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3
     (accept-1/accept-4のfalse block是正)のregression test(¥0)。"""
@@ -3354,12 +3502,12 @@ class TestMisconceptionPrincipleDefaultWiring(unittest.TestCase):
     def test_enable_flag_defaults_true(self):
         self.assertTrue(runner.ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT)
 
-    def test_body_rubric_default_is_v5_when_enabled(self):
-        # 委任_31 Part1(b)(design書§4-24)でV4からV5へ昇格(neg1の不要
-        # Rewrite是正の防御層、Safety-critical 8claim misdowngrade 0件を
-        # 確認済み)。
+    def test_body_rubric_default_is_v6_when_enabled(self):
+        # 委任_33(design書§4-25)でV5からV6へ昇格(広いTrial iteration8で
+        # 検出したB3/A2A3-0誤降格の是正、rep18でSafety-critical 8claim/
+        # Hormuz許容5・NG5/bgroup_B3・safety_A2A3のfull flow再確認済み)。
         self.assertEqual(runner.BODY_RUBRIC_DEFAULT,
-                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5)
+                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6)
 
     def test_hook_rubric_default_is_v4_when_enabled(self):
         self.assertEqual(runner.HOOK_RUBRIC_DEFAULT,
