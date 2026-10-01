@@ -16015,3 +16015,82 @@ recovery_flow_runner_01_rep19/`(新規、`stage1_fixtures/meta_run03_
 standard_iter8_cycle1_frozen.json`含む)、`OPEN_ITEMS.md`(OPEN-233行
 更新)。Production code(er003/er006/er009/er010/er012/er019)・既存
 iteration1〜8・rep7〜18は無変更。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: deterministic floorのfact_id単位broadcast廃止+same_fact_id_locations列挙のcycle1限定+iol_degenerate guard追加、frozen fixture再検証でrep19の非収束連鎖が解消(委任_35、2026-10-01)
+
+**区分**: Implementation Hardening(Checker/Self-Recovery Flow Trial側
+のロジック修正。Production/共通Prompt・schema・routingは無変更)。
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_35: 委任_34で特定した
+追加原因(d)の小修正とfrozen fixture再検証。広いTrialは含めない)。
+
+**内容**: 委任_34(design書§6-15)が特定した追加原因(d)
+(`deterministic_floor:changed_number`/`changed_actor`が、違反を体現する
+当該claim文だけでなく、`expand_same_fact_id_locations`[委任_20 W2]が
+複製した同一`related_fact_id`の他claimへもBLOCKINGを強制波及させる
+こと)を是正した。(1) `apply_floor`/`apply_floor_cited`
+(`er052_open233_self_recovery_flow_runner_01.py`)が、複製claim
+(`dev.detected_by_enumeration=True`)に対してはfloorを適用しないよう
+変更(違反を体現する当該claim文自体は従来どおりfloorでBLOCKING維持、
+fail-closed不変)。(2) `run_recheck`に`enable_fact_id_enumeration`
+引数(既定`False`)を追加し、Recheck呼び出し(全cycle)では
+`same_fact_id_locations`の再列挙を行わない(初回Stage1検出のみが
+列挙対象)。(3) `measure_section_role_violation`に`iol_degenerate`
+(「## In one line」見出し自体の削除・消失)を追加し、既存の
+`title_degenerate`/`hook_degenerate`と同じhard block条件へ合流。
+
+**結果**: rep19と同一のfrozen fixture(`er052_output/open233_self_
+recovery_flow_runner_01_rep19/stage1_fixtures/meta_run03_standard_
+iter8_cycle1_frozen.json`、再freezeせず読み込むのみ)を、(d)是正後の
+コードで2 run再実行した(`er052_open233_self_recovery_flow_runner_01_
+rep20_representative_01.py`、`OUT_DIR_REP20`新設)。両runともcycle1の
+blocking_claimsが2→1件(複製4件が強制BLOCKINGから解放)に収まり、
+rep19で観測された検出対象増加連鎖(cycle1:2件→cycle2:12件→cycle3:
+5件)・「別文へ丸ごと置換」・「## In one line」見出し削除はいずれも
+再発しなかった。sample1は3cycleで`RESOLVED_REWRITE_THEN_DOWNGRADE`
+(¥2.0186、人間確認なしで解消)。sample2は2cycleで`STAGE4_ESCALATION`
+(`ladder_exhausted_without_full_rewrite`、¥1.8301、全文Rewrite不使用
+のまま安全側にfail-closed、false PASSではない)。Safety対照(Safety12の
+changed_number/changed_actor fixture各1件full flow n=1+Safety-critical
+8claimのうち検出可能な6claimをStage2のみn=1)はBLOCKINGからの
+downgrade0件。false PASS 0件。unittest304件(既存292+新規12)全PASS、
+project-wide regression(`run_project_regression.py`)でも本委任由来の
+新規failureなしを確認した。
+
+**採用理由**: floorのfact_id単位broadcastは、Stage2 LLMが独立に
+ACCEPTABLE/QUALITYと判定した正確な文(例: "News reports also cited one
+employee's report."という正確な単数表現)まで強制的にBLOCKING化し、
+§0「重大誤解でないものを止めない」「小さく直せる問題を大きくしない」
+原則に反していた。floorの適用範囲を違反を体現する当該claim文のみへ
+限定しても、複製claim自体が実際に違反していればStage2 LLMが独立に
+BLOCKINGと判定するため、fail-closedは失われない(Safety対照で実測確認
+済み)。
+
+**比較した選択肢**: floorを完全に廃止する案(不採用、違反を体現する
+当該claim文自体のfail-closedが失われるため)。same_fact_id_locations
+enumeration自体を廃止する案(不採用、初回Stage1検出時の同一事実の
+複数箇所把握という本来の目的[委任_20 W2]まで失われるため、cycle2以降
+の再列挙のみを止める方が影響範囲が小さい)。
+
+**却下理由**: 上記2案は、委任文が指定した「小修正」の範囲(floorの適用
+範囲をStage2許容例示の延長として調整)を超え、根本設計変更に該当する
+ため採用しなかった。
+
+**Status**: `D_FIX_IMPLEMENTED_REP20_VALIDATED_CYCLE1_BLOCKING_2_TO_1_
+NO_SAFETY_DOWNGRADE`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§33、
+`docs/pm/design_open233_self_recovery_flow_01.md`§6-16/§9-1㉕、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-TRIAL-01_
+35.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_flow_runner_01.py`
+(`apply_floor`/`apply_floor_cited`/`run_recheck`/`measure_section_
+role_violation`/`run_instance`のhard block条件、`OUT_DIR_REP20`/
+`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`新設、既存`OUT_DIR_REP19`等は
+無変更)。`er052_open233_self_recovery_flow_runner_01_test_01.py`
+(新規unittest12件)。新規`er052_open233_self_recovery_flow_runner_01_
+rep20_representative_01.py`、`er052_output/open233_self_recovery_
+flow_runner_01_rep20/`(新規)、`OPEN_ITEMS.md`(OPEN-233行更新)。
+Production code(er003/er006/er009/er010/er012/er019)・既存
+iteration1〜8・rep7〜19・rep19 frozen fixtureは無変更。

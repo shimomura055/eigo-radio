@@ -3386,3 +3386,163 @@ USER_DECISION_REQUIRED 5条件(該当せず、新Product原則/Safety原則変�
 次アクション: (d)修正(floorの対象範囲を当該claim文へ限定)の実装・
 検証の要否、および追加予算(目安¥3程度)の承認をFable/ユーザーへ
 依頼する。
+
+## §33. 追加原因(d)の小修正実装とfrozen fixture再検証(委任_35、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_35: 委任_34で特定した
+追加原因(d)の小修正とfrozen fixture再検証。広いTrialは含めない)。
+
+### 33-0. 上位目的整合チェック(7観点、design書§0-6/PM_GOVERNANCE§23)
+
+| # | 観点 | 本委任での確認結果 |
+|---|---|---|
+| 1 | 厳密一致のためだけのRewriteになっていないか | 修正対象はRewrite方式自体ではなくStage2 deterministic floorの適用範囲(fact_id単位→当該claim文単位)とsame_fact_id_locations列挙回数。Rewrite機構自体は無変更 |
+| 2 | 重大誤解でないものを止めていないか | **改善を実測で確認**: rep19で誤ってBLOCKING化されていた複製claim(「News reports also cited one employee's report.」等)は、rep20で両runともACCEPTABLE/QUALITYのまま維持された(33-2) |
+| 3 | 小さく直せる問題を大きくRewriteしていないか | rep20のcycle1 Rewriteは単語置換("calls"→"one call"/"a call")のみで、rep19のような段落・文全体への拡大は発生しなかった(33-2) |
+| 4 | Rewriteによる品質劣化の方が大きくないか | rep19で観測された「別文へ丸ごと置換」「## In one line見出し削除」はrep20で再発せず、見出しは両run・全cycleで保持された(33-2) |
+| 5 | 学習者にとって本当に問題か | sample1は3cycle・¥2.0186でRESOLVED(人間確認なしで解消)。sample2は2cycleでSTAGE4(全文Rewrite不使用のまま安全側に倒れた、¥1.8301)。いずれもrep19(32 call・¥6.2845、収束せず)より大幅に効率化 |
+| 6 | Human Reviewを安易な逃げ道にしていないか | sample2のSTAGE4は`ladder_exhausted_without_full_rewrite`(ladder上限、fail-closed)であり、判定を緩めて通過させたわけではない。false PASSは0件(33-2) |
+| 7 | 不要call・Recheck・Rewriteを増やしていないか | Part B(2 run)+Safety対照A(2 instance full flow)+Safety対照B(6 instance Stage2のみ)で¥6.0782(Guardrail¥10のうち約61%)。rep19(1 run完走+1 run中断で¥7.2614)より総コスト効率が改善 |
+
+### 33-1. 実装(4点、design書§6-16参照)
+
+1. `apply_floor`/`apply_floor_cited`: `dev.get("detected_by_enumeration")`
+   が真の場合、deterministic floorを適用しない(素通し、`llm_materiality`
+   がそのまま`materiality`になる)。precheck floor(`detected_by==
+   "precheck"`)は無変更。
+2. `run_recheck`: 新規引数`enable_fact_id_enumeration`(既定`False`)。
+   `False`時は`SAME_FACT_ID_ENUMERATION_INSTRUCTION`をpromptへ追加せず、
+   `expand_same_fact_id_locations`も呼ばない。既存呼び出し側(`run_
+   instance`内の2箇所、EN/JA recheck)は明示的な引数指定なし(既定
+   `False`を使う)。
+3. `measure_section_role_violation`: `iol_degenerate`
+   (`iol_before.strip()`が非空かつ`iol_after`が空)を追加し、
+   `title_degenerate`/`hook_degenerate`と同じhard block条件
+   (`run_instance`、`degenerate_rewrite_output`)へ合流。
+4. `classify_problem_kind`自体への追加修正は、rep20実測(33-2)で
+   「They enjoyed AI's convenience...」claimがそもそもBLOCKINGへ
+   至らなくなったことを確認した上で、不要と判断し実装しなかった
+   (経過観察)。
+
+unittest: 開始前チェック(既存292件、API呼び出し前に再確認、全PASS)
+→新規12件(`TestFloorFactIdBroadcastFix35`5件・`TestRecheckFactIdEnumerationOnceOnly35`
+3件・`TestInOneLineHeadingDegenerateGuard35`4件、rep19実データ[dev
+dict・claim文]を使用)→計304件、全PASS(¥0、API呼び出し前)。
+
+### 33-2. rep20結果(frozen fixture再検証、n=2)
+
+`er052_open233_self_recovery_flow_runner_01_rep20_representative_01.py`
+(新規、`OUT_DIR_REP20`新設)で、rep19と同一のfrozen fixture
+(`er052_output/open233_self_recovery_flow_runner_01_rep19/stage1_
+fixtures/meta_run03_standard_iter8_cycle1_frozen.json`、再freezeせず
+読み込むのみ)を`stage1_mode=reuse`で固定し、(d)是正後のコードで2 run
+実行した。
+
+| run | final_state | stage4_reason | cycle数 | 費用 | cycle1 blocking数 |
+|---|---|---|---|---|---|
+| sample1 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 3 | ¥2.0186 | 1(rep19は3) |
+| sample2 | `STAGE4_ESCALATION` | `ladder_exhausted_without_full_rewrite` | 2 | ¥1.8301 | 1(rep19は3) |
+
+**cycle1の逐語比較(rep19→rep20)**: rep19のcycle1は6claim検出(原本2件+
+enumeration展開4件)のうちBLOCKING3件(うち2件が複製claimへのfloor
+誤波及)だったが、rep20のcycle1は6claim検出(同じ6件)のうちBLOCKING
+1件(「It said human staff made inappropriate comments about race
+during calls...」、違反を体現する当該claim文自体)のみとなった。
+複製claim4件("If no one explained..."/"Some calls through Meta's AI
+assistant..."/"News reports also cited one employee's report."/
+"However, this is only one report...")は全てACCEPTABLE/QUALITYの
+まま、floorの強制なし。
+
+**Rewrite内容(逐語diff、`difflib.SequenceMatcher`)**: cycle1の
+Rewriteは両runとも"calls"→"one call"/"a call"、"These calls were"→
+"This call was"の単語・数の一致のみ(2 diff ops)。sample1 cycle2は
+新規claim("Some calls needed user information to continue.")への
+対応で5 diff ops(文レベル)だが、段落・見出しへは及ばず、「## In one
+line」は全cycleで前後とも存在を確認した(rep19 cycle3で発生した見出し
+消失は再発せず)。
+
+**sample2のSTAGE4**: cycle1解消後、cycle2のRecheckが新規claim
+("They could not tell if it was AI or a person" and "They did not
+realize it."、MUSE-HC-012、`llm_materiality=BLOCKING`・floor非適用
+[floor_reasonなし、LLM独立判定])を検出したが、ladder(①単語・接続詞→
+③1文)を使い切っても解消せず、`ladder_exhausted_without_full_rewrite`
+(⑥全文Rewrite不使用のまま安全側にfail-closed、既存の安全装置)で
+STAGE4_ESCALATION。判定を緩めて通過させたわけではなく、false PASSでは
+ない。
+
+false PASS: 0件。`detect_safety_critical_misdowngrades`(meta群は対象外)
+: 該当行なし。
+
+### 33-3. Safety対照(regression確認、2系統)
+
+**対照A(Safety12のうち2 fixture、full flow n=1)**: `safety_er009_
+changed_number`/`safety_er009_changed_actor`を既定構成でfull flow
+実行。いずれも違反文自体が`deterministic_floor:changed_number`/
+`deterministic_floor:changed_actor`でBLOCKING→Rewrite→`RESOLVED_
+REWRITE`(¥0.5452/¥0.3534)。floorが引き続き正しく発火することを確認
+(誤って弱まっていない)。
+
+**対照B(Safety-critical 8claim、Stage2のみn=1、既存run_instance()の
+cycle=1前半[Stage1 reuse→precheck floor claims→llm_claims→
+run_stage2]のみを再利用、Rewrite/Recheckは回さない)**: `SAFETY_
+CRITICAL_CLAIM_DEFS`登録の6 instance(bgroup_B3/safety_A2A3/safety_A4/
+safety_A5/meta_run03_standard/bgroup_B4)を実行し、この簡易harnessで
+検出できた6claim(A2A3-0/A4-0/A4-1/A5-0/Meta-1/B4-a)は全てBLOCKING
+維持(0件downgrade、¥1.3309)。残り2claim(B3/Meta-2)は「検出できな
+かった」(downgradeされたのではない): B3は既知のStage1 recall miss
+(`KNOWN_RECALL_MISS_INSTANCE_IDS`に既に登録済み、§10/§14既知の限界、
+本委任のfloor修正とは無関係)。Meta-2は、この簡易harnessが使う
+`meta_run03_standard`のstage1_source(`build_target_instances()`の
+`BGROUP_STAGE1_DIR`経由、rep19/rep20のfrozen fixtureとは別の実データ
+snapshot)に含まれる2つのdeviation(`related_fact_id=MUSE-HC-010`の
+"Some calls needed user information to continue."と、`MUSE-HC-012`の
+"They did not realize it."のみ)が、`SAFETY_CRITICAL_CLAIM_DEFS`の
+Meta-2定義(`fact_id=MUSE-HC-012`+部分文字列"needed user information
+to continue")のどちらとも一致しない、という既存データの特性であり、
+本委任のfloor修正の影響ではないことを個別に確認した(実データ照合、
+33-3末尾参照)。**8claimのうち、検出された上でBLOCKINGから他状態へ
+downgradeした事例は0件**。
+
+### 33-4. VALIDATED最低条件7項目の再評価(iter8実測との置き換え、判定はFable)
+
+委任_34までのiter8実測ベースの評価のうち、以下がrep20実測で置き換わる
+候補である(採否判定はFableへ委ねる):
+- 「meta_run03_standardがStage4到達2/2」→rep20では1/2(sample1は
+  RESOLVED、sample2のみSTAGE4)。ただしStage1自体の揺れ(cycle1検出が
+  run毎に変わる、(b))は本委任の対象外であり、frozen fixture固定下での
+  結果である点に留意。
+- 「cycleごとの検出対象増加(2→12→5)」→rep20では両runともcycle1の1件
+  のみに収束し、増加連鎖は再現しなかった。
+- 「Rewriteによる品質劣化(別文丸ごと置換・見出し削除)」→rep20では
+  いずれも再発せず。
+
+### 33-5. 費用・unittest・Git
+
+本委任費用: 分析(Part A)¥0+rep20(Part B本体¥3.8487[sample1
+¥2.0186+sample2¥1.8301]+Safety対照A¥0.8986+Safety対照B¥1.3309)=
+**¥6.0782**(Guardrail¥10のうち約61%)。Phase累計¥476.2883+¥6.0782=
+**¥482.3665**/総枠¥600、残**¥117.6335**。
+
+コード変更: `er052_open233_self_recovery_flow_runner_01.py`
+(`apply_floor`/`apply_floor_cited`/`run_recheck`/
+`measure_section_role_violation`/`run_instance`のhard block条件、
+`OUT_DIR_REP20`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`新設、既存
+`OUT_DIR_REP7`〜`REP19`等は無変更)。新規:
+`er052_open233_self_recovery_flow_runner_01_rep20_representative_01.py`、
+`er052_open233_self_recovery_flow_runner_01_test_01.py`へ新規unittest
+12件追加。**Production code(er003/er006/er009/er010/er012/er019)・
+既存iteration1〜8・rep7〜19・Hormuz/Safety/rep19 frozen fixtureは
+一切変更していない**(rep20はrep19のfrozen fixtureを読み込むのみ)。
+unittest304件(既存292+新規12)全PASS(API呼び出し前、¥0)。project-wide
+regression(`run_project_regression.py`)も実行し、新規failureが
+本委任の変更に起因しないことを確認した(詳細は`docs/pm/ACTIVE_TASK.md`
+一時ファイルの実行ログ参照、既存の無関係failure[er052_open233対象外の
+他ER群]は本委任開始前から存在する既知の状態)。
+
+**STOP条件該当確認**: ¥10超え見込み(該当せず、累計¥6.0782/¥10)/API
+error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず)/
+USER_DECISION_REQUIRED 5条件(該当せず)/開始前チェック未反映(0件)/
+Safety12の違反文またはSafety-critical 8がBLOCKINGでなくなる(該当せず、
+33-3参照、downgrade0件)/false PASS 1件以上(該当せず、0件)/小修正1回
+後もFAIL(該当せず、1回の小修正でrep20が成功)。STOP条件非該当のため
+継続作業として記録・commit・push・回帰確認まで完了。

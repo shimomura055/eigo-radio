@@ -3624,5 +3624,196 @@ class TestMisconceptionPrincipleDefaultWiring(unittest.TestCase):
         self.assertEqual(captured["developer_message"], vfl01.DEVIATION_DEVELOPER_MESSAGE)
 
 
+class TestFloorFactIdBroadcastFix35(unittest.TestCase):
+    """委任_35(design書§6-16、OPEN-233-SELF-RECOVERY-TRIAL-01 REPORT§32-3の
+    追加原因(d)是正): deterministic floorは、Stage1が違反を体現する当該
+    claim文に直接付与したflagにのみ適用し、`expand_same_fact_id_locations`
+    (委任_20 W2)が同一related_fact_idの他claimへ複製したflag
+    (detected_by_enumeration=True)には適用しない。rep19実測
+    (`er052_output/open233_self_recovery_flow_runner_01_rep19/instances_s1/
+    meta_run03_standard.json`cycle1)の実データdevをそのまま使う。"""
+
+    # claim#2(原本、非enum): 「It said human staff made inappropriate
+    # comments about race during calls. These calls were about trying to
+    # lower internet or cable fees.」。違反を体現する当該claim文自体。
+    VIOLATION_DEV = {
+        "claim_in_article": "“It said human staff made inappropriate comments about race during calls. "
+                             "These calls were about trying to lower internet or cable fees.”",
+        "severity": "MAJOR", "changed_fact": True, "changed_scope": True, "changed_number": True,
+        "changed_actor": False, "changed_negation": False, "changed_comparison": False, "changed_time": False,
+        "unsupported_new_claim": True, "related_fact_id": "MUSE-HC-011",
+        "same_fact_id_locations": [
+            "News reports also cited one employee’s report.",
+            "However, this is only one report. It would be wrong to say all contract workers did this.",
+        ],
+    }
+
+    # claim#5(expand_same_fact_id_locationsによる複製、enum=True):
+    # 「News reports also cited one employee's report.」。文面自体は単数
+    # ("one")で正確であり、Stage2 LLM自身もACCEPTABLEと判定した
+    # (rep19実測)が、floor波及でBLOCKINGへ強制されていた。
+    BROADCAST_DEV = {
+        **{k: v for k, v in VIOLATION_DEV.items() if k != "claim_in_article"},
+        "claim_in_article": "News reports also cited one employee’s report.",
+        "detected_by_enumeration": True,
+        "enumeration_source_claim": VIOLATION_DEV["claim_in_article"],
+    }
+
+    def test_violation_claim_itself_still_forced_blocking_by_floor(self):
+        # 違反を体現する当該claim文は、Safety側安全装置として引き続き
+        # floorでBLOCKING(fail-closed維持、非回帰)。
+        materiality, reason = runner.apply_floor("QUALITY", self.VIOLATION_DEV, "stage1_llm")
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertEqual(reason, "deterministic_floor:changed_number")
+
+    def test_broadcast_claim_not_forced_blocking_when_llm_says_acceptable(self):
+        # 複製claim(detected_by_enumeration=True)は、Stage2 LLMが独立に
+        # ACCEPTABLEと判定した場合、floorで強制BLOCKINGへ波及しない
+        # (rep19実測のclaim#5誤分類の是正)。
+        materiality, reason = runner.apply_floor("ACCEPTABLE", self.BROADCAST_DEV, "stage1_llm")
+        self.assertEqual(materiality, "ACCEPTABLE")
+        self.assertIsNone(reason)
+
+    def test_broadcast_claim_still_blocking_if_llm_independently_says_so(self):
+        # floorが波及しなくなっても、Stage2 LLMが複製claim自体を独立に
+        # BLOCKINGと判定した場合はBLOCKINGのまま(fail-closedが失われて
+        # いないことの確認、floor forcingを外しただけでllm判定は無変更)。
+        materiality, reason = runner.apply_floor("BLOCKING", self.BROADCAST_DEV, "stage1_llm")
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertIsNone(reason)
+
+    def test_precheck_floor_unaffected_by_enumeration_flag(self):
+        # precheck floor(detected_by=="precheck")はdetected_by_enumeration
+        # の値に関わらず常にBLOCKING(既存のprecheck fail-closedは変更なし)。
+        dev = dict(self.BROADCAST_DEV)
+        materiality, reason = runner.apply_floor("ACCEPTABLE", dev, "precheck")
+        self.assertEqual(materiality, "BLOCKING")
+        self.assertEqual(reason, "precheck_floor")
+
+    def test_floor_cited_variant_also_skips_broadcast_claim(self):
+        ledger = "[VERIFIED] MUSE-HC-011: a contract worker reported one incident.\n"
+        materiality, reason = runner.apply_floor_cited("ACCEPTABLE", self.BROADCAST_DEV, "stage1_llm", ledger)
+        self.assertEqual(materiality, "ACCEPTABLE")
+        self.assertIsNone(reason)
+
+
+class TestRecheckFactIdEnumerationOnceOnly35(unittest.TestCase):
+    """委任_35(design書§6-16): same_fact_id_locations列挙は初回Stage1
+    検出時のみ行い、run_recheck()呼び出し(cycle番号に関わらず)では既定で
+    再列挙しない(enable_fact_id_enumeration既定False)。"""
+
+    def test_default_prompt_omits_enumeration_instruction(self):
+        captured = {}
+
+        class _FakeResp:
+            output_text = json.dumps({
+                "overall_status": "LEDGER_COMPLIANT", "deviations": [],
+                "prior_issues_resolved": [{"index": 0, "resolved": True, "explanation": "fixed"}],
+            })
+
+        class _FakeResponses:
+            def create(self, **kwargs):
+                captured["prompt"] = kwargs["input"][1]["content"]
+                return _FakeResp()
+
+        class _FakeClient:
+            responses = _FakeResponses()
+
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        fixture = {"ledger_text": "[VERIFIED] HF-001: x\n", "source_article_text": None}
+        runner.run_recheck(_FakeClient(), state, [0], [], "test_recheck", fixture,
+                            "Some article text.", [{"fact_id": "HF-001", "claim_in_article": "x",
+                                                     "issue": "i", "explanation": "e"}])
+        self.assertNotIn("same_fact_id_locations", captured["prompt"])
+
+    def test_default_does_not_expand_deviations(self):
+        dev_with_locations = {
+            "claim_in_article": "A claim.", "severity": "MAJOR", "related_fact_id": "HF-001",
+            "same_fact_id_locations": ["Another sentence stating the same fact."],
+        }
+        article_text = "A claim. Another sentence stating the same fact."
+
+        class _FakeResp:
+            output_text = json.dumps({
+                "overall_status": "LEDGER_DEVIATION", "deviations": [dev_with_locations],
+                "prior_issues_resolved": [{"index": 0, "resolved": False, "explanation": "still there"}],
+            })
+
+        class _FakeResponses:
+            def create(self, **kwargs):
+                return _FakeResp()
+
+        class _FakeClient:
+            responses = _FakeResponses()
+
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        fixture = {"ledger_text": "[VERIFIED] HF-001: x\n", "source_article_text": None}
+        result = runner.run_recheck(_FakeClient(), state, [0], [], "test_recheck", fixture, article_text,
+                                     [{"fact_id": "HF-001", "claim_in_article": "A claim.",
+                                       "issue": "i", "explanation": "e"}])
+        self.assertEqual(len(result["deviations"]), 1)
+        self.assertFalse(any(d.get("detected_by_enumeration") for d in result["deviations"]))
+
+    def test_explicit_true_restores_old_enumeration_behavior(self):
+        dev_with_locations = {
+            "claim_in_article": "A claim.", "severity": "MAJOR", "related_fact_id": "HF-001",
+            "same_fact_id_locations": ["Another sentence stating the same fact."],
+        }
+        article_text = "A claim. Another sentence stating the same fact."
+
+        class _FakeResp:
+            output_text = json.dumps({
+                "overall_status": "LEDGER_DEVIATION", "deviations": [dev_with_locations],
+                "prior_issues_resolved": [{"index": 0, "resolved": False, "explanation": "still there"}],
+            })
+
+        class _FakeResponses:
+            def create(self, **kwargs):
+                return _FakeResp()
+
+        class _FakeClient:
+            responses = _FakeResponses()
+
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        fixture = {"ledger_text": "[VERIFIED] HF-001: x\n", "source_article_text": None}
+        result = runner.run_recheck(_FakeClient(), state, [0], [], "test_recheck", fixture, article_text,
+                                     [{"fact_id": "HF-001", "claim_in_article": "A claim.",
+                                       "issue": "i", "explanation": "e"}],
+                                     enable_fact_id_enumeration=True)
+        self.assertEqual(len(result["deviations"]), 2)
+        self.assertTrue(any(d.get("detected_by_enumeration") for d in result["deviations"]))
+
+
+class TestInOneLineHeadingDegenerateGuard35(unittest.TestCase):
+    """委任_35(design書§6-16): 「## In one line」見出し自体の削除・消失を
+    Rewrite失敗(iol_degenerate)として検出する(rep19実測cycle3、見出し行
+    ごと消失した事例、REPORT§32参照)。"""
+
+    def test_in_one_line_heading_removed_is_degenerate(self):
+        before = "# T\n\nHook para.\n\n## In one line\nSome calls were handled by humans.\n"
+        after = "# T\n\nHook para.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertTrue(result["iol_degenerate"])
+        self.assertTrue(result["section_role_violated"])
+        self.assertIn("in_one_line_degenerate", result["reasons"])
+
+    def test_in_one_line_heading_unchanged_is_not_degenerate(self):
+        text = "# T\n\nHook para.\n\n## In one line\nSome calls were handled by humans.\n"
+        result = runner.measure_section_role_violation(text, text)
+        self.assertFalse(result["iol_degenerate"])
+        self.assertFalse(result["section_role_violated"])
+
+    def test_in_one_line_text_changed_but_heading_kept_is_not_degenerate(self):
+        before = "# T\n\nHook para.\n\n## In one line\nOld summary sentence.\n"
+        after = "# T\n\nHook para.\n\n## In one line\nNew summary sentence here now.\n"
+        result = runner.measure_section_role_violation(before, after)
+        self.assertFalse(result["iol_degenerate"])
+
+    def test_run_instance_source_contains_iol_degenerate_hard_block(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn('final_section_role.get("iol_degenerate")', src)
+
+
 if __name__ == "__main__":
     unittest.main()

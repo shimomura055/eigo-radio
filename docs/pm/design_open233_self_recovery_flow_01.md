@@ -3216,6 +3216,80 @@ enumerationの複合によるcycle内非収束」を既知の残存原因候補�
 なく、**未検証のままコード変更は行っていない**。(d)の是非確認は
 追加予算(目安¥3程度)の承認をFable/ユーザーへ依頼する。
 
+### 6-16. (d)の小修正実装とfrozen fixture再検証(委任_35、REPORT§33)
+
+**修正内容(4点、いずれも小修正、Safety原則自体は変更しない)**:
+
+1. **floorのfact_id単位broadcast廃止**: `apply_floor`/`apply_floor_cited`
+   (`er052_open233_self_recovery_flow_runner_01.py`)が、`expand_same_
+   fact_id_locations`(委任_20 W2)によって複製されたclaim(`dev.
+   detected_by_enumeration=True`)に対しては、deterministic floorの
+   強制BLOCKINGを適用しないよう変更した。違反を体現する当該claim文
+   自体(`detected_by_enumeration`が立っていない、Stage1が直接flagを
+   付与したclaim)は従来どおりfloorでBLOCKING維持(fail-closed不変)。
+   複製claimはStage2 LLMの独立判定(`llm_materiality`)がそのまま
+   `materiality`になる(floorが波及しなくなっても、複製claim自体が
+   実際に違反していればLLMが独立にBLOCKINGと判定し、fail-closedは
+   失われない)。
+2. **same_fact_id_locations enumerationのcycle1限定**: `run_recheck`
+   に`enable_fact_id_enumeration`引数(既定`False`)を追加し、Recheck
+   呼び出し(cycle番号に関わらず、本関数は常に初回Stage1より後に呼ばれる)
+   では`SAME_FACT_ID_ENUMERATION_INSTRUCTION`をprompt化せず、
+   `expand_same_fact_id_locations`も呼ばない。初回Stage1検出
+   (`stage1_fresh_with_enumeration`/reuse時の`deterministic_same_
+   fact_id_location_fallback`経由)のみが列挙対象のまま(既存動作不変)。
+3. **iol_degenerate guard追加**: `measure_section_role_violation`に
+   `iol_degenerate`(「## In one line」見出し自体の削除・消失)を追加し、
+   既存の`title_degenerate`/`hook_degenerate`と同じhard block条件
+   (`run_instance`、`degenerate_rewrite_output`)へ合流させた。
+4. **「別文へ丸ごと置換」個別是正の要否**: rep20実測(下記)で、修正1・2の
+   効果により該当claim("They enjoyed AI's convenience...")がそもそも
+   BLOCKINGへ至らなくなったため、`classify_problem_kind`自体の追加
+   是正は不要と判断した(経過観察、根拠は下記rep20結果)。
+
+**rep20実測(`er052_open233_self_recovery_flow_runner_01_rep20_
+representative_01.py`、`OUT_DIR_REP20`新設、rep19と同一frozen fixture
+を再利用)**:
+
+| run | final_state | stage4_reason | cycle数 | 費用 | 備考 |
+|---|---|---|---|---|---|
+| sample1 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 3 | ¥2.0186 | cycle1の検出がfix後2→1件(複製4件が強制BLOCKINGから解放)。Rewriteは単語置換("calls"→"one call"等)。見出し保持。cycle2で新規claim("Some calls needed user information...")が直接LLM判定でBLOCKING、cycle3で解消 |
+| sample2 | `STAGE4_ESCALATION` | `ladder_exhausted_without_full_rewrite` | 2 | ¥1.8301 | cycle1は同様に1件のみBLOCKING、単語置換で解消。cycle2の新規claim("They could not tell...")がladder上限(⑥OFF、全文Rewrite不使用)に達しfail-closedでSTAGE4(人間確認、安全側) |
+
+rep19(修正前)の「cycle1: 2件原本→cycle2: 12件→cycle3: 5件」という
+検出対象の増加は再現せず、両runともcycle1のblocking_claimsは1件
+(違反を体現する当該claim文のみ)に収まった。「They enjoyed AI's
+convenience...」は両runとも`disclosure_gap_negative_inference_
+downgrade`でQUALITYのまま維持され、rep19で観測された「別文へ丸ごと
+置換」も「## In one line」見出し削除も再発しなかった(修正3のiol_
+degenerate guardは本rep20では未発火、guard自体は追加済み)。
+
+**Safety対照(regression確認)**: (a) Safety12のうち`safety_er009_
+changed_number`/`safety_er009_changed_actor`をfull flow n=1で実行し、
+いずれも違反文自体がfloorでBLOCKING(`deterministic_floor:changed_
+number`/`changed_actor`)→Rewrite→`RESOLVED_REWRITE`(floorが引き続き
+正しく発火することを確認、誤って弱まっていない)。(b) `SAFETY_CRITICAL_
+CLAIM_DEFS`登録の6 instance・8claimをStage1(reuse)+Stage2のみ(cycle=1
+相当)で実行し、8claimのうちこの簡易harnessで検出できた6claim
+(A2A3-0/A4-0/A4-1/A5-0/Meta-1/B4-a)は全てBLOCKING維持(0件downgrade)。
+残り2claim(B3/Meta-2)は「この簡易harnessで検出できなかった」(B3は
+既知のStage1 recall miss[`KNOWN_RECALL_MISS_INSTANCE_IDS`、§10/§14
+既知の限界]、Meta-2はこのinstance用stage1_source[build_target_
+instances()の`BGROUP_STAGE1_DIR`経由、rep19/rep20のfrozen fixtureとは
+別物]の実データがSAFETY_CRITICAL_CLAIM_DEFSのMeta-2定義[fact_id+
+文字列]と一致しない、いずれも本委任のfloor修正とは無関係な既存データ
+特性)。**BLOCKINGから他状態へdowngradeした事例は0件**(「検出された
+上でdowngradeされた」ケースはない)。
+
+safety_critical_misdowngrade_rows(rep20 Part B側、`detect_safety_
+critical_misdowngrades`による自動検知)も0件。false PASSは0件
+(STAGE4_ESCALATION/RESOLVED_REWRITE_THEN_DOWNGRADEのみ、PASS系で
+未検査のまま通過したケースなし)。
+
+実測費用: analysis(Part A)¥0+rep20(Part B本体+Safety対照A・B)
+¥6.0782=**¥6.0782**(Guardrail¥10のうち約61%)。Phase累計¥476.2883+
+¥6.0782=**¥482.3665**/総枠¥600、残**¥117.6335**。詳細REPORT§33。
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず
@@ -4976,6 +5050,23 @@ same_fact_id_locations enumeration複合によるcycle内非収束を追加原�
 未実施(STOP、budget guardrail該当)。実測¥7.2614(Guardrail¥8内)。
 Phase累計¥469.0269+¥7.2614=**¥476.2883**/総枠¥600、残**¥123.7117**。
 詳細REPORT§32。
+
+**㉕ 追加原因(d)の小修正実装とfrozen fixture再検証(委任_35、本書
+§6-16参照)**: floorのfact_id単位broadcast廃止+same_fact_id_locations
+enumerationのcycle1限定+iol_degenerate guard追加の3点を実装した
+(unittest12件新規、既存292件は非回帰)。rep19と同一のfrozen fixtureを
+`er052_open233_self_recovery_flow_runner_01_rep20_representative_01.py`
+(`OUT_DIR_REP20`新設)で再実行した結果、両runともcycle1のblocking_claims
+が2→1件(複製4件が強制BLOCKINGから解放)に収まり、rep19で観測された
+検出対象の増加連鎖(2→12→5件)・「別文へ丸ごと置換」・見出し削除は
+再発しなかった。sample1は3cycleで`RESOLVED_REWRITE_THEN_DOWNGRADE`
+(¥2.0186)、sample2は2cycleで`STAGE4_ESCALATION`
+(`ladder_exhausted_without_full_rewrite`、¥1.8301、全文Rewrite不使用の
+まま安全側にfail-closed)。Safety対照(changed_number/changed_actor
+full flow n=1×2+Safety-critical 8claimのうち検出可能な6claim)は
+BLOCKINGからのdowngrade0件。実測¥6.0782(Guardrail¥10内)。
+Phase累計¥476.2883+¥6.0782=**¥482.3665**/総枠¥600、残**¥117.6335**。
+詳細REPORT§33。
 
 ## 10. リスク
 

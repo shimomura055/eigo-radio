@@ -632,6 +632,33 @@ IDENTIFIED_FIX_UNTESTED_BUDGET_GUARDRAIL_STOP`。詳細:
 §9-1㉔、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§32。(d)修正の
 実装・検証要否および追加予算(目安¥3程度)の承認はFable/ユーザー
 判断事項として継続。
+**2026-10-01追記(委任_35、追加原因(d)の小修正実装とfrozen fixture
+再検証)**: floorのfact_id単位broadcast廃止(`apply_floor`/`apply_
+floor_cited`が複製claim[`detected_by_enumeration=True`]にはfloorを
+適用しない)+`same_fact_id_locations`enumerationのcycle1限定
+(`run_recheck`に`enable_fact_id_enumeration`既定False)+`iol_
+degenerate`guard追加(「## In one line」見出し削除をhard block化)を
+実装した(unittest12件新規、既存292件は非回帰、計304件PASS)。rep19と
+同一のfrozen fixtureを`er052_open233_self_recovery_flow_runner_01_
+rep20_representative_01.py`(OUT_DIR_REP20新設)で再実行した結果、
+両runともcycle1のblocking_claimsが2→1件(複製4件が強制BLOCKINGから
+解放)に収まり、rep19の検出対象増加連鎖(2→12→5件)・別文丸ごと置換・
+見出し削除はいずれも再発しなかった。sample1は3cycleで`RESOLVED_
+REWRITE_THEN_DOWNGRADE`(¥2.0186)、sample2は2cycleで`STAGE4_
+ESCALATION`(`ladder_exhausted_without_full_rewrite`、¥1.8301、全文
+Rewrite不使用のまま安全側にfail-closed)。Safety対照(changed_number/
+changed_actor fixture各1件full flow n=1+Safety-critical 8claimの
+うち検出可能な6claimをStage2のみn=1)はBLOCKINGからのdowngrade0件。
+false PASS 0件。project-wide regression(`run_project_regression.py`)
+でも本委任由来の新規failureなしを確認。実測¥6.0782(Guardrail¥10内)。
+Phase累計¥476.2883+¥6.0782=¥482.3665/総枠¥600、残¥117.6335。
+Status=`D_FIX_IMPLEMENTED_REP20_VALIDATED_CYCLE1_BLOCKING_2_TO_1_
+NO_SAFETY_DOWNGRADE`。詳細: `DECISION_LOG.md`2026-10-01
+`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_35エントリ、`docs/pm/design_
+open233_self_recovery_flow_01.md`§6-16/§9-1㉕、`OPEN-233-SELF-
+RECOVERY-TRIAL-01_REPORT.md`§33。meta_run03_standardの(b)Stage1
+fresh enumeration非決定性そのものの改善要否、Phase 2新規テーマ選定
+(PM_GOVERNANCE§13)はFable/ユーザー判断事項として継続。
 旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
 B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
 Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は

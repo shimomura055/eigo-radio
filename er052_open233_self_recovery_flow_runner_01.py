@@ -242,11 +242,21 @@ OUT_DIR_REP18 = "er052_output/open233_self_recovery_flow_runner_01_rep18"
 # QA・JA fail-open封鎖・escalate_to_paragraph OFF・⑥OFF)で2回
 # (iter8のs1/s2それぞれ1run)実行する。出力は新規ディレクトリ(`_rep19`)へ書く。
 OUT_DIR_REP19 = "er052_output/open233_self_recovery_flow_runner_01_rep19"
-OUT_DIR = OUT_DIR_REP19
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ak_34_rep19.json"
-TOTAL_BUDGET_JPY = 7.0  # 委任_34 Guardrail¥8のうち、小修正後のSafety-critical
-# priming再確認(≤¥1、別budget state)分の余裕を残し、rep19本体(B、2 run)
-# 自身は¥7で自己停止する。
+# 委任_35(rep20、2026-10-01、委任文§2 B): 既存iteration1〜8・rep7〜19の
+# 出力(OUT_DIR_ITER1〜8/OUT_DIR_REP7〜19)は変更しない。(d)是正(floorの
+# fact_id単位broadcast廃止+same_fact_id_locations列挙のcycle1限定+
+# iol_degenerate guard追加)後、rep19と同じfrozen fixture
+# (`stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`、
+# OUT_DIR_REP19から読み込む、再freezeしない)をn=2で再検証する。Safety
+# 対照(changed_number/changed_actor fixture各1件full flow n=1、
+# Safety-critical 8のStage2のみn=1)も同じOUT_DIR_REP20・同じbudget
+# stateで実行する。出力は新規ディレクトリ(`_rep20`)へ書く。
+OUT_DIR_REP20 = "er052_output/open233_self_recovery_flow_runner_01_rep20"
+OUT_DIR = OUT_DIR_REP20
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233al_35_rep20.json"
+TOTAL_BUDGET_JPY = 9.0  # 委任_35 Guardrail¥10のうち、¥1をhard margin
+# として残し、本runnerのAPI呼び出し全体(rep20本体+Safety対照)を¥9で
+# 自己停止する。
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -760,6 +770,15 @@ def measure_section_role_violation(before_text: str, after_text: str) -> dict:
         not title_after.strip() or title_words_after < 3
     )
     hook_degenerate = bool(hook_before.strip()) and hook_after != hook_before and not hook_after.strip()
+    # 委任_35(design書§6-16、Rewrite品質ガード追加): title_degenerate/
+    # hook_degenerateと同じ理由で、「## In one line」見出し自体が削除され
+    # 空文字列抽出になった場合(rep19実測cycle3、見出し行ごと消失し
+    # `_extract_in_one_line_text`が空文字を返した、§32-3参照)をFAILとして
+    # 検出する。iol_too_long(長文化)とは別の「消失」専用フラグであり、
+    # 既存のneeds_regeneration系トリガとは異なる新しい安全装置ではなく、
+    # title_degenerate/hook_degenerateと同じ既存hard-block機構へ単に合流
+    # させる(run_instance側の判定行への追加のみ)。
+    iol_degenerate = bool(iol_before.strip()) and iol_after != iol_before and not iol_after.strip()
 
     reasons = []
     if iol_too_long:
@@ -778,6 +797,8 @@ def measure_section_role_violation(before_text: str, after_text: str) -> dict:
         reasons.append(f"title_degenerate(words_after={title_words_after})")
     if hook_degenerate:
         reasons.append("hook_degenerate(emptied)")
+    if iol_degenerate:
+        reasons.append("in_one_line_degenerate(heading_removed_or_emptied)")
 
     return {
         "in_one_line_length_increase_ratio": iol_length_increase_ratio, "in_one_line_too_long": iol_too_long,
@@ -787,6 +808,7 @@ def measure_section_role_violation(before_text: str, after_text: str) -> dict:
         "title_rhetorical_markers_lost": title_flattened,
         "title_word_count_after": title_words_after,
         "title_degenerate": title_degenerate, "hook_degenerate": hook_degenerate,
+        "iol_degenerate": iol_degenerate,
         "section_role_violated": bool(reasons), "reasons": "; ".join(reasons),
     }
 
@@ -1447,7 +1469,20 @@ def build_recheck_schema(include_related_fact_id: bool, include_origin: bool) ->
 
 
 def run_recheck(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
-                 prior_issues: list) -> dict:
+                 prior_issues: list, enable_fact_id_enumeration: bool = False) -> dict:
+    """委任_35(design書§6-16、追加原因(d)の是正): `same_fact_id_locations`
+    列挙(委任_20 W2)は、初回Stage1検出(cycle1の入力を作る1回)でのみ行い、
+    以後のRecheck呼び出し(cycle番号に関わらず、本関数の呼び出しは全て
+    初回Stage1より後)では新規候補を再列挙しない(既定`enable_fact_id_
+    enumeration=False`)。Rewrite後のテキストから毎回新しい候補文を
+    探し続けることがcycleごとの検出対象増加(rep19実測、cycle1:2件原本->
+    cycle2:12件->cycle3:5件)の一因だった(REPORT§32-3)。未解消のまま
+    残るclaim自体は、prior_issuesに基づく通常のRecheck判定
+    (overall_status/deviations)でこれまでどおり継続して検出される
+    (`prior_issues_resolved`で確認、新規列挙ではなく既存claimの再判定)。
+    `enable_fact_id_enumeration=True`を明示すれば旧来どおりの列挙を行う
+    (後方互換、既存呼び出し側[本runner外からの直接利用]のデフォルト変更
+    による無断広域変更を避ける)。"""
     check_budget(state)
     prompt_template = trial.build_trial_prompt_template("V4A")
     prompt = prompt_template.format(verified_ledger_text=fixture["ledger_text"], article_text=article_text)
@@ -1456,7 +1491,8 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     if include_origin:
         prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=fixture["source_article_text"])
     prompt += vfl01.build_prior_issues_instruction(prior_issues)
-    prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
+    if enable_fact_id_enumeration:
+        prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
     schema = build_recheck_schema(True, include_origin)
 
     last_err = None
@@ -1485,8 +1521,10 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     raw_parsed = json.loads(response.output_text)
     parsed = vfl01._apply_deviation_post_hoc_validation(raw_parsed)
     parsed_trial = trial.classify_parsed_result_trial(parsed, "V4A")
-    # 委任_20 W2: Recheckが検出した同一fact_id別箇所も展開する(¥0)。
-    parsed_trial["deviations"] = expand_same_fact_id_locations(parsed_trial["deviations"], article_text)
+    # 委任_20 W2(委任_35で既定False化、§6-16): Recheckが検出した同一
+    # fact_id別箇所の展開は、enable_fact_id_enumeration=True明示時のみ行う。
+    if enable_fact_id_enumeration:
+        parsed_trial["deviations"] = expand_same_fact_id_locations(parsed_trial["deviations"], article_text)
     resolved = raw_parsed.get("prior_issues_resolved", [])
     parsed_trial["prior_issues_resolved"] = resolved
     parsed_trial["all_prior_issues_resolved"] = (
@@ -1675,9 +1713,22 @@ def _sanitize_dev_for_rounding(dev: dict, claim_text: str, ledger_text: str) -> 
     return dev
 
 
+# 委任_35(design書§6-16、追加原因(d)の是正): deterministic floor
+# (FLOOR_FLAGS)は、Stage1が違反を体現する当該claim文に直接付与したflagに
+# のみ適用し、`expand_same_fact_id_locations`(委任_20 W2)が同一
+# `related_fact_id`を共有する他claimへ複製したflag(`detected_by_
+# enumeration=True`、dev自体はdict(d)でコピーされたもの)には適用しない。
+# 複製claimは引き続きStage2(独立LLM判定、llm_materiality)で評価され、
+# その文自体が実際に違反していればllm_materiality=BLOCKINGとなり
+# final_materialityもBLOCKINGのまま維持される(fail-closedは失われない)。
+# floorを素通しするのは「LLMが独立にACCEPTABLE/QUALITYと判定した複製claim
+# まで強制的にBLOCKINGへ昇格させる」部分のみであり、これがrep19実測
+# (REPORT§32-1 claim#5/#6等)で確認された誤分類の直接原因だった。
 def apply_floor(materiality: str, dev: dict, detected_by: str) -> tuple:
     if detected_by == "precheck":
         return "BLOCKING", "precheck_floor"
+    if dev.get("detected_by_enumeration"):
+        return materiality, None
     triggered = [k for k in FLOOR_FLAGS if bool(dev.get(k))]
     if triggered:
         return "BLOCKING", "deterministic_floor:" + ",".join(triggered)
@@ -1735,6 +1786,11 @@ def apply_floor_cited(materiality: str, dev: dict, detected_by: str, ledger_text
     させる。"""
     if detected_by == "precheck":
         return "BLOCKING", "precheck_floor"
+    # 委任_35: apply_floorと同じ理由(§6-16参照)で、same_fact_id_locations
+    # 複製claim(detected_by_enumeration=True)はfloor-cited反実仮想からも
+    # 除外する(本関数は実フロー制御には使われないが、記録の一貫性のため)。
+    if dev.get("detected_by_enumeration"):
+        return materiality, None
     triggered = [k for k in FLOOR_FLAGS if bool(dev.get(k))]
     if triggered and floor_cited_eligible(dev, ledger_text):
         return "BLOCKING", "deterministic_floor_cited:" + ",".join(triggered)
@@ -4254,8 +4310,12 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # を試みるが、再生成後も同じ結果ならそのまま通過してしまう既存の
         # ガード漏れ)とは別に、無条件hard blockとしてSTAGE4へ回す
         # (再生成を1回試みた後の結果[regenerated時]を優先して判定する)。
+        # 委任_35(design書§6-16): iol_degenerate(「## In one line」見出し
+        # 自体の削除・消失)も同じhard block条件へ合流させる(rep19実測
+        # cycle3、§32-3参照)。
         final_section_role = section_role_after_regen if section_role_after_regen is not None else section_role
-        if final_section_role.get("title_degenerate") or final_section_role.get("hook_degenerate"):
+        if (final_section_role.get("title_degenerate") or final_section_role.get("hook_degenerate")
+                or final_section_role.get("iol_degenerate")):
             final_state = "STAGE4_ESCALATION"
             stage4_reason = "degenerate_rewrite_output"
             cycle_record["degenerate_rewrite_detected"] = True
