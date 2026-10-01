@@ -2135,3 +2135,148 @@ Part1(¥0)+Part2主実測(¥2.0336)+Trial A-2(¥0.1261)=本委任合計
 既存rep/iteration証跡への差分なしを確認した。
 Status=`ELEMENT_TRIAL_MISCONCEPTION_PRINCIPLE_CODIFIED_HORMUZ_TRIAL_A_
 PASSED_AFTER_ONE_MINOR_FIX`。Meta要素Trialは次回委任_28。
+
+## §26. Stage1/Hook重大誤解原則の実配線+Safety対照群の全量確認、
+STOP条件該当により Meta要素Trial未実施(委任_28、2026-10-01)
+
+### 26-0. 対応表(委任文Part0〜Part1、Part2/3は未実施)
+
+| # | 項目 | 実施内容 | Evidence |
+|---|---|---|---|
+| 0-1 | Stage1(V4A)実配線 | `er052_open233_self_recovery_flow_runner_01.stage1_fresh_with_misconception_principle`新設(既存`stage1_fresh()`は無変更) | 26-1 |
+| 0-1 | Hook実配線 | `run_stage2_hook_batch`へ`hook_rubric_text`引数追加(既定値無変更) | 26-1 |
+| 0-2 | SAFETY_CRITICAL_SUB_IDS是正 | hormuz-HF009を除外(10件→9件) | 26-1 |
+| 0-3 | Hook許容基準tie-break明文化 | `HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2`新設 | 26-1 |
+| 0-4 | unittest | 新規7件、discoverで既存338件+7件=345件全PASS | 26-1 |
+| Part1 | Safety対照群全量確認 | Safety-critical 9claim+Safety12(9フラグ)をn=2実測、V2で2件misdowngrade→最小修正1回(V3)→なお2件残存→**STOP** | 26-2〜26-4 |
+| Part2/3 | Meta Hook Trial B・Actor Trial C | **未実施**(STOP条件該当のため着手せず) | 26-5 |
+
+### 26-1. Part0(¥0、配線・ラベル是正)
+
+`er052_open233_self_recovery_flow_runner_01.py`へ
+`stage1_fresh_with_misconception_principle(client, state,
+consecutive_errors, call_log, label, fixture)`を新設した(既存
+`stage1_fresh()`と同一のretry/cost計上パターンだが、developer
+messageへ`trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE`を
+使う点のみ異なる。既存`stage1_fresh()`自体・既存29 instance実行・
+既存rep/iteration証跡は無変更)。
+`er052_open233_self_recovery_stage2_hook_01.run_stage2_hook_batch`へ
+`hook_rubric_text`引数(既定`HOOK_RUBRIC`、本文不変)を追加し、新定数
+`HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2`(tie-break明文化: 確認
+済みFactから自然に導ける受け手側の体験描写・場面描写・attention
+grabber・conversational restatementは許容、BLOCKINGは未確認の具体的
+人物・行動・数字の追加またはFactと逆方向の出来事のみ)を新設した。
+`er052_open233_self_recovery_r3dprime_calibration_01.SAFETY_CRITICAL_
+SUB_IDS`から`hormuz-HF009`を除外した(§7-0-iter27の再ラベルとの整合、
+10件→9件、根拠はDECISION_LOG参照)。unittest 7件
+(`TestStage1FreshWithMisconceptionPrinciple`2件・
+`TestHookRubricTextWiring`3件・`TestSafetyCriticalSubIdsHormuzExclusion`
+2件)を追加し、`python -m unittest discover -p "er05*test*.py"`で
+既存338件+新規7件=**345件全PASS**を確認した。
+
+### 26-2. Part1 n=1予備測定(V2、¥2.7022)での発見
+
+Safety-critical 9claim(`SAFETY_CRITICAL_SUB_IDS`是正後)+Safety12
+(er009 9フラグ)を、Stage2 body rubric
+(`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V2`)でn=1
+予備測定したところ、2件がfalse downgradeした:
+
+- **A4-0**(“Through Muse, trained human contract workers made some
+  calls and completed the exchanges with users.”)→`ACCEPTABLE`
+  (basis: ledger_claim)。元issue(逐語): 「この記事では、契約スタッフ
+  がやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが
+  示すのは電話の相手先(企業・店舗など)です。」=カウンターパート
+  (誰が誰とやり取りしたか)の取り違えであり、用語の近似・一般化ではない。
+- **A5-1**(“Meta executives admitted that starting the test without a
+  proper explanation was a mistake.”)→`QUALITY`(basis:
+  ledger_scope)。元issue(逐語): 「The Ledger attributes this
+  admission to a specific Meta vice president, while the article
+  attributes it to "Meta executives," broadening the speaker
+  attribution.」=特定の副社長→「Meta幹部」という同一組織内のより
+  一般的な役職名への言い換え。
+
+**事故と復旧(重要、正直な開示)**: 予備測定の実装で、Stage1 fresh
+呼び出しを誤って`runner.stage1_fresh_with_misconception_principle`
+経由で直接実行したところ、同関数内部の`record_call`→
+`save_budget_state`が**呼び出し元のstate dictの中身に関わらず、
+runner自身の固定`BUDGET_STATE_PATH`(`er052_output/open233_self_
+recovery_flow_runner_01_rep15/budget_state_c233ab_24_rep15.json`、
+委任_24の既存証跡)へ書き込む**副作用を持つことが判明し、同ファイルを
+一時的に上書きする事故が発生した。発覚直後に`git diff --stat`で検出し
+`git checkout`で該当1ファイルのみ即座に復元した(`git diff`で復元後の
+差分なしを確認、他の既存証跡ファイルへの影響なし)。ただし復元操作に
+より、この予備測定のStage1 fresh呼び出し4件分の詳細出力(json)自体は
+失われた(既存証跡への実害はないが、本委任の予備診断データとしては
+再取得できなくなった、sunk costとして正直に計上)。以後は本ファイル
+専用の自己完結ラッパー(`check_budget`/`save_budget_state`を本ファイル
+のみで完結させる方式)へ是正し、同種の事故を防止した(詳細は両新規
+Trialスクリプト冒頭コメント)。
+
+### 26-3. 最小修正1回(V3)とn=2公式測定結果
+
+「当事者関係(カウンターパート)の取り違えはBLOCKING、同一組織内での
+役職の一般化(発言内容・責任主体=組織自体は不変)は許容」という区別を
+追加した`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V3`を
+新設し、Safety-critical 9claim+Safety12をn=2で再測定した
+(`er052_open233_element_trial_safety_control_01.py`、¥4.3851)。
+
+| 項目 | 結果 |
+|---|---|
+| A4-0 | 2/2 `BLOCKING`(解消) |
+| A5-1 | 2/2 `ACCEPTABLE`(**V2[QUALITY]よりさらに悪化**) |
+| Meta-1 | 2/2 `QUALITY`(**V3で新規false downgrade**) |
+| Meta-2 | 2/2 `QUALITY`(Meta-1と同一claim、`build_eval_groups()`仕様によりbaseline deviationが1件のみのため両sub_idが同一文を指す重複) |
+| B3/B4-a/A2A3-0/A4-1/A5-0 | 全て2/2 `BLOCKING`(維持) |
+| Safety12(er009 9フラグ、Stage2直接判定) | **9/9とも2/2 `BLOCKING`**(false downgrade 0件) |
+| Safety12のうち4フラグ(Stage1 V4A新配線fresh実行) | 8 run中7 runでseverity_final=`BLOCKING`維持かつ想定flag名一致。1 run(changed_actor)はBLOCKING自体は維持しつつ付与flag名が別名へ振れた(真の見逃しではない、参考所見) |
+
+Meta-1/Meta-2の実体(逐語): “Also, some calls needed user information
+to continue.”。元issue(逐語): 「Ledgerは、電話の遂行にユーザー情報が
+必要になる可能性を条件として示しているが、記事は実際に一部の電話で
+情報が必要だったと断定している。」(`changed_certainty: true`、floor
+対象外)。
+
+### 26-4. STOP判定
+
+委任文STOP条件「Safety対照群のいずれかが小修正1回後もBLOCKINGに戻らない」
+に該当する(A5-1・Meta-1/Meta-2の計2件が、最小修正1回後もBLOCKINGへ
+戻らない)。これにより、Stage2 body rubricへの重大誤解原則配線は
+**ここで停止**し、Part2(Meta Hook Trial B)・Part3(Actor Trial C、
+neg1実データの未確認actor置換抑止)は着手しなかった(Safety優先、
+「広いTrialを続けるべきか」という問い自体を本委任では判定せず、Fable/
+ユーザーへ開示する)。
+
+**worker見解(判定はFable)**: A5-1・Meta-1/Meta-2はいずれも、既存
+§7-0-iter5でA2A3-1/A4-2が「`build_eval_groups()`の機械コピー由来
+ラベルであり、NG(a)〜(e)に照らすとQUALITYが正しい」として是正された
+前例と**構造的に類似**する(A5-1=役職の一般化、Meta-1/Meta-2=
+certainty強化で、いずれも委任_12/13の「自然な解釈基準」の下で既に
+QUALITY側に整理されたB4-b/B4-d型パターンに近い)。一方で、本委任の
+上位原則はこれらを含む包括的な許容文であり、個別claim単位の精査
+(Ledgerの文言と記事の文言を1件ずつ突き合わせる人間判断)を経ずに
+rubric側だけでこの区別を安定させられるかは実測上まだ不確実
+(V3の1回の修正では解決しなかった)。次の一手としては、(a)
+A5-1/Meta-1・Meta-2を正解ラベル自体の再検討対象としてユーザー確認を
+仰ぐ(hormuz-HF009と同じ経路)、または(b) rubricのさらなる改善
+(ただし本委任のSTOP条件に基づき追加の小修正は次回委任以降とする)の
+いずれかをFableが選ぶことになる。
+
+### 26-5. 未実施事項・費用・Git・Status
+
+Part2(Meta Hook Trial B)・Part3(Actor Trial C)は上記STOP判定により
+未実施。これに伴い、Hook許容基準(0-3)の実測・neg1 actor claimの
+Stage1再判定実測・Stage3主体置換ガードの実rewrite実測はいずれも
+次回以降へ持ち越す(コードとしては`er052_open233_element_trial_meta_
+hook_01.py`を実装済みだが、本委任では実行していない)。
+
+本委任費用: Part0(¥0)+Part1予備測定(¥2.7022、詳細出力は事故復旧操作
+により喪失)+Part1 V3公式測定(¥4.3851)=**¥7.0873**(Guardrail¥25の
+うち、Part1単体のGuardrail¥9に対し実績超過なし)。Phase累計
+¥395.4752+¥7.0873=**¥402.5625**/総枠¥600、残**¥197.4375**。
+`git diff --stat`でProduction(er003/er006/er009/er010/er012/er019)・
+既存rep/iteration証跡(rep15の一時汚染は`git checkout`で復元済み)への
+差分なしを確認した。USER_DECISION_REQUIRED 7条件(design書§12)は
+いずれも非該当(Production非接続・KPI不変・Cap/予算¥600内・新Product
+原則の設定なし)。Status=`SAFETY_CONTROL_AUDIT_STOPPED_AFTER_ONE_
+MINOR_FIX_STILL_FAILING`。Meta要素Trial(Hook/Actor)・A5-1/Meta-1・
+Meta-2の扱いはFable/ユーザー判断待ちとして次回へ引き継ぐ。

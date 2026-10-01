@@ -355,6 +355,53 @@ RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V2 = (
     RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V2
 )
 
+# ------------------------------------------------------------
+# 委任_28 Part1(Safety対照群の全量確認、design書委任文Part1・§4-18
+# 「priming再測定の要件」): V2でSafety-critical 9claim全量をn=1で予備測定
+# したところ、2件がfalse downgradeした(Stage2 body、rubric=V2、
+# er052_output/open233_element_trial_safety_control_01/partA/配下)。
+# 1. A4-0(“Through Muse, trained human contract workers made some calls
+#    and completed the exchanges with users.”)が`ACCEPTABLE`(basis=
+#    ledger_claim)。Ledgerの実際の指摘(issue、逐語):「この記事では、
+#    契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、
+#    Ledgerが示すのは電話の相手先(企業・店舗など)です。」=
+#    やり取りの相手(カウンターパート)の取り違えであり、用語の近似・
+#    一般化ではない。V2は「近似・一般化は許容」という原則文のみで、
+#    「誰が誰とやり取りしたか」という当事者関係の取り違えを明示的に
+#    区別していなかったため、誤ってACCEPTABLEへ寛容化したと判断する。
+# 2. A5-1(“Meta executives admitted that starting the test without a
+#    proper explanation was a mistake.”)が`QUALITY`(basis=ledger_scope)。
+#    Stage1 issue(逐語):「The Ledger attributes this admission to a
+#    specific Meta vice president, while the article attributes it to
+#    “Meta executives,” broadening the speaker attribution.」これは
+#    「特定の副社長」→「Meta幹部」という、同じ組織の中でのより一般的な
+#    役職名への言い換えであり、発言内容・責任主体(Meta)自体は変えて
+#    いない。§0-2の「Brent futures→oil prices」と同種の一般化に該当する
+#    可能性があり、V2のもとでQUALITYへ振れたこと自体はA4-0ほど明確な
+#    誤りとは言えない(ただしSAFETY_CRITICAL_SUB_IDS自体の見直し要否は
+#    本委任の独断では決めず、Fable/ユーザー確認事項として開示する、
+#    hormuz-HF009[委任_27/Part0-2]と同じ扱い)。
+# 是正(最小修正1回、新しい例示は追加せず、当事者関係の区別のみを明確化):
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT_V3 = MISCONCEPTION_PRINCIPLE_TEXT_V2 + """
+
+【追加明確化(委任_28 Part1、Safety対照群実測でのfalse downgrade是正、
+最小修正1回)】
+「誰が誰に対して行ったか」という当事者関係(カウンターパート)の取り違えは、
+用語の近似・一般化とは別のものとして扱ってください。Ledgerが「ある人物・
+担当者が実際にやり取りした相手」を特定の対象(例: 企業・店舗)として記録
+しているのに、記事がそのやり取りの相手を別の対象(例: サービスの利用者
+本人)に取り違えている場合は、記事の主体・対象を誤認させるため引き続き
+BLOCKINGとしてください。一方、Ledgerが特定の役職・肩書きを持つ人物
+(例: ある副社長)の発言として記録している内容を、記事が同じ組織に属する
+より一般的な役職の言い方(例: 同社の幹部)で言い換えるだけで、発言内容や
+責任主体の範囲(どの組織か)自体は変えていない場合は、これも許容される
+一般化に含めてください。"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V3 = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V3
+)
+
 
 class TrialAbort(RuntimeError):
     pass

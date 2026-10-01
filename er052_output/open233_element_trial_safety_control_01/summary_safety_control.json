@@ -1,0 +1,431 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "rubric_variant": "V3",
+    "cumulative_jpy_this_run": 4.3851,
+    "sunk_cost_preliminary_v2_run_jpy": 2.7022,
+    "cumulative_jpy_total_including_sunk": 7.0873,
+    "cumulative_calls": 22,
+    "cumulative_errors": 0,
+    "part_a_safety_critical_9claim": {
+      "misdowngrade_total": 6,
+      "n_claims": 9
+    },
+    "part_b_safety12_stage2": {
+      "misdowngrade_total": 0,
+      "n_flags": 9
+    },
+    "part_b_safety12_stage1_fresh": {
+      "recall_miss_total": 1,
+      "n_flags_tested": 4
+    }
+  },
+  "part_a": {
+    "per_claim_rows": [
+      {
+        "sub_id": "B3",
+        "group_id": "B3",
+        "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "対象文: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage”. 継続していた懸念が撤回の原因だったという「so」の因果関係を削除し、懸念の継続と撤回を因果で結ばずに記述してください。置換発表について触れる場合は、トランプ氏が中東指導者との「非常に生産的な協議」に基づく決定だと説明した、と範囲を限定してください。参照: HF-007"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "対象箇所: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage”。継続する懸念を撤回の原因として結び付けないよう「so」による因果関係を削り、懸念の継続と計画の撤回・置換を別々の事実として記述してください。撤回・置換については、湾岸諸国との貿易・投資案件に置き換えるとの投稿を記述します（HF-007）。"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "B4-a",
+        "group_id": "B4",
+        "claim_text": "“A person can take over when AI alone has trouble.”",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "“A person can take over when AI alone has trouble.” Narrow this to say that a person handled some Muse calls in the test; do not claim that human handling was triggered specifically when AI had difficulty. [MUSE-HC-002]"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "「AIだけでは難しい場面を、人が引き継ぐ。仕組みとしては、むしろ便利そうです。」という記述のうち、AIが困難に直面したときに人へ引き継ぐという運用条件は確認されていません。その仕組みを加えず、確認済みのMuseの機能説明に範囲を狭めてください。参照Ledger: MUSE-HC-002。"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "Meta-1",
+        "group_id": "Meta_run03_standard",
+        "claim_text": "Also, some calls needed user information to continue.",
+        "observed_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_conditions",
+            "rewrite_hint": ""
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_conditions",
+            "rewrite_hint": ""
+          }
+        ],
+        "misdowngrade_count": 2
+      },
+      {
+        "sub_id": "Meta-2",
+        "group_id": "Meta_run03_standard",
+        "claim_text": "Also, some calls needed user information to continue.",
+        "observed_labels": [
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_conditions",
+            "rewrite_hint": ""
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "ledger_conditions",
+            "rewrite_hint": ""
+          }
+        ],
+        "misdowngrade_count": 2
+      },
+      {
+        "sub_id": "A2A3-0",
+        "group_id": "A2A3",
+        "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” Revise to say the proposal sought reimbursement for U.S. security costs on cargo passing through the strait, without identifying who would pay. Ledger fact: HF-003."
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_conditions",
+            "rewrite_hint": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” 「貨物を運ぶ側」が支払うと特定せず、20％案は米国の安全確保費用の償還として提案された、と範囲を狭めてください。参照: HF-003"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A4-0",
+        "group_id": "A4",
+        "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship",
+            "rewrite_hint": "該当箇所: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「with users」は相手を利用者と特定しているため削り、「with the other party on the call」など、Ledgerが確認する範囲に狭めてください。参照: MUSE-HC-006。"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope",
+            "rewrite_hint": "該当箇所: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「users」はMuseの利用者本人を電話相手とする意味に読めるため削り、「電話相手とのやり取りを完了した」と範囲を狭めてください。参照: MUSE-HC-006"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A4-1",
+        "group_id": "A4",
+        "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "該当箇所: “So people who thought they were speaking with AI were actually speaking with human staff.” 相手側が実際にそう認識していたという断定は削り、適切な開示なしにテストが始まった事実に限定してください。参照: MUSE-HC-012。"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "該当箇所: “So people who thought they were speaking with AI were actually speaking with human staff.” 実際に人々がAIと話していると思っていたという未確認の認識を断定せず、「適切な開示なしにテストが始まった」とする記述に置き換えてください。参照: MUSE-HC-012"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A5-0",
+        "group_id": "A5",
+        "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "「They also temporarily put back the feature in which humans handled the calls.」を「Meta temporarily rolled back the human-concierge feature.」などに修正し、機能を再導入したのではなくロールバックしたことを示してください。参照: MUSE-HC-012"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim",
+            "rewrite_hint": "Quote: “They also temporarily put back the feature in which humans handled the calls.” Replace “put back” with “rolled back” (or say the human-concierge feature was temporarily rolled back); do not imply it was reinstated. Ledger fact_id: MUSE-HC-012."
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "sub_id": "A5-1",
+        "group_id": "A5",
+        "claim_text": "Meta executives admitted that starting the test without a proper explanation was a mistake.",
+        "observed_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none",
+            "rewrite_hint": ""
+          },
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none",
+            "rewrite_hint": ""
+          }
+        ],
+        "misdowngrade_count": 2
+      }
+    ],
+    "misdowngrade_total": 6
+  },
+  "part_b_stage2": {
+    "per_flag_rows": [
+      {
+        "flag": "changed_number",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_actor",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_scope",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_causality",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "unsupported_relationship"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_certainty",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_negation",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_comparison",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "changed_time",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_date_or_period"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_date_or_period"
+          }
+        ],
+        "misdowngrade_count": 0
+      },
+      {
+        "flag": "unsupported_new_claim",
+        "observed_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "misdowngrade_count": 0
+      }
+    ],
+    "misdowngrade_total": 0
+  },
+  "part_b_stage1_fresh": {
+    "rows": [
+      {
+        "flag": "changed_number",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "Ledgerが示すサンプル規模と異なる具体的な件数を主張しており、changed_fact・changed_numberに該当します。その件数はLedgerに裏付けられていないためunsupported_new_claimもtrueです。チップ率が高いと乗客がより多く残したという因果関係はF-004と整合します。"
+            ]
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "F-002 records a sample of more than 13 million New York City taxi credit-card transactions, not more than 30 million. The article changes the numeric claim and adds an unsupported sample-size assertion. Its description of higher suggested tips leading to more tips is consistent with F-004."
+            ]
+          }
+        ],
+        "recall_miss_count": 0
+      },
+      {
+        "flag": "changed_actor",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "Harvard Business Schoolへの所属・研究主体の特定はLedgerにない具体的主張です。そのためchanged_fact、changed_actor、unsupported_new_claimをtrueとします。件数と因果関係の記述はLedgerと一致します。"
+            ]
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": false,
+            "any_blocking": true,
+            "explanations": [
+              "Ledgerは研究者名を記載していますが、Harvard Business Schoolとの所属関係は確認していません。したがって、その所属は未確認の具体的主張です。研究結果と件数はF-002、F-004に沿っています。"
+            ]
+          }
+        ],
+        "recall_miss_count": 1
+      },
+      {
+        "flag": "changed_scope",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "F-004の対象はニューヨーク市のタクシー利用者。レストラン全国への範囲拡張に加え、レストランでチップ額が増える因果効果を直接確認済みと断定しており、Ledgerにない主張を追加している。"
+            ]
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "F-004が因果効果を報告しているのはニューヨーク市タクシーの利用者です。全国のレストランでも結果が「直接確認」され、画面の高い推奨率がより多いチップを引き起こすという主張は、対象範囲と因果関係を拡張し、裏付けのない確認済み事実として断定しています。該当フラグはchanged_fact、changed_scope、changed_causality、changed_certainty、unsupported_new_claimです。"
+            ]
+          }
+        ],
+        "recall_miss_count": 0
+      },
+      {
+        "flag": "unsupported_new_claim",
+        "runs": [
+          {
+            "run": 1,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "F-004にない男女別の結果を追加しているためchanged_factとunsupported_new_claimはtrue。対象を男女別の比較に広げているためchanged_scopeもtrueで、「twice」という未確認の数量を加えているためchanged_numberもtrue。既存の因果方向・否定・時間・研究者の主体を置き換えたものではなく、Ledgerにある比較方向を反転したものでもないため、その他のフラグはfalse。"
+            ]
+          },
+          {
+            "run": 2,
+            "overall_status": "LEDGER_DEVIATION",
+            "n_deviations": 1,
+            "expected_flag_true": true,
+            "any_blocking": true,
+            "explanations": [
+              "関連するF-004は、より高い推奨率を見た乗客がより多くチップを残したことを示しますが、性別による差や2倍という数値は記載していません。したがって、新たな性別比較・数値を含む未確認の主張です。"
+            ]
+          }
+        ],
+        "recall_miss_count": 0
+      }
+    ],
+    "recall_miss_total": 1
+  }
+}

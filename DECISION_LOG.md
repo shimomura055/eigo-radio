@@ -15349,3 +15349,87 @@ PASSED_AFTER_ONE_MINOR_FIX`。詳細:
 `er052_output/open233_element_trial_hormuz_terms_01/`、
 `docs/pm/PM_GOVERNANCE.md`(23節新設)、`docs/pm/PM_BRIEF.md`、
 `OPEN_ITEMS.md`(OPEN-233行Statusセル更新)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: hormuz-HF009のSAFETY_CRITICAL_SUB_IDS
+除外+Stage1/Hook重大誤解原則の実配線+Safety対照群全量確認でSTOP該当、
+Meta要素Trial未実施(委任_28、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_28: Meta要素Trial B/C、
+重大誤解原則のStage1・Hook rubric実配線、Safety対照群の全量確認、
+hormuz HF-009のラベル整合。広い29件Trialは禁止)。
+
+**是正1: `SAFETY_CRITICAL_SUB_IDS`からのhormuz-HF009除外(根拠)**:
+委任_27(design書§7-0-iter27)で、hormuz-HF009(Brent先物→oil prices型
+scope一般化)は上位原則「重大誤解原則」(§0-2)の原則許容候補
+「Brent futures→oil prices」そのものに該当するとして正解ラベルを
+BLOCKINGからACCEPTABLE/QUALITYへ再ラベル済みだったが、
+`er052_open233_self_recovery_r3dprime_calibration_01.SAFETY_CRITICAL_
+SUB_IDS`(既存10件、Stage2較正の「必ずBLOCKING維持」対照リスト)には
+hormuz-HF009が残ったままで、両者が直接矛盾していた(同一claimが
+「必ずBLOCKING」と「ACCEPTABLE/QUALITYが正解」の両方に属せない)。
+本委任はこの既知の不整合を解消するため、`SAFETY_CRITICAL_SUB_IDS`から
+hormuz-HF009を除外した(10件→9件: A2A3-0/A4-0/A4-1/A5-0/A5-1/Meta-1/
+Meta-2/B3/B4-a)。**これはSafety原則自体の変更ではなく、委任_27で
+既に確定したユーザー上位原則によるラベル整合である**。過去iteration
+較正証跡(iter4/5/6等の保存済みsummary json)は値のまま不変であり、
+本変更は以後の新規実行にのみ影響する。
+
+**是正2: Stage1(V4A)・Hook専用rubricへの重大誤解原則の実配線**:
+`er052_open233_self_recovery_flow_runner_01.py`へ
+`stage1_fresh_with_misconception_principle()`(既存`stage1_fresh()`は
+無変更、新規関数として追加)、
+`er052_open233_self_recovery_stage2_hook_01.run_stage2_hook_batch`へ
+`hook_rubric_text`引数(既定値`HOOK_RUBRIC`で無変更)を追加した。
+Hook許容基準のtie-break明文化として
+`HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2`を新設した。unittest 7件
+追加、discoverで既存338件+新規7件=345件全PASS。
+
+**Safety対照群の全量確認(Part1)とSTOP判定**: 上記除外後のSafety-
+critical 9claim+Safety12(er009 9フラグ)を、Stage2 body rubric
+(重大誤解原則入り)でn=1予備測定したところ、A4-0(カウンターパート
+取り違え)・A5-1(VP→「Meta executives」への役職一般化)の2件がfalse
+downgradeした。最小修正1回(V3、当事者関係の取り違えと役職の一般化を
+明示的に区別)を実施したところ、A4-0は解消したが、**A5-1がさらに
+ACCEPTABLEへ悪化し、新規にMeta-1/Meta-2(certainty強化型、"Also,
+some calls needed user information to continue.")がQUALITYへfalse
+downgradeした**(詳細判定文はREPORT§26)。委任文のSTOP条件「Safety
+対照群のいずれかが小修正1回後もBLOCKINGに戻らない」に該当するため、
+Stage2 body rubricへの重大誤解原則配線を停止し、Meta要素Trial
+(Hook Trial B・Actor Trial C)は未実施のまま本委任を終えた。
+
+**事故と復旧(開示)**: Part1予備測定の実装中、Stage1 fresh呼び出しを
+誤って`runner.stage1_fresh_with_misconception_principle`経由で直接
+実行し、同関数内部の`record_call`→`save_budget_state`が呼び出し元の
+state dictに関わらずrunner自身の固定`BUDGET_STATE_PATH`
+(委任_24の既存証跡`.../flow_runner_01_rep15/budget_state_c233ab_24_
+rep15.json`)へ書き込む副作用により、同ファイルを一時的に上書きする
+事故が発生した。検出直後に`git checkout`で当該1ファイルのみ復元し
+(`git diff`で差分なしを確認)、以後は本委任専用の自己完結ラッパーへ
+是正した。他の既存証跡ファイルへの影響はない。
+
+**採否・理由**: hormuz-HF009除外は採用(ラベル整合の是正、Safety原則
+不変)。Stage1/Hook実配線コード(発火既定OFF)は採用(既存動作に影響
+しない、新規Trial科学のための plumbing)。Stage2 body rubricへの
+重大誤解原則の実配線自体は**不採用(未解決のまま保留)**: A5-1・
+Meta-1/Meta-2がSafety-critical対照群として残存する限り、Production
+採用はおろかさらなるTrial拡大の前提にもできない。
+
+**却下しなかった代替案**: A5-1/Meta-1・Meta-2を独断でSafety-critical
+リストから除外する、またはラベルをQUALITY/ACCEPTABLEへ再ラベルする
+ことは、hormuz-HF009と同じ重みを持つ判断(既存Safety較正証跡の解釈
+変更)であり、Fable/ユーザー確認なしに本委任では行わなかった。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§26、
+`docs/pm/design_open233_self_recovery_flow_01.md`§7-0-iter27続き/
+§9-1⑱、`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-
+TRIAL-01_28.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_r3dprime_
+calibration_01.py`(`SAFETY_CRITICAL_SUB_IDS`是正)、
+`er052_open233_self_recovery_flow_runner_01.py`(+test、新規関数)、
+`er052_open233_self_recovery_stage2_hook_01.py`(`hook_rubric_text`
+引数・V2 tie-break)、`er052_open233_self_recovery_stage2_calibration_
+01.py`(V3新設)、`er052_open233_element_trial_safety_control_01.py`
+(新規)、`er052_open233_element_trial_meta_hook_01.py`(新規、未実行)、
+`er052_output/open233_element_trial_safety_control_01/`、
+`OPEN_ITEMS.md`(OPEN-233行Statusセル更新)。

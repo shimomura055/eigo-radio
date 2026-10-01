@@ -58,9 +58,19 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
 
 # 委任_13 論点1(是正2): 「Safety側誤降格0件」を、名指しした10claimへ限定。
 # A2A3-1/A4-2はQUALITYへ再ラベルされたため対象から除外する。
+#
+# 委任_28 Part0-2(design書§7-0-iter27で開示・Fable確認事項とされていた
+# 論点への対応): `hormuz-HF009`(Brent先物→oil prices全体、同じoilという
+# 対象内での一般化)は、上位原則「重大誤解原則」(§0-2)の原則許容候補に
+# 明確に該当するため、ユーザー上位原則によるラベル整合としてこのリストから
+# 除外する(§0-2/§7-0-iter27自体の再ラベルは委任_27で既に確定済み、本変更は
+# それとSAFETY_CRITICAL_SUB_IDSの不整合を解消するのみ、Safety原則自体の
+# 変更ではない)。過去iteration較正証跡(iter4/5/6等のsummary json)は
+# 保存済みの値のまま不変であり、本変更は以後の新規実行にのみ影響する。
+# 根拠はDECISION_LOG.md(OPEN-233-SELF-RECOVERY-TRIAL-01、委任_28)参照。
 SAFETY_CRITICAL_SUB_IDS = frozenset({
     "A2A3-0", "A4-0", "A4-1", "A5-0", "A5-1", "Meta-1", "Meta-2",
-    "hormuz-HF009", "B3", "B4-a",
+    "B3", "B4-a",
 })
 
 

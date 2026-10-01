@@ -11,6 +11,8 @@ import unittest
 from unittest import mock
 
 import er052_open233_self_recovery_flow_runner_01 as runner
+import er052_open233_self_recovery_r3dprime_calibration_01 as r3d
+import er052_open233_self_recovery_stage2_hook_01 as s2h
 
 
 class TestClaimIdentity(unittest.TestCase):
@@ -2885,6 +2887,139 @@ class TestEscalateToParagraphDisabledByDefault(unittest.TestCase):
         self.assertEqual(result["ladder_level_used"], "1_word_connective")
         self.assertEqual(len(calls), 1)
         self.assertTrue(result["guard_ok"])
+
+
+class TestStage1FreshWithMisconceptionPrinciple(unittest.TestCase):
+    """委任_28 Part0-1: Stage1(V4A)Trial harnessへの重大誤解原則配線の
+    regression test(¥0、API呼び出しはmock)。既存`stage1_fresh()`は無変更で
+    あること・新関数は`developer_message_override`を渡すことの両方を確認する。"""
+
+    def test_stage1_fresh_unchanged_uses_no_override(self):
+        captured = {}
+
+        def fake_check(client, ledger, article, model, variant, include_related_fact_id=False,
+                       source_article_text=None, developer_message_override=None):
+            captured["override"] = developer_message_override
+            return {"parsed": {"overall_status": "LEDGER_COMPLIANT", "deviations": []},
+                    "usage": {"input_tokens": 1, "output_tokens": 1}, "prompt": "p"}
+
+        fixture = {"ledger_text": "L", "article_text": "A"}
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        # 委任_28事故是正: runner.stage1_fresh()は既存どおりrecord_call→
+        # save_budget_state(runner自身の固定BUDGET_STATE_PATH)を経由する
+        # ため、このunittest自体が他delegation(rep15)の既存証跡を上書き
+        # しないよう、save_budget_stateを必ずno-opへ差し替えて呼び出す。
+        with mock.patch.object(runner.trial, "run_trial_deviation_check", side_effect=fake_check), \
+             mock.patch.object(runner, "save_budget_state", lambda s: None):
+            runner.stage1_fresh(None, state, [0], [], "label", fixture)
+        self.assertIsNone(captured["override"])
+
+    def test_new_function_passes_misconception_override(self):
+        captured = {}
+
+        def fake_check(client, ledger, article, model, variant, include_related_fact_id=False,
+                       source_article_text=None, developer_message_override=None):
+            captured["override"] = developer_message_override
+            return {"parsed": {"overall_status": "LEDGER_COMPLIANT", "deviations": []},
+                    "usage": {"input_tokens": 1, "output_tokens": 1}, "prompt": "p"}
+
+        fixture = {"ledger_text": "L", "article_text": "A"}
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        with mock.patch.object(runner.trial, "run_trial_deviation_check", side_effect=fake_check):
+            result = runner.stage1_fresh_with_misconception_principle(
+                None, state, [0], [], "label", fixture)
+        self.assertEqual(captured["override"], runner.trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE)
+        self.assertEqual(result["overall_status"], "LEDGER_COMPLIANT")
+
+
+class TestHookRubricTextWiring(unittest.TestCase):
+    """委任_28 Part0-1/0-3: `run_stage2_hook_batch`の`hook_rubric_text`
+    引数配線と、`HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2`のtie-break
+    明文化のregression test(¥0)。"""
+
+    def test_default_uses_hook_rubric_unchanged(self):
+        captured = {}
+
+        class FakeResp:
+            output_text = '{"judgments": []}'
+            id = "r1"
+            model = "gpt-6-luna"
+
+        class FakeClient:
+            class responses:
+                @staticmethod
+                def create(**kwargs):
+                    captured["prompt"] = kwargs["input"][1]["content"]
+                    return FakeResp()
+
+        s2h.run_stage2_hook_batch(FakeClient(), "(ledger)", None, "(hook)", [])
+        self.assertIn(s2h.HOOK_RUBRIC.strip(), captured["prompt"])
+        self.assertNotIn("tie-break", captured["prompt"])
+
+    def test_override_uses_misconception_principle_v2(self):
+        captured = {}
+
+        class FakeResp:
+            output_text = '{"judgments": []}'
+            id = "r1"
+            model = "gpt-6-luna"
+
+        class FakeClient:
+            class responses:
+                @staticmethod
+                def create(**kwargs):
+                    captured["prompt"] = kwargs["input"][1]["content"]
+                    return FakeResp()
+
+        s2h.run_stage2_hook_batch(FakeClient(), "(ledger)", None, "(hook)", [],
+                                   hook_rubric_text=s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2)
+        self.assertIn("重大誤解原則", captured["prompt"])
+        self.assertIn("tie-break", captured["prompt"])
+
+    def test_hook_tiebreak_text_mentions_allow_and_block_criteria(self):
+        self.assertIn("conversational restatement", s2h.HOOK_TIEBREAK_TEXT)
+        self.assertIn("未確認の具体的な", s2h.HOOK_TIEBREAK_TEXT)
+
+
+class TestSafetyCriticalSubIdsHormuzExclusion(unittest.TestCase):
+    """委任_28 Part0-2: SAFETY_CRITICAL_SUB_IDSからhormuz-HF009を除外した
+    ことのregression test(¥0)。"""
+
+    def test_hormuz_hf009_excluded(self):
+        self.assertNotIn("hormuz-HF009", r3d.SAFETY_CRITICAL_SUB_IDS)
+
+    def test_other_nine_still_present(self):
+        expected = {"A2A3-0", "A4-0", "A4-1", "A5-0", "A5-1", "Meta-1", "Meta-2", "B3", "B4-a"}
+        self.assertEqual(set(r3d.SAFETY_CRITICAL_SUB_IDS), expected)
+
+
+class TestStage1FreshWithMisconceptionPrincipleDoesNotTouchSharedBudgetFile(unittest.TestCase):
+    """委任_28事故是正のregression test(¥0): `stage1_fresh_with_
+    misconception_principle`が、実際にrunner自身の固定`BUDGET_STATE_
+    PATH`ファイルへ一切書き込まないことを確認する(委任_28実測中に本関数
+    経由でrep15の既存budget state証跡を一時的に上書きする事故が発生し、
+    `git checkout`で復元した。再発防止として、本関数自体がファイル書き
+    込みの副作用を持たない設計へ是正済みであることをファイルI/Oの有無で
+    直接検証する)。"""
+
+    def test_does_not_write_to_runner_budget_state_path(self):
+        def fake_check(client, ledger, article, model, variant, include_related_fact_id=False,
+                       source_article_text=None, developer_message_override=None):
+            return {"parsed": {"overall_status": "LEDGER_COMPLIANT", "deviations": []},
+                    "usage": {"input_tokens": 1, "output_tokens": 1}, "prompt": "p"}
+
+        fixture = {"ledger_text": "L", "article_text": "A"}
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        write_calls = []
+        with mock.patch.object(runner.trial, "run_trial_deviation_check", side_effect=fake_check), \
+             mock.patch.object(runner, "save_budget_state", side_effect=lambda s: write_calls.append(s)):
+            result = runner.stage1_fresh_with_misconception_principle(
+                None, state, [0], [], "label", fixture)
+        self.assertEqual(write_calls, [], "stage1_fresh_with_misconception_principleはsave_budget_state"
+                                           "(runner固定pathへの書き込み)を一切呼び出してはならない")
+        self.assertEqual(result["overall_status"], "LEDGER_COMPLIANT")
+        self.assertEqual(state["cumulative_calls"], 1)
+        self.assertGreater(state["cumulative_jpy"], 0.0)
 
 
 if __name__ == "__main__":

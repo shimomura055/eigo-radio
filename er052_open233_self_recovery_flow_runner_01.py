@@ -1210,6 +1210,56 @@ def stage1_fresh(client, state, consecutive_errors, call_log, label, fixture) ->
     return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "_stage1_api_failure": True}
 
 
+def stage1_fresh_with_misconception_principle(client, state, consecutive_errors, call_log, label,
+                                               fixture) -> dict:
+    """委任_28 Part0-1(design書§0/§4-18): `stage1_fresh()`と同一の呼び出し
+    (developer messageへ重大誤解原則[`trial.V4A_DEVELOPER_MSG_WITH_
+    MISCONCEPTION_PRINCIPLE`]を使う点のみが異なる、既存`stage1_fresh()`
+    自体は一切変更しない)だが、**cost計上は`record_call`/`check_budget`
+    (本runner自身の固定`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`を参照する
+    module-level関数)を経由せず、渡された`state`/`consecutive_errors`
+    のみを直接更新し、ファイル書き込みは一切行わない**(委任_28実測中に
+    本関数経由でrep15の既存budget state証跡を誤って上書きする事故が
+    実際に発生し[`git checkout`で復元・実害なし確認済み]、原因は
+    `record_call`内部の`save_budget_state(state)`が引数`state`の中身に
+    関わらず本runner自身の固定pathへ書き込む副作用だったため、本関数
+    自体の設計をこの副作用を持たないよう是正した。`simple_llm_call`の
+    docstringが記録する委任_09のs3rt事故と同根の問題)。呼び出し元
+    (Meta要素Trial[委任_28]専用)が、戻り値を使って自分自身のbudget
+    state/fileへの計上・保存を行う。本関数はmain()のデフォルト経路へは
+    配線しない。"""
+    last_err = None
+    result = None
+    t0 = time.time()
+    for _ in range(1 + MAX_RETRIES_PER_CALL):
+        try:
+            result = trial.run_trial_deviation_check(
+                client, fixture["ledger_text"], fixture["article_text"], MODEL, "V4A",
+                include_related_fact_id=True, source_article_text=fixture.get("source_article_text"),
+                developer_message_override=trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE,
+            )
+            break
+        except Exception as e:  # noqa: BLE001
+            last_err = f"{type(e).__name__}: {e}"
+            time.sleep(1.0)
+    elapsed = round(time.time() - t0, 3)
+    if result is not None:
+        cost = round(s2p.official_cost_jpy(result["usage"]), 4)
+        call_log.append({"label": label, "recovery_stage": "stage1_initial", "cost_jpy": cost,
+                          "usage": result["usage"], "elapsed_seconds": elapsed,
+                          "prompt_sha256": s2p.sha256_text(result["prompt"])})
+        state["cumulative_calls"] = state.get("cumulative_calls", 0) + 1
+        state["cumulative_jpy"] = state.get("cumulative_jpy", 0.0) + cost
+        state.setdefault("history", []).append({"label": label, "cost_jpy": cost, "usage": result["usage"]})
+        consecutive_errors[0] = 0
+        return result["parsed"]
+    call_log.append({"label": label, "recovery_stage": "stage1_initial", "error": last_err})
+    state["cumulative_calls"] = state.get("cumulative_calls", 0) + 1
+    state["cumulative_errors"] = state.get("cumulative_errors", 0) + 1
+    consecutive_errors[0] += 1
+    return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "_stage1_api_failure": True}
+
+
 # ------------------------------------------------------------
 # S1-U variant(委任_10、§3-1): Stage1(V4A)がACCEPTABLEだった場合に限り、
 # S1-D(materiality一体型、1 call)を追加実行し、BLOCKING判定claimのみを

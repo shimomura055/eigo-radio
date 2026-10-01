@@ -180,7 +180,32 @@ false PASS/false BLOCK 0件を確認した。Trial A-2[決定論名詞句置換�
 指摘は置換と無関係な既存箇所)。Stage1[V4A]・Hook専用rubricへの原則文
 追加は定数として実装済みだが本委任では未配線(予算制約、§4-18に開示)。
 本委任費用¥2.2597[Guardrail¥25のうち]。USER_DECISION_REQUIRED非該当。
-詳細§9-1⑰、REPORT§25、Meta要素Trialは次回委任_28)。
+詳細§9-1⑰、REPORT§25、Meta要素Trialは次回委任_28)。→
+**[委任_28更新]** `SAFETY_CONTROL_AUDIT_STOPPED_AFTER_ONE_MINOR_FIX_
+STILL_FAILING`(Part0: Stage1[V4A]・Hook専用rubricへ重大誤解原則を
+実配線する自己完結ヘルパーを追加[既存`stage1_fresh()`/Hook batch既定
+値は無変更、新規unittest 7件追加]。`SAFETY_CRITICAL_SUB_IDS`から
+hormuz-HF009を除外[§7-0-iter27との整合、9件化]。Part1[Safety対照群の
+全量確認、Stage2 body rubric]: Safety-critical 9claim+Safety12[er009
+9フラグ]をn=2で実測したところ、**V2のままn=1予備測定でA4-0[counterparty
+取り違え]・A5-1[VP→役職一般化]の2件がfalse downgrade**、原因を分析し
+最小修正1回[V3、当事者関係の取り違えと役職の一般化を区別]を実施したが、
+**n=2公式測定でもA5-1[QUALITY→ACCEPTABLEへさらに悪化]+Meta-1/Meta-2
+[同一claim、"Also, some calls needed user information to continue."
+がQUALITYへ新規false downgrade]の計2件が残存**(A4-0自体はV3で解消)。
+委任文STOP条件「Safety対照群のいずれかが小修正1回後もBLOCKINGに戻らない」
+に該当するため、**Stage2 body rubricへの重大誤解原則配線はここでSTOPし、
+Part2[Meta Hook Trial B]・Part3[Actor Trial C]は未実施のまま本委任を
+終了する**(Safety優先、広いTrial未実施)。Safety12[er009 9フラグ]は
+Stage2直接判定9/9・Stage1[V4A]新配線4フラグ中3/4で完全一致(flag名の
+帰属が1/8 runでchanged_actor→別flagへ振れたがseverity_final=BLOCKING
+自体は維持、真の見逃しではない)。本委任費用¥7.0873[Part1予備測定
+¥2.7022(詳細出力は事故復旧操作により失われた既知の損失、§9-1⑱参照)+
+V3公式測定¥4.3851、Guardrail¥9/¥25のうち]。USER_DECISION_REQUIRED
+7条件(§12)はいずれも非該当(Production非接続・KPI不変・Cap/予算内・
+新Product原則の設定なし)。A5-1・Meta-1/Meta-2の扱い[Safety-critical
+リストからの除外候補か、rubricのさらなる改善が必要かの判断]はFable/
+ユーザー確認事項として開示。詳細§9-1⑱、REPORT§26)。
 
 本書は前Phase`OPEN-233-CHECKER-REDESIGN-TRIAL-01`(以下「前Phase」)の
 成果(Trial 1/2実測、Opus L2レビュー#1、Stability n=20実測、negative
@@ -1361,6 +1386,17 @@ plan was withdrawn.")が2/2 false BLOCKだったため、「Brent先物を
 許容する」明確化を追加した`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_
 PRINCIPLE_V2`を新設し、再実測n=2で全群(許容5・NG5・Safety2)の
 false PASS/false BLOCKが0件になることを確認した(詳細REPORT§25)。
+
+**委任_28追記(Stage1/Hook配線の実装・Safety対照群全量確認の結果)**:
+Stage1(V4A)・Hook専用rubricへの実配線自体(自己完結ヘルパー・
+`hook_rubric_text`引数)は委任_28で実装した(§9-1⑱)。一方、Stage2
+body rubricをSafety-critical 9claim+Safety12全量で対照測定したところ
+A4-0は最小修正1回(V3)で解消したが、**A5-1・Meta-1/Meta-2の計2件が
+V3でも残存**(false downgrade、§9-1⑱)し、委任文のSTOP条件に該当した
+ため、Meta要素Trial(Hook/Actor)は未実施のまま停止した。**Stage2 body
+rubricへの重大誤解原則配線は、本書時点では依然としてSafety側の懸念が
+解消しておらず、Production採用はもちろんさらなるTrial拡大の前提にも
+できない**(詳細REPORT§26、Fable/ユーザー確認事項)。
 
 ## 5. Stage 3 Automatic Rewrite設計
 
@@ -2944,6 +2980,14 @@ whole market after the plan was withdrawn." 等、Brent先物→oil prices
 ユーザー判断を仰ぐ(USER_DECISION_REQUIRED候補ではなく、次回委任での
 確認事項として記録)。
 
+**委任_28追記**: 上記確認事項を受け、委任_28委任文Part0-2で
+`hormuz-HF009`を`SAFETY_CRITICAL_SUB_IDS`(9件化)から除外する編集を
+実施した(過去iteration較正証跡[iter4/5/6のsummary json等]は保存済み
+の値のまま不変、本変更は以後の新規実行にのみ影響、根拠はDECISION_LOG
+参照)。除外後の9件に対する全量対照測定の結果は§9-1⑱・REPORT§26を
+参照(A5-1・Meta-1/Meta-2の2件がV3適用後も残存し、本書時点ではSafety
+側の懸念が未解消)。
+
 **BLOCK候補への対応付け監査(§1指示、変更はしない)**: Safety-critical
 10件+Safety12(er009 9フラグ)の各claimが、§0-2のBLOCK候補(主体/
 方向/規模/時間軸/未確認追加/逆因果のいずれか)に対応付けられるかを
@@ -4151,6 +4195,59 @@ verdictは`REVIEW_REQUIRED`だったが、指摘された唯一の`meaning_chang
 原則文追加は定数として実装済みだが未配線(§4-18)。**Status=
 `ELEMENT_TRIAL_MISCONCEPTION_PRINCIPLE_CODIFIED_HORMUZ_TRIAL_A_PASSED_
 AFTER_ONE_MINOR_FIX`**。詳細REPORT§25。Meta要素Trialは次回委任_28。
+
+**⑱ Stage1/Hook重大誤解原則の実配線+Safety対照群の全量確認(委任_28
+Part0-1/0-2/Part1、本書§4-18/§7-0-iter5続き)**: 新規
+`er052_open233_element_trial_safety_control_01.py`で、Safety-critical
+9claim(`SAFETY_CRITICAL_SUB_IDS`、委任_28でhormuz-HF009を除外した後の
+9件)+Safety12(er009 9フラグ)の全量をStage2 body rubric(重大誤解原則
+入り)で対照測定した。Stage1(V4A)・Hook専用rubricへの原則文配線は、
+`er052_open233_self_recovery_flow_runner_01.stage1_fresh_with_
+misconception_principle`(新規関数、既存`stage1_fresh()`は無変更)+
+`er052_open233_self_recovery_stage2_hook_01.run_stage2_hook_batch`への
+`hook_rubric_text`引数(既定`HOOK_RUBRIC`、無変更)で実装し、unittest
+7件で配線自体を確認した(¥0)。
+
+**n=1予備測定(V2)**: Safety-critical 9claim中2件がfalse downgradeした
+(A4-0「Through Muse, trained human contract workers made some calls
+and completed the exchanges with users.」→ACCEPTABLE[元issue: Ledgerが
+示す電話の相手先は企業・店舗だが、記事はMuseユーザー本人とやり取りした
+ことにしている、カウンターパートの取り違え]。A5-1「Meta executives
+admitted that starting the test without a proper explanation was a
+mistake.」→QUALITY[元issue: Ledgerは特定の副社長の発言としているが、
+記事は"Meta executives"へ一般化])。
+
+**最小修正1回(V3)**: 「当事者関係(カウンターパート)の取り違えは
+BLOCKING、同一組織内の役職の一般化[発言内容・責任主体=組織自体は不変]
+は許容」という区別を追加した
+(`RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V3`)。
+
+**n=2公式測定(V3)**: A4-0は2/2 BLOCKINGへ復帰(解消)。**しかしA5-1が
+2/2 ACCEPTABLE(是正前のQUALITYよりさらに悪化)、かつ新規にMeta-1/
+Meta-2(`build_eval_groups()`既存仕様によりbaseline deviationが1件のみ
+のため両sub_idとも同一claim「Also, some calls needed user information
+to continue.」を指す重複)が2/2ずつQUALITYへfalse downgradeした**
+(元issue: Ledgerは「電話完遂にユーザー情報が必要になる可能性」という
+条件付き記述だが、記事は「実際に一部の電話で必要だった」と断定、
+certainty強化型)。Safety12(er009 9フラグ、Stage2直接判定)は9/9とも
+2/2 BLOCKINGを維持(false downgrade 0件)。Stage1(V4A)新配線4フラグ
+(changed_actor/changed_number/changed_scope/unsupported_new_claim)は
+8 run中7runでseverity_final=BLOCKING維持かつ想定flag名一致、1run
+(changed_actor)はBLOCKING自体は維持しつつ付与されたflag名が別名へ
+振れた(真の見逃しではないが、flag名ベースのfloor発火条件が将来変わり
+得ることを示す参考所見)。
+
+**STOP判定**: 委任文STOP条件「Safety対照群のいずれかが小修正1回後も
+BLOCKINGに戻らない」に該当するため、Stage2 body rubricへの重大誤解
+原則配線はここで停止し、Part2(Meta Hook Trial B)・Part3(Actor Trial
+C)は未実施のまま本委任を終える。A5-1・Meta-1/Meta-2の扱い(§7-0-iter5
+で一度A2A3-1/A4-2が同種の機械コピー由来ラベルとしてQUALITYへ是正された
+前例があり、同様の再ラベル候補である可能性と、rubric側のさらなる改善が
+必要な可能性の両方が考えられる)はFable/ユーザー確認事項として開示する
+(独断でSAFETY_CRITICAL_SUB_IDSやラベルを追加変更しない)。本委任費用
+¥7.0873(予備測定¥2.7022+V3公式測定¥4.3851、Guardrail¥9のうち)。
+**Status=`SAFETY_CONTROL_AUDIT_STOPPED_AFTER_ONE_MINOR_FIX_STILL_
+FAILING`**。詳細REPORT§26。
 
 ## 10. リスク
 

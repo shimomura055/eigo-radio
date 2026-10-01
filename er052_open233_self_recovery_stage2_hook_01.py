@@ -80,6 +80,25 @@ BLOCKINGにしないでください。"""
 
 HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE = HOOK_RUBRIC + "\n" + HOOK_MISCONCEPTION_PRINCIPLE_TEXT
 
+# ------------------------------------------------------------
+# 委任_28 Part0-3(OPEN-233-SELF-RECOVERY-TRIAL-01、design書§0/§4-18続き):
+# Hook許容基準のtie-break明文化。HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE
+# 本文は変更せず(既存iteration証跡の再現性維持)、新定数として追加する。
+# Meta要素Trial B(委任_28 Part2)で実測する。
+# ------------------------------------------------------------
+HOOK_TIEBREAK_TEXT = """
+【Hook許容基準のtie-break明文化(委任_28、§0に基づく)】
+確認済みのFactから自然に導ける、読者(受け手)側の体験描写・場面描写・
+attention grabber・conversational restatement(元の出来事を平易に
+言い換えるだけの表現)は許容してください(QUALITYまたはACCEPTABLE)。
+BLOCKINGとするのは、Ledgerに無い未確認の具体的な人物・具体的な行動・
+具体的な数字を新たに追加する場合、またはFactと逆方向の出来事を述べる
+場合のみとしてください。"""
+
+HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2 = (
+    HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE + "\n" + HOOK_TIEBREAK_TEXT
+)
+
 HOOK_BATCH_PROMPT_TEMPLATE = """これはStage 1が既にBLOCKING-candidateとして検出した、Title/Hookに
 位置する複数claimの一括再評価です。Stage 1の判定理由(explanation/severity/10種類のフラグ)は
 ここでは一切提示しません。以下のLedger全文・記事の日本語原文(参考)・Title/Hookの本文
@@ -132,10 +151,17 @@ HOOK_BATCH_JSON_SCHEMA = {
 
 
 def run_stage2_hook_batch(client, verified_ledger_text: str, source_article_text: str | None,
-                           title_hook_text: str, claims: list, model: str = s2p.MODEL) -> dict:
+                           title_hook_text: str, claims: list, model: str = s2p.MODEL,
+                           hook_rubric_text: str = HOOK_RUBRIC) -> dict:
     """claims: list of dict{claim_text, origin, related_fact_id, ...}。
     委任文§3 A-2どおり、local_context(段落±1)は渡さない(Title/Hookの
-    みへ入力を意図的に限定する)。"""
+    みへ入力を意図的に限定する)。
+
+    委任_28 Part0-1(design書§0/§4-18): `hook_rubric_text`(既定
+    `HOOK_RUBRIC`、本文不変)を追加した。既存呼び出し元は無変更のまま
+    動作する。値を渡した場合のみ(例:
+    `HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V2`)、そのrubric文字列を
+    prompt本文とdeveloper向け参照の両方へ使う(重大誤解原則の実配線)。"""
     blocks = []
     for i, c in enumerate(claims):
         blocks.append(
@@ -149,7 +175,7 @@ def run_stage2_hook_batch(client, verified_ledger_text: str, source_article_text
         source_article_text=source_article_text or "(なし)",
         title_hook_text=title_hook_text or "(なし)",
         claims_block=claims_block,
-        hook_rubric=HOOK_RUBRIC,
+        hook_rubric=hook_rubric_text,
         rewrite_hint_instruction=s2p.REWRITE_HINT_INSTRUCTION,
     )
     t0 = time.time()
