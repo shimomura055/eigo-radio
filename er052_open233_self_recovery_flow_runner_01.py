@@ -216,9 +216,18 @@ OUT_DIR_REP16 = "er052_output/open233_self_recovery_flow_runner_01_rep16"
 # 自己停止するよう¥6.3に設定する(委任全体Guardrail¥10を超えないための
 # サブGuardrail配分)。
 OUT_DIR_REP17 = "er052_output/open233_self_recovery_flow_runner_01_rep17"
-OUT_DIR = OUT_DIR_REP17
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ah_31_rep17.json"
-TOTAL_BUDGET_JPY = 6.3
+# 委任_32(iter8、2026-10-01、広いTrial iteration8=重大誤解原則・要素Trial
+# 修正の横断安定性確認、ユーザー承認済み): 既存iteration1〜7・rep7〜17の
+# 出力(OUT_DIR_ITER1〜7/OUT_DIR_REP7〜17)は変更しない。本委任は29
+# instance全量(うち9 instanceはn=2、20 instanceはn=1)を、既定構成
+# (Stage1 V4-A+重大誤解原則/Stage2 V5/Hook V4、ENABLE_MISCONCEPTION_
+# PRINCIPLE_DEFAULT=True)でStage1 fresh再実行する(reuse fixtureは原則
+# 配線前の出力のため使わない。Safety 12 fixtureのみ構造上の理由で
+# reuseのまま、詳細はREPORT§30参照)。出力は新規ディレクトリ(`_iter8`)へ書く。
+OUT_DIR_ITER8 = "er052_output/open233_self_recovery_flow_runner_01_iter8"
+OUT_DIR = OUT_DIR_ITER8
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ai_32_iter8.json"
+TOTAL_BUDGET_JPY = 50.0
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"

@@ -1,0 +1,209 @@
+{
+  "instance_id": "safety_er009_changed_time",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+            "issue": "研究の発表年がLedgerの2014年と異なっています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "Ledgerの発表年は2014年であり、記事の2019年は異なる具体的な時期です。changed_timeおよび矛盾する事実の主張としてchanged_factをtrueにしました。チップが増えたという因果的な内容と対象範囲はLedgerの記述に沿っています。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "「In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.」の「2019」をLedger記載の「2014」に置き換えてください。参照Fact: F-004。",
+          "floor_reason": "deterministic_floor:changed_time",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:8f4f1deb9cceada6",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 28.0,
+          "difficult_word_ratio": 0.25,
+          "word_count": 28
+        },
+        "stats_after": {
+          "avg_sentence_len": 28.0,
+          "difficult_word_ratio": 0.25,
+          "word_count": 28
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 28.0,
+          "difficult_word_ratio": 0.25,
+          "word_count": 28
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 28.0,
+          "difficult_word_ratio": 0.25,
+          "word_count": 28
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 28,
+        "hook_word_count_after": 28,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 28,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+      "en_text_after_rewrite": "In 2014, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim",
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_time_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1321,
+      "usage": {
+        "input_tokens": 6093,
+        "cached_input_tokens": 0,
+        "output_tokens": 465,
+        "reasoning_tokens": 346
+      },
+      "elapsed_seconds": 5.799,
+      "prompt_sha256": "df71a01cb3352a553d8445c49c66de9bdc2caa4c01f8bef114ba190af722724a"
+    },
+    {
+      "label": "safety_er009_changed_time_c1_claim:8f4f1deb9ccead_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0761,
+      "usage": {
+        "input_tokens": 4442,
+        "cached_input_tokens": 0,
+        "output_tokens": 82,
+        "reasoning_tokens": 42
+      },
+      "elapsed_seconds": 2.84,
+      "prompt_sha256": "5e4efe3e3dde9158b59b93df974d33f6667d67926bad69b41788cb94fb240309"
+    },
+    {
+      "label": "safety_er009_changed_time_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1167,
+      "usage": {
+        "input_tokens": 6363,
+        "cached_input_tokens": 0,
+        "output_tokens": 215,
+        "reasoning_tokens": 150
+      },
+      "elapsed_seconds": 3.229,
+      "prompt_sha256": "9c87b92ae403af813c8c0ac0543902be227cbc5aa425b5526b195bc6286889af",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3249,
+  "total_calls": 3,
+  "elapsed_seconds": 11.888
+}

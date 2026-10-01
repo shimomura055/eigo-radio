@@ -15786,3 +15786,91 @@ MISCONCEPTION_PRINCIPLE_V5`新設)、
 (新規)、`er052_output/open233_self_recovery_flow_runner_01_rep17/`
 (新規)、`user_test/open233_rewrite_compare_01/index.html`更新
 (`index_rep16.html`に旧版保存)、`OPEN_ITEMS.md`(OPEN-233行追記)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: 広いTrial iteration8(29 instance全量・38 instance-run)でB3/A2A3-0のSafety-critical誤降格とmeta_run03_standardの人間確認率悪化を新規検出(委任_32、2026-10-01)
+
+**区分**: Implementation Hardening(Trial測定のみ、Production/共通
+Prompt・schema・routingは無変更)。
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_32: 広いTrial iteration8
+=重大誤解原則・要素Trial修正の横断検証。ユーザー承認済み[2026-10-01]、
+見込み¥40。新テーマ生成なし。新しい改善案を探すTrialではなく「現在の
+設計が横断的に安定して機能するか」の確認)。
+
+**内容**: 29 instance全量(うち9 instanceはn=2、計38 instance-run)を、
+既定構成(Stage1 V4-A+重大誤解原則/Stage2 V5/Hook V4)でStage1 fresh
+再実行した(Safety12 fixtureのみ構造上の理由でStage1 reuseのまま、
+詳細design書§7-0-iter32)。これは、過去の委任(_28/_29)でSafety-
+critical 8claimを「Stage2のみ」の単体測定で8/8 BLOCKING維持を確認
+済みだったのに対し、**Stage1 fresh→Stage2→Rewrite→Recheckのfull
+flowでこれらのclaimを実行した初めての広域実測**である。
+
+**良好な点**: (a)不要Rewrite率11.11%(1/9)でiter7の21.43%から改善、
+(b)既知のハードケースhormuz_run03_standard(iter7は2/2 STAGE4)が
+今回2/2ともRewrite 0件で解消(ユーザー承認済みhormuz-HF009再ラベルの
+効果がfull flowで初めて確認できた)、(c)Hook rubricの実際の発火
+Evidenceを初めて観測、(d)全体平均コスト¥0.6975/instance-run・worst
+コスト¥5.1772(ともにiter7から改善)。
+
+**新規に判明した問題(2件)**: (1)**B3(HF-007、§7-4で正解BLOCKING
+確定済みの因果claim)がn=2の両方でStage2 body rubric(V5)により
+QUALITYへ誤降格**(安定した誤判定、`changed_causality`/
+`unsupported_new_claim`のみでfloor非該当のため)。(2)**A2A3-0(HF-003、
+未確認の支払主体追加claim)がn=2の1/2でQUALITYへ誤降格**(同一Stage1
+出力[reuse、決定論]に対しStage2 LLM判定のみが変動)。候補修正
+(`matched_notes_id`+`observation_consistent=False`を新floor条件とする
+案)を検討したが、この条件がhormuz-HF009(ユーザー承認済み再ラベル)・
+meta_run03_standard・safety_A5の正当なQUALITY/ACCEPTABLE claim群にも
+該当することを確認し、既存のユーザー承認済み決定を無効化するリスクが
+あるため**不採用**とした。§7 STOP条件(小修正1回後もSafety-critical
+誤通過が残る)に該当するとして、根本設計変更は本委任のスコープ外とし
+コード変更を行わなかった。
+
+**追加で判明した問題(1件)**: 実記事6種10 run中、`meta_run03_
+standard`がn=2の両方でSTAGE4(`stage4_reason`はsample間で
+`same_claim_fact_id_reblocked`/`target_not_locatable`と異なる)に
+到達し、実記事の人間確認率が20%(2/10、目標0)となった。iter7
+(Stage1 reuse)では同一記事のmeta群escalation率は0%だった。原因候補は
+Stage1 freshの検出網羅性向上(`changed_number`floor claimがcycle毎に
+6→11→9件と増加検出)と`escalate_to_paragraph`廃止の組み合わせにより、
+MAX_CYCLES(2)の範囲内で全箇所を解消しきれなかったこと。いずれも
+fail-closed(false PASSではない)だが、根本解決(MAX_CYCLES拡大等)は
+本委任のスコープ外とした。
+
+**既存false PASS自動検知の限界(開示)**: `aggregate_measurements`内の
+`silent_pass_candidate`は常に`0`を返す非稼働プレースホルダであり、
+実際には何も検証していない。上記2件の誤降格は、SAFETY_CRITICAL_
+SUB_IDS(8claim名指しリスト)との手動照合で初めて検出できたものであり、
+自動測定だけに依拠すると「false PASS 0件」と誤報告される状態だった。
+
+**採用理由**: 新しい改善案を導入するTrialではなく、既存の既定構成
+(重大誤解原則配線版)が広域・full flowで安定して機能するかを確認する
+ための実測。結果はコスト・不要Rewrite率の改善と、Safety-critical
+誤降格・実記事人間確認率悪化という相反する2方向の発見を同時にもたらし
+た。**Production(`APPROVED_FOR_PRODUCTION`)は未承認のまま**。
+
+**比較した選択肢**: 候補floor修正の採用 vs 不採用。既存データで
+hormuz-HF009等の正当ケースを巻き込むことを確認したため不採用を選択
+(安全側判断)。
+
+**却下理由**: floor拡張案は既存のユーザー承認済み決定(hormuz-HF009
+再ラベル)と直接衝突するデータが実測で得られたため。
+
+**Status**: `ITER8_BROAD_STABILITY_TRIAL_COMPLETE_COST_AND_
+UNNECESSARY_REWRITE_IMPROVED_BUT_B3_A2A3-0_SAFETY_CRITICAL_
+MISDOWNGRADE_AND_META_STANDARD_HUMAN_REVIEW_REGRESSION_FOUND`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§30、
+`docs/pm/design_open233_self_recovery_flow_01.md`§7-0-iter32/§9-1㉒、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-
+TRIAL-01_32.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_flow_runner_01.py`
+(`OUT_DIR_ITER8`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`更新のみ、
+既存ロジック無変更)、新規`er052_open233_self_recovery_flow_runner_
+01_iter8_01.py`(既存`run_instance`/`aggregate_measurements`/
+`combine_n2_measures`/`compute_cost_breakdown_5way`を再利用、新規
+ロジック追加なし)、`er052_output/open233_self_recovery_flow_runner_
+01_iter8/`(新規)、`user_test/open233_rewrite_compare_01/index.html`
+更新(`index_rep17.html`に旧版保存)、`OPEN_ITEMS.md`(OPEN-233行
+追記)。

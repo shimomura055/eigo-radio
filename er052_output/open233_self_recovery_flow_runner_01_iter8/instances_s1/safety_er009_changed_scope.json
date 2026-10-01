@@ -1,0 +1,466 @@
+{
+  "instance_id": "safety_er009_changed_scope",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "issue": "タクシー研究の結果が全米のレストランでも直接確認され、レストラン画面の高い推奨率が客により多くチップを残させると因果的に断定している。Ledgerはレストランでのそのような因果確認を示していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-004の因果結果はニューヨーク市タクシーのクレジットカード利用者に関するもの。レストラン全国への拡張、レストラン客への主体の置き換え、およびレストラン画面の因果効果の断定はLedgerにない。F-011〜F-017の調査結果も自己申告等の記述的結果であり、直接の因果確認を裏付けない。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money」を、確認されているニューヨーク市タクシーでの因果効果（F-004）に範囲を狭めてください。レストラン全国調査（F-015）は記述的比較であり、この因果効果を直接確認したとは書けません。",
+          "floor_reason": "deterministic_floor:changed_actor",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:d3a7f9cf63dc204a",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 36.0,
+          "difficult_word_ratio": 0.1944,
+          "word_count": 36
+        },
+        "stats_after": {
+          "avg_sentence_len": 38.0,
+          "difficult_word_ratio": 0.1053,
+          "word_count": 38
+        },
+        "sentence_len_increase": 2.0,
+        "difficulty_ratio_increase": -0.0891,
+        "fragment_stats_before": {
+          "avg_sentence_len": 25.0,
+          "difficult_word_ratio": 0.28,
+          "word_count": 25
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 27.0,
+          "difficult_word_ratio": 0.1481,
+          "word_count": 27
+        },
+        "fragment_sentence_len_increase": 2.0,
+        "fragment_difficulty_ratio_increase": -0.1319,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 36,
+        "hook_word_count_after": 38,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 38,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+      "en_text_after_rewrite": "The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money., just as they did in the New York City taxi data.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim",
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money., just as they did in the New York City taxi data.",
+          "origin": null,
+          "related_fact_id": "F-004",
+          "dev": {
+            "claim_in_article": "The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money., just as they did in the New York City taxi data.",
+            "issue": "The causal finding about New York City taxi users is supported by F-004, but the claim that it has now been directly confirmed adds an unreported, apparently later confirmation.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "F-004 supports the reported causal finding in New York City taxis, but the Ledger does not report a new or present-day direct confirmation. “Directly confirmed” strengthens the claim, and “now” adds a temporal claim.",
+            "related_fact_id": "F-004",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money., just as they did in the New York City taxi data.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money」から「have now been directly confirmed」の新たな確認を示す表現を削り、元の研究で高い推奨チップ率がより多いチップにつながったという範囲に狭めてください（F-004）。",
+          "floor_reason": "deterministic_floor:changed_time",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:F-004",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 38.0,
+          "difficult_word_ratio": 0.1053,
+          "word_count": 38
+        },
+        "stats_after": {
+          "avg_sentence_len": 24.0,
+          "difficult_word_ratio": 0.0833,
+          "word_count": 24
+        },
+        "sentence_len_increase": -14.0,
+        "difficulty_ratio_increase": -0.022,
+        "fragment_stats_before": {
+          "avg_sentence_len": 27.0,
+          "difficult_word_ratio": 0.1481,
+          "word_count": 27
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 13.0,
+          "difficult_word_ratio": 0.1538,
+          "word_count": 13
+        },
+        "fragment_sentence_len_increase": -14.0,
+        "fragment_difficulty_ratio_increase": 0.0057,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 38,
+        "hook_word_count_after": 24,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 24,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money., just as they did in the New York City taxi data.",
+      "en_text_after_rewrite": "Higher suggested tip rates on taxi screens cause customers to leave more money.., just as they did in the New York City taxi data.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim",
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "claim_text": "Higher suggested tip rates on taxi screens cause customers to leave more money.., just as they did in the New York City taxi data.",
+          "origin": null,
+          "related_fact_id": "F-004",
+          "dev": {
+            "claim_in_article": "Higher suggested tip rates on taxi screens cause customers to leave more money.., just as they did in the New York City taxi data.",
+            "issue": "The causal effect is supported for New York City taxi credit-card users, but the sentence states it broadly for customers using taxi screens, extending beyond the population covered by the Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "F-004 supports the causal finding in the New York City taxi data. The broader phrasing about customers on taxi screens generalizes that finding beyond the Ledger's stated scope; the causal direction itself is supported.",
+            "related_fact_id": "F-004",
+            "qualifier_present": true,
+            "qualifier_text": "just as they did in the New York City taxi data.",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Higher suggested tip rates on taxi screens cause customers to leave more money.., just as they did in the New York City taxi data.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_scope_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1626,
+      "usage": {
+        "input_tokens": 6111,
+        "cached_input_tokens": 0,
+        "output_tokens": 851,
+        "reasoning_tokens": 703
+      },
+      "elapsed_seconds": 10.617,
+      "prompt_sha256": "476e160275708a414b97ea715998dce9533dc1405baab69a7f6c20487187c6d0"
+    },
+    {
+      "label": "safety_er009_changed_scope_c1_claim:d3a7f9cf63dc20_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1652,
+      "usage": {
+        "input_tokens": 4526,
+        "cached_input_tokens": 0,
+        "output_tokens": 1201,
+        "reasoning_tokens": 1165
+      },
+      "elapsed_seconds": 14.682,
+      "prompt_sha256": "cb44df1916dc2cc21e6c4b624d8f44fdb3337942cc35cd89d8a7c054cea5e673"
+    },
+    {
+      "label": "safety_er009_changed_scope_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2537,
+      "usage": {
+        "input_tokens": 6465,
+        "cached_input_tokens": 0,
+        "output_tokens": 1941,
+        "reasoning_tokens": 1539
+      },
+      "elapsed_seconds": 21.536,
+      "prompt_sha256": "5e47d4815b6cbe90b6b43876f61c71e18c7a57b58cd9c352315a2a3b5d7277f3",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_er009_changed_scope_c2_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1749,
+      "usage": {
+        "input_tokens": 6117,
+        "cached_input_tokens": 0,
+        "output_tokens": 1006,
+        "reasoning_tokens": 866
+      },
+      "elapsed_seconds": 10.669,
+      "prompt_sha256": "2d408da9be169918eb9defc170cc3f441bc47f781da1498a8bf79e0b82906486"
+    },
+    {
+      "label": "safety_er009_changed_scope_c2_fact:F-004_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1273,
+      "usage": {
+        "input_tokens": 4482,
+        "cached_input_tokens": 0,
+        "output_tokens": 727,
+        "reasoning_tokens": 707
+      },
+      "elapsed_seconds": 10.17,
+      "prompt_sha256": "ceb8a54cdb592cc301b55297cdbe08de8b0e095d5d1e3b78af9999b8f897b7b8"
+    },
+    {
+      "label": "safety_er009_changed_scope_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2572,
+      "usage": {
+        "input_tokens": 6357,
+        "cached_input_tokens": 0,
+        "output_tokens": 2007,
+        "reasoning_tokens": 1622
+      },
+      "elapsed_seconds": 21.433,
+      "prompt_sha256": "0748d8f2e9c6d132e5797aef9080a671e56357a9ccc1444edd573aefdc83f6f9",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_er009_changed_scope_c3_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1189,
+      "usage": {
+        "input_tokens": 6072,
+        "cached_input_tokens": 0,
+        "output_tokens": 302,
+        "reasoning_tokens": 253
+      },
+      "elapsed_seconds": 4.98,
+      "prompt_sha256": "93419311ec0aea89b0d85c14af5e2ed73feca14d0675d579fd1466e4970b4c81"
+    }
+  ],
+  "total_cost_jpy": 1.2598,
+  "total_calls": 7,
+  "elapsed_seconds": 94.124
+}

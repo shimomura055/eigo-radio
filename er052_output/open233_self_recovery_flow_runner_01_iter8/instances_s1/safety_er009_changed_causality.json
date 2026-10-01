@@ -1,0 +1,301 @@
+{
+  "instance_id": "safety_er009_changed_causality",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+            "issue": "Ledgerが記述的な歴史的傾向としているチップ率の上昇に、デジタル画面の導入が直接の原因だったという因果関係を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-006の数値・時期・対象範囲は保たれているが、因果関係を示さない記述に「directly caused」という新たな因果主張を加え、断定している。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “was directly caused by the introduction of digital tip screens” — この因果関係の断定を削り、Ledgerが確認する歴史的なチップ慣行の推移のみを述べる形に範囲を狭めてください（F-006）。",
+          "floor_reason": null,
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:89721925ca5a0c1f",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 30.0,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 30
+        },
+        "stats_after": {
+          "avg_sentence_len": 35.0,
+          "difficult_word_ratio": 0.0286,
+          "word_count": 35
+        },
+        "sentence_len_increase": 5.0,
+        "difficulty_ratio_increase": -0.1047,
+        "fragment_stats_before": {
+          "avg_sentence_len": 10.0,
+          "difficult_word_ratio": 0.3,
+          "word_count": 10
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 15.0,
+          "difficult_word_ratio": 0.0,
+          "word_count": 15
+        },
+        "fragment_sentence_len_increase": 5.0,
+        "fragment_difficulty_ratio_increase": -0.3,
+        "vocab_difficulty_increased_wholetext": true,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_wholetext(sentence_len+5.0,difficult_ratio+-0.1047); vocab_difficulty_increased_fragment(sentence_len+5.0,difficult_ratio+-0.3)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": true,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 30,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 35,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": true,
+        "reasons": "numbers_added_to_title"
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 30.0,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 30
+        },
+        "stats_after": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.0526,
+          "word_count": 38
+        },
+        "sentence_len_increase": -11.0,
+        "difficulty_ratio_increase": -0.0807,
+        "fragment_stats_before": {
+          "avg_sentence_len": 10.0,
+          "difficult_word_ratio": 0.3,
+          "word_count": 10
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 9.0,
+          "difficult_word_ratio": 0.0556,
+          "word_count": 18
+        },
+        "fragment_sentence_len_increase": -1.0,
+        "fragment_difficulty_ratio_increase": -0.2444,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": true,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 30,
+        "hook_word_count_after": 38,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 38,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": true,
+        "reasons": "numbers_added_to_title"
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 2,
+        "sentence_drop_rate": -1.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+      "en_text_after_rewrite": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s In U.S. restaurants, tipping rose from about 10–15% in the early 1970s to about 20% by the late 1990s..",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_causality_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.16,
+      "usage": {
+        "input_tokens": 6120,
+        "cached_input_tokens": 0,
+        "output_tokens": 816,
+        "reasoning_tokens": 700
+      },
+      "elapsed_seconds": 10.031,
+      "prompt_sha256": "1b37ff8dbfeb2ebd8c271a95abdbf92eb9628c8ebc81537a29dec905b1a58a5a"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.136,
+      "usage": {
+        "input_tokens": 4451,
+        "cached_input_tokens": 0,
+        "output_tokens": 843,
+        "reasoning_tokens": 837
+      },
+      "elapsed_seconds": 11.408,
+      "prompt_sha256": "c72441afcd9a0ffc3e847d7246ff134cc021e9d0734ab15b26d27fac23da65a1"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0813,
+      "usage": {
+        "input_tokens": 4312,
+        "cached_input_tokens": 0,
+        "output_tokens": 174,
+        "reasoning_tokens": 138
+      },
+      "elapsed_seconds": 2.908,
+      "prompt_sha256": "5e74e2ed59f245b4f04c05a0052ceb835fde97eee3493e43a3898e0fa0a98a21"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1396,
+      "usage": {
+        "input_tokens": 4530,
+        "cached_input_tokens": 0,
+        "output_tokens": 874,
+        "reasoning_tokens": 868
+      },
+      "elapsed_seconds": 11.257,
+      "prompt_sha256": "6890e5e881521e6ad4615ca55a85eb2ad3b85c2be465c751f73de41e1338b5a2"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_regen_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.097,
+      "usage": {
+        "input_tokens": 4391,
+        "cached_input_tokens": 0,
+        "output_tokens": 358,
+        "reasoning_tokens": 317
+      },
+      "elapsed_seconds": 5.331,
+      "prompt_sha256": "5800d43b4e733c0016a3d21e9ff58b05e4607db761446d449ea77dae0b3889d4"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1224,
+      "usage": {
+        "input_tokens": 6414,
+        "cached_input_tokens": 0,
+        "output_tokens": 278,
+        "reasoning_tokens": 189
+      },
+      "elapsed_seconds": 5.844,
+      "prompt_sha256": "4b148009af14d4391385f5f1a9c0b8e884f2dad294a62936ab66dab32f4aa951",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.7363,
+  "total_calls": 6,
+  "elapsed_seconds": 46.801
+}

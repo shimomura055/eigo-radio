@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>OPEN-233 Self-Recovery Flow rep17 - Rewrite 修正前後比較</title>
+<title>OPEN-233 Self-Recovery Flow iteration8 - Rewrite 修正前後比較</title>
 <style>
 body { font-family: -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
        max-width: 1100px; margin: 0 auto; padding: 24px; line-height: 1.6; color: #222; }
@@ -30,8 +30,8 @@ footer { margin-top: 3em; color: #888; font-size: 0.85em; }
 </style>
 </head>
 <body>
-<h1>OPEN-233 Self-Recovery Flow rep17 - Rewrite 修正前後比較</h1>
-<div class="iter-link"><a href="index_rep16.html">rep16版のページはこちら(旧版、保存のまま残しています)</a>
+<h1>OPEN-233 Self-Recovery Flow iteration8 - Rewrite 修正前後比較</h1>
+<div class="iter-link"><a href="index_rep17.html">rep17版のページはこちら(旧版、保存のまま残しています)</a>
 / <a href="index_iter7.html">iteration7版のページはこちら(旧版)</a></div>
 <div class="top-note">
 <p><strong>これは何か</strong>: Eigo Radioの記事生成パイプラインで、AIチェッカー
@@ -39,18 +39,17 @@ footer { margin-top: 3em; color: #888; font-size: 0.85em; }
 発明していると判定した文章を、AIが自動的に書き直した(Rewrite)実例です。
 書き直し前(Before)と書き直し後(After)を並べて表示しています。</p>
 <p>このページは、OPEN-233-SELF-RECOVERY-TRIAL-01(Self-Recovery Flow Trial)
-委任_31(rep16の残3点の是正+rep17再確認)の実測結果からの抜粋です。
-Production(本番)記事の生成経路には未接続のTrial実装であり、この結果を見て
-ユーザーが「この自動修正の品質は妥当か」を確認するためのページです。rep16からの
-変更点: (1)主体置換ガードをproblem_kindに関係なく常に評価するよう是正、(2)Hook
-セクションの範囲を「冒頭段落全体(Hook導入文+締め文)」へ拡張、(3)body rubricへ
-「受け手側の驚き・反応は新規Factではない」の防御層(V5)を追加。最後に新設した
-セクションで、Hookセクション境界拡張の効果を実データで確認した結果を示す
-(「Rewriteなし」例)。</p>
+委任_32(広いTrial iteration8、29 instance全量・9 instanceはn=2)の実測結果
+からの抜粋です。Production(本番)記事の生成経路には未接続のTrial実装であり、
+この結果を見てユーザーが「この自動修正の品質は妥当か」を確認するためのページ
+です。<strong>重要な開示</strong>: 本委任では、Safety-critical claim(B3/
+A2A3-0)がStage2により誤ってQUALITYへ降格する事例を新規に検出した(末尾の
+専用セクション参照)。上の3件は「正しく機能した実例」、末尾は「現在未解決の
+問題点」であり、あわせて見ることで現状を正確に把握できるようにしている。</p>
 </div>
-<h2>hormuz_run03_standard (instances_s1) &mdash; Hormuz実記事(Standard、重大誤解原則V4によるRewriteなし実例)</h2>
-<div class="meta">レベル: Standard / 最終状態: RESOLVED_STAGE2_DOWNGRADE / 総コスト: ¥0.8001 / 総call数: 3</div>
-<div class="note">重大誤解原則(Stage1 V4A・Stage2 body V4)をrunner既定経路へ実配線した後の再実行(委任_30)。「Brent futures→oil prices」「Brent crude futures→crude prices」のような、同じ対象をより一般的な言い方へ置き換えるだけの表現は許容候補として明記されており(design書§0-2)、本instanceではStage2自体が全claimを非BLOCKING(QUALITY/ACCEPTABLE)と判定し、Rewrite自体が一度も発生しなかった(final_state=RESOLVED_STAGE2_DOWNGRADE、ladder使用0件)。sample1・sample2とも同一結果で再現性を確認した。</div>
+<h2>hormuz_run03_standard (instances_s1) &mdash; Hormuz実記事(Standard、既知のハードケースが今回解消したRewriteなし実例)</h2>
+<div class="meta">レベル: Standard / 最終状態: RESOLVED_STAGE2_DOWNGRADE / 総コスト: ¥0.7785 / 総call数: 3</div>
+<div class="note">広いTrial iteration8(委任_32)でStage1 freshにより再実行。過去(iteration7、委任_22)はこのinstanceがn=2の両方でSTAGE4(人間確認)に到達していたが、今回はn=2の両方でStage2自体が全claimを非BLOCKING(QUALITY/ACCEPTABLE)と判定し、Rewrite自体が一度も発生しなかった(final_state=RESOLVED_STAGE2_DOWNGRADE、ladder使用0件)。「Brent futures→oil prices」型の一般化を許容する上位原則(design書§0-2)の効果が、full flow上で初めて確認できた実例。</div>
 <div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (0件)と修正方針</div>
 <div class="claim">(このcycleでBLOCKING claimは検出されませんでした。Rewriteは発生していません。)</div>
 </div>
@@ -65,33 +64,48 @@ Production(本番)記事の生成経路には未接続のTrial実装であり、
 <label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
 <label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
 </div>
-<h2>neg1_meta_b3prod_a2 (instances_s1) &mdash; negative候補7(Meta Muse記事、最小置換実例)</h2>
-<div class="meta">レベル: Standard / 最終状態: RESOLVED_REWRITE / 総コスト: ¥1.3456 / 総call数: 6</div>
-<div class="note">Hook claim(“Ring, ring...”)・users claim(“The test began without clearly telling users...”)はいずれも非BLOCKING(委任_30 Part1のHook V4・委任_29の重大誤解原則配線により、境界群・社内テスト誤読の双方が解消済み)のままRewrite対象にならなかった。一方、別の1 body claim(“Meta had run a test that caused exactly this surprise.”)がBLOCKING判定され、①単語・接続詞水準のみ(ladder_level_used=1_word_connective)の最小置換(「that caused exactly this surprise」を削除)で解消した。段落・全文Rewriteは発生していない。</div>
+<h2>neg3_hormuz_prodrunner_b1b (instances_s2) &mdash; negative候補7(Hormuz関連記事、最小修正実例)</h2>
+<div class="meta">レベル: Standard / 最終状態: RESOLVED_REWRITE / 総コスト: ¥0.9553 / 総call数: 6</div>
+<div class="note">`changed_time`floor該当claim(継続していた出来事が一度消えて戻ったかのような時間表現の変化)が3件検出されたが、いずれも①単語・接続詞水準のみ(ladder_level_used=1_word_connective)の最小編集で解消した。段落・全文Rewriteは発生していない(sample1も同様の結果)。</div>
+<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (3件)と修正方針</div>
+<div class="claim"><div>cycle1 / basis=ledger_conditions / rewrite_kind=narrow_scope / section_type=in_one_line / floor=deterministic_floor:changed_time</div><div>対象claim: 「The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.」</div><div>修正方針(rewrite_hint): “the events driving oil prices—and the prices themselves—quickly returned.” は、続いていた出来事まで一度消えて戻ったかのように読めます。出来事が戻ったという部分を削り、価格が一時的に上げ幅を縮めた後、発表前に近い高い水準へ戻ったという範囲に狭めてください（HF-009）。</div></div>
+<div class="claim"><div>cycle1 / basis=none / rewrite_kind=replace_with_ledger_value / section_type=body / floor=deterministic_floor:changed_time</div><div>対象claim: 「During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.」</div><div>修正方針(rewrite_hint): </div></div>
+<div class="claim"><div>cycle1 / basis=ledger_conditions / rewrite_kind=replace_with_ledger_value / section_type=body / floor=deterministic_floor:changed_time</div><div>対象claim: 「The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.」</div><div>修正方針(rewrite_hint): </div></div>
+</div>
+<div class="note"><strong>最小変更ラダーの停止水準</strong>: cycle1:1_word_connective(single_text_local(E-2/delete-generic)) / cycle1:1_word_connective(single_text_local(E-2/delete-generic)) / cycle1:1_word_connective(single_text_local(E-2/delete-generic))</div>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>17</td><td>17</td></tr><tr><td>段落数</td><td>11</td><td>11</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>3</td><td>3</td></tr></table>
+<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
+<tr class="diff-equal"><td># The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return</td><td># The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return</td></tr>
+<tr class="diff-equal"><td>Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.</td><td>Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.</td></tr>
+<tr class="diff-equal"><td>### The proposed fee enters, then exits</td><td>### The proposed fee enters, then exits</td></tr>
+<tr class="diff-equal"><td>On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.</td><td>On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.</td></tr>
+<tr class="diff-equal"><td>### The price refuses to follow</td><td>### The price refuses to follow</td></tr>
+<tr class="diff-equal"><td>Trump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.</td><td>Trump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.</td></tr>
+<tr class="diff-equal"><td>That return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.</td><td>That return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.</td></tr>
+<tr class="diff-replace"><td>During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.<br><br>The lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.</td><td>At the same time, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.<br><br>The lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events do not simply disappear backstage because of one announcement.</td></tr>
+<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
+<tr class="diff-replace"><td>The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.</td><td>The fee plan left the stage, but the prices themselves quickly returned.</td></tr>
+</tbody></table>
+<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
+<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
+<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
+<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
+<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
+<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
+<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
+<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
+<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
+</div>
+<h2>safety_er009_changed_actor (instances_s1) &mdash; Safety群(er009フラグ、正当BLOCK実例)</h2>
+<div class="meta">レベル: Safety fixture / 最終状態: RESOLVED_REWRITE / 総コスト: ¥0.3599 / 総call数: 3</div>
+<div class="note">記事が「A team at Harvard Business School(具体的な研究機関名)」という、Ledgerにない具体的な主体を追加していたclaimが、deterministic safety floor(`changed_actor`)により無条件にBLOCKINGへ確定し(LLM判定を待たず)、①単語・接続詞水準のみ(ladder_level_used=1_word_connective)の最小編集(具体的な研究機関名の削除)で解消した。本委任で検出したB3/A2A3-0の誤降格(REPORT§30-3C)とは異なり、`changed_actor`はFLOOR_FLAGSに含まれるためdeterministicfloorが正しく機能した例として対比のために掲載する。</div>
 <div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (1件)と修正方針</div>
-<div class="claim"><div>cycle1 / basis=unsupported_relationship / rewrite_kind=narrow_scope / section_type=body / floor_cited=なし</div><div>対象claim: 「Meta had run a test that caused exactly this surprise.」</div><div>修正方針(rewrite_hint): 「Meta had run a test that caused exactly this surprise.」は、利用者が実際にこの驚きを経験したと断定しない形にし、MetaがMuse経由の一部の電話を訓練済みの契約スタッフに担当させるテストをした、と範囲を限定してください。参照: MUSE-HC-006</div></div>
+<div class="claim"><div>cycle1 / basis=unsupported_relationship / rewrite_kind=narrow_scope / section_type=title / floor=deterministic_floor:changed_actor</div><div>対象claim: 「A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.」</div><div>修正方針(rewrite_hint): 「A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis」を修正してください。Ledgerは研究者の所属先を確認していないため、Harvard Business Schoolへの帰属を削除し、「A study analyzed more than 13 million credit card payments in New York City taxis」のように範囲を狭めてください。取引件数はF-002、結果はF-004を参照。</div></div>
 </div>
 <div class="note"><strong>最小変更ラダーの停止水準</strong>: cycle1:1_word_connective(single_text_local(E-2/delete-generic))</div>
-<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>35</td><td>35</td></tr><tr><td>段落数</td><td>18</td><td>18</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>6</td><td>6</td></tr></table>
+<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>1</td><td>1</td></tr><tr><td>段落数</td><td>1</td><td>1</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>0</td><td>0</td></tr></table>
 <table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
-<tr class="diff-equal"><td># We Thought It Was AI—But There Was a Person Inside Meta’s Muse</td><td># We Thought It Was AI—But There Was a Person Inside Meta’s Muse</td></tr>
-<tr class="diff-equal"><td>Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.</td><td>Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.</td></tr>
-<tr class="diff-replace"><td>Meta had run a test that caused exactly this surprise.</td><td>Meta had run a test.</td></tr>
-<tr class="diff-equal"><td>The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.</td><td>The test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.</td></tr>
-<tr class="diff-equal"><td>It was like someone took off an AI costume. Then a person stepped out.</td><td>It was like someone took off an AI costume. Then a person stepped out.</td></tr>
-<tr class="diff-equal"><td>Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.</td><td>Having a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.</td></tr>
-<tr class="diff-equal"><td>But this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.</td><td>But this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.</td></tr>
-<tr class="diff-equal"><td>It is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.</td><td>It is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.</td></tr>
-<tr class="diff-equal"><td>### The hidden person behind the AI sign</td><td>### The hidden person behind the AI sign</td></tr>
-<tr class="diff-equal"><td>Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.</td><td>Here was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.</td></tr>
-<tr class="diff-equal"><td>AI had not learned to speak like a human. A human stood behind the sign that said AI.</td><td>AI had not learned to speak like a human. A human stood behind the sign that said AI.</td></tr>
-<tr class="diff-equal"><td>It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?</td><td>It seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?</td></tr>
-<tr class="diff-equal"><td>As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.</td><td>As AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.</td></tr>
-<tr class="diff-equal"><td>### Meta admits a mistake</td><td>### Meta admits a mistake</td></tr>
-<tr class="diff-equal"><td>A Meta executive admitted the mistake. The test had begun without clearly telling users.</td><td>A Meta executive admitted the mistake. The test had begun without clearly telling users.</td></tr>
-<tr class="diff-equal"><td>For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.</td><td>For now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.</td></tr>
-<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
-<tr class="diff-equal"><td>Before AI speaks for us, we need to know whether the voice belongs to AI or a person.</td><td>Before AI speaks for us, we need to know whether the voice belongs to AI or a person.</td></tr>
+<tr class="diff-replace"><td>A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.</td><td>A team studied more than 13 million credit card payments in New York City taxis., and found that higher suggested tip rates led passengers to leave more money.</td></tr>
 </tbody></table>
 <div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
 <label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
@@ -103,67 +117,17 @@ Production(本番)記事の生成経路には未接続のTrial実装であり、
 <label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
 <label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
 </div>
-<h2>bgroup_B3 (instances_s1) &mdash; B群(Safety-critical、因果の接続詞修正実例)</h2>
-<div class="meta">レベル: B3 fixture / 最終状態: RESOLVED_REWRITE / 総コスト: ¥0.8472 / 総call数: 6</div>
-<div class="note">Safety-critical claim(因果の“so”、Ledgerでは単なる時期の一致であり因果関係は確認されていない)が、重大誤解原則V4配線後も引き続きBLOCKINGとして正しく検出され(誤降格なし、final_state=RESOLVED_REWRITE)、①単語・接続詞水準のみ(ladder_level_used=1_word_connective)で&quot;so&quot;→&quot;while&quot;への1語修正により解消した。段落・全文Rewriteは発生していない。sample1・sample2とも同一結果。</div>
-<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (1件)と修正方針</div>
-<div class="claim"><div>cycle1 / basis=unsupported_relationship / rewrite_kind=narrow_scope / section_type=in_one_line / floor_cited=なし</div><div>対象claim: 「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.」</div><div>修正方針(rewrite_hint): 「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正してください。「so」が懸念を計画撤回の原因として結び付けているため、その因果関係を削除し、懸念の継続と計画の置換を別々の事実として記述してください。HF-007では、トランプ氏は中東指導者との「非常に生産的な協議」に基づく決定だと説明しています。参照: HF-007。</div></div>
-</div>
-<div class="note"><strong>最小変更ラダーの停止水準</strong>: cycle1:1_word_connective(paired_ja_en(J-1))</div>
-<table class="metrics-table"><tr><th></th><th>Before</th><th>After</th></tr><tr><td>文数</td><td>23</td><td>23</td></tr><tr><td>段落数</td><td>12</td><td>12</td></tr><tr><td>弱め表現(may/might/possibly等)数</td><td>0</td><td>0</td></tr></table>
-<table class="diff-table"><thead><tr><th>Before(Rewrite前)</th><th>After(Rewrite後)</th></tr></thead><tbody>
-<tr class="diff-equal"><td># 20% Withdrawn—but the Oil Chart Was Not Finished Yet</td><td># 20% Withdrawn—but the Oil Chart Was Not Finished Yet</td></tr>
-<tr class="diff-equal"><td>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.</td><td>This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.</td></tr>
-<tr class="diff-equal"><td>The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.</td><td>The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.</td></tr>
-<tr class="diff-equal"><td>But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.</td><td>But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.</td></tr>
-<tr class="diff-equal"><td>The number stayed at center stage for about a day. Then the story took a sharp turn.</td><td>The number stayed at center stage for about a day. Then the story took a sharp turn.</td></tr>
-<tr class="diff-equal"><td>### The 20% plan changes overnight</td><td>### The 20% plan changes overnight</td></tr>
-<tr class="diff-equal"><td>The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.</td><td>The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.</td></tr>
-<tr class="diff-equal"><td>The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</td><td>The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.</td></tr>
-<tr class="diff-equal"><td>### The chart refuses to stay down</td><td>### The chart refuses to stay down</td></tr>
-<tr class="diff-equal"><td>On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.</td><td>On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.</td></tr>
-<tr class="diff-equal"><td>## In one line</td><td>## In one line</td></tr>
-<tr class="diff-replace"><td>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td><td>Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.</td></tr>
-</tbody></table>
-<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
-<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
-<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
-<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
-<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
-<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
-<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
-<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
-<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
-</div>
-<h2>neg1_meta_b3prod_a2 (instances_s1) &mdash; negative候補7(Meta Muse記事、rep17再実行、Rewrite 0件)</h2>
-<div class="meta">レベル: Standard / 最終状態: RESOLVED_STAGE2_DOWNGRADE / 総コスト: ¥0.6628 / 総call数: 2</div>
-<div class="note">委任_31の3点の是正(actorガード常時評価・Hook境界拡張・body rubric V5)反映後のStage1 fresh再実行。今回はStage1が別のbody claim(“A human can handle situations that AI alone finds difficult.”、related_fact_id=MUSE-HC-008)を検出し、body rubric(V5)でQUALITYへdowngradeした(Rewrite 0件、final_state=RESOLVED_STAGE2_DOWNGRADE、sample1・sample2とも同一結果)。Hook導入文・Hook締め文・usersクレームは今回Stage1が検出しなかったため、この特定の実行はHook境界拡張の効果を直接は再現していない(下のセクションで実データによる直接確認を別途示す)。</div>
-<div class="claims-box"><div class="label">BLOCKINGと判定されたclaim (0件)と修正方針</div>
-<div class="claim">(このcycleでBLOCKING claimは検出されませんでした。Rewriteは発生していません。)</div>
-</div>
-<p>(この instance には保存済みのRewrite前後全文が無い、または前後で変化がなかったため、差分表示を省略します。Rewrite自体が発生しなかった[Rewriteなし]ことを示す実例です。)</p>
-<div class="checklist"><div class="label">観点チェックリスト(確認用)</div>
-<label><input type="checkbox" disabled> 読みやすさ(Before比でAfterが読みにくくなっていないか)</label>
-<label><input type="checkbox" disabled> 面白さ(ストーリーの面白さが損なわれていないか)</label>
-<label><input type="checkbox" disabled> ストーリー性(前後の文脈・流れが不自然に途切れていないか)</label>
-<label><input type="checkbox" disabled> Title/Hook/In one lineの役割維持(引きつける/演出/短い締めが保たれているか)</label>
-<label><input type="checkbox" disabled> 不自然な弱め表現(may/might/possibly等が不自然に増えていないか)</label>
-<label><input type="checkbox" disabled> Rewriteによる品質劣化(文が唐突に短く/曖昧になっていないか、重複段落・孤立逆接語がないか)</label>
-<label><input type="checkbox" disabled> Fact上の問題解消(BLOCKINGと判定された問題が実際に解消されているか)</label>
-<label><input type="checkbox" disabled> 最小変更か(単語・接続詞・1文で済む話を段落・全文まで書き換えていないか)</label>
-</div>
-<h2>neg1_meta_b3prod_a2 &mdash; Hookセクション境界拡張の確認(委任_31 Part1(b)、実データ・¥0)</h2>
-<div class="note">rep17のStage1(fresh、非決定性)は今回たまたまHook導入文・Hook締め文・usersクレームのいずれもBLOCKING-candidateとして検出しなかったため(下のセクションのrep17実行結果は別のclaimの結果)、Hook境界拡張の効果はfull flow上では直接再現しなかった。そこで、実fixtureのarticle_text(捏造なし)に対し<code>detect_claim_section_type</code>/<code>_hook_paragraph_block</code>を直接呼ぶ¥0の確認を別途行った。その結果、Hook導入文・Hook締め文の双方がsection_type=&quot;hook&quot;(Hook専用rubric、演出を許容)へ分類され、usersクレームはsection_type=&quot;body&quot;のまま(変化なし)であることを確認した。以前(委任_30以前)は、Hook締め文は段落①(Hook導入文)のみをHook候補とする旧実装により&quot;body&quot;に誤分類され、本文の厳格なrubricで判定されていた。</div>
-<table class="metrics-table"><tr><th>claim</th><th>section_type(新実装)</th></tr>
-<tr><td>Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.</td><td>hook</td></tr>
-<tr><td>Meta had run a test that caused exactly this surprise.</td><td>hook</td></tr>
-<tr><td>The test began without clearly telling users that contract workers would make the calls.</td><td>body</td></tr>
+<h2>委任_32で新規検出したSafety-critical claim誤降格(B3/A2A3-0、REPORT§30-3C)</h2>
+<div class="note"><strong>重要な開示</strong>: 本ページの他の実例(左記3件)は「正しく機能した例」だが、本委任では以下2件のSafety-critical claim(design書§7-0-iter32で正解BLOCKING確定済み)がStage2により誤ってQUALITYへ降格する事例を検出した。既存のfalse PASS自動検知(<code>silent_pass_candidate</code>)は常に0を返す非稼働コードであり、以下はSAFETY_CRITICAL_SUB_IDSとの手動照合で検出したものである。採用可否・対応要否はFable/ユーザー判断待ち。</div>
+<table class="metrics-table"><tr><th>claim</th><th>sample1</th><th>sample2</th></tr>
+<tr><td>B3(HF-007、因果)</td><td>QUALITY</td><td>QUALITY</td></tr>
+<tr><td>A2A3-0(HF-003、未確認の支払主体)</td><td>BLOCKING</td><td>QUALITY</td></tr>
 </table>
+<p>正解ラベル: いずれもBLOCKING(design書§7-1/§7-4参照)。</p>
 <footer>
-生成元: er052_open233_self_recovery_rewrite_compare_page_rep17_01.py (API呼び出し
-なし、既存rep16/rep17証跡json[er052_output/open233_self_recovery_flow_runner_01_
-rep16(rep17)/]の読み直し+決定論関数の直接呼び出しのみ)。管理ID:
-OPEN-233-SELF-RECOVERY-TRIAL-01(委任_31)。
+生成元: er052_open233_self_recovery_rewrite_compare_page_iter8_01.py (API呼び出し
+なし、既存iteration8証跡json[er052_output/open233_self_recovery_flow_runner_01_
+iter8/]の読み直しのみ)。管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_32)。
 </footer>
 </body>
 </html>

@@ -1,0 +1,142 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“And if this was not properly explained, users had no way to know whether they were talking to AI or a person. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“And if this was not properly explained, users had no way to know whether they were talking to AI or a person. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.”",
+            "issue": "The article goes beyond the verified fact that the test began without proper disclosure and asserts that users could not know, and did not realize, that a human was handling the call. The Ledger does not establish what callers knew or realized.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The claim about callers’ actual awareness is not established by the Ledger; it turns the reported lack of proper disclosure into a definite claim that users did not know.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“if this was not properly explained”; nearby: “might think” and “in some cases”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told."
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The issue was not that humans made the calls themselves. The issue was how to tell users who was speaking.\n\nPeople who asked Muse to make a call might think that AI was making it. But in some cases, a human was speaking. And if this was not properly explained, users had no way to know whether they were talking to AI or a person. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it. That was what was happening behind the scenes.\n\nAlso, when user information was needed to continue a call, it might be shared unintentionally with contract workers at a call center. Meta employees pointed this out internally as a privacy concern.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません。」を、利用者が実際に気づかなかった、または知る手段がなかったとの断定を避け、適切な開示なしに人間の契約スタッフが電話を担当するテストが開始されたという範囲に狭めてください。参照: MUSE-HC-012",
+          "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told.",
+            "issue": "The article goes beyond the verified fact that the test began without proper disclosure and asserts that users could not know, and did not realize, that a human was handling the call. The Ledger does not establish what callers knew or realized.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The claim about callers’ actual awareness is not established by the Ledger; it turns the reported lack of proper disclosure into a definite claim that users did not know.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“if this was not properly explained”; nearby: “might think” and “in some cases”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "Some calls made through Meta’s AI assistant were actually handled by humans, without users being properly told."
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“And if this was not properly explained, users had no way to know whether they were talking to AI or a person. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The real challenge for AI phone calls is not just how they talk. It is whether they can honestly tell people who is on the other end of the call. The more useful a service is, the less it should hide the people working behind the scenes. The Muse case showed us this simple but important point.\n\n## In one line\nSome calls made through Meta’s AI assistant were actually handled by humans, without users being properly told.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2146,
+      "usage": {
+        "input_tokens": 7438,
+        "cached_input_tokens": 7435,
+        "output_tokens": 2587,
+        "reasoning_tokens": 2405
+      },
+      "elapsed_seconds": 22.248,
+      "prompt_sha256": "40b753b0e8f623cef5f4e711994499b90f6a5a805f1de374aae079fec8731a37"
+    }
+  ],
+  "total_cost_jpy": 0.2146,
+  "total_calls": 1,
+  "elapsed_seconds": 22.279
+}

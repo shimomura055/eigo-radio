@@ -550,6 +550,33 @@ Production・既存iteration/rep証跡への差分なしを確認済み。
 詳細: `DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-TRIAL-01`
 委任_31エントリ、`docs/pm/design_open233_self_recovery_flow_01.md`
 §4-24/§9-1㉑、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§29。
+**2026-10-01追記(委任_32、広いTrial iteration8=29 instance全量・38
+instance-run)**: ユーザー承認済み(見込み¥40)の横断安定性確認Trial。
+Safety12 fixtureはStage1 reuseのまま、残り17 instanceはStage1 fresh
+(重大誤解原則配線版)で実行(¥24.9738、Guardrail¥50内、error 0)。
+良好な点: 不要Rewrite率11.11%(iter7比改善)、`hormuz_run03_standard`
+(iter7は2/2 STAGE4)が今回2/2ともRewrite0件で解消、Hook rubric発火を
+初めて観測、全体平均コスト¥0.6975/instance-run(iter7比改善)。
+**新規判明した問題**: (1)B3(HF-007)がn=2の両方でQUALITYへ誤降格
+(安定した誤判定)、(2)A2A3-0(HF-003)がn=2の1/2でQUALITYへ誤降格
+(揺れ)。候補floor修正はhormuz-HF009等の正当なQUALITY/ACCEPTABLE
+claimを巻き込むため不採用(§7 STOP条件該当、根本設計変更は本委任の
+スコープ外としFable/ユーザー判断へ委ねる)。(3)実記事`meta_run03_
+standard`がn=2の両方でSTAGE4(人間確認率2/10=20%、iter7の0%から悪化、
+いずれもfail-closedでfalse PASSではない)。既存`silent_pass_
+candidate`は常に0を返す非稼働プレースホルダであり、上記誤降格は
+SAFETY_CRITICAL_SUB_IDSとの手動照合で検出したことを開示。Phase累計
+¥437.6498+¥24.9738=¥462.6236/総枠¥600、残¥137.3764。unittest
+既存281件全PASS(新規ロジック追加なし)。`git diff --stat`で
+Production・既存iteration/rep証跡への差分なしを確認済み。Status=
+`ITER8_BROAD_STABILITY_TRIAL_COMPLETE_COST_AND_UNNECESSARY_REWRITE_
+IMPROVED_BUT_B3_A2A3-0_SAFETY_CRITICAL_MISDOWNGRADE_AND_META_
+STANDARD_HUMAN_REVIEW_REGRESSION_FOUND`。詳細:
+`DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_32
+エントリ、`docs/pm/design_open233_self_recovery_flow_01.md`
+§7-0-iter32/§9-1㉒、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§30。
+B3/A2A3-0誤降格への対応要否(根本設計変更の是非)はFable/ユーザー
+判断事項。
 旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
 B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
 Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は

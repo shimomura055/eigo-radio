@@ -2798,3 +2798,298 @@ Status=`HOOK_BOUNDARY_ACTOR_GUARD_FIXED_REP17_N2_STAGE4_ZERO_PARTIAL_
 CLAIM_COVERAGE_DUE_TO_STAGE1_NONDETERMINISM`。次回アクション候補
 (いずれもFable/ユーザー判断): (1)Phase 2(10〜20実記事規模)の新規
 テーマ選定(PM_GOVERNANCE§13)、(2)広い29件規模Trialへ進めるかの判断。
+
+## §30. 広いTrial iteration8(29 instance全量・38 instance-run)で現行既定構成の横断安定性を確認(委任_32、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_32: 広いTrial iteration8=
+重大誤解原則・要素Trial修正の横断検証。ユーザー承認済み、見込み¥40。
+新テーマ生成なし。新しい改善案を探すTrialではなく「現在の設計が横断的に
+安定して機能するか」の確認)。
+
+### 30-0. 上位目的整合チェック(7観点、design書§0-6/PM_GOVERNANCE§23)
+
+| # | 観点 | 本委任での確認結果 |
+|---|---|---|
+| 1 | 厳密一致のためだけのRewriteになっていないか | neg3の①単語/短い句編集のみで解消しており該当せず。meta_run03_standardはcycle2で段落水準まで達したが、これは同一事実の多箇所反復(下記)が原因であり厳密一致目的のRewriteではない |
+| 2 | 重大誤解でないものを止めていないか | 不要Rewrite率1/9(11.11%、neg3のみ)。hormuz_run03_standard/meta_run03_advancedはStage2で正しくQUALITY/ACCEPTABLEへ降格しRewrite不要と判定 |
+| 3 | 小さく直せる問題を大きくRewriteしていないか | ladder分布は1_word/connective=15・sentence=9・paragraph=3(全記事中)、全体Rewrite(⑥)は既定OFFのため0件 |
+| 4 | Rewriteによる品質劣化の方が大きくないか | `measure_rewrite_quality_degradation`候補9件検出(詳細30-4)、重大な劣化(タイトル破壊等)は目視確認の範囲では見られず |
+| 5 | 学習者にとって本当に問題か | B3/A2A3-0の誤降格(下記30-3C)は「学習者に重大な誤解を与える事実の捏造・矛盾」を見逃す方向のリスクであり、本観点に照らし重大(Fable/ユーザー判断事項) |
+| 6 | Human Reviewを安易な逃げ道にしていないか | 実記事6種10 runの人間確認率20%(2/10、meta_run03_standardのみ)。いずれも正当なfail-closed(false PASSではない)だが、iter7の0%から悪化(下記30-1) |
+| 7 | 不要call・Recheck・Rewriteを増やしていないか | 全体平均コスト¥0.6975/instance-run(iter7の¥1.0407から改善)、局所QA/全文Recheckの比率は30-5参照 |
+
+### 30-1. 維持すべき仕様のRegression表(委任文§2)
+
+| 項目 | 期待 | 実測結果 | 判定 |
+|---|---|---|---|
+| Hormuz: Brent futures≒oil prices許容 | 非BLOCKING | hormuz_run03_standard n=2ともRESOLVED_STAGE2_DOWNGRADE(Rewrite 0件)。iter7は2/2 STAGE4だった同一ハードケースが今回解消 | **改善確認** |
+| Hormuz: gasoline/world energy等はBLOCK | BLOCKING | A2A3-1(gasoline claim)はsample1/2ともQUALITY(既存正解ラベルどおり、§9-1⑬で既に再ラベル済みのため非該当claim) | 一致(再ラベル済み項目) |
+| Hormuz: 修正は名詞句等の最小範囲 | ladder低水準 | neg3は①水準のみで解消 | 一致 |
+| Hormuz: 同じFact再登場でも段落へ飛ばない | escalate_to_paragraph OFF維持 | 全instanceでOFF(§0-4どおり、初期単位から判断) | 一致 |
+| Meta: 元Hook許容 | Hook claimはACCEPTABLE/QUALITY | safety_A2A3/safety_A4のHook段落claimがQUALITY/ACCEPTABLEへ正しく降格(30-6参照) | 一致 |
+| Meta: 確認済みFactから導ける場面・体験描写は許容 | 非BLOCKING | 同上 | 一致 |
+| Meta: 未確認人物・数字・行動・逆事実はBLOCK | BLOCKING | **B3(HF-007、因果)がn=2の両方でQUALITYへ誤降格**。**A2A3-0(HF-003、未確認の支払主体追加)がn=2の1/2でQUALITYへ誤降格** | **未達(下記30-3C)** |
+| Meta: users→employees型の未確認主体置換禁止 | 主体置換ガード発火 | 本委任のinstance群では該当claimの再現なし(委任_31で是正済みのactorガードは常時評価のまま、コード変更なし) | 該当なしのため維持(非回帰) |
+| Rewrite: 問題種類に応じた最小単位 | §0-4表どおり | neg3は接続詞/短い句、meta_run03_standardの一部claimのみ段落水準(下記30-4) | 概ね一致 |
+| Rewrite: 不要な段落Rewrite禁止/全文OFF | 0件 | 全体Rewrite(⑥)0件(既定OFF)、段落水準3件は理由あり(30-4) | 一致 |
+| Rewrite: 品質劣化を成功扱いしない | - | `escalation_zero_breakdown.silent_pass_candidate`は既存コードで常に0固定(非稼働プレースホルダ、実質未検証)。本委任はSAFETY_CRITICAL_SUB_IDSとの手動照合で30-3Cの誤降格を独自に検出した | **既存の自動false PASS検知は機能していないことを確認(新規開示)** |
+
+### 30-2. 実測条件
+
+`er052_open233_self_recovery_flow_runner_01_iter8_01.py`(`OUT_DIR_ITER8`
+新設)。29 instance全量のうちSafety12 fixture(`safety_*`)はStage1
+reuse(既存既定のまま、構造上の理由はdesign書§7-0-iter32参照)、残り17
+instanceはStage1 freshへ明示的に上書きした。9 instance
+(`neg1_meta_b3prod_a2`/`neg2_meta_refresh_a2`/`neg3_hormuz_prodrunner_
+b1b`/`meta_run03_advanced`/`meta_run03_standard`/`hormuz_run03_
+standard`/`hormuz_run03_advanced`/`bgroup_B3`/`safety_A2A3`)はsample1・
+sample2の2回実行(Stage1 freshの箇所はsample間でcache共有、二重課金
+防止)、残り20 instanceはsample1のみ。実測¥24.9738(Guardrail¥50内)、
+132 call、API error 0件、TrialAbort 0件(STOP未到達)。
+
+### 30-3. KPI測定
+
+#### A. 実記事(hormuz×4・meta×2の6記事・計10 run)の人間確認率
+
+| 記事 | run数 | STAGE4到達 | 率 |
+|---|---|---|---|
+| hormuz_run01_advanced | 1 | 0 | 0% |
+| hormuz_run02_advanced | 1 | 0 | 0%(Stage1 freshだがcache一致により0 call、hormuz_run01_advancedと内容同一のため) |
+| hormuz_run03_advanced | 2 | 0 | 0% |
+| hormuz_run03_standard | 2 | 0 | 0%(**iter7は2/2 STAGE4、今回2/2ともRewrite 0件で解消**) |
+| meta_run03_advanced | 2 | 0 | 0% |
+| meta_run03_standard | 2 | 2 | **100%** |
+| **合計** | **10** | **2** | **20%(目標0、未達)** |
+
+**meta_run03_standardの原因分析(claim原文・判定文・cycle log)**:
+sample1はcycle1(6claim検出)→cycle2(11claim検出、rewrite 6件、
+ladderは1_word/connective×3・4_paragraph×2・3_sentence×1)→cycle3
+(9claim検出、rewrite 0件)の末、`stage4_reason=same_claim_fact_id_
+reblocked`でSTAGE4。sample2はcycle1(6claim)→cycle2(8claim、rewrite
+5件)の末、`stage4_reason=target_not_locatable`でSTAGE4(1件の
+`paired_ja_en(J-1)`attemptで`guard_ok=False`)。両sampleとも、
+`floor_reason=deterministic_floor:changed_number`の「one employee's
+report」(Ledgerの実数と記事の「1件」という言い切りの不一致)型claimが
+cycle間で繰り返し新規検出され(6→11→9件、同一事実の複数箇所での
+再出現)、MAX_CYCLES(2、HARD_MAX_CYCLES 3)の範囲内で全箇所を解消
+しきれず、最終的に未解消のBLOCKING claimが残った状態でfail-closed
+(STAGE4)した。**いずれもfalse PASSではない**(fail-closed、正しい
+人間確認トリガー)が、**iter7(Stage1 reuse)の同一記事はmeta群
+escalation 0/4(0%)だったのに対し、iter8(Stage1 fresh)はcycle毎の
+検出claim数が増加しており(enumeration強化の効果と推定)、cycle上限
+内で収束しなくなった**。原因候補はStage1 freshの検出網羅性向上と
+`escalate_to_paragraph`廃止(§0-4、各箇所独立判断)の組み合わせ。
+根本修正(MAX_CYCLES拡大等)は根本設計変更に該当するため本委任では
+実装せず、Fable/ユーザー判断へ委ねる。
+
+fixture群(Safety12+B群4)のStage4到達は30-3Cおよび下記参照
+(理由コード付き別集計、実記事と混同しない)。
+
+#### B. 不要Rewrite率(正常記事=negative7+Normal2、計9)
+
+| # | 指標 | 値 |
+|---|---|---|
+| 対象数 | 9 |
+| 不要Rewrite件数 | 1(`neg3_hormuz_prodrunner_b1b`) |
+| 率 | 11.11%(iter7比21.43%→改善、iter6比44.44%→改善) |
+
+**neg3の内訳(両建て)**: neg3は正解ラベル上「Normal群(ACCEPTABLE
+期待)」に分類されるが、実際にはStage1 freshが`changed_time`
+floor該当claim(“During that period, attacks between the United
+States and Iran, a sea blockade...”/“The fee plan may be replaced,
+but events continuing at the same time do not simply disappear
+backstage...”)を検出しBLOCKING floor発火(deterministic、LLM判断
+ではない)。これは委任文のBLOCK候補の正当な適用([continued→
+returned]型の継続性を損なう時間表現変化)であり、「不要Rewrite」
+としてカウントする一方、「正当なfloor発火によるRewrite」という
+両建ての解釈が可能(§7-0既存整理どおり)。Before/After:
+sample1は“During that period, attacks...”→（“the events driving
+oil prices—and the prices themselves—”部分を短縮)・“During that
+period”→“At the same time”・“because of”→“after”の①水準のみ、
+sample2も同様に①水準の短い句編集のみ(段落・全文Rewrite 0件)。
+
+#### C. Safety(重大Fact見逃し/false PASS/Safety-critical誤通過)
+
+**目標0に対し2件の誤降格を検出(未達)**:
+
+1. **B3(HF-007)**: `bgroup_B3`をStage1 fresh・n=2で実行した結果、
+   **sample1・sample2の両方**でB3クレームがStage2 body rubric(V5)
+   によりQUALITYへ誤降格(`llm_materiality=QUALITY`、
+   `section_type=in_one_line`[同一rubric経由、特別な緩和ルートでは
+   ないことをunittest`test_rubric_r4_does_not_exempt_body_or_in_one_
+   line_section_from_normal_rules`で確認済み]、`changed_causality=
+   true`・`unsupported_new_claim=true`、floor非該当)。判定文逐語:
+   issue=“The sentence implies that the continuing security concerns
+   caused the 20% plan to be withdrawn. The Ledger reports that Trump
+   said the replacement decision was based on discussions with Middle
+   Eastern leaders; it does not establish the cause asserted here.”
+   (Stage1自身はBLOCKING根拠を正しく記録しているが、Stage2 LLMが
+   QUALITYへ降格)。**2/2で再現する安定した誤判定**。
+2. **A2A3-0(HF-003)**: `safety_A2A3`をStage1 reuse・n=2で実行した
+   結果、A2A3-0クレーム(“The idea was that those carrying the cargo
+   would repay the money the United States spends to keep the
+   strait safe.”)がsample1=BLOCKING(正しい)・**sample2=QUALITYへ
+   誤降格**(同一Stage1出力[reuse、決定論]に対しStage2 LLM判定のみが
+   変動、`changed_fact=true`・`changed_certainty=true`・
+   `unsupported_new_claim=true`、floor非該当)。**1/2の揺れ**。
+
+**候補修正の検討と不採用理由**: `matched_notes_id`+
+`observation_consistent=False`を新floor条件とする案を検討したが、
+同一実測データ中でhormuz-HF009(ユーザー承認済み再ラベル、§7-0-
+iter27)・meta_run03_standard・safety_A5の正当なQUALITY/ACCEPTABLE
+claim 29件がこの条件に該当することを確認し(design書§7-0-iter32
+参照)、採用すると既存のユーザー承認済み決定を無効化するため**不採用**
+とした。§7 STOP条件(小修正1回後もSafety-critical誤通過が残る)に
+該当するとして、根本設計変更は本委任のスコープ外としFable/ユーザー
+判断へ委ねる。
+
+**JA逸脱残存でのRESOLVED**: 0件(本委任の全RESOLVED_*インスタンスで
+`ja_recheck_overall_status`がLEDGER_DEVIATIONのまま確定した例はなし、
+ja_fail_open_guard関連の誤通過も検出されず)。
+
+**既存false PASS自動検知の限界(新規開示)**: `aggregate_measurements`
+内の`silent_pass_candidate`は常に`0`を返す非稼働コード(プレース
+ホルダ)であり、実際には何も検証していない。本委任の2件の誤降格は、
+SAFETY_CRITICAL_SUB_IDS(8claim名指しリスト)とclaim文字列を手動で
+照合して初めて検出できた。自動測定だけに依拠すると今回の2件は
+「false PASS 0件」と誤報告される状態だったことを正直に開示する。
+
+#### D. Rewrite範囲の分類(全29 instance、sample1)
+
+| 分類 | 件数 |
+|---|---|
+| 用語のみ/接続詞等/短い句(1_word_connective) | 15 |
+| 1文(3_sentence) | 9 |
+| 段落(4_paragraph) | 3 |
+| 全体(6_full_article) | 0(既定OFF、§9-1⑯) |
+
+段落水準3件の内訳: `meta_run03_standard`×2(cycle2、上記30-1Aの
+繰り返し検出パターンの一部としてladder自然昇段[guard失敗後の通常
+escalation、`escalate_to_paragraph`強制skipではない])、
+`safety_er009_changed_comparison`×1(cycle1、同様に①③水準でのguard
+失敗後の自然escalation)。いずれも「同じFactが再登場したら最初から
+段落へ飛ばす」廃止済み機構の再発ではなく、個別claimごとの通常のladder
+上昇(guard_okがFalseだった場合の次水準試行)である。
+
+#### E. コスト5分割(sample1、29 instance、既存`compute_cost_
+breakdown_5way`流用、¥0)
+
+| 指標 | 値 | iter7比較 |
+|---|---|---|
+| Rewriteなし平均 | ¥0.3922(15件) | ¥0.1712(15件)から悪化 |
+| Rewriteあり平均 | ¥1.0247(14件) | ¥1.6078(23件)から改善 |
+| Rewrite率 | 48.28% | 60.53%から改善 |
+| 全記事平均 | ¥0.6975 | ¥1.0407から改善 |
+| worst(instance単位) | ¥5.1772(`meta_run03_standard`) | ¥8.9545(`safety_A4`)から改善 |
+
+**call種別内訳**(sample1、105 call・¥20.2282): `stage3_rewrite`50件
+¥4.6377/`stage2_second_judge`27件¥6.1552/`stage1_initial`(fresh)16件
+¥5.6614/`stage1_recheck`12件¥3.7739。`local_qa`(局所QA fastpath)
+0件・`ja_en_equivalence`0件・`stage1_union_screen`(S1-U、既定無効)
+0件(いずれも本委任の対象instance構成ではfastpath条件に合致せず未発火、
+不要callが増えた形跡はなし)。全文Recheck(`stage1_recheck`)は12件
+発生、既存ドキュメント(§22-3項目8)どおり局所QAより依然多い。
+
+### 30-4. Rewrite品質劣化候補(決定論、¥0)
+
+`measure_rewrite_quality_degradation`候補9件(いずれもSafety12
+fixture、1cycle目のEN側、文数減少/hedge語増加等の閾値超過)を検出。
+目視確認の範囲ではHook喪失・タイトル破壊等の重大な劣化は見られず、
+Safety fixtureの短い1文Rewriteに伴う自然な文数減少が主因(詳細は
+`er052_output/open233_self_recovery_flow_runner_01_iter8/instances_s1/
+<id>.json`の`quality_degradation_en`参照)。
+
+### 30-5. 判定揺れ(n=2の9件)
+
+| instance | 一致/不一致 | 詳細 |
+|---|---|---|
+| `neg1_meta_b3prod_a2` | 一致 | 両sampleともACCEPTABLE_STAGE1(sample2はStage1 cache一致により0 call) |
+| `neg2_meta_refresh_a2` | 一致 | 両sampleともRESOLVED_STAGE2_DOWNGRADE |
+| `neg3_hormuz_prodrunner_b1b` | 一致 | 両sampleともRESOLVED_REWRITE、①水準のみ |
+| `meta_run03_advanced` | 一致 | 両sampleともRESOLVED_STAGE2_DOWNGRADE(Stage1 false blockをStage2が正しく救済) |
+| `meta_run03_standard` | **不一致(failure mode)** | 両方STAGE4だが`stage4_reason`が異なる(`same_claim_fact_id_reblocked`/`target_not_locatable`)。最終的な着地(人間確認)は同じで安全側だが、未解消の原因箇所は揺れている(30-1A参照) |
+| `hormuz_run03_standard` | 一致 | 両sampleともRESOLVED_STAGE2_DOWNGRADE(iter7は2/2 STAGE4だった同一ハードケースが改善) |
+| `hormuz_run03_advanced` | 一致 | 両sampleともACCEPTABLE_STAGE1 |
+| `bgroup_B3` | **一致(ただし誤り)** | 両sampleともRESOLVED_STAGE2_DOWNGRADEだが、正解はBLOCKING(30-3C参照)。揺れずに同じ誤りへ収束しており「揺れが小さいから安全」とは言えない反例 |
+| `safety_A2A3` | **不一致(Safety-critical)** | sample1=STAGE4(target_not_locatable、BLOCKING維持したまま解決に失敗、fail-closed)/sample2=RESOLVED_STAGE2_DOWNGRADE(A2A3-0がQUALITYへ誤降格、30-3C参照)。一致率は`combine_n2_measures`で8/9=88.89% |
+
+一致率88.89%(8/9)。ただし一致した場合でも`bgroup_B3`のように
+**揺れずに同じ誤りへ収束するケース**があり、「揺れが無い=安全」とは
+限らないことが本委任で判明した(Hormuz/Meta群の揺れは全て安全側へ
+収束、Safety群の2件[`bgroup_B3`固定誤り・`safety_A2A3`揺れ]は収束先
+自体に問題がある)。
+
+### 30-6. Meta Hook実フロー
+
+今回は**Hook救済が実際に発火したEvidenceを観測した**(委任_31の
+rep17では非観測だったため、iter8で初めて確認)。`safety_A2A3`の
+Hook段落claim(“Normally, that might have brought some relief to
+crude oil prices.”、`section_type=hook`、`detected_by_enumeration=
+true`経由でA2A3-1[gasoline claim]と同一fact_idの箇所として検出)が
+Hook専用rubricによりQUALITYへ降格した判定(sample1)。`safety_A4`でも
+同様にHook段落claim(“That was what people thought as they spoke.”)
+がQUALITYへ降格した。いずれも、Hookパラグラフの演出的言明を本文の
+厳格なrubricとは別に扱うという設計意図どおりの動作である(ただし
+これらはSafety fixture内のHook段落であり、neg1/meta_run03等の「実記事
+Hook」固有の再現ではない点に留意)。
+
+### 30-7. iter7との比較表(同一定義)
+
+| 指標 | iter7(2026-10-01、委任_22、Stage1 reuse) | iter8(本委任、Stage1 fresh[Safety12除く]) |
+|---|---|---|
+| instance-run数 | 38(29×n=1相当+9×追加n=1) | 38(29 sample1+9 sample2) |
+| 総コスト | ¥39.5475 | ¥24.9738(**改善**) |
+| 不要Rewrite率 | 21.43%(3/14) | 11.11%(1/9、**改善**、分母定義がn runベースで異なる点に留意) |
+| ⑥(全体Rewrite)使用 | 7/38(18.4%) | 0/38(0%、既定OFF継続) |
+| 全体平均コスト | ¥1.0407/instance-run | ¥0.6975/instance-run(**改善**) |
+| worst instance cost | ¥8.9545(`safety_A4`) | ¥5.1772(`meta_run03_standard`、**改善**) |
+| real_run(6記事)escalation率 | 2/10=20.0%(`hormuz_run03_standard`) | 2/10=20.0%(`meta_run03_standard`、**原因instanceが交代**: hormuzは解消、metaが新規悪化) |
+| Safety hard gate(floor_variant診断、counterfactual) | true(n=1/n=2とも0候補) | **false**(sample1、`safety_A4`1候補。floor-cited変種の診断のみで実フロー制御には影響しない) |
+| false PASS(自動測定) | 0/38 | 0/38(ただし30-3C参照、自動測定の限界により2件の誤降格は検出対象外) |
+| Hook救済の実フロー観測 | 未観測(rep17時点) | **観測**(30-6) |
+
+### 30-8. 費用・unittest・Git
+
+本委任費用: ¥24.9738(Guardrail¥50内、見込み¥40に対し実測は下回った)。
+Phase累計¥437.6498+¥24.9738=**¥462.6236**/総枠¥600、残**¥137.3764**。
+
+コード変更: `er052_open233_self_recovery_flow_runner_01.py`
+(`OUT_DIR_ITER8`新設、`OUT_DIR`付け替えのみ、既存ロジックは無変更)。
+新規: `er052_open233_self_recovery_flow_runner_01_iter8_01.py`
+(29 instance全量+9 instance n=2のmixed-n実行、既存`run_instance`/
+`aggregate_measurements`/`combine_n2_measures`/`compute_cost_
+breakdown_5way`を再利用、新規ロジック追加なし)。unittestは既存
+281件のみ(新規ロジックを追加していないため新規unittest追加なし)、
+全PASS(`.venv/Scripts/python.exe -m unittest er052_open233_self_
+recovery_flow_runner_01_test_01`)。`run_project_regression.py`結果・
+`git diff --stat`は30-9参照。
+
+### 30-9. VALIDATED最低条件7項目充足表(判定はFableへ委ねる)
+
+| # | 条件 | 実測 | 充足 |
+|---|---|---|---|
+| 1 | 重大Fact見逃し0 | B3/A2A3-0の誤降格2件検出(30-3C) | **未充足** |
+| 2 | false PASS 0 | 自動測定上は0/38だが、手動照合で2件の実質的誤降格を検出(30-3C) | **未充足(自動測定の限界込みで報告)** |
+| 3 | 実記事人間確認0 | 2/10(20%、`meta_run03_standard`、30-3A) | **未充足** |
+| 4 | 不要Rewrite許容水準 | 11.11%(1/9、iter7の21.43%から改善) | 充足(改善傾向) |
+| 5 | Rewrite最小範囲中心 | ①水準15件/①〜③で24/27(88.9%)、段落3件は理由あり、全体0件 | 充足 |
+| 6 | 平均≤+¥2/記事 | 全体平均¥0.6975/instance-run(iter7¥1.0407から改善) | 充足 |
+| 7 | Meta・Hormuz Regressionなし | Hormuzは改善。Metaは`meta_run03_standard`の人間確認率悪化(0%→20%)と`bgroup_B3`/`A2A3-0`の誤降格が新規発見 | **未充足** |
+
+7項目中4項目充足・3項目未充足。**Status**:
+`ITER8_BROAD_STABILITY_TRIAL_COMPLETE_COST_AND_UNNECESSARY_REWRITE_
+IMPROVED_BUT_B3_A2A3-0_SAFETY_CRITICAL_MISDOWNGRADE_AND_META_
+STANDARD_HUMAN_REVIEW_REGRESSION_FOUND`。
+
+**STOP条件該当確認**: ¥50超え見込み(該当せず、実測¥24.9738)/API
+error 3連続(該当せず、0 error)/Production・既存証跡変更(該当せず、
+`git diff --stat`でer052本体[OUT_DIR新設のみ]・design書・REPORT・
+DECISION_LOG・OPEN_ITEMS・delegation_log・新規iter8出力・新規
+compare page生成スクリプトのみ、既存iteration1〜7・rep7〜17証跡は
+無変更)/USER_DECISION_REQUIRED 5条件(design書§12)はいずれも非該当
+(新Product原則/Safety原則変更/¥600超過/根本設計変更の実施/
+Production採用判断のいずれも実施していない)/開始前チェック未反映
+(0件)/**Safety-critical 8claimの誤通過が小修正1回後も残る→該当**
+(ただし「小修正1回」は候補を検討した上で安全側に不採用と判断した
+結果であり、コードは変更していない。該当するためSTOPし、本§30で
+Fable/ユーザーへ報告する)。

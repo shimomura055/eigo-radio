@@ -1,0 +1,301 @@
+{
+  "instance_id": "safety_er009_changed_certainty",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+            "issue": "Ledgerでは著者のメカニズム説明として述べられている社会的圧力を、すべての顧客に生じることが証明済みの因果効果として断定している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-008はデジタル画面による社会的圧力を著者の議論として記し、実証的な因果効果ではないとしている。記事は因果関係を断定し（changed_causality）、証明済みと確実性を強め（changed_certainty）、対象を画面を見たすべての顧客に拡張している（changed_scope）。この普遍的な因果主張はLedgerにないため、changed_factとunsupported_new_claimもtrue。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "F-008",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.” Replace the universal claim with a qualified statement that 59% of surveyed consumers said digital screens prompting a tip made them feel they had to leave one; do not present this self-reported result as proof of causation. (F-012)",
+          "floor_reason": null,
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:439420669563d7f6",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.1579,
+          "word_count": 19
+        },
+        "stats_after": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.1579,
+          "word_count": 19
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.1579,
+          "word_count": 19
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.1579,
+          "word_count": 19
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": true,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 19,
+        "hook_word_count_after": 19,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 19,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": true,
+        "reasons": "numbers_added_to_title"
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.1579,
+          "word_count": 19
+        },
+        "stats_after": {
+          "avg_sentence_len": 20.0,
+          "difficult_word_ratio": 0.1,
+          "word_count": 20
+        },
+        "sentence_len_increase": 1.0,
+        "difficulty_ratio_increase": -0.0579,
+        "fragment_stats_before": {
+          "avg_sentence_len": 19.0,
+          "difficult_word_ratio": 0.1579,
+          "word_count": 19
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 20.0,
+          "difficult_word_ratio": 0.1,
+          "word_count": 20
+        },
+        "fragment_sentence_len_increase": 1.0,
+        "fragment_difficulty_ratio_increase": -0.0579,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": true,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 19,
+        "hook_word_count_after": 20,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 20,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": true,
+        "reasons": "numbers_added_to_title"
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+      "en_text_after_rewrite": "In a survey, 59% of consumers said they felt they had to leave a tip when a digital screen prompted one.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_certainty_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1526,
+      "usage": {
+        "input_tokens": 6051,
+        "cached_input_tokens": 0,
+        "output_tokens": 735,
+        "reasoning_tokens": 613
+      },
+      "elapsed_seconds": 8.861,
+      "prompt_sha256": "0592117d69e13dc64c9ac24fe58d9ec0d0c2a3307111e5b02ffb11d9df33f8ea"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_claim:439420669563d7_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.103,
+      "usage": {
+        "input_tokens": 4470,
+        "cached_input_tokens": 0,
+        "output_tokens": 419,
+        "reasoning_tokens": 413
+      },
+      "elapsed_seconds": 5.637,
+      "prompt_sha256": "9b47789da2fe9813bfc326b2fe257e6c3cd5a5d78d9b2f57af4b9bfed93772a3"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_claim:439420669563d7_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0787,
+      "usage": {
+        "input_tokens": 4331,
+        "cached_input_tokens": 0,
+        "output_tokens": 137,
+        "reasoning_tokens": 107
+      },
+      "elapsed_seconds": 3.194,
+      "prompt_sha256": "a586850c95ae2b21b4b68c11c145000ff43cfd83a2d0f6746bd3b04e2355c863"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_claim:439420669563d7_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1036,
+      "usage": {
+        "input_tokens": 4506,
+        "cached_input_tokens": 0,
+        "output_tokens": 420,
+        "reasoning_tokens": 414
+      },
+      "elapsed_seconds": 6.38,
+      "prompt_sha256": "2fa791f958565499c468059dd19f06cd26178eef54de5e9476f7e673d818e59d"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_claim:439420669563d7_regen_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0796,
+      "usage": {
+        "input_tokens": 4367,
+        "cached_input_tokens": 0,
+        "output_tokens": 142,
+        "reasoning_tokens": 111
+      },
+      "elapsed_seconds": 2.333,
+      "prompt_sha256": "a4b98e94603540c2586766df3833e9eaaae333561703829a62c8edb97da3672f"
+    },
+    {
+      "label": "safety_er009_changed_certainty_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1294,
+      "usage": {
+        "input_tokens": 6421,
+        "cached_input_tokens": 0,
+        "output_tokens": 366,
+        "reasoning_tokens": 249
+      },
+      "elapsed_seconds": 4.94,
+      "prompt_sha256": "fff24852092163c18e479372740a3c46485e1fc3dbb8b59530860be6b3751084",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.6469,
+  "total_calls": 6,
+  "elapsed_seconds": 31.368
+}

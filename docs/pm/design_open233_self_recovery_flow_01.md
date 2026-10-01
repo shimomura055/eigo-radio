@@ -3226,6 +3226,62 @@ NG5(委任_27 Trial Aのclaim定義を再利用、Stage2のみ)を対照測定�
 条件(Safety対照群のいずれかが小修正1回後もBLOCKINGに戻らない)を
 解消し、PASSした**(費用¥4.9438、Guardrail¥10のうち)。詳細REPORT§27。
 
+### 7-0-iter32. 広いTrial iteration 8でB3/A2A3-0の誤降格を新規検出(委任_32、2026-10-01、REPORT§30)
+
+**位置づけの違い(重要)**: §7-0-iter28/iter29のSafety-critical 8/8
+確認は、いずれも**Stage2のみ**(固定claim文を直接入力)の単体測定
+(`er052_open233_element_trial_safety_control_0{2,3}.py`)であり、
+Stage1は経由しない。委任_32(広いTrial iteration8、29 instance全量)は
+初めて**Stage1 fresh(重大誤解原則配線版)→Stage2→Rewrite→Recheckの
+full flow**でSafety-critical 8claimのうちB3・A2A3-0を含む複数instance
+を実行し、この組み合わせで以下の誤降格を新規に検出した(過去の
+Stage2単体測定は無効化されない、測定条件が異なるため非矛盾)。
+
+**(1) B3(HF-007、§7-4で正解BLOCKING確定済み)**: `bgroup_B3`を
+Stage1 fresh・n=2で実行した結果、**sample1・sample2の両方**で
+B3クレーム(“Concerns about US-Iran attacks...so the flashy 20% plan
+left the stage...same day.”)がStage2 body rubric(V5)により
+QUALITYへ誤降格した(`llm_materiality=QUALITY`、`changed_causality=
+true`・`unsupported_new_claim=true`、`FLOOR_FLAGS`非該当のため
+deterministic floorが発火しない)。2/2で再現する**安定した**誤判定で
+あり、A2A3-0(下記)のような偶発的揺れではない。
+
+**(2) A2A3-0(HF-003、§7-1相当)**: `safety_A2A3`をStage1 reuse
+(Safety12と同じ既定、§9-1㉒参照)・n=2で実行した結果、A2A3-0クレーム
+(“The idea was that those carrying the cargo would repay the money
+the United States spends...”、Ledgerは支払主体を特定しないとする
+HF-003と明示的に矛盾)が、sample1ではBLOCKING(正しい)、**sample2では
+QUALITYへ誤降格**した(同一Stage1出力[reuse、決定論]に対しStage2 LLM
+判定のみが変動、`changed_fact=true`・`changed_certainty=true`・
+`unsupported_new_claim=true`、`FLOOR_FLAGS`非該当)。1/2の揺れ。
+
+**根本原因(共通)**: 両claimとも`FLOOR_FLAGS`(changed_actor/number/
+negation/comparison/time)のいずれにも該当せず、deterministic floorの
+保護を受けない。body rubric V5(重大誤解原則テキスト追加後)は、
+Ledgerが明示的に否定・未特定とする具体的事実(支払主体/因果関係)を
+記事が断定的に追加するケースについて、Stage2 LLM単体の裁量判定のみに
+依存しており、この判定が非決定的に割れる。
+
+**候補修正の検討(小修正1回、§4 FAIL時プロトコル)と不採用の理由**:
+`matched_notes_id`+`observation_consistent=False`(Stage1が既にLedger
+notesとの矛盾を決定論的に確認済み)を新しいfloor条件として追加する案を
+検討したが、同一委任の実測データ中で**この組み合わせがhormuz-HF009
+(“Oil prices did not fall...”、§7-0-iter27でBLOCKINGから
+ACCEPTABLE/QUALITYへユーザー正式再ラベル済み)・meta_run03_standard・
+safety_A5の複数の正当なQUALITY/ACCEPTABLE claimにも该当する**ことを
+確認した。この条件でfloorを追加すると、既にユーザー承認済みの
+hormuz-HF009再ラベルを機械的に無効化してしまうため、**安全側判断として
+この小修正は採用しなかった**(§7 STOP条件「小修正1回後も残る」に該当、
+根本設計変更[例: Safety-critical群限定のredundant judge/2回目判定の
+導入、既存`stage2_two_of_two`のNORMAL_GROUP限定を緩和する等]が必要と
+判断し、本委任ではコード変更を行わずFable/ユーザー判断へ委ねる)。
+
+**Production影響**: 本委任はTrialコード(er052)のみの実行であり、
+Production(er003/er006/er009/er010/er012/er019)・既存iteration/rep
+証跡は無変更。ただし本発見は、重大誤解原則配線版の設計が将来
+Production導入を検討される際に解消すべき既知のSafety側残存リスクとして
+記録する。
+
 ### 7-1. Safety群(Stage 1/2で必ずBLOCKING維持、その後Rewrite→PASSが期待到達経路)
 
 | fixture | 正解ラベル | 理由(floor/rubric) | 期待到達経路 |
@@ -4647,6 +4703,45 @@ discoverは2224件中8件が失敗(er025/er040/er043/er011、本委任と無関�
 iteration1〜7・rep7〜16への差分なしを確認した。**Status=
 `HOOK_BOUNDARY_ACTOR_GUARD_FIXED_REP17_N2_STAGE4_ZERO_PARTIAL_CLAIM_
 COVERAGE_DUE_TO_STAGE1_NONDETERMINISM`**。詳細REPORT§29。
+
+**㉒ 広いTrial iteration8(29 instance全量、9 instanceはn=2、計38
+instance-run)で現行既定構成の横断安定性を確認(委任_32、本書
+§7-0-iter32参照)**: 新しい改善案を探すTrialではなく、既定構成
+(Stage1 V4-A+重大誤解原則/Stage2 V5/Hook V4、`ENABLE_MISCONCEPTION_
+PRINCIPLE_DEFAULT=True`)がfull flowで横断的に安定して機能するかの
+確認Trial。Safety12 fixtureのみStage1 reuse(構造上の理由は§7-0-iter32
+参照)、残り17 instanceはStage1 freshで実行した
+(`er052_open233_self_recovery_flow_runner_01_iter8_01.py`、
+`OUT_DIR_ITER8`新設)。
+
+結果: 実測¥24.9738(Guardrail¥50内、API error 0件)。良好な点:
+(a)不要Rewrite率11.11%(1/9、neg3のみ)でiter7の21.43%から改善、
+(b)hormuz_run03_standard(既知のハードケース、iter7は2/2 STAGE4)が
+今回2/2ともRewrite 0件で解消(ユーザー承認済みhormuz-HF009再ラベルの
+効果がfull flow上で初めて確認できた)、(c)Hook rubricが実際に発火し
+QUALITYへ正しく降格させるEvidence(`safety_A2A3`/`safety_A4`の
+Hook段落claim)を確認、(d)全体平均コスト¥0.6975/instance-runで
+iter7の¥1.0407から改善。
+
+**残存した問題(§7-0-iter32に詳細)**: (1)B3(HF-007)がn=2の両方で
+QUALITYへ誤降格(安定した誤判定)、(2)A2A3-0(HF-003)がn=2の1/2で
+QUALITYへ誤降格(揺れ)。候補修正(floor拡張)はhormuz-HF009等の正当な
+QUALITY/ACCEPTABLE claimを巻き込むため不採用とし、§7 STOP条件
+(小修正1回後も残るSafety-critical誤降格)に該当するとして根本修正は
+行わずFable/ユーザー判断へ委ねた。(3)meta_run03_standard(実記事)が
+n=2の両方でSTAGE4(stage4_reasonはsample間で異なる:
+`same_claim_fact_id_reblocked`/`target_not_locatable`)に到達し、
+実記事6種10 run中2 run(20%)が人間確認を要した(iter7のmeta群0%
+escalationから悪化。Stage1 freshが「one employee」等のchanged_number
+floor claimをより多くの箇所で検出するようになったこと[enumeration
+強化]と、escalate_to_paragraph廃止[§0-4]の組み合わせにより、cycle
+上限[MAX_CYCLES=2]内で全箇所を解消しきれなかったことが原因候補。
+根本解決[MAX_CYCLES拡大/escalate_to_paragraph部分復活等]は本委任の
+スコープ外として実装せず、Fable/ユーザー判断へ委ねた)。
+
+**Status**: `ITER8_BROAD_STABILITY_TRIAL_COMPLETE_COST_AND_UNNECESSARY_
+REWRITE_IMPROVED_BUT_B3_A2A3-0_SAFETY_CRITICAL_MISDOWNGRADE_AND_META_
+STANDARD_HUMAN_REVIEW_REGRESSION_FOUND`。詳細REPORT§30。
 
 ## 10. リスク
 
