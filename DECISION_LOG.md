@@ -15950,3 +15950,68 @@ flow_runner_01_rep18_representative_01.py`、`er052_output/open233_
 element_trial_safety_control_04/`・`er052_output/open233_self_
 recovery_flow_runner_01_rep18/`(新規)、`OPEN_ITEMS.md`(OPEN-233行
 更新)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: meta_run03_standardの人間確認をStage1の揺れから切り離して検証、floorのfact_id単位broadcastという追加原因(d)を特定(委任_34、2026-10-01)
+
+**区分**: Implementation Hardening(Trial測定のみ、Production/共通
+Prompt・schema・routingは無変更)。
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_34: meta_run03_standard
+の人間確認を「Stage1の揺れ」から切り離して検証。広いTrialは含めない)。
+
+**内容**: 委任_33(§6-14)は`meta_run03_standard`の人間確認率悪化の
+原因を「(b)Stage1 fresh enumeration非決定性」と確定したが、Stage1
+自体の揺れはSelf-Recovery Flowの責任範囲外であり、「出たものを人間
+確認なしに正しく処理できるか」は責任範囲内という整理のもと、iter8の
+cycle1 Stage1出力(s1/s2で完全同一、`stage1_cache`共有を実測で確認
+済み)を`stage1_mode=reuse`で固定し、現行既定構成(V6・actorガード・
+局所QA・JA fail-open封鎖・escalate_to_paragraph OFF・⑥OFF)で2 run
+試行した(`er052_open233_self_recovery_flow_runner_01_rep19_
+representative_01.py`、`OUT_DIR_REP19`新設)。
+
+**結果**: sample1は3cycle・32 call(¥6.2845)を費やしても収束せず
+`STAGE4_ESCALATION`(`cycle_limit_exhausted_after_recheck`)。sample2は
+cycle1完了後、累計¥7.2614がGuardrail¥8へ到達し`TrialAbort`で自己停止
+(¥0.9769消費、結果は未保存)。false PASS 0件・Safety-critical誤降格
+0件(meta群は対象外)。cycle1入力を完全固定しても非収束が再現した
+ことは、委任_33が確定した「原因は(b)のみ」では説明できない事実であり、
+claim単位の逐語照合により、`deterministic_floor:changed_number`/
+`deterministic_floor:changed_actor`が、違反を体現する当該claim文
+だけでなく**同一related_fact_idを共有する他の全claim**(llm_
+materialityが独立にACCEPTABLE/QUALITYと判定していても)へBLOCKINGを
+強制的に波及させていること、`same_fact_id_locations`enumerationが
+毎cycle新しい候補文を再列挙し続けることと複合し、cycle上限に達する
+まで収束しなかったことを特定した(追加原因(d)、design書§6-15)。
+
+**対応状況**: (d)は委任文の分類では「Stage2許容例示の適用範囲」
+(floorの対象範囲を当該claim文のみへ狭める)に近い小修正候補だが、
+本委任はGuardrail¥8のうち¥7.2614を使い切ったため、修正の実装・
+再検証(見込み≤¥2)およびSafety-critical priming再確認(見込み≤¥1)を
+行う予算がなく、**未検証のままコード変更は行っていない**(STOP、
+budget guardrail該当)。design書§6-14の結論を「(b)は少なくとも部分的
+要因」へ修正し、(d)を既知の残存原因候補として追加した。
+
+**採用理由**: 該当なし(本委任はコード変更を行っていない。分析・
+計測のみ)。
+
+**比較した選択肢**: 該当なし(修正実装は次委任以降の予算承認待ち)。
+
+**却下理由**: 該当なし。
+
+**Status**: `META_STANDARD_STAGE1_INPUT_FROZEN_STILL_STAGE4_ADDITIONAL_
+ROOT_CAUSE_D_DETERMINISTIC_FLOOR_FACT_ID_BROADCAST_IDENTIFIED_FIX_
+UNTESTED_BUDGET_GUARDRAIL_STOP`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§32、
+`docs/pm/design_open233_self_recovery_flow_01.md`§6-15/§9-1㉔、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-TRIAL-01_
+34.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_flow_runner_01.py`
+(`OUT_DIR_REP19`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`新設、既存
+`OUT_DIR_REP18`等は無変更)。新規`er052_open233_self_recovery_flow_
+runner_01_rep19_representative_01.py`、`er052_output/open233_self_
+recovery_flow_runner_01_rep19/`(新規、`stage1_fixtures/meta_run03_
+standard_iter8_cycle1_frozen.json`含む)、`OPEN_ITEMS.md`(OPEN-233行
+更新)。Production code(er003/er006/er009/er010/er012/er019)・既存
+iteration1〜8・rep7〜18は無変更。

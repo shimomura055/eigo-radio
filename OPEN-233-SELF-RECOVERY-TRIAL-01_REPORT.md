@@ -3238,3 +3238,151 @@ USER_DECISION_REQUIRED 5条件(該当せず、新Product原則/Safety原則変�
 残る(**該当せず、V6是正1回でB3/A2A3-0の誤降格はrep18で再現せず解消**)/
 false PASS 1件以上(該当せず、自動検知0件)/Hormuz許容群の誤BLOCK再発
 (該当せず、Part C実測で5/5非BLOCKING)。**STOPなし**。
+
+## §32. meta_run03_standardの人間確認をStage1の揺れから切り離して検証(委任_34、2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_34: meta_run03_standardの
+人間確認を「Stage1の揺れ」から切り離して検証。広いTrialは含めない)。
+
+### 32-0. 上位目的整合チェック(7観点、design書§0-6/PM_GOVERNANCE§23)
+
+| # | 観点 | 本委任での確認結果 |
+|---|---|---|
+| 1 | 厳密一致のためだけのRewriteになっていないか | 本委任はRewrite方式自体を変更していない(既定構成のまま)。発見した問題はRewrite方式ではなくStage2 deterministic floorの適用範囲 |
+| 2 | 重大誤解でないものを止めていないか | **問題を実測で確認**: `News reports also cited one employee's report.`(「one」=単数、正確な記述)・`However, this is only one report...`(正確なhedge文)・`Meta said it was a mistake to start the test without clear notice.`(無関係の別事実)が、いずれも`llm_materiality=ACCEPTABLE`であるにもかかわらずfloorでBLOCKINGへ強制された(32-1/32-3) |
+| 3 | 小さく直せる問題を大きくRewriteしていないか | cycle2で`escalate_to_paragraph=True`が複数claimに付き、cycle3では`full_recheck_required_reasons`に`paragraph_or_full_or_delete_rewrite`相当の条件が複数回出現し、段階的に大きい単位への昇段が続いた(32-2) |
+| 4 | Rewriteによる品質劣化の方が大きくないか | 本委任は修正を実装していない(未検証のまま変更しない方針)ため、品質劣化の実測比較は次委任の課題 |
+| 5 | 学習者にとって本当に問題か | sample1は3cycle・32 API callを費やしても収束せず人間確認(STAGE4)へ落ちた。学習者への実配信という観点では「正しく安全側へ倒れている」が、運用コスト(¥6.2845/1 run)が高い |
+| 6 | Human Reviewを安易な逃げ道にしていないか | STAGE4は`cycle_limit_exhausted_after_recheck`(cycle上限到達、fail-closed)であり、判定を緩めて通過させてはいない。false PASSは0件(32-2) |
+| 7 | 不要call・Recheck・Rewriteを増やしていないか | 本委任はB(≤¥7)・Safety-critical確認(≤¥1)のGuardrail¥8に対し、sample1完走(¥6.2845)+sample2がcycle1完了直後に自己停止(¥0.9769)で累計¥7.2614に達し、計画の「2 run完走」は未達(32-2・32-4) |
+
+### 32-1. iter8 cycle1 Stage1出力(原本2件+enumeration展開4件)の逐語とFable分類
+
+iter8のs1/s2は`stage1_cache`共有(fresh instanceの既存仕様)により
+cycle1のStage1検出内容が**完全に同一**(原本2件: MUSE-HC-012/
+MUSE-HC-011、実測で確認済み)。原本2件は`same_fact_id_locations`
+フィールドを持ち、`expand_same_fact_id_locations`により各4件・計6件へ
+展開される。
+
+| # | claim(EN、逐語) | fact_id | section | Stage2判定(materiality/llm_materiality/basis) | floor_reason | Fable分類 |
+|---|---|---|---|---|---|---|
+| 1(原本) | "They enjoyed AI's convenience, but a human was on the other end. They did not realize it." | MUSE-HC-012 | body | QUALITY / BLOCKING / unsupported_relationship | `disclosure_gap_negative_inference_downgrade`(委任_18 2-2) | **(ii)** 重大誤解に該当せず、disclosure-gap型(利用者が実際に気づいていなかったと断定する表現だが、Ledgerは「適切な開示なしにテストを開始した」事実のみを確認。既存floorが正しくQUALITYへ降格) |
+| 2(原本) | "It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees." | MUSE-HC-011 | body | BLOCKING / BLOCKING / ledger_scope | `deterministic_floor:changed_number` | **(i)** 正当なBLOCK(規模の歪曲。Ledgerは単一の従業員報告だが記事は複数形"calls"で一般化) |
+| 3(展開) | "If no one explained this clearly, users could not know. They could not tell if it was AI or a person." | MUSE-HC-012 | body | QUALITY / QUALITY / ledger_conditions | なし | **(ii)** 条件文のまま(Ledgerの開示なし条件を正確に反映)、LLM自身が直接QUALITYと判定(floor不要) |
+| 4(展開) | "Some calls through Meta's AI assistant were actually handled by humans, but users were not properly told." | MUSE-HC-012 | in_one_line | ACCEPTABLE / ACCEPTABLE / ledger_claim | なし | **(ii)** 「一部の通話」という範囲は保たれ、Ledgerの核心事実と一致 |
+| 5(展開) | "News reports also cited one employee's report." | MUSE-HC-011 | body | BLOCKING / **ACCEPTABLE** / ledger_claim | `deterministic_floor:changed_number` | **(ii)誤分類**: 文中の"one"は単数で正確。LLM自身もACCEPTABLEと判定したが、同一`related_fact_id`(MUSE-HC-011)を共有する claim#2のfloorが波及してBLOCKINGへ強制された |
+| 6(展開) | "However, this is only one report. It would be wrong to say all contract workers did this." | MUSE-HC-011 | body | BLOCKING / **ACCEPTABLE** | `deterministic_floor:changed_number` | **(ii)誤分類**: 単一報告であることを明示するhedge文そのもの。claim#2のfloorが波及 |
+
+claim#5/#6は、**文面自体は正確(single reportを正しく反映)なのに、
+同一fact_idの他claim(#2)が持つfloorへ巻き込まれてBLOCKINGへ強制
+される**典型例であり、§0許容表の「規模の歪曲」そのものではなく、
+floorの適用範囲(fact_id単位)が広すぎることによる誤分類である
+(32-3で詳述)。
+
+**cycle2/cycle3の推移(要旨、逐語はrep19実測JSON参照)**: cycle1の
+Rewrite後、claim#2相当の文がさらに細分化され、cycle2では
+blocking6件・non-blocking6件(計12件)まで検出対象が増加した。
+BLOCKING6件のうち3件(`News reports also cited one employee's report
+about a phone call.`/`It said human staff made inappropriate comments
+about race during a call.`/`However, this is only one case. It would
+be wrong to say all contract workers did this.`)はいずれも
+`llm_materiality=ACCEPTABLE`または`QUALITY`でありながら
+`deterministic_floor:changed_number`でBLOCKINGへ強制された(claim#5/
+#6と同型の誤分類が増殖)。cycle3では`deterministic_floor:changed_actor`
+が新たに発火し、`"Meta said it was a mistake to start the test
+without clear notice."`(MUSE-HC-012と無関係に近い別事実、
+`llm_materiality=ACCEPTABLE`)までBLOCKINGへ強制された
+(**(ii)誤分類**、32-3)。cycle3のblocking5件・non-blocking0件の時点で
+cycle上限(`MAX_CYCLES=2`+`extra_cycle_granted`延長で実質3)に達し、
+`STAGE4_ESCALATION`(`cycle_limit_exhausted_after_recheck`)。
+
+### 32-2. rep19結果(frozen Stage1入力、現行既定構成、2 run試行)
+
+`er052_open233_self_recovery_flow_runner_01_rep19_representative_
+01.py`(新規、OUT_DIR_REP19新設)で、iter8 cycle1原本2件を
+`stage1_mode=reuse`で固定した1つのfixture
+(`stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`)から
+2 run試行した。
+
+| run | final_state | stage4_reason | cycle数 | 費用 | 備考 |
+|---|---|---|---|---|---|
+| sample1 | `STAGE4_ESCALATION` | `cycle_limit_exhausted_after_recheck` | 3 | ¥6.2845(32 call) | 32-1の推移どおり、cycle3で全5claimがBLOCKINGのまま上限到達 |
+| sample2 | (未完了) | - | cycle1完了後に中断 | ¥0.9769(5 call) | 累計¥7.2614がGuardrail¥8へ到達し`TrialAbort`で自己停止(安全側、結果は未保存) |
+
+false PASS: 0件(いずれもSTAGE4、PASS/RESOLVED系statusなし)。
+Safety-critical誤降格: 0件(`detect_safety_critical_misdowngrades`を
+実行、meta群はSAFETY_CRITICAL_SUB_IDS対象外のため該当行なし)。
+
+### 32-3. 結論: Stage1入力固定でも収束しない追加メカニズム(d)、design書§6-15
+
+**上位目的整合**: Stage1自体の揺れ(cycle1検出内容がrunごとに変わる
+こと)はSelf-Recovery Flowの責任範囲外。しかし本委任はcycle1入力を
+iter8 s1/s2と完全同一に固定した上で、現行既定構成の流路のみを再実行
+した。それでもsample1は3cycle・32 callを費やして収束せず
+`STAGE4_ESCALATION`に到達した。これは、委任_33(§6-14)が確定した
+「原因は(b)Stage1 fresh enumeration非決定性のみ」という結論では
+説明できない事実である((b)はiter8のs1/s2間差異[cycle2以降の検出が
+sampleごとに異なった事実]を説明しうるが、cycle1を完全固定しても
+再現する非収束は説明できない)。
+
+**追加メカニズム(d)**: 32-1のclaim#5/#6および cycle2/cycle3の追加
+誤分類が示すとおり、`deterministic_floor:changed_number`/
+`deterministic_floor:changed_actor`は、違反を体現する当該claim文
+だけでなく、**同一`related_fact_id`を共有する他の全claim**(`llm_
+materiality`が独立にACCEPTABLE/QUALITYと判定していても)へBLOCKING
+判定を強制的に波及させる。`same_fact_id_locations`enumeration
+(委任_20 W2)がRewrite後のテキストから毎cycle新しい候補文を再列挙し
+続けることと複合し、検出対象claim数がcycleごとに増加し続け
+(cycle1: 2件原本→cycle2: 12件→cycle3: 5件全てBLOCKING)、cycle上限に
+達するまで収束しなかった。
+
+**(b)と(d)の関係**: 両者は独立した別メカニズムであり、(b)が
+Stage1検出内容の揺れそのものを指すのに対し、(d)はStage1検出内容が
+固定されていてもfloorの適用範囲(fact_id単位のbroadcast)に起因して
+非収束が生じることを指す。design書§6-14の結論を「(b)は少なくとも
+部分的要因」へ修正し、(d)を既知の残存原因候補として追加した
+(design書§6-15)。
+
+**対応状況**: 委任文の分類では(d)は「Stage2許容例示の適用範囲」
+(floor自体の対象範囲を、違反を体現する当該claim文のみへ狭める)に
+近い**小修正候補**である。ただし本委任はGuardrail¥8のうち¥7.2614を
+sample1完走+sample2 cycle1部分実行で使い切ったため、修正の実装・
+再検証(見込み≤¥2)およびSafety-critical priming再確認(見込み≤¥1)を
+行う予算がなく、**未検証のままコード変更は行っていない**。(d)の
+是非確認(floorの対象範囲を当該claim文へ限定する修正の実装・検証)は
+追加予算(目安¥3程度)の承認をFable/ユーザーへ依頼する。
+
+### 32-4. 費用・unittest・Git
+
+本委任費用: 分析(Part A)¥0+rep19(Part B)¥7.2614=**¥7.2614**
+(Guardrail¥8のうち約91%)。Phase累計¥469.0269+¥7.2614=
+**¥476.2883**/総枠¥600、残**¥123.7117**。
+
+コード変更: `er052_open233_self_recovery_flow_runner_01.py`
+(`OUT_DIR_REP19`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`新設、既存
+`OUT_DIR_REP18`等は無変更)。新規:
+`er052_open233_self_recovery_flow_runner_01_rep19_representative_
+01.py`、`er052_output/open233_self_recovery_flow_runner_01_rep19/
+stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`
+(iter8 cycle1原本2件のfreeze、同一article_textであることを事前に
+確認済み)。**Production code(er003/er006/er009/er010/er012/er019)・
+既存iteration1〜8・rep7〜18・Hormuz/Safety fixtureは一切変更して
+いない**。unittest292件(既存281+委任_33新規11)を実行前に再確認し
+全PASS(API呼び出し前、¥0)。
+
+**STOP条件該当確認**: ¥8超え見込み(**該当: 累計¥7.2614/¥8[残
+¥0.7386]に到達し、計画の残作業[sample2完走・小修正1回・Safety-critical
+priming再確認]のいずれも≤¥2〜¥3の見込み費用を賄えないため、これ以上
+API呼び出しを伴う作業を行うとGuardrailを超える見込み。本節の記録・
+commit・回帰確認はAPI呼び出しを伴わないため継続した**)/API error
+3連続(該当せず、0 error)/Production・既存証跡変更(該当せず)/
+USER_DECISION_REQUIRED 5条件(該当せず、新Product原則/Safety原則変更/
+¥600超過/根本設計変更の実施/Production採用判断のいずれも実施して
+いない。(d)の採否判断自体はFable/ユーザーへ照会するが、本委任内では
+実施していない)/開始前チェック未反映(0件)/Safety-critical誤降格
+(該当せず、meta群は対象外・0件)/false PASS 1件以上(該当せず、0件)/
+小修正1回後もFAIL(**未実施**: 修正を試す前に予算到達のため、「小修正→
+再実行」のサイクル自体に着手できなかった)。**STOP(budget guardrail)**。
+次アクション: (d)修正(floorの対象範囲を当該claim文へ限定)の実装・
+検証の要否、および追加予算(目安¥3程度)の承認をFable/ユーザーへ
+依頼する。

@@ -3157,14 +3157,64 @@ cycle機構の不備((a))では説明できず、**Stage1 fresh(V4A+重大誤解
 のclaim検出(enumeration)自体が強い非決定性を持つ((b))**ことの
 直接証拠である。
 
-**結論・対応**: 原因は(b)(Stage1 fresh enumeration非決定性)。(a)の
-機構自体(複数箇所独立ladder)は正しく機能しており修正不要、(c)も
-不成立のためrubric修正は不要。Stage1検出の非決定性そのものの改善
-(例: temperature/サンプリング設定の見直し、複数回Stage1呼び出しによる
-union screen[S1-U、既存§3-1機構]の既定化等)は根本設計変更に該当する
-ため、本委任ではコード変更を行わず、既知の残存リスクとしてFable/
-ユーザー判断へ委ねる(§7 STOP条件「cycle上限の単純拡大や段落直行の
-復活はしない」に従い、その種の回避策も実装していない)。
+**結論・対応(委任_33時点)**: 原因は(b)(Stage1 fresh enumeration非
+決定性)。(a)の機構自体(複数箇所独立ladder)は正しく機能しており修正
+不要、(c)も不成立のためrubric修正は不要。Stage1検出の非決定性
+そのものの改善(例: temperature/サンプリング設定の見直し、複数回Stage1
+呼び出しによるunion screen[S1-U、既存§3-1機構]の既定化等)は根本設計
+変更に該当するため、本委任ではコード変更を行わず、既知の残存リスク
+としてFable/ユーザー判断へ委ねる(§7 STOP条件「cycle上限の単純拡大や
+段落直行の復活はしない」に従い、その種の回避策も実装していない)。
+**委任_34で(b)単独では説明できない追加メカニズム(d)が判明したため、
+下記§6-15で結論を補強・修正する。**
+
+### 6-15. `meta_run03_standard`、Stage1入力固定後も残る追加原因(d)の特定(委任_34、REPORT§32)
+
+**背景**: Stage1自体の揺れ(cycle1検出内容がrunごとに変わること)は
+Self-Recovery Flowの責任範囲外だが、「出たものを人間確認なしに正しく
+処理できるか」は責任範囲内という整理のもと、iter8のcycle1 Stage1出力
+(s1/s2で完全同一、`stage1_cache`共有[fresh instanceの仕様どおり]を
+実測で確認済み)を`stage1_mode=reuse`で固定し、現行既定構成(V6・
+actorガード常時評価・局所QA・JA fail-open封鎖・escalate_to_paragraph
+OFF・⑥OFF)でそのまま再実行した(frozen fixture:
+`er052_output/open233_self_recovery_flow_runner_01_rep19/
+stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`、
+`er052_open233_self_recovery_flow_runner_01_rep19_representative_
+01.py`新設、OUT_DIR_REP19新設)。
+
+**結果**: sample1は3cycle完走後も`STAGE4_ESCALATION`
+(`stage4_reason=cycle_limit_exhausted_after_recheck`、¥6.2845)。
+sample2はcycle1完了後、Guardrail到達(累計¥7.2614/¥8)で安全側に
+自己停止(`TrialAbort`、¥0.9769消費、結果は未保存)。cycle1の入力を
+iter8と完全固定したにもかかわらず再びSTAGE4へ到達したことは、
+§6-14の「原因は(b)のみ」という結論では説明できない。
+
+**追加メカニズム(d)**: `deterministic_floor:changed_number`/
+`deterministic_floor:changed_actor`は、違反を体現する当該claim文
+だけでなく、同一`related_fact_id`を共有する**他の全claim**(`llm_
+materiality`が独立にACCEPTABLE/QUALITYと判定していても)へBLOCKING
+判定を強制的に波及させる。`same_fact_id_locations`enumeration
+(委任_20 W2)がRewrite後のテキストから毎cycle新しい候補文を再列挙
+し続けることと複合し、cycle1の2claim→cycle2の12claim(blocking6+
+non_blocking6)→cycle3の5claim(全てBLOCKING、non_blocking0)と
+検出対象が増加し続け、cycle上限(`MAX_CYCLES=2`+`extra_cycle_granted`
+延長で実質3)に達するまで収束しなかった(詳細逐語はREPORT§32)。
+
+**(b)と(d)の関係**: (b)はiter8のs1/s2間の差異(cycle2以降の検出が
+sampleごとに異なった事実)を説明しうるが、cycle1を完全固定しても
+依然として収束しないという今回の事実は、(b)単独では説明できない。
+(d)はdeterministic floorの波及範囲(fact_id単位)が広すぎることに
+起因する、(b)とは独立した追加原因候補である。
+
+**対応**: §6-14の結論を「(b)は少なくとも部分的要因」へ修正し、(d)
+「deterministic floorのfact_id単位broadcast+same_fact_id_locations
+enumerationの複合によるcycle内非収束」を既知の残存原因候補として
+追加する。委任文の分類では(d)は「Stage2許容例示の適用範囲」(floor
+自体の対象範囲を、違反を体現する当該claim文のみへ狭める)に近い
+**小修正候補**だが、本委任はGuardrail¥8のうち¥7.2614を1run+aborted
+1runで使い切ったため、修正の実装・再検証(見込み≤¥2)を行う予算が
+なく、**未検証のままコード変更は行っていない**。(d)の是非確認は
+追加予算(目安¥3程度)の承認をFable/ユーザーへ依頼する。
 
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
@@ -4910,6 +4960,22 @@ RESOLVED_REWRITE(誤降格解消)。(2)A2A3-0は2/2ともBLOCKING維持
 `BODY_RUBRIC_DEFAULT`をV6へ昇格した。実測合計¥6.4033(Guardrail¥15内)。
 Phase累計¥462.6236+¥6.4033=**¥469.0269**/総枠¥600、残**¥130.9731**。
 詳細REPORT§31。
+
+**㉔ meta_run03_standardの人間確認をStage1の揺れから切り離して検証
+(委任_34、本書§6-15参照)**: iter8のcycle1 Stage1出力(s1/s2完全同一)を
+固定しreuse入力として、現行既定構成で2 run試行した
+(`er052_open233_self_recovery_flow_runner_01_rep19_representative_
+01.py`、`OUT_DIR_REP19`新設)。結果: sample1は3cycle完走後も
+STAGE4_ESCALATION(`cycle_limit_exhausted_after_recheck`、¥6.2845)。
+sample2はcycle1完了後、Guardrail到達(累計¥7.2614/¥8)で自己停止
+(¥0.9769消費、結果未保存)。Stage1入力を完全固定しても収束しなかった
+ことから、§6-14の「原因は(b)Stage1非決定性のみ」を「(b)は部分的要因」
+へ修正し、新たに(d)deterministic floorのfact_id単位broadcast+
+same_fact_id_locations enumeration複合によるcycle内非収束を追加原因
+候補として特定した(§6-15)。修正の実装・再検証は予算超過のため
+未実施(STOP、budget guardrail該当)。実測¥7.2614(Guardrail¥8内)。
+Phase累計¥469.0269+¥7.2614=**¥476.2883**/総枠¥600、残**¥123.7117**。
+詳細REPORT§32。
 
 ## 10. リスク
 

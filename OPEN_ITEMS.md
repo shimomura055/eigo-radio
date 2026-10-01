@@ -604,6 +604,34 @@ TRIAL-01`委任_33エントリ、`docs/pm/design_open233_self_recovery_
 flow_01.md`§4-25/§6-14/§8-8/§9-1㉓、`OPEN-233-SELF-RECOVERY-
 TRIAL-01_REPORT.md`§31。meta_run03_standardの非決定性そのものの
 改善要否はFable/ユーザー判断事項として継続。
+**2026-10-01追記(委任_34、meta_run03_standardの人間確認をStage1の
+揺れから切り離して検証)**: iter8のcycle1 Stage1出力(s1/s2完全同一、
+`stage1_cache`共有を実測確認)を`stage1_mode=reuse`で固定し、現行
+既定構成で2 run試行した(`er052_open233_self_recovery_flow_runner_
+01_rep19_representative_01.py`、OUT_DIR_REP19新設)。結果:
+sample1は3cycle・32 call(¥6.2845)を費やしても収束せずSTAGE4_
+ESCALATION(`cycle_limit_exhausted_after_recheck`)。sample2はcycle1
+完了後、累計¥7.2614がGuardrail¥8へ到達し自己停止(¥0.9769消費、
+結果未保存)。false PASS 0件・Safety-critical誤降格0件(meta群は
+対象外)。cycle1入力を完全固定しても非収束が再現したことから、
+委任_33の「原因は(b)Stage1非決定性のみ」を「(b)は部分的要因」へ
+修正し、新たな追加原因(d)を特定した: `deterministic_floor:
+changed_number`/`changed_actor`が、違反を体現する当該claim文だけで
+なく同一`related_fact_id`を共有する他の全claim(llm_materialityが
+独立にACCEPTABLE/QUALITYと判定していても)へBLOCKINGを強制的に波及
+させ、`same_fact_id_locations`enumerationが毎cycle新しい候補文を
+再列挙し続けることと複合して、cycle上限まで収束しなかった(design書
+§6-15)。(d)は「Stage2許容例示の適用範囲」に近い小修正候補だが、
+Guardrail¥8を使い切ったため修正の実装・再検証は未実施(STOP、budget
+guardrail該当)。Phase累計¥469.0269+¥7.2614=¥476.2883/総枠¥600、
+残¥123.7117。Status=`META_STANDARD_STAGE1_INPUT_FROZEN_STILL_
+STAGE4_ADDITIONAL_ROOT_CAUSE_D_DETERMINISTIC_FLOOR_FACT_ID_BROADCAST_
+IDENTIFIED_FIX_UNTESTED_BUDGET_GUARDRAIL_STOP`。詳細:
+`DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_34
+エントリ、`docs/pm/design_open233_self_recovery_flow_01.md`§6-15/
+§9-1㉔、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§32。(d)修正の
+実装・検証要否および追加予算(目安¥3程度)の承認はFable/ユーザー
+判断事項として継続。
 旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
 B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
 Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は

@@ -233,11 +233,20 @@ OUT_DIR_ITER8 = "er052_output/open233_self_recovery_flow_runner_01_iter8"
 # 再実行する(委任文Guardrail¥13の一部、詳細はREPORT§31参照)。出力は
 # 新規ディレクトリ(`_rep18`)へ書く。
 OUT_DIR_REP18 = "er052_output/open233_self_recovery_flow_runner_01_rep18"
-OUT_DIR = OUT_DIR_REP18
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233aj_33_rep18.json"
-TOTAL_BUDGET_JPY = 11.0  # 委任_33 rep18 Guardrail¥13のうち、Part A/C/Hook
-# (別budget state、er052_open233_element_trial_safety_control_04.py)分の
-# 余裕を残して本rep18自身は¥11で自己停止する。
+# 委任_34(rep19、2026-10-01、委任文§2 B): 既存iteration1〜8・rep7〜18の
+# 出力(OUT_DIR_ITER1〜8/OUT_DIR_REP7〜18)は変更しない。iter8の
+# meta_run03_standard(s1/s2)のcycle1 Stage1出力(fresh、同一事実の多箇所
+# 列挙を含む、両sample同一内容)をそのままreuse入力として固定
+# (`stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`、
+# `stage1_mode="reuse"`へ上書き)し、現行既定構成(V6・actorガード・局所
+# QA・JA fail-open封鎖・escalate_to_paragraph OFF・⑥OFF)で2回
+# (iter8のs1/s2それぞれ1run)実行する。出力は新規ディレクトリ(`_rep19`)へ書く。
+OUT_DIR_REP19 = "er052_output/open233_self_recovery_flow_runner_01_rep19"
+OUT_DIR = OUT_DIR_REP19
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ak_34_rep19.json"
+TOTAL_BUDGET_JPY = 7.0  # 委任_34 Guardrail¥8のうち、小修正後のSafety-critical
+# priming再確認(≤¥1、別budget state)分の余裕を残し、rep19本体(B、2 run)
+# 自身は¥7で自己停止する。
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
