@@ -450,6 +450,30 @@ RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4 = (
     RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V4
 )
 
+# ------------------------------------------------------------
+# 委任_31 Part1(b)(design書§4-24、neg1「Meta had run a test that caused
+# exactly this surprise.」の不要Rewrite是正): 本委任の主な是正はSection
+# routing側(Hook専用rubricへ回す、`_hook_paragraph_block`)だが、同じ
+# claimが何らかの理由でbody rubric経路に残った場合の防御層として、body
+# rubric側にも最小限の1段落のみ追加する(priming回避のため新しい例示は
+# 増やさず、既存V4の区別[条件付き可能性→既成事実への断定はcertainty
+# 強化としてBLOCKING維持、§0-2]とは明確に別物として書く)。
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT_V5 = MISCONCEPTION_PRINCIPLE_TEXT_V4 + """
+
+【追加明確化(委任_31 Part1(b)、neg1の不要Rewrite是正、最小修正1回)】
+確認済みの中心的な出来事(例: 相手はAIだと思っていたら、開示なしに実は
+人間がやり取りしていた)から当然に導ける、受け手(読者・利用者)側の
+驚き・反応についての言及は、新しい具体的Factの追加ではありません。
+一方、Ledgerが「〜する可能性がある」のように条件付き・未確定としている
+内容を、その条件を外して実際に起きたこととして断定する場合(上記の
+区別どおり)は、これとは別物として引き続き確実性の強化を理由に
+BLOCKINGとしてください。"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5 = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V5
+)
+
 
 class TrialAbort(RuntimeError):
     pass

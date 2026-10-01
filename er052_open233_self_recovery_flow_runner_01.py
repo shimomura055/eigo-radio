@@ -198,8 +198,6 @@ OUT_DIR_REP15 = "er052_output/open233_self_recovery_flow_runner_01_rep15"
 # instanceをStage1 fresh・n=2で再実行する(委任文Part3、budget_stateパス
 # 明示)。出力は新規ディレクトリ(`_rep16`)へ書く。
 OUT_DIR_REP16 = "er052_output/open233_self_recovery_flow_runner_01_rep16"
-OUT_DIR = OUT_DIR_REP16
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ag_30_rep16.json"
 # 委任_30 Part3続き(neg3 FAIL是正の反映後、sample2残り4 instanceの再開):
 # sample1完走時点でrep16単体が既に¥10.3338(Part3当初Guardrail¥10をわずかに
 # 超過、check_budgetは呼び出し前判定のため最終callで超過すること自体は
@@ -207,7 +205,20 @@ BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ag_30_rep16.json"
 # 単体fix検証[¥0.0758]を含む)の残り約¥3.8の範囲内でsample2を完走させる
 # ため、rep16単体の上限をここまで引き上げる(委任全体の新しい支出枠を
 # 追加するものではなく、既承認の¥15の範囲内でのサブGuardrail再配分)。
-TOTAL_BUDGET_JPY = 13.6
+# 委任_31(2026-10-01、rep16の残3点の是正と再確認): 既存iteration1〜7・
+# rep7〜16の出力は変更しない。Part1の是正((a)actor置換ガード常時評価・
+# (b)Hook境界拡張+body rubric V5)反映後、`neg1_meta_b3prod_a2`/
+# `neg3_hormuz_prodrunner_b1b`をStage1 fresh・n=2で再実行する(委任文
+# Part2、budget_stateパス明示)。出力は新規ディレクトリ(`_rep17`)へ書く。
+# Part2のGuardrail¥8のうち、Safety-critical 8claim V5再確認(別budget
+# state、`er052_open233_element_trial_safety_control_03.py`)で既に
+# ¥1.6243を使用済みのため、本rep17自身の上限は残り約¥6.37の範囲内で
+# 自己停止するよう¥6.3に設定する(委任全体Guardrail¥10を超えないための
+# サブGuardrail配分)。
+OUT_DIR_REP17 = "er052_output/open233_self_recovery_flow_runner_01_rep17"
+OUT_DIR = OUT_DIR_REP17
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ah_31_rep17.json"
+TOTAL_BUDGET_JPY = 6.3
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -255,9 +266,15 @@ ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP = False
 # (iteration1〜7・rep7〜15と同一)の挙動に戻る(再有効化はFable/ユーザー
 # 判断、既存iteration/rep証跡は本フラグの既定値変更と無関係[既にOUT_DIRが
 # 固定済み])。
+# 委任_31 Part1(b)(design書§4-24): body rubricの既定をV4からV5(neg1の
+# 不要Rewrite是正の防御層、「受け手側の驚き・反応は新規Factではない」の
+# 1段落追加)へ昇格する。Safety-critical 8claim(B3を含む、n=1、
+# `er052_open233_element_trial_safety_control_03.py`)で誤降格0件を確認
+# 済み(priming再測定の要件どおり)。Falseに戻すと重大誤解原則配線前
+# (iteration1〜7・rep7〜15と同一)の挙動に戻る。
 ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT = True
 BODY_RUBRIC_DEFAULT = (
-    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4
+    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5
     if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2c.RUBRIC_R3_TRIPLE_PRIME
 )
 HOOK_RUBRIC_DEFAULT = (
@@ -542,6 +559,34 @@ def _paragraph_title(t: str) -> str:
 def _first_body_paragraph(t: str) -> str:
     paras = _split_paragraphs_nonheading(t)
     return paras[0] if paras else ""
+
+
+def _hook_paragraph_block(t: str) -> str:
+    """委任_31 Part1(b)是正(design書§4-24): Hookセクションの範囲を
+    「冒頭段落全体(Hook導入文+その締め文)」へ拡張する。`_first_body_
+    paragraph`(段落①のみ)の既知の限界(§4-14コメント参照、「hookが実質
+    2段落以上にまたがる記事であっても常にparas[0]のみをhook候補として
+    扱う」)を、neg1実例(段落①=場面描写、段落②=“Meta had run a test
+    that caused exactly this surprise.”という1文の締め文)に限定して解消
+    する。第2段落を無条件にHookへ含めると、hormuz/meta_run03_standard/
+    bgroup_B3/neg3実測(段落②が複数文・具体的な数字/日付を含む本文段落)で
+    Safety回帰(本文のmaterial claimをHook専用[緩やか]rubricへ誤って
+    振り分けるリスク)が生じるため、意図的に保守的な決定論ヒューリスティック
+    (¥0)で絞る: 第2段落が(a)1文のみ、かつ(b)数字を含まない場合に限り
+    Hookへ含める(「締め文」=曖昧な演出の1文という想定に合致する場合のみ)。
+    それ以外(複数文、または具体的な数字/日付を含む)は従来どおり段落①のみ
+    を返す(body/in_one_lineの既存ルーティングは変更しない)。"""
+    paras = _split_paragraphs_nonheading(t)
+    if not paras:
+        return ""
+    if len(paras) < 2:
+        return paras[0]
+    second = paras[1]
+    sentence_count = len([s for s in re.split(r"(?<=[.!?])\s+", second.strip()) if s])
+    has_digit = bool(re.search(r"\d", second))
+    if sentence_count <= 1 and not has_digit:
+        return paras[0] + "\n\n" + second
+    return paras[0]
 
 
 def measure_rewrite_quality_degradation_v2(before_text: str, after_text: str,
@@ -1692,13 +1737,15 @@ def _extract_in_one_line_text(full_text: str) -> str:
 
 
 def detect_claim_section_type(claim_text: str, full_text: str) -> str:
-    """claimがTitle/Hook(第1段落)/In one line/本文のどこに位置するかを
-    決定論的に判定する(委任_14 B-5、¥0)。位置特定にはlocate_best_sentence
-    (既存)を再利用し、新しいマッチングロジックは発明しない。"""
+    """claimがTitle/Hook(第1段落、委任_31 Part1(b)是正後は条件を満たす
+    場合に限り第2段落=締め文も含む`_hook_paragraph_block`)/In one line/
+    本文のどこに位置するかを決定論的に判定する(委任_14 B-5、¥0)。位置
+    特定にはlocate_best_sentence(既存)を再利用し、新しいマッチング
+    ロジックは発明しない。"""
     if not full_text:
         return "body"
     title = _paragraph_title(full_text)
-    hook = _first_body_paragraph(full_text)
+    hook = _hook_paragraph_block(full_text)
     in_one_line = _extract_in_one_line_text(full_text)
     target, _method = locate_best_sentence(claim_text, full_text)
     probe = target or claim_text or ""
@@ -1725,14 +1772,16 @@ def detect_claim_section_type(claim_text: str, full_text: str) -> str:
 # detect_claim_section_typeの判定基準(既存、変更なし):
 # - title: 記事先頭行(`_paragraph_title`、Markdown見出し記号を含む生の
 #   1行)とのJaccard類似度[閾値0.4]または部分文字列一致。
-# - hook: 本文第1段落(`_first_body_paragraph`=`_split_paragraphs_
-#   nonheading`が返す最初の段落。「#」始まりの見出し行は除外される)との
-#   類似度[閾値0.3]。**境界例**: hookが実質2段落以上にまたがる記事
-#   (例: 場面描写が2段落連続する構成)であっても、本判定は常に
-#   `paras[0]`(最初の1段落)のみをhook候補として扱う。2段落目以降の
-#   場面描写は本判定では「body」に分類される(既知の限界、Hook専用Stage2
-#   の対象外のまま本文Stage2[R3''']で判定される。iteration1〜6・rep7の
-#   fixture群では該当例は確認されていない)。
+# - hook: 本文第1段落+条件を満たす場合のみ第2段落(`_hook_paragraph_
+#   block`=`_split_paragraphs_nonheading`が返す最初の段落、「#」始まりの
+#   見出し行は除外される)との類似度[閾値0.3]。**委任_31 Part1(b)是正
+#   (design書§4-24)**: 旧実装は常に`paras[0]`のみをhook候補として扱い、
+#   2段落目以降(neg1実例の締め文「Meta had run a test that caused
+#   exactly this surprise.」のような1文の演出)は「body」に誤分類される
+#   既知の限界があった。第2段落が(a)1文のみ・(b)数字を含まない場合に
+#   限り、Hook導入文の締め文とみなして含める(hormuz/meta_run03_
+#   standard/bgroup_B3/neg3実測: 第2段落が複数文・具体的な数字/日付を
+#   含む本文段落であるため対象外のまま、Safety回帰なしを確認済み)。
 # - in_one_line: 「## In one line」見出し直後の1段落(`_extract_in_one_
 #   line_text`)との類似度[閾値0.4]。**in_one_lineはHook専用Stage2の対象
 #   外**(下記HOOK_ONLY_STAGE2_SECTION_TYPESに含まれない、§5-7の役割定義
@@ -1752,13 +1801,14 @@ HOOK_ONLY_STAGE2_SECTION_TYPES = frozenset({"title", "hook"})
 
 def build_title_hook_context(full_text: str) -> str:
     """Hook専用Stage2(委任_17 A-2)の入力用に、Title(見出し行)とHook段落
-    (本文第1段落)のみを抽出して返す(¥0、決定論)。既存のローカル文脈
-    ±1段落(`s2p.build_local_context`)とは異なり、対象範囲をTitle/Hookのみ
-    へ意図的に限定する(委任文§3 A-2「入力=Ledger全文+source context+
+    (本文第1段落+条件を満たす場合のみ締め文の第2段落、委任_31 Part1(b)
+    是正)のみを抽出して返す(¥0、決定論)。既存のローカル文脈±1段落
+    (`s2p.build_local_context`)とは異なり、対象範囲をTitle/Hookのみへ
+    意図的に限定する(委任文§3 A-2「入力=Ledger全文+source context+
     タイトル・hook段落+対象claim」)。"""
     title = _paragraph_title(full_text)
-    hook = _first_body_paragraph(full_text)
-    return f"タイトル: {title}\n\nHook段落(本文第1段落): {hook}"
+    hook = _hook_paragraph_block(full_text)
+    return f"タイトル: {title}\n\nHook段落(本文第1段落+該当する場合は締め文): {hook}"
 
 
 def apply_hook_aware_downgrade(materiality: str, dev: dict, section_type: str, floor_reason) -> tuple:
@@ -2606,9 +2656,17 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                     continue
                 candidate = full_text.replace(lv["target"], revised, 1)
                 if candidate != full_text and claim_text.strip() not in candidate:
-                    # 委任_27 Part1-3(§0-5): 主体置換ガード(problem_kind=
-                    # "actor"のclaimのみ)。未確認の具体主体への置換を防ぐ。
-                    if problem_kind == "actor" and not actor_rewrite_guard_ok(
+                    # 委任_31 Part1(a)是正(design書§4-24): 主体置換ガードを
+                    # problem_kindに関係なく常に評価する。旧実装は
+                    # `problem_kind == "actor"`の場合のみ評価していたため、
+                    # classify_problem_kindの優先順位(term_scope>actor)に
+                    # よりchanged_scope/changed_actorが同時に真のclaimでは
+                    # ガードが一度も発火しない設計上の盲点があった(委任_30
+                    # Trial C期待2で発見)。actor_rewrite_guard_ok自体は
+                    # 新しい主体語が導入されない場合は常にTrueを返す
+                    # no-opのため(§0-5既存仕様)、常時評価してもunspecified/
+                    # term_scope等の既存経路への非回帰影響はない。
+                    if not actor_rewrite_guard_ok(
                             lv["target"], revised, fixture["ledger_text"]):
                         method_used = f"{lv['tag']}_actor_guard_rejected({locate_method})"
                         continue
@@ -2821,8 +2879,10 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                 and candidate_ja != ja_full and candidate_en != en_full
                 and claim_text.strip() not in candidate_en
             )
-            # 委任_27 Part1-3(§0-5): 主体置換ガード(problem_kind="actor"のみ)。
-            if level_guard_ok and problem_kind == "actor" and not actor_rewrite_guard_ok(
+            # 委任_31 Part1(a)是正(design書§4-24): single_text_rewriteと
+            # 同一理由でproblem_kindに関係なく常に評価する(委任_30 Trial C
+            # 期待2で発見したterm_scope>actor優先順位による盲点の是正)。
+            if level_guard_ok and not actor_rewrite_guard_ok(
                     lv["en_target"], en_revised, fixture["ledger_text"]):
                 level_guard_ok = False
             if level_guard_ok:

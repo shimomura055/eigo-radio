@@ -1,0 +1,89 @@
+{
+  "instance_id": "neg1_meta_b3prod_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "A human can handle situations that AI alone finds difficult.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-008",
+          "dev": {
+            "claim_in_article": "A human can handle situations that AI alone finds difficult.",
+            "issue": "限られたテストの結果から、AIが難しい状況を人間が処理できるという一般的な能力比較へ広げています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "MUSE-HC-008は一部テストで人間担当時の成功率がAIのみの場合より高かったという報告に限られ、一般的な能力比較への拡張はnotesの制約に反します。",
+            "related_fact_id": "MUSE-HC-008",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "Having a person take over is not always a bad thing. ... As a system, this may even be useful.",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-008",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "It was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": []
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg1_meta_b3prod_a2_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0584,
+      "usage": {
+        "input_tokens": 7232,
+        "cached_input_tokens": 7229,
+        "output_tokens": 599,
+        "reasoning_tokens": 549
+      },
+      "elapsed_seconds": 7.703,
+      "prompt_sha256": "3273373bba18d201c392e9df34238e5ca40f65d04bb86c8374b114e2886a1e8c"
+    }
+  ],
+  "total_cost_jpy": 0.0584,
+  "total_calls": 1,
+  "elapsed_seconds": 7.717
+}

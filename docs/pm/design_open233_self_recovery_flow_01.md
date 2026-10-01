@@ -1514,6 +1514,72 @@ exact_substring))`・ladder_level_used=`1_word_connective`で解決した**
 verify_01.py`)。本修正は`single_text_rewrite`を単体で呼ぶだけの
 委譲であり、⑥(全文フォールバック、既定OFF)の再有効化ではない。
 
+### 4-24. 主体置換ガードの常時評価+Hookセクション境界拡張(締め文)+body rubric V5(委任_31 Part1)
+
+委任_30 rep16実測で残った3点(Fable判定§1(a)(b)(c)、委任文§1)のうち、
+(a)(b)の是正コードをここに記録する((c)はneg3のn=2再実行そのものであり
+コード変更ではないため§9-1の実測ログのみに記録する)。
+
+**(a) 主体置換ガードの常時評価(actorガード盲点の是正)**: 委任_30 Trial
+C期待2で発見した設計上の盲点(`classify_problem_kind`の優先順位
+[term_scope>causality>actor>time]により、changed_scope/changed_actorが
+同時に真のclaimではproblem_kind="term_scope"に分類され、主体置換ガード
+[`actor_rewrite_guard_ok`、旧実装は`problem_kind=="actor"`の場合のみ
+発火]が一度も評価されなかった)を是正する。`single_text_rewrite`/
+`paired_rewrite`両方の呼び出し箇所で、`problem_kind == "actor" and not
+actor_rewrite_guard_ok(...)`という条件から`problem_kind == "actor"
+and`部分を削除し、**problem_kindに関係なく常に`actor_rewrite_guard_ok`
+を評価する**よう変更した。`actor_rewrite_guard_ok`自体は新しい主体語が
+導入されない場合は常にTrueを返すno-op設計(§0-5既存仕様)であるため、
+常時評価してもunspecified/term_scope等の既存経路への非回帰影響はない
+(既存unittestの結果は変わらない、新規のみ追加)。unittest 1件
+(`TestActorGuardAlwaysEvaluatedRegardlessOfProblemKind`)で、Trial C
+期待2の実データ(changed_scope=True・changed_actor=True・
+"users"→"employees")が、是正後は実際に却下されることを確認した(¥0)。
+
+**(b) Hookセクション境界拡張(締め文を条件付きで含める)+body rubric
+V5(neg1の不要Rewrite是正)**: neg1実例(「Meta had run a test that
+caused exactly this surprise.」→「Meta had run a test.」のRewrite)は、
+確認済みの中心的な出来事(開示なしに人間が電話をかけていた)から自然に
+導ける、Hook導入文の締め文であり、重大誤解原則では本来Rewrite不要
+(削除はHookの落ちを消す品質劣化)とFableが判定した。根本原因は
+`detect_claim_section_type`/`build_title_hook_context`が常に段落①
+(Hook導入文)のみをHook候補とし、段落②(締め文)を無条件に「body」へ
+分類していたため(§4-14既述の既知の限界)、この1文がHook専用rubric
+(緩やか)ではなく本文rubric(厳格)で判定されていたことにある。
+
+是正は以下2点:
+1. 新設`_hook_paragraph_block()`で、Hookの範囲を「段落①+条件を満たす
+   場合のみ段落②」へ拡張する。段落②を無条件に含めると、hormuz_run03_
+   standard/meta_run03_standard/bgroup_B3/neg3_hormuz_prodrunner_b1b
+   実測(段落②が複数文・具体的な数字/日付を含む本文段落)でSafety回帰
+   (本文のmaterial claimをHook専用[緩やか]rubricへ誤って振り分ける
+   リスク)が生じるため、意図的に保守的な決定論ヒューリスティック
+   (¥0)で絞る: 段落②が(i)1文のみ、かつ(ii)数字を含まない場合に限り
+   Hookへ含める。neg1の段落②("Meta had run a test that caused exactly
+   this surprise.")は1文・数字なしのため該当し、hormuz/meta_run03_
+   standard/bgroup_B3/neg3の段落②(いずれも複数文、または具体的な数字/
+   日付を含む)は非該当のまま(既存実測fixtureで検証、unittest
+   `TestHookParagraphBlockBoundary`4件・`TestDetectClaimSectionType`
+   更新2件)。
+2. 防御層として、body rubric(`RUBRIC_R3_TRIPLE_PRIME_WITH_
+   MISCONCEPTION_PRINCIPLE_V5`、`MISCONCEPTION_PRINCIPLE_TEXT_V4`へ
+   最小1段落追加)を新設し、「確認済みFactから導ける受け手側の驚き・
+   反応の言及は新規Factの追加ではない」ことを明記した(同じclaimが何らか
+   の理由でbody rubric経路に残った場合の保険、新しい例示は増やさず既存
+   V4の区別[条件付き可能性→既成事実への断定はcertainty強化として
+   BLOCKING維持]とは明確に別物として記述、priming回避のため新しい
+   例示は追加しない)。`BODY_RUBRIC_DEFAULT`をV4からV5へ昇格する前に、
+   priming再測定の要件(委任_16の教訓)どおりSafety-critical 8claim
+   (B3を含む、`er052_open233_self_recovery_r3dprime_calibration_01.
+   SAFETY_CRITICAL_SUB_IDS`)をStage2のみ・n=1で再確認し(`er052_
+   open233_element_trial_safety_control_03.py`、¥1.6243)、**8claim全件
+   がBLOCKINGを維持し誤降格0件**であることを確認してから昇格した
+   (unittest`TestMisconceptionPrincipleRubricV5`3件)。
+
+既存iteration1〜7・rep7〜16の出力(OUT_DIR_ITER1〜7/OUT_DIR_REP7〜16)は
+変更しない。実記事での検証(neg1/neg3のn=2再実行)は§9-1㉑参照。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
@@ -4518,6 +4584,69 @@ unittest discoverで既存306件(§4-22時点)+新規6件
 への差分なしを確認した。**Status=
 `HOOK_V4_BOUNDARY_RESOLVED_DEFAULT_WIRED_REP16_PARTIAL_N2_ACTOR_GUARD_
 GAP_DISCLOSED`**。詳細REPORT§28。
+
+**㉑ rep16の残3点の是正(actorガード常時評価+Hook境界拡張+body rubric
+V5)+neg1/neg3のn=2再確認(委任_31、本書§4-24参照)**: Fable判定
+§1(a)(b)(c)(§4-24に詳細記録)を反映した。(a)(b)はコード是正(¥0、
+unittest 9件新規)、priming再測定(Safety-critical 8claim、B3を含む、
+Stage2のみ・n=1、`er052_open233_element_trial_safety_control_03.py`)で
+誤降格0件を確認後(¥1.6243)、`neg1_meta_b3prod_a2`/
+`neg3_hormuz_prodrunner_b1b`をStage1 fresh・n=2で再実行した
+(`er052_open233_self_recovery_flow_runner_01_rep17_representative_01.py`、
+¥3.1313)。
+
+結果: **両instanceともn=2全件でStage4到達0・false PASS 0を確認した**。
+`neg1_meta_b3prod_a2`はsample1/sample2ともRESOLVED_STAGE2_DOWNGRADE
+(Rewrite 0件)。ただしStage1(fresh、非決定性)が今回たまたまHook導入文・
+Hook締め文・usersの3claimを検出せず(別のBLOCKING-candidate「A human
+can handle situations that AI alone finds difficult.」[related_fact_id
+MUSE-HC-008、section_type=body]を検出しn=2ともQUALITYへdowngrade)、
+本委任の主目的(Hook境界拡張の効果)はこの実行ではfull flow上で直接は
+再現しなかった。そのため、実fixtureのarticle_text(捏造なし)に対し
+`detect_claim_section_type`/`_hook_paragraph_block`を直接呼ぶ¥0確認を
+別途行い、**Hook導入文(“Ring, ring...It was a person.”)・Hook締め文
+(“Meta had run a test that caused exactly this surprise.”)がともに
+section_type="hook"へ、usersクレームはsection_type="body"のまま
+(変化なし)であることを実データで確認した**(是正の構造的な効果は
+確認済み、Stage1非決定性によるfull flow上の偶発的な不一致は既知の
+限界として記録する)。
+
+`neg3_hormuz_prodrunner_b1b`はsample1=RESOLVED_REWRITE・
+sample2=RESOLVED_REWRITE_THEN_DOWNGRADE(cycle2のRecheckで新規claimが
+ACCEPTABLEへ収束)、**いずれもStage4到達なし・Rewriteは①単語・接続詞
+水準のみ(段落・全文Rewrite 0)**。ただしStage1 freshが今回検出した
+claim群は全て`origin=translation`(EN単独、`single_text_rewrite`
+経路)であり、委任_30で単体検証した`origin=ja_source`のJA/EN paired
+claim(JA「貨物に」→「貨物について」)とは別のclaim集合だった(Stage1
+非決定性、既知の限界)。当該JA paired claimの単体検証結果(既存artifact
+`er052_output/open233_self_recovery_flow_runner_01_rep16/
+neg3_fail_fix_verification.json`、委任_30・¥0.0758で取得済み、再実行
+せず読み出しのみ)を参照として据え置く: `guard_ok=True`・
+`method=j1_single_side_ja(e1_minimal_word_edit(exact_substring))`・
+JA「海峡を通るすべての貨物に二割の償還」→「海峡を通るすべての貨物
+について二割の償還」(支払義務者を特定しない表現、1語編集のみ)。
+rep17で実際に検出されたEN claim(“The fee plan may be replaced, but
+events continuing at the same time do not simply disappear backstage
+because of one announcement.”の“events driving oil prices—and the
+prices themselves—quickly returned”句)は、①水準の1語/短い句編集
+(sample1: “the events driving oil prices—and the prices
+themselves—”→“prices themselves ”への縮小、“During that period”→
+“At the same time”、“because of”→“after”)でguard_ok=Trueのまま解決
+した(段落・全文Rewriteへのescalationなし)。
+
+本委任合計費用¥1.6243(Safety V5再確認)+¥3.1313(rep17)=
+**¥4.7556**(Guardrail¥10のうち、残¥5.2444)。unittest discoverで本
+テストファイル既存272件(§4-23時点)+新規9件
+(`TestHookParagraphBlockBoundary`4件・`TestDetectClaimSectionType`
+新規1件・`TestActorGuardAlwaysEvaluatedRegardlessOfProblemKind`1件・
+`TestMisconceptionPrincipleRubricV5`3件、うち1件は既存test名の更新で
+純増ではないため合計9件純増)=**合計281件、全PASS**。リポジトリ全体
+discoverは2224件中8件が失敗(er025/er040/er043/er011、本委任と無関係な
+既存failure、`er052`関連の失敗は0件であることを確認)。`git diff
+--stat`でProduction(er003/er006/er009/er010/er012/er019)・既存
+iteration1〜7・rep7〜16への差分なしを確認した。**Status=
+`HOOK_BOUNDARY_ACTOR_GUARD_FIXED_REP17_N2_STAGE4_ZERO_PARTIAL_CLAIM_
+COVERAGE_DUE_TO_STAGE1_NONDETERMINISM`**。詳細REPORT§29。
 
 ## 10. リスク
 

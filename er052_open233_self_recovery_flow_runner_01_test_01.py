@@ -544,12 +544,12 @@ class TestRubricR3Wiring(unittest.TestCase):
         # run_stage2内のコメント・REPORT§17参照)。RUBRIC_R4_HOOK_AWARE
         # 自体は次回委任向けにコードとして保持する(削除しない)。
         # 委任_30 Part2(design書§0/§9-1)でbody rubricの既定を
-        # `BODY_RUBRIC_DEFAULT`(モジュール定数、既定V4=RUBRIC_R3_TRIPLE_
-        # PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4、`ENABLE_MISCONCEPTION_
-        # PRINCIPLE_DEFAULT=False`で旧来のRUBRIC_R3_TRIPLE_PRIMEへ復帰
-        # 可能)経由へ変更したため、run_stage2内の直接参照は
-        # `BODY_RUBRIC_DEFAULT`を確認する(モジュール定数自体の定義は
-        # TestMisconceptionPrincipleDefaultWiringで別途検証)。
+        # `BODY_RUBRIC_DEFAULT`(モジュール定数、委任_31 Part1(b)でV5=
+        # RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5へ昇格、
+        # `ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT=False`で旧来の
+        # RUBRIC_R3_TRIPLE_PRIMEへ復帰可能)経由へ変更したため、run_stage2
+        # 内の直接参照は`BODY_RUBRIC_DEFAULT`を確認する(モジュール定数
+        # 自体の定義はTestMisconceptionPrincipleDefaultWiringで別途検証)。
         self.assertIn("BODY_RUBRIC_DEFAULT", src)
         self.assertNotIn("s2c.RUBRIC_R4_HOOK_AWARE,", src)
         self.assertNotIn("s2c.RUBRIC_R2,", src)
@@ -1069,11 +1069,52 @@ class TestHookAwareDowngrade(unittest.TestCase):
         self.assertNotEqual(runner.HOOK_AWARE_ELIGIBLE_FLAG, "changed_comparison")
 
 
+class TestHookParagraphBlockBoundary(unittest.TestCase):
+    """委任_31 Part1(b)(design書§4-24): `_hook_paragraph_block`の
+    regression test(¥0)。第2段落を無条件に含めず、(a)1文のみ・(b)数字を
+    含まない場合のみ含める決定論ヒューリスティックを直接検証する。"""
+
+    def test_neg1_style_closing_line_is_included(self):
+        full_text = ("# Title\n\n"
+                      "Ring, ring. A call seemed to come from an AI agent.\n\n"
+                      "Meta had run a test that caused exactly this surprise.\n\n"
+                      "The test used the phone feature of its AI agent, Muse.\n")
+        result = runner._hook_paragraph_block(full_text)
+        self.assertIn("Meta had run a test that caused exactly this surprise.", result)
+        self.assertIn("Ring, ring.", result)
+        self.assertNotIn("Muse", result)
+
+    def test_multi_sentence_second_paragraph_is_excluded(self):
+        # hormuz_run03_standard実例の構造と同種(複数文の本文段落)。
+        full_text = ("# Title\n\nA plan appeared.\n\n"
+                     "Trump said the fee would pay for safety. It would cover all cargo. "
+                     "But details were missing.\n\n")
+        result = runner._hook_paragraph_block(full_text)
+        self.assertNotIn("Trump said", result)
+
+    def test_single_sentence_with_digit_is_excluded(self):
+        # neg3/bgroup_B3実例の構造と同種(1文でも具体的な数字/日付を含む)。
+        full_text = "# Title\n\nA call came in.\n\nOn July 13, the plan appeared with a 20 percent fee.\n\n"
+        result = runner._hook_paragraph_block(full_text)
+        self.assertNotIn("July 13", result)
+
+    def test_single_paragraph_article_returns_first_paragraph_only(self):
+        full_text = "# Title\n\nJust one paragraph here.\n"
+        self.assertEqual(runner._hook_paragraph_block(full_text), "Just one paragraph here.")
+
+
 class TestDetectClaimSectionType(unittest.TestCase):
+    # 委任_31 Part1(b)是正(design書§4-24)後の期待値へ更新。段落②
+    # ("Meta ran a test...a report says.")は1文・数字なしの短い締め文
+    # のため、旧来の"body"から"hook"へ変わる(意図的な仕様変更、新設
+    # test_hook_second_paragraph_closing_line_detectedで確認)。genuine
+    # bodyを確認するため、複数文・具体的な日付/数字を含む段落③を新設した。
     ARTICLE = (
         "# A Call That Surprised Everyone\n\n"
         "Ring, ring. A call seemed to come from an AI agent, but it was a person all along.\n\n"
         "Meta ran a test with trained contract workers on some calls, a report says.\n\n"
+        "The test began on July 14. It used a calling feature inside the assistant, and some "
+        "calls were handled by real people instead of AI, a company statement said.\n\n"
         "## In one line\n"
         "A test used real people on some calls.\n"
     )
@@ -1087,13 +1128,24 @@ class TestDetectClaimSectionType(unittest.TestCase):
             "Ring, ring. A call seemed to come from an AI agent, but it was a person all along.",
             self.ARTICLE), "hook")
 
+    def test_hook_second_paragraph_closing_line_detected(self):
+        # 委任_31 Part1(b): 1文のみ・数字を含まない第2段落は、Hook導入文の
+        # 締め文とみなしhookへ含める(neg1実例の構造と同一)。
+        self.assertEqual(runner.detect_claim_section_type(
+            "Meta ran a test with trained contract workers on some calls, a report says.",
+            self.ARTICLE), "hook")
+
     def test_in_one_line_detected(self):
         self.assertEqual(runner.detect_claim_section_type(
             "A test used real people on some calls.", self.ARTICLE), "in_one_line")
 
     def test_body_detected(self):
+        # 複数文・具体的日付(July 14)を含む段落③は、締め文の条件(1文・
+        # 数字なし)を満たさないため引き続き"body"のまま(Safety回帰なしの
+        # 確認、hormuz/meta_run03_standard/bgroup_B3/neg3実測と同種)。
         self.assertEqual(runner.detect_claim_section_type(
-            "Meta ran a test with trained contract workers on some calls, a report says.",
+            "The test began on July 14. It used a calling feature inside the assistant, and "
+            "some calls were handled by real people instead of AI, a company statement said.",
             self.ARTICLE), "body")
 
 
@@ -2936,6 +2988,54 @@ class TestActorRewriteGuard(unittest.TestCase):
         self.assertTrue(runner.actor_rewrite_guard_ok(before, after, ledger_text))
 
 
+class TestActorGuardAlwaysEvaluatedRegardlessOfProblemKind(unittest.TestCase):
+    """委任_31 Part1(a)是正(design書§4-24): Trial C期待2の実データ
+    (users→employees)が、`classify_problem_kind`の優先順位(term_scope>
+    actor)によりproblem_kind="term_scope"に分類される場合でも、
+    主体置換ガードが発火し却下されることを確認する(委任_30で発見した
+    設計上の盲点のregression test、¥0、API呼び出しはmock)。"""
+
+    def test_term_scope_and_actor_both_true_still_rejects_users_to_employees(self):
+        full_text = ("# Title\n\nHere was the reveal. The test began without clearly telling "
+                     "users that contract workers would make the calls.\n")
+        ledger_text = ("[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、"
+                       "適切な開示なしに契約スタッフが電話をかけるテストを開始したことを"
+                       "「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。")
+        claim_rec = {
+            "claim_text": "The test began without clearly telling users that contract "
+                           "workers would make the calls.",
+            "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_conditions",
+            "rewrite_hint": "",
+            # changed_scope=True かつ changed_actor=True(委任_30 Trial C
+            # 期待2の実データと同じ組み合わせ)。classify_problem_kindの
+            # 優先順位により problem_kind="term_scope" になる(actorではない)。
+            "dev": {"changed_scope": True, "changed_actor": True, "issue": "scope widened"},
+        }
+        self.assertEqual(
+            runner.classify_problem_kind(claim_rec["dev"]), "term_scope",
+            "前提: このdevの組み合わせはterm_scopeに分類される(盲点の再現条件)")
+        fixture = {"ledger_text": ledger_text, "article_text": full_text}
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            # どの水準でも"users"を"employees"へ置換する応答を返す
+            # (ledger_textに存在しない新しい主体語、却下されるべき)。
+            return ("Here was the reveal. The test began without clearly telling employees "
+                    "that contract workers would make the calls.")
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.single_text_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, "article_text", claim_rec)
+
+        # 是正前(旧実装)は`problem_kind == "actor"`の場合のみガードを
+        # 評価していたため、term_scope分類のこのclaimではガードが一度も
+        # 発火せず"employees"への置換がそのまま通っていた(委任_30開示)。
+        # 是正後は却下され、updated_textが変化しないまま終わることを確認する。
+        self.assertFalse(result["guard_ok"])
+        self.assertIn("actor_guard_rejected", result["method"])
+        self.assertEqual(result["updated_text"], full_text)
+
+
 class TestEscalateToParagraphDisabledByDefault(unittest.TestCase):
     """委任_27 Part1-1: escalate_to_paragraphのladder skipが既定で発火
     しないこと(ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP=False)を確認
@@ -3152,6 +3252,33 @@ class TestMisconceptionPrincipleRubricV4(unittest.TestCase):
                        s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4)
 
 
+class TestMisconceptionPrincipleRubricV5(unittest.TestCase):
+    """委任_31 Part1(b)(design書§4-24): RUBRIC_R3_TRIPLE_PRIME_WITH_
+    MISCONCEPTION_PRINCIPLE_V5(neg1の不要Rewrite是正、body rubric側の
+    防御層)のregression test(¥0)。既存V4定数は変更していないことも
+    併せて確認する。"""
+
+    def test_v5_extends_v4_with_new_clarification_only(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(
+            s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5.startswith(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4))
+        self.assertIn("受け手(読者・利用者)側の", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5)
+        self.assertIn("新しい具体的Factの追加ではありません", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5)
+
+    def test_v4_unchanged(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertIn("条件付きの可能性", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4)
+        self.assertNotIn("受け手(読者・利用者)側の", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V4)
+
+    def test_rubric_v5_combines_base_and_text(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(
+            s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5.startswith(
+                s2c.RUBRIC_R3_TRIPLE_PRIME))
+        self.assertIn(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V5,
+                       s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5)
+
+
 class TestHookRubricV3(unittest.TestCase):
     """委任_29 Part2: HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3
     (accept-1/accept-4のfalse block是正)のregression test(¥0)。"""
@@ -3227,9 +3354,12 @@ class TestMisconceptionPrincipleDefaultWiring(unittest.TestCase):
     def test_enable_flag_defaults_true(self):
         self.assertTrue(runner.ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT)
 
-    def test_body_rubric_default_is_v4_when_enabled(self):
+    def test_body_rubric_default_is_v5_when_enabled(self):
+        # 委任_31 Part1(b)(design書§4-24)でV4からV5へ昇格(neg1の不要
+        # Rewrite是正の防御層、Safety-critical 8claim misdowngrade 0件を
+        # 確認済み)。
         self.assertEqual(runner.BODY_RUBRIC_DEFAULT,
-                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4)
+                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V5)
 
     def test_hook_rubric_default_is_v4_when_enabled(self):
         self.assertEqual(runner.HOOK_RUBRIC_DEFAULT,

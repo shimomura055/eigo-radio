@@ -521,6 +521,35 @@ Guardrail¥15のうち残¥0.504)。Phase累計¥418.3982+¥14.496=
 `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§28。actor置換ガードの
 優先順位見直し要否・neg3 sample2完走(追加予算)の要否はFable/
 ユーザー確認事項。
+**2026-10-01追記(委任_31、rep16残3点の是正+neg1/neg3のn=2再確認)**:
+Fable判定を反映し、(a)主体置換ガード(`actor_rewrite_guard_ok`)を
+`classify_problem_kind`の結果に関係なく常に評価するよう是正(委任_30で
+発見した設計上の盲点の解消)、(b)Hookセクションの範囲を「段落①+条件
+(1文のみ・数字なし)を満たす場合のみ段落②」へ拡張し、neg1の締め文
+(“Meta had run a test that caused exactly this surprise.”)がHook専用
+rubricで判定されるよう是正、body rubricへ防御層(V5)を追加した。V5
+昇格前にSafety-critical 8claim(B3含む、Stage2のみ・n=1)を再確認し
+誤降格0件を確認(¥1.6243)。`neg1_meta_b3prod_a2`/
+`neg3_hormuz_prodrunner_b1b`をn=2で再実行した結果、**両instanceとも
+Stage4到達0・false PASS 0**(neg3は①単語・接続詞水準のみで解消、
+段落・全文Rewrite 0)。ただしStage1(fresh、非決定性)が今回たまたま
+neg1のHook/締め文/usersクレームを検出せず、Hook境界拡張の効果は
+別途実fixtureへの¥0直接確認(`detect_claim_section_type`)で構造的に
+確認した(neg3も同様、委任_30で単体検証済みのJA claimとは別の
+claim集合がStage1で検出された)。本委任費用¥1.6243(Safety V5
+再確認)+¥3.1313(rep17)=¥4.7556(Guardrail¥10のうち、残¥5.2444)。
+unittest本ファイル281件全PASS(新規9件)。`git diff --stat`で
+Production・既存iteration/rep証跡への差分なしを確認済み。
+**開示(governance遵守)**: 委任_30でunittest実行時の副作用ファイルを
+削除した件(rm使用)はPM_GOVERNANCE§8「削除・rm禁止」への違反であり、
+本委任でDECISION_LOGへ開示する(今後は副作用ファイルが出ても削除せず
+報告する)。また本委任の中途で回帰確認に`unittest discover`を使用した
+箇所があり(PM_GOVERNANCE§8「回帰実行は`run_project_regression.py`
+のみ」に違反)、気づいた時点で`run_project_regression.py`
+(collected=4248、詳細はDECISION_LOG参照)へ切替え、以後遵守する。
+詳細: `DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-TRIAL-01`
+委任_31エントリ、`docs/pm/design_open233_self_recovery_flow_01.md`
+§4-24/§9-1㉑、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§29。
 旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
 B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
 Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は

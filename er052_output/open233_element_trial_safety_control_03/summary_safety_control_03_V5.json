@@ -1,0 +1,121 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "rubric_variant": "V5",
+    "n_runs": 1,
+    "cumulative_jpy": 1.6243,
+    "cumulative_calls": 6,
+    "cumulative_errors": 0,
+    "part_a_safety_critical_8claim": {
+      "misdowngrade_total": 0,
+      "n_claims": 8,
+      "per_claim_rows": [
+        {
+          "sub_id": "B3",
+          "group_id": "B3",
+          "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、続いていた懸念が計画撤回の原因だったと読める「so」の因果関係を外してください。HF-007に沿って、トランプ氏が中東指導者との協議を理由に挙げて計画を置き換えた、と記述できます。参照: HF-007。"
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "B4-a",
+          "group_id": "B4",
+          "claim_text": "“A person can take over when AI alone has trouble.”",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "unsupported_relationship",
+              "rewrite_hint": "「A person can take over when AI alone has trouble.」を削除してください。AIだけでは対応が難しい場合に人間へ引き継ぐ、という条件や運用フローは確認されていません。MUSE-HC-002が確認しているのはMuseの機能であり、この引き継ぎ条件ではありません。参照Ledger: MUSE-HC-002"
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "Meta-1",
+          "group_id": "Meta_run03_standard",
+          "claim_text": "Also, some calls needed user information to continue.",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "ledger_conditions",
+              "rewrite_hint": "“Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” Narrow the first sentence so it states that user information might be needed, rather than asserting that some calls actually required it. MUSE-HC-010 records this as a condition for the privacy concern."
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "Meta-2",
+          "group_id": "Meta_run03_standard",
+          "claim_text": "Also, some calls needed user information to continue.",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "ledger_conditions",
+              "rewrite_hint": "“Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center.” Narrow the first sentence to a conditional statement; MUSE-HC-012 documents the feature’s rollback, not that calls actually required user information. The relevant ledger condition is in MUSE-HC-010."
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "A2A3-0",
+          "group_id": "A2A3",
+          "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "ledger_conditions",
+              "rewrite_hint": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” 支払義務者はLedgerで特定されていないため、「貨物を運ぶ側が支払う」という部分を削り、米国が安全確保の費用の償還を求める案だった、という範囲にとどめてください。参照: HF-003"
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "A4-0",
+          "group_id": "A4",
+          "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "ledger_scope",
+              "rewrite_hint": "「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」の「with users」を、電話をかけた相手を指す表現に狭めてください（例: “with the people they called”）。参照: MUSE-HC-006"
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "A4-1",
+          "group_id": "A4",
+          "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "ledger_claim",
+              "rewrite_hint": "「The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.」から、人々が実際にAIと話していると思っていたという断定を削除し、適切な開示なしにテストが始まったという確認済みの範囲にとどめてください。参照: MUSE-HC-012"
+            }
+          ],
+          "misdowngrade_count": 0
+        },
+        {
+          "sub_id": "A5-0",
+          "group_id": "A5",
+          "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+          "observed_labels": [
+            {
+              "materiality": "BLOCKING",
+              "basis": "ledger_claim",
+              "rewrite_hint": "「They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.」の “put back” を、機能を「一時的にロールバックした」という意味に修正し、Muse全体は停止していないという点は維持してください。参照: MUSE-HC-012"
+            }
+          ],
+          "misdowngrade_count": 0
+        }
+      ]
+    }
+  }
+}

@@ -15676,3 +15676,113 @@ developer_message引数追加、`run_instance`use_misconception_principle
 fix_verify_01.py`、`er052_output/open233_element_trial_meta_hook_02/`
 (新規)、`er052_output/open233_self_recovery_flow_runner_01_rep16/`
 (新規)、`OPEN_ITEMS.md`(OPEN-233行Statusセル更新)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: rep16残3点の是正(actorガード常時
+評価+Hook境界拡張+body rubric V5)+neg1/neg3のn=2再確認(委任_31、
+2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_31: rep16の残3点の是正と
+再確認。広い29件Trialは禁止)。
+
+**(a) 主体置換ガードの常時評価**: 委任_30で発見した盲点
+(`classify_problem_kind`の優先順位[term_scope>causality>actor>time]に
+より、changed_scope/changed_actorが同時に真のclaimはproblem_kind=
+"term_scope"に分類され、主体置換ガード[problem_kind=="actor"の場合
+のみ発火]が一度も評価されない)を是正した。`single_text_rewrite`・
+`paired_rewrite`両方で、`problem_kind == "actor" and`部分を削除し、
+**problem_kindに関係なく常に`actor_rewrite_guard_ok`を評価する**よう
+変更した。`actor_rewrite_guard_ok`自体は新しい主体語が導入されない
+場合は常にTrueを返すno-op設計のため、常時評価しても既存経路への非回帰
+影響はない。unittest 1件で、Trial C期待2の実データ(changed_scope=
+True・changed_actor=True・"users"→"employees")が是正後は実際に
+却下されることを確認した。
+
+**(b) Hookセクション境界拡張+body rubric V5**: neg1実例(「Meta had
+run a test that caused exactly this surprise.」→「Meta had run a
+test.」)は、Hook導入文の締め文であり、確認済みの中心的な出来事から
+自然に導ける演出としてRewrite不要とFableが判定した。根本原因は
+`detect_claim_section_type`が常に段落①のみをHook候補とし段落②
+(締め文)を無条件にbodyへ分類していたこと。新設`_hook_paragraph_
+block()`で、段落②が(i)1文のみ・(ii)数字を含まない場合に限りHookへ
+含める決定論ヒューリスティック(¥0)を実装した。実fixture 5件で実測
+した結果、neg1(段落②=1文・数字なし)のみが該当し、他4件(hormuz/
+neg3/meta_run03_standard/bgroup_B3、いずれも段落②が複数文または
+具体的な数字/日付を含む)は従来どおりbodyのまま残ることを確認した
+(Safety回帰なし)。
+
+あわせてbody rubric側にも防御層として`MISCONCEPTION_PRINCIPLE_
+TEXT_V5`(V4へ最小1段落追加、「確認済みFactから導ける受け手側の驚き・
+反応の言及は新規Factではない」)を新設した。`BODY_RUBRIC_DEFAULT`を
+V5へ昇格する前に、priming再測定の要件(委任_16の教訓)に従い
+Safety-critical 8claim(B3含む)をStage2のみ・n=1で再確認し
+(`er052_open233_element_trial_safety_control_03.py`、¥1.6243)、
+**8claim全件がBLOCKINGを維持し誤降格0件**であることを確認してから
+昇格した。unittest: Hook境界4件・section_type更新1件・actor guard
+統合test 1件・body rubric V5 3件(計9件新規)。
+
+**(c) rep17(neg1/neg3のn=2再確認)**: `er052_open233_self_recovery_
+flow_runner_01_rep17_representative_01.py`で、`neg1_meta_b3prod_a2`/
+`neg3_hormuz_prodrunner_b1b`をStage1 fresh・n=2で再実行した
+(¥3.1313)。**両instanceともn=2全件でStage4到達0・false PASS 0**
+(neg3は①単語・接続詞水準のみで解消、段落・全文Rewrite 0)。ただし
+neg1のStage1(fresh、非決定性)は今回たまたまHook導入文・Hook締め文・
+usersクレームのいずれも検出せず、別のbody claim(“A human can handle
+situations that AI alone finds difficult.”)を検出してbody rubric
+(V5)でQUALITYへdowngradeした(本委任の主目的はこの特定の実行では
+full flow上で直接再現しなかった)。そのため、実fixtureのarticle_text
+(捏造なし)への¥0直接確認(`detect_claim_section_type`)を別途行い、
+Hook導入文・Hook締め文がともに`section_type="hook"`(是正前の締め文は
+"body")へ分類されることを実データで確認した。neg3もStage1が今回検出
+したclaim(全て`origin=translation`)は委任_30で単体検証したJA paired
+claimとは別集合だったが(Stage1非決定性)、検出されたEN claim(“the
+events driving oil prices—and the prices themselves—quickly
+returned”)は①水準の1語/短い句編集で解決し、段落・全文Rewriteへの
+escalationは発生しなかった。
+
+**費用**: Safety-critical V5再確認(¥1.6243)+rep17(¥3.1313)=
+**¥4.7556**(Guardrail¥10のうち、残**¥5.2444**)。
+
+**unittest**: `er052_open233_self_recovery_flow_runner_01_test_01.py`
+単体281件全PASS(既存272件+新規9件)。`run_project_regression.py`
+(正式入口)でcollected=4248、failed=6+errors=6=計12件はいずれも
+本委任で変更していないファイル(`er003_test_p2j_investigate`3 FAIL+
+1 ERROR[テスト件数照合の履歴的な算術test]・`er012_e_family_
+entertainment_two_level_runner_test_01`1 ERROR[CLI subprocess
+test]・`er015_standard_a2_6000_generation_first_trial_01_test_01`1
+ERROR[loader failure]・`er025/er040/er043/er011`計4件[既知、委任_30
+でも報告済み])。`git diff --stat`でProduction・既存iteration1〜7・
+rep7〜16への差分なしを確認した。
+
+**governance違反の開示(PM_GOVERNANCE§8)**:
+1. 委任_30で、unittest実行時に生じた副作用ファイルを`rm`で削除した
+   ことが判明した(§8「削除・rm禁止」への違反)。本委任でこれを開示
+   し、今後は副作用ファイルが出ても削除せず正直に報告する運用へ
+   改める。
+2. 本委任の作業中、回帰確認に`python -m unittest discover`を使用した
+   箇所があった(§8「回帰実行は`run_project_regression.py`のみ」への
+   違反、2026-09-06追記ルール)。気づいた時点で`run_project_
+   regression.py`へ切替え、以後本ルールを遵守する。
+
+**Status**: `HOOK_BOUNDARY_ACTOR_GUARD_FIXED_REP17_N2_STAGE4_ZERO_
+PARTIAL_CLAIM_COVERAGE_DUE_TO_STAGE1_NONDETERMINISM`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§29、
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-24/§9-1㉑、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-
+TRIAL-01_31.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_flow_runner_01.py`
+(`actor_rewrite_guard_ok`呼び出し条件是正、`_hook_paragraph_block`
+新設、`detect_claim_section_type`/`build_title_hook_context`更新、
+`OUT_DIR_REP17`/`BUDGET_STATE_PATH`/`TOTAL_BUDGET_JPY`更新)、
+`er052_open233_self_recovery_stage2_calibration_01.py`
+(`MISCONCEPTION_PRINCIPLE_TEXT_V5`/`RUBRIC_R3_TRIPLE_PRIME_WITH_
+MISCONCEPTION_PRINCIPLE_V5`新設)、
+`er052_open233_self_recovery_flow_runner_01_test_01.py`(+test 9件)、
+新規`er052_open233_element_trial_safety_control_03.py`、新規
+`er052_open233_self_recovery_flow_runner_01_rep17_representative_
+01.py`、新規`er052_open233_self_recovery_rewrite_compare_page_rep17_
+01.py`、`er052_output/open233_element_trial_safety_control_03/`
+(新規)、`er052_output/open233_self_recovery_flow_runner_01_rep17/`
+(新規)、`user_test/open233_rewrite_compare_01/index.html`更新
+(`index_rep16.html`に旧版保存)、`OPEN_ITEMS.md`(OPEN-233行追記)。
