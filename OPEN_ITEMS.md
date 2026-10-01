@@ -659,7 +659,18 @@ open233_self_recovery_flow_01.md`§6-16/§9-1㉕、`OPEN-233-SELF-
 RECOVERY-TRIAL-01_REPORT.md`§33。meta_run03_standardの(b)Stage1
 fresh enumeration非決定性そのものの改善要否、Phase 2新規テーマ選定
 (PM_GOVERNANCE§13)はFable/ユーザー判断事項として継続。
-**2026-10-01追記(委任_36、rep20 sample2の`ladder_exhausted_without_
+`USER_DECISION_REQUIRED(最終分類: 実記事人間確認の残存1記事/最終横断確認の
+要否/Phase 2母数)`(委任_37、Status更新のみ[¥0、コード変更・API課金・Trial
+実行なし]。広いTrial iter8[29 instance]+是正[委任_33〜36]完了。VALIDATED
+最低条件7項目のうち6項目充足[重大Fact見逃し0(V6後)/false PASS 0/不要
+Rewrite11.1%(neg3両建て)/Rewrite最小範囲中心/全記事平均¥0.70≤+¥2/Meta・
+Hormuz Regression解消]。未充足1項目: 実記事人間確認0 — meta_run03_
+standardのみ、固定Stage1入力でも4 run中2 runがStage4[いずれもfail-closed、
+原因はLLM出力テキスト依存のRewrite対象特定の揺れで毎回別変種]。構造是正
+[Stage1の文字オフセット出力等]は根本設計変更に当たるためユーザー判断。
+あわせて全修正反映後の最終横断確認[≈¥25]の要否とPhase 2母数が未決。
+残予算¥114.07/上限¥600)。詳細: `docs/pm/delegation_log/2026-10-01_
+OPEN-233-SELF-RECOVERY-TRIAL-01_37.md`。旧Status参考(委任_36): **2026-10-01追記(委任_36、rep20 sample2の`ladder_exhausted_without_
 full_rewrite`根本原因特定と小修正)**: claim_textが記事中の非隣接2文を
 “…” and “…”で結合した合成claimの場合、既存`locate_target()`が1文
 fuzzy match(SequenceMatcher)しか試みず一方の断片しか捕捉しない
