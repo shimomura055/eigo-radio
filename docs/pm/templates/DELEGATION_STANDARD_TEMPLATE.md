@@ -20,7 +20,8 @@ APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED/USER_DECISION_REQUIRED等]、
 禁止事項[対象外ファイル不可・費用上限[Cap]・破壊的操作禁止等]を明記する。
 費用上限[Cap]の記載はT-3の定型文(Guardrail文言)に従う。「上限¥X、
 超えそうなら実行前STOP」のみの記載(継続条件・STOP条件の書き分けが
-無いもの)は使用しない。)
+無いもの)は使用しない。**Opus独立技術レビューGate(`docs/pm/PM_GOVERNANCE.md`
+11-3節、2026-10-02)の該当判定[条件A/B/C/D/非該当]を1行で記す。**)
 
 ## 固定ブロック(E-1/D-1/G-1/F-1/T-0/T-1/T-2/T-3)
 
@@ -87,3 +88,4 @@ import実行される事故防止(CONSOLIDATION-124)。)
 - [ ] コマンドに引数実値あり
 - [ ] 禁止事項・費用上限あり
 - [ ] 並行タスク衝突回避あり
+- [ ] Opus独立技術レビューGate(PM_GOVERNANCE 11-3)の該当判定[A/B/C/D/非該当]あり

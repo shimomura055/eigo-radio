@@ -48,6 +48,16 @@
 レビュー(Fable裁量、1日2回まで)/Sonnet・Fableのみ、の3段階運用。上限は
 L2 1回+L3 1回/管理ID。詳細は`docs/pm/PM_GOVERNANCE.md`11-2節参照。
 
+**Opus独立技術レビューGate(2026-10-02ユーザー決定)**: Opusを重要な技術
+設計の独立レビュー役として使う。条件A(新構造・処理フロー設計、実装前、
+必須)/条件B(同じ問題へ2回修正しても再発、3回目パッチ前にSTOP、必須)/
+条件C(重要変更のProduction採用提案前、必須、ユーザー採用判断は代替しない)/
+条件D(QCD大幅悪化時、追加Trial前)。Fableはレビュー結果を鵜呑みにせず最終
+PM評価を行う。条件・観点・不要例の正本は`docs/pm/PM_GOVERNANCE.md`11-3節、
+観点文言は`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`。回数上限等
+との競合K1〜K6は11-3節に記載(ユーザー判断待ち、暫定運用: 省略も上限超過も
+せずSTOPして`USER_DECISION_REQUIRED`)。
+
 **Existing Spec / Prior Trial Check Gate(2026-09-27ユーザー決定)**: 新仕様
 提案前・新Trial起票前・`USER_DECISION_REQUIRED`提示前・Production修正
 方針決定前・新Open Item登録前には、既存SSOT・過去Trial・Production

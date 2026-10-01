@@ -143,6 +143,9 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
 - **opus-consultant**: 読み取り専用の診断(原因・選択肢・影響範囲)を行う。
   実装・編集・Git・Production採用判断をしない。診断後にSonnetを
   自動再実行しない。
+  **追記(2026-10-02、11-3節)**: 重要な技術設計に対する独立レビュー役
+  (Claude: 調査・設計・実装・テスト / Opus: 独立レビュー / Fable: 目的・
+  QCD・仕様・Gate・ユーザー判断との整合の管理)。発火条件は11-3節が正本。
 - **haiku-worker**(2026-09-10新設): Sonnet不要のread-only定型処理
   (定型集計・artifact存在確認・費用集計・固定チェックリスト確認等、
   判断を含まない作業)のみを行う。SSOT編集・Git操作・API支出・Gate判断・
@@ -164,7 +167,12 @@ ChatGPT旧PMからの引き継ぎ照合PM-HANDOFF-CHATGPT-001の結果を受け�
   する**(2026-09-12追記、`PM-CLOSEOUT-CONSOLIDATION-87-APPROVAL-
   EVIDENCE-RECORD`。事例: `PM-CLOSEOUT-CONSOLIDATION-83/84`がOPEN-145/
   146の承認を要約引用のみで記載したため、後日の横断監査で承認証拠不明
-  と判定された)。
+  と判定された)。**ユーザーへProduction正式採用を提案する前に、重要な
+  技術変更[Production初回経路/retry/fallback/regeneration/validator/
+  Human Review/model routing/Safety判定/自動Rewrite/自動Recovery]には
+  Opus最終レビュー[11-3節条件C]を入れる。Opusレビューはユーザーの採用
+  判断を代替しない(2026-10-02追記、管理ID`PM-OPUS-INDEPENDENT-TECH-
+  REVIEW-GATE-2026-10-02`)。**
 - **Gate 3 — Production Wiring Checklist**: `APPROVED_FOR_PRODUCTION`後、
   以下すべてが完了するまで`PRODUCTION_WIRED`としない: Production正式初回経路 /
   retry・fallback・regenerationとの整合 / DEV・Trial-onlyではないこと /
@@ -1930,6 +1938,152 @@ commit対象に含める(D-2委任文標準の`T-0`[委任文保存+検証]と�
 復元しない。2026-09-27分は`docs/pm/ACTIVE_TASK_*.md`[本日更新分]からの
 backfillとして管理ID・委任要旨・Statusを保存した[全文欠落と明記])。
 
+**11-3節との関係(2026-10-02追記、追記のみ)**: 2026-10-02に11-3節
+「Opus独立技術レビューGate」を新設した。本11-2節の本文は変更していない。
+11-3節の条件A〜Dと本節の発火条件(i)〜(iv)・上限との関係および未解決の
+競合は11-3節を参照する。
+
+### 11-3. Opus独立技術レビューGate(2026-10-02ユーザー決定)
+
+**管理ID: PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02
+(2026-10-02、ユーザー決定。運用ルールとして正式反映済み。Production仕様の
+Status[`VALIDATED`/`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`]には関与
+しない)。ユーザー原文の全文は`DECISION_LOG.md`同管理IDエントリを正本と
+する。**
+
+**位置づけ**: Opusを、単なる任意相談先ではなく「重要な技術設計に対する
+独立レビュー役」として明示的に活用する。FableはPM・PR管理・Gate管理を
+主担当とし、複雑な技術設計についてClaudeの提案をそのまま受け入れない
+ために、必要な場面ではOpusによる独立レビューを入れる。**Opusレビューの
+目的はClaude案の追認ではない。** 必ず、(1)そもそもその設計が必要か、
+(2)より単純な方法がないか、(3)既存処理をそのまま利用できないか、
+(4)不要な複雑化をしていないか、(5)根本原因に対する対策になっているか、
+(6)別のFailureを生まないか、を独立に評価させる。
+
+**発火条件(客観的に判定できる条件のみ。Fableが機械的に判定する)**:
+
+- **条件A(必須、実装前): 新しい構造・処理フローを設計・変更するとき。**
+  以下のような構造変更を新規設計・変更する場合、実装前にOpusレビューを
+  必須とする。例: (1)Checker → Rewrite間の受け渡し、(2)retry / fallback /
+  regeneration、(3)Human Reviewへの遷移、(4)LLM出力を後段で解釈・変換する
+  仕組み、(5)複数LLMをまたぐ処理、(6)deterministic処理とLLM処理の役割分担、
+  (7)model routing、(8)validator / QAの大きな構造変更、(9)Production初回経路と
+  後続経路の関係変更。単純なコード修正ではなく、処理構造・責務分担・
+  データの流れを変える変更が対象。
+- **条件B(必須、3回目の個別パッチ前にSTOP): 同じ問題へ2回修正しても
+  再発したとき。** 1回目の修正 → 再発 → 2回目の修正 → さらに同種問題が
+  再発となった場合、3回目の個別パッチへ進む前にSTOPする。この時点でOpusに
+  「個別バグの連続なのか、根本設計に問題があるのか」をレビューさせる。
+  Opusレビューなしに3回目以降の個別パッチを惰性的に追加しない。典型例は
+  `OPEN-233-SELF-RECOVERY-TRIAL-01` / `meta_run03_standard`のように「1つの
+  変種を直すと別変種が出る」ケース。
+- **条件C(必須、ユーザーへProduction正式採用を提案する前): 重要変更を
+  Production採用候補にするとき。** Trialで良い結果が出て、ユーザーへ
+  Production正式採用を提案する前に、重要な技術変更についてOpus最終
+  レビューを入れる。対象: Production初回経路 / retry / fallback /
+  regeneration / validator / Human Review / model routing / Safety判定 /
+  自動Rewrite / 自動Recovery に関係する変更。Opusには、Trial専用実装に
+  なっていないか / Production全体で矛盾しないか / 初回・retry・fallback間で
+  仕様が一致しているか / Dangling Referenceがないか / Failure時に安全側へ
+  倒れるか / QCD上の新しい問題を生まないか、を確認させる。**これは
+  ユーザーのProduction採用判断を代替するものではない。Opusレビュー後も、
+  正式採用はユーザー判断が必要である。**
+- **条件D(入れる、QCDが大きく悪化したとき。追加Trialや場当たり修正を
+  繰り返す前): 明確な悪化を検出したとき。** 例: Human Review率が大きく
+  増えた / コストが大きく増えた / 不要Rewrite率が大きく増えた / Safety
+  改善によって記事品質が悪化した / 非決定性が大きく増えた / ある修正に
+  よって別Family・別経路が壊れた / retry・fallbackが異常に増えた。単なる
+  1件の通常FAILではなく、設計上の問題を疑うべき変化が対象。
+
+**採用しない条件**: 「Fable自身が技術的に十分評価できないとき」という条件
+は採用しない(理由: 判断基準が曖昧。Opus利用条件は上記のように客観的に
+判定できる条件を使う)。
+
+**Opusレビュー不要の例(原則)**: typo修正 / 原因が明確な単純バグ / 1行
+程度の明白な修正 / ログ追加 / テスト追加 / 承認済み仕様の単純な配線 /
+ドキュメント更新 / 既存仕様どおりの機械的変更。不要にOpusを呼び、コストや
+作業時間を増やさない(11-2節「Sonnet/Fableのみ」・L2定義「儀式的な起用の
+禁止」と同旨)。
+
+**レビュー観点**: 最低限12観点(必要性・より単純な構造・既存処理/データの
+利用・前段取得済み情報の喪失/再探索・不要なLLM処理・非決定性・Human Review
+増・不要Rewrite増・コスト増・retry/fallback/regenerationとの矛盾・Failure時の
+安全側・再発防止)+条件別の追加観点を、Opusへ独立に評価させる。**文言の
+正本は`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`**(本節へは全文
+複製しない)。Opusへのレビュー依頼(context packet)には、同ブロックを必ず
+そのまま貼る。Claude/Fableの案を前提として追認させず、代替案が良ければ
+明確に提案させる。
+
+**Fableの役割**: FableはOpusレビュー結果をそのまま採用しない。Claude案・
+Opusレビュー・`CURRENT_SPEC.md`・ユーザー承認内容・QCD・PM Gateを照合して
+最終的なPM評価を行う。役割分担は、Claude: 調査・設計・実装・テスト /
+Opus: 重要技術設計の独立レビュー / Fable: 目的・QCD・仕様・Gate・ユーザー
+判断との整合を管理、とする。
+
+**モデル指定**: 「Opus 5.5の固定運用などは今回採用しない。モデル指定は
+現状変更不要」(2026-10-02ユーザー決定)。`.claude/agents/*.md`のfrontmatter
+は変更していない。
+
+**既存ルールとの関係(変更しないもの)**: 11-2節の発火条件(i)〜(iv)・
+context packet方式・Opus入力限定・「Opus結果を受けてSonnetを自動再実行
+しない」は維持する。Opus発火の記録は`docs/pm/REPORT_LEDGER.md`の既存列
+「Opus発火(L2/L3/無)」へ、発火した条件(A/B/C/D)を併記する(列構造は
+変えない)。11-1節STOP条件(3)「構造的問題」と条件Bは整合する(条件Bは
+追加のSTOP契機)。14節(問題発生時の7段階)は、条件B・Dの該当判定を併せて
+行う。
+
+**未解決の競合(ユーザー判断待ち。既存文言は未変更)**:
+
+- K1(回数上限): 11-2節「L2 1回+L3 1回/管理ID」、11節冒頭の歴史的記述
+  (L2+L3合計最大1回)、`CLAUDE.md`「Opusは診断目的で最大1回まで」、
+  `docs/pm/PM_BRIEF.md`同旨、`.claude/agents/sandwich-pm.md`「L2+L3合計で
+  1管理IDあたり最大1回」「Opus診断1回」、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`
+  L2/L3定義。条件A〜Dは同一管理ID内で複数回発火しうる(例: 設計時A→
+  再発時B→採用提案前C)ため、現行上限のままでは実施できない場面が生じる。
+- K2(任意Opusレビュー): 11-2節「任意Opusレビュー…Fable裁量、1日2回まで」。
+  本Gateは客観的に判定できる条件を使う方針であり、任意(裁量)枠を残すか
+  廃止するかが未決。
+- K3(Fable本体定義の旧記述): `.claude/agents/sandwich-pm.md`のdescription
+  「難問の診断だけをopus-consultantへ委任」、手順7「差し戻しても解決しない
+  難問についてのみ…」「ユーザーが事前に承認した高リスク案件(HIGH、論点
+  限定)」は、11-2節(包括承認)とも本節とも合っていない(本ファイルは
+  今回編集しない)。
+- K4(実施タイミングの重なり): 11-2節の必須L2は「PRODUCTION_WIRED判定前」、
+  条件Cは「Production採用提案前」。同一変更で2回レビューするか、条件Cの
+  レビューで11-2の必須L2を兼ねてよいかが未決(兼用可否は本節では定めない)。
+- K5(レビュー後の実装着手): 既存「Opus結果を受けてSonnetを自動再実行
+  しない/実装が必要な場合はユーザー判断を仰ぐ」(11-2節、`sandwich-pm.md`
+  手順8)は維持する。この結果、条件Aのレビュー後の実装着手は毎回ユーザー
+  判断待ちになる(本節はユーザー判断なしで実装へ進んでよいとは定めない)。
+- K6(`opus-consultant`の役割記述): `.claude/agents/opus-consultant.md`の
+  description「Sonnetで解決できなかった難問について…診断する」は、独立
+  レビュー役(本節)と表現が合っていない(frontmatterは変更しない方針の
+  ため未編集。本文へ「独立技術レビュー」節を追記して補った)。
+
+**暫定運用(K1〜K6の解決まで)**: 条件A〜Dに該当した場合、Opusレビューを
+省略して先へ進まない。既存の回数上限等により実施できない場合は、上限を
+黙って超えず、レビューを黙って省略せず、STOPしてユーザー判断
+(`USER_DECISION_REQUIRED`)を求める。
+
+**発火経路(このGateが実際に効く場所)**: (1)セッション開始時: `docs/pm/
+PM_BRIEF.md`・`CLAUDE.md`。(2)委任文作成時: `docs/pm/templates/
+DELEGATION_STANDARD_TEMPLATE.md`(該当判定の1行記載+自己チェック項目)。
+(3)Opus起動時: `docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`・
+`.claude/agents/opus-consultant.md`本文。(4)Production採用提案前: 2節
+Gate 2。(5)問題対応時: 14節・11-2節末尾・1節。(6)記録: `docs/pm/
+REPORT_LEDGER.md`。(7)`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`のL2/L3定義部。
+(8)該当案件の`OPEN_ITEMS.md`行(初適用: OPEN-233)。
+
+**OPEN-233への当てはめ(Fable判定、2026-10-02)**: 条件B該当(委任_35
+[原因(d)の小修正]・委任_36[複数引用断片結合の小修正]の2回の修正後、
+rep21 sample1で別変種(e)によるStage 4が再発。ユーザー原文も典型例として
+明示)。構造是正(Checker→Rewrite間の受け渡しの変更)へ進む場合は条件Aにも
+該当する。したがって3回目の個別パッチ・構造是正のいずれも、実装前にOpus
+独立レビューが必要。条件C・Dの判定は現時点では行わない(Production採用
+提案の段階ではない)。同管理IDではOpus L2レビューを既に複数回実施済み
+(`docs/pm/opus_l2_review_open233_self_recovery_01〜04.md`)であり、回数
+上限との関係はK1。技術変更は本管理IDでは行っていない。
+
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
 **管理ID: PM-CLOSEOUT-CONSOLIDATION-66(2026-09-10、ユーザー正式決定、恒久ルール)**
@@ -2283,6 +2437,12 @@ PM-CLOSEOUT-CONSOLIDATION-79-USER-CORRECTION-2026-09-12-02にて
 で対策を検討し、その単位でTrial結果・採否をcloseする。「また別の
 事例が起きたら都度追加する」という運用は禁止し、一般化Trialで一度に
 検討する。
+
+**Opus独立技術レビューGateとの関係(2026-10-02追記、追記のみ)**: 同じ
+問題へ2回修正しても同種問題が再発した場合は3回目の個別パッチへ進む前に
+STOPしOpus独立レビューを入れる(11-3節条件B)。QCDが大きく悪化した場合も、
+追加Trialや場当たり修正を繰り返す前にOpus独立レビューを入れる(同条件D)。
+該当判定は11-3節を正本とし、本節へは条件を複製しない。
 
 ### 14-2. Human Reviewの位置づけ
 
@@ -3337,3 +3497,11 @@ STOPして報告する(広いTrialへは進まない。委任_16実例: Hook-awa
   「重大誤解原則」2026-10-01の明文化に伴い新設。正式原則文の一次SSOTは
   design書§0、本節は要約+参照のみ)。詳細は`DECISION_LOG.md`同管理ID
   委任_27エントリ、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§25参照。
+- 2026-10-02(`PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02`): 新設
+  11-3節「Opus独立技術レビューGate」(ユーザー決定。条件A[新構造設計]/
+  B[2回修正後の再発]/C[Production採用提案前]/D[QCD大幅悪化]、不採用条件、
+  不要例、Fableの役割、未解決競合K1〜K6と暫定運用)。1節・2節Gate 2・11-2節
+  末尾・14-1節へポインタのみ追記(既存文言は未変更)。レビュー観点の文言
+  正本は`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`。文書編集のみ、
+  コード・Prompt・エージェント定義frontmatter変更なし。詳細は`DECISION_LOG.md`
+  同管理IDエントリ参照。

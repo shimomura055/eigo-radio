@@ -60,6 +60,12 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   最大3回(合計最大4回)、Opusは診断目的で最大1回まで。上限到達時は
   `USER_DECISION_REQUIRED`としてSTOPする(詳細は`docs/pm/PM_GOVERNANCE.md`
   11節)。
+- Opus独立技術レビューGate(2026-10-02ユーザー決定): 新しい構造・処理フロー
+  の設計(条件A)、同じ問題へ2回修正しても再発した場合の3回目パッチ前
+  (条件B)、重要変更のProduction採用提案前(条件C)、QCDが大きく悪化した
+  とき(条件D)は、Opus独立レビューを入れる。条件・観点・不要例の正本は
+  `docs/pm/PM_GOVERNANCE.md` 11-3節(ここへは複製しない)。Opusレビュー後も
+  Production採用は人間ユーザーだけが承認する。
 - Production採用(`APPROVED_FOR_PRODUCTION`)は人間ユーザーだけが承認できる。
 - PM運用Gate(Gate 1〜7)・PM Closeout Mandatory Check・1記事ずつ完結原則・
   安全≠成功原則の正式SSOTは`docs/pm/PM_GOVERNANCE.md`(2026-09-05、

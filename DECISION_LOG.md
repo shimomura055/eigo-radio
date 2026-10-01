@@ -16179,3 +16179,270 @@ flow_runner_01_rep21_representative_01.py`、`er052_output/open233_
 self_recovery_flow_runner_01_rep21/`(新規)、`OPEN_ITEMS.md`(OPEN-233
 行更新)。Production code(er003/er006/er009/er010/er012/er019)・既存
 iteration1〜8・rep7〜20・rep19 frozen fixtureは無変更。
+
+## PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02: Opus独立技術レビューGateの新設(2026-10-02ユーザー決定)
+
+**区分**: PM/開発運用ルール(文書)の正式反映。Production仕様のStatus
+(`VALIDATED`/`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`)には関与しない。
+コード・Prompt・Production path・エージェント定義frontmatterは無変更。費用¥0。
+
+管理ID: PM-OPUS-INDEPENDENT-TECH-REVIEW-GATE-2026-10-02(初回委任、Sonnet実行層)。
+
+**(1)ユーザー原文(2026-10-02、逐語全文)**:
+
+> Opusの技術レビュー運用について、ユーザー判断が確定しました。
+>
+> 以下を正式なPM/開発運用ルールとして反映してください。
+>
+> なお、Opus 5.5の固定運用などは今回採用しません。モデル指定については現状変更不要です。
+>
+> ## 1. 目的
+>
+> Opusを、単なる任意相談先ではなく、
+>
+> **重要な技術設計に対する独立レビュー役**
+>
+> として明示的に活用します。
+>
+> 背景として、FableはPM・PR管理・Gate管理を主担当とし、複雑な技術設計についてClaudeの提案をそのまま受け入れないために、必要な場面ではOpusによる独立レビューを入れます。
+>
+> Opusレビューの目的はClaude案の追認ではありません。
+>
+> 必ず、
+>
+> - そもそもその設計が必要か
+> - より単純な方法がないか
+> - 既存処理をそのまま利用できないか
+> - 不要な複雑化をしていないか
+> - 根本原因に対する対策になっているか
+> - 別のFailureを生まないか
+>
+> を独立に評価させてください。
+>
+> ## 2. Opusレビュー必須：新しい構造・処理フローを設計するとき
+>
+> 以下のような構造変更を新規設計・変更する場合、実装前にOpusレビューを必須とします。
+>
+> 例：
+>
+> - Checker → Rewrite間の受け渡し
+> - retry / fallback / regeneration
+> - Human Reviewへの遷移
+> - LLM出力を後段で解釈・変換する仕組み
+> - 複数LLMをまたぐ処理
+> - deterministic処理とLLM処理の役割分担
+> - model routing
+> - validator / QAの大きな構造変更
+> - Production初回経路と後続経路の関係変更
+>
+> 単純なコード修正ではなく、処理構造・責務分担・データの流れを変える変更が対象です。
+>
+> ## 3. Opusレビュー必須：同じ問題へ2回修正しても再発したとき
+>
+> 同じ問題について、
+>
+> 1回目の修正
+> → 再発
+> → 2回目の修正
+> → さらに同種問題が再発
+>
+> となった場合、3回目の個別パッチへ進む前にSTOPしてください。
+>
+> この時点でOpusに、
+>
+> **「個別バグの連続なのか、根本設計に問題があるのか」**
+>
+> をレビューさせます。
+>
+> Opusレビューなしに3回目以降の個別パッチを惰性的に追加しないでください。
+>
+> 今回のOPEN-233 / meta_run03_standardのように、
+>
+> 「1つの変種を直すと別変種が出る」
+>
+> ケースが典型例です。
+>
+> ## 4. Opusレビュー必須：重要変更をProduction採用候補にするとき
+>
+> Trialで良い結果が出て、ユーザーへProduction正式採用を提案する前に、
+>
+> 重要な技術変更についてOpus最終レビューを入れてください。
+>
+> 特に以下に関係する変更を対象とします。
+>
+> - Production初回経路
+> - retry
+> - fallback
+> - regeneration
+> - validator
+> - Human Review
+> - model routing
+> - Safety判定
+> - 自動Rewrite
+> - 自動Recovery
+>
+> Opusには、
+>
+> - Trial専用実装になっていないか
+> - Production全体で矛盾しないか
+> - 初回・retry・fallback間で仕様が一致しているか
+> - Dangling Referenceがないか
+> - Failure時に安全側へ倒れるか
+> - QCD上の新しい問題を生まないか
+>
+> を確認させてください。
+>
+> これはユーザーのProduction採用判断を代替するものではありません。
+>
+> Opusレビュー後も、正式採用はユーザー判断が必要です。
+>
+> ## 5. Opusレビューを入れる：QCDが大きく悪化したとき
+>
+> 以下のような明確な悪化を検出した場合、追加Trialや場当たり修正を繰り返す前に、Opusによる技術レビューを入れてください。
+>
+> 例：
+>
+> - Human Review率が大きく増えた
+> - コストが大きく増えた
+> - 不要Rewrite率が大きく増えた
+> - Safety改善によって記事品質が悪化した
+> - 非決定性が大きく増えた
+> - ある修正によって別Family・別経路が壊れた
+> - retry / fallbackが異常に増えた
+>
+> 単なる1件の通常FAILではなく、設計上の問題を疑うべき変化が対象です。
+>
+> ## 6. 採用しない条件
+>
+> 以前案にあった、
+>
+> **「Fable自身が技術的に十分評価できないとき」**
+>
+> という条件は採用しません。
+>
+> 理由は、判断基準が曖昧だからです。
+>
+> Opus利用条件は、上記のように客観的に判定できる条件を使ってください。
+>
+> ## 7. Opusレビュー不要の例
+>
+> 以下のような作業では、原則Opusレビュー不要です。
+>
+> - typo修正
+> - 原因が明確な単純バグ
+> - 1行程度の明白な修正
+> - ログ追加
+> - テスト追加
+> - 承認済み仕様の単純な配線
+> - ドキュメント更新
+> - 既存仕様どおりの機械的変更
+>
+> 不要にOpusを呼び、コストや作業時間を増やさないでください。
+>
+> ## 8. Opusレビューで必ず確認する観点
+>
+> Opusには、最低限以下を独立してレビューさせてください。
+>
+> 1. そもそもこの変更・設計は必要か
+> 2. より単純な構造にできないか
+> 3. 既存処理・既存データを利用できないか
+> 4. 前段で取得済みの情報を後段で失ったり再探索したりしていないか
+> 5. 不要なLLM処理を追加していないか
+> 6. 非決定性を増やさないか
+> 7. Human Reviewを増やさないか
+> 8. 不要Rewriteを増やさないか
+> 9. コストを不必要に増やさないか
+> 10. retry / fallback / regenerationと矛盾しないか
+> 11. Failure時に安全側へ倒れるか
+> 12. 個別パッチではなく再発防止になっているか
+>
+> Claude/Fableの案を前提として追認せず、代替案が良ければ明確に提案させてください。
+>
+> ## 9. Fableの役割
+>
+> FableはOpusレビュー結果をそのまま採用しないでください。
+>
+> Claude案・Opusレビュー・CURRENT_SPEC・ユーザー承認内容・QCD・PM Gateを照合して、最終的なPM評価を行ってください。
+>
+> 役割は、
+>
+> - Claude：調査・設計・実装・テスト
+> - Opus：重要技術設計の独立レビュー
+> - Fable：目的・QCD・仕様・Gate・ユーザー判断との整合を管理
+>
+> とします。
+>
+> ## 10. 今回の反映先
+>
+> このルールを既存のPM Governance / 開発運用ルールへ正式に反映してください。
+>
+> 最低限、
+>
+> - PM_GOVERNANCE
+> - DECISION_LOG
+> - Claude/Fableへの委任テンプレート等、実際の運用で参照される箇所
+>
+> を確認し、重複定義を避けてSSOTへ反映してください。
+>
+> 既存ルールと競合する場合は勝手に上書きせず、競合内容を報告してください。
+>
+> 今回の作業は運用ルールの正式反映まで行って構いません。
+>
+> 反映後、
+>
+> - 変更ファイル
+> - 追加したルールの要約
+> - 既存ルールとの競合有無
+> - 実際に次回以降このGateが発火する経路
+> - commit / push結果
+>
+> を報告してください。
+>
+> また、現在進行中のOPEN-233についても、今回のルールに照らしてOpusレビュー対象に該当するかを判定してください。
+>
+> ただしOPEN-233の技術変更自体は、今回の運用ルール反映と混ぜて実装しないでください。
+
+**(2)反映先ファイル**: `docs/pm/PM_GOVERNANCE.md`(11-3節新設、1節・2節
+Gate 2・11-2節末尾・14-1節へポインタ、変更履歴)、
+`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`(新規)、
+`docs/pm/templates/OPUS_CONTEXT_PACKET_TEMPLATE.md`((g)節追記)、
+`docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md`(説明文+自己チェック1項目、
+見出し不変)、`.claude/agents/opus-consultant.md`(本文のみ追記、frontmatter
+不変)、`docs/pm/PM_BRIEF.md`、`CLAUDE.md`、`docs/pm/MODEL_ROUTING_TRIAL_LOG.md`、
+`docs/pm/REPORT_LEDGER.md`(行追加)、`OPEN_ITEMS.md`(OPEN-233行の次Action
+セルへ追記、Status不変)、本ファイル。`CURRENT_SPEC.md`・`HISTORY_INDEX.md`は
+Opus Escalationの要約/前例がなく編集していない。
+
+**(3)正本の置き場所**: 発火条件・役割・不要例・既存ルールとの関係=
+`PM_GOVERNANCE.md` 11-3節。Opusへ渡すレビュー観点の文言=
+`docs/pm/templates/OPUS_INDEPENDENT_REVIEW_BLOCK.md`。他ファイルはポインタのみ。
+
+**(4)不採用事項**: 「Fable自身が技術的に十分評価できないとき」条件(判断基準が
+曖昧)。Opus 5.5の固定運用(モデル指定は現状変更不要。`.claude/agents/*.md`の
+frontmatterは未変更、`sandwich-pm.md`は未編集)。
+
+**(5)未解決の競合(既存文言は未変更、ユーザー判断待ち)**: K1(回数上限:
+11-2節「L2 1回+L3 1回」、11節冒頭の歴史的記述、`CLAUDE.md`・`PM_BRIEF.md`・
+`sandwich-pm.md`・`MODEL_ROUTING_TRIAL_LOG.md`の「Opus最大1回」)/K2(任意Opus
+レビュー「Fable裁量1日2回まで」)/K3(`sandwich-pm.md`の旧記述)/K4(11-2必須L2
+[PRODUCTION_WIRED前]と条件C[採用提案前]の重なり)/K5(レビュー後の実装着手は
+毎回ユーザー判断待ち)/K6(`opus-consultant.md` descriptionの「難問の診断」表現)。
+**暫定運用**: 条件A〜Dに該当した場合、Opusレビューを省略して先へ進まない。既存の
+回数上限等により実施できない場合は、上限を黙って超えず・レビューを黙って省略
+せず、STOPしてユーザー判断(`USER_DECISION_REQUIRED`)を求める。
+
+**(6)OPEN-233への当てはめ(Fable判定、2026-10-02)**: 条件B該当(委任_35
+[原因(d)の小修正]・委任_36[複数引用断片結合の小修正]の2回の修正後、rep21
+sample1で別変種(e)によるStage 4が再発。ユーザー原文§3も典型例として明示)。
+構造是正(Checker→Rewrite間の受け渡しの変更)へ進む場合は条件Aにも該当。
+したがって3回目の個別パッチ・構造是正のいずれも、実装前にOpus独立レビューが
+必要。条件C・Dの判定は現時点では行わない(Production採用提案の段階ではない)。
+同管理IDではOpus L2レビューを既に複数回実施済み(`docs/pm/opus_l2_review_
+open233_self_recovery_01〜04.md`)であり、回数上限との関係はK1。技術変更は
+本管理IDでは行っていない。OPEN-233のStatus(`USER_DECISION_REQUIRED`)は不変。
+
+**(7)前提として確認した現状**(`PM-OPUS-MODEL-ID-INVENTORY-01`、2026-10-02):
+Opus指定は`.claude/agents/opus-consultant.md`:5の`claude-opus-5-5`のみ。
+Claude Code 2.1.287で`claude-opus-5-5`として実行されることをprobeで確認、
+`opus`エイリアスも同日時点で`claude-opus-5-5`へ解決。**モデル指定は変更して
+いない。**
