@@ -12,7 +12,9 @@ from unittest import mock
 
 import er052_open233_self_recovery_flow_runner_01 as runner
 import er052_open233_self_recovery_r3dprime_calibration_01 as r3d
+import er052_open233_self_recovery_stage2_calibration_01 as s2c
 import er052_open233_self_recovery_stage2_hook_01 as s2h
+import er051_open233_checker_trial_variant_01 as trial
 
 
 class TestClaimIdentity(unittest.TestCase):
@@ -541,7 +543,14 @@ class TestRubricR3Wiring(unittest.TestCase):
         # 条件該当)、実配線はRUBRIC_R3_TRIPLE_PRIMEへ復帰した(詳細は
         # run_stage2内のコメント・REPORT§17参照)。RUBRIC_R4_HOOK_AWARE
         # 自体は次回委任向けにコードとして保持する(削除しない)。
-        self.assertIn("s2c.RUBRIC_R3_TRIPLE_PRIME", src)
+        # 委任_30 Part2(design書§0/§9-1)でbody rubricの既定を
+        # `BODY_RUBRIC_DEFAULT`(モジュール定数、既定V4=RUBRIC_R3_TRIPLE_
+        # PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4、`ENABLE_MISCONCEPTION_
+        # PRINCIPLE_DEFAULT=False`で旧来のRUBRIC_R3_TRIPLE_PRIMEへ復帰
+        # 可能)経由へ変更したため、run_stage2内の直接参照は
+        # `BODY_RUBRIC_DEFAULT`を確認する(モジュール定数自体の定義は
+        # TestMisconceptionPrincipleDefaultWiringで別途検証)。
+        self.assertIn("BODY_RUBRIC_DEFAULT", src)
         self.assertNotIn("s2c.RUBRIC_R4_HOOK_AWARE,", src)
         self.assertNotIn("s2c.RUBRIC_R2,", src)
         self.assertTrue(hasattr(s2c, "RUBRIC_R3_NATURAL_INTERPRETATION"))
@@ -1326,7 +1335,10 @@ class TestStage2HookAwareSectionTypeWiring(unittest.TestCase):
         self.assertIn('"section_type": section_type', src)
         self.assertIn("claim_records_for_stage2", src)
         self.assertIn('if k != "section_type"', src)
-        self.assertIn("s2c.RUBRIC_R3_TRIPLE_PRIME", src)
+        # 委任_30 Part2(design書§0/§9-1): body rubric既定が`BODY_RUBRIC_
+        # DEFAULT`経由へ変更されたため(TestRubricR3Wiring参照)、ここでは
+        # 文字列自体ではなくその参照を確認する。
+        self.assertIn("BODY_RUBRIC_DEFAULT", src)
         self.assertIn("Hook-aware原則", s2c.RUBRIC_R4_HOOK_AWARE)
 
     def test_rubric_r4_does_not_exempt_body_or_in_one_line_section_from_normal_rules(self):
@@ -1409,7 +1421,7 @@ class TestHookOnlyStage2Separation(unittest.TestCase):
         claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": None,
                    "dev": {}, "detected_by": "stage1_llm"}]
 
-        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None):
+        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None, **kwargs):
             self.assertEqual(len(cl), 1)
             self.assertIn("When a Robot Voice Answered the Phone", title_hook_text)
             return {"prompt_sha256": "h", "parsed": {"judgments": [
@@ -1447,8 +1459,15 @@ class TestHookOnlyStage2Separation(unittest.TestCase):
         section_type = runner.detect_claim_section_type(claim_text, self.B3_BODY_TEXT)
         self.assertEqual(section_type, "in_one_line")
 
-        def fake_body_batch(client, ledger, source, cl, rubric_text, model=None):
-            self.assertIs(rubric_text, runner.s2c.RUBRIC_R3_TRIPLE_PRIME)
+        def fake_body_batch(client, ledger, source, cl, rubric_text, model=None, **kwargs):
+            # 委任_30 Part2(design書§0/§9-1)でbody rubricの既定を
+            # `RUBRIC_R3_TRIPLE_PRIME`からV4(重大誤解原則配線)へ昇格した
+            # ため、ここではrubric_textが`runner.BODY_RUBRIC_DEFAULT`
+            # (既定True時はV4、Falseなら従来のRUBRIC_R3_TRIPLE_PRIME)と
+            # 一致することを確認する(本テストの目的=hook/body routingの
+            # regressionであり、rubric本文自体の選択はTestMisconception
+            # PrincipleDefaultWiringで別途検証する)。
+            self.assertIs(rubric_text, runner.BODY_RUBRIC_DEFAULT)
             return {"prompt_sha256": "b", "parsed": {"judgments": [
                 {"claim_index": 0, "materiality": "BLOCKING", "basis": "notes_for_writer",
                  "rewrite_kind": "delete", "rewrite_hint": "delete the causal clause"}]},
@@ -1480,7 +1499,7 @@ class TestHookOnlyStage2Separation(unittest.TestCase):
         claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": "HF-001",
                    "dev": {"changed_actor": True}, "detected_by": "stage1_llm"}]
 
-        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None):
+        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None, **kwargs):
             return {"prompt_sha256": "h2", "parsed": {"judgments": [
                 {"claim_index": 0, "materiality": "QUALITY", "basis": "none",
                  "rewrite_kind": "none", "rewrite_hint": ""}]},
@@ -1506,7 +1525,7 @@ class TestHookOnlyStage2Separation(unittest.TestCase):
         claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": None,
                    "dev": {}, "detected_by": "stage1_llm"}]
 
-        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None):
+        def fake_hook_batch(client, ledger, source, title_hook_text, cl, model=None, **kwargs):
             return {"prompt_sha256": "h3", "parsed": {"judgments": [
                 {"claim_index": 0, "materiality": "BLOCKING", "basis": "unsupported_relationship",
                  "rewrite_kind": "delete", "rewrite_hint": "delete the invented feature claim"}]},
@@ -1620,6 +1639,73 @@ class TestTargetNotLocatableEarlyReturn(unittest.TestCase):
         self.assertTrue(res["target_not_locatable"])
         self.assertFalse(res["guard_ok"])
         self.assertEqual(call_log, [])
+
+    def test_paired_rewrite_partial_locate_delegates_to_single_text_rewrite(self):
+        # 委任_30 Part3 FAIL是正(neg3_hormuz_prodrunner_b1b根本原因の
+        # regression test、¥0): claim_text自体がJA文(origin=ja_source由来の
+        # 実データで実際に観測された形、§27-5開示doc参照)で、JA側には
+        # 存在する(exact_substring)がEN側には存在しない(EN側は既に別
+        # cycleで解決済み等)場合、従来は0 callでladder6-disabled(method=
+        # "+ladder6_disabled")へ落ちていた(EN側に対応する位置推定
+        # fallbackが存在しないため、ja_located=True/en_located=Falseの
+        # 非対称ケースはJA→EN双方向の既存fallback網でも救済されない)。
+        # 本委任の是正後は、特定できたJA側のみ既存single_text_rewrite
+        # (①〜④の非⑥ローカル編集)へ委譲し、EN側は変更せずguard_ok=Trueで
+        # 解決することを確認する。
+        from unittest import mock
+
+        en_full = "# T\n\nSomething entirely different in English.\n\n## In one line\nSummary.\n"
+        ja_full = "# タイトル\n\nこの主張文はJA本文にのみ存在します。\n\n## 一言でまとめると\nまとめ。\n"
+        claim_rec = {
+            "claim_text": "この主張文はJA本文にのみ存在します。",
+            "rewrite_kind": "replace_with_ledger_value", "materiality": "BLOCKING", "basis": "ledger_fact",
+            "rewrite_hint": "", "dev": {"issue": "stale duplicate"}, "origin": "ja_source",
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-999: ...", "article_text": en_full,
+                   "source_article_text": ja_full}
+        calls = []
+
+        def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            return "この主張文は修正されました。"
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+            result = runner.paired_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, claim_rec)
+        self.assertTrue(result["guard_ok"])
+        self.assertFalse(result["target_not_locatable"])
+        self.assertTrue(result["method"].startswith("j1_single_side_ja("))
+        self.assertIn("この主張文は修正されました。", result["updated_ja_text"])
+        self.assertEqual(result["updated_en_text"], en_full, "EN側は未特定のため変更しないこと")
+        self.assertTrue(len(calls) >= 1)
+
+    def test_paired_rewrite_partial_locate_falls_through_to_stage4_when_single_side_also_fails(self):
+        # 単体側への委譲自体が失敗(API失敗等)した場合は、従来どおり⑥を
+        # 試みずmethodに"+ladder6_disabled"を含めてguard_ok=Falseを返す
+        # こと(新設elif分岐が無限ループ・例外を起こさないこと)を確認する。
+        from unittest import mock
+
+        en_full = "# T\n\nSomething entirely different in English.\n\n## In one line\nSummary.\n"
+        ja_full = "# タイトル\n\nこの主張文はJA本文にのみ存在します。\n\n## 一言でまとめると\nまとめ。\n"
+        claim_rec = {
+            "claim_text": "この主張文はJA本文にのみ存在します。",
+            "rewrite_kind": "replace_with_ledger_value", "materiality": "BLOCKING", "basis": "ledger_fact",
+            "rewrite_hint": "", "dev": {"issue": "stale duplicate"}, "origin": "ja_source",
+        }
+        fixture = {"ledger_text": "[VERIFIED] HF-999: ...", "article_text": en_full,
+                   "source_article_text": ja_full}
+
+        def fake_llm_declines(client, state, errs, log, label, dev_msg, prompt, model=None):
+            return None  # API失敗を模す(全levelでapi_failureとなりguard_okが一度もTrueにならない)
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm_declines):
+            result = runner.paired_rewrite(
+                None, {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []},
+                [], [], "test", fixture, claim_rec)
+        self.assertFalse(result["guard_ok"])
+        self.assertEqual(result["updated_en_text"], en_full)
+        self.assertEqual(result["updated_ja_text"], ja_full)
 
 
 class TestDegenerateRewriteGuard(unittest.TestCase):
@@ -3131,6 +3217,133 @@ class TestMetaHookTallyScoringBugFix(unittest.TestCase):
         n_ng_runs = sum(c["n_runs"] for c in meta_hook.HOOK_CLAIMS if c["group"] == "ng")
         self.assertEqual(sum(r["false_block_count"] for r in rows), n_accept_runs)
         self.assertEqual(sum(r["false_pass_count"] for r in rows), n_ng_runs)
+
+
+class TestMisconceptionPrincipleDefaultWiring(unittest.TestCase):
+    """委任_30 Part2(design書§0/§9-1「既定構成の確定」): 重大誤解原則V4を
+    Stage1/Stage2(body)/Hook専用Stage2の既定経路へ配線したことの
+    regression test(¥0、ネットワーク呼び出しなし)。"""
+
+    def test_enable_flag_defaults_true(self):
+        self.assertTrue(runner.ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT)
+
+    def test_body_rubric_default_is_v4_when_enabled(self):
+        self.assertEqual(runner.BODY_RUBRIC_DEFAULT,
+                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4)
+
+    def test_hook_rubric_default_is_v4_when_enabled(self):
+        self.assertEqual(runner.HOOK_RUBRIC_DEFAULT,
+                          s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V4)
+
+    def test_stage1_fresh_with_enumeration_default_developer_message_unchanged(self):
+        # 既存呼び出し元(developer_message省略時)はvfl01既定のまま
+        # (後方互換、既存iteration/rep証跡の再現性維持)。
+        import inspect
+        sig = inspect.signature(runner.stage1_fresh_with_enumeration)
+        default = sig.parameters["developer_message"].default
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        self.assertEqual(default, vfl01.DEVIATION_DEVELOPER_MESSAGE)
+
+    def test_stage1_fresh_with_enumeration_accepts_misconception_developer_message(self):
+        captured = {}
+
+        class FakeResp:
+            output_text = '{"deviations": []}'
+            id = "r1"
+            model = "gpt-6-luna"
+
+        class FakeClient:
+            class responses:
+                @staticmethod
+                def create(**kwargs):
+                    captured["developer"] = kwargs["input"][0]["content"]
+                    return FakeResp()
+
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        with mock.patch.object(runner, "check_budget", lambda s: None), \
+             mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2p, "_extract_usage", lambda r: {}), \
+             mock.patch.object(runner.s2p, "official_cost_jpy", lambda u: 0.0):
+            runner.stage1_fresh_with_enumeration(
+                FakeClient(), state, [0], [], "label", {"ledger_text": "(l)", "article_text": "(a)"},
+                developer_message=trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE)
+        self.assertIn("重大誤解原則", captured["developer"])
+
+    def test_run_stage2_body_group_uses_body_rubric_default(self):
+        captured = {}
+
+        class FakeResp:
+            output_text = '{"judgments": []}'
+            id = "r1"
+            model = "gpt-6-luna"
+
+        class FakeClient:
+            class responses:
+                @staticmethod
+                def create(**kwargs):
+                    captured["prompt"] = kwargs["input"][1]["content"]
+                    return FakeResp()
+
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        fixture = {"ledger_text": "(ledger)", "article_text": "Some body paragraph claim here.",
+                   "source_article_text": None}
+        claims = [{"claim_text": "Some body paragraph claim here.", "origin": "translation",
+                   "related_fact_id": "X-1", "dev": {}}]
+        with mock.patch.object(runner, "check_budget", lambda s: None), \
+             mock.patch.object(runner, "record_call", lambda *a, **k: None):
+            runner.run_stage2(FakeClient(), state, [0], [], "label", fixture, claims)
+        self.assertIn("重大誤解原則", captured["prompt"])
+
+    def test_run_instance_passes_misconception_principle_flag_to_stage1(self):
+        # run_instance(fresh mode, use_enumeration_stage1既定True)が
+        # misconception principle配線版developer_messageを使うことを、
+        # stage1_fresh_with_enumerationへのcall引数で確認する(¥0、APIは
+        # fakeで代替)。
+        captured = {}
+
+        def fake_stage1(client, state, consecutive_errors, call_log, label, fixture,
+                         developer_message=None):
+            captured["developer_message"] = developer_message
+            return {"overall_status": "ACCEPTABLE_LLM", "deviations": []}
+
+        inst = {
+            "instance_id": "unit_test_instance", "group": "unit", "expected_group_label": "unit",
+            "stage1_mode": "fresh",
+            "fixture": {"ledger_text": "(l)", "article_text": "(a)", "source_article_text": None},
+        }
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        # 委任_30(事故是正): run_instance()は末尾でsave_json()を呼び、
+        # runner.OUT_DIR(固定path、過去delegationの既存証跡ディレクトリを
+        # 指す)へ実ファイル書き込みを行う副作用を持つ。本委任の最初の実装で
+        # この副作用を遮断し忘れ、rep15既存ディレクトリへunit_test_instance
+        # .jsonを誤って書き込む事故が実際に発生した(直後に削除・復元済み)。
+        # 以後、runner.save_jsonを必ずmockしてファイルI/Oを遮断する。
+        with mock.patch.object(runner, "stage1_fresh_with_enumeration", fake_stage1), \
+             mock.patch.object(runner, "save_json", lambda *a, **k: None):
+            runner.run_instance(object(), state, [0], inst, stage1_cache={})
+        self.assertEqual(captured["developer_message"],
+                          trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE)
+
+    def test_run_instance_use_misconception_principle_false_restores_old_developer_message(self):
+        captured = {}
+
+        def fake_stage1(client, state, consecutive_errors, call_log, label, fixture,
+                         developer_message=None):
+            captured["developer_message"] = developer_message
+            return {"overall_status": "ACCEPTABLE_LLM", "deviations": []}
+
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        inst = {
+            "instance_id": "unit_test_instance2", "group": "unit", "expected_group_label": "unit",
+            "stage1_mode": "fresh",
+            "fixture": {"ledger_text": "(l)", "article_text": "(a)", "source_article_text": None},
+        }
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        with mock.patch.object(runner, "stage1_fresh_with_enumeration", fake_stage1), \
+             mock.patch.object(runner, "save_json", lambda *a, **k: None):
+            runner.run_instance(object(), state, [0], inst, stage1_cache={},
+                                 use_misconception_principle=False)
+        self.assertEqual(captured["developer_message"], vfl01.DEVIATION_DEVELOPER_MESSAGE)
 
 
 if __name__ == "__main__":

@@ -144,6 +144,37 @@ HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V3 = (
     HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE + "\n" + HOOK_TIEBREAK_TEXT_V3
 )
 
+# ------------------------------------------------------------
+# 委任_30 Part1(boundary-1-dramatizationのfalse block残存の是正、最小修正
+# 1回のみ): V3実測(委任_29、summary_meta_hook.json trial_b_v3)で
+# boundary-1("The surprise came halfway through the call.")のみがn=2とも
+# BLOCKINGのまま残存した(元Hook accept-1/accept-4は解消済み)。ユーザー
+# (Fable経由)の判断: boundary-1はdesign書§10の境界例定義「演出がやや
+# 強いが、新しい具体Factを追加していないHook」に該当し許容が正解。V3の
+# tie-break例示は「しばらくの間」「通話の途中で」を挙げていたが、
+# 「(新事実の追加ではなく)時間経過・順序の曖昧な演出である」という
+# 判定の軸自体を明示していなかったため、迷う場合の判定基準として
+# この軸を追記する(新しい例示の追加は最小限、既存HOOK_TIEBREAK_TEXT_V3
+# 本文は変更しない、既存証跡の再現性維持)。
+# ------------------------------------------------------------
+HOOK_TIEBREAK_TEXT_V4 = HOOK_TIEBREAK_TEXT_V3 + """
+
+【tie-break再明確化(委任_30、boundary-1残存の是正、最小修正1回のみ)】
+「通話の途中で」「道中で」「しばらくして」のように、出来事がいつ起きたかを
+おおまかにしか指定しない時間経過・順序の演出(例: "The surprise came
+halfway through the call.")は、新しい具体的Factの追加ではありません。
+これらは検証可能な新事実(具体的な時刻・経過時間の数値・通話中の特定の
+発言内容)を追加しているのではなく、既に確認済みの出来事(驚きが通話中に
+起きたこと)を読者に体験させるための、曖昧なままの時間描写です。具体的
+Factの追加に該当するのは、数字(例: "three minutes in")・日付・固有
+名詞・特定の具体的行動(例: 台本を読んだ、身分を偽った)を新たに加える
+場合のみです。曖昧な時間・順序の演出であるという理由だけでBLOCKINGに
+しないでください。"""
+
+HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V4 = (
+    HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE + "\n" + HOOK_TIEBREAK_TEXT_V4
+)
+
 HOOK_BATCH_PROMPT_TEMPLATE = """これはStage 1が既にBLOCKING-candidateとして検出した、Title/Hookに
 位置する複数claimの一括再評価です。Stage 1の判定理由(explanation/severity/10種類のフラグ)は
 ここでは一切提示しません。以下のLedger全文・記事の日本語原文(参考)・Title/Hookの本文

@@ -1,0 +1,80 @@
+{
+  "real_dev_record": {
+    "claim_text": "The test began without clearly telling users that contract workers would make the calls.",
+    "origin": "ja_source",
+    "related_fact_id": "MUSE-HC-012",
+    "dev": {
+      "claim_in_article": "The test began without clearly telling users that contract workers would make the calls.",
+      "issue": "The article says users were not clearly told, whereas the Ledger describes an internal test involving Meta employees and does not establish that Muse users generally were the audience that lacked disclosure. The nearby suggestion that a user might think the exchange was with AI does not establish that audience or experience.",
+      "severity": "MAJOR",
+      "changed_fact": true,
+      "changed_scope": true,
+      "changed_causality": false,
+      "changed_certainty": false,
+      "changed_number": false,
+      "changed_actor": true,
+      "changed_negation": false,
+      "changed_comparison": false,
+      "changed_time": false,
+      "unsupported_new_claim": true,
+      "explanation": "The article substitutes users for the employees involved in the internal test and adds an unsupported claim about who was not told. The nearby “might” hedges a user's possible belief, not the claim about the audience lacking disclosure.",
+      "related_fact_id": "MUSE-HC-012",
+      "origin": "ja_source",
+      "qualifier_present": true,
+      "qualifier_text": "A user might think the exchange was with AI, even though a person was involved.",
+      "ledger_field_basis": "ledger_fact",
+      "observation_consistent": false,
+      "matched_notes_id": "",
+      "same_fact_id_locations": [
+        "A user might think the exchange was with AI, even though a person was involved.",
+        "A Meta executive admitted the mistake. The test had begun without clearly telling users."
+      ],
+      "auto_downgraded": false,
+      "severity_final": "BLOCKING",
+      "action": "STOP",
+      "basis": "ledger_fact",
+      "rule_id": "existing_major_v2"
+    },
+    "detected_by": "stage1_llm",
+    "local_context": "### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling users that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.",
+    "fallback_used": false,
+    "section_type": "body",
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "basis": "ledger_claim",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "floor_reason": "deterministic_floor:changed_actor",
+    "stage2_route": "body",
+    "floor_cited_materiality": "ACCEPTABLE",
+    "floor_cited_reason": null
+  },
+  "problem_kind_assigned": "term_scope",
+  "stage3_result": {
+    "updated_text": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. Some Muse calls were handled not by AI, but by trained contract workers.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.\n\nIt was like someone took off an AI costume. Then a person stepped out.\n\nHaving a person take over is not always a bad thing. A human can handle situations that AI alone finds difficult. As a system, this may even be useful.\n\nBut this was where the problem began. A human staff member might handle the call. Then the user’s sensitive information could be shared with a contract worker at a call center.\n\nIt is one thing to speak because you think a machine is listening. It is another when you know a person is listening. When people share their names, plans, or personal situations, it matters who listens.\n\n### The hidden person behind the AI sign\n\nHere was the reveal. The test began without clearly telling employees that contract workers would make the calls. A user might think the exchange was with AI, even though a person was involved.\n\nAI had not learned to speak like a human. A human stood behind the sign that said AI.\n\nIt seemed like a story from the future. But the main question was very basic: Had users been clearly told who was making the call?\n\nAs AI becomes able to make calls or reservations for us, this question will become more familiar. The more useful the feature, the more people will want to know who is on the other side. They will want to know if it is AI or human.\n\n### Meta admits a mistake\n\nA Meta executive admitted the mistake. The test had begun without clearly telling users.\n\nFor now, Meta has pulled back the human concierge feature. In the AI age, technology that makes a voice sound human is not enough. We must also know, at the start, who is on the other end.\n\n## In one line\n\nBefore AI speaks for us, we need to know whether the voice belongs to AI or a person.",
+    "method": "e1_minimal_word_edit(exact_substring)",
+    "guard_ok": true,
+    "target_sentence": "The test began without clearly telling users that contract workers would make the calls.",
+    "locate_method": "exact_substring",
+    "delete_reoccurrence_detected": false,
+    "before_fragment": "The test began without clearly telling users that contract workers would make the calls.",
+    "after_fragment": "The test began without clearly telling employees that contract workers would make the calls.",
+    "ladder_level_used": "1_word_connective",
+    "target_not_locatable": false
+  },
+  "call_log": [
+    {
+      "label": "partD_actorguard_rewrite_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0637,
+      "usage": {
+        "input_tokens": 3443,
+        "cached_input_tokens": 0,
+        "output_tokens": 123,
+        "reasoning_tokens": 102
+      },
+      "elapsed_seconds": 3.2,
+      "prompt_sha256": "9ec01213cdadd7387e2fb5d66c26f0ad72c15d3faab140da80fd9e39622859e1"
+    }
+  ]
+}

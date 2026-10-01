@@ -15559,3 +15559,120 @@ calibration_01.py`(`SAFETY_CRITICAL_SUB_IDS`是正・ラベル是正)、
 (新規)、`er052_output/open233_element_trial_safety_control_02/`
 (新規)、`er052_output/open233_element_trial_meta_hook_01/`(新規実行)、
 `OPEN_ITEMS.md`(OPEN-233行Statusセル更新)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01: Hook V4によるboundary-1解消+
+重大誤解原則のrunner既定化+実記事代表5ケースrep16確認(委任_30、
+2026-10-01)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_30: Hook境界群の最終
+小修正、重大誤解原則のrunner既定化、実記事代表5ケースでのend-to-end
+確認。広い29件Trialは禁止)。
+
+**Part1(Hook rubric V4、¥0.7000)**: 委任_29で残存したboundary-1-
+dramatization(“The surprise came halfway through the call.”)の
+false block(2/2)を、Fableが「design書§10の境界例定義[演出がやや
+強いが新しい具体Factを追加していないHook]に該当、許容が正解」と判定
+したことを受け、`HOOK_TIEBREAK_TEXT_V4`(既存V3へ、時間経過・順序の
+曖昧な演出は具体的Factの追加ではないというtie-break判定軸を明記する
+1段落のみ追加)を新設した。n=2再測定(boundary-1・元Hook accept-1・
+NG4群)の結果、**boundary-1(0 false block、解消)・元Hook(0 false
+block、維持)・NG4群(0 false pass、維持)**を確認した。
+
+**Trial C期待2(主体置換ガードの設計上の盲点、¥0.0637)**: 委任_29の
+「期待1」(社内テスト誤読の解消)確認後、未検証だった「期待2」(BLOCKING
+経路を強制した場合のactor_rewrite_guard_ok実挙動)を、iter7実データの
+実際の過去BLOCKING判定(dev: changed_scope=true**かつ**changed_
+actor=true)をそのまま`single_text_rewrite`へ投入して観測した。
+**`classify_problem_kind`の優先順位(term_scope>actor)により
+problem_kind="term_scope"と分類され、主体置換ガード
+(`actor_rewrite_guard_ok`、problem_kind=="actor"の場合のみ発火)が
+一度も評価されないまま"users"→"employees"の置換が通った**
+(guard_ok=True、ただし汎用guardのみに基づく)。独立に確認した結果、
+"employees"はledger_textに一度も出現せず、もしactor経路に乗っていれば
+実際に却下されていたはずであることを特定した。これは委任_27 Part1-3
+導入時には想定されていなかった設計上の盲点であり、`classify_problem_
+kind`の優先順位見直し要否は本委任スコープ外のため、変更せず
+**Fable/ユーザーへの開示事項**とする。
+
+**Part2(runner既定化、¥0)**: 重大誤解原則(Stage1 V4A・Stage2 body
+V4・Hook V4)を、Trial要素実測専用コードから
+`er052_open233_self_recovery_flow_runner_01.py`本体の既定経路へ実配線
+した。新設`ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`(既定True)・
+`BODY_RUBRIC_DEFAULT`/`HOOK_RUBRIC_DEFAULT`(モジュール定数)で
+`run_stage2`内のbody/hook呼び出しを切り替え、`stage1_fresh_with_
+enumeration`へ`developer_message`引数(既定値=既存Production非接続の
+vfl01定数、後方互換)を追加し、`run_instance`の新設`use_misconception_
+principle`引数(既定True)で重大誤解原則配線版へ切り替える。Falseで
+既存iteration1〜7・rep7〜15と同一の挙動へ復帰できる。根拠:
+V4(Stage2 body/Hook)はいずれも委任_29/本委任でSafety-critical対照群
+PASSを確認済み。unittest 6件(`TestMisconceptionPrincipleDefault
+Wiring`)新設、既存4件(ルーティング確認test)はrubric既定切り替えに
+伴いfakeのシグネチャ・アサーションを追従更新(ロジック自体は無変更)。
+
+**Part3(rep16、実記事代表5ケースend-to-end確認)**: `hormuz_run03_
+standard`/`neg1_meta_b3prod_a2`/`neg3_hormuz_prodrunner_b1b`/
+`meta_run03_standard`/`bgroup_B3`をStage1 fresh・n=2で実行した
+(`OUT_DIR_REP16`新設)。sample1(5/5完走、¥10.3338)で
+`neg3_hormuz_prodrunner_b1b`がSTAGE4_ESCALATIONとなった(FAIL)。
+
+**neg3 FAILの根本原因・小修正1回・検証**: 原因分析の結果、
+`paired_rewrite`は`en_located and ja_located`(両言語特定)の場合のみ
+①〜④ladderを構築・試行する実装であり、**片側のみ特定できた場合
+(本caseはJA側のみexact_substringで特定、EN側は別cycleで既に解決済み
+のため元claim文言が現存しない)、ladder構築自体が一度も実行されず
+method=Noneのまま直後の⑥(既定OFF、委任_23 B-2)判定へ落ちて0 callで
+Stage4に至る**という設計上の穴を特定した(⑥自体の既定OFF判断とは
+別の問題)。是正(小修正1回): `en_located != ja_located`の新設elif
+分岐で、特定できた側だけを既存`single_text_rewrite`(①〜④の非⑥
+ローカル編集ラダー、新規テンプレートは追加しない)へ委譲する
+(`j1_single_side_en`/`j1_single_side_ja`、未特定側は無変更)。unittest
+2件で再発防止。実際に失敗していたclaimを再構成して単体検証した結果、
+**guard_ok=True・JA文を「貨物に」→「貨物について」(支払義務者を
+特定しない表現)へ1語修正で解決**(¥0.0758)。
+
+残り4 instanceのsample2完走(Safety関連2件を優先する順序へ変更)を
+行った結果、**4件とも sample1/sample2一致でRESOLVED(hormuz/meta=
+RESOLVED_STAGE2_DOWNGRADE[Rewrite 0]、neg1/bgroup_B3=
+RESOLVED_REWRITE[①単語・接続詞水準のみ、段落・全文Rewrite 0]、
+Stage4到達0・false PASS 0、Safety-critical[bgroup_B3]はBLOCKING経由
+で正しく検出され続け誤降格なし)**(sample2追加¥3.3225)。neg3の
+sample2は予算制約により未完走のまま残った(修正自体の有効性は単体
+検証で確認済み、既知の残課題)。
+
+**費用**: Part1(¥0.7000)+Trial C期待2(¥0.0637)+Part3 rep16
+(sample1¥10.3338+sample2¥3.3225=¥13.6565)+neg3単体検証(¥0.0758)
+=**¥14.496**(Guardrail¥15のうち、残¥0.504)。Phase累計
+¥418.3982+¥14.496=**¥432.8942**/総枠¥600、残**¥167.1058**。
+
+**unittest**: `er052_open233_self_recovery_flow_runner_01_test_01.py`
+単体272件全PASS(新規8件)。リポジトリ全体discover(2215件)では
+本委任と無関係な既存7件(er025/er040/er043/er011、TTS音声鍵生成・
+trend synthesis等)の失敗が見つかったが、いずれも本委任で変更して
+いないファイルであり、独自に調査・修正はせず正直に報告するのみと
+する。`git diff --stat`でProduction・既存iteration1〜7・rep7〜15
+への差分なしを確認した。
+
+**Status**: `HOOK_V4_BOUNDARY_RESOLVED_DEFAULT_WIRED_REP16_PARTIAL_
+N2_ACTOR_GUARD_GAP_DISCLOSED`。
+
+**根拠レポート**: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§28、
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-23/§9-1⑳、
+`docs/pm/delegation_log/2026-10-01_OPEN-233-SELF-RECOVERY-
+TRIAL-01_30.md`。
+
+**影響するファイル**: `er052_open233_self_recovery_stage2_hook_01.py`
+(`HOOK_TIEBREAK_TEXT_V4`/`HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_
+V4`新設)、`er052_open233_self_recovery_flow_runner_01.py`
+(`ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`/`BODY_RUBRIC_DEFAULT`/
+`HOOK_RUBRIC_DEFAULT`新設、`stage1_fresh_with_enumeration`
+developer_message引数追加、`run_instance`use_misconception_principle
+引数追加、`paired_rewrite`片側locate是正、`OUT_DIR_REP16`/
+`TOTAL_BUDGET_JPY`更新)、
+`er052_open233_self_recovery_flow_runner_01_test_01.py`(+test 8件、
+既存4件のfake/assertion追従更新)、新規
+`er052_open233_element_trial_meta_hook_02.py`、新規
+`er052_open233_self_recovery_flow_runner_01_rep16_representative_
+01.py`、新規`er052_open233_self_recovery_flow_runner_01_rep16_neg3_
+fix_verify_01.py`、`er052_output/open233_element_trial_meta_hook_02/`
+(新規)、`er052_output/open233_self_recovery_flow_runner_01_rep16/`
+(新規)、`OPEN_ITEMS.md`(OPEN-233行Statusセル更新)。

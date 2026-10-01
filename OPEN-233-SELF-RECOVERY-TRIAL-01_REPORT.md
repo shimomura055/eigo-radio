@@ -2398,3 +2398,216 @@ Status=`SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_B_PARTIAL_BOUNDARY_
 RESIDUAL_TRIAL_C_RESOLVED`。boundary-1(境界群)の残存false blockの
 扱い(追加rubric修正要否)・広いTrialへ進む可否はFable/ユーザー判断
 待ちとして次回へ引き継ぐ。
+
+## §28. Hook V4によるboundary-1解消+runner既定化+実記事代表5ケース
+rep16確認、paired_rewrite片側locate是正(委任_30、2026-10-01)
+
+### 28-0. 対応表
+
+| # | 項目(ユーザー§8〜§12 4目標+Trial B/C+rep16) | 実施内容 | Evidence |
+|---|---|---|---|
+| Part1 | Hook境界群の最終小修正(boundary-1) | `HOOK_TIEBREAK_TEXT_V4`で再測定(n=2)、false block/pass 0件 | 28-1 |
+| Trial C期待2 | 未確認actor置換の抑止(BLOCKING経路強制) | 実測の結果`classify_problem_kind`優先順位の盲点を発見、ガード未発火を特定 | 28-2 |
+| Part2 | 重大誤解原則のrunner既定化 | Stage1/Stage2 body/Hook専用Stage2の既定経路へ実配線(flagで復帰可) | 28-3 |
+| Part3 | 実記事代表5ケースend-to-end確認(rep16) | neg3がSTAGE4_ESCALATION→根本原因特定・是正→単体検証でPASS、残り4件はn=2でRESOLVED | 28-4 |
+
+### 28-1. Part1: Hook rubric V4によるboundary-1解消
+
+Fable(委任文§1)が、boundary-1-dramatization(“The surprise came
+halfway through the call.”)はdesign書§10の境界例定義「演出がやや
+強いが、新しい具体Factを追加していないHook」に該当し許容が正解と判定
+した。既存`HOOK_TIEBREAK_TEXT_V3`(委任_29)の例示(「通話の途中で」を
+許容例として既に明記していた)にもかかわらず実測では2/2 false block
+だったため、tie-break判定の**軸自体**(「時間経過・順序の曖昧な演出は
+具体的Factの追加ではない」)を明示する`HOOK_TIEBREAK_TEXT_V4`を追加した
+(既存V3本文は変更せず新定数として追加、既存証跡の再現性維持)。
+
+`er052_open233_element_trial_meta_hook_02.py`で、boundary-1・元Hook
+accept-1・NG4群(ng-1〜4)を1 batch×n=2で再測定した結果:
+
+| sub_id | group | 観測(materiality) | false block/pass |
+|---|---|---|---|
+| accept-1-original-hook | accept | ACCEPTABLE, QUALITY | 0 |
+| boundary-1-dramatization | boundary | ACCEPTABLE, QUALITY | 0(**解消**) |
+| ng-1〜4 | ng | 全てBLOCKING, BLOCKING | 0(維持) |
+
+費用¥0.7000(Guardrail Part1≤¥4のうち)。委任_29からの残課題
+(boundary-1の残存)はこれで解消した。
+
+### 28-2. Trial C期待2: actor置換ガードの設計上の盲点の発見
+
+委任_29で「期待1(社内テスト誤読の解消)」は確認済みだったが、
+「期待2(BLOCKING経路を強制した場合のactor_rewrite_guard_ok実挙動)」
+は未検証のままだった。本委任で、iter7実データの実際の過去BLOCKING
+判定(dev: `changed_scope=true`かつ`changed_actor=true`、
+`claim_in_article`="The test began without clearly telling users
+that contract workers would make the calls.")をそのまま
+`single_text_rewrite`へ投入して1 run観測した結果:
+
+- `problem_kind_assigned`: `"term_scope"`(`classify_problem_kind`の
+  優先順位がterm_scope>actorのため、changed_actor=trueでも
+  term_scopeが優先される)
+- `method`: `"e1_minimal_word_edit(exact_substring)"`、`guard_ok`:
+  `True`
+- Rewrite結果: "telling **users**" → "telling **employees**"
+  (主体置換が発生)
+
+`problem_kind=="actor"`の場合のみ発火する`actor_rewrite_guard_ok`が
+**一度も評価されなかった**ため、このguard_okは主体の正しさを検証した
+結果ではなく、汎用guard(「文言が変化し元claim文言が残っていない」)
+のみに基づく。独立に確認した結果、"employees"という語はledger_text
+(日本語本文)に一度も出現しないため、**もしproblem_kind=="actor"
+経路に乗っていればactor_rewrite_guard_okは実際にこの置換を却下して
+いたはずである**ことを特定した(¥0.0637)。
+
+これは委任_27 Part1-3で導入した主体置換ガードの設計上の盲点であり、
+`classify_problem_kind`の優先順位をどう設計すべきか(actorを
+term_scopeより優先するか、両方該当時は両方のガードを適用するか等)
+という独立した設計判断を要する。本委任のスコープ(Hook境界群是正・
+runner既定化・rep16確認)の外にあるため、ここでは変更せず
+**Fable/ユーザーへの開示事項**として報告する(OPEN_ITEMS参照)。
+
+### 28-3. Part2: runner既定化
+
+重大誤解原則(Stage1 V4A・Stage2 body V4・Hook V4)を、委任_27〜29の
+Trial要素実測専用コードから、`er052_open233_self_recovery_flow_
+runner_01.py`本体(実記事runnerとして使われる既定経路)へ実配線した。
+
+- `ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT = True`(新設module定数)。
+  `BODY_RUBRIC_DEFAULT`/`HOOK_RUBRIC_DEFAULT`を同時に新設し、
+  `run_stage2`内の body/hook 2箇所の呼び出しをこれらへ切り替えた。
+  Falseにすると既存iteration1〜7・rep7〜15と同一の挙動(重大誤解
+  原則配線前)へ復帰する(既存証跡自体はOUT_DIRが既に固定済みのため
+  本フラグの既定値変更と無関係)。
+- `stage1_fresh_with_enumeration`へ`developer_message`引数(既定値
+  =既存Production非接続の`vfl01.DEVIATION_DEVELOPER_MESSAGE`)を
+  追加し、`run_instance`の新設`use_misconception_principle`引数
+  (既定True、`ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`連動)に応じて
+  重大誤解原則配線版developer messageを渡す。
+- 根拠: V4は委任_29 Part1(Safety-critical 8claim+Safety12+Hormuz
+  許容5/NG5、n=2公式測定)で全件PASS確認済み、Hook V4は本委任28-1で
+  PASS確認済み。
+- unittest 6件(`TestMisconceptionPrincipleDefaultWiring`)で、
+  flag既定値・rubric選択・developer message配線・`run_instance`への
+  伝播(既定True/明示False両方)を確認した。既存4件
+  (`TestHookOnlyStage2Separation`系・`TestRubricR3Wiring`)は、
+  rubric既定がV4へ切り替わったことに伴い、fakeの呼び出しシグネチャ
+  (`**kwargs`許容)・ソース検査アサーション(`BODY_RUBRIC_DEFAULT`
+  参照の確認)を更新した(ロジック自体は無変更、既定値切り替えに伴う
+  当然の追従)。費用¥0(コードのみ)。
+
+### 28-4. Part3: rep16実記事代表5ケースend-to-end確認
+
+`hormuz_run03_standard`/`neg1_meta_b3prod_a2`/
+`neg3_hormuz_prodrunner_b1b`/`meta_run03_standard`/`bgroup_B3`を
+Stage1 fresh・n=2で実行した(`er052_open233_self_recovery_flow_
+runner_01_rep16_representative_01.py`、`OUT_DIR_REP16`新設)。
+
+**sample1(5/5完走、¥10.3338)**:
+
+| instance_id | final_state | ladder | 備考 |
+|---|---|---|---|
+| hormuz_run03_standard | RESOLVED_STAGE2_DOWNGRADE | なし | oil prices型の一般化をV4が許容、Rewriteなし |
+| neg1_meta_b3prod_a2 | RESOLVED_REWRITE | 1_word_connective | Hook/usersは非BLOCKING、別の1 body claim(“Meta had run a test that caused exactly this surprise.”)が①水準のみで解消 |
+| neg3_hormuz_prodrunner_b1b | **STAGE4_ESCALATION** | 混在 | **FAIL(28-5参照)** |
+| meta_run03_standard | RESOLVED_STAGE2_DOWNGRADE | なし | Stage4到達0・false PASS 0 |
+| bgroup_B3 | RESOLVED_REWRITE | 1_word_connective | 因果接続詞"so"→"while"の1語修正で解消(Safety-critical維持、BLOCKING経由) |
+
+### 28-5. neg3 FAIL是正(根本原因・小修正1回・検証)
+
+**原因分析**: `neg3_hormuz_prodrunner_b1b`のcycle0(Trump/HF-003の
+EN claim)は①水準(`j1_e1_minimal_word`)で解消したが、JA/EN等価QA
+(`ja_en_equivalence`)がFAILしたため全文Recheckが発生し、cycle1で
+同一fact(HF-003)のJA原文逐語("トランプ氏は、アメリカが...二割の
+償還を求めると投稿した。")が同一fact_id別箇所として再出現・BLOCKING
+判定された。この claimを`paired_rewrite`で処理したところ、**EN側は
+`locate_target`で特定できず(cycle0で既に書き換え済みのため元の
+claim文言が現存の記事に残っていない)、JA側のみexact_substringで
+特定できた**。既存`paired_rewrite`は`en_located and ja_located`
+(両言語特定)の場合のみ①〜④ladderを構築・試行する実装であり、
+**片側のみ特定できた場合はladder構築自体が一度も実行されず**、
+`method=None`のまま直後の⑥(既定OFF、委任_23 B-2)判定へ落ちて
+**0 callでStage4(`ladder_exhausted_without_full_rewrite`)に至る**
+設計上の穴であることを特定した(call_logにこのclaimのrewrite call
+が1件も存在しないことで確認、§4-23(c)参照)。
+
+**是正(小修正1回)**: `paired_rewrite`へ`elif en_located != ja_located:`
+分岐を新設し、特定できた側だけを対象に既存`single_text_rewrite`
+(①〜④の非⑥ローカル編集ラダー、新規テンプレートは追加しない)へ
+委譲する(`j1_single_side_en`/`j1_single_side_ja`)。未特定側は変更
+しない。⑥(全文フォールバック、既定OFF)は再有効化しない。unittest
+2件(`test_paired_rewrite_partial_locate_delegates_to_single_text_
+rewrite`/`_falls_through_to_stage4_when_single_side_also_fails`)で
+再発防止した。
+
+**検証**: フルの29 call的な再実行(≤¥2のGuardrail内では収まらない
+見込み)ではなく、既存rep16 sample1のinstance jsonから実際に失敗した
+時点の状態(cycle0 rewrite後のEN/JA本文、cycle1で検出された実際の
+dev)を再構成し、`paired_rewrite`単体を1回だけ実行して検証した
+(`er052_open233_self_recovery_flow_runner_01_rep16_neg3_fix_verify_
+01.py`、¥0.0758)。結果:
+
+- `guard_ok`: `True`、`method`:
+  `"j1_single_side_ja(e1_minimal_word_edit(exact_substring))"`、
+  `ladder_level_used`: `"1_word_connective"`
+- JA before: 「…海峡を通るすべての貨物**に**二割の償還を求める…」
+- JA after: 「…海峡を通るすべての貨物**について**二割の償還を求める…」
+  (支払義務者を特定しない表現へ最小修正、issue「貨物を支払義務者として
+  特定しているように読める」を解消)
+- EN側は未特定のため無変更。
+
+**フルフロー内でのsample2完走**: 残り4 instanceのsample2完走を優先し
+(Safety関連2件[`meta_run03_standard`/`bgroup_B3`]を先に処理する順序
+へ変更)、Guardrailを使い切ったため`neg3_hormuz_prodrunner_b1b`の
+sample2は**未完走のまま残った**(既知の残課題、上記単体検証で
+is正自体の有効性は確認済み)。
+
+**sample2(4/5完走、hormuz/neg1/meta/bgroup_B3の計¥3.3225)**:
+
+| instance_id | sample1 | sample2 | 一致 |
+|---|---|---|---|
+| hormuz_run03_standard | RESOLVED_STAGE2_DOWNGRADE(¥0.8001) | RESOLVED_STAGE2_DOWNGRADE(¥0.1253) | 一致 |
+| neg1_meta_b3prod_a2 | RESOLVED_REWRITE(¥1.3456) | RESOLVED_REWRITE(¥0.5175) | 一致 |
+| meta_run03_standard | RESOLVED_STAGE2_DOWNGRADE(¥0.6627) | RESOLVED_STAGE2_DOWNGRADE(¥0.2059) | 一致 |
+| bgroup_B3 | RESOLVED_REWRITE(¥0.8472) | RESOLVED_REWRITE(¥0.402) | 一致 |
+| neg3_hormuz_prodrunner_b1b | STAGE4_ESCALATION(¥3.104、FAIL是正済み) | (未実施、残課題) | — |
+
+段落・全文Rewrite(`4_paragraph`/`6_full_article`)はsample1/sample2
+いずれも0件。Safety-critical(bgroup_B3)はBLOCKING経由で正しく検出
+され続け(RESOLVED_STAGE2_DOWNGRADEではなくRESOLVED_REWRITE)、
+誤降格は発生していない。meta_run03_standardのstage2_materialities
+は全てQUALITY/ACCEPTABLEで、floor_reasonは既存の
+`disclosure_gap_negative_inference_downgrade`(委任_18 2-2、既存
+機構、本委任で新設していない)のみ。false PASS 0件。
+
+### 28-6. 費用・unittest・Git・Status
+
+本委任合計費用: Part1(¥0.7000)+Trial C期待2(¥0.0637)+Part3 rep16
+(sample1¥10.3338+sample2追加¥3.3225=¥13.6565)+neg3単体検証
+(¥0.0758)=**¥14.496**(Guardrail¥15のうち、残**¥0.504**)。
+Phase累計¥418.3982+¥14.496=**¥432.8942**/総枠¥600、残
+**¥167.1058**。
+
+unittest: `er052_open233_self_recovery_flow_runner_01_test_01.py`単体
+で272件全PASS(既存264件+新規8件: `TestMisconceptionPrincipleDefault
+Wiring`6件+`TestTargetNotLocatableEarlyReturn`内のpaired_rewrite
+是正test 2件)。リポジトリ全体discover(`*_test_01.py`、2215件)では
+7件(3 FAIL+4 ERROR、`er025_pronunciation_resolution_phase3_b1b_en_
+wiring_01_test_01`/`er040_tts_fixed_shell_master_champion_trial_01_
+test_01`/`er043_tts_fixed_shell_master_champion_trial_02_test_01`/
+`er011_open112_trend_synthesis_mode_production_wiring_01_test_01`)
+が失敗していたが、**いずれも本委任で変更していないファイルであり、
+OPEN-233関連ファイルとは無関係**(TTS音声鍵生成・trend synthesis
+byte parity等、既存の別件issueと推定される。本委任の変更前から存在
+していたか否かは未確認のため、独自に調査・修正はせず正直に報告する
+のみとする)。
+
+`git diff --stat`でProduction(er003/er006/er009/er010/er012/er019)・
+既存iteration1〜7・rep7〜15の出力への差分なしを確認した。
+USER_DECISION_REQUIRED 5条件(design書§12)はいずれも非該当。
+
+Status=`HOOK_V4_BOUNDARY_RESOLVED_DEFAULT_WIRED_REP16_PARTIAL_N2_
+ACTOR_GUARD_GAP_DISCLOSED`。次回アクション候補(いずれもFable/
+ユーザー判断): (1)`classify_problem_kind`の優先順位見直し要否
+(actor置換ガードの盲点)、(2)neg3のsample2完走(追加予算)の要否、
+(3)Phase 2(10〜20実記事規模)の新規テーマ選定(PM_GOVERNANCE§13)。

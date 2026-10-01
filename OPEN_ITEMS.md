@@ -489,33 +489,50 @@ downgrade、最小修正1回(V3)を実施したがA4-0は解消した一方**A5-
 `DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_28
 エントリ、`docs/pm/design_open233_self_recovery_flow_01.md`§7-0-
 iter27続き/§9-1⑱、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§26。
-**2026-10-01追記(委任_29、Fableラベル判定反映)**: A5-1(役職の同一
-対象内一般化)をSafety-criticalから除外(9件→8件、QUALITYへ正解
-ラベル是正)、Meta-1/Meta-2(条件付きの可能性→既成事実への断定)は
-rubric最小修正1回(V4)で是正。新規`er052_open233_element_trial_
-safety_control_02.py`でSafety-critical 8claim+Safety12+Hormuz許容5/
-NG5をn=1予備・n=2公式で対照測定し、**全件misdowngrade/false PASS/
-false BLOCK 0件でPASS**(¥4.9438)。Part1 PASS後、委任_28実装済み・
-未実行の`er052_open233_element_trial_meta_hook_01.py`を初実行。
-集計コードの符号反転バグを発見・是正(`tally_hook_rows()`、unittestで
-再発防止)した上で、Meta要素Trial B(Hook許容基準)はNG群4/4 BLOCKING
-(false pass 0件)を確認、許容群はaccept-4・境界群boundary-1が毎回
-false block・元Hookも1/3 false blockだったため最小修正1回
-(`HOOK_TIEBREAK_TEXT_V3`)を実施し、元Hook・accept-4は解消したが
-**boundary-1(境界群)のみ2/2 false blockのまま残存**(委任文STOP
-条件[元Hook誤BLOCK/NG誤PASS]には非該当のためSTOPせず残課題として
-記録)。Trial C(未確認actor置換の抑止)は、対象claimがStage1(V4A、
-重大誤解原則配線後)でn=2ともLEDGER_COMPLIANT(deviation自体が
-検出されない)となり「社内テスト誤読」が解消、NG対照(VP→CEO)は
-引き続きBLOCKINGを維持。本委任費用¥15.8357(Part1¥4.9438+Part2/3
-¥10.8919、Guardrail¥25のうち)。Phase累計¥402.5625+¥15.8357=
-¥418.3982/総枠¥600、残¥181.6018。unittest全PASS(discover306件)、
-`git diff --stat`でProduction・既存証跡への差分なしを確認済み。詳細:
-`DECISION_LOG.md`2026-10-01`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_29
-エントリ、`docs/pm/design_open233_self_recovery_flow_01.md`§7-0-
-iter29/§4-21/§4-22/§9-1⑲、`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`
-§27。boundary-1(境界群)の残存false blockの扱い(追加rubric修正要否)は
-Fable/ユーザー確認事項。
+**2026-10-01追記(委任_30、Hook V4によるboundary-1解消+runner既定化+
+rep16実記事代表5ケース確認)**: Hook rubric V4(`HOOK_TIEBREAK_TEXT_V4`)
+で委任_29残存のboundary-1境界群を解消(n=2で0 false block、元Hook・
+NG4群も非回帰、¥0.7000)。重大誤解原則(Stage1 V4A・Stage2 body V4・
+Hook V4)をTrial要素実測から`er052_open233_self_recovery_flow_runner_
+01.py`本体の既定経路へ実配線(`ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`
+既定True、Falseで旧挙動復帰可)。rep16(実記事代表5ケース、Stage1
+fresh)で`neg3_hormuz_prodrunner_b1b`がSTAGE4_ESCALATIONとなり、原因分析の
+結果`paired_rewrite`が片側(EN/JAいずれか)のみ対象文特定できた場合に
+0 callで⑥disabled経路へ落ちる設計上の穴を特定・是正(既存
+`single_text_rewrite`へ委譲、⑥自体は再有効化せず)。単体検証で解決を
+確認(¥0.0758)。残り4 instance(`hormuz_run03_standard`/
+`neg1_meta_b3prod_a2`/`meta_run03_standard`/`bgroup_B3`)はn=2
+(sample1+sample2)で再実行し**全件RESOLVED(Stage4到達0・false PASS
+0、段落・全文Rewrite 0)を確認**(neg3はbudget制約によりsample2未完走、
+単体検証で解決のみ確認)。**重要な開示事項**: Trial C「期待2」実測で、
+`classify_problem_kind`の優先順位(term_scope>actor)により、
+changed_scope/changed_actorが同時に真のclaimでは主体置換ガード
+(`actor_rewrite_guard_ok`)が一度も発火しないまま置換が通ることを
+発見した(本caseは偶然ledger不一致を検出できなかっただけで、ガード
+自体が機能していたら却下していたはずと確認済み)。優先順位の見直し
+要否は本委任スコープ外のためFable/ユーザー判断へ送る。本委任費用
+¥14.496(Part1¥0.7637+Part3 rep16¥13.6565+neg3単体検証¥0.0758、
+Guardrail¥15のうち残¥0.504)。Phase累計¥418.3982+¥14.496=
+¥432.8942/総枠¥600、残¥167.1058。unittest全PASS(本ファイル272件、
+うち新規8件)、`git diff --stat`でProduction・既存iteration/rep証跡
+への差分なしを確認済み。詳細: `DECISION_LOG.md`2026-10-01
+`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_30エントリ、
+`docs/pm/design_open233_self_recovery_flow_01.md`§4-23/§9-1⑳、
+`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§28。actor置換ガードの
+優先順位見直し要否・neg3 sample2完走(追加予算)の要否はFable/
+ユーザー確認事項。
+旧Status参考(委任_29): `SAFETY_CONTROL_STABILIZED_META_HOOK_TRIAL_
+B_PARTIAL_BOUNDARY_RESIDUAL_TRIAL_C_RESOLVED`(委任_29でA5-1を
+Safety-criticalから除外[QUALITYへ正解ラベル是正]、Meta-1/Meta-2は
+rubric最小修正1回[V4]で是正し、Safety-critical 8claim+Safety12+
+Hormuz許容5/NG5がn=1予備・n=2公式とも全件PASS[¥4.9438]。Meta要素
+Trial B[Hook]は集計コードの符号反転バグを発見・是正した上でNG群4/4
+BLOCKING維持を確認、許容群は最小修正1回[V3]でaccept-4・元Hookは
+解消したがboundary-1[境界群]のみ2/2 false blockのまま残存[STOP条件
+非該当]。Trial C[未確認actor置換の抑止]は対象claimがStage1[V4A]で
+n=2ともLEDGER_COMPLIANT[deviation非検出]となり「社内テスト誤読」が
+解消。Phase累計¥402.5625+¥15.8357=¥418.3982/総枠¥600、残
+¥181.6018)。
 旧Status参考(委任_25): `USER_DECISION_REQUIRED(Phase 2の記事母数・予算方針)`(委任_25、Status更新のみ[¥0、コード変更・API課金・Trial実行なし]。Phase 1[29 instance iter7+rep8〜15]完了。Safety hard gate PASS/false PASS 0/54以降通算0・不要Rewrite21.4%[neg3 disputed除外で7%]・全記事平均¥1.04≤+¥2・⑥全体Rewrite経路は0/7で無効化。未達: 実記事Escalation[hormuz_run03_standard、④段落Rewrite後のJA/EN等価FAILによる正当なfail-closed]。Phase 2[10〜20実記事]は既存の独立実記事が6本のみで、10本規模には新規テーマ選定[PM_GOVERNANCE§13、ユーザー判断]と追加生成費用が必要。残予算¥106.78)。旧Status参考(委任_24): `LADDER_ESCALATION_ORDER_FIXED_VALIDATED_HORMUZ_NO_LONGER_PREMATURE_REBLOCK_BUT_SEPARATE_EQUIVALENCE_GATE_ESCALATES_COST_INCREASED_B4_A2A3_UNTESTED_BUDGET_EXHAUSTED`(委任_24で、委任_23が「Stage3 Rewrite品質の限界[第三要因]」と報告していた`same_claim_fact_id_reblocked`の真因を再特定し、実際は§3-3安全網がラダー前進機構[escalate_to_paragraph]より先に評価される実装順序の問題だったと判明した。同一claim再発を④段落水準まで試行済みの場合のみSTAGE4へ回す是正を実装[unittest 222件全PASS]。rep15実測[`hormuz_run03_standard`×n=2、¥7.1025]でsample1完走・sample2はGuardrail¥7到達でTrialAbort。sample1は`same_claim_fact_id_reblocked`が発生せず①→③→④まで正しく昇段しEN/JA Ledger Recheckとも「解消」を確認したが、別の既存hard gate[`ja_en_equivalence_verdict=FAIL`、委任_23で意図的に維持]により`ja_deviation_unresolved`でSTAGE4_ESCALATIONへ至った[false PASSではない]。コストはrep14比約2.1倍[¥4.0578 vs ¥1.87〜1.98]となりrep15 Guardrailをhormuz n=2だけで使い切ったため`bgroup_B4`×1・`safety_A2A3`×1は未実施。Phase 2候補記事一覧を精査した結果、独立した実在記事テーマは「hormuz」「meta」の2件のみで10本には届かないことを正直に報告[詳細REPORT§24-4]。Phase累計¥386.113+¥7.1025=¥393.2155/総枠¥500、残¥106.7845。旧Status参考(委任_23): `A2_GATING_AND_ENUMERATION_FIXED_VALIDATED_LADDER6_DISABLED_COST_REDUCED_HORMUZ_STILL_ESCALATES_NEW_THIRD_CAUSE_FOUND`(委任_23でreal_run Escalation真因2点[等価QA gating過剰保守/reuse fixture同一fact_id列挙欠如]を特定・是正し、rep14実測[`hormuz_run03_standard`×n=2+`safety_A4`×n=1、¥5.3545]で双方の是正が実際に発火することを確認した。`safety_A4`のworst costは¥8.9545→¥1.5084[83%減、⑥ feature flag既定OFF]。一方`hormuz_run03_standard`は2/2ともSTAGE4_ESCALATIONのまま残り、理由が`ja_deviation_unresolved`から`same_claim_fact_id_reblocked`[Stage3 Rewrite品質の限界という新規の第三要因]へ変化した。予算制約[Guardrail¥6、残¥0.6455]のため追加修正は行わずFable/ユーザー判断待ちとしてSTOP。Phase累計¥380.7585+¥5.3545=¥386.113/総枠¥500、残¥113.887。旧Status参考(委任_22): `A1_EQUIVALENCE_GATING_FIXED_REP13_4_OF_4_NO_STAGE4_ITER7_38_OF_38_COMPLETE_FALSE_PASS_ZERO_WORST_COST_TAIL_RISK_INCREASED`(委任_22でJA/EN等価QA gatingを整理し`bgroup_B3`のrep13実測4/4でSTAGE4を解消[rep12は2/2 STAGE4]、Gate 9項目は全項目Evidence記載完了[STOP非該当]。29 instance全量規模の広いTrial iteration 7を初めて完走[38 instance-run・¥39.5475・error 0・false PASS 0]し、不要Rewrite率の改善[44.44%→21.43%]を確認した一方、⑥使用[0→7件]・worst instance cost[¥5.79→¥8.95]という新たなtail riskが全量規模で初めて判明した。Gate判定[VALIDATED/REJECTED]・tail risk対応の要否はFable/ユーザー判断待ち。Phase累計¥380.7585/総枠¥500、残¥119.2415。旧Status参考(委任_21): `W1_W3_IMPLEMENTED_REP11_8_OF_8_COMPLETE_FALSE_PASS_ZERO`(委任_20でOpus L2レビュー#4是正[JA fail-open封鎖W1・Stage1同一fact_id列挙W2・全文Recheck条件更新W3]を実装し、代表4 instance×n=2 rep11[¥8.0288、8/8完走]で**false PASS 0/8**を確認。Gate 9項目は充足5/部分3/未充足0[Opus#4時点の充足3/部分4/未充足2から改善、最重要だった項目7=Safety誤通過を解消]。局所QA基本形[項目1]は引き続き未達(fastpath発火2/8だが実call成功0件、既存locateバグが主因)。29 instance全量ではないため広いTrialのGateは判定保留。Phase累計¥338.5278/総枠¥500、残¥161.4722。旧Status参考(委任_19): `REP10_ALL_7_INSTANCES_COMPLETE_STAGE4_ZERO`(委任_19で全文Recheck条件narrowingを検討したが`hormuz_run03_standard`新規反証によりnarrowingは実施せず維持。同一fact_id再出現時のラダー前進[escalate_to_paragraph]・neg3両論併記・限定7 instance rep10 Trial[¥12.3479、14/14完走・STAGE4 0件]を実施。29 instance全量ではないため広いTrialのGateは判定保留。Phase累計¥330.499/総枠¥500、残¥169.501。旧Status参考(委任_18): 局所QA統合/全体Rewrite経路是正/不要Rewrite4件の解決策/Escalation 2 run是正を実装し代表12 instance×n=2 rep9 Trial[¥20.0358]を実施。主要3目標[precheck locate是正/disclosure-gap downgrade/meta_run03_standard Escalation 0]はPASS、`hormuz_run03_standard`で新規観測1件[構造的限界]がFable/ユーザー判断待ち。29 instance全量ではないため広いTrialのGateは判定保留。Phase累計¥317.8415/総枠¥500、残¥182.1585。旧Status参考: 委任_14でiteration6実測完了、Gate=REJECTED[継続改善]。不要Rewrite率77.78%→44.44%へ改善したがroot cause4件[Hook-aware対象外flag/Stage2汎化未確認]は残存、real_run Escalation(n=2)16.67%で未達。委任_16で再発防止ルール明文化[PM_GOVERNANCE.md§14]+設計修正[J-1ラダー/Hook-aware rubric]を実施し、広いiteration7 Trial前に代表5ケースTrialを実施したところSafety-critical claim(bgroup_B3)誤降格のregressionを検出、最小修正1回後もFAILのためSTOP条件に該当し安全側(RUBRIC_R3_TRIPLE_PRIME)へ復帰、広いTrialへは進んでいない。J-1ラダーは有効性を確認済み[bgroup_B3がladder_level_used=1_word_connectiveでBLOCKING維持のまま解消]。**委任_17でHook演出許容を別API call(Hook専用Stage2)へ完全分離**し、委任_16と同一の代表5ケースを再実行したところ5/5全てPASS(neg1もbgroup_B3も両方解消、prompt priming regressionは再現せず)。次回委任: 広いiteration7実測(29 instance全量)へ進むか、Fable/ユーザー判断待ち。Phase累計¥297.8057/総枠¥500(2026-09-30ユーザー拡張)、残¥202.1943)。 | `er003_v1_en_direct_vfl_01_generate.py`(`DEVIATION_PROMPT_TEMPLATE`等、無変更)、`LEDGER-DEVIATION-CHECK-REDESIGN-INVESTIGATION-01_REPORT.md`、`LEDGER-DEVIATION-CHECK-REDESIGN-REVIEW-01_REPORT.md`、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`、`docs/pm/design_checker_redesign_v02_01.md`。 | Blocking(再開)。ja_source MAJOR発生時の暫定「案B」運用は継続するが、Checker本体の過剰品質・非決定性・changed_actor等の検出弱点の再設計は再開されたACTIVEな課題となった | 再設計案(`OPEN-233-CHECKER-REDESIGN-V02-01`)のレビュー・採否をFable/ユーザーが判断する。詳細: `DECISION_LOG.md`2026-09-29`GPT6-MODEL-COMPARISON-TRIAL-01`委任_04エントリ、`GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
 | OPEN-234 | **Family X音声生成runner(`er019_family_x_audio_production_runner_01.py`)の`source_dir`導出が`--slug`/`--run`のみに依存し、JA/writer段の`--out-dir`(例: `er019_output/family_x_refresh_e2e_01/{slug}/{run}`)と一致しない場合、Audio段(scaffold/tts/assemble/player)が入力を見つけられない(2026-09-29`FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01`Meta run_03等で発見)**。`source_dir`は`er019_output/{slug}/{run}`固定で導出され、外部pathを直接指定するCLI引数が存在しない。Hormuz(run_01〜03)・Meta run_03いずれも、該当ディレクトリ一式を`er019_output/{slug}/{run}`へ手動コピーすることで回避した(新規APIコール無し、コード変更なし)。**2026-09-29追記(`GPT6-MODEL-COMPARISON-TRIAL-01`委任_01、ユーザー決定)**: 本件の恒久対応(CLI引数追加等)検討はGPT-6 Trial後に対応する(deferred/non-blocking、コード変更なし)。 | `OPEN (non-blocking for wiring / blocking for unattended量産)` | `er019_family_x_audio_production_runner_01.py`(`source_dir`導出箇所) | Non-blocking(手動コピー運用で現状のE2E・Production配線自体はGate 3 PASS済み)だが、無人量産運用(手動コピーを挟まない自動連続実行)を行う場合はblocking(コピー漏れで誤った入力を参照するリスク) | 恒久対応(CLI引数追加等)の要否・実装方針をユーザーが判断する。詳細: `FAMILY-X-REFRESH-E2E-PRODUCTION-WIRING-01_REPORT.md`§E2E Meta run_03(Audio段実行結果)、`CURRENT_SPEC.md`「Family X(Entertainment News)音声構造」節「運用上の既知制約」。 | 区分: POST_USER_VALIDATION | 棚卸し: 未実施 |
 

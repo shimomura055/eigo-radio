@@ -1,0 +1,137 @@
+{
+  "summary": {
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 0.7637,
+    "cumulative_calls": 3,
+    "cumulative_errors": 0,
+    "part1_false_block_total": 0,
+    "part1_false_pass_total": 0,
+    "trial_c2": {
+      "problem_kind_assigned": "term_scope",
+      "method": "e1_minimal_word_edit(exact_substring)",
+      "guard_ok": true,
+      "updated_text_contains_users": true,
+      "updated_text_contains_employees": true,
+      "target_sentence": "The test began without clearly telling users that contract workers would make the calls.",
+      "after_fragment": "The test began without clearly telling employees that contract workers would make the calls."
+    }
+  },
+  "part1": {
+    "hook_stage2_rows": [
+      {
+        "sub_id": "accept-1-original-hook",
+        "group": "accept",
+        "claim_text": "A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "false_block_count": 0,
+        "false_pass_count": 0
+      },
+      {
+        "sub_id": "boundary-1-dramatization",
+        "group": "boundary",
+        "claim_text": "The surprise came halfway through the call.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "ACCEPTABLE",
+            "basis": "none"
+          },
+          {
+            "materiality": "QUALITY",
+            "basis": "none"
+          }
+        ],
+        "false_block_count": 0,
+        "false_pass_count": 0
+      },
+      {
+        "sub_id": "ng-1-unconfirmed-person",
+        "group": "ng",
+        "claim_text": "Mark Zuckerberg himself made some of the calls.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "false_block_count": 0,
+        "false_pass_count": 0
+      },
+      {
+        "sub_id": "ng-2-unconfirmed-action",
+        "group": "ng",
+        "claim_text": "Workers read from a secret script to hide that they were human.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          }
+        ],
+        "false_block_count": 0,
+        "false_pass_count": 0
+      },
+      {
+        "sub_id": "ng-3-unconfirmed-number",
+        "group": "ng",
+        "claim_text": "About 40% of Muse calls were made by humans.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_numeric_value"
+          }
+        ],
+        "false_block_count": 0,
+        "false_pass_count": 0
+      },
+      {
+        "sub_id": "ng-4-fact-reversal",
+        "group": "ng",
+        "claim_text": "Meta said every call was fully AI.",
+        "hook_stage2_labels": [
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_claim"
+          },
+          {
+            "materiality": "BLOCKING",
+            "basis": "ledger_scope"
+          }
+        ],
+        "false_block_count": 0,
+        "false_pass_count": 0
+      }
+    ],
+    "false_block_total": 0,
+    "false_pass_total": 0
+  },
+  "trial_c2": {
+    "problem_kind_assigned": "term_scope",
+    "method": "e1_minimal_word_edit(exact_substring)",
+    "guard_ok": true,
+    "updated_text_contains_users": true,
+    "updated_text_contains_employees": true,
+    "target_sentence": "The test began without clearly telling users that contract workers would make the calls.",
+    "after_fragment": "The test began without clearly telling employees that contract workers would make the calls."
+  }
+}

@@ -1,0 +1,681 @@
+{
+  "instance_id": "neg3_hormuz_prodrunner_b1b",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "ladder_exhausted_without_full_rewrite",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+            "issue": "This wording assigns the payment obligation to the cargo, while the Ledger says the payer was not specified.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The article identifies cargo as the party that should provide payment; HF-003 says the payer was unspecified. The Japanese source already uses wording that can imply reimbursement is sought from the cargo, so this deviation was present in the source. The 20% rate itself is supported.",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "should provide",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-003",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The proposed fee enters, then exits\n\nOn July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.\n\n### The price refuses to follow",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_actor",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": "deterministic_floor_cited:changed_actor"
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "j1_e1_minimal_word",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        }
+      ],
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.06,
+          "difficult_word_ratio": 0.1401,
+          "word_count": 307
+        },
+        "stats_after": {
+          "avg_sentence_len": 18.47,
+          "difficult_word_ratio": 0.1369,
+          "word_count": 314
+        },
+        "sentence_len_increase": 0.41,
+        "difficulty_ratio_increase": -0.0032,
+        "fragment_stats_before": {
+          "avg_sentence_len": 16.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 16
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 23.0,
+          "difficult_word_ratio": 0.087,
+          "word_count": 23
+        },
+        "fragment_sentence_len_increase": 7.0,
+        "fragment_difficulty_ratio_increase": -0.038,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+7.0,difficult_ratio+-0.038)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 36,
+        "hook_word_count_after": 36,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 11,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.06,
+          "difficult_word_ratio": 0.1401,
+          "word_count": 307
+        },
+        "stats_after": {
+          "avg_sentence_len": 17.41,
+          "difficult_word_ratio": 0.1419,
+          "word_count": 296
+        },
+        "sentence_len_increase": -0.65,
+        "difficulty_ratio_increase": 0.0018,
+        "fragment_stats_before": {
+          "avg_sentence_len": 16.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 16
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 5.0,
+          "difficult_word_ratio": 0.2,
+          "word_count": 5
+        },
+        "fragment_sentence_len_increase": -11.0,
+        "fragment_difficulty_ratio_increase": 0.075,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+-11.0,difficult_ratio+0.075)"
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 36,
+        "hook_word_count_after": 36,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 11,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 17,
+        "sentence_count_after": 17,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 3,
+        "hedge_word_count_after": 3,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "quality_degradation_ja": {
+        "sentence_count_before": 2,
+        "sentence_count_after": 2,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 10,
+        "paragraph_count_after": 10,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return\n\nOil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.\n\n### The proposed fee enters, then exits\n\nOn July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.\n\n### The price refuses to follow\n\nTrump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.\n\nThat return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.\n\nDuring that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.\n\n## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "en_text_after_rewrite": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return\n\nOil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.\n\n### The proposed fee enters, then exits\n\nOn July 13, Trump posted a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.\n\n### The price refuses to follow\n\nTrump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.\n\nThat return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.\n\nDuring that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.\n\n## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "ja_text_before_rewrite": "二割の料金案は撤回。それでも原油価格はすぐ戻った\n\n原油価格のニュースには、ときどき政策発表よりも、発表後の値動きが大きなオチを持ってくる。今回のオチは、料金案が舞台から退場したのに、価格が一緒には退場しなかったことだ。\n\n七月十三日、トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。いきなり大きな数字が登場し、ニュースの舞台に新しい主役が出てきた形だ。\n\nところが翌日の七月十四日、その主役はあっさり交代する。トランプ氏は二割の償還料を、湾岸諸国によるアメリカとの貿易や投資の案件に置き換えると投稿した。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明したのだ。\n\nさらに記者団には、ホルムズ海峡を通る船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないとも述べた。前の日に出てきた料金案が、次の日には別の話へ置き換わったことになる。\n\nここで普通なら、料金の話が消えたのだから、原油価格も落ち着きそうに見える。実際、発表直後のブレント原油先物は、上げ幅をいったん縮めた。\n\nしかし、値動きはそこで終わらない。価格はほどなく、発表前に近い高い水準へ戻った。記事掲載時点では、およそ二・六パーセント高で、一バレル八十五ドルを上回っていた。\n\nこの戻りが面白い。政治の舞台では看板が掛け替えられたのに、価格の舞台では、数字がすぐ元の勢いを取り戻したからだ。しかもその時間帯には、米国とイランの間の攻撃、海上封鎖、タンカーの安全への懸念が続いていた。\n\n今回わかるのは、発表の言葉が変わったことと、価格の動きが同じようには変わらないことがある、ということだ。料金案は置き換えられても、同じ時間に続いている出来事まで、発表一つで舞台裏へ消えるわけではなかった。\n\n【追加指示: 前回指摘の解消確認】\n以下は前回のFact Checkで指摘された項目です。今回の記事で、各項目が個別に解消されたかを判定し、prior_issues_resolvedとして記録してください(indexは以下のリストの番号[0始まり]と対応させること。全項目について回答すること)。\n- index=0: fact_id=HF-003 | claim_in_article=Trump posted that all cargo passing through the Strait of Hormuz should pay back 20 percent of the cost of the United States keeping the strait safe. | issue=記事は20％の算定基礎を『米国が安全確保に使う費用』と特定しているが、Ledgerでは20％という率のみが示され、課税標準・算定基礎は明記されていない。 | explanation=HF-003が未提示としている評価方法・算定基礎を、記事が具体的に示している。日本語原文の『費用について二割の償還』よりも、英訳で『費用の20％』と明確化されており、逸脱は翻訳・適応時に生じた。",
+      "ja_text_after_rewrite": "二割の料金案は撤回。それでも原油価格はすぐ戻った\n\n原油価格のニュースには、ときどき政策発表よりも、発表後の値動きが大きなオチを持ってくる。今回のオチは、料金案が舞台から退場したのに、価格が一緒には退場しなかったことだ。\n\n七月十三日、トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。いきなり大きな数字が登場し、ニュースの舞台に新しい主役が出てきた形だ。\n\nところが翌日の七月十四日、その主役はあっさり交代する。トランプ氏は二割の償還料を、湾岸諸国によるアメリカとの貿易や投資の案件に置き換えると投稿した。中東の指導者たちとの「非常に生産的な協議」に基づく決定だと説明したのだ。\n\nさらに記者団には、ホルムズ海峡を通る船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないとも述べた。前の日に出てきた料金案が、次の日には別の話へ置き換わったことになる。\n\nここで普通なら、料金の話が消えたのだから、原油価格も落ち着きそうに見える。実際、発表直後のブレント原油先物は、上げ幅をいったん縮めた。\n\nしかし、値動きはそこで終わらない。価格はほどなく、発表前に近い高い水準へ戻った。記事掲載時点では、およそ二・六パーセント高で、一バレル八十五ドルを上回っていた。\n\nこの戻りが面白い。政治の舞台では看板が掛け替えられたのに、価格の舞台では、数字がすぐ元の勢いを取り戻したからだ。しかもその時間帯には、米国とイランの間の攻撃、海上封鎖、タンカーの安全への懸念が続いていた。\n\n今回わかるのは、発表の言葉が変わったことと、価格の動きが同じようには変わらないことがある、ということだ。料金案は置き換えられても、同じ時間に続いている出来事まで、発表一つで舞台裏へ消えるわけではなかった。\n\n【追加指示: 前回指摘の解消確認】\n以下は前回のFact Checkで指摘された項目です。今回の記事で、各項目が個別に解消されたかを判定し、prior_issues_resolvedとして記録してください(indexは以下のリストの番号[0始まり]と対応させること。全項目について回答すること)。\nTrump posted 20 percent of the cost of the United States keeping the strait safe. | issue=記事は20％の算定基礎を『米国が安全確保に使う費用』と特定しているが、Ledgerでは20％という率のみが示され、課税標準・算定基礎は明記されていない。 | explanation=HF-003が未提示としている評価方法・算定基礎を、記事が具体的に示している。日本語原文の『費用について二割の償還』よりも、英訳で『費用の20％』と明確化されており、逸脱は翻訳・適応時に生じた。",
+      "ja_fail_open_guard": {
+        "ok": true,
+        "violations": [],
+        "checked": false,
+        "indeterminate": false
+      },
+      "rewrite_new_precheck_findings_count": 0,
+      "ja_en_equivalence_verdict": "FAIL",
+      "ja_en_equivalence_reason": {
+        "notes": "Prior issue [0] is resolved in the narrow sense that the English no longer states that 20 percent is calculated from the United States’ security costs. However, the proposal’s scope and context are now materially under-specified in the translation.",
+        "meaning_changes": [
+          "The one-line summary calls the concurrent events “the events driving oil prices,” which asserts a causal role more explicitly than the Japanese conclusion."
+        ],
+        "important_omissions": [
+          "The English omits that the proposed 20 percent reimbursement was sought from all cargo passing through the Strait of Hormuz.",
+          "The English leaves unspecified what the 20 percent reimbursement was based on and does not retain the context that it concerned costs the United States uses to ensure the strait’s safety."
+        ],
+        "unsupported_additions": [
+          "The one-line summary describes the concurrent events as driving oil prices, a causal claim not explicitly made in the Japanese text."
+        ],
+        "number_name_negation_issues": []
+      },
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim",
+        "ja_en_equivalence_not_pass"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "ja_recheck_overall_status": "LEDGER_DEVIATION"
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+            "issue": "The summary says the events driving prices returned, while the article’s body and the Ledger describe those events as continuing. It also states a price-driving causal link more explicitly than the Ledger establishes for this July 14 price move.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "The Japanese source says the events continued and did not disappear; the English summary instead says they returned and explicitly calls them price drivers. This changes the temporal claim and adds a causal claim.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "The preceding sentence says “events continuing at the same time do not simply disappear”; it also says the fee plan “may be replaced.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+              "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement."
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.」の「events ... quickly returned」を、出来事は継続していたという表現に直してください。価格については、一時的に上げ幅を縮小した後、発表前に近い高い水準へ戻ったと範囲を限定してください。参照: HF-009",
+          "floor_reason": "deterministic_floor:changed_time",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+            "issue": "The summary says the events driving prices returned, while the article’s body and the Ledger describe those events as continuing. It also states a price-driving causal link more explicitly than the Ledger establishes for this July 14 price move.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "The Japanese source says the events continued and did not disappear; the English summary instead says they returned and explicitly calls them price drivers. This changes the temporal claim and adds a causal claim.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "The preceding sentence says “events continuing at the same time do not simply disappear”; it also says the fee plan “may be replaced.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+              "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement."
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "That return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.\n\nDuring that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_time",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+          "origin": "translation",
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+            "issue": "The summary says the events driving prices returned, while the article’s body and the Ledger describe those events as continuing. It also states a price-driving causal link more explicitly than the Ledger establishes for this July 14 price move.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "The Japanese source says the events continued and did not disappear; the English summary instead says they returned and explicitly calls them price drivers. This changes the temporal claim and adds a causal claim.",
+            "related_fact_id": "HF-009",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "The preceding sentence says “events continuing at the same time do not simply disappear”; it also says the fee plan “may be replaced.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+              "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement."
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_time",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。",
+            "issue": "この表現は、すべての貨物を支払義務者として特定しているように読めるが、Ledgerでは支払義務者は特定されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "貨物を支払義務者として示す具体的主張が加わっている。Ledgerは支払義務者を未特定としているため、changed_actorおよびunsupported_new_claimに該当する。",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-003",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return\n\nOil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it. This time, the fee plan left the stage, but the price did not leave with it.\n\n### The proposed fee enters, then exits\n\nOn July 13, Trump posted a 20 percent reimbursement. A large number suddenly appeared, making the proposal the story’s new lead. But the next day, July 14, he posted that the 20 percent fee would be replaced by trade and investment deals between Gulf states and the United States.\n\n### The price refuses to follow\n\nTrump said the change was based on “very productive discussions” with Middle Eastern leaders. He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself. Normally, removing the fee plan would seem likely to calm oil prices. Brent futures briefly narrowed their gains, but soon returned to near their earlier high.\n\nThat return is the interesting part. On the political stage, the sign above the entrance was changed. But on the price stage, the numbers quickly regained their earlier strength. At the time of publication, oil was up about 2.6 percent and above $85 a barrel.\n\nDuring that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe lesson is that changing the words in an announcement does not always change the price in the same way. The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.\n\n## In one line\n\nThe fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+          "fallback_used": true,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": "deterministic_floor:changed_actor",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "escalate_to_paragraph": true
+        }
+      ],
+      "blocking_count": 4,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(rewrite_hint_quote)",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "in_one_line",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        },
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(exact_substring)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        },
+        {
+          "claim_identity": "fact:HF-009",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(exact_substring)",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false
+        },
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "paired_ja_en(J-1)",
+          "method": "+ladder6_disabled",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": true
+        }
+      ],
+      "ladder_exhausted_claim_ids": [
+        "fact:HF-003"
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.3733,
+      "usage": {
+        "input_tokens": 6922,
+        "cached_input_tokens": 0,
+        "output_tokens": 3375,
+        "reasoning_tokens": 3128
+      },
+      "elapsed_seconds": 37.756,
+      "prompt_sha256": "c79df7c8036ebce173e22feca095f4a476addc9562c4ea7caf49f6f062b2e423"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1413,
+      "usage": {
+        "input_tokens": 7235,
+        "cached_input_tokens": 0,
+        "output_tokens": 354,
+        "reasoning_tokens": 303
+      },
+      "elapsed_seconds": 5.15,
+      "prompt_sha256": "c08b9e3409369907fdbfda236915c6301e9948179757a8f59e16ef69580ce488"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_fact:HF-003_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1562,
+      "usage": {
+        "input_tokens": 3647,
+        "cached_input_tokens": 0,
+        "output_tokens": 1262,
+        "reasoning_tokens": 1176
+      },
+      "elapsed_seconds": 10.826,
+      "prompt_sha256": "c6b9eff3f28da15690aeda823893e4d58c8ed09dc1425cd0249db4204324bc89"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_fact:HF-003_regen_j1_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.209,
+      "usage": {
+        "input_tokens": 3698,
+        "cached_input_tokens": 0,
+        "output_tokens": 1925,
+        "reasoning_tokens": 1883
+      },
+      "elapsed_seconds": 16.16,
+      "prompt_sha256": "bc049dab046c16346cde5d6728531691593250675c317ff024d55e8a33fe8d84"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.147,
+      "usage": {
+        "input_tokens": 1713,
+        "cached_input_tokens": 0,
+        "output_tokens": 1531,
+        "reasoning_tokens": 1299
+      },
+      "elapsed_seconds": 13.822,
+      "prompt_sha256": "fa3ffb257f1b2d9a00dc1bd0c530840ff6641bfd729f43a5d3a93f68bf029b32",
+      "verdict": "FAIL",
+      "notes": "Prior issue [0] is resolved in the narrow sense that the English no longer states that 20 percent is calculated from the United States’ security costs. However, the proposal’s scope and context are now materially under-specified in the translation."
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.9576,
+      "usage": {
+        "input_tokens": 6773,
+        "cached_input_tokens": 0,
+        "output_tokens": 10853,
+        "reasoning_tokens": 10358
+      },
+      "elapsed_seconds": 109.217,
+      "prompt_sha256": "4bb2c1e6e242befd0d1b44eea71129ee27cd1bda0a47a5c3a60aa402a647a64a",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c1_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4273,
+      "usage": {
+        "input_tokens": 7283,
+        "cached_input_tokens": 0,
+        "output_tokens": 3991,
+        "reasoning_tokens": 3624
+      },
+      "elapsed_seconds": 36.905,
+      "prompt_sha256": "94fd7125c166d8650f4b23addaa50b888adff26321079c429e51203459fada9e",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2924,
+      "usage": {
+        "input_tokens": 7938,
+        "cached_input_tokens": 0,
+        "output_tokens": 2140,
+        "reasoning_tokens": 1921
+      },
+      "elapsed_seconds": 18.572,
+      "prompt_sha256": "66259ae30e4d469377a2ac594d1cec81eb78c385316b0d6336ce6390831fa082"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c2_fact:HF-009_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1341,
+      "usage": {
+        "input_tokens": 3647,
+        "cached_input_tokens": 0,
+        "output_tokens": 980,
+        "reasoning_tokens": 974
+      },
+      "elapsed_seconds": 12.052,
+      "prompt_sha256": "e3ba1ea55967a9c3b9c85b4cfaf204b08a6595304453277aa0eb784faf1e00a8"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c2_fact:HF-009_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0876,
+      "usage": {
+        "input_tokens": 3508,
+        "cached_input_tokens": 0,
+        "output_tokens": 415,
+        "reasoning_tokens": 376
+      },
+      "elapsed_seconds": 5.214,
+      "prompt_sha256": "b5dea425a1e6ec86ec8bf66492466bc6cd047309efc97504e5bd852c2d7eb721"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c2_fact:HF-009_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0908,
+      "usage": {
+        "input_tokens": 3567,
+        "cached_input_tokens": 0,
+        "output_tokens": 444,
+        "reasoning_tokens": 418
+      },
+      "elapsed_seconds": 5.84,
+      "prompt_sha256": "0d970a3c18f6e13ad9667639f6cbc6991ff5a442c47976981097f7e2751c7dce"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_c2_fact:HF-009_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0874,
+      "usage": {
+        "input_tokens": 3569,
+        "cached_input_tokens": 0,
+        "output_tokens": 401,
+        "reasoning_tokens": 375
+      },
+      "elapsed_seconds": 5.124,
+      "prompt_sha256": "1634ce379a9bd4f537f7df651596613746511a8e50d1e305ee2bcfa6f0eaa80d"
+    }
+  ],
+  "total_cost_jpy": 3.104,
+  "total_calls": 12,
+  "elapsed_seconds": 276.711
+}

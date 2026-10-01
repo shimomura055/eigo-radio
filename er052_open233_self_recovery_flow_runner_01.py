@@ -190,11 +190,24 @@ OUT_DIR_REP14 = "er052_output/open233_self_recovery_flow_runner_01_rep14"
 # 再実行する(委任文§2 B、budget_stateパス明示)。出力は新規ディレクトリ
 # (`_rep15`)へ書く。
 OUT_DIR_REP15 = "er052_output/open233_self_recovery_flow_runner_01_rep15"
-OUT_DIR = OUT_DIR_REP15
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ab_24_rep15.json"
-TOTAL_BUDGET_JPY = 7.0  # 委任_24 rep15単体Guardrail(委任文§0「本委任
-# Guardrail¥8(実装¥0、rep15≤¥7)」、TrialAbortの技術的上限をrep15の
-# サブGuardrailで設定する)
+# 委任_30(2026-10-01、Hook境界群の最終小修正+重大誤解原則のrunner既定化+
+# 実記事代表5ケースend-to-end確認): 既存iteration1〜7・rep7〜15の出力は
+# 変更しない。Part2(本既定化、ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT=
+# True)反映後、`hormuz_run03_standard`/`neg1_meta_b3prod_a2`/
+# `neg3_hormuz_prodrunner_b1b`/`meta_run03_standard`/`bgroup_B3`の5
+# instanceをStage1 fresh・n=2で再実行する(委任文Part3、budget_stateパス
+# 明示)。出力は新規ディレクトリ(`_rep16`)へ書く。
+OUT_DIR_REP16 = "er052_output/open233_self_recovery_flow_runner_01_rep16"
+OUT_DIR = OUT_DIR_REP16
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233ag_30_rep16.json"
+# 委任_30 Part3続き(neg3 FAIL是正の反映後、sample2残り4 instanceの再開):
+# sample1完走時点でrep16単体が既に¥10.3338(Part3当初Guardrail¥10をわずかに
+# 超過、check_budgetは呼び出し前判定のため最終callで超過すること自体は
+# 既存の仕様どおり)。委任全体Guardrail¥15(Part1[¥0.7637]+本委任neg3
+# 単体fix検証[¥0.0758]を含む)の残り約¥3.8の範囲内でsample2を完走させる
+# ため、rep16単体の上限をここまで引き上げる(委任全体の新しい支出枠を
+# 追加するものではなく、既承認の¥15の範囲内でのサブGuardrail再配分)。
+TOTAL_BUDGET_JPY = 13.6
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -231,6 +244,26 @@ ENABLE_LADDER_LEVEL_6_FULL_REWRITE = False
 # かったことの実証によるfail-closedという別の安全機構であり、本委任の
 # スコープ外)。
 ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP = False
+
+# 委任_30 Part2(design書§0/§9-1「既定構成の確定(要素Trial反映)」):
+# 上位原則「重大誤解原則」(2026-10-01ユーザー指示)をStage1/Stage2(body)/
+# Hook専用Stage2の既定経路へ実配線する。委任_27〜29の要素Trial(Hormuz
+# Trial A、Safety対照群n=2公式測定、Meta要素Trial B/C、委任_30 Part1の
+# Hook V4 boundary-1是正)で、Safety-critical/Safety12/Hormuz許容・NG/
+# Hook許容・境界・NG群のいずれも非回帰(false downgrade/false pass 0件)を
+# 確認済みのため、既定をTrueへ昇格する。Falseに戻すと重大誤解原則配線前
+# (iteration1〜7・rep7〜15と同一)の挙動に戻る(再有効化はFable/ユーザー
+# 判断、既存iteration/rep証跡は本フラグの既定値変更と無関係[既にOUT_DIRが
+# 固定済み])。
+ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT = True
+BODY_RUBRIC_DEFAULT = (
+    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V4
+    if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2c.RUBRIC_R3_TRIPLE_PRIME
+)
+HOOK_RUBRIC_DEFAULT = (
+    s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V4
+    if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2h.HOOK_RUBRIC
+)
 
 # 委任_27 Part1-2(design書§0-4/§5-11): 問題種類→初期Rewrite単位の写像。
 # Stage1のdeterministic floor flag(dev)から決定論(¥0、LLM呼び出しなし)
@@ -1125,12 +1158,22 @@ def deterministic_same_fact_id_location_fallback(deviations: list, article_text:
     return out
 
 
-def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, label, fixture) -> dict:
+def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, label, fixture,
+                                   developer_message: str = vfl01.DEVIATION_DEVELOPER_MESSAGE) -> dict:
     """委任_20 W2: `stage1_fresh()`と同一のretry/cost計上パターンだが、
     schemaへ`same_fact_id_locations`を追加したローカル拡張版(`run_recheck()`
     と同じ「schemaだけローカルに拡張する」既存パターンを踏襲、er051は
     read-onlyのまま)。呼び出し元(`run_instance`)がこのinstanceについて
-    Stage1を新規実行する場合のみ使う(reuse fixtureには影響しない)。"""
+    Stage1を新規実行する場合のみ使う(reuse fixtureには影響しない)。
+
+    委任_30 Part2(design書§0/§9-1「既定構成の確定」): `developer_message`
+    引数を追加した(既定値は既存の`vfl01.DEVIATION_DEVELOPER_MESSAGE`で
+    既存呼び出し元の挙動は無変更)。`run_instance`からは重大誤解原則配線版
+    (`trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE`)が既定で渡る
+    (`ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`、既定True)。schemaのenum
+    拡張(same_fact_id_locations)自体は変更しない(委任_28/29の要素Trial
+    [`stage1_fresh_with_misconception_principle`]はenum非対応だったため
+    別関数だったが、本関数は両方を同時に持つ既定経路として統合する)。"""
     check_budget(state)
     include_origin = fixture.get("source_article_text") is not None
     prompt_template = trial.build_trial_prompt_template("V4A")
@@ -1156,7 +1199,7 @@ def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, l
             response = client.responses.create(
                 model=MODEL, reasoning={"effort": vfl01.REASONING_EFFORT},
                 text={"format": {"type": "json_schema", **schema}},
-                input=[{"role": "developer", "content": vfl01.DEVIATION_DEVELOPER_MESSAGE},
+                input=[{"role": "developer", "content": developer_message},
                        {"role": "user", "content": prompt}],
             )
             break
@@ -1890,23 +1933,33 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                 judgments_by_index[global_idx] = match
                 stage2_route_by_index[global_idx] = group_kind
 
-    # body/in_one_line: 既存Stage2(R3'''、プロンプト内容は不変)
+    # body/in_one_line: 既存Stage2(R3'''、プロンプト内容は不変)。
+    # 委任_30 Part2(design書§0/§9-1「既定構成の確定」): 重大誤解原則V4
+    # (`BODY_RUBRIC_DEFAULT`、既定`ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`=
+    # True)を既定へ昇格する。V4は委任_29 Part1(Safety-critical 8claim+
+    # Safety12+Hormuz許容5/NG5、n=2公式測定)で全件PASS確認済み
+    # (REPORT§27-2)。旧挙動(V4適用前のRUBRIC_R3_TRIPLE_PRIME単体)は
+    # `ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT=False`で復帰できる(既存
+    # iteration1〜7・rep7〜15の再現性はそれらのOUT_DIRが既に固定済みの
+    # 証跡のため本フラグの既定値変更とは無関係、新規runのみに影響)。
     _run_stage2_group(
         body_indices, "body",
         lambda cl: s2c.run_stage2_batch_variant(
             client, fixture["ledger_text"], fixture.get("source_article_text"),
-            cl, s2c.RUBRIC_R3_TRIPLE_PRIME, model=MODEL,
+            cl, BODY_RUBRIC_DEFAULT, model=MODEL,
         ),
     )
     # title/hook: Hook専用Stage2(s2h、別Prompt・別call。入力はLedger全文+
     # source context+タイトル・hook段落のみ、対象claimを含む段落±1段落の
-    # ような広い文脈は渡さない)
+    # ような広い文脈は渡さない)。委任_30 Part2: Hook rubricも同様にV4
+    # (`HOOK_RUBRIC_DEFAULT`)を既定へ昇格する(委任_30 Part1でboundary-1
+    # 残存の解消をn=2で確認済み、元Hook/NG4群も非回帰を確認済み)。
     title_hook_text = build_title_hook_context(fixture["article_text"]) if hook_indices else ""
     _run_stage2_group(
         hook_indices, "hook",
         lambda cl: s2h.run_stage2_hook_batch(
             client, fixture["ledger_text"], fixture.get("source_article_text"),
-            title_hook_text, cl, model=MODEL,
+            title_hook_text, cl, model=MODEL, hook_rubric_text=HOOK_RUBRIC_DEFAULT,
         ),
     )
 
@@ -2681,6 +2734,12 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     method = None
     updated_en = en_full
     updated_ja = ja_full
+    # 委任_30 Part3 FAIL是正(小修正1回、neg3_hormuz_prodrunner_b1b根本原因、
+    # design書§9-1追記予定): 下記`en_located and ja_located`分岐の外側
+    # (片側のみ特定できた新設elif分岐)でもこれらの変数が未定義にならない
+    # よう既定値を与える(後段のcite-or-release判定式が参照するため)。
+    use_paragraph = False
+    en_revised = None
 
     # 委任_18 2-1(b)(d): EN/JA双方とも対象文が一度も特定できない場合
     # (single_text_rewriteと同一原則)、①〜④のladderは意味を持たず、
@@ -2773,6 +2832,32 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                 method = lv["tag"]
                 ladder_level_used = lv["name"]
                 break
+    elif en_located != ja_located:
+        # 委任_30 Part3 FAIL是正(小修正1回、neg3_hormuz_prodrunner_b1b根本
+        # 原因、design書§9-1追記予定): 片側のみ対象文が特定できた場合(既知の
+        # 限界、例: EN側が別cycleで既に解決済みのため元claim文言が現存の
+        # 記事に残っていない)、従来は`if en_located and ja_located:`の外側
+        # (この関数本体)でlevels構築自体が一度も実行されず、method=None
+        # のまま直後の`if not guard_ok:`→⑥(disabled)経路へ落ちて0 call
+        # でStage4に至っていた(本委任で実測・特定)。⑥(JA/EN全文フォール
+        # バック、`ENABLE_LADDER_LEVEL_6_FULL_REWRITE`既定OFF)は再有効化
+        # せず、特定できた側だけを対象に既存`single_text_rewrite`
+        # (①〜④の非⑥ローカル編集ラダー、新規テンプレートは追加しない)を
+        # 適用する(未特定側は変更しない)。
+        only_located_field = "article_text" if en_located else "source_article_text"
+        only_full_text = en_full if en_located else ja_full
+        mini_fixture = {"ledger_text": fixture["ledger_text"], only_located_field: only_full_text}
+        single_result = single_text_rewrite(
+            client, state, consecutive_errors, call_log, f"{label_prefix}_j1_single_side",
+            mini_fixture, only_located_field, claim_rec)
+        if single_result.get("guard_ok"):
+            if en_located:
+                updated_en = single_result["updated_text"]
+            else:
+                updated_ja = single_result["updated_text"]
+            guard_ok = True
+            method = f"j1_single_side_{'en' if en_located else 'ja'}({single_result.get('method')})"
+            ladder_level_used = single_result.get("ladder_level_used")
 
     # 委任_13: cite-or-release用のbefore/afterペア(単一文置換時のみ判明。
     # paragraph-level rewriteはtarget_sentence単位のafter断片を一意に
@@ -3593,7 +3678,8 @@ def build_precheck_floor_claims(fixture: dict, existing_fact_ids: set) -> list:
 # ------------------------------------------------------------
 def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool = False,
                   stage1_cache: dict | None = None, instances_subdir: str = "instances",
-                  use_enumeration_stage1: bool = True) -> dict:
+                  use_enumeration_stage1: bool = True,
+                  use_misconception_principle: bool = ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT) -> dict:
     instance_id = inst["instance_id"]
     fixture = inst["fixture"]
     call_log: list = []
@@ -3633,9 +3719,22 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         else:
             # 委任_20 W2(既定True): 同一fact_id別箇所列挙フィールド付きの
             # Stage1初回callを使う(追加callなし、¥0限界コスト)。
-            stage1_fn = stage1_fresh_with_enumeration if use_enumeration_stage1 else stage1_fresh
-            stage1_parsed = stage1_fn(client, state, consecutive_errors, call_log,
-                                       f"{instance_id}_stage1", fixture)
+            # 委任_30 Part2(design書§0/§9-1): 重大誤解原則(既定True、
+            # `ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT`)をdeveloper message
+            # として既定配線する(`use_enumeration_stage1=False`の場合は
+            # 旧`stage1_fresh`[enum非対応・原則非対応]のまま、後方互換)。
+            stage1_developer_message = (
+                trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE
+                if (use_enumeration_stage1 and use_misconception_principle)
+                else vfl01.DEVIATION_DEVELOPER_MESSAGE
+            )
+            if use_enumeration_stage1:
+                stage1_parsed = stage1_fresh_with_enumeration(
+                    client, state, consecutive_errors, call_log, f"{instance_id}_stage1", fixture,
+                    developer_message=stage1_developer_message)
+            else:
+                stage1_parsed = stage1_fresh(client, state, consecutive_errors, call_log,
+                                              f"{instance_id}_stage1", fixture)
             stage1_call_used = True
             if cache_key is not None:
                 stage1_cache[cache_key] = stage1_parsed
