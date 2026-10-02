@@ -4013,3 +4013,30 @@ Ledgerが条件つき・可能性・懸念として書いている内容を、�
    - 判断3: 判断1で「重大として扱う」を選ぶ場合の予算上限の引き上げ。
 4. 委任_49までの到達点: 受け渡し修正(委任_42)は維持。評価・記録の追加、照合の追補(`VS_MATCH_EXT`)、英語だけ修正(`JA_MODE=english_only`、補正つき)は実装済み・既定OFF・flowでは未確認。Opus独立レビュー#6の指摘どおり、合格の判定が1回の検査結果に依存する構造は未対策。
 5. ユーザー判断が出るまで、実装・Trial・測定を進めない。
+
+## §38. 2026-10-03ユーザー決定の反映(委任_51〜54)
+
+1. 線引きの補正と再分類(委任_51、`docs/pm/open233_materiality_criteria_2026-10-03.md`、`docs/pm/open233_missed_candidates_reclassification_2026-10-03.md`): 見逃し候補23種類(すべて旧判定BLOCKING)を新しい線引きで再分類。過剰品質17/23、真の重大見逃し1/23(K19「Just after the charge plan disappeared, prices began to fall.」HF-009、境界)、軽微8/23、問題なし9/23、新判定が重大で見逃し0が5/23。入れ子3種類を除く20種類では、過剰品質17/20、真の重大見逃し1/20、軽微8/20、問題なし9/20。過剰品質17のうち8種類は、LLM判定がACCEPTABLE/QUALITYで決定論floorだけがBLOCKINGにしたもの(floorは変更しない)。
+2. K19の原因切り分け(委任_51): 1周目で完全に見逃し(固定Stage 1出力に無い)。再検査で文が残った約12回中1回のみ指摘。Rewrite起因ではない(日本語原文が起点)。Checkerと判定役の基準の食い違いは証拠なし(Stage 2が見た唯一の回はBLOCKINGで一致)。Production現行のChecker出力はK19をMAJORで指摘できていた。MINORで拾っていたかは記録が無く確認不能。
+3. 線引き案への指摘(委任_51、7点)のうちFableが重要と判断したもの: 「迷えば実害で決める」は既存の「迷えばBLOCKING」(fail-closed)と逆向きで、判定役へ適用すればSafety原則の変更に当たる。Fableは判定役を変更していない(線引きは評価・ラベル用の文書化に留めた)。判定役と線引きの不整合は4箇所(V4原則の一律BLOCKING、disclosure_gap降格の否定形限定、production rubricの「動機の帰属=QUALITY」、「迷えばBLOCKING」)。
+4. 句読点差対策のProduction反映準備(委任_52、`docs/pm/open233_a1_production_reflection_plan_and_ja_scope_2026-10-03.md`): Family XのProduction正式経路にはCheckerの引用を記事内で探す処理が無く、反映先が無い。位置特定を行うProduction処理は`er010_ledger_local_rewrite_09.py`の`locate_target_sentence`(完全一致→単語重なり0.25)で、Discovery Focus・N3・B-family voicesが呼ぶ。Production記録では句読点差のみの不一致は0件(標本小、sentence_fallback 67件は原因未判定)。Fable判断: ユーザー意向は「Self-Recovery FlowをProductionへ接続する際の必須項目」として追跡する(`OPEN_ITEMS.md`に`OPEN-233-A1-PROD`を新設、Status=`APPROVED_FOR_PRODUCTION`[ユーザー意向、2026-10-03]・approved-but-unwired)。接続時はL0〜L3の単語境界・L5・label_onlyを一体で取り込み、初回・Rewrite周回・Recheck・retry/fallback/regenerationが同じ照合を通ること、含めずに接続した場合は`PRODUCTION_WIRED`としないことを条件にする。接続前にOpus独立レビュー条件Cに該当。er010の`locate_target_sentence`への同等処理は別の仕様変更であり、ユーザー判断事項として提示する(今回は実装しない)。
+5. 日本語本文を直さないことの実害(委任_52): 実害あり1系統(Production再生成がer012_e L361・365・403〜404/er019 entertainment runner L358〜397で古い日本語R2から英語を再翻訳し、直した誤りが戻りうる。ただし再生成後は必ず`run_deviation_check`を通る。最小対策=既存で足り、接続仕様に「再生成後も必ずSelf-Recovery Flowを通す」を明記)。整合だけ2、影響なし5。日本語タイトルは英語記事を入力にせず、変更なし前提(ユーザー決定)。`JA_MODE=english_only`はユーザー方針3点を満たす。Production採用時は「忠実英訳」(CURRENT_SPEC L1272〜1278)・「案B」(L1242〜1257)と衝突する可能性が高く、その時点でユーザー判断が必要。
+6. 説明文混入12件(委任_53): 主因は出力形式10・Prompt2・後段処理0(推定)。Trial専用`CHECKER_SPANS_MODE=violation_spans`(既定legacy)を実装(テスト406→418件PASS、er052回帰462件PASS)。Stage 1のみの限定確認(6記事×2腕×n=3、¥14.99): 特定不能は対照0/24・処置0/24(説明文混入はStage 1では再現せず。12件中8件はRecheck出力)、配列要素は35/35確定、費用ほぼ同じ(¥0.412/¥0.421)、Human Review増0。一方、BLOCKING fact検出は対照12/18→処置8/18、false PASSは対照1/15→処置4/15と悪化方向(n=3、対照どうしの一致率0.67で揺れ大)。**Fable判断: `VALIDATED`にしない。既定OFFのまま。ユーザー確認項目「検出漏れが増えないか」「false PASSが増えないか」を満たしたと言えないため、現時点では採用しない。** 実装は設計書§3の形と同じだが機構が異なる(claim dictにlistを持たせる設計に対し、claim文字列を鍵にしたモジュール内の対応表`_VS_SPANS_REGISTRY`で配列を引く)。有効化する場合はclaim dictへ配列を載せる形へ直すこと(同一文字列の衝突・隠れた状態を避けるため)。
+7. 予算: 委任_53 ¥14.9926。Phase累計¥530.0107、上限¥900、残¥369.9893。
+8. 回帰: 現作業ツリーで全体回帰を1回実行(委任_54): 4385件、passed 4374、failed 6、errors 5(実質11件)。失敗・エラーは er003_test_p2j_investigate 4件(combined_equals_sum_of_er002_and_er003、p2h_reported_count、p2i_reported_count、per_file_counts_sum)、er015 loader 1件(er015_standard_a2_6000_generation_first_trial_01_test_01)、er025 1件(test_b1_segments_pass_enable_pronunciation_resolver_true)、er040 1件(test_master_audio_key_distinguishes_style_versions)、er043 1件(test_new_candidate_keys_differ_from_production_key)、er011 3件(test_default_*_matches_pre_wiring_baseline)で、委任_42・49の基準11件と同一。委任_53が報告した12件(er012を含む)との差1件=er012は再現せず(er012系8ファイル222件は全PASS)。分類=(c)揺れ(再現せず、原因は未確定)。委任_51〜53のcommit(`b7068028`・`f7e46b38`・`74d805b9`)はer012を編集していない(`git show --stat`で確認)。回帰出力中の`FAIL: test_case_0 (er003_test_bad...)`はer003のテストが一時ディレクトリで実行する内側のfixtureの出力で、本体の集計には含まれない。
+9. 全体の状態: 次Trial(5記事×2レベル)は未開始・開始禁止。`USER_DECISION_REQUIRED`としてSTOP(判断事項は`OPEN_ITEMS.md`と`ACTIVE_TASK.md`に記載)。
+
+成果物: `docs/pm/open233_materiality_criteria_2026-10-03.md`、`docs/pm/open233_missed_candidates_reclassification_2026-10-03.md`、`docs/pm/open233_a1_production_reflection_plan_and_ja_scope_2026-10-03.md`、委任報告`docs/pm/delegation_log/2026-10-03_OPEN-233-SELF-RECOVERY-TRIAL-01_51_result.md`・`_52_result.md`・`_53_result.md`、追跡項目`OPEN_ITEMS.md`の`OPEN-233-A1-PROD`、記録`DECISION_LOG.md`2026-10-03エントリ(委任_51〜54)。
+
+委任_53の集計表(Stage 1のみ、6記事×2腕×n=3、対照=legacy/処置=violation_spans):
+
+| 項目 | 対照 | 処置 |
+|---|---|---|
+| 違反箇所の特定不能 | 0/24 | 0/24 |
+| 配列要素の確定 | - | 35/35 |
+| 1回あたり費用 | ¥0.412 | ¥0.421 |
+| Human Review増 | - | 0 |
+| BLOCKING fact検出 | 12/18 | 8/18 |
+| false PASS | 1/15 | 4/15 |
+| 対照どうしの一致率 | 0.67 | - |
+

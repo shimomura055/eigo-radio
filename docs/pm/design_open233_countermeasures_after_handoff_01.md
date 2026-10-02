@@ -701,6 +701,18 @@ rep22のT1(固定Stage 1、meta_run03_standard、4実行)で、正解ラベル�
 | 限定確認(案X/案Z) | 案Zを採用(固定入力で測れ、費用が小さく、仮説を切り分けられる) | 検出器の直接比較として実施 |
 | 予算 | Phase累計¥494.03/総枠¥600(委任_49前)。29件横断は1回分のみ見込み、2回目が必要ならユーザーへ戻す | 委任_49の費用¥20.9881、Phase累計¥515.0181、残¥84.9819 |
 
+### 12-3. 2026-10-03ユーザー決定後の採否(委任_51〜54)
+
+(依頼文では「12-2」だが、既存12-2(各対策との対応表)と番号が重なるため12-3とした。)
+
+| 対策 | 採否・状態 |
+|---|---|
+| A1(L5、末尾句読点差) | ユーザー正式採用意向。Production反映先が無いため`OPEN_ITEMS.md`の`OPEN-233-A1-PROD`で接続時必須項目として追跡。`PRODUCTION_WIRED`ではない |
+| A2-a・単語境界 | Trialで実装済み(既定OFF)。Production未接続 |
+| B(説明文混入の出力形式変更、`CHECKER_SPANS_MODE=violation_spans`) | 不採用(既定OFFのまま)。限定確認でBLOCKING fact検出12/18→8/18、false PASS 1/15→4/15と悪化方向(n=3、揺れ大)。実装は設計書§3と機構が異なる(claim文字列鍵の対応表`_VS_SPANS_REGISTRY`)。有効化時はclaim dictへ配列を載せる形へ直すこと |
+| C | K19「Just after the charge plan disappeared, prices began to fall.」の重大度の扱い待ち(ユーザー判断1) |
+| D(`JA_MODE=english_only`) | ユーザー方針3点を満たす(補正つき)。Production採用時は「忠実英訳」(CURRENT_SPEC L1272〜1278)・「案B」(L1242〜1257)と衝突する可能性が高く、その時点でユーザー判断が必要 |
+
 ---
 
 ## 付録: 参照した主なファイル・範囲(Read・Grep)
