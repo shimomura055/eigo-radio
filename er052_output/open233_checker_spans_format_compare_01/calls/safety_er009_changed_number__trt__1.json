@@ -1,0 +1,80 @@
+{
+ "article": "safety_er009_changed_number",
+ "arm": "trt",
+ "k": 1,
+ "label": "sc01_safety_er009_changed_number_trt_1",
+ "model": "gpt-6-luna",
+ "error": null,
+ "cost_jpy": 0.16,
+ "usage": {
+  "input_tokens": 7238,
+  "cached_input_tokens": 0,
+  "output_tokens": 592,
+  "reasoning_tokens": 396
+ },
+ "elapsed_seconds": 6.118,
+ "prompt_sha256": "e4a774730fabc6977ec564c988115164efb3b46071038319bf19d405e91edf77",
+ "raw_output_text": "{\"deviations\":[{\"issue\":\"The article says the study covered more than 30 million payments, while the Ledger reports more than 13 million.\",\"severity\":\"MAJOR\",\"changed_fact\":true,\"changed_scope\":false,\"changed_causality\":false,\"changed_certainty\":false,\"changed_number\":true,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":false,\"explanation\":\"The stated transaction count conflicts with F-002; the other claims about the study and its reported tipping effect are consistent with the Ledger.\",\"related_fact_id\":\"F-002\",\"qualifier_present\":false,\"qualifier_text\":\"\",\"ledger_field_basis\":\"ledger_fact\",\"observation_consistent\":false,\"matched_notes_id\":\"\",\"same_fact_id_locations\":[],\"violation_spans\":[\"more than 30 million\"]}]}",
+ "raw_model_deviations": [
+  {
+   "issue": "The article says the study covered more than 30 million payments, while the Ledger reports more than 13 million.",
+   "severity": "MAJOR",
+   "changed_fact": true,
+   "changed_scope": false,
+   "changed_causality": false,
+   "changed_certainty": false,
+   "changed_number": true,
+   "changed_actor": false,
+   "changed_negation": false,
+   "changed_comparison": false,
+   "changed_time": false,
+   "unsupported_new_claim": false,
+   "explanation": "The stated transaction count conflicts with F-002; the other claims about the study and its reported tipping effect are consistent with the Ledger.",
+   "related_fact_id": "F-002",
+   "qualifier_present": false,
+   "qualifier_text": "",
+   "ledger_field_basis": "ledger_fact",
+   "observation_consistent": false,
+   "matched_notes_id": "",
+   "same_fact_id_locations": [],
+   "violation_spans": [
+    "more than 30 million"
+   ]
+  }
+ ],
+ "final_deviations": [
+  {
+   "issue": "The article says the study covered more than 30 million payments, while the Ledger reports more than 13 million.",
+   "severity": "MAJOR",
+   "changed_fact": true,
+   "changed_scope": false,
+   "changed_causality": false,
+   "changed_certainty": false,
+   "changed_number": true,
+   "changed_actor": false,
+   "changed_negation": false,
+   "changed_comparison": false,
+   "changed_time": false,
+   "unsupported_new_claim": false,
+   "explanation": "The stated transaction count conflicts with F-002; the other claims about the study and its reported tipping effect are consistent with the Ledger.",
+   "related_fact_id": "F-002",
+   "qualifier_present": false,
+   "qualifier_text": "",
+   "ledger_field_basis": "ledger_fact",
+   "observation_consistent": false,
+   "matched_notes_id": "",
+   "same_fact_id_locations": [],
+   "violation_spans": [
+    "more than 30 million"
+   ],
+   "auto_downgraded": false,
+   "severity_final": "BLOCKING",
+   "action": "STOP",
+   "basis": "ledger_fact",
+   "rule_id": "existing_major_v2",
+   "claim_in_article": "more than 30 million",
+   "claim_assembled_from_violation_spans": true
+  }
+ ],
+ "overall_status": "LEDGER_DEVIATION"
+}
