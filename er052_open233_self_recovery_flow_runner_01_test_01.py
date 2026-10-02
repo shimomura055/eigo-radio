@@ -4764,5 +4764,395 @@ class TestHandoffCarryForwardWithinCycle(unittest.TestCase):
         self.assertIn('cycle_replaced_units.extend(collect_replaced_units(r, claim_identity(c["dev"])))', src)
 
 
+# ============================================================
+# 委任_49: 照合の追補(VS_MATCH_EXT)・英語だけ修正(JA_MODE)・評価と記録の追加の実例ベーステスト。
+# すべて¥0・ネットワークなし。実例の文字列は`er052_output/open233_match_ext_replay_01`の再生で
+# 確認した記録(委任_45のU03・U04・U07)と、rep22 meta_run03_standardの実文から取った。
+# ============================================================
+U03_CLAIM = "“Trump’s proposed Hormuz fee vanished overnight.”"
+U03_ARTICLE = ("# T\n\n## In one line\nTrump’s proposed Hormuz fee vanished overnight, but crude oil prices "
+               "stayed high as tensions and tanker fees remained.\n")
+U04_CLAIM = ("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the "
+             "flashy 20% plan left the stage.")
+U07_CLAIM = ("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the "
+             "flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.")
+U047_ARTICLE = ("# T\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety "
+                "continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back "
+                "briefly before recovering: the policy turn and the oil chart’s “not over yet” movement.\n")
+META_TARGET = "Also, some calls needed user information to continue."
+
+
+def _ext(on: bool = True):
+    return mock.patch.object(runner, "VS_MATCH_EXT", on)
+
+
+class TestVsMatchExtA1EdgePunct49(unittest.TestCase):
+    def test_default_switch_is_off(self):
+        self.assertFalse(runner.VS_MATCH_EXT)
+        self.assertEqual(runner.JA_MODE, runner.JA_MODE_PAIRED)
+
+    def test_u03_u04_u07_unresolved_when_off_and_confirmed_by_l5_when_on(self):
+        for claim, art, expected in (
+                (U03_CLAIM, U03_ARTICLE, "Trump’s proposed Hormuz fee vanished overnight"),
+                (U04_CLAIM, U047_ARTICLE, U04_CLAIM[:-1]),
+                (U07_CLAIM, U047_ARTICLE, U07_CLAIM[:-1])):
+            with self.subTest(claim=claim[:30]):
+                off = runner.resolve_violation_spans(claim, art, None)
+                self.assertEqual(off["status"], "unverified")
+                self.assertEqual(off["reason"], "mismatch")
+                with _ext():
+                    on = runner.resolve_violation_spans(claim, art, None)
+                self.assertEqual(on["status"], "resolved")
+                self.assertEqual(on["level"], "L5_edge_punct")
+                self.assertEqual(on["ranges"], [expected])  # 文の途中までの節。文単位へ拡張しない
+                self.assertEqual(on["edge_removed"][1], ".")
+
+    def test_mid_word_match_is_not_confirmed(self):
+        # 「ear.」から末尾句読点を除いた「ear」は「year」の途中にしか無い(語の途中への一致)
+        art = "# T\n\nThe year, then calm.\n"
+        with _ext():
+            r = runner.resolve_violation_spans("ear.", art, None)
+        self.assertEqual(r["status"], "unverified")
+
+    def test_ja_body_is_not_subject_to_l5(self):
+        ja = "# T\n\n夜のうちに消えた、そして落ち着いた。\n"
+        with _ext():
+            r = runner.resolve_violation_spans("夜のうちに消えた。", None, ja)
+        self.assertEqual(r["status"], "unverified")
+
+    def test_inner_punctuation_is_not_removed(self):
+        art = "# T\n\nOne, two and three stay.\n"
+        with _ext():
+            r = runner.resolve_violation_spans("One two and three stay.", art, None)
+        self.assertEqual(r["status"], "unverified")  # 両端以外の句読点は補わない
+
+    def test_two_places_stays_unverified(self):
+        art = "# T\n\nIt left the stage, then It left the stage; done.\n"
+        with _ext():
+            r = runner.resolve_violation_spans("It left the stage.", art, None)
+        self.assertEqual(r["status"], "unverified")
+        self.assertEqual(r["reason"], "multi_match")
+
+
+class TestVsMatchExtLabelAndBoundary49(unittest.TestCase):
+    ART = "# Title Line\n\n## In one line\nBody sentence one. Body sentence two.\n"
+
+    def test_label_line_is_unverified_with_label_only_when_on(self):
+        off = runner.resolve_violation_spans("“In one line”", self.ART, None)
+        self.assertEqual(off["status"], "resolved")  # 委任_42の照合(現行)では見出し行に確定してしまう
+        with _ext():
+            on = runner.resolve_violation_spans("“In one line”", self.ART, None)
+        self.assertEqual(on["status"], "unverified")
+        self.assertEqual(on["reason"], "label_only")
+
+    def test_title_line_and_body_are_not_label(self):
+        with _ext():
+            t = runner.resolve_violation_spans("Title Line", self.ART, None)
+            b = runner.resolve_violation_spans("Body sentence two.", self.ART, None)
+        self.assertEqual(t["status"], "resolved")
+        self.assertEqual(b["status"], "resolved")
+
+    def test_word_boundary_applies_to_l0(self):
+        art = "# T\n\nThe year, then calm.\n"
+        self.assertEqual(runner.resolve_violation_spans("ear", art, None)["status"], "resolved")  # OFF=現行
+        with _ext():
+            self.assertEqual(runner.resolve_violation_spans("ear", art, None)["status"], "unverified")
+
+    def test_word_boundary_applies_to_l1_l2_l3_and_l4(self):
+        art = "# T\n\nThe Year ahead, with more  space. Another place.\n"
+        with _ext():
+            # L1(引用符を外す)
+            self.assertEqual(runner.resolve_violation_spans("“ear”", art, None)["status"], "unverified")
+            # L2(空白の連続の同一視)・L3(大文字小文字)でも語の途中は確定しない
+            self.assertEqual(runner.resolve_violation_spans("ore space", art, None)["status"], "unverified")
+            self.assertEqual(runner.resolve_violation_spans("EAR AHEAD", art, None)["status"], "unverified")
+            # 語境界を満たすL3は確定する
+            self.assertEqual(runner.resolve_violation_spans("year AHEAD", art, None)["level"], "L3")
+            # L4(2断片): 1つが語の途中なら確定しない
+            self.assertEqual(runner.resolve_violation_spans("“ear” and “Another place”", art, None)["status"],
+                             "unverified")
+            self.assertEqual(runner.resolve_violation_spans("“Year ahead” and “Another place”", art, None)["level"],
+                             "L4")
+
+    def test_ja_body_has_no_word_boundary_condition(self):
+        ja = "# T\n\n夜のうちに消えた。\n"
+        with _ext():
+            self.assertEqual(runner.resolve_violation_spans("消え", None, ja)["status"], "resolved")
+
+    def test_switch_off_equals_delegation_42_for_real_strings(self):
+        # スイッチOFF(既定)と、スイッチ変数を明示的にFalseにした場合で同一(委任_42の挙動のまま)
+        for claim, art in ((U03_CLAIM, U03_ARTICLE), (U04_CLAIM, U047_ARTICLE), ("“In one line”", self.ART)):
+            a = runner.resolve_violation_spans(claim, art, None)
+            with _ext(False):
+                b = runner.resolve_violation_spans(claim, art, None)
+            self.assertEqual(a, b)
+            self.assertNotIn("edge_removed", a)
+
+
+# ---- run_instanceの流れを偽の応答で通す(ネットワークなし)
+EN49 = ("# Title\n\n## In one line\nShort line.\n\n"
+        "Calls happened. Also, some calls needed user information to continue. The end.\n")
+JA49 = "# タイトル\n\n## ひとこと\n短い。\n\nいくつかの通話があった。\n"
+
+
+def _dev49(claim, sev="MAJOR", origin="translation", fid="MUSE-HC-010", **flags):
+    d = {"claim_in_article": claim, "severity": sev, "origin": origin, "related_fact_id": fid,
+         "issue": "claim differs from ledger", "explanation": "x", "changed_fact": False, "changed_scope": False,
+         "changed_causality": False, "changed_certainty": False, "changed_number": False,
+         "changed_actor": False, "changed_negation": False, "changed_comparison": False,
+         "changed_time": False, "unsupported_new_claim": False}
+    d.update(flags)
+    return d
+
+
+def _run_instance49(stage1_devs, recheck_devs=None, stage3_new_sentence="Some calls may have needed user information.",
+                    fastpath_success=True, ja_mode=None, stage3_fn=None, iid="unit49", ledger_text="(ledger)",
+                    stage1_status="LEDGER_DEVIATION", recheck_resolved=True):
+    """run_instanceを、Checker/Stage 2/Rewrite/Recheck/局所QAの偽の応答で通す。返値: (result, 記録dict)。"""
+    seen = {"stage3_ja": [], "stage3_en": [], "fastpath_calls": 0, "recheck_calls": [], "recheck_fixture_ja": []}
+
+    def fake_stage1(client, state, ce, call_log, label, fixture, developer_message=None):
+        return {"overall_status": stage1_status, "deviations": [dict(d) for d in stage1_devs]}
+
+    def fake_stage2(client, state, ce, call_log, label, fixture, claims):
+        return [{**c, "materiality": "BLOCKING", "llm_materiality": "BLOCKING", "basis": "ledger_fact",
+                 "rewrite_kind": "narrow_scope", "rewrite_hint": "h", "floor_reason": None, "section_type": "body",
+                 "stage2_route": "body", "floor_cited_materiality": "BLOCKING", "floor_cited_reason": None}
+                for c in claims]
+
+    def fake_stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
+        seen["stage3_ja"].append(ja)
+        seen["stage3_en"].append(en)
+        new_en = en.replace(META_TARGET, "Also, " + stage3_new_sentence[0].lower() + stage3_new_sentence[1:])
+        return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": new_en, "ja_text": ja,
+                "method": "fake", "guard_ok": True, "before_fragment": META_TARGET,
+                "after_fragment": stage3_new_sentence, "ladder_level_used": "1_word_connective",
+                "target_not_locatable": False, "span_unverified": False,
+                "ladder_exhausted_without_full_rewrite": False,
+                "handoff": {"level_attempts": [], "text_lang": "EN"}}
+
+    def fake_fastpath(*a, **k):
+        seen["fastpath_calls"] += 1
+        return {"success": fastpath_success, "results": []}
+
+    def fake_recheck(client, state, ce, call_log, label, fixture, article_text, prior_issues, **k):
+        seen["recheck_calls"].append(label)
+        seen["recheck_fixture_ja"].append(fixture.get("source_article_text"))
+        seen.setdefault("prior_issues", prior_issues)
+        return {"overall_status": "LEDGER_COMPLIANT" if recheck_resolved else "LEDGER_DEVIATION",
+                "deviations": [dict(d) for d in (recheck_devs or [])],
+                "prior_issues_resolved": [{"index": i, "resolved": recheck_resolved, "explanation": ""}
+                                          for i, _ in enumerate(prior_issues)],
+                "all_prior_issues_resolved": recheck_resolved}
+
+    inst = {"instance_id": iid, "group": "unit", "expected_group_label": "unit", "stage1_mode": "fresh",
+            "fixture": {"ledger_text": ledger_text, "article_text": EN49, "source_article_text": JA49}}
+    patches = [mock.patch.object(runner, "stage1_fresh_with_enumeration", fake_stage1),
+               mock.patch.object(runner, "run_stage2", fake_stage2),
+               mock.patch.object(runner, "apply_stage2_two_of_two", lambda *a, **k: (a[6], [])),
+               mock.patch.object(runner, "run_stage3_for_claim", stage3_fn or fake_stage3),
+               mock.patch.object(runner, "run_local_qa_fastpath", fake_fastpath),
+               mock.patch.object(runner, "run_recheck", fake_recheck),
+               mock.patch.object(runner, "save_json", lambda *a, **k: None)]
+    if ja_mode is not None:
+        patches.append(mock.patch.object(runner, "JA_MODE", ja_mode))
+    for p in patches:
+        p.start()
+    try:
+        res = runner.run_instance(object(), _state0(), [0], inst, stage1_cache={})
+    finally:
+        for p in reversed(patches):
+            p.stop()
+    return res, seen
+
+
+def _title_rewrite49(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
+    return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": en.replace("# Title", "# New Title"),
+            "ja_text": ja, "method": "fake", "guard_ok": True, "before_fragment": "# Title",
+            "after_fragment": "# New Title", "ladder_level_used": "1_word_connective",
+            "target_not_locatable": False, "span_unverified": False,
+            "ladder_exhausted_without_full_rewrite": False, "handoff": {"level_attempts": []}}
+
+
+class TestJaModeEnglishOnly49(unittest.TestCase):
+    JA_SRC_DEV = _dev49(META_TARGET, origin="ja_source")
+    TR_DEV = _dev49(META_TARGET, origin="translation")
+
+    def test_english_only_ja_text_is_none_and_ja_source_forces_full_recheck(self):
+        res, seen = _run_instance49([self.JA_SRC_DEV], ja_mode=runner.JA_MODE_ENGLISH_ONLY)
+        self.assertEqual(seen["stage3_ja"], [None])  # 日本語側の処理は呼ばれない(JA本文を渡さない)
+        self.assertEqual(seen["fastpath_calls"], 0)  # 局所QA fastpath(全文検査なし)を使わない
+        self.assertEqual(len(seen["recheck_calls"]), 1)  # 全文Recheckは1回(JA Recheckは無い)
+        self.assertNotIn("ja_recheck", seen["recheck_calls"][0])
+        c = res["cycles"][0]
+        self.assertTrue(c["full_recheck_required"])
+        self.assertIn("english_only_ja_source_requires_full_recheck", c["full_recheck_required_reasons"])
+        self.assertNotIn("ja_fail_open_guard", c)
+        self.assertNotIn("ja_en_equivalence_verdict", c)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        # CheckerとStage 2へ渡す元の日本語は変えない(D1)
+        self.assertEqual(seen["recheck_fixture_ja"], [JA49])
+        self.assertEqual(res["switches"]["JA_MODE"], "english_only")
+
+    def test_english_only_other_origin_keeps_local_qa_fastpath(self):
+        res, seen = _run_instance49([self.TR_DEV], ja_mode=runner.JA_MODE_ENGLISH_ONLY)
+        self.assertEqual(seen["fastpath_calls"], 1)
+        self.assertEqual(seen["recheck_calls"], [])
+        self.assertNotIn("english_only_ja_source_requires_full_recheck",
+                         res["cycles"][0]["full_recheck_required_reasons"])
+
+    def test_paired_default_is_unchanged_ja_text_passed_and_no_extra_reason(self):
+        res, seen = _run_instance49([self.JA_SRC_DEV])
+        self.assertEqual(seen["stage3_ja"], [JA49])
+        self.assertNotIn("english_only_ja_source_requires_full_recheck",
+                         res["cycles"][0]["full_recheck_required_reasons"])
+        self.assertEqual(res["switches"]["JA_MODE"], "paired")
+
+    def test_full_recheck_required_direct(self):
+        recs = [{"ladder_level_used": "1_word_connective", "mechanism": "single_text_local(E-2/delete-generic)"}]
+        with mock.patch.object(runner, "JA_MODE", runner.JA_MODE_ENGLISH_ONLY):
+            ok, reasons = runner.full_recheck_required(recs, [{"origin": "ja_source"}], "unit49")
+            ng, _ = runner.full_recheck_required(recs, [{"origin": "translation"}], "unit49")
+        self.assertTrue(ok)
+        self.assertEqual(reasons, ["english_only_ja_source_requires_full_recheck"])
+        self.assertFalse(ng)
+        self.assertFalse(runner.full_recheck_required(recs, [{"origin": "ja_source"}], "unit49")[0])
+
+    def test_ja_only_match_is_unverified_with_english_only_reason(self):
+        ja = "# T\n\nアメリカが費用を返してもらうという考えです。\n"
+        en = "# T\n\nThe US wants a refund.\n"
+        rec = _claim("アメリカが費用を返してもらうという考えです。", origin="ja_source")
+        with mock.patch.object(runner, "JA_MODE", runner.JA_MODE_ENGLISH_ONLY):
+            r = runner.run_stage3_for_claim(None, _state0(), [], [], "t",
+                                            {"ledger_text": LEDGER, "article_text": en, "source_article_text": ja},
+                                            en, None, rec)
+        self.assertTrue(r["span_unverified"])
+        self.assertEqual(r["span_unverified_reason"], "ja_only_match_english_only")
+        self.assertEqual(r["en_text"], en)
+
+
+class TestRecordsOnly49(unittest.TestCase):
+    def test_minor_is_recorded_but_not_passed_downstream(self):
+        major = _dev49(META_TARGET)
+        minor = _dev49("Calls happened.", sev="MINOR", fid="MUSE-HC-011")
+        res, seen = _run_instance49([major, minor], recheck_devs=[minor], fastpath_success=False)
+        raw = res["all_deviations_raw"]
+        self.assertEqual([d["severity"] for d in raw["stage1"]], ["MAJOR", "MINOR"])
+        self.assertEqual([d["passed_downstream"] for d in raw["stage1"]], [True, False])
+        # 後段(Stage 2の入力=cycle1のstage2_results)へ渡るのは従来どおりMAJORのみ
+        self.assertEqual([s["claim_text"] for s in res["cycles"][0]["stage2_results"]], [META_TARGET])
+        # Recheckが返したMINORも記録(次周回へは渡らない=1周で終了し、prior_issuesはMAJORのみ)
+        self.assertEqual(res["all_deviations_raw"]["rechecks"][0]["deviations"][0]["severity"], "MINOR")
+
+    def test_judgement_unchanged_by_records(self):
+        # 記録の有無で最終状態・周回数が変わらない(同じ入力で同じ結果)
+        r1, _ = _run_instance49([_dev49(META_TARGET)])
+        r2, _ = _run_instance49([_dev49(META_TARGET), _dev49("Calls happened.", sev="MINOR")])
+        self.assertEqual((r1["final_state"], len(r1["cycles"])), (r2["final_state"], len(r2["cycles"])))
+
+    def test_residual_at_pass_stage1_pass_with_minor_only_deviation(self):
+        # rep22 T1 s1/s3/s4型: 対象文が元のまま残り、Checkerが(MINORでも)BLOCKINGでも指摘せずに合格
+        minor = _dev49("Also, some calls needed user information to continue", sev="MINOR")
+        res, _ = _run_instance49([minor], iid="meta_run03_standard", stage1_status="LEDGER_COMPLIANT")
+        self.assertEqual(res["final_state"], "ACCEPTABLE_STAGE1")
+        d = res["residual_at_pass"]["defs"][0]
+        self.assertEqual(d["sub_id"], "Meta-1")
+        self.assertTrue(d["remains_in_final_en"])
+        self.assertFalse(d["ever_blocking_flagged"])
+        self.assertTrue(d["pass_with_residual_unflagged"])
+        self.assertEqual(d["in_checker_raw_deviations_any_severity"][0]["severity"], "MINOR")
+
+    def test_residual_at_pass_values(self):
+        cyc_block = [{"stage2_results": [{"claim_text": "needed user information to continue",
+                                          "related_fact_id": "MUSE-HC-010", "materiality": "BLOCKING"}]}]
+        cyc_down = [{"stage2_results": [{"claim_text": "needed user information to continue",
+                                         "related_fact_id": "MUSE-HC-010", "materiality": "QUALITY"}]}]
+        txt = "x. " + META_TARGET + " y."
+        f = runner.compute_residual_at_pass
+        a = f("meta_run03_standard", "RESOLVED_REWRITE", txt, cyc_block, [], [])["defs"][0]
+        self.assertTrue(a["ever_blocking_flagged"])
+        self.assertFalse(a["pass_with_residual_unflagged"])
+        b = f("meta_run03_standard", "RESOLVED_STAGE2_DOWNGRADE", txt, cyc_down, [], [])["defs"][0]
+        self.assertTrue(b["ever_flagged_but_never_blocking"])
+        self.assertTrue(b["pass_with_residual_unflagged"])
+        c = f("meta_run03_standard", "STAGE4_ESCALATION", txt, [], [], [])
+        self.assertFalse(c["final_state_is_pass_family"])
+        self.assertFalse(c["defs"][0]["pass_with_residual_unflagged"])  # 人間確認へ回った=合格系ではない
+        d = f("meta_run03_standard", "RESOLVED_REWRITE", "x. Some calls may have needed user information.", [], [], [])
+        self.assertFalse(d["defs"][0]["remains_in_final_en"])
+        self.assertEqual(f("unknown_instance", "RESOLVED_REWRITE", txt, [], [], [])["defs"], [])
+
+    def test_existing_misdowngrade_detector_unchanged(self):
+        r = {"instance_id": "meta_run03_standard", "cycles": [{"stage2_results": [
+            {"claim_text": "needed user information to continue", "related_fact_id": "MUSE-HC-010",
+             "materiality": "QUALITY"}]}]}
+        self.assertEqual(len(runner.detect_safety_critical_misdowngrades([r])), 1)
+
+    def test_severity_wobble_recorded_across_cycles_only(self):
+        en = "# T\n\nAlpha beta gamma delta.\n"
+        s_block = {"claim_text": "Alpha beta gamma delta.", "related_fact_id": "F-1", "materiality": "BLOCKING",
+                   "llm_materiality": "BLOCKING", "floor_reason": None, "basis": "b1",
+                   "dev": {"changed_fact": True}}
+        s_q = {**s_block, "materiality": "QUALITY", "floor_reason": "disclosure_gap_negative_inference_downgrade",
+               "basis": "b2", "dev": {"changed_certainty": True}}
+        reg0, recs0 = {}, []
+        runner._wobble_observe(reg0, recs0, 1, [s_block], en)
+        runner._wobble_observe(reg0, recs0, 1, [s_q], en)  # 同一周回内は比較しない
+        self.assertEqual(recs0, [])
+        recs2 = []
+        reg2 = {}
+        runner._wobble_observe(reg2, recs2, 1, [s_block], en)
+        runner._wobble_observe(reg2, recs2, 2, [s_q], en)
+        self.assertEqual(len(recs2), 1)
+        self.assertEqual(recs2[0]["from"]["true_flags"], ["changed_fact"])
+        self.assertEqual(recs2[0]["to"]["true_flags"], ["changed_certainty"])
+        self.assertEqual(recs2[0]["to"]["floor_reason"], "disclosure_gap_negative_inference_downgrade")
+
+    def test_carry_forward_comparison_and_recheck_flag(self):
+        start = "# T\n\nResearchers studied 30 million payments in taxis. Another sentence stays.\n"
+        after = "# T\n\nResearchers studied over 3 million payments in taxis. Another sentence stays.\n"
+        sent = "Researchers studied 30 million payments in taxis."
+        dev = {"issue": "plural calls vs one reported call", "related_fact_id": "MUSE-HC-011",
+               "changed_fact": True}
+        rec = _claim(sent, kind="replace_with_ledger_value", origin="translation", dev=dev)
+        rec.update({"cycle_start_en_text": start, "cycle_start_ja_text": None,
+                    "cycle_replaced_units": [{"claim_identity": "claim:first", "lang": "EN",
+                                              "before_units": [sent], "after_units": ["x"]}],
+                    "cycle_claim_info": {"claim:first": {"issue": "plural calls vs one reported call",
+                                                         "related_fact_id": "MUSE-HC-011",
+                                                         "true_flags": ["changed_fact"]}}})
+        r = runner.run_stage3_for_claim(None, None, [0], [], "t", {"ledger_text": LEDGER, "article_text": after},
+                                        after, None, rec)
+        cmp_ = r["handoff"]["carry_forward_comparison"][0]
+        self.assertTrue(cmp_["issue_string_equal"])
+        self.assertTrue(cmp_["same_related_fact_id"])
+        self.assertTrue(cmp_["true_flags_equal"])
+        self.assertEqual(r["method"], "covered_by_earlier_rewrite_in_cycle")  # 動作は変えない
+        rr = [{"handoff": r["handoff"]}]
+        runner._record_carry_forward_recheck(rr, [{"index": 0, "resolved": True}], "full_recheck")
+        self.assertTrue(rr[0]["handoff"]["carry_forward_recheck_resolved"])
+        runner._record_carry_forward_recheck(rr, None, "local_qa_fastpath_no_full_recheck")
+        self.assertIsNone(rr[0]["handoff"]["carry_forward_recheck_resolved"])
+        # 異なるissueなら不一致として記録される
+        rec["dev"] = {**dev, "issue": "different issue", "changed_fact": False, "changed_scope": True}
+        r2 = runner.run_stage3_for_claim(None, None, [0], [], "t", {"ledger_text": LEDGER, "article_text": after},
+                                         after, None, rec)
+        c2 = r2["handoff"]["carry_forward_comparison"][0]
+        self.assertFalse(c2["issue_string_equal"])
+        self.assertFalse(c2["true_flags_equal"])
+        self.assertTrue(c2["same_related_fact_id"])
+
+    def test_en_title_rewrite_recorded(self):
+        self.assertEqual(runner._en_title_line("# A Title\n\n## In one line\nx"), "# A Title")
+        self.assertIsNone(runner._en_title_line("## In one line\nx"))
+        res, _ = _run_instance49([_dev49(META_TARGET)], stage3_fn=_title_rewrite49)
+        self.assertTrue(res["en_title_rewritten"])
+        self.assertEqual(res["en_title_changes"], [{"cycle": 1, "before": "# Title", "after": "# New Title"}])
+        self.assertTrue(res["cycles"][0]["en_title_rewritten"])
+        res2, _ = _run_instance49([_dev49(META_TARGET)])
+        self.assertFalse(res2["en_title_rewritten"])
+        self.assertEqual(res2["en_title_changes"], [])
+
+
 if __name__ == "__main__":
     unittest.main()
