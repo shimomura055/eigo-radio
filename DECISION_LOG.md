@@ -17269,3 +17269,25 @@ USER_DECISION_REQUIREDのいずれかへ分類(VALIDATEDでもProduction採用�
 ユーザー決定で項目を減らした範囲+Opus指摘のFable採用修正のみのため、再レビューなし(PM_GOVERNANCE 11-3、Opus発火=無)。ただし本Trialで判明した不具合の是正として
 追加した`carry_forward_resolution`/`collect_replaced_units`(同一cycle内で先行claimのRewriteが書き換えた範囲を後続claimが「書き換え済み」と扱う小機構)は
 Opusレビュー#5の設計にない追加であり、Fableの確認(必要ならOpus確認)を要する。
+
+
+### 2026-10-02 OPEN-233-SELF-RECOVERY-TRIAL-01(委任_43〜49、Opus独立レビュー#6後のFable判断。ユーザーの新しい決定ではない。ユーザー指示は委任_42エントリの逐語引用を正本とする)
+
+1. 委任_42の限定Trial rep22の分類: **保留(`VALIDATED`にしない)**。ユーザーの成功条件「誤って危険な記事をPASSしない」を満たしていない。固定Stage 1の4実行中3実行で、正解ラベルでSafety-criticalな文「Also, some calls needed user information to continue.」(MUSE-HC-010、Meta-1)が、元のまま残り・一度もBLOCKINGで指摘されず・人間確認なしで終了した(旧方式の同じ入力では7実行中1実行。回数が少なく新旧の差の因果は断定できない)。成功条件「2文取りこぼしによるHuman Review 0」「違反範囲を勝手に縮小しない」は満たした。原因は受け渡しではなくCheckerの見逃し。受け渡し修正は棄却せず維持し、ユーザー指示(1回のFAILで戻さず、原因特定→対策→限定再確認)に従い継続する。
+2. 委任_42の「false PASS 0」は「検出済みBLOCKINGが未解消のまま合格した例が0」の意味で、正解ラベルとの照合ではなかった。既存の安全評価は「指摘された後に降格された」件しか見ない(評価の盲点)。
+3. 調査結果(委任_43〜47): 特定不能35件=末尾句読点22・説明文混入12・省略記号1・言い換え0(委任_45)。周回2以降の新規BLOCKING 85行=見逃し34・書き換え起因20・重大度の揺れ15・取りこぼし8・判定不能8(委任_44)。日本語本文はユーザーへ届かず、届く日本語タイトルは英語記事を入力にしない(委任_43・46)。
+4. Opus独立レビュー#6(条件A+B、`docs/pm/opus_l2_review_open233_self_recovery_06.md`)の要点: 合格の判定がどの出口でも1回の検査結果だけに依存していることが根本原因(条件Bの判定=根本設計の問題)。設計書のC1・C2は対策の位置がずれている。該当文がMINORとして見えていて捨てられている可能性(未検証の仮説)。英語だけ修正にすると全文検査なしの合格経路が広がるため補正が必須。
+5. Fableの採否(11-3節の8項目照合のうえ、Fable判断で進行):
+   - 採用して実装(委任_49、すべてスイッチ既定OFF・検証用runnerのみ): 評価と記録の追加(`residual_at_pass`、MINORを含む全指摘の記録、重大度の揺れの記録、carry-forwardの記録、英語見出しの書き換え記録、既知問題集合による見逃し疑いの一覧)、照合の追補(末尾句読点、位置ラベル、単語境界)、英語だけ修正+`ja_source`の指摘は全文Recheck必須の補正。
+   - 採用して測定(委任_49、有料・Guardrail ¥22): 固定した記事本文に対する検出器の直接比較。flowへ検査を足す前に、「見えていない」のか「MINORで捨てられている」のかを切り分ける。
+   - 測定結果を見てから決める: 合格直前の出口検査のflowへの組み込み。
+   - 見送り: A3のまとめ渡し(carry-forwardを維持し記録を取る。後続指摘は`prior_issues`に残りRecheckで確認されるため)、B・B-alt(直近の確定不能0件、確定不能は人間確認に倒れる)、C1を本体Promptへ入れること・C2(対策の位置がずれている)、C5(承認済みの降格ルールの意図を1回の判定で上書きするため)。
+   - 実装しない(ユーザー判断が必要になる変更): A4(b)主体置換ガードの基準変更(Opus判定=安全用ガードの緩和。据え置き)、降格ルールの変更(C4)、MINORの指摘を後段へ渡す変更(測定でMINOR仮説が確認された場合、Production Checker PromptのMINOR規定とStage 2のV4原則の食い違いをユーザーへ報告する)。
+   - 予算の事前宣言: Phase累計¥494.03/総枠¥600。29件横断の再確認は1回分のみを見込む。2回目が必要になった場合は、総枠超過の可否をユーザーへ戻す(STOP条件「¥600予算上限超過が必要」)。
+6. 委任_49の結果(Sonnet実行層、数値の出所は`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§36):
+   - 実装(すべて検証用runner`er052_open233_self_recovery_flow_runner_01.py`、既定=現行の挙動): `VS_MATCH_EXT`(既定False。L5末尾句読点[英語本文のみ、両端の`. , ; : ! ?`を除いた文字列がちょうど1箇所かつ単語境界]・位置ラベル`label_only`[`## In one line`行]・L0〜L4の単語境界)、`JA_MODE`(既定`paired`、`english_only`で日本語側の処理を迂回、`ja_source`の指摘を書き換えた周回は全文Recheck必須=`english_only_ja_source_requires_full_recheck`、日本語のみで確定する指摘は`ja_only_match_english_only`で確定不能)、記録(`switches`/`all_deviations_raw`[MINOR含む]/`residual_at_pass`/`severity_wobble`/carry-forward比較/`en_title_rewritten`)。CLIは`--vs-match-ext`/`--ja-mode`。Production正式pathは未変更。
+   - テスト: runnerのunittest 381→406件(新規25)全PASS、er052回帰450件全PASS、プロジェクト全体回帰は4373件中11件(既存の失敗11件と同一: er003_test_bad、p2j 4件、er015 loader、er025、er040、er043、er011 3件)で新規failureなし。
+   - ¥0再生(既存の全BLOCKING 346行、`er052_output/open233_match_ext_replay_01/`): 確定→確定不能0件(単語境界・label_onlyで正当な確定が失われた例なし)、確定不能→確定22件(すべてL5。U03 1・U04 1・U07 20=委任_45の22行と一致)、範囲が変わった例0件。日本語本文でしか確定しない指摘は346行中3件(safety_A2A3 HF-003 2件、neg3_hormuz_prodrunner_b1b HF-003 1件、いずれも`ja_source`)。
+   - 既知問題集合(rep22): 合格系4 instance中3 instance(meta_run03_standard s1・s3・s4)で見逃しの疑い各16件(合計48)、指摘済み0件。集合は「過去に一度でもBLOCKINGになった範囲」全てを含むため正当な文も多く含まれ、対象文は「some calls needed user information to continue(.)」の2形で含まれる(`er052_output/open233_known_issue_residual_check_01/`)。
+   - 検出器の直接比較(Checker呼び出しのみ58call計画→陽性nを3→2へ減らして44call実施、出力失敗0、¥20.9881/Guardrail¥22内。Phase累計¥494.03+¥20.9881=¥515.0181/総枠¥600、残¥84.9819): 該当文の区分(陽性の検出器合計、n少数)=DET-A(現行Recheck)MAJOR 3/8・MINOR 0/8、DET-B(現行Stage 1相当)MAJOR 2/10・MINOR 0/10、DET-C(出口検査候補Prompt)MAJOR 4/10・MINOR 4/10・指摘なし2/10。MINORで返った例は全てDET-C(4件)で、DET-A・DET-BのMINOR例は0件。陰性は書き換え後の該当文(N1・N2)をどの検出器も指摘せず、陰性のMAJOR指摘総数はA 4(4call)・B 28(6call)・C 14(6call)、MINOR指摘総数はA 0・B 0・C 15。結論は書かない(回数が少ない。MINOR仮説=該当文がMINORで返る例は、候補Prompt(DET-C)でのみ実在、現行のRecheck・Stage 1相当では観測されず)。詳細・生応答: `er052_output/open233_detector_direct_compare_01/`。
+   - Production正式pathは未変更。合格直前の出口検査・A4(b)・降格ルール変更・MINORを後段へ渡す変更は未実装(Fable/ユーザー判断待ち)。OPEN-233の分類は保留のまま(`VALIDATED`ではない)。

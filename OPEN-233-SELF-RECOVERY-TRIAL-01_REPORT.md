@@ -3899,3 +3899,103 @@ JA側の構造見直し(英語だけ直す化)は別委任(並行調査委任_43
 解消しない(並行調査委任_44)。(3)主体置換ガード(`actor_rewrite_guard_ok`)が、範囲の外の同じ段落にある語(`users`)でも「新しい主体語」として扱い③を棄却した
 (既存ガード、無変更)。(4)Checker引用の特定不能率(委任_41集計の13.4%)に対する対策(Prompt変更等)は本委任の対象外(委任_45で原因分類)。(5)29件横断再確認・実記事N増しへ進む前に、
 Fableによる上記の分類判断と、JA側の暫定経路の扱い・T1 s2型の対策方針(別委任)の決定が必要。
+
+## §36. 受け渡し修正後の原因調査・対策設計・Opusレビュー#6・追補実装と検出器比較(委任_43〜49、2026-10-02)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01。Trial/検証用であり、Production採用ではない(`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない)。
+最終分類はFableが行う(本節は実測値と所見まで。OPEN-233のStatusは「Trial継続中・分類保留」)。Production正式path(er003/er012/er019等)は無変更。
+
+### 36-1. DECISION_LOG追記(2026-10-02エントリ)の1〜6
+正本は`DECISION_LOG.md`末尾の「2026-10-02 OPEN-233-SELF-RECOVERY-TRIAL-01(委任_43〜49、Opus独立レビュー#6後のFable判断)」。要点を再掲する(数値の出所は下記の成果物)。
+1. rep22の分類=保留(`VALIDATED`にしない)。固定Stage 1の4実行中3実行で、Safety-criticalな文「Also, some calls needed user information to continue.」(MUSE-HC-010、Meta-1)が元のまま残り・一度もBLOCKINGで指摘されず・人間確認なしで終了(旧方式の同じ入力では7実行中1実行、回数が少なく因果は断定できない)。出所: `er052_output/open233_rep22_truth_label_check_01/`(委任_47)。原因は受け渡しではなくChecker側の見逃し。
+2. 委任_42の「false PASS 0」は「検出済みBLOCKINGが未解消のまま合格した例が0」の意味(正解ラベル照合ではない)。既存の安全評価は「指摘された後の降格」だけを見る(評価の盲点)。
+3. 調査結果(委任_43〜47): 特定不能35件=末尾句読点22・説明文混入12・省略記号1・言い換え0(委任_45)。周回2以降の新規BLOCKING 85行=見逃し34・書き換え起因20・重大度の揺れ15・取りこぼし8・判定不能8(委任_44)。
+4. Opus独立レビュー#6(`docs/pm/opus_l2_review_open233_self_recovery_06.md`)の要点: 合格の判定がどの出口でも1回の検査結果だけに依存することが根本原因。MINOR仮説(未検証)。英語だけ修正には補正が必須。
+5. Fableの採否: 実装=記録の追加・照合の追補・英語だけ修正(補正つき)、測定=検出器の直接比較、見送り=A3・B・B-alt・C1本体・C2・C5、実装しない=A4(b)・降格ルール変更・MINORを後段へ渡す変更。
+6. 委任_49の結果(下記36-2〜36-6)。
+
+### 36-2. 作業1: Opusが挙げたコード上の事実の確認(実装前、¥0。行番号は実装前のrunner)
+| # | 主張 | 判定 | 根拠(行) |
+|---|---|---|---|
+| 1 | `severity=="MAJOR"`だけを後段へ渡し、MINORを捨てる。捨てたMINORはinstance JSONに無い | 一致 | 5030行(Stage 1)・5596行(Recheck)の`d.get("severity") == "MAJOR"`。instance JSONのキーは`cycles`(stage2_results=MAJOR由来のみ)・`call_log`等で、MINORを含む生のdeviationsを保存するキーは無かった(rep22 instance JSONで確認) |
+| 2 | 合格の出口は5つで、いずれも1回分の検査結果だけで決まる。S1-UはStage 1が空のときだけ | 一致 | ACCEPTABLE_STAGE1(4992)、RESOLVED_STAGE2_DOWNGRADE/RESOLVED_REWRITE_THEN_DOWNGRADE(5099)、局所QA fastpath RESOLVED_REWRITE(5478〜5480、全文検査なし)、Recheckで合格(5584〜5585)。`enable_s1u`は4961行で`overall_status != "LEDGER_DEVIATION"`のときだけ |
+| 3 | `full_recheck_required`の(c)は「paired かつ(ladder≥④ or JAガード不通過)」に縮小され、JAを迂回すると`ja_source`の指摘も条件次第で局所QA fastpathで合格できる | 一致 | 4281〜4287行(`paired_records`が空なら(c)は不成立)。docstringの4271〜4274行は「paired J-1は常に全文Recheck」と食い違っていた(作業4-5でdocstringのみ訂正) |
+| 4 | er003のChecker Promptに「自己申告の調査結果を断定的な行動として書く等はMINOR」の規定 | 一致 | `er003_v1_en_direct_vfl_01_generate.py` 533〜534行(逐語): 「意味はおおむね保っているが言い回しがやや粗い場合(出典に勝手な肩書きを補う、/自己申告の調査結果を断定的な行動として書く等)はMINORとして記録してください。」(Opusの指摘の534〜535行付近とは1行ずれ) |
+| 5 | `vs_match_levels`は一致箇所の両端が単語境界かを見ない | 一致 | 2876〜2902行(`vs_find_all`によるsubstring一致のみ) |
+| 6 | `classify_problem_kind`は論理系flag 2個以上で`multi_sentence`(段落水準) | 一致 | 380〜398行(`len(logic_hits) >= 2` → `multi_sentence`。Opusの指摘397〜401行付近) |
+
+不一致なし。依存する作業はすべて進めた。
+
+### 36-3. 作業2〜4: 実装(`er052_open233_self_recovery_flow_runner_01.py`、すべて既定=現行の挙動)
+- スイッチ: `VS_MATCH_EXT`(既定False)、`JA_MODE`(既定`"paired"`、`"english_only"`)。CLIは`--vs-match-ext`/`--ja-mode`。
+- A1(L5_edge_punct、`vs_edge_punct_match`): L0〜L4で確定しなかった場合に限り、両端の`. , ; : ! ?`(と空白)を除いた文字列が英語本文にちょうど1箇所かつ単語境界なら確定。英語本文のみ。範囲は一致文字列そのもの(文へ拡張しない)。断片(L4)の個別救済には使わない(全体の1回のみ)。
+- A2-a(`label_only`): ラベル行の定義=行頭の`#`群と前後の空白を除いた残りが`in one line`(大文字小文字同一視)の行そのもの。`er019_output/`配下のa2/b1b記事21本の見出しをGrepで確認したところ、本文ではない区切りの行は`## In one line`の1種類のみ(`# タイトル`は違反箇所になりうるため対象外、`### 小見出し`は本文の見出し)。
+- 単語境界(`vs_word_boundary_ok`): 英語本文へのL0〜L3の「ちょうど1箇所」の一致に課す。複数箇所一致の扱いは変えない(確定が減る方向のみ)。英数字・`_`・英数字に挟まれたアポストロフィを語の構成文字とする。
+- 記録: `switches`、`all_deviations_raw`(stage1とrechecksごとの全件、`passed_downstream`)、`residual_at_pass`(定義名・残存の有無・`ever_blocking_flagged`[fact_id不問]と同一fact_id版・生のdeviationsでの重大度)、`severity_wobble`(周回間の最終判定の違いのflag・LLM判定・floor理由・basis)、carry-forward比較(`carry_forward_comparison`[issue文字列一致・`related_fact_id`一致・trueのflag集合一致]と`carry_forward_recheck_resolved`)、`en_title_rewritten`。合否・重大度・書き換え対象の決定には使わない。
+- JA_MODE=english_only: `run_instance`冒頭で`current_ja_text=None`、`baseline_precheck_ja`はスキップ。`ja_source`の指摘を書き換えた周回は全文Recheckを必須(`english_only_ja_source_requires_full_recheck`)。日本語本文でしか確定しない指摘は確定不能(理由`ja_only_match_english_only`、記録のためだけに元の日本語を照合し、範囲の確定には使わない)。
+- 指示と異なる点・判断: (a)`detect_safety_critical_misdowngrades`は不変(併存)。(b)既存のテストが`BUDGET_STATE_PATH`(rep22の予算state)を上書きする既知の問題があり(今回のテストが原因ではない)、回帰実行のたびに`git checkout`で復元した。(c)T-0の保存ファイル`_49.md`は、受領した委任文のうちSSOT追記文の長大な本文と報告項目の細目を参照形式に圧縮した(それ以外は原文のまま。要約保存不可の指示からの逸脱)。
+
+作業4-4: `current_ja_text is None`で挙動が変わる`run_instance`内の分岐(実装前の行番号。`current_ja_text`のGrepで列挙)
+| 分岐 | english_onlyでの挙動 | 判定 |
+|---|---|---|
+| `working_fixture["source_article_text"]`の上書き(5342) | 上書きされず元の日本語のまま=Checker/Stage 2/Recheckへ元の日本語が渡る(D1) | 迂回されて問題ない |
+| `annotate_claim_span_identity`のJA照合(5387) | JA本文のみで確定する指摘は確定不能 | 迂回されて問題ない(4-3で理由コード記録) |
+| `ja_pending_deviation`(5407ほか) | 常にFalse | 迂回されて問題ない |
+| Stage 3の`use_pairing`/`paired_rewrite`/JA暫定経路 | 常にFalse、`ja_source`も英語単独のRewrite | 迂回されて問題ない(`ja_source`の扱いは4-2で補正) |
+| `quality_degradation_ja`・JA本文の前後記録(5693〜5704) | 記録されない | 迂回されて問題ない |
+| `ja_fail_open_guard`(5709〜5712、5778〜5785) | 実行されない(`ja_guard_ok=None`) | 補正が要る=4-2(`full_recheck_required`の(c)が常に不成立) |
+| JA precheck(5736) | `[]` | 迂回されて問題ない |
+| JA/EN等価チェック(5748)・`resolve_ja_ok_after_equivalence_gating`(5859) | 実行されない/ja_ok=True固定 | 迂回されて問題ない |
+| `full_recheck_required`呼び出しのJA引数(5773) | `None`で渡る | 補正が要る=4-2 |
+| 局所QA fastpathの`ja_pending_deviation`条件(5802) | 常に偽 | 補正が要る=4-2(`ja_source`のみ全文Recheck必須) |
+| JA Recheck(5828)・JA指摘の合流(5943〜5946) | 実行されない | 迂回されて問題ない(EN Recheckが返す`origin=="ja_source"`は4-2で扱う) |
+
+4-2以外に補正が要る分岐は見つからなかった。注意点(補正対象外、報告のみ): english_onlyでは、Checker/Stage 2/Recheckへ元の日本語(書き換えない)が渡り続けるため、英語を直した後も日本語を理由にした再指摘が起きうる(設計書§5-2のD1の既知の残リスク、実測未確認)。
+
+### 36-4. 作業3-4(¥0再生)・2-6・2-7の結果
+再生(`er052_output/open233_match_ext_replay_01/`、`replay_01.py`、既存の全BLOCKING 346行[K1 272・K2 55・K3 19]。runnerの`resolve_violation_spans`をOFF/ONで実行):
+
+| 遷移 | 件数 | 備考 |
+|---|---|---|
+| 確定→確定(同じ範囲) | 298 | L0 191・L1 71・L2 11・L3 21・L4 4 |
+| 確定→確定不能 | **0** | 単語境界・label_onlyで正当な確定が失われた例なし(逐語報告の対象=0件) |
+| 確定→確定(範囲が変わった) | 0 | |
+| 確定不能→確定 | 22 | すべてL5_edge_punct(U03 1・U04 1・U07 20、委任_45の22行と一致) |
+| 確定不能→確定不能 | 26 | explanatory_mixed 13・mismatch 13(理由は変わらず) |
+
+記事別: 確定不能→確定の22件は`bgroup_B3` 21・`bgroup_B2_hormuz` 1。label_onlyに該当する行は346行中0件。
+- 2-7(日本語本文でしか確定しない指摘): 346行中3件(`safety_A2A3` HF-003 2件[iter7 s1・s2 cycle2]、`neg3_hormuz_prodrunner_b1b` HF-003 1件[rep16 s1 cycle2]、いずれも`origin==ja_source`)。出所: `er052_output/open233_match_ext_replay_01/ja_only_count_01.json`。
+- 2-6(既知問題集合、rep22に適用、`er052_output/open233_known_issue_residual_check_01/results_rep22.json`・`cases_rep22.csv`): 既存394 instance記録から既知集合を作成(記事別。meta_run03_standardは32範囲)。rep22の合格系4 instance中3(meta_run03_standard s1・s3・s4)で「見逃しの疑い」各16件(計48件)、指摘済み0件。対象文は「some calls needed user information to continue.」「同(ピリオドなし)」の2形で入っている。注意: 既知集合は「過去に一度でもBLOCKINGになった範囲」をすべて含むため、正当な文(例「The problem was telling users who was speaking.」)も疑いとして並ぶ(ノイズが多い。指摘済み判定は包含関係のみで類似度は使っていない)。
+
+### 36-5. 作業6: テスト・回帰
+- runnerのunittest: 381 → 406件(新規25: A1[U03・U04・U07の実文字列が確定・単語途中は確定しない・日本語本文には適用しない・両端以外の句読点は除かない・複数箇所は確定不能のまま]、A2-a[ラベル行は確定不能、タイトル・本文は確定]、単語境界[L0〜L4・日本語は対象外]、スイッチOFFで委任_42と同じ結果、`JA_MODE=english_only`[日本語側の処理が呼ばれない・`ja_source`で全文Recheck必須・他のoriginは局所QA fastpathのまま・日本語のみ確定は`ja_only_match_english_only`]、`JA_MODE=paired`で従来と同じ、記録[合否が変わらない・MINORが後段へ渡らない・`residual_at_pass`の値・揺れ・carry-forward比較・英語見出し])。全PASS。
+- er052回帰(`run_project_regression.py --pattern "er052*_test_*.py"`): 450件collected・450 passed・0 failed。
+- プロジェクト全体の回帰: 4373件collected・4362 passed・failed 6・errors 5(計11件)。既存の失敗11件(er003_test_bad、p2j 4件、er015 loader、er025、er040、er043、er011 3件)と同一で、新規failureなし。
+
+### 36-6. 作業5: 検出器の直接比較(`er052_open233_detector_direct_compare_01.py`、`er052_output/open233_detector_direct_compare_01/`)
+- 固定入力(取り出した全本文で、該当文「Also, some calls needed user information to continue.」の完全一致[空白正規化のみ]を課金前に確認): P1〜P5は該当文が残っている(True)、N1〜N3は該当文が無い(False)。N1の書き換え後の文=「If a call needs user information, it may be shared by mistake with call center contract workers.」、N2=「If a call needed user information, it might be shared by mistake with call center contract workers.」(N2は"needed user information"を含むため、陰性の補助判定は"user information"で行った)、N3は`user information`を含む文なし。
+- DET-Cの追記ブロック(`DET_C_BLOCK`、逐語):
+
+```
+【Trial専用の追加指示(OPEN-233、出口検査候補、Production非適用)】
+Verified Fact Ledgerのfactを1件ずつ順に取り上げ、記事の中でそのfactに触れている文をすべて確認してください。
+Ledgerが条件つき・可能性・懸念として書いている内容を、記事が実際に起きたこととして書いていないかを、各文で確認してください。
+確認の結果は、重大度を問わず(MAJORもMINORも)deviationsにすべて列挙してください。
+何を逸脱とするか、severityの基準、10種類のflagの基準は変えません。
+```
+
+- probe(P1の各検出器1回): DET-A ¥0.5139、DET-B ¥0.6064、DET-C ¥0.7152(出力トークン5.2k〜7.7k、reasoning主体)。58call(陽性n=3)の見込みは¥35.98、陽性n=2でも¥27.31と¥22を超える見込みだったため、陽性nを3→2に減らして実行した(指示どおり。実費の平均単価は見込みより低く、結果は44call・¥20.9881でGuardrail¥22内)。なお、最初のバックグラウンド実行が実行時間の上限で停止した際に実行中だった1call分は記録されていない可能性がある(再実行は完了済みのcallをスキップして継続)。
+- 実施: 44call(DET-A 12[P1〜P4×2、N1・N2×2]、DET-B 16[P1〜P5×2、N1〜N3×2]、DET-C 16)、出力失敗0(JSON/schema/API)。
+- 該当文の区分(検出器×本文、判定=`claim_in_article`を空白・引用符・大小文字で正規化した文字列が"needed user information"を含む、最終severity):
+
+| 検出器 | P1 | P2 | P3 | P4 | P5 |
+|---|---|---|---|---|---|
+| DET-A(現行Recheck) | MAJOR 2 | MAJOR 1/指摘なし 1 | 指摘なし 2 | 指摘なし 2 | (対象外) |
+| DET-B(現行Stage 1相当) | MAJOR 1/指摘なし 1 | MAJOR 1/指摘なし 1 | 指摘なし 2 | 指摘なし 2 | 指摘なし 2 |
+| DET-C(候補Prompt) | MAJOR 1/MINOR 1 | MINOR 2 | MAJOR 1/指摘なし 1 | MAJOR 2 | MINOR 1/指摘なし 1 |
+
+- 検出器ごとの陽性合計: DET-A MAJOR 3/8(37.5%)・MAJOR+MINOR 3/8(37.5%)、DET-B MAJOR 2/10(20%)・MAJOR+MINOR 2/10(20%)、DET-C MAJOR 4/10(40%)・MAJOR+MINOR 8/10(80%)。
+- 陰性(N1〜N3): 書き換え後の該当文("user information"を含む指摘)はどの検出器でも指摘なし(N1・N2の各4call)。MAJOR指摘の総数(カッコ内=MAJORが出たcall数/call数): DET-A 4(4/4)、DET-B 28(6/6、N3の2callを含む=N3は正常記事ラベルだがMAJOR 7件・5件)、DET-C 14(3/6、N1の2call・N3のk2)。MINOR指摘の総数: DET-A 0、DET-B 0、DET-C 15。
+- 「They enjoyed AI’s convenience」(MUSE-HC-012、参考、検出器|本文の区分): DET-A: P1 MAJOR2、P2 MAJOR1/なし1、P3 MAJOR1/なし1、P4 MAJOR1/なし1、N1 MAJOR2、N2 MAJOR1/なし1。DET-B: P1 MAJOR2、P2 MAJOR1/なし1、P3 MAJOR1/なし1、P4 MAJOR2、P5 MAJOR2、N1 MAJOR2、N2 MAJOR2、N3 なし2。DET-C: P1 MAJOR1/MINOR1、P2 MINOR2、P3 MAJOR1/なし1、P4 MAJOR2、P5 MINOR1/なし1、N1 MAJOR2、N2 MINOR2、N3 なし2。(`results_01.json`の「参考_They_enjoyed_…」)
+- MINOR仮説への当てはめ(結論は書かない): 該当文がMINORで返った例は実在する(DET-Cの4call: P1 k1、P2 k1・k2、P5 k2。claim例=「Also, some calls needed user information to continue.」「Some calls needed user information to continue.」)。DET-A・DET-Bでは、該当文がMINORで返った例は0件で、指摘なしが多数(DET-A 5/8、DET-B 8/10)。回数が少ない(陽性は検出器×本文あたりn=2)。
+- 費用: 今回¥20.9881(Guardrail¥22内)。Phase累計¥494.03+¥20.9881=¥515.0181/総枠¥600、残¥84.9819。予算stateは専用ファイル(`budget_state_direct_compare_01.json`)で、既存の証跡を上書きしていない。

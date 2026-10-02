@@ -1,0 +1,80 @@
+{
+ "detector": "A",
+ "text_id": "N1",
+ "k": 1,
+ "label": "dc01_A_N1_1",
+ "model": "gpt-6-luna",
+ "error": null,
+ "cost_jpy": 0.3232,
+ "usage": {
+  "input_tokens": 6535,
+  "cached_input_tokens": 0,
+  "output_tokens": 2813,
+  "reasoning_tokens": 2336
+ },
+ "elapsed_seconds": 26.495,
+ "prompt_sha256": "e5423a4b324d2d39177620269f8bbf79ecb7a6c5c2f07f673fa8f551cb21ca60",
+ "raw_output_text": "{\n  \"deviations\": [\n    {\n      \"claim_in_article\": \"They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.\",\n      \"issue\": \"この記事は、人間が電話を担当した際に利用者がその事実に気づいていなかったと断定しています。Ledgerが確認しているのは、適切な開示なしにテストが始まったことや、開示不足への懸念であり、利用者が実際に気づいていなかったことまでは確認していません。\",\n      \"severity\": \"MAJOR\",\n      \"changed_fact\": true,\n      \"changed_scope\": false,\n      \"changed_causality\": false,\n      \"changed_certainty\": true,\n      \"changed_number\": false,\n      \"changed_actor\": false,\n      \"changed_negation\": false,\n      \"changed_comparison\": false,\n      \"changed_time\": false,\n      \"unsupported_new_claim\": true,\n      \"explanation\": \"「They did not realize it」と利用者の認識を断定しています。Ledgerにその認識の確認はなく、断定の強化と未確認の具体的主張に当たります。\",\n      \"related_fact_id\": \"MUSE-HC-012\",\n      \"origin\": \"ja_source\",\n      \"qualifier_present\": true,\n      \"qualifier_text\": \"前後に「sometimes」「If no one explained this clearly」という限定がありますが、続く「They did not realize it」は断定です。\",\n      \"ledger_field_basis\": \"ledger_fact\",\n      \"observation_consistent\": false,\n      \"matched_notes_id\": \"\",\n      \"same_fact_id_locations\": [\n        \"本文第5段落\"\n      ]\n    }\n  ],\n  \"prior_issues_resolved\": [\n    {\n      \"index\": 0,\n      \"resolved\": true,\n      \"explanation\": \"今回の記事は「If a call needs user information, it may be shared by mistake」と条件付きの可能性として記し、実際に一部の電話で情報が必要だったとは主張していません。\"\n    }\n  ]\n}",
+ "raw_model_deviations": [
+  {
+   "claim_in_article": "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.",
+   "issue": "この記事は、人間が電話を担当した際に利用者がその事実に気づいていなかったと断定しています。Ledgerが確認しているのは、適切な開示なしにテストが始まったことや、開示不足への懸念であり、利用者が実際に気づいていなかったことまでは確認していません。",
+   "severity": "MAJOR",
+   "changed_fact": true,
+   "changed_scope": false,
+   "changed_causality": false,
+   "changed_certainty": true,
+   "changed_number": false,
+   "changed_actor": false,
+   "changed_negation": false,
+   "changed_comparison": false,
+   "changed_time": false,
+   "unsupported_new_claim": true,
+   "explanation": "「They did not realize it」と利用者の認識を断定しています。Ledgerにその認識の確認はなく、断定の強化と未確認の具体的主張に当たります。",
+   "related_fact_id": "MUSE-HC-012",
+   "origin": "ja_source",
+   "qualifier_present": true,
+   "qualifier_text": "前後に「sometimes」「If no one explained this clearly」という限定がありますが、続く「They did not realize it」は断定です。",
+   "ledger_field_basis": "ledger_fact",
+   "observation_consistent": false,
+   "matched_notes_id": "",
+   "same_fact_id_locations": [
+    "本文第5段落"
+   ]
+  }
+ ],
+ "final_deviations": [
+  {
+   "claim_in_article": "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.",
+   "issue": "この記事は、人間が電話を担当した際に利用者がその事実に気づいていなかったと断定しています。Ledgerが確認しているのは、適切な開示なしにテストが始まったことや、開示不足への懸念であり、利用者が実際に気づいていなかったことまでは確認していません。",
+   "severity": "MAJOR",
+   "changed_fact": true,
+   "changed_scope": false,
+   "changed_causality": false,
+   "changed_certainty": true,
+   "changed_number": false,
+   "changed_actor": false,
+   "changed_negation": false,
+   "changed_comparison": false,
+   "changed_time": false,
+   "unsupported_new_claim": true,
+   "explanation": "「They did not realize it」と利用者の認識を断定しています。Ledgerにその認識の確認はなく、断定の強化と未確認の具体的主張に当たります。",
+   "related_fact_id": "MUSE-HC-012",
+   "origin": "ja_source",
+   "qualifier_present": true,
+   "qualifier_text": "前後に「sometimes」「If no one explained this clearly」という限定がありますが、続く「They did not realize it」は断定です。",
+   "ledger_field_basis": "ledger_fact",
+   "observation_consistent": false,
+   "matched_notes_id": "",
+   "same_fact_id_locations": [
+    "本文第5段落"
+   ],
+   "auto_downgraded": false,
+   "severity_final": "BLOCKING",
+   "action": "STOP",
+   "basis": "ledger_fact",
+   "rule_id": "existing_major_v2"
+  }
+ ],
+ "overall_status": "LEDGER_DEVIATION"
+}
