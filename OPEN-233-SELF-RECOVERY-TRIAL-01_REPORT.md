@@ -3999,3 +3999,17 @@ Ledgerが条件つき・可能性・懸念として書いている内容を、�
 - 「They enjoyed AI’s convenience」(MUSE-HC-012、参考、検出器|本文の区分): DET-A: P1 MAJOR2、P2 MAJOR1/なし1、P3 MAJOR1/なし1、P4 MAJOR1/なし1、N1 MAJOR2、N2 MAJOR1/なし1。DET-B: P1 MAJOR2、P2 MAJOR1/なし1、P3 MAJOR1/なし1、P4 MAJOR2、P5 MAJOR2、N1 MAJOR2、N2 MAJOR2、N3 なし2。DET-C: P1 MAJOR1/MINOR1、P2 MINOR2、P3 MAJOR1/なし1、P4 MAJOR2、P5 MINOR1/なし1、N1 MAJOR2、N2 MINOR2、N3 なし2。(`results_01.json`の「参考_They_enjoyed_…」)
 - MINOR仮説への当てはめ(結論は書かない): 該当文がMINORで返った例は実在する(DET-Cの4call: P1 k1、P2 k1・k2、P5 k2。claim例=「Also, some calls needed user information to continue.」「Some calls needed user information to continue.」)。DET-A・DET-Bでは、該当文がMINORで返った例は0件で、指摘なしが多数(DET-A 5/8、DET-B 8/10)。回数が少ない(陽性は検出器×本文あたりn=2)。
 - 費用: 今回¥20.9881(Guardrail¥22内)。Phase累計¥494.03+¥20.9881=¥515.0181/総枠¥600、残¥84.9819。予算stateは専用ファイル(`budget_state_direct_compare_01.json`)で、既存の証跡を上書きしていない。
+
+## §37. `USER_DECISION_REQUIRED`としてSTOP(委任_50)
+
+1. 分類: 今回フェーズ(受け渡し修正+限定Trial rep22+対策)は **`USER_DECISION_REQUIRED`**。`VALIDATED`ではない。Production採用ではない。
+2. STOPの根拠(ユーザー指示のSTOP条件のうち3つに該当):
+   - 「Safety原則の変更が必要」: `meta_run03_standard`の文「Also, some calls needed user information to continue.」(MUSE-HC-010)は、設計書の正解ラベル(Fableのラベル判定、設計書§4-21・委任_29)では必ず重大として拾う対象。一方、Production Checker Prompt(er003 533〜534行)は近い型を「MINORとして記録」と定めている。検出器の直接比較(委任_49、固定本文、該当文が残る本文P1〜P5)では、現行Recheckが該当文を重大で指摘 3/8・指摘なし 5/8、現行Stage 1相当が重大 2/10・指摘なし 8/10、factごとに確認させる候補Promptが重大 4/10・軽微 4/10・指摘なし 2/10。該当文を安定して拾うには、軽微の指摘を判定役へ渡す変更が必要で、これは「何を重大として扱うか」の原則の変更に当たる。
+   - 「複数の合理的な設計案に明確なQCDトレードオフがあり、ユーザー判断が必要」: 該当文を重大として扱い続ける案は、合格直前の追加検査(実測単価¥0.72/回)と軽微の指摘の取り込みが必要で、費用・書き換え・人間確認が増える。軽微(品質改善)として扱う案は、追加の検査が不要になる代わりに、条件つきの内容を断定で書いた文が記事に残る。
+   - 「¥600予算上限超過が必要」: Phase累計¥515.0181、残り¥84.9819。検査の実測単価は見積もり(¥0.32〜0.36)より高い(¥0.51〜0.72)。重大として扱い続ける案は、追加検査の限定確認と29件横断(追加検査つき)で残額を超える見込み。
+3. 判断事項(ユーザーへ提示):
+   - 判断1: 「条件つきの懸念を、起きたこととして書いた文」(該当文)を、必ず止める重大な逸脱として扱うか、品質改善(軽微)として扱うか。
+   - 判断2: 「They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.」(MUSE-HC-012、開示がなかったことから利用者の認識を推論した否定形の文)を、既存の降格ルール(Trial限定の判定候補、設計書1228〜1246行)どおり軽微として記事に残してよいか。
+   - 判断3: 判断1で「重大として扱う」を選ぶ場合の予算上限の引き上げ。
+4. 委任_49までの到達点: 受け渡し修正(委任_42)は維持。評価・記録の追加、照合の追補(`VS_MATCH_EXT`)、英語だけ修正(`JA_MODE=english_only`、補正つき)は実装済み・既定OFF・flowでは未確認。Opus独立レビュー#6の指摘どおり、合格の判定が1回の検査結果に依存する構造は未対策。
+5. ユーザー判断が出るまで、実装・Trial・測定を進めない。

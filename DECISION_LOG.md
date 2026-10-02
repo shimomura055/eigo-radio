@@ -17291,3 +17291,17 @@ Opusレビュー#5の設計にない追加であり、Fableの確認(必要な�
    - 既知問題集合(rep22): 合格系4 instance中3 instance(meta_run03_standard s1・s3・s4)で見逃しの疑い各16件(合計48)、指摘済み0件。集合は「過去に一度でもBLOCKINGになった範囲」全てを含むため正当な文も多く含まれ、対象文は「some calls needed user information to continue(.)」の2形で含まれる(`er052_output/open233_known_issue_residual_check_01/`)。
    - 検出器の直接比較(Checker呼び出しのみ58call計画→陽性nを3→2へ減らして44call実施、出力失敗0、¥20.9881/Guardrail¥22内。Phase累計¥494.03+¥20.9881=¥515.0181/総枠¥600、残¥84.9819): 該当文の区分(陽性の検出器合計、n少数)=DET-A(現行Recheck)MAJOR 3/8・MINOR 0/8、DET-B(現行Stage 1相当)MAJOR 2/10・MINOR 0/10、DET-C(出口検査候補Prompt)MAJOR 4/10・MINOR 4/10・指摘なし2/10。MINORで返った例は全てDET-C(4件)で、DET-A・DET-BのMINOR例は0件。陰性は書き換え後の該当文(N1・N2)をどの検出器も指摘せず、陰性のMAJOR指摘総数はA 4(4call)・B 28(6call)・C 14(6call)、MINOR指摘総数はA 0・B 0・C 15。結論は書かない(回数が少ない。MINOR仮説=該当文がMINORで返る例は、候補Prompt(DET-C)でのみ実在、現行のRecheck・Stage 1相当では観測されず)。詳細・生応答: `er052_output/open233_detector_direct_compare_01/`。
    - Production正式pathは未変更。合格直前の出口検査・A4(b)・降格ルール変更・MINORを後段へ渡す変更は未実装(Fable/ユーザー判断待ち)。OPEN-233の分類は保留のまま(`VALIDATED`ではない)。
+
+OPEN-233-SELF-RECOVERY-TRIAL-01(2026-10-02、委任_50、Fable判断: `USER_DECISION_REQUIRED`としてSTOP。ユーザーの新しい決定ではない)
+
+1. 分類: 今回フェーズ(受け渡し修正+限定Trial rep22+対策)は **`USER_DECISION_REQUIRED`**。`VALIDATED`ではない。Production採用ではない。
+2. STOPの根拠(ユーザー指示のSTOP条件のうち3つに該当):
+   - 「Safety原則の変更が必要」: `meta_run03_standard`の文「Also, some calls needed user information to continue.」(MUSE-HC-010)は、設計書の正解ラベル(Fableのラベル判定、設計書§4-21・委任_29)では必ず重大として拾う対象。一方、Production Checker Prompt(er003 533〜534行)は近い型を「MINORとして記録」と定めている。検出器の直接比較(委任_49、固定本文、該当文が残る本文P1〜P5)では、現行Recheckが該当文を重大で指摘 3/8・指摘なし 5/8、現行Stage 1相当が重大 2/10・指摘なし 8/10、factごとに確認させる候補Promptが重大 4/10・軽微 4/10・指摘なし 2/10。該当文を安定して拾うには、軽微の指摘を判定役へ渡す変更が必要で、これは「何を重大として扱うか」の原則の変更に当たる。
+   - 「複数の合理的な設計案に明確なQCDトレードオフがあり、ユーザー判断が必要」: 該当文を重大として扱い続ける案は、合格直前の追加検査(実測単価¥0.72/回)と軽微の指摘の取り込みが必要で、費用・書き換え・人間確認が増える。軽微(品質改善)として扱う案は、追加の検査が不要になる代わりに、条件つきの内容を断定で書いた文が記事に残る。
+   - 「¥600予算上限超過が必要」: Phase累計¥515.0181、残り¥84.9819。検査の実測単価は見積もり(¥0.32〜0.36)より高い(¥0.51〜0.72)。重大として扱い続ける案は、追加検査の限定確認と29件横断(追加検査つき)で残額を超える見込み。
+3. 判断事項(ユーザーへ提示):
+   - 判断1: 「条件つきの懸念を、起きたこととして書いた文」(該当文)を、必ず止める重大な逸脱として扱うか、品質改善(軽微)として扱うか。
+   - 判断2: 「They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.」(MUSE-HC-012、開示がなかったことから利用者の認識を推論した否定形の文)を、既存の降格ルール(Trial限定の判定候補、設計書1228〜1246行)どおり軽微として記事に残してよいか。
+   - 判断3: 判断1で「重大として扱う」を選ぶ場合の予算上限の引き上げ。
+4. 委任_49までの到達点: 受け渡し修正(委任_42)は維持。評価・記録の追加、照合の追補(`VS_MATCH_EXT`)、英語だけ修正(`JA_MODE=english_only`、補正つき)は実装済み・既定OFF・flowでは未確認。Opus独立レビュー#6の指摘どおり、合格の判定が1回の検査結果に依存する構造は未対策。
+5. ユーザー判断が出るまで、実装・Trial・測定を進めない。
