@@ -1,0 +1,39 @@
+{
+  "expected": "(委任_42 受け渡し修正)後、T1(固定Stage1×n=4): 2文取りこぼし起因のStage 4が0、Rewrite対象=Checkerの範囲(縮小0)、水準①から開始、段落④・全文⑥を増やさない。T2(離れた2範囲): 2範囲とも対象になる(間の文は対象外)。T3(Safety対照): floor発火・false PASS 0。",
+  "parts": {
+    "t3_safety_contrast": {
+      "rows": [
+        {
+          "instance_id": "safety_er009_changed_number",
+          "final_state": "STAGE4_ESCALATION",
+          "stage4_reason": "violation_span_unverified",
+          "total_cost_jpy": 0.1992,
+          "total_calls": 2,
+          "stage2_materialities": [
+            {
+              "cycle": 1,
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "related_fact_id": null,
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "deterministic_floor:changed_number",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "related_fact_id": "F-002",
+              "materiality": "BLOCKING",
+              "llm_materiality": null,
+              "floor_reason": "precheck_floor",
+              "detected_by_enumeration": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "cumulative_jpy": 0.1992,
+  "cumulative_calls": 3,
+  "cumulative_errors": 0
+}

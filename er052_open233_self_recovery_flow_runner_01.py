@@ -264,11 +264,14 @@ OUT_DIR_REP20 = "er052_output/open233_self_recovery_flow_runner_01_rep20"
 # 対照(changed_number fixture1件full flow n=1)も同じOUT_DIR_REP21・同じ
 # budget stateで実行する。出力は新規ディレクトリ(`_rep21`)へ書く。
 OUT_DIR_REP21 = "er052_output/open233_self_recovery_flow_runner_01_rep21"
-OUT_DIR = OUT_DIR_REP21
-BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233am_36_rep21.json"
-TOTAL_BUDGET_JPY = 6.5  # 委任_36 Guardrail¥7のうち、¥0.5をhard marginとして
-# 残し、本runnerのAPI呼び出し全体(rep21本体+Safety対照)を¥6.5で自己停止
-# する。
+# 委任_42(rep22、2026-10-02、受け渡し修正[Checkerの違反範囲をそのままRewriteへ]
+# の限定Trial): 既存rep7〜21の出力は変更せず、新規ディレクトリ(`_rep22`)へ書く。
+OUT_DIR_REP22 = "er052_output/open233_self_recovery_flow_runner_01_rep22"
+OUT_DIR = OUT_DIR_REP22
+BUDGET_STATE_PATH = f"{OUT_DIR}/budget_state_c233an_42_rep22.json"
+TOTAL_BUDGET_JPY = 14.5  # 委任_42 Guardrail¥15のうち、¥0.5をhard marginとして
+# 残し、本runnerのAPI呼び出し全体(rep22のT1/T2/T3)を¥14.5で自己停止する
+# (委任_36までの¥6.5/¥7と同じ構成。暴走疑い時のみSTOP、T-3方針)。
 MAX_RETRIES_PER_CALL = 2
 MAX_CONSECUTIVE_ERRORS = 3
 MODEL = "gpt-6-luna"
@@ -305,6 +308,19 @@ ENABLE_LADDER_LEVEL_6_FULL_REWRITE = False
 # かったことの実証によるfail-closedという別の安全機構であり、本委任の
 # スコープ外)。
 ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP = False
+
+# 委任_42(2026-10-02、OPEN-233 受け渡し修正、ユーザー指示§1): Rewrite対象の
+# 決定方式の切替(Trial専用。Production正式pathには存在しない定数)。
+# - "violation_span"(既定=新方式): Checkerが返した違反箇所(claim_in_article、
+#   runner内ではclaim_text)だけを入力に、文字単位の照合(L0〜L4、ちょうど1箇所)
+#   で記事側の範囲を確定し、その範囲をそのままRewriteへ渡す。照合できない指摘は
+#   類似度・単語重なり・判定役の引用へ落とさず、新reason
+#   `violation_span_unverified`でStage 4(人間確認、fail-closed)にする。
+# - "legacy"(旧方式): 委任_36までの`locate_target`(判定役hint引用→包含スパン→
+#   類似度→単語重なり)。比較・切り戻し用に残す(対象決定の既定経路からは呼ばれない)。
+HANDOFF_MODE_VIOLATION_SPAN = "violation_span"
+HANDOFF_MODE_LEGACY = "legacy"
+HANDOFF_MODE = HANDOFF_MODE_VIOLATION_SPAN
 
 # 委任_30 Part2(design書§0/§9-1「既定構成の確定(要素Trial反映)」):
 # 上位原則「重大誤解原則」(2026-10-01ユーザー指示)をStage1/Stage2(body)/
@@ -998,7 +1014,8 @@ def claim_identity(dev: dict) -> str:
     return "claim:" + hashlib.sha256(claim.encode("utf-8")).hexdigest()[:16]
 
 
-def find_matching_prior_record(dev: dict, prior_records: list, threshold: float = CLAIM_TEXT_SIMILARITY_THRESHOLD):
+def find_matching_prior_record(dev: dict, prior_records: list, threshold: float = CLAIM_TEXT_SIMILARITY_THRESHOLD,
+                                claim_norm: str | None = None):
     """委任_11 作業B-3(§3-3停止判定の是正、Opus L2 #2論点1推奨3): 従来の
     claim_identity()単独(fact_id一致のみ)による停止判定は、設計§3-3の原意
     (「Rewriteが当該claimに効かなかったことが実証された場合」)より厳しく、
@@ -1012,7 +1029,11 @@ def find_matching_prior_record(dev: dict, prior_records: list, threshold: float 
     一致するprior recordがあれば返し(=「同一claimが再発した」)、無ければ
     Noneを返す(=「別claいとして扱い、cycle 3の1回限り緩和対象になり得る」)。"""
     fact_id = (dev.get("related_fact_id") or "").strip()
-    claim_text_norm = normalize_claim_text(dev.get("claim_in_article") or "")
+    # 委任_42 仕様(7): `claim_norm`(確定範囲を正規化した表現、受け渡し修正の
+    # 新方式)が渡された場合はそれを使う(生の引用符付き文字列のままだと周回間の
+    # 同一判定が揺れる、Opus L2レビュー#5 §3-8)。未指定なら従来どおり。
+    claim_text_norm = (claim_norm if claim_norm is not None
+                       else normalize_claim_text(dev.get("claim_in_article") or ""))
     ident = claim_identity(dev)
     # 委任_24 A-2(§6-13): 同一fact_idのprior recordは複数cycleにまたがって
     # 複数件蓄積され得る(各cycleごとに1件追記)。呼び出し側が本関数の返り値
@@ -1842,6 +1863,49 @@ def _extract_in_one_line_text(full_text: str) -> str:
 
 
 def detect_claim_section_type(claim_text: str, full_text: str) -> str:
+    """委任_42(受け渡し修正、仕様(2)): 区分判定の入口。`HANDOFF_MODE`が
+    新方式(既定)なら、Checkerの文字列から確定した範囲が各区分ブロック
+    (title/in_one_line/hook)に含まれるかの包含判定(`detect_claim_section_
+    type_by_spans`、類似度による1文選びを使わない)。旧方式
+    (`HANDOFF_MODE="legacy"`)なら従来の`detect_claim_section_type_legacy`。"""
+    if HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+        return detect_claim_section_type_by_spans(claim_text, full_text)
+    return detect_claim_section_type_legacy(claim_text, full_text)
+
+
+_VS_SECTION_RANK = {"title": 0, "in_one_line": 1, "hook": 2, "body": 3}
+
+
+def detect_claim_section_type_by_spans(claim_text: str, full_text: str) -> str:
+    """委任_42 仕様(2): 確定範囲(`resolve_violation_spans`、EN本文に対する
+    照合)が各区分ブロックに含まれるかの包含判定。確定範囲が複数区分に
+    またがる場合は最も保護の強い区分(title>in_one_line>hook>body)を返す
+    (hook保持等の制約は範囲ごとに適用される=rewrite側は区分で緩めない)。
+    範囲を確定できない場合はbody(その指摘は後段で`violation_span_unverified`
+    としてStage 4になるため、区分は結果に影響しない)。類似度は使わない。"""
+    if not full_text:
+        return "body"
+    resolution = resolve_violation_spans(claim_text, full_text, None)
+    if resolution["status"] != "resolved":
+        return "body"
+    title = _paragraph_title(full_text)
+    hook = _hook_paragraph_block(full_text)
+    in_one_line = _extract_in_one_line_text(full_text)
+    best = "body"
+    for rng in resolution["ranges"]:
+        probe = rng.strip()
+        section = "body"
+        if probe:
+            for name, block in (("title", title), ("in_one_line", in_one_line), ("hook", hook)):
+                if block and (probe in block or block.strip() in probe):
+                    section = name
+                    break
+        if _VS_SECTION_RANK[section] < _VS_SECTION_RANK[best]:
+            best = section
+    return best
+
+
+def detect_claim_section_type_legacy(claim_text: str, full_text: str) -> str:
     """claimがTitle/Hook(第1段落、委任_31 Part1(b)是正後は条件を満たす
     場合に限り第2段落=締め文も含む`_hook_paragraph_block`)/In one line/
     本文のどこに位置するかを決定論的に判定する(委任_14 B-5、¥0)。位置
@@ -2728,6 +2792,621 @@ genuinely CANNOT be resolved by such a minimal edit, return {{"ja_revised": "", 
 not attempt a larger rewrite)."""
 
 
+# ============================================================
+# 委任_42(2026-10-02、OPEN-233 受け渡し修正、ユーザー指示§1・§2、設計書
+# design_open233_violation_span_handoff_01.md、Opus L2レビュー#5反映)
+# ------------------------------------------------------------
+# 問題: Checkerが複数文を違反として返しているのに、後段(locate_target)が
+# 判定役の引用・包含スパン・類似度・単語重なりで1文だけ選んでRewriteへ渡して
+# いた(rep21 sample1 cycle1: 2文のclaimのうち1文しか対象にならず取りこぼし)。
+# 是正(ユーザー基本線): ①Checkerが示した違反範囲を後段で再推測しない
+# ②複数文は複数文のまま・離れた複数箇所は複数範囲として渡す ③別AI(判定役)の
+# 引用でRewrite対象を決めない ④類似度・単語重なりで1文へ縮小しない
+# ⑤文ID・文字オフセットは採用しない ⑥最小修正優先(語句→文全体→必要最小範囲)。
+#
+# 実装: `resolve_violation_spans`が、Checkerの文字列だけを入力に、次の
+# **文字単位の照合のみ**で記事側の範囲を確定する(定義は無料集計
+# `er052_output/open233_handoff_log_aggregation_01/aggregate_01.py`[委任_41]と
+# 同一。importはせず移植):
+#   L0 そのまま含まれる / L1 文字列全体を囲む1組の引用符・括弧を外す /
+#   L2 空白・改行の連続・曲線/直線の引用符の同一視 / L3 大文字小文字の同一視 /
+#   L4 引用断片が2つ以上あり、断片以外の残りがつなぎ語・句読点・空白だけの
+#      場合に限り、各断片を別々の範囲にして各々L0〜L3で照合
+#      (残りに説明文がある場合は分解せず確定不能)。
+# 確定の条件=対象本文に「ちょうど1箇所」。0箇所・2箇所以上は確定不能。照合は
+# EN本文・JA本文の両方に対して行い、どちらで確定したかを保持する。
+# 確定不能の指摘は類似度等へ落とさず`violation_span_unverified`でStage 4。
+# ============================================================
+_VS_QUOTE_PAIRS = [("“", "”"), ('"', '"'), ("‘", "’"), ("「", "」"), ("『", "』")]
+_VS_CURLY_MAP = {"’": "'", "‘": "'", "‚": "'", "‛": "'", "“": '"', "”": '"', "„": '"'}
+_VS_FRAG_RE = re.compile(r"“([^”]+)”|「([^」]+)」|『([^』]+)』")
+_VS_CONNECT_RE = re.compile(r"\b(and|or)\b|[&,;、，；と/／.。:：]|および|\s", re.I)
+# 文分割(範囲を含む文全体への拡張[水準③]専用。確定には使わない)。改行も区切りとする。
+_VS_SENT_END_RE = re.compile(r"[.!?]+[\"”’'」』)\]]*(?=\s|$)|[。！？]+[\"”’」』)\]]*|\n")
+
+
+def vs_find_all(text: str, sub: str) -> list:
+    out, i = [], 0
+    if not sub:
+        return out
+    while True:
+        j = text.find(sub, i)
+        if j < 0:
+            return out
+        out.append((j, j + len(sub)))
+        i = j + len(sub)
+
+
+def vs_norm_with_map(text: str, lower: bool) -> tuple:
+    chars, spans = [], []
+    i, n = 0, len(text)
+    while i < n:
+        ch = text[i]
+        if ch.isspace():
+            j = i
+            while j < n and text[j].isspace():
+                j += 1
+            chars.append(" ")
+            spans.append((i, j))
+            i = j
+            continue
+        ch2 = _VS_CURLY_MAP.get(ch, ch)
+        if lower:
+            lo = ch2.lower()
+            ch2 = lo if len(lo) == 1 else ch2
+        chars.append(ch2)
+        spans.append((i, i + 1))
+        i += 1
+    return "".join(chars), spans
+
+
+def vs_norm_str(s: str, lower: bool) -> str:
+    return vs_norm_with_map(s.strip(), lower)[0]
+
+
+def vs_strip_one_pair(s: str):
+    s = s.strip()
+    if len(s) >= 2:
+        for o, c in _VS_QUOTE_PAIRS:
+            if s[0] == o and s[-1] == c:
+                return s[1:-1].strip()
+    return None
+
+
+def vs_match_levels(cand: str, text: str) -> tuple:
+    """candをL0〜L3でtextへ照合する。返値 (status, level, stripped_used, spans)。
+    status: 'ok'(ちょうど1箇所)/'multi'(2箇所以上)/'none'。"""
+    raw = cand.strip()
+    stripped = vs_strip_one_pair(raw)
+    for label, v, st in (("L0", raw, False), ("L1", stripped, True)):
+        if v:
+            occ = vs_find_all(text, v)
+            if len(occ) == 1:
+                return "ok", label, st, occ
+            if len(occ) >= 2:
+                return "multi", label, st, occ
+    for label, lower in (("L2", False), ("L3", True)):
+        nt, nm = vs_norm_with_map(text, lower)
+        for v, st in ((raw, False), (stripped, True)):
+            if not v:
+                continue
+            nv = vs_norm_str(v, lower)
+            if not nv:
+                continue
+            occ = vs_find_all(nt, nv)
+            if len(occ) == 1:
+                s, e = occ[0]
+                return "ok", label, st, [(nm[s][0], nm[e - 1][1])]
+            if len(occ) >= 2:
+                return "multi", label, st, [(nm[a][0], nm[b - 1][1]) for a, b in occ]
+    return "none", None, False, []
+
+
+def vs_split_fragments(claim: str) -> tuple:
+    frags = [next(g for g in m.groups() if g is not None) for m in _VS_FRAG_RE.finditer(claim)]
+    rest = _VS_FRAG_RE.sub("", claim)
+    rest_clean = _VS_CONNECT_RE.sub("", rest)
+    return frags, rest, rest_clean
+
+
+def vs_resolve_in_text(claim: str, text: str) -> dict:
+    """1つの本文(EN or JA)に対しclaimの範囲を確定する。返値 dict:
+    status(ok/multi/none/explanatory/frag_unresolved)、level、spans[(a,b)]。"""
+    st, lv, strp, spans = vs_match_levels(claim, text)
+    if st == "ok":
+        return {"status": "ok", "level": lv, "spans": spans, "stripped": strp}
+    if st == "multi":
+        return {"status": "multi", "level": lv, "spans": spans, "stripped": strp}
+    frags, _rest, rest_clean = vs_split_fragments(claim)
+    if len(frags) >= 2 and rest_clean == "":
+        sp, lvs, bad = [], [], None
+        for f in frags:
+            s2, l2, _st2, spans2 = vs_match_levels(f, text)
+            if s2 != "ok":
+                bad = (f, s2)
+                break
+            sp.append(spans2[0])
+            lvs.append(l2)
+        if bad:
+            return {"status": "frag_unresolved", "level": "L4", "spans": [], "bad_fragment": bad[0],
+                    "bad_status": bad[1]}
+        return {"status": "ok", "level": "L4", "spans": sp, "frag_levels": lvs, "stripped": False}
+    if len(frags) >= 1 and rest_clean != "":
+        return {"status": "explanatory", "level": None, "spans": []}
+    return {"status": "none", "level": None, "spans": []}
+
+
+def vs_merge_spans(spans: list, text: str) -> list:
+    """複数範囲の整理(仕様(1)): 重なる、または間が空白だけで隣接する範囲は
+    1つに結合する(段落区切り`\\n\\n`はまたがない)。一方が他方を含む場合は
+    大きい方へ吸収される。記事順(開始位置昇順)で返す。"""
+    merged: list = []
+    for a, b in sorted(set(spans)):
+        if merged:
+            pa, pb = merged[-1]
+            gap = text[pb:a] if a > pb else ""
+            if a <= pb or (gap.strip() == "" and "\n\n" not in gap):
+                merged[-1] = (pa, max(pb, b))
+                continue
+        merged.append((a, b))
+    return merged
+
+
+def resolve_violation_spans(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
+    """委任_42 仕様(1): Checkerの`claim_text`だけを入力に、記事側の範囲を確定する
+    (再推測ではなく照合)。類似度・単語重なり・判定役の引用・位置比は使わない。
+    返値: {"status": "resolved"|"unverified", "lang": "EN"|"JA"|None,
+    "level": "L0".."L4"|None, "ranges": [記事側の文字列(記事順・結合後)],
+    "spans": [(a,b)(結合後)], "raw_spans": [(a,b)(結合前)], "reason":
+    unverified時の原因("mismatch"/"multi_match"/"explanatory_mixed"/
+    "empty_claim"/"no_text"), "per_lang": {...}, "both_langs_ok": bool}。
+    EN・JAの両方で確定できた場合はEN側を採用する(両方確定した事実は保持)。"""
+    claim = (claim_text or "").strip()
+    out = {"status": "unverified", "reason": None, "claim_text": claim_text, "lang": None, "level": None,
+           "ranges": [], "spans": [], "raw_spans": [], "per_lang": {}, "both_langs_ok": False}
+    if not claim:
+        out["reason"] = "empty_claim"
+        return out
+    results = {}
+    if en_text is not None:
+        results["EN"] = vs_resolve_in_text(claim, en_text)
+    if ja_text is not None:
+        results["JA"] = vs_resolve_in_text(claim, ja_text)
+    if not results:
+        out["reason"] = "no_text"
+        return out
+    out["per_lang"] = {k: {"status": v["status"], "level": v.get("level")} for k, v in results.items()}
+    ok_langs = [k for k, v in results.items() if v["status"] == "ok"]
+    if ok_langs:
+        lang = "EN" if "EN" in ok_langs else "JA"
+        r = results[lang]
+        text = en_text if lang == "EN" else ja_text
+        merged = vs_merge_spans(r["spans"], text)
+        out.update({"status": "resolved", "lang": lang, "level": r["level"], "raw_spans": list(r["spans"]),
+                    "spans": merged, "ranges": [text[a:b] for a, b in merged],
+                    "both_langs_ok": len(ok_langs) == 2, "stripped": r.get("stripped", False),
+                    "frag_levels": r.get("frag_levels")})
+        return out
+    sts = [v["status"] for v in results.values()]
+    if "multi" in sts:
+        out["reason"] = "multi_match"
+    elif "explanatory" in sts:
+        out["reason"] = "explanatory_mixed"
+    elif "frag_unresolved" in sts:
+        out["reason"] = "mismatch"
+        out["detail"] = "fragment_unresolved"
+    else:
+        out["reason"] = "mismatch"
+    return out
+
+
+def vs_sentence_segments(text: str) -> list:
+    """水準③(範囲を含む文全体への拡張)専用の文分割。(開始,終了)のlistを返す。"""
+    segs, pos = [], 0
+    for m in _VS_SENT_END_RE.finditer(text):
+        end = m.start() if m.group(0) == "\n" else m.end()
+        segs.append((pos, end))
+        pos = m.end()
+    segs.append((pos, len(text)))
+    out = []
+    for a, b in segs:
+        while a < b and text[a].isspace():
+            a += 1
+        while b > a and text[b - 1].isspace():
+            b -= 1
+        if b > a:
+            out.append((a, b))
+    return out
+
+
+def vs_expand_to_sentences(spans: list, text: str) -> list:
+    """水準③: 各範囲を、その範囲を含む文全体(複数文にまたがる範囲はそれらの文)へ
+    拡張した文字列のlistを返す(拡張後に重なる/隣接するものは結合、段落は
+    またがない。範囲自体が`\\n\\n`を含む場合はその範囲のまま)。"""
+    segs = vs_sentence_segments(text)
+    expanded = []
+    for a, b in spans:
+        if "\n\n" in text[a:b]:
+            expanded.append((a, b))
+            continue
+        hit = [s for s in segs if s[0] < b and s[1] > a]
+        if hit:
+            expanded.append((min(a, hit[0][0]), max(b, hit[-1][1])))
+        else:
+            expanded.append((a, b))
+    return [text[a:b] for a, b in vs_merge_spans(expanded, text)]
+
+
+def vs_replace_once(text: str, target: str, replacement: str):
+    """仕様(5): 書き戻し直前に、現在の本文でtargetが「ちょうど1箇所」であることを
+    再確認してから`.replace(target, replacement, 1)`する。再確認に失敗したら
+    None(推測で置換しない)。"""
+    if not target or text.count(target) != 1:
+        return None
+    return text.replace(target, replacement, 1)
+
+
+def claim_span_text(resolution: dict) -> str | None:
+    """周回間の同一判定・Recheckへ渡す`prior_issues`用の、確定範囲の表現
+    (複数なら記事順に改行で連結)。確定不能ならNone(呼び出し側は生のclaim
+    文字列にフォールバックする)。"""
+    if not resolution or resolution.get("status") != "resolved":
+        return None
+    return "\n".join(resolution["ranges"])
+
+
+def annotate_claim_span_identity(claim: dict, en_text: str | None, ja_text: str | None) -> dict:
+    """委任_42 仕様(7): cycle開始時点の本文でclaimの範囲を確定し、claimへ記録する
+    (`claim["span_resolution_cycle_start"]`、`claim["claim_span_text"]`)。
+    新方式(`HANDOFF_MODE`)以外では何もしない。"""
+    if HANDOFF_MODE != HANDOFF_MODE_VIOLATION_SPAN:
+        return claim
+    res = resolve_violation_spans(claim.get("claim_text", ""), en_text, ja_text)
+    claim["span_resolution_cycle_start"] = {k: res.get(k) for k in (
+        "status", "lang", "level", "reason", "ranges", "both_langs_ok", "per_lang", "detail")}
+    claim["claim_span_text"] = claim_span_text(res)
+    return claim
+
+
+# ------------------------------------------------------------
+# 委任_42 仕様(3): Rewrite呼び出し(1指摘=1回の呼び出し、全範囲を配列で渡し、
+# 範囲ごとの書き換え結果を同じ個数・同じ順序の配列で返させる)。範囲を含む段落を
+# 読み取り専用の文脈として付ける。Stage 2のrewrite hintは「書き換え指示文」と
+# してのみ渡す(対象決定には使わない)。
+# ------------------------------------------------------------
+VS_RANGES_JSON_TAIL = (
+    "Return strict JSON only, with exactly this shape: {{\"revised_ranges\": [\"...\", ...]}}. The array "
+    "MUST contain exactly {n} string(s), in the same order as the numbered ranges above (Range 1 first). "
+    "No explanation, no code fences."
+)
+VS_RANGES_COMMON_RULES = (
+    "The ranges above are the EXACT text(s) the Checker flagged; edit ONLY inside them. Do NOT edit "
+    "anything outside the ranges (the paragraph context is read-only; never return it). Inside a range, "
+    "any part that does not need to change must be returned character-for-character unchanged (same "
+    "words, punctuation, capitalization, spacing). The rewrite hint tells you HOW to fix; any quotation "
+    "inside it does not change which text is flagged."
+)
+E1_RANGES_DEVELOPER_MSG = (
+    "You are fixing a fact deviation flagged by a Ledger Deviation Checker, using the SMALLEST possible "
+    "edit: swap a single word or connective, remove a short qualifier, or split one sentence into two at a "
+    "connective. You may be given Japanese or English text."
+)
+E1_RANGES_PROMPT_TEMPLATE = """[Verified Fact Ledger]
+{ledger_text}
+
+[Flagged range(s) (the exact text the Checker flagged as a Ledger deviation; article order)]
+{ranges_block}
+
+[Paragraph context (read-only)]
+{context_block}
+
+[Checker's issue]
+{issue}
+
+[Rewrite hint (an instruction on how to fix)]
+{rewrite_hint}
+
+Try to resolve the issue using ONLY a minimal edit inside the range(s): swap a single word, swap a \
+connective (for example "so" -> "while" / "meanwhile", or a causal connective that wrongly implies one \
+thing caused another -> a connective that only states they happened together), remove a single \
+qualifying word or short phrase, or split one sentence into two at a connective (without adding any new \
+fact and without changing any other word). Do NOT rewrite the content or structure beyond this. Do NOT \
+make the tone flatter, and do NOT remove its hook or storytelling value. Preserve the original intent \
+and meaning wherever the Ledger allows. Keep the same language as the input. """ + VS_RANGES_COMMON_RULES + """ \
+If this issue genuinely CANNOT be resolved by such a minimal edit, return {{"revised_ranges": []}} (do \
+not attempt a larger rewrite). """ + VS_RANGES_JSON_TAIL
+E2_RANGES_DEVELOPER_MSG = (
+    "You are fixing a fact deviation flagged by a Ledger Deviation Checker, using the smallest possible "
+    "edit (single-shot, no escalation). You may be given Japanese or English text."
+)
+E2_RANGES_PROMPT_TEMPLATE = """[Verified Fact Ledger]
+{ledger_text}
+
+[Flagged sentence(s) (the sentence(s) containing the exact text the Checker flagged; article order)]
+{ranges_block}
+
+[Paragraph context (read-only)]
+{context_block}
+
+[Checker's issue]
+{issue}
+
+[Rewrite hint (an instruction on how to fix)]
+{rewrite_hint}
+
+Rewrite ONLY the flagged sentence(s) above to resolve the issue (delete the unsupported part, replace it \
+with what the Ledger actually supports, or narrow its scope to match the Ledger, per the rewrite hint). \
+Keep the same language as the input. A sentence that needs no change must be returned \
+character-for-character unchanged. If one flagged sentence is best resolved by deleting it entirely, \
+return an empty string for that element. Do NOT edit anything outside the flagged sentence(s) (the \
+paragraph context is read-only; never return it). """ + VS_RANGES_JSON_TAIL
+E4_RANGES_DEVELOPER_MSG = (
+    "You are fixing a fact deviation flagged by a Ledger Deviation Checker. You must revise paragraph "
+    "block(s) (which may include a heading/title/hook line) using the smallest edit that removes the "
+    "unsupported claim from EVERY sentence in the block(s) that states or implies it. You may be given "
+    "Japanese or English text."
+)
+E4_RANGES_PROMPT_TEMPLATE = """[Verified Fact Ledger]
+{ledger_text}
+
+[Paragraph block(s) flagged as containing a Ledger deviation (may include a heading/title/hook line)]
+{ranges_block}
+
+[Text originally flagged by the Checker (inside the block(s) above)]
+{flagged_block}
+
+[Checker's issue]
+{issue}
+
+[Rewrite hint (an instruction on how to fix)]
+{rewrite_hint}
+
+Rewrite each paragraph block to resolve the issue. Delete or narrow EVERY sentence in the block(s) \
+(including any heading/title/hook line) that states or implies the same unsupported claim, per the \
+rewrite hint. Keep the same language as the input. Leave sentences unrelated to this issue unchanged, \
+character-for-character, wherever possible. """ + VS_RANGES_JSON_TAIL
+
+
+def vs_format_ranges(ranges: list) -> str:
+    return "\n".join(f"Range {i}:\n<<<\n{t}\n>>>" for i, t in enumerate(ranges, 1))
+
+
+def vs_parse_revised_ranges(raw: str) -> tuple:
+    """Rewrite応答から`revised_ranges`(str配列)を取り出す。(list, None)または(None, エラー種別)。"""
+    try:
+        parsed = s3rt.extract_json_obj(raw)
+    except Exception:  # noqa: BLE001
+        return None, "parse_failure"
+    lst = parsed.get("revised_ranges") if isinstance(parsed, dict) else None
+    if not isinstance(lst, list) or not all(isinstance(x, str) for x in lst):
+        return None, "parse_failure"
+    return lst, None
+
+
+def vs_apply_replacements(full_text: str, targets: list, revised: list) -> tuple:
+    """範囲ごとに、書き戻し直前に現在の本文で「ちょうど1箇所」を再確認して置換する
+    (仕様(5))。(新本文|None, 失敗した範囲のindex|None)を返す。"""
+    cur = full_text
+    for i, (t, r) in enumerate(zip(targets, revised)):
+        nxt = vs_replace_once(cur, t, r)
+        if nxt is None:
+            return None, i
+        cur = nxt
+    return cur, None
+
+
+def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                           target_text_field, claim_rec: dict) -> dict:
+    """委任_42 仕様(2)〜(6)(9): 確定範囲を対象にした最小修正優先ラダー。
+    水準①(語句・接続詞の最小編集)=確定範囲そのもの(文の一部ならその断片、複数文なら
+    その複数文)。①が不成立の場合のみ水準③=範囲を含む文全体(複数範囲ならそれぞれを含む
+    文)へ拡張。それでも不成立の場合のみ水準④=範囲を含む段落。⑥は既定OFF(既存flag)。
+    水準選択ロジック(`filter_levels_by_problem_kind`/`escalate_to_paragraph`)の意味は
+    変えない(対象範囲の与え方だけ変える)。範囲を確定できない場合はRewriteを試みず
+    `target_not_locatable`+`span_unverified`を返す(呼び出し側がStage 4へ)。"""
+    full_text = fixture[target_text_field]
+    claim_text = claim_rec["claim_text"]
+    rewrite_kind = claim_rec["rewrite_kind"]
+    dev = claim_rec["dev"]
+    lang = "EN" if target_text_field == "article_text" else "JA"
+    issue = dev.get("issue") or dev.get("explanation") or claim_text
+    rewrite_hint = claim_rec.get("rewrite_hint") or f"materiality={claim_rec['materiality']}, basis={claim_rec['basis']}"
+    rewrite_hint = rewrite_hint + claim_rec.get("extra_constraint", "")
+
+    resolution = claim_rec.get("span_resolution")
+    if (not resolution or resolution.get("status") != "resolved" or resolution.get("lang") != lang
+            or any(full_text.count(r) != 1 for r in resolution.get("ranges", []))):
+        resolution = resolve_violation_spans(
+            claim_text, full_text if lang == "EN" else None, full_text if lang == "JA" else None)
+    handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text, "text_lang": lang,
+               "resolution": {k: resolution.get(k) for k in (
+                   "status", "lang", "level", "reason", "detail", "ranges", "raw_spans", "spans",
+                   "per_lang", "both_langs_ok", "frag_levels", "stripped")},
+               "level_attempts": [], "level_used": None, "span_unverified": False}
+
+    if resolution["status"] != "resolved":
+        handoff["span_unverified"] = True
+        handoff["span_unverified_reason"] = resolution.get("reason")
+        return {"updated_text": full_text, "method": "violation_span_unverified", "guard_ok": False,
+                "target_sentence": None, "locate_method": f"violation_span_unverified({resolution.get('reason')})",
+                "delete_reoccurrence_detected": False, "before_fragment": None, "after_fragment": None,
+                "ladder_level_used": None, "target_not_locatable": True, "span_unverified": True,
+                "span_unverified_reason": resolution.get("reason"), "handoff": handoff}
+
+    ranges = list(resolution["ranges"])
+    spans = list(resolution["spans"])
+    locate_method = f"violation_span({lang},{resolution['level']})"
+    sentence_units = vs_expand_to_sentences(spans, full_text)
+    context_blocks: list = []
+    for u in sentence_units:
+        blk, _ = locate_paragraph_block(u, full_text)
+        if blk and blk not in context_blocks:
+            context_blocks.append(blk)
+    context_block = "\n\n".join(context_blocks) if context_blocks else "(not available)"
+
+    method_used = None
+    updated_text = full_text
+    guard_ok = False
+    ladder_level_used = None
+    after_fragment = None
+    before_fragment = " ".join(ranges)
+    delete_reoccurrence_detected = False
+
+    if rewrite_kind == "delete":
+        whole = {u.strip() for u in sentence_units}
+        del_units = ranges if all(r.strip() in whole for r in ranges) else list(sentence_units)
+        handoff["delete_units"] = del_units
+        handoff["delete_expanded_to_sentence"] = del_units is not ranges and del_units != ranges
+        cur, bad = vs_apply_replacements(full_text, del_units, [""] * len(del_units))
+        attempt = {"level": "0_delete", "targets": del_units}
+        if cur is None:
+            attempt["result"] = "writeback_failed"
+            method_used = "delete_writeback_failed"
+        else:
+            norm_after = vs_norm_str(cur, True)
+            delete_reoccurrence_detected = any(
+                vs_norm_str(r, True) and vs_norm_str(r, True) in norm_after for r in ranges)
+            attempt["delete_reoccurrence_detected"] = delete_reoccurrence_detected
+            if cur != full_text and not delete_reoccurrence_detected:
+                updated_text, guard_ok = cur, True
+                method_used = f"deterministic_delete({locate_method})"
+                ladder_level_used = "0_delete"
+                after_fragment = ""
+                attempt["result"] = "success"
+                handoff["level_used"] = "0_delete"
+            else:
+                attempt["result"] = "guard_failed"
+                method_used = "deterministic_delete_guard_failed"
+        handoff["level_attempts"].append(attempt)
+        before_fragment = " ".join(del_units)
+    else:
+        levels = []
+        levels.append({
+            "name": "1_word_connective", "tag": "e1_minimal_word_edit", "targets": ranges,
+            "label": f"{label_prefix}_e1_minimal_word", "dev_msg": E1_RANGES_DEVELOPER_MSG,
+            "prompt": E1_RANGES_PROMPT_TEMPLATE.format(
+                ledger_text=fixture["ledger_text"], ranges_block=vs_format_ranges(ranges),
+                context_block=context_block, issue=issue, rewrite_hint=rewrite_hint, n=len(ranges)),
+            "allow_empty": False})
+        levels.append({
+            "name": "3_sentence", "tag": "e2_generic_rewrite", "targets": sentence_units,
+            "label": f"{label_prefix}_e2_rewrite", "dev_msg": E2_RANGES_DEVELOPER_MSG,
+            "prompt": E2_RANGES_PROMPT_TEMPLATE.format(
+                ledger_text=fixture["ledger_text"], ranges_block=vs_format_ranges(sentence_units),
+                context_block=context_block, issue=issue, rewrite_hint=rewrite_hint, n=len(sentence_units)),
+            "allow_empty": True})
+        blocks: list = []
+        all_units_have_block = True
+        for u in sentence_units:
+            blk, _ = locate_paragraph_block(u, full_text)
+            if not blk:
+                all_units_have_block = False
+                break
+            if blk not in blocks:
+                blocks.append(blk)
+        if all_units_have_block and blocks:
+            levels.append({
+                "name": "4_paragraph", "tag": "e2_paragraph_rewrite", "targets": blocks,
+                "label": f"{label_prefix}_e2_paragraph_rewrite", "dev_msg": E4_RANGES_DEVELOPER_MSG,
+                "prompt": E4_RANGES_PROMPT_TEMPLATE.format(
+                    ledger_text=fixture["ledger_text"], ranges_block=vs_format_ranges(blocks),
+                    flagged_block=vs_format_ranges(ranges), issue=issue, rewrite_hint=rewrite_hint,
+                    n=len(blocks)),
+                "allow_empty": True})
+        if ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP and claim_rec.get("escalate_to_paragraph"):
+            levels = [lv for lv in levels if lv["name"] not in ("1_word_connective", "3_sentence")]
+        problem_kind = classify_problem_kind(dev)
+        claim_rec["problem_kind"] = problem_kind
+        handoff["problem_kind"] = problem_kind
+        levels = filter_levels_by_problem_kind(levels, dev)
+        handoff["levels_planned"] = [lv["name"] for lv in levels]
+
+        for lv in levels:
+            targets = lv["targets"]
+            attempt = {"level": lv["name"], "targets": list(targets)}
+            if lv["name"] == "1_word_connective":
+                attempt["target_equals_confirmed_ranges"] = (list(targets) == ranges)
+            handoff["level_attempts"].append(attempt)
+            raw = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"],
+                                   lv["dev_msg"], lv["prompt"], model=MODEL)
+            if raw is None:
+                attempt["result"] = "api_failure"
+                method_used = f"{lv['tag']}_api_failure"
+                continue
+            revised, err = vs_parse_revised_ranges(raw)
+            if err:
+                attempt["result"] = err
+                method_used = f"{lv['tag']}_{err}"
+                continue
+            if lv["name"] == "1_word_connective" and (len(revised) == 0 or any(not r.strip() for r in revised)):
+                attempt["result"] = "declined"
+                method_used = f"{lv['tag']}_declined"
+                continue
+            if len(revised) != len(targets):
+                attempt["result"] = "count_mismatch"
+                attempt["returned_count"] = len(revised)
+                method_used = f"{lv['tag']}_count_mismatch"
+                continue
+            attempt["revised"] = list(revised)
+            changed = [r != t for t, r in zip(targets, revised)]
+            attempt["each_target_changed"] = changed
+            candidate, bad_idx = vs_apply_replacements(full_text, targets, revised)
+            if candidate is None:
+                attempt["result"] = "writeback_failed"
+                attempt["writeback_failed_index"] = bad_idx
+                method_used = f"{lv['tag']}_writeback_failed({locate_method})"
+                continue
+            if not (candidate != full_text and all(changed)):
+                attempt["result"] = "guard_failed"
+                method_used = f"{lv['tag']}_guard_failed({locate_method})"
+                continue
+            if not all(actor_rewrite_guard_ok(t, r, fixture["ledger_text"]) for t, r in zip(targets, revised)):
+                attempt["result"] = "actor_guard_rejected"
+                method_used = f"{lv['tag']}_actor_guard_rejected({locate_method})"
+                continue
+            attempt["result"] = "success"
+            attempt["before_after"] = [{"before": t, "after": r} for t, r in zip(targets, revised)]
+            updated_text, guard_ok = candidate, True
+            method_used = f"{lv['tag']}({locate_method})"
+            ladder_level_used = lv["name"]
+            handoff["level_used"] = lv["name"]
+            if lv["name"] != "4_paragraph":
+                before_fragment = " ".join(targets)
+                after_fragment = " ".join(revised)
+            break
+
+    if not guard_ok:
+        after_fragment = None
+        if not ENABLE_LADDER_LEVEL_6_FULL_REWRITE:
+            return {"updated_text": full_text, "method": (method_used or "") + "+ladder6_disabled",
+                    "guard_ok": False, "target_sentence": before_fragment, "locate_method": locate_method,
+                    "delete_reoccurrence_detected": delete_reoccurrence_detected,
+                    "before_fragment": before_fragment, "after_fragment": None,
+                    "ladder_level_used": None, "target_not_locatable": False,
+                    "ladder_exhausted_without_full_rewrite": True, "handoff": handoff}
+        prompt = FULL_TEXT_FALLBACK_PROMPT_TEMPLATE.format(
+            ledger_text=fixture["ledger_text"], full_text=full_text,
+            target_sentence="\n".join(ranges), issue=issue, rewrite_hint=rewrite_hint)
+        fallback_text = simple_llm_call(client, state, consecutive_errors, call_log,
+                                         f"{label_prefix}_fulltext_fallback",
+                                         FULL_TEXT_FALLBACK_DEVELOPER_MSG, prompt, model=MODEL)
+        if fallback_text:
+            updated_text = fallback_text
+            method_used = (method_used or "") + "+fulltext_fallback"
+            guard_ok = updated_text != full_text
+            if guard_ok:
+                ladder_level_used = "6_full_article"
+                handoff["level_used"] = "6_full_article"
+        else:
+            method_used = (method_used or "") + "+fulltext_fallback_api_failure"
+
+    return {"updated_text": updated_text, "method": method_used, "guard_ok": guard_ok,
+            "target_sentence": before_fragment, "locate_method": locate_method,
+            "delete_reoccurrence_detected": delete_reoccurrence_detected,
+            "before_fragment": before_fragment, "after_fragment": after_fragment,
+            "ladder_level_used": ladder_level_used, "target_not_locatable": False, "handoff": handoff}
+
+
 def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, fixture, target_text_field,
                          claim_rec: dict) -> dict:
     """claim_rec['dev']の言語テキスト(target_text_field='article_text'固定、
@@ -2735,7 +3414,12 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
     の仕様どおり)に対する単一言語local rewrite。delete型はまず決定論的削除を
     試し、それ以外(replace_with_ledger_value/narrow_scope)はE-2汎用Promptを
     使う。guard抵触(対象文が特定できない/置換後も同じ問題文言が残る)時は
-    1回だけ全文最小編集フォールバックを試す。"""
+    1回だけ全文最小編集フォールバックを試す。
+    委任_42: `HANDOFF_MODE`が新方式(既定)なら`rewrite_ranges_ladder`(Checkerの
+    違反範囲をそのまま対象にする)へ委ねる。以下の本体は旧方式(legacy)用。"""
+    if HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+        return rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                                      target_text_field, claim_rec)
     full_text = fixture[target_text_field]
     claim_text = claim_rec["claim_text"]
     rewrite_kind = claim_rec["rewrite_kind"]
@@ -2917,6 +3601,20 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
             "ladder_level_used": ladder_level_used, "target_not_locatable": False}
 
 
+def _paired_en_target_from_span(claim_rec: dict, claim_text: str, en_full: str) -> tuple:
+    """委任_42 仕様(8): paired(origin=ja_source)でEN側の対象を、Checkerの文字列から
+    確定した**単一の範囲**に差し替える。確定範囲が単一のEN範囲でなければ
+    (en_target=None, 理由付きmethod, resolution)を返す(呼び出し側`run_stage3_for_claim`が
+    複数範囲/JAのみ確定を片側経路へ回すため、通常ここへは単一範囲しか来ない)。"""
+    res = claim_rec.get("span_resolution")
+    if (not res or res.get("status") != "resolved" or res.get("lang") != "EN"
+            or any(en_full.count(r) != 1 for r in res.get("ranges", []))):
+        res = resolve_violation_spans(claim_text, en_full, None)
+    if res["status"] == "resolved" and len(res["ranges"]) == 1:
+        return res["ranges"][0], f"violation_span(EN,{res['level']})", res
+    return None, f"violation_span_not_single_en_range({res.get('reason') or len(res.get('ranges', []))})", res
+
+
 def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fixture, claim_rec: dict) -> dict:
     """JA/EN pairing(article_text=EN, source_article_text=JA)がある場合の
     paired local rewrite(J-1一般化)。JA側は言及先が特定できない場合が
@@ -2937,7 +3635,24 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     # rewrite_hintへ追記する(既存テンプレートは変更しない非侵襲策)。
     rewrite_hint = rewrite_hint + claim_rec.get("extra_constraint", "")
 
-    en_target, en_method = locate_target(claim_text, rewrite_hint, en_full)
+    # 委任_42 仕様(2)(8): 新方式では、EN側の対象は「Checkerの文字列から確定した
+    # 単一の範囲」に差し替える(判定役hint引用・類似度・単語重なり・包含スパンを
+    # 使わない)。JA側の対応決定(下記の既存処理)は本委任では変更しない(暫定。
+    # JA側の構造見直し[英語だけ直す化]は並行調査+Opusレビュー後の別委任)。
+    # 確定範囲が複数・JA本文でのみ確定の場合は`run_stage3_for_claim`が本関数を
+    # 呼ばず、片側経路(`single_text_rewrite`)へ回す。
+    paired_handoff = None
+    en_span_resolution = None
+    if HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+        en_target, en_method, en_span_resolution = _paired_en_target_from_span(claim_rec, claim_text, en_full)
+        paired_handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text,
+                          "text_lang": "EN(paired)", "level_attempts": [], "level_used": None,
+                          "span_unverified": False,
+                          "resolution": {k: en_span_resolution.get(k) for k in (
+                              "status", "lang", "level", "reason", "detail", "ranges", "raw_spans", "spans",
+                              "per_lang", "both_langs_ok", "frag_levels", "stripped")}}
+    else:
+        en_target, en_method = locate_target(claim_text, rewrite_hint, en_full)
     # JA側ロケータ改善(委任_10、§5-4): 第一キー=rewrite_hintの引用断片
     # (もしJA本文中に逐語引用があれば)、第二キー=claim_text自体での
     # lexical探索(claim_textはEN文のため通常は失敗する、既知の限界)、
@@ -2955,7 +3670,9 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     # (失敗時は以下の既存優先順位へfail-closedで委ねる、非multi_quote_span
     # の既存経路は一切変更しない)。
     ja_target, ja_method = None, "not_attempted"
-    if en_method == "multi_quote_span" and en_target is not None:
+    if (HANDOFF_MODE == HANDOFF_MODE_LEGACY and en_method == "multi_quote_span"
+            and en_target is not None):
+        # (委任_42: 新方式では使わない[仕様(8)]。旧方式の比較・切り戻し用のみ)
         ja_target, ja_method = locate_ja_counterpart_by_position(en_target, en_full, ja_full)
     hint_fragment = extract_quoted_fragment(rewrite_hint)
     if ja_target is None and hint_fragment and hint_fragment in ja_full:
@@ -2996,7 +3713,7 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
         return {"updated_en_text": en_full, "updated_ja_text": ja_full, "method": "j1_target_not_locatable",
                 "guard_ok": False, "en_target": None, "ja_target": None,
                 "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
-                "target_not_locatable": True}
+                "target_not_locatable": True, "handoff": paired_handoff}
 
     ladder_level_used = None
     if en_located and ja_located:
@@ -3009,6 +3726,14 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
         has_paragraph_block = bool(ja_block) and bool(en_block)
         issue = dev.get("issue") or dev.get("explanation") or ""
 
+        # 委任_42 仕様(4): 水準①のEN対象=確定範囲そのもの(文の一部ならその断片)、
+        # 水準③で初めて範囲を含む文全体へ拡張する(旧方式は常に文全体)。
+        en_target_l3 = en_target
+        if HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN and en_span_resolution:
+            _exp = vs_expand_to_sentences(en_span_resolution["spans"], en_full)
+            if len(_exp) == 1:
+                en_target_l3 = _exp[0]
+
         levels = []
         prompt_l1 = J1_MINIMAL_WORD_PROMPT_TEMPLATE.format(
             ledger_text=fixture["ledger_text"], ja_target=ja_target, en_target=en_target,
@@ -3020,12 +3745,12 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                         "ja_target": ja_target, "en_target": en_target,
                         "tag": "j1_e1_minimal_word", "use_paragraph": False})
         prompt_l3 = J1_GENERIC_PROMPT_TEMPLATE.format(
-            ledger_text=fixture["ledger_text"], ja_target=ja_target, en_target=en_target,
+            ledger_text=fixture["ledger_text"], ja_target=ja_target, en_target=en_target_l3,
             rewrite_hint=rewrite_hint,
         )
         levels.append({"name": "3_sentence", "prompt": prompt_l3, "dev_msg": s3rt.J1_DEVELOPER_MSG,
                         "label": f"{label_prefix}_j1_paired_rewrite",
-                        "ja_target": ja_target, "en_target": en_target,
+                        "ja_target": ja_target, "en_target": en_target_l3,
                         "tag": "j1_paired_rewrite", "use_paragraph": False})
         if has_paragraph_block:
             prompt_l4 = J1_PARAGRAPH_PROMPT_TEMPLATE.format(
@@ -3058,25 +3783,54 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                 parsed = {}
             ja_revised = parsed.get("ja_revised", "")
             en_revised = parsed.get("en_revised", "")
-            candidate_ja = ja_full.replace(lv["ja_target"], ja_revised, 1) if ja_revised else ja_full
-            candidate_en = en_full.replace(lv["en_target"], en_revised, 1) if en_revised else en_full
-            level_guard_ok = (
-                bool(ja_revised) and bool(en_revised)
-                and candidate_ja != ja_full and candidate_en != en_full
-                and claim_text.strip() not in candidate_en
-            )
+            if HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+                # 委任_42 仕様(5)(6): EN側は書き戻し直前に「ちょうど1箇所」を再確認して
+                # 置換(失敗なら置換せず水準失敗)。guardは「Checkerが指した範囲
+                # [①は範囲、③④は拡張後の対象]が実際に変化したこと」(旧
+                # `claim_text.strip() not in candidate_en`は引用符付き文字列では
+                # 常に成立し取りこぼしを検出できなかった)。JA側の置換・guardは
+                # 既存のまま(暫定、変更しない)。
+                candidate_ja = ja_full.replace(lv["ja_target"], ja_revised, 1) if ja_revised else ja_full
+                _en_cand = vs_replace_once(en_full, lv["en_target"], en_revised) if en_revised else None
+                candidate_en = _en_cand if _en_cand is not None else en_full
+                level_guard_ok = (
+                    bool(ja_revised) and bool(en_revised)
+                    and candidate_ja != ja_full and candidate_en != en_full
+                    and en_revised != lv["en_target"]
+                )
+                paired_handoff["level_attempts"].append({
+                    "level": lv["name"], "targets": [lv["en_target"]],
+                    "target_equals_confirmed_ranges": (
+                        lv["en_target"] == en_target if lv["name"] == "1_word_connective" else None),
+                    "ja_target": lv["ja_target"], "revised": [en_revised], "ja_revised": ja_revised,
+                    "writeback_ok": _en_cand is not None if en_revised else False,
+                    "each_target_changed": [en_revised != lv["en_target"]],
+                    "result": "success_pending_actor_guard" if level_guard_ok else "guard_failed"})
+            else:
+                candidate_ja = ja_full.replace(lv["ja_target"], ja_revised, 1) if ja_revised else ja_full
+                candidate_en = en_full.replace(lv["en_target"], en_revised, 1) if en_revised else en_full
+                level_guard_ok = (
+                    bool(ja_revised) and bool(en_revised)
+                    and candidate_ja != ja_full and candidate_en != en_full
+                    and claim_text.strip() not in candidate_en
+                )
             # 委任_31 Part1(a)是正(design書§4-24): single_text_rewriteと
             # 同一理由でproblem_kindに関係なく常に評価する(委任_30 Trial C
             # 期待2で発見したterm_scope>actor優先順位による盲点の是正)。
             if level_guard_ok and not actor_rewrite_guard_ok(
                     lv["en_target"], en_revised, fixture["ledger_text"]):
                 level_guard_ok = False
+                if paired_handoff is not None:
+                    paired_handoff["level_attempts"][-1]["result"] = "actor_guard_rejected"
             if level_guard_ok:
                 updated_ja, updated_en = candidate_ja, candidate_en
                 guard_ok = True
                 use_paragraph = lv["use_paragraph"]
                 method = lv["tag"]
                 ladder_level_used = lv["name"]
+                if paired_handoff is not None:
+                    paired_handoff["level_attempts"][-1]["result"] = "success"
+                    paired_handoff["level_used"] = lv["name"]
                 break
     elif en_located != ja_located:
         # 委任_30 Part3 FAIL是正(小修正1回、neg3_hormuz_prodrunner_b1b根本
@@ -3096,6 +3850,9 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
         single_result = single_text_rewrite(
             client, state, consecutive_errors, call_log, f"{label_prefix}_j1_single_side",
             mini_fixture, only_located_field, claim_rec)
+        if paired_handoff is not None and single_result.get("handoff"):
+            paired_handoff = dict(single_result["handoff"])
+            paired_handoff["via_paired_single_side"] = True
         if single_result.get("guard_ok"):
             if en_located:
                 updated_en = single_result["updated_text"]
@@ -3122,7 +3879,7 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
                     "en_target": en_target, "ja_target": ja_target,
                     "before_fragment": en_target, "after_fragment": None,
                     "ladder_level_used": None, "target_not_locatable": False,
-                    "ladder_exhausted_without_full_rewrite": True}
+                    "ladder_exhausted_without_full_rewrite": True, "handoff": paired_handoff}
         # 委任_11 作業B-1(バグA是正、Opus L2 #2論点1推奨1): 従来はen_target/
         # ja_targetのいずれかが特定できない(j1_pair_not_located)場合、この
         # 全文フォールバックへ到達せず早期returnしていたため、テキストが
@@ -3190,7 +3947,207 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
     return {"updated_en_text": updated_en, "updated_ja_text": updated_ja, "method": method, "guard_ok": guard_ok,
             "en_target": en_target, "ja_target": ja_target,
             "before_fragment": en_target, "after_fragment": en_after_fragment,
-            "ladder_level_used": ladder_level_used, "target_not_locatable": False}
+            "ladder_level_used": ladder_level_used, "target_not_locatable": False,
+            "handoff": paired_handoff}
+
+
+def collect_replaced_units(result: dict, claim_identity_str: str) -> list:
+    """委任_42(rep22 T3で判明した不具合の是正): このStage 3の1 claim分のRewriteで実際に
+    置換された範囲(前→後)を、同一cycle内の後続claimが参照できるよう取り出す
+    (成功した水準の`before_after`、delete型は削除単位、pairedはJA側の対象も)。
+    新方式以外・未成功なら空list。"""
+    if not result.get("guard_ok"):
+        return []
+    h = result.get("handoff") or {}
+    units = []
+    for att in h.get("level_attempts", []):
+        if att.get("result") != "success":
+            continue
+        targets = list(att.get("targets") or [])
+        revised = [ba.get("after", "") for ba in att.get("before_after", [])] if att.get("before_after") else (
+            att.get("revised") or [""] * len(targets))
+        lang = "JA" if (h.get("text_lang") == "JA") else "EN"
+        units.append({"claim_identity": claim_identity_str, "lang": lang, "before_units": targets,
+                      "after_units": list(revised)})
+        if att.get("ja_target") and att.get("ja_revised"):
+            units.append({"claim_identity": claim_identity_str, "lang": "JA", "before_units": [att["ja_target"]],
+                          "after_units": [att["ja_revised"]]})
+    return units
+
+
+def carry_forward_resolution(claim_rec: dict, claim_text: str, en_now: str | None, ja_now: str | None):
+    """委任_42(rep22 T3で判明): 同一cycleで先行claimのRewriteが同じ文を書き換えた結果、後続
+    claimのCheker文字列が現在の本文から消えている場合の扱い。cycle開始時点の本文で
+    Checker文字列から範囲を確定し(再推測ではなく照合)、各範囲が先行claimのRewrite対象
+    (置換済みの単位)に含まれていれば「先行Rewriteで既に書き換え済み」とみなす。
+    返値: None(該当せず=従来どおり確定不能として扱う)または
+    {"lang", "covered": [...], "remaining": [記事に現存する未書き換えの範囲], "res0"}。
+    先行Rewriteに含まれず現存もしない範囲が1つでもあれば None(本当の確定不能)。"""
+    units = claim_rec.get("cycle_replaced_units") or []
+    if not units or claim_rec.get("cycle_start_en_text") is None:
+        return None
+    res0 = resolve_violation_spans(claim_text, claim_rec.get("cycle_start_en_text"),
+                                   claim_rec.get("cycle_start_ja_text"))
+    if res0["status"] != "resolved":
+        return None
+    lang0 = res0["lang"]
+    now_text = en_now if lang0 == "EN" else ja_now
+    if now_text is None:
+        return None
+    covered, remaining = [], []
+    for r in res0["ranges"]:
+        cov = next((u for u in units if u["lang"] == lang0 and any(r in b for b in u["before_units"])), None)
+        if cov is not None:
+            covered.append({"range": r, "covered_by_claim": cov["claim_identity"]})
+        elif now_text.count(r) == 1:
+            remaining.append(r)
+        else:
+            return None
+    if not covered:
+        return None
+    return {"lang": lang0, "covered": covered, "remaining": remaining, "res0": res0}
+
+
+def run_stage3_for_claim_spans(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                                current_en_text: str, current_ja_text: str | None, claim_rec: dict,
+                                use_pairing: bool) -> dict:
+    """委任_42: 新方式のStage 3入口(範囲の確定+同一cycle内の先行Rewriteによる書き換え済みの扱い)。
+    現在の本文でCheckerの文字列から範囲を確定する。確定できず、かつその文字列がcycle開始
+    時点の本文では確定でき、その範囲が同一cycleの先行claimのRewrite対象に含まれていた
+    場合(rep22 T3で判明: LLM claimとprecheck floor claimが同じ文を指し、先行Rewriteで文が
+    変わると後続の文字列が現在の本文から消える)は、確定不能(Stage 4)ではなく「先行Rewriteで
+    既に書き換え済み」として扱う(Rewriteを重ねない=不要Rewriteを増やさない。解消の判定は
+    全文Recheckが担う)。現存する未書き換えの範囲が残る場合はそれだけをRewriteする。"""
+    claim_text = claim_rec["claim_text"]
+    resolution = resolve_violation_spans(claim_text, current_en_text, current_ja_text)
+    cf = None
+    if resolution["status"] != "resolved":
+        cf = carry_forward_resolution(claim_rec, claim_text, current_en_text, current_ja_text)
+    if cf is not None:
+        if not cf["remaining"]:
+            handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text,
+                       "resolution": {"status": "covered_by_earlier_rewrite_in_cycle", "lang": cf["lang"],
+                                      "ranges": [c["range"] for c in cf["covered"]]},
+                       "carry_forward_covered": cf["covered"], "level_attempts": [], "level_used": None,
+                       "span_unverified": False, "skipped_covered_by_earlier_rewrite": True}
+            return {"mechanism": ("paired_ja_en(J-1)" if use_pairing else "single_text_local(E-2/delete-generic)"),
+                    "en_text": current_en_text, "ja_text": current_ja_text,
+                    "method": "covered_by_earlier_rewrite_in_cycle", "guard_ok": False,
+                    "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
+                    "target_not_locatable": False, "span_unverified": False,
+                    "ladder_exhausted_without_full_rewrite": False, "handoff": handoff}
+        now_text = current_en_text if cf["lang"] == "EN" else current_ja_text
+        raw_spans = [(now_text.find(r), now_text.find(r) + len(r)) for r in cf["remaining"]]
+        merged = vs_merge_spans(raw_spans, now_text)
+        resolution = {"status": "resolved", "lang": cf["lang"], "level": "carry_forward",
+                      "ranges": [now_text[a:b] for a, b in merged], "spans": merged, "raw_spans": raw_spans,
+                      "per_lang": {}, "both_langs_ok": False, "claim_text": claim_text, "reason": None,
+                      "carry_forward_covered": cf["covered"]}
+    res = _run_stage3_spans_core(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                                 current_en_text, current_ja_text, claim_rec, use_pairing, resolution)
+    if cf is not None and isinstance(res.get("handoff"), dict):
+        res["handoff"]["carry_forward_covered"] = cf["covered"]
+    return res
+
+
+def _run_stage3_spans_core(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                            current_en_text: str, current_ja_text: str | None, claim_rec: dict,
+                            use_pairing: bool, resolution: dict) -> dict:
+    """委任_42 仕様(1)(2)(8): 新方式のStage 3入口。Checkerの文字列を、EN本文・JA本文の
+    両方に対して照合して範囲を確定し(どちらで確定したかを保持)、次のとおり振り分ける。
+    - 確定不能(0箇所/複数箇所/説明文混在): Rewriteを試みず`span_unverified`
+      (呼び出し側がStage 4`violation_span_unverified`へ)。他の指摘は通常どおり処理される。
+    - originが`ja_source`でEN本文で単一範囲に確定: 既存の`paired_rewrite`(EN側の対象だけ
+      新方式の確定範囲に差し替え、JA側の対応決定は既存処理のまま変更しない)。
+    - originが`ja_source`でEN本文で複数範囲に確定、またはJA本文でのみ確定: **暫定**
+      (JA側の構造見直し[英語だけ直す化]は別委任のため本委任では最小対応に留める)。
+      確定できた言語側だけを新方式で直す既存の片側経路(`single_text_rewrite`)に入れ、
+      もう一方は既存の再検査(JA Recheck)に任せる。`locate_multi_quote_span`+位置比優先は
+      使わない。該当件数は`handoff["ja_provisional_path"]`で記録する。
+    - originが`ja_source`でない: EN本文で確定した範囲を単一言語のladderで直す。JA本文
+      でのみ確定した場合は、JA側を直す経路を持たないため確定不能(fail-closed)とする。"""
+    working_fixture = dict(fixture)
+    working_fixture["article_text"] = current_en_text
+    if current_ja_text is not None:
+        working_fixture["source_article_text"] = current_ja_text
+    claim_text = claim_rec["claim_text"]
+    claim_rec = dict(claim_rec)
+    claim_rec["span_resolution"] = resolution
+    mechanism_single = "single_text_local(E-2/delete-generic)"
+    mechanism_paired = "paired_ja_en(J-1)"
+
+    def _unverified(reason: str, detail: str | None = None) -> dict:
+        handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text,
+                   "resolution": {k: resolution.get(k) for k in (
+                       "status", "lang", "level", "reason", "detail", "ranges", "per_lang", "both_langs_ok")},
+                   "level_attempts": [], "level_used": None, "span_unverified": True,
+                   "span_unverified_reason": reason, "span_unverified_detail": detail}
+        return {"mechanism": mechanism_paired if use_pairing else mechanism_single,
+                "en_text": current_en_text, "ja_text": current_ja_text, "method": "violation_span_unverified",
+                "guard_ok": False, "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
+                "target_not_locatable": True, "span_unverified": True, "span_unverified_reason": reason,
+                "ladder_exhausted_without_full_rewrite": False, "handoff": handoff}
+
+    if resolution["status"] != "resolved":
+        return _unverified(resolution.get("reason") or "mismatch")
+
+    lang = resolution["lang"]
+    n_ranges = len(resolution["ranges"])
+    if not use_pairing:
+        if lang == "JA":
+            return _unverified("ja_only_match_origin_not_ja_source",
+                               "Checker文字列はJA本文でのみ確定したが、originがja_sourceでなく"
+                               "JA側を直す経路を持たないため確定不能として扱う(fail-closed)")
+        res = single_text_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture,
+                                  "article_text", claim_rec)
+        return {"mechanism": mechanism_single, "en_text": res["updated_text"], "ja_text": current_ja_text,
+                "method": res["method"], "guard_ok": res["guard_ok"],
+                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
+                "target_not_locatable": res.get("target_not_locatable", False),
+                "span_unverified": res.get("span_unverified", False),
+                "ladder_level_used": res.get("ladder_level_used"),
+                "ladder_exhausted_without_full_rewrite": res.get("ladder_exhausted_without_full_rewrite", False),
+                "handoff": res.get("handoff")}
+
+    if lang == "EN" and n_ranges == 1:
+        res = paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, working_fixture, claim_rec)
+        handoff = res.get("handoff") or {}
+        handoff["ja_provisional_path"] = False
+        return {"mechanism": mechanism_paired, "en_text": res["updated_en_text"], "ja_text": res["updated_ja_text"],
+                "method": res["method"], "guard_ok": res["guard_ok"],
+                "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
+                "ladder_level_used": res.get("ladder_level_used"),
+                "target_not_locatable": res.get("target_not_locatable", False),
+                "span_unverified": False,
+                "ladder_exhausted_without_full_rewrite": res.get("ladder_exhausted_without_full_rewrite", False),
+                "handoff": handoff}
+
+    # 暫定(JA側の構造見直しまで): 確定できた言語側だけを新方式で直す片側経路
+    provisional_reason = ("en_multiple_ranges" if lang == "EN" else "ja_only_match")
+    field = "article_text" if lang == "EN" else "source_article_text"
+    only_text = current_en_text if lang == "EN" else current_ja_text
+    mini_fixture = {"ledger_text": fixture["ledger_text"], field: only_text}
+    res = single_text_rewrite(client, state, consecutive_errors, call_log, f"{label_prefix}_j1_single_side",
+                              mini_fixture, field, claim_rec)
+    handoff = res.get("handoff") or {}
+    handoff["ja_provisional_path"] = True
+    handoff["ja_provisional_reason"] = provisional_reason
+    handoff["ja_provisional_note"] = ("暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに"
+                                       "任せる。JA側の構造見直しは別委任")
+    new_en, new_ja = current_en_text, current_ja_text
+    if res.get("guard_ok"):
+        if lang == "EN":
+            new_en = res["updated_text"]
+        else:
+            new_ja = res["updated_text"]
+    return {"mechanism": mechanism_paired, "en_text": new_en, "ja_text": new_ja,
+            "method": f"j1_single_side_{lang.lower()}({res.get('method')})", "guard_ok": res.get("guard_ok", False),
+            "before_fragment": res.get("before_fragment"), "after_fragment": res.get("after_fragment"),
+            "ladder_level_used": res.get("ladder_level_used"),
+            "target_not_locatable": res.get("target_not_locatable", False),
+            "span_unverified": res.get("span_unverified", False),
+            "ladder_exhausted_without_full_rewrite": res.get("ladder_exhausted_without_full_rewrite", False),
+            "handoff": handoff}
 
 
 def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_prefix, fixture,
@@ -3201,6 +4158,9 @@ def run_stage3_for_claim(client, state, consecutive_errors, call_log, label_pref
         and current_ja_text is not None
         and fixture.get("source_article_text") is not None
     )
+    if HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+        return run_stage3_for_claim_spans(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                                          current_en_text, current_ja_text, claim_rec, use_pairing)
     working_fixture = dict(fixture)
     working_fixture["article_text"] = current_en_text
     if current_ja_text is not None:
@@ -4112,6 +5072,12 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
         blocking_claims = [c for c in stage2_results if c["materiality"] == "BLOCKING"]
         non_blocking_claims = [c for c in stage2_results if c["materiality"] != "BLOCKING"]
+        # 委任_42 仕様(7): cycle開始時点の本文で、各BLOCKING claimの範囲を確定して
+        # 記録する(周回間の同一判定・Recheckの`prior_issues`を、生の引用符付き
+        # 文字列ではなく正規化後の確定範囲へ揃えるため。Stage 2へ渡す`claim_text`
+        # 表示は変更しない)。確定不能の場合は従来どおり生のclaim文字列を使う。
+        for c in blocking_claims:
+            annotate_claim_span_identity(c, current_en_text, current_ja_text)
 
         cycle_record = {
             "cycle": cycle, "stage2_results": stage2_results,
@@ -4148,7 +5114,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         matched_claim_by_identity = {}
         if cycle > 1:
             for c in blocking_claims:
-                m = find_matching_prior_record(c["dev"], prior_blocking_records)
+                _span_txt = c.get("claim_span_text")
+                m = find_matching_prior_record(
+                    c["dev"], prior_blocking_records,
+                    claim_norm=(normalize_claim_text(_span_txt) if _span_txt else None))
                 if m is not None:
                     matched_records.append(m)
                     matched_claim_by_identity[m["identity"]] = c
@@ -4252,7 +5221,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             prior_blocking_records.append({
                 "identity": claim_identity(c["dev"]),
                 "fact_id": (c["dev"].get("related_fact_id") or "").strip(),
-                "claim_text_norm": normalize_claim_text(c["dev"].get("claim_in_article") or ""),
+                "claim_text_norm": (normalize_claim_text(c["claim_span_text"]) if c.get("claim_span_text")
+                                    else normalize_claim_text(c["dev"].get("claim_in_article") or "")),
                 # 委任_24 A-2(§6-13): このRewrite試行で④段落水準まで既に
                 # 試行済みか(escalate_to_paragraphが今cycleで付与済みか)を
                 # 記録する。次cycleで同一claimが再発した際、matched_records
@@ -4278,9 +5248,16 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         def _run_stage3_cycle(claims_list, en_text, ja_text, extra_constraint, label_suffix=""):
             en_out, ja_out = en_text, ja_text
             records, pairs = [], []
+            cycle_replaced_units: list = []
             for c in claims_list:
                 c2 = dict(c)
                 c2["extra_constraint"] = extra_constraint
+                # 委任_42(rep22 T3の是正): 同一cycle内で先行claimが書き換えた範囲を後続claimへ
+                # 渡す(同じ文を指す複数claimの後続が、書き換え済みで文字列が消えたことを
+                # 確定不能[Stage 4]と誤認しないため)。
+                c2["cycle_start_en_text"] = en_text
+                c2["cycle_start_ja_text"] = ja_text
+                c2["cycle_replaced_units"] = list(cycle_replaced_units)
                 r = run_stage3_for_claim(
                     client, state, consecutive_errors, call_log,
                     f"{instance_id}_c{cycle}_{claim_identity(c['dev'])[:20]}{label_suffix}",
@@ -4288,6 +5265,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 en_out = r["en_text"]
                 if r["ja_text"] is not None:
                     ja_out = r["ja_text"]
+                cycle_replaced_units.extend(collect_replaced_units(r, claim_identity(c["dev"])))
                 records.append({"claim_identity": claim_identity(c["dev"]), "rewrite_kind": c["rewrite_kind"],
                                  "mechanism": r["mechanism"], "method": r["method"], "guard_ok": r["guard_ok"],
                                  "ladder_level_used": r.get("ladder_level_used"),
@@ -4299,7 +5277,12 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                  # 全段でguardが失敗したclaim(呼び出し側run_instanceが
                                  # STAGE4へ回す)。
                                  "ladder_exhausted_without_full_rewrite": r.get(
-                                     "ladder_exhausted_without_full_rewrite", False)})
+                                     "ladder_exhausted_without_full_rewrite", False),
+                                 # 委任_42 仕様(9): 受け渡しの記録(Checker文字列/確定範囲/
+                                 # 照合レベル/確定不能理由/水準別の対象と結果/before・after/
+                                 # guard結果/JA暫定経路)。次回以降の集計を記録値でできるように。
+                                 "span_unverified": r.get("span_unverified", False),
+                                 "handoff": r.get("handoff")})
                 pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
             return en_out, ja_out, records, pairs
 
@@ -4315,7 +5298,13 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         unlocatable_records = [r for r in rewrite_records if r.get("target_not_locatable")]
         if unlocatable_records:
             final_state = "STAGE4_ESCALATION"
-            stage4_reason = "target_not_locatable"
+            # 委任_42: 新方式で範囲を確定できなかった指摘(0箇所/複数箇所/説明文混在)は
+            # 新reason`violation_span_unverified`(類似度等へ落とさずfail-closed)。
+            span_unverified_records = [r for r in unlocatable_records if r.get("span_unverified")]
+            stage4_reason = "violation_span_unverified" if span_unverified_records else "target_not_locatable"
+            if span_unverified_records:
+                cycle_record["violation_span_unverified_claim_ids"] = sorted(
+                    {r["claim_identity"] for r in span_unverified_records})
             cycle_record["rewrite_records"] = rewrite_records
             cycle_record["unlocatable_claim_ids"] = sorted(
                 {r["claim_identity"] for r in unlocatable_records})
@@ -4497,7 +5486,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # [未該当、または局所QAが問題を検出]の場合のみ到達する、既存挙動
         # は無変更)
         prior_issues = [{"fact_id": c["dev"].get("related_fact_id", ""),
-                          "claim_in_article": c["claim_text"],
+                          # 委任_42 仕様(7): 新方式では確定範囲(複数なら記事順に連結)。
+                          "claim_in_article": c.get("claim_span_text") or c["claim_text"],
                           "issue": c["dev"].get("issue", ""), "explanation": c["dev"].get("explanation", "")}
                          for c in blocking_claims]
         recheck_fixture = dict(working_fixture)

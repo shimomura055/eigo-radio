@@ -1,0 +1,1110 @@
+{
+  "expected": "(委任_42 受け渡し修正)後、T1(固定Stage1×n=4): 2文取りこぼし起因のStage 4が0、Rewrite対象=Checkerの範囲(縮小0)、水準①から開始、段落④・全文⑥を増やさない。T2(離れた2範囲): 2範囲とも対象になる(間の文は対象外)。T3(Safety対照): floor発火・false PASS 0。",
+  "parts": {
+    "t3_safety_contrast": {
+      "rows": [
+        {
+          "instance_id": "safety_er009_changed_number",
+          "final_state": "RESOLVED_REWRITE",
+          "stage4_reason": null,
+          "total_cost_jpy": 0.2311,
+          "total_calls": 3,
+          "stage2_materialities": [
+            {
+              "cycle": 1,
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "related_fact_id": null,
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "deterministic_floor:changed_number",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+              "related_fact_id": "F-002",
+              "materiality": "BLOCKING",
+              "llm_materiality": null,
+              "floor_reason": "precheck_floor",
+              "detected_by_enumeration": false
+            }
+          ]
+        }
+      ]
+    },
+    "t1_two_sentence_miss": {
+      "expected": "(委任_42 受け渡し修正)後、T1(固定Stage1×n=4): 2文取りこぼし起因のStage 4が0、Rewrite対象=Checkerの範囲(縮小0)、水準①から開始、段落④・全文⑥を増やさない。T2(離れた2範囲): 2範囲とも対象になる(間の文は対象外)。T3(Safety対照): floor発火・false PASS 0。",
+      "stopped": false,
+      "stop_reason": null,
+      "n_samples_completed": 4,
+      "n_samples_planned": 4,
+      "per_sample": [
+        {
+          "sample": 1,
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "num_cycles": 2,
+          "total_cost_jpy": 1.121,
+          "total_calls": 4,
+          "stage2_materialities": [
+            {
+              "cycle": 1,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "“It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "deterministic_floor:changed_number",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "If no one explained this clearly, users could not know. They could not tell if it was AI or a person.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "News reports also cited one employee’s report.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "However, this is only one report. It would be wrong to say all contract workers did this.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 2,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            }
+          ]
+        },
+        {
+          "sample": 2,
+          "final_state": "STAGE4_ESCALATION",
+          "stage4_reason": "cycle_limit_exhausted",
+          "num_cycles": 3,
+          "total_cost_jpy": 2.1773,
+          "total_calls": 7,
+          "stage2_materialities": [
+            {
+              "cycle": 1,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "“It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "deterministic_floor:changed_number",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "If no one explained this clearly, users could not know. They could not tell if it was AI or a person.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "News reports also cited one employee’s report.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "However, this is only one report. It would be wrong to say all contract workers did this.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 2,
+              "claim_text": "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 2,
+              "claim_text": "some calls needed user information to continue",
+              "related_fact_id": "MUSE-HC-010",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": null,
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 3,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": null,
+              "detected_by_enumeration": false
+            }
+          ]
+        },
+        {
+          "sample": 3,
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "num_cycles": 2,
+          "total_cost_jpy": 1.314,
+          "total_calls": 4,
+          "stage2_materialities": [
+            {
+              "cycle": 1,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "“It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "deterministic_floor:changed_number",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "If no one explained this clearly, users could not know. They could not tell if it was AI or a person.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "News reports also cited one employee’s report.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "However, this is only one report. It would be wrong to say all contract workers did this.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 2,
+              "claim_text": "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            }
+          ]
+        },
+        {
+          "sample": 4,
+          "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+          "stage4_reason": null,
+          "num_cycles": 2,
+          "total_cost_jpy": 1.0118,
+          "total_calls": 4,
+          "stage2_materialities": [
+            {
+              "cycle": 1,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "“It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "BLOCKING",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "deterministic_floor:changed_number",
+              "detected_by_enumeration": false
+            },
+            {
+              "cycle": 1,
+              "claim_text": "If no one explained this clearly, users could not know. They could not tell if it was AI or a person.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "QUALITY",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "News reports also cited one employee’s report.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 1,
+              "claim_text": "However, this is only one report. It would be wrong to say all contract workers did this.",
+              "related_fact_id": "MUSE-HC-011",
+              "materiality": "ACCEPTABLE",
+              "llm_materiality": "ACCEPTABLE",
+              "floor_reason": null,
+              "detected_by_enumeration": true
+            },
+            {
+              "cycle": 2,
+              "claim_text": "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+              "related_fact_id": "MUSE-HC-012",
+              "materiality": "QUALITY",
+              "llm_materiality": "BLOCKING",
+              "floor_reason": "disclosure_gap_negative_inference_downgrade(委任_18 2-2)",
+              "detected_by_enumeration": false
+            }
+          ]
+        }
+      ],
+      "safety_critical_misdowngrade_rows": []
+    },
+    "t2_separated_ranges": {
+      "stopped": false,
+      "stop_reason": null,
+      "n_planned": 2,
+      "samples": [
+        {
+          "sample": 1,
+          "input": {
+            "claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+            "origin": "ja_source",
+            "related_fact_id": "MUSE-HC-012",
+            "materiality": "BLOCKING",
+            "span_resolution_cycle_start": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L4",
+              "reason": null,
+              "ranges": [
+                "They could not tell if it was AI or a person",
+                "They did not realize it."
+              ],
+              "both_langs_ok": false,
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L4"
+                },
+                "JA": {
+                  "status": "frag_unresolved",
+                  "level": "L4"
+                }
+              },
+              "detail": null
+            }
+          },
+          "stage3_first": {
+            "claim_identity": "fact:MUSE-HC-012",
+            "rewrite_kind": "narrow_scope",
+            "mechanism": "paired_ja_en(J-1)",
+            "method": "j1_single_side_en(e2_paragraph_rewrite(violation_span(EN,L4)))",
+            "guard_ok": true,
+            "ladder_level_used": "4_paragraph",
+            "section_type": "body",
+            "target_not_locatable": false,
+            "ladder_exhausted_without_full_rewrite": false,
+            "span_unverified": false,
+            "handoff": {
+              "mode": "violation_span",
+              "checker_claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+              "text_lang": "EN",
+              "resolution": {
+                "status": "resolved",
+                "lang": "EN",
+                "level": "L4",
+                "reason": null,
+                "detail": null,
+                "ranges": [
+                  "They could not tell if it was AI or a person",
+                  "They did not realize it."
+                ],
+                "raw_spans": [
+                  [
+                    841,
+                    885
+                  ],
+                  [
+                    952,
+                    976
+                  ]
+                ],
+                "spans": [
+                  [
+                    841,
+                    885
+                  ],
+                  [
+                    952,
+                    976
+                  ]
+                ],
+                "per_lang": {
+                  "EN": {
+                    "status": "ok",
+                    "level": "L4"
+                  },
+                  "JA": {
+                    "status": "frag_unresolved",
+                    "level": "L4"
+                  }
+                },
+                "both_langs_ok": false,
+                "frag_levels": [
+                  "L0",
+                  "L0"
+                ],
+                "stripped": false
+              },
+              "level_attempts": [
+                {
+                  "level": "1_word_connective",
+                  "targets": [
+                    "They could not tell if it was AI or a person",
+                    "They did not realize it."
+                  ],
+                  "target_equals_confirmed_ranges": true,
+                  "result": "declined"
+                },
+                {
+                  "level": "3_sentence",
+                  "targets": [
+                    "They could not tell if it was AI or a person.",
+                    "They did not realize it."
+                  ],
+                  "revised": [
+                    "Without a clear explanation, users might not know if it was AI or a person.",
+                    ""
+                  ],
+                  "each_target_changed": [
+                    true,
+                    true
+                  ],
+                  "result": "actor_guard_rejected"
+                },
+                {
+                  "level": "4_paragraph",
+                  "targets": [
+                    "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes."
+                  ],
+                  "revised": [
+                    "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+                  ],
+                  "each_target_changed": [
+                    true
+                  ],
+                  "result": "success",
+                  "before_after": [
+                    {
+                      "before": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.",
+                      "after": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+                    }
+                  ]
+                }
+              ],
+              "level_used": "4_paragraph",
+              "span_unverified": false,
+              "problem_kind": "term_scope",
+              "levels_planned": [
+                "1_word_connective",
+                "3_sentence",
+                "4_paragraph"
+              ],
+              "ja_provisional_path": true,
+              "ja_provisional_reason": "en_multiple_ranges",
+              "ja_provisional_note": "暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに任せる。JA側の構造見直しは別委任"
+            }
+          },
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 10.19,
+              "difficult_word_ratio": 0.109,
+              "word_count": 367
+            },
+            "stats_after": {
+              "avg_sentence_len": 10.47,
+              "difficult_word_ratio": 0.1134,
+              "word_count": 335
+            },
+            "sentence_len_increase": 0.28,
+            "difficulty_ratio_increase": 0.0044,
+            "fragment_stats_before": null,
+            "fragment_stats_after": null,
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 31,
+            "hook_word_count_after": 31,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "title_word_count_after": 9,
+            "title_degenerate": false,
+            "hook_degenerate": false,
+            "iol_degenerate": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "regenerated": false,
+          "ja_fail_open_guard": {
+            "ok": true,
+            "violations": [],
+            "checked": false,
+            "indeterminate": false
+          },
+          "ja_text_changed": false,
+          "ja_en_equivalence_verdict": "PASS",
+          "ja_en_equivalence_reason": {
+            "notes": "重要な事実、因果関係、結論、一言まとめの趣旨は維持されています。",
+            "meaning_changes": [],
+            "important_omissions": [],
+            "unsupported_additions": [],
+            "number_name_negation_issues": []
+          },
+          "full_recheck_required": true,
+          "full_recheck_required_reasons": [
+            "paragraph_or_full_or_delete_rewrite",
+            "both_ja_en_changed(paired_j1)"
+          ],
+          "recheck_en": {
+            "overall_status": "LEDGER_COMPLIANT",
+            "all_prior_issues_resolved": true,
+            "deviations": []
+          },
+          "recheck_ja": {
+            "overall_status": "LEDGER_DEVIATION",
+            "all_prior_issues_resolved": false,
+            "deviations": [
+              {
+                "claim_in_article": "「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません。」",
+                "severity": "MAJOR",
+                "related_fact_id": "MUSE-HC-012",
+                "issue": "Ledgerは、適切な開示なしに人間の契約スタッフが電話を担当したテストがあったことは確認していますが、利用者が相手を識別できなかったことまでは示していません。条件付きの表現ではあるものの、「知ることができません」と利用者の認識可能性を断定しています。"
+              }
+            ]
+          },
+          "en_ok": true,
+          "ja_ok": false,
+          "final_state": "UNRESOLVED_AFTER_ONE_CYCLE(次周回=cycle3はこの再現の範囲外)",
+          "stage4_reason": null,
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:MUSE-HC-012",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "paired_ja_en(J-1)",
+              "method": "j1_single_side_en(e2_paragraph_rewrite(violation_span(EN,L4)))",
+              "guard_ok": true,
+              "ladder_level_used": "4_paragraph",
+              "section_type": "body",
+              "target_not_locatable": false,
+              "ladder_exhausted_without_full_rewrite": false,
+              "span_unverified": false,
+              "handoff": {
+                "mode": "violation_span",
+                "checker_claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+                "text_lang": "EN",
+                "resolution": {
+                  "status": "resolved",
+                  "lang": "EN",
+                  "level": "L4",
+                  "reason": null,
+                  "detail": null,
+                  "ranges": [
+                    "They could not tell if it was AI or a person",
+                    "They did not realize it."
+                  ],
+                  "raw_spans": [
+                    [
+                      841,
+                      885
+                    ],
+                    [
+                      952,
+                      976
+                    ]
+                  ],
+                  "spans": [
+                    [
+                      841,
+                      885
+                    ],
+                    [
+                      952,
+                      976
+                    ]
+                  ],
+                  "per_lang": {
+                    "EN": {
+                      "status": "ok",
+                      "level": "L4"
+                    },
+                    "JA": {
+                      "status": "frag_unresolved",
+                      "level": "L4"
+                    }
+                  },
+                  "both_langs_ok": false,
+                  "frag_levels": [
+                    "L0",
+                    "L0"
+                  ],
+                  "stripped": false
+                },
+                "level_attempts": [
+                  {
+                    "level": "1_word_connective",
+                    "targets": [
+                      "They could not tell if it was AI or a person",
+                      "They did not realize it."
+                    ],
+                    "target_equals_confirmed_ranges": true,
+                    "result": "declined"
+                  },
+                  {
+                    "level": "3_sentence",
+                    "targets": [
+                      "They could not tell if it was AI or a person.",
+                      "They did not realize it."
+                    ],
+                    "revised": [
+                      "Without a clear explanation, users might not know if it was AI or a person.",
+                      ""
+                    ],
+                    "each_target_changed": [
+                      true,
+                      true
+                    ],
+                    "result": "actor_guard_rejected"
+                  },
+                  {
+                    "level": "4_paragraph",
+                    "targets": [
+                      "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes."
+                    ],
+                    "revised": [
+                      "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+                    ],
+                    "each_target_changed": [
+                      true
+                    ],
+                    "result": "success",
+                    "before_after": [
+                      {
+                        "before": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.",
+                        "after": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+                      }
+                    ]
+                  }
+                ],
+                "level_used": "4_paragraph",
+                "span_unverified": false,
+                "problem_kind": "term_scope",
+                "levels_planned": [
+                  "1_word_connective",
+                  "3_sentence",
+                  "4_paragraph"
+                ],
+                "ja_provisional_path": true,
+                "ja_provisional_reason": "en_multiple_ranges",
+                "ja_provisional_note": "暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに任せる。JA側の構造見直しは別委任"
+              }
+            }
+          ],
+          "total_cost_jpy": 1.0338,
+          "total_calls": 6
+        },
+        {
+          "sample": 2,
+          "input": {
+            "claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+            "origin": "ja_source",
+            "related_fact_id": "MUSE-HC-012",
+            "materiality": "BLOCKING",
+            "span_resolution_cycle_start": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L4",
+              "reason": null,
+              "ranges": [
+                "They could not tell if it was AI or a person",
+                "They did not realize it."
+              ],
+              "both_langs_ok": false,
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L4"
+                },
+                "JA": {
+                  "status": "frag_unresolved",
+                  "level": "L4"
+                }
+              },
+              "detail": null
+            }
+          },
+          "stage3_first": {
+            "claim_identity": "fact:MUSE-HC-012",
+            "rewrite_kind": "narrow_scope",
+            "mechanism": "paired_ja_en(J-1)",
+            "method": "j1_single_side_en(e2_paragraph_rewrite(violation_span(EN,L4)))",
+            "guard_ok": true,
+            "ladder_level_used": "4_paragraph",
+            "section_type": "body",
+            "target_not_locatable": false,
+            "ladder_exhausted_without_full_rewrite": false,
+            "span_unverified": false,
+            "handoff": {
+              "mode": "violation_span",
+              "checker_claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+              "text_lang": "EN",
+              "resolution": {
+                "status": "resolved",
+                "lang": "EN",
+                "level": "L4",
+                "reason": null,
+                "detail": null,
+                "ranges": [
+                  "They could not tell if it was AI or a person",
+                  "They did not realize it."
+                ],
+                "raw_spans": [
+                  [
+                    841,
+                    885
+                  ],
+                  [
+                    952,
+                    976
+                  ]
+                ],
+                "spans": [
+                  [
+                    841,
+                    885
+                  ],
+                  [
+                    952,
+                    976
+                  ]
+                ],
+                "per_lang": {
+                  "EN": {
+                    "status": "ok",
+                    "level": "L4"
+                  },
+                  "JA": {
+                    "status": "frag_unresolved",
+                    "level": "L4"
+                  }
+                },
+                "both_langs_ok": false,
+                "frag_levels": [
+                  "L0",
+                  "L0"
+                ],
+                "stripped": false
+              },
+              "level_attempts": [
+                {
+                  "level": "1_word_connective",
+                  "targets": [
+                    "They could not tell if it was AI or a person",
+                    "They did not realize it."
+                  ],
+                  "target_equals_confirmed_ranges": true,
+                  "result": "declined"
+                },
+                {
+                  "level": "3_sentence",
+                  "targets": [
+                    "They could not tell if it was AI or a person.",
+                    "They did not realize it."
+                  ],
+                  "revised": [
+                    "Without a clear explanation, users might not know if it was AI or a person.",
+                    ""
+                  ],
+                  "each_target_changed": [
+                    true,
+                    true
+                  ],
+                  "result": "actor_guard_rejected"
+                },
+                {
+                  "level": "4_paragraph",
+                  "targets": [
+                    "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes."
+                  ],
+                  "revised": [
+                    "People could ask Muse to make calls. But sometimes, a human was speaking instead. Meta later said the test began without proper notice. That was happening behind the scenes."
+                  ],
+                  "each_target_changed": [
+                    true
+                  ],
+                  "result": "success",
+                  "before_after": [
+                    {
+                      "before": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.",
+                      "after": "People could ask Muse to make calls. But sometimes, a human was speaking instead. Meta later said the test began without proper notice. That was happening behind the scenes."
+                    }
+                  ]
+                }
+              ],
+              "level_used": "4_paragraph",
+              "span_unverified": false,
+              "problem_kind": "term_scope",
+              "levels_planned": [
+                "1_word_connective",
+                "3_sentence",
+                "4_paragraph"
+              ],
+              "ja_provisional_path": true,
+              "ja_provisional_reason": "en_multiple_ranges",
+              "ja_provisional_note": "暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに任せる。JA側の構造見直しは別委任"
+            }
+          },
+          "quality_degradation_v2": {
+            "duplicate_paragraphs": [],
+            "duplicate_paragraph_detected": false,
+            "orphan_contrastive_paragraphs": [],
+            "orphan_contrastive_detected": false,
+            "stats_before": {
+              "avg_sentence_len": 10.19,
+              "difficult_word_ratio": 0.109,
+              "word_count": 367
+            },
+            "stats_after": {
+              "avg_sentence_len": 10.12,
+              "difficult_word_ratio": 0.1138,
+              "word_count": 334
+            },
+            "sentence_len_increase": -0.07,
+            "difficulty_ratio_increase": 0.0048,
+            "fragment_stats_before": null,
+            "fragment_stats_after": null,
+            "fragment_sentence_len_increase": 0.0,
+            "fragment_difficulty_ratio_increase": 0.0,
+            "vocab_difficulty_increased_wholetext": false,
+            "vocab_difficulty_increased_fragment": false,
+            "vocab_difficulty_increased": false,
+            "title_changed": false,
+            "first_paragraph_changed": false,
+            "hook_or_title_changed": false,
+            "needs_regeneration": false,
+            "reasons": ""
+          },
+          "section_role_violation": {
+            "in_one_line_length_increase_ratio": 0.0,
+            "in_one_line_too_long": false,
+            "numbers_added_to_title": false,
+            "numbers_added_to_in_one_line": false,
+            "hook_word_count_before": 31,
+            "hook_word_count_after": 31,
+            "hook_shrank": false,
+            "hook_rhetorical_markers_lost": false,
+            "title_rhetorical_markers_lost": false,
+            "title_word_count_after": 9,
+            "title_degenerate": false,
+            "hook_degenerate": false,
+            "iol_degenerate": false,
+            "section_role_violated": false,
+            "reasons": ""
+          },
+          "regenerated": false,
+          "ja_fail_open_guard": {
+            "ok": true,
+            "violations": [],
+            "checked": false,
+            "indeterminate": false
+          },
+          "ja_text_changed": false,
+          "ja_en_equivalence_verdict": "REVIEW_REQUIRED",
+          "ja_en_equivalence_reason": {
+            "notes": "中心的な事実、プライバシー上の懸念、報告が一件に限られる点、幹部の対応、一言まとめの趣旨は概ね維持されています。",
+            "meaning_changes": [
+              "Museの「AIエージェント」が英語では「AI assistant」とされており、呼称に軽い差があります。"
+            ],
+            "important_omissions": [
+              "利用者が相手がAIか人間かを知ることができない、という帰結は、英語では「適切に伝えられなかった」と要約され、明示性がやや弱まっています。"
+            ],
+            "unsupported_additions": [],
+            "number_name_negation_issues": []
+          },
+          "full_recheck_required": true,
+          "full_recheck_required_reasons": [
+            "paragraph_or_full_or_delete_rewrite",
+            "both_ja_en_changed(paired_j1)",
+            "ja_en_equivalence_not_pass"
+          ],
+          "recheck_en": {
+            "overall_status": "LEDGER_DEVIATION",
+            "all_prior_issues_resolved": true,
+            "deviations": [
+              {
+                "claim_in_article": "Also, some calls needed user information to continue.",
+                "severity": "MAJOR",
+                "related_fact_id": "MUSE-HC-010",
+                "issue": "The article states that some calls actually required user information. The Ledger describes employees’ concern conditionally—if user information is needed to carry out a call—but does not establish that this occurred in some calls."
+              }
+            ]
+          },
+          "recheck_ja": {
+            "overall_status": "LEDGER_DEVIATION",
+            "all_prior_issues_resolved": false,
+            "deviations": [
+              {
+                "claim_in_article": "「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません」「いつの間にか電話の向こうに人間がいた」",
+                "severity": "MAJOR",
+                "related_fact_id": "MUSE-HC-012",
+                "issue": "記事は、適切な説明がなければ利用者が相手の正体を知ることができず、実際に気づかなかったかのように述べています。Ledgerが確認しているのはテストで適切な開示がなかったことまでで、利用者が実際に何を知っていたか、または知ることができなかったかは確認されていません。"
+              }
+            ]
+          },
+          "en_ok": false,
+          "ja_ok": false,
+          "final_state": "UNRESOLVED_AFTER_ONE_CYCLE(次周回=cycle3はこの再現の範囲外)",
+          "stage4_reason": null,
+          "rewrite_records": [
+            {
+              "claim_identity": "fact:MUSE-HC-012",
+              "rewrite_kind": "narrow_scope",
+              "mechanism": "paired_ja_en(J-1)",
+              "method": "j1_single_side_en(e2_paragraph_rewrite(violation_span(EN,L4)))",
+              "guard_ok": true,
+              "ladder_level_used": "4_paragraph",
+              "section_type": "body",
+              "target_not_locatable": false,
+              "ladder_exhausted_without_full_rewrite": false,
+              "span_unverified": false,
+              "handoff": {
+                "mode": "violation_span",
+                "checker_claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+                "text_lang": "EN",
+                "resolution": {
+                  "status": "resolved",
+                  "lang": "EN",
+                  "level": "L4",
+                  "reason": null,
+                  "detail": null,
+                  "ranges": [
+                    "They could not tell if it was AI or a person",
+                    "They did not realize it."
+                  ],
+                  "raw_spans": [
+                    [
+                      841,
+                      885
+                    ],
+                    [
+                      952,
+                      976
+                    ]
+                  ],
+                  "spans": [
+                    [
+                      841,
+                      885
+                    ],
+                    [
+                      952,
+                      976
+                    ]
+                  ],
+                  "per_lang": {
+                    "EN": {
+                      "status": "ok",
+                      "level": "L4"
+                    },
+                    "JA": {
+                      "status": "frag_unresolved",
+                      "level": "L4"
+                    }
+                  },
+                  "both_langs_ok": false,
+                  "frag_levels": [
+                    "L0",
+                    "L0"
+                  ],
+                  "stripped": false
+                },
+                "level_attempts": [
+                  {
+                    "level": "1_word_connective",
+                    "targets": [
+                      "They could not tell if it was AI or a person",
+                      "They did not realize it."
+                    ],
+                    "target_equals_confirmed_ranges": true,
+                    "result": "declined"
+                  },
+                  {
+                    "level": "3_sentence",
+                    "targets": [
+                      "They could not tell if it was AI or a person.",
+                      "They did not realize it."
+                    ],
+                    "revised": [
+                      "Without a clear explanation, users might not know if it was AI or a person.",
+                      ""
+                    ],
+                    "each_target_changed": [
+                      true,
+                      true
+                    ],
+                    "result": "actor_guard_rejected"
+                  },
+                  {
+                    "level": "4_paragraph",
+                    "targets": [
+                      "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes."
+                    ],
+                    "revised": [
+                      "People could ask Muse to make calls. But sometimes, a human was speaking instead. Meta later said the test began without proper notice. That was happening behind the scenes."
+                    ],
+                    "each_target_changed": [
+                      true
+                    ],
+                    "result": "success",
+                    "before_after": [
+                      {
+                        "before": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.",
+                        "after": "People could ask Muse to make calls. But sometimes, a human was speaking instead. Meta later said the test began without proper notice. That was happening behind the scenes."
+                      }
+                    ]
+                  }
+                ],
+                "level_used": "4_paragraph",
+                "span_unverified": false,
+                "problem_kind": "term_scope",
+                "levels_planned": [
+                  "1_word_connective",
+                  "3_sentence",
+                  "4_paragraph"
+                ],
+                "ja_provisional_path": true,
+                "ja_provisional_reason": "en_multiple_ranges",
+                "ja_provisional_note": "暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに任せる。JA側の構造見直しは別委任"
+              }
+            }
+          ],
+          "total_cost_jpy": 1.0143,
+          "total_calls": 6
+        }
+      ]
+    }
+  },
+  "cumulative_jpy": 7.9033,
+  "cumulative_calls": 35,
+  "cumulative_errors": 0
+}

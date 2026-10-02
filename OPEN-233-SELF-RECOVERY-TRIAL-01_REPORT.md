@@ -3750,3 +3750,152 @@ Safety12の違反文またはSafety-critical 8がBLOCKINGでなくなる(該当�
 後もFAIL(該当せず、本委任の修正対象[sample2 cycle2のladder枯渇]は34-2
 の決定論的unittestで解消を確認)。STOP条件非該当のため継続作業として
 記録・commit・push・回帰確認まで完了。
+
+
+## §35. 受け渡し修正(Checkerの違反範囲をそのままRewriteへ、再推測の廃止)の実装と限定Trial rep22(委任_42、2026-10-02)
+
+管理ID: OPEN-233-SELF-RECOVERY-TRIAL-01(委任_42: ユーザー指示§1・§2の実装+限定Trial)。
+設計書追記: `docs/pm/design_open233_self_recovery_flow_01.md`§6-18(実装内容・対応表・結果の要約)。本節は詳細証跡。
+Trial/検証用の実装であり、Production採用ではない(`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない)。
+最終分類(`REJECTED`/`VALIDATED`/`USER_DECISION_REQUIRED`)はFableが行う(本節は実測値と所見まで)。
+
+### 35-0. 変更範囲・Production未変更の確認
+
+変更ファイル: `er052_open233_self_recovery_flow_runner_01.py`(Trial専用runner)、
+`er052_open233_self_recovery_flow_runner_01_test_01.py`、新規
+`er052_open233_self_recovery_flow_runner_01_rep22_representative_01.py`、新規
+`er052_output/open233_self_recovery_flow_runner_01_rep22/`。Production正式path
+(`er003_v1_n3_01_articles_generate.py`、`er003_v1_en_direct_vfl_01_generate.py`等)・Checker(Stage 1/Recheck)の
+Prompt・schema・Stage 2のPrompt・rubric・floor・`MAX_CYCLES`/`HARD_MAX_CYCLES`・⑥(既定OFF)は無変更。
+`git grep -n "er052_open233" -- "er003*.py" "er0[0-4]*.py"` = 0件(Production側がrunnerをimportしていない)。
+
+対象決定の経路から旧4段が外れていることの確認(runner内の呼び出し元Grep、`locate_target|locate_best_sentence|
+locate_multi_quote_span|extract_quoted_fragment|locate_ja_counterpart_by_position|detect_claim_section_type|
+claim_text.strip() not in`): 新方式(既定)でのEN側対象決定には使われない。残る呼び出し元は次のとおり。
+(a)`single_text_rewrite`の旧方式本体(冒頭の`HANDOFF_MODE`分岐の後ろ、legacy専用)、(b)`paired_rewrite`のEN対象の
+`else`分岐(legacy専用)、(c)`paired_rewrite`のJA側対応決定(`locate_ja_counterpart_by_position`・
+`extract_quoted_fragment`[判定役のhint引用]・`locate_best_sentence`)は**ユーザー決定どおり本委任では変更していない暫定の既存処理**
+(ja_sourceかつEN単一範囲のpaired経路のみ)、(d)`detect_claim_section_type_legacy`(legacy専用)。
+
+### 35-1. 実装(仕様(1)〜(10))
+
+設計書§6-18の表のとおり。新規関数: `vs_*`(照合・結合・文拡張・書き戻し)、`resolve_violation_spans`、
+`claim_span_text`、`annotate_claim_span_identity`、`rewrite_ranges_ladder`(+`E1/E2/E4_RANGES_*`Prompt)、
+`run_stage3_for_claim_spans`/`_run_stage3_spans_core`、`_paired_en_target_from_span`、`collect_replaced_units`、
+`carry_forward_resolution`、`detect_claim_section_type_by_spans`。`find_matching_prior_record`へ任意引数`claim_norm`を追加。
+`OUT_DIR_REP22`/`BUDGET_STATE_PATH`(`budget_state_c233an_42_rep22.json`)/`TOTAL_BUDGET_JPY=14.5`を新設(Guardrail¥15)。
+
+テスト: `er052_open233_self_recovery_flow_runner_01_test_01`は317件→381件(新規64件)全PASS(`-m unittest`)。
+`run_project_regression.py --pattern "er052*_test_*.py"`: collected=425/passed=425。project-wide(`run_project_regression.py`):
+collected=4348(4284+64)・passed=4337・failed=6・errors=5。失敗/エラー11件は委任_36時点(§34-5)と同一のmodule
+(`er003_test_bad`・`er003_test_p2j_investigate`4件・`er015_standard_a2_6000_generation_first_trial_01_test_01`[loaderエラー]・
+`er025_pronunciation_resolution_phase3_b1b_en_wiring_01_test_01`・`er040_tts_fixed_shell_master_champion_trial_01_test_01`・
+`er043_tts_fixed_shell_master_champion_trial_02_test_01`・`er011_open112_trend_synthesis_mode_production_wiring_01_test_01`3件)で、
+新規failureなし。意図的に書き換えた既存テスト: `@_legacy_handoff`(旧方式を明示)7件=
+`TestMinimalChangeLadderOrdering`2件・`TestEscalateToParagraphLadderSkip`2件・`TestEscalateToParagraphDisabledByDefault`1件・
+`TestActorGuardAlwaysEvaluatedRegardlessOfProblemKind`1件・`TestTargetNotLocatableEarlyReturn`の
+`test_paired_rewrite_partial_locate_delegates_to_single_text_rewrite`1件、および`TestDegenerateRewriteHardBlockWiring`の
+stage4_reason文字列のソース検査1件。旧`locate_target`/`locate_multi_quote_span`の関数単体テスト(`TestLocateTarget`・
+`TestLocateTargetMultiQuoteIntegration`等)は旧関数を残すため無変更で維持(新方式の同等の挙動は新規テストで固定)。
+
+新規テストの必須実例(a)〜(h)はすべて`TestResolveViolationSpans`/`TestHandoffRewriteLadder`等に含まれる:
+(a)`test_a_...`、(b)`test_b_...`、(c)`test_c_...`、(d)`test_d_...`/`test_d2_...`、(e)`test_e_...`、(f)`test_f_...`/`test_f2_...`、
+(g)`test_g_...`/`test_g2_...`、(h)`test_h_...`/`test_h2_...`(旧guardの盲点[2文claimの片方だけ変更でも通っていた]が閉じていること)。
+rep22 T3で判明した不具合の是正は`TestHandoffCarryForwardWithinCycle`(6件)。
+
+### 35-2. Trial実行コマンドと費用
+
+作業ディレクトリ`C:\Users\tensh\eigo-radio`、`PYTHONIOENCODING=utf-8 .venv\Scripts\python.exe
+er052_open233_self_recovery_flow_runner_01_rep22_representative_01.py --parts t3`(Safety対照、2回: 是正前run1・是正後run2)、
+`--parts t1 --t1-n 4`、`--parts t2 --t2-n 2`、`--parts agg`(記録済みJSONの集計、API呼び出しなし)。予算は
+runner定数`TOTAL_BUDGET_JPY=14.5`(Guardrail¥15)。TTSなし。`TTS_EXECUTION_MODE`は非該当。
+
+費用(instance JSONの`total_cost_jpy`の合計、¥): T3 run1 0.1992(是正前)+T3 run2 0.2311+T1 5.6241(s1 1.1210/s2 2.1773/s3 1.3140/s4 1.0118)+
+T2 2.0481(s1 1.0338/s2 1.0143)=**8.1025**。Phase累計¥485.9275+¥8.1025=**¥494.0300**/総枠¥600、残**¥105.9700**。
+(予算state`budget_state_c233an_42_rep22.json`の`cumulative_jpy`=7.9033は、T3 run1[¥0.1992]がunittest実行によるstate
+ファイル上書きで失われているため総額より小さい。既存の仕様[unittestの`TestNoCrossModuleBudgetStateContamination`系がBUDGET_STATE_PATHへ書く]で、
+rep21のstateファイルも同じ痕跡[`test_recheck`]を持つ。正式な費用はinstance JSONの`call_log`合計。)
+
+### 35-3. T1(固定Stage 1×n=4、`instances_s1`〜`s4`)
+
+固定Stage 1: `er052_output/open233_self_recovery_flow_runner_01_rep19/stage1_fixtures/meta_run03_standard_iter8_cycle1_frozen.json`
+(再freezeしない)。全4 sampleで、cycle1のBLOCKINGは1件=MUSE-HC-011「“It said human staff made inappropriate comments about race
+during calls. These calls were about trying to lower internet or cable fees.”」(`deterministic_floor:changed_number`)。Checker文字列は記事に
+ちょうど1箇所(L1=両端の引用符を外す)で、**2文が1つの範囲**として確定し、水準①の対象は4/4でこの2文(対象==確定範囲)。
+①の結果は4/4で成立(例: 2文が「…race during a call. These calls …」のように書き換えられ、範囲の外は不変)。
+
+| run | final_state | stage4_reason | cycle | call | 費用 |
+|---|---|---|---|---|---|
+| s1 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | 4 | ¥1.1210 |
+| s2 | `STAGE4_ESCALATION` | `cycle_limit_exhausted` | 3 | 7 | ¥2.1773 |
+| s3 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | 4 | ¥1.3140 |
+| s4 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | 4 | ¥1.0118 |
+
+s2のStage 4の周回別の指摘(受け渡し以外が原因):
+- cycle1: 上記HC-011(BLOCKING)→①成立。Recheck: 前回指摘は解消(`all_prior_issues_resolved=True`)、次cycleへMAJORが2件。
+- cycle2(Stage 2): QUALITY=MUSE-HC-012「They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.」
+  (LLM判定BLOCKING→既存floor`disclosure_gap_negative_inference_downgrade`でQUALITY)。BLOCKING=MUSE-HC-010
+  「some calls needed user information to continue」(Checker文字列は文の断片で小文字・句点なし、L0で確定。元記事の「Also, some calls needed
+  user information to continue.」で、元記事に最初からあった問題。固定Stage 1は検出していない)。HC-010は既存の問題種類→初期水準の規則
+  (`multi_sentence`、委任_27)により④から開始し成立(段落「Also, some calls needed … privacy concern.」を「If a call needs user
+  information, it may be shared by mistake with call center contract workers. …」へ)。Recheck: 前回指摘は解消、MAJORが1件。
+- cycle3: MUSE-HC-012「They enjoyed AI’s convenience …」が**BLOCKING**(cycle1・2は既存floorでQUALITY)。cycle3はMAX_CYCLES=2を超え、blocking件数が
+  減少せず新しいfact_idでもないため追加cycleが許可されず`cycle_limit_exhausted`。
+- 原因の切り分け: 受け渡し起因ではない(各周回の対象は常にCheckerの文字列どおり)。元記事にあった問題(HC-010)を固定Stage 1が見逃し、
+  Recheckがcycle2で初めて検出したこと(再検出の揺れ)、同じ文(HC-012)のStage 2判定がcycle1・2=QUALITY→cycle3=BLOCKINGと揺れたこと。
+  並行調査委任_44の対象で、本委任では修正していない。
+
+### 35-4. T2(rep20 sample2 cycle2の状態からStage 3以降だけを実行、`instances_t2_s1`/`s2`)
+
+**再現入力の組み方**: `rep20/instances_s2/meta_run03_standard.json`のcycle1記録`en_text_after_rewrite`(cycle1のRewrite後のEN本文)、
+JA本文=fixtureの`source_article_text`(cycle1でJAは変化していない=記録に`ja_text_after_rewrite`なし)、cycle2の記録`stage2_results`のうち
+BLOCKING 1件(claim_text=`“They could not tell if it was AI or a person” and “They did not realize it.”`、origin=`ja_source`、dev・rewrite_hint・
+rewrite_kind=`narrow_scope`・materiality等をそのまま使用)。実行は`run_stage3_for_claim`(本番と同じ入口)→品質劣化v2/section_role→JAガード→
+JA/EN等価チェック→`full_recheck_required`→(必要なら局所QA)→EN・JAの全文Recheckを、`run_instance`のcycle内ロジックと同じ関数・順序で再現。
+**限界**: (1)cycle2のStage 1/Stage 2のLLMは再実行しない(記録を固定)ためその非決定性は再現しない、(2)1周のみ(cycle3以降は再現しない)、
+(3)入力のEN本文は旧方式のcycle1の結果、(4)`repeat_fact_ids`は空として扱う。
+
+結果(Checker文字列は記事のEN本文で**L4=2範囲**に確定: 「They could not tell if it was AI or a person」と「They did not realize it.」。間の文
+「They enjoyed AI’s convenience, but a human was on the other end.」は対象外):
+
+| run | 水準①(対象=2範囲、配列) | 水準③(対象=2文、配列) | 水準④(対象=段落) | 結果 | call | 費用 |
+|---|---|---|---|---|---|---|
+| s1 | 「最小編集では解消できない」(declined) | 主体置換ガードで棄却(新語`users`、Ledger本文[日本語]に無い) | 成立(7文の段落を3文[s1]/4文[s2]へ短縮して再構成。範囲外の文も含む段落全体が書き換わる[④の既存の性質]) | EN Recheck: 前回指摘は解消、新規なし。JA Recheck: 未解消(JA「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません。」)。`ja_ok=False` | 6 | ¥1.0338 |
+| s2 | declined | 同上 | 成立 | EN Recheck: 前回指摘は解消、新規MAJOR=MUSE-HC-010「Also, some calls needed user information to continue.」(元記事にあった問題)。JA Recheck: 未解消(JAの2箇所)。`ja_ok=False` | 6 | ¥1.0143 |
+
+JA暫定経路(仕様(8)、`en_multiple_ranges`)に2/2が該当(EN側だけを直し、JAは触らず既存のJA Recheckに任せた)。旧方式の同じ状態
+(rep20 s2 cycle2)は①③④すべて不成立→`ladder_exhausted_without_full_rewrite`でStage 4。新方式は2範囲とも対象になり、④で成立し
+ENの前回指摘は解消したが、JA未解消のため1周では`RESOLVED`にならない(2周目以降は再現範囲外)。
+
+### 35-5. T3(Safety対照、`instances_safety_a`、是正前は`instances_safety_a_run1_before_carry_forward_fix`)
+
+`safety_er009_changed_number`(rep21と同じfull flow n=1)。**run1(是正前)**: `STAGE4_ESCALATION`/`violation_span_unverified`(¥0.1992、2 call)。
+原因: 同cycleにLLM claim(`deterministic_floor:changed_number`)とprecheck floor claim(`precheck_floor`、fact F-002)の2件が**同じ文**
+(タイトル)を指しており、先行claimのRewrite(③)で文が書き換わった後、後続claimのCheckerの文字列が現在の本文から消え「不一致」→確定不能と
+誤判定した(受け渡しの実装不具合。旧方式は類似度で書き換え後の文を拾っていた)。修正(本委任の範囲内、1回): `carry_forward_resolution`/
+`collect_replaced_units`(cycle開始時点の本文でCheckerの文字列を照合し、その範囲が同cycleの先行claimのRewrite対象に含まれていれば
+「先行Rewriteで書き換え済み」としてRewriteを重ねない。解消の判定は全文Recheck。先行Rewrite対象に含まれず現存もしない範囲は従来どおり
+確定不能)。テスト6件追加。**run2(是正後、T3だけ再実行)**: `RESOLVED_REWRITE`(¥0.2311、3 call): 先行claimが③で
+「more than 30 million」→「more than 13 million」(Ledger F-002「1,300万件」)へ修正、後続のfloor claimは先行Rewriteで書き換え済みとしてスキップ、
+全文Recheck=`LEDGER_COMPLIANT`/`all_prior_issues_resolved=True`。floorは両claimともBLOCKING(Stage 2のllm_materiality=BLOCKING/precheck_floor)で
+発火し、false PASS 0件。
+
+### 35-6. 成功条件ごとの実測(`analysis_rep22.json`の記録値)
+
+1. 2文取りこぼしによるHuman Review: T1 4/4で2文が1周目に2文とも①の対象(記録値`level_attempts[0].targets`)。Stage 4=1/4、取りこぼし起因0。**達成**。
+2. 範囲の縮小: ①試行6件(T1 4+T2 2)で`target_equals_confirmed_ranges`=6/6、不一致0。**達成**。
+3. 誤PASS: T3 false PASS 0(floor発火・Ledger値へ修正)。T1/T2で未解消のBLOCKINGが残ったまま合格した例は0。**達成**。
+4. 最小修正優先: ①開始6/7(T1 5claim中4、T2 2/2=計7claim中6。残り1=T1 s2 cycle2のHC-010は既存の問題種類規則で④開始)、T3は既存規則で③開始。
+   成立水準: T1 ①4・④1、T2 ④2、T3 ③1。**達成(開始水準は既存の水準選択規則に従う)**。
+5. 不要な段落・全文Rewrite: ⑥=0。④成立はT1で1/4 run(旧方式rep20 s1・s2/rep21 s1・s2も1/4 run)、T2は2/2(旧方式は同じ状態でStage 4)。
+   T1では増加なし。T2は①declined・③主体置換ガード棄却の後の④であり「不要」かはFable判断。
+6. その他: 確定不能(最終runでの`violation_span_unverified`)0件(T3 run1の1件は是正済みの不具合)、JA暫定経路2件(T2、`en_multiple_ranges`)・JAのみ確定0件、
+   carry-forwardスキップ1件(T3 run2)。
+
+### 35-7. 残る問題・未確認事項
+
+(1)T2はJA暫定経路のため、ENの前回指摘が解消してもJA Recheckが未解消を返す(2/2)。次cycleでJA側のRewriteへ進む挙動は本再現の範囲外。
+JA側の構造見直し(英語だけ直す化)は別委任(並行調査委任_43)+Opusレビュー後。(2)T1 s2型(周回ごとの新規指摘・Stage 2重大度の揺れ)は受け渡し修正では
+解消しない(並行調査委任_44)。(3)主体置換ガード(`actor_rewrite_guard_ok`)が、範囲の外の同じ段落にある語(`users`)でも「新しい主体語」として扱い③を棄却した
+(既存ガード、無変更)。(4)Checker引用の特定不能率(委任_41集計の13.4%)に対する対策(Prompt変更等)は本委任の対象外(委任_45で原因分類)。(5)29件横断再確認・実記事N増しへ進む前に、
+Fableによる上記の分類判断と、JA側の暫定経路の扱い・T1 s2型の対策方針(別委任)の決定が必要。

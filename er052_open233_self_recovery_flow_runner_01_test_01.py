@@ -19,6 +19,14 @@ import er052_open233_self_recovery_stage2_hook_01 as s2h
 import er051_open233_checker_trial_variant_01 as trial
 
 
+def _legacy_handoff(fn):
+    """委任_42(意図的な書き換え): 旧方式(`HANDOFF_MODE="legacy"`、locate_target
+    経由の対象決定)の挙動を固定する既存テスト。旧方式は比較・切り戻し用に残して
+    あるため、旧方式を明示してこれらのテストを維持する(新方式の同等テストは
+    `TestHandoffViolationSpan*`系で別途追加)。"""
+    return mock.patch.object(runner, "HANDOFF_MODE", runner.HANDOFF_MODE_LEGACY)(fn)
+
+
 class TestClaimIdentity(unittest.TestCase):
     def test_uses_fact_id_when_present(self):
         dev = {"related_fact_id": "HF-009", "claim_in_article": "some claim text"}
@@ -1351,6 +1359,7 @@ class TestMinimalChangeLadderOrdering(unittest.TestCase):
     guardを満たしたらそれ以降(③文/④段落)へ進まないことを、API呼び出しを
     mockして確認する(¥0)。"""
 
+    @_legacy_handoff
     def test_stops_at_level1_when_minimal_edit_resolves_it(self):
         from unittest import mock
 
@@ -1378,6 +1387,7 @@ class TestMinimalChangeLadderOrdering(unittest.TestCase):
         self.assertEqual(len(calls), 1)
         self.assertTrue(result["guard_ok"])
 
+    @_legacy_handoff
     def test_escalates_to_level3_when_level1_declines(self):
         from unittest import mock
 
@@ -1827,6 +1837,7 @@ class TestTargetNotLocatableEarlyReturn(unittest.TestCase):
         self.assertFalse(res["guard_ok"])
         self.assertEqual(call_log, [])
 
+    @_legacy_handoff
     def test_paired_rewrite_partial_locate_delegates_to_single_text_rewrite(self):
         # 委任_30 Part3 FAIL是正(neg3_hormuz_prodrunner_b1b根本原因の
         # regression test、¥0): claim_text自体がJA文(origin=ja_source由来の
@@ -1945,7 +1956,7 @@ class TestDegenerateRewriteHardBlockWiring(unittest.TestCase):
     def test_run_instance_source_contains_target_not_locatable_escalation(self):
         import inspect
         src = inspect.getsource(runner.run_instance)
-        self.assertIn('stage4_reason = "target_not_locatable"', src)
+        self.assertIn('stage4_reason = "violation_span_unverified" if span_unverified_records else "target_not_locatable"', src)
         self.assertIn("unlocatable_records", src)
 
     def test_run_instance_source_contains_same_fact_id_new_location_extension(self):
@@ -2336,6 +2347,7 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
     削除していないため、flagを明示的にTrueへ戻すと旧来の挙動(①③飛ばし
     ④直行)に戻ることも確認する。"""
 
+    @_legacy_handoff
     def test_single_text_rewrite_does_not_skip_by_default_even_with_flag_set_on_claim(self):
         """claim_recに`escalate_to_paragraph=True`が付与されていても、
         ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIPが既定Falseのため①から
@@ -2366,6 +2378,7 @@ class TestEscalateToParagraphLadderSkip(unittest.TestCase):
         self.assertEqual(result["ladder_level_used"], "1_word_connective")
         self.assertEqual(calls, ["test_e1_minimal_word"])
 
+    @_legacy_handoff
     def test_single_text_rewrite_skips_to_paragraph_level_when_flag_reenabled(self):
         """flagを明示的にTrueへ戻すと、旧来どおり①③を飛ばし④段落水準から
         直接試す(コード自体は壊れていない、再有効化はFable/ユーザー判断)。"""
@@ -3130,6 +3143,7 @@ class TestActorGuardAlwaysEvaluatedRegardlessOfProblemKind(unittest.TestCase):
     主体置換ガードが発火し却下されることを確認する(委任_30で発見した
     設計上の盲点のregression test、¥0、API呼び出しはmock)。"""
 
+    @_legacy_handoff
     def test_term_scope_and_actor_both_true_still_rejects_users_to_employees(self):
         full_text = ("# Title\n\nHere was the reveal. The test began without clearly telling "
                      "users that contract workers would make the calls.\n")
@@ -3179,6 +3193,7 @@ class TestEscalateToParagraphDisabledByDefault(unittest.TestCase):
     def test_flag_defaults_to_false(self):
         self.assertFalse(runner.ENABLE_ESCALATE_TO_PARAGRAPH_LADDER_SKIP)
 
+    @_legacy_handoff
     def test_escalate_flag_on_claim_no_longer_skips_level1_and_3(self):
         full_text = ("# Title\n\nConcerns continued on July 14. So the flashy 20% plan left "
                      "the stage.\n\n## In one line\nA plan changed.\n")
@@ -3946,6 +3961,807 @@ class TestInOneLineHeadingDegenerateGuard35(unittest.TestCase):
         import inspect
         src = inspect.getsource(runner.run_instance)
         self.assertIn('final_section_role.get("iol_degenerate")', src)
+
+
+# ============================================================
+# 委任_42(2026-10-02、OPEN-233 受け渡し修正)の新規テスト。
+# 実データ(rep21 sample1 cycle1の記事本文、rep20 sample2 cycle1後の記事本文)を
+# テスト用に埋め込む。ネットワーク呼び出しなし(¥0、simple_llm_callはmock)。
+# ============================================================
+REP21_S1_EN = """# Some AI Phone Calls Had Humans Behind the Scenes
+
+It was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.
+
+The main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.
+
+In some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.
+
+The problem was not that humans made the calls. The problem was telling users who was speaking.
+
+People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.
+
+Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.
+
+News reports also cited one employee’s report. It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.
+
+A Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.
+
+The real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.
+
+## In one line
+Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told."""
+
+REP20_S2_CYCLE2_EN = """# Some AI Phone Calls Had Humans Behind the Scenes
+
+It was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.
+
+The main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.
+
+In some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.
+
+The problem was not that humans made the calls. The problem was telling users who was speaking.
+
+People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.
+
+Also, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.
+
+News reports also cited one employee’s report. It said human staff made inappropriate comments about race during a call. This call was about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.
+
+A Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.
+
+The real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.
+
+## In one line
+Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told."""
+
+REP21_S1_TWO_SENTENCE_CLAIM = (
+    "“It said human staff made inappropriate comments about race during calls. "
+    "These calls were about trying to lower internet or cable fees.”"
+)
+REP21_S1_TWO_SENTENCES = (
+    "It said human staff made inappropriate comments about race during calls. "
+    "These calls were about trying to lower internet or cable fees."
+)
+REP20_S2_C2_CLAIM = "“They could not tell if it was AI or a person” and “They did not realize it.”"
+LEDGER = "[VERIFIED] MUSE-HC-011: one reported call. [VERIFIED] MUSE-HC-012: test started without disclosure."
+
+
+def _state0() -> dict:
+    return {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+
+
+def _claim(claim_text: str, kind: str = "narrow_scope", hint: str = "", origin: str = "translation",
+           dev: dict | None = None, **extra) -> dict:
+    rec = {"claim_text": claim_text, "rewrite_kind": kind, "materiality": "BLOCKING", "basis": "ledger_fact",
+           "rewrite_hint": hint, "dev": dev if dev is not None else {"issue": "plural calls vs one reported call",
+                                                                      "related_fact_id": "MUSE-HC-011"},
+           "origin": origin}
+    rec.update(extra)
+    return rec
+
+
+class TestResolveViolationSpans(unittest.TestCase):
+    """委任_42 仕様(1): Checkerの文字列だけを入力にした文字単位の照合(L0〜L4、
+    ちょうど1箇所)。類似度・単語重なり・判定役の引用は使わない。"""
+
+    def test_a_rep21_s1_two_sentence_quoted_claim_becomes_one_range_of_two_sentences(self):
+        res = runner.resolve_violation_spans(REP21_S1_TWO_SENTENCE_CLAIM, REP21_S1_EN, None)
+        self.assertEqual(res["status"], "resolved")
+        self.assertEqual(res["lang"], "EN")
+        self.assertEqual(res["level"], "L1")  # 両端の“ ”を外すだけ
+        self.assertEqual(res["ranges"], [REP21_S1_TWO_SENTENCES])
+        a, b = res["spans"][0]
+        self.assertEqual(REP21_S1_EN[a:b], REP21_S1_TWO_SENTENCES)
+
+    def test_b_rep20_s2_cycle2_two_fragments_become_two_ranges_and_middle_sentence_excluded(self):
+        res = runner.resolve_violation_spans(REP20_S2_C2_CLAIM, REP20_S2_CYCLE2_EN, None)
+        self.assertEqual(res["status"], "resolved")
+        self.assertEqual(res["level"], "L4")
+        self.assertEqual(res["ranges"], ["They could not tell if it was AI or a person",
+                                         "They did not realize it."])
+        joined = " ".join(res["ranges"])
+        self.assertNotIn("They enjoyed AI’s convenience", joined)  # 間の文は対象外
+        self.assertEqual(len(res["spans"]), 2)
+        self.assertLess(res["spans"][0][1], res["spans"][1][0])
+
+    def test_c_paragraph_beginning_description_is_unverified_explanatory(self):
+        res = runner.resolve_violation_spans("Paragraph beginning “People asking Muse to call”",
+                                             REP20_S2_CYCLE2_EN, None)
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "explanatory_mixed")
+        self.assertEqual(res["ranges"], [])
+
+    def test_d_partial_sentence_confirmed_by_case_insensitive_match(self):
+        res = runner.resolve_violation_spans("“Some calls needed user information to continue.”",
+                                             REP21_S1_EN, None)
+        self.assertEqual(res["status"], "resolved")
+        self.assertEqual(res["level"], "L3")
+        # 記事側の文字列(小文字のsome)が範囲。文頭の“Also, ”は含まれない(縮小も拡張もしない)
+        self.assertEqual(res["ranges"], ["some calls needed user information to continue."])
+
+    def test_e_same_string_in_two_places_is_unverified_multi_match(self):
+        text = "# T\n\nIt was one call. Other text.\n\nIt was one call. More text.\n"
+        res = runner.resolve_violation_spans("It was one call.", text, None)
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "multi_match")
+
+    def test_paraphrase_is_not_rescued_by_similarity(self):
+        # 原文を少し言い換えた文字列は、類似度で近い文へ落とさず確定不能(不一致)
+        res = runner.resolve_violation_spans("Human staff made racist remarks during calls.", REP21_S1_EN, None)
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "mismatch")
+
+    def test_l2_curly_vs_straight_quotes_and_whitespace(self):
+        text = "# T\n\nMeta’s AI  assistant\nhandled it.\n"
+        res = runner.resolve_violation_spans("Meta's AI assistant handled it.", text, None)
+        self.assertEqual(res["status"], "resolved")
+        self.assertEqual(res["level"], "L2")
+        self.assertEqual(res["ranges"], ["Meta’s AI  assistant\nhandled it."])
+
+    def test_l4_with_explanatory_remainder_is_not_decomposed(self):
+        # 断片が2つ以上でも、残りに説明文があれば分解しない(縮小の防止)
+        res = runner.resolve_violation_spans(
+            "The paragraph with “They could not tell if it was AI or a person” and then “They did not realize it.”",
+            REP20_S2_CYCLE2_EN, None)
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "explanatory_mixed")
+
+    def test_l4_fragment_not_found_is_unverified(self):
+        res = runner.resolve_violation_spans("“They could not tell if it was AI or a person” and “Nothing like this.”",
+                                             REP20_S2_CYCLE2_EN, None)
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "mismatch")
+
+    def test_ja_text_is_checked_and_language_is_kept(self):
+        ja = "# タイトル\n\nこの主張文はJA本文にのみ存在します。\n"
+        res = runner.resolve_violation_spans("この主張文はJA本文にのみ存在します。", "# T\n\nEnglish only.\n", ja)
+        self.assertEqual(res["status"], "resolved")
+        self.assertEqual(res["lang"], "JA")
+        self.assertFalse(res["both_langs_ok"])
+
+    def test_en_is_preferred_when_both_languages_match(self):
+        res = runner.resolve_violation_spans("2.6%", "# T\n\nUp 2.6% today.\n", "# T\n\n2.6%上昇。\n")
+        self.assertEqual(res["lang"], "EN")
+        self.assertTrue(res["both_langs_ok"])
+
+    def test_empty_claim_is_unverified(self):
+        res = runner.resolve_violation_spans("   ", "# T\n\nText.\n", None)
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "empty_claim")
+
+
+class TestMergeSpans(unittest.TestCase):
+    def test_overlapping_spans_are_merged(self):
+        text = "abcdefghij"
+        self.assertEqual(runner.vs_merge_spans([(0, 5), (3, 8)], text), [(0, 8)])
+
+    def test_adjacent_spans_separated_only_by_whitespace_are_merged(self):
+        text = "First one. Second one."
+        self.assertEqual(runner.vs_merge_spans([(0, 10), (11, 22)], text), [(0, 22)])
+
+    def test_spans_across_paragraph_break_are_not_merged(self):
+        text = "First one.\n\nSecond one."
+        self.assertEqual(runner.vs_merge_spans([(0, 10), (12, 23)], text), [(0, 10), (12, 23)])
+
+    def test_contained_span_is_absorbed_by_the_larger_one(self):
+        text = "abcdefghij"
+        self.assertEqual(runner.vs_merge_spans([(1, 9), (3, 5)], text), [(1, 9)])
+
+    def test_spans_with_text_between_stay_separate(self):
+        text = "AAA middle BBB"
+        self.assertEqual(runner.vs_merge_spans([(0, 3), (11, 14)], text), [(0, 3), (11, 14)])
+
+
+class TestVsExpandAndReplace(unittest.TestCase):
+    def test_expand_partial_range_to_whole_sentence_without_adding_other_sentences(self):
+        spans = runner.resolve_violation_spans("“Some calls needed user information to continue.”",
+                                               REP21_S1_EN, None)["spans"]
+        units = runner.vs_expand_to_sentences(spans, REP21_S1_EN)
+        self.assertEqual(units, ["Also, some calls needed user information to continue."])
+
+    def test_expand_two_ranges_to_their_own_sentences_only(self):
+        spans = runner.resolve_violation_spans(REP20_S2_C2_CLAIM, REP20_S2_CYCLE2_EN, None)["spans"]
+        units = runner.vs_expand_to_sentences(spans, REP20_S2_CYCLE2_EN)
+        self.assertEqual(units, ["They could not tell if it was AI or a person.", "They did not realize it."])
+
+    def test_replace_once_requires_exactly_one_occurrence(self):
+        self.assertEqual(runner.vs_replace_once("a b c", "b", "X"), "a X c")
+        self.assertIsNone(runner.vs_replace_once("a b b", "b", "X"))
+        self.assertIsNone(runner.vs_replace_once("a b", "zzz", "X"))
+        self.assertIsNone(runner.vs_replace_once("a b", "", "X"))
+
+    def test_parse_revised_ranges(self):
+        self.assertEqual(runner.vs_parse_revised_ranges('{"revised_ranges": ["a", "b"]}'), (["a", "b"], None))
+        self.assertEqual(runner.vs_parse_revised_ranges('```json\n{"revised_ranges": ["a"]}\n```'), (["a"], None))
+        self.assertEqual(runner.vs_parse_revised_ranges("plain sentence")[1], "parse_failure")
+        self.assertEqual(runner.vs_parse_revised_ranges('{"revised_ranges": "a"}')[1], "parse_failure")
+
+
+def _run_ladder(fixture: dict, claim_rec: dict, fake_llm, field: str = "article_text") -> tuple:
+    calls: list = []
+
+    def wrapped(client, state, errs, log, label, dev_msg, prompt, model=None):
+        calls.append({"label": label, "prompt": prompt})
+        return fake_llm(label, prompt, len(calls))
+
+    with mock.patch.object(runner, "simple_llm_call", side_effect=wrapped):
+        result = runner.single_text_rewrite(None, _state0(), [], [], "t", fixture, field, claim_rec)
+    return result, calls
+
+
+class TestHandoffRewriteLadder(unittest.TestCase):
+    """委任_42 仕様(3)(4)(5)(6)(9): 確定範囲を対象にした最小修正優先ラダー。"""
+
+    def setUp(self):
+        self.assertEqual(runner.HANDOFF_MODE, runner.HANDOFF_MODE_VIOLATION_SPAN)  # 既定=新方式
+
+    def test_a_two_sentence_claim_level1_target_is_the_whole_confirmed_range(self):
+        revised = ("It said human staff made inappropriate comments about race during a call. "
+                   "This call was about trying to lower internet or cable fees.")
+
+        def fake(label, prompt, n):
+            self.assertTrue(label.endswith("_e1_minimal_word"), label)
+            return json.dumps({"revised_ranges": [revised]})
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP21_S1_EN}
+        res, calls = _run_ladder(fixture, _claim(REP21_S1_TWO_SENTENCE_CLAIM, kind="replace_with_ledger_value"), fake)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["ladder_level_used"], "1_word_connective")
+        self.assertEqual(len(calls), 1)
+        h = res["handoff"]
+        self.assertEqual(h["level_attempts"][0]["targets"], [REP21_S1_TWO_SENTENCES])
+        self.assertTrue(h["level_attempts"][0]["target_equals_confirmed_ranges"])
+        self.assertEqual(h["resolution"]["ranges"], [REP21_S1_TWO_SENTENCES])
+        self.assertIn(revised, res["updated_text"])
+        self.assertNotIn(REP21_S1_TWO_SENTENCES, res["updated_text"])
+        # 範囲の外は書き換えない
+        self.assertEqual(res["updated_text"].replace(revised, REP21_S1_TWO_SENTENCES), REP21_S1_EN)
+        self.assertEqual(res["before_fragment"], REP21_S1_TWO_SENTENCES)
+        self.assertEqual(res["after_fragment"], revised)
+        # Promptには範囲全体と読み取り専用の段落文脈が入る
+        self.assertIn(REP21_S1_TWO_SENTENCES, calls[0]["prompt"])
+        self.assertIn("Paragraph context (read-only)", calls[0]["prompt"])
+        self.assertIn("However, this is only one report.", calls[0]["prompt"])  # 同じ段落の文脈
+
+    def test_b_two_separate_ranges_are_passed_as_array_and_middle_sentence_untouched(self):
+        def fake(label, prompt, n):
+            return json.dumps({"revised_ranges": ["They could not always tell if it was AI or a person",
+                                                  "They may not have realized it."]})
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP20_S2_CYCLE2_EN}
+        res, calls = _run_ladder(fixture, _claim(REP20_S2_C2_CLAIM, origin="translation"), fake)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["ladder_level_used"], "1_word_connective")
+        self.assertEqual(res["handoff"]["level_attempts"][0]["targets"],
+                         ["They could not tell if it was AI or a person", "They did not realize it."])
+        self.assertIn("Range 1:", calls[0]["prompt"])
+        self.assertIn("Range 2:", calls[0]["prompt"])
+        self.assertIn("exactly 2 string(s)", calls[0]["prompt"])
+        self.assertNotIn("They enjoyed AI’s convenience", calls[0]["prompt"].split("[Paragraph context")[0])
+        self.assertIn("They enjoyed AI’s convenience, but a human was on the other end.", res["updated_text"])
+        self.assertIn("They could not always tell if it was AI or a person. They enjoyed", res["updated_text"])
+        self.assertIn("They may not have realized it.", res["updated_text"])
+
+    def test_c_unverified_claim_makes_no_api_call_and_is_flagged_span_unverified(self):
+        fixture = {"ledger_text": LEDGER, "article_text": REP20_S2_CYCLE2_EN}
+        res, calls = _run_ladder(fixture, _claim("Paragraph beginning “People asking Muse to call”"),
+                                 lambda *a: self.fail("API must not be called"))
+        self.assertEqual(calls, [])
+        self.assertTrue(res["target_not_locatable"])
+        self.assertTrue(res["span_unverified"])
+        self.assertEqual(res["span_unverified_reason"], "explanatory_mixed")
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(res["updated_text"], REP20_S2_CYCLE2_EN)
+        self.assertTrue(res["handoff"]["span_unverified"])
+
+    def test_d_partial_sentence_level1_targets_fragment_and_only_level3_expands_to_whole_sentence(self):
+        seen = {}
+
+        def fake(label, prompt, n):
+            if label.endswith("_e1_minimal_word"):
+                seen["l1"] = prompt
+                return json.dumps({"revised_ranges": []})  # 最小編集では解消できない宣言
+            if label.endswith("_e2_rewrite"):
+                seen["l3"] = prompt
+                return json.dumps({"revised_ranges": ["Also, some calls may need user information to continue."]})
+            self.fail(f"unexpected {label}")
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP21_S1_EN}
+        res, calls = _run_ladder(fixture, _claim("“Some calls needed user information to continue.”"), fake)
+        self.assertEqual([c["label"] for c in calls], ["t_e1_minimal_word", "t_e2_rewrite"])
+        attempts = res["handoff"]["level_attempts"]
+        self.assertEqual(attempts[0]["targets"], ["some calls needed user information to continue."])
+        self.assertEqual(attempts[0]["result"], "declined")
+        self.assertEqual(attempts[1]["targets"], ["Also, some calls needed user information to continue."])
+        self.assertEqual(res["ladder_level_used"], "3_sentence")
+        self.assertIn("Also, some calls may need user information to continue.", res["updated_text"])
+        # ①のPromptには文頭の“Also, ”を含む文全体は範囲として出ない(範囲は断片)
+        l1_ranges_part = seen["l1"].split("[Paragraph context")[0]
+        self.assertIn("<<<\nsome calls needed user information to continue.\n>>>", l1_ranges_part)
+        self.assertNotIn("<<<\nAlso, some calls", l1_ranges_part)
+
+    def test_d2_partial_sentence_level1_success_replaces_only_the_fragment(self):
+        def fake(label, prompt, n):
+            return json.dumps({"revised_ranges": ["some calls may need user information to continue."]})
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP21_S1_EN}
+        res, calls = _run_ladder(fixture, _claim("“Some calls needed user information to continue.”"), fake)
+        self.assertEqual(res["ladder_level_used"], "1_word_connective")
+        self.assertIn("Also, some calls may need user information to continue.", res["updated_text"])
+        self.assertEqual(len(calls), 1)
+
+    def test_e_ambiguous_duplicate_string_is_unverified_without_api_call(self):
+        text = "# T\n\nIt was one call. Other text.\n\nIt was one call. More text.\n"
+        res, calls = _run_ladder({"ledger_text": LEDGER, "article_text": text}, _claim("It was one call."),
+                                 lambda *a: self.fail("API must not be called"))
+        self.assertTrue(res["span_unverified"])
+        self.assertEqual(res["span_unverified_reason"], "multi_match")
+        self.assertEqual(calls, [])
+
+    def test_f_array_count_mismatch_fails_that_level_and_escalates(self):
+        def fake(label, prompt, n):
+            if label.endswith("_e1_minimal_word"):
+                return json.dumps({"revised_ranges": ["only one"]})  # 範囲は2つ → 個数不一致
+            return json.dumps({"revised_ranges": ["They could not always tell if it was AI or a person.",
+                                                  "They may not have realized it."]})
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP20_S2_CYCLE2_EN}
+        res, calls = _run_ladder(fixture, _claim(REP20_S2_C2_CLAIM), fake)
+        attempts = res["handoff"]["level_attempts"]
+        self.assertEqual(attempts[0]["level"], "1_word_connective")
+        self.assertEqual(attempts[0]["result"], "count_mismatch")
+        self.assertEqual(attempts[0]["returned_count"], 1)
+        self.assertEqual(attempts[1]["level"], "3_sentence")
+        self.assertEqual(attempts[1]["result"], "success")
+        self.assertEqual(res["ladder_level_used"], "3_sentence")
+
+    def test_f2_all_levels_count_mismatch_ends_in_ladder_exhausted_without_full_rewrite(self):
+        fixture = {"ledger_text": LEDGER, "article_text": REP20_S2_CYCLE2_EN}
+        res, calls = _run_ladder(fixture, _claim(REP20_S2_C2_CLAIM),
+                                 lambda *a: json.dumps({"revised_ranges": ["x", "y", "z"]}))  # 常に3個(範囲は2つ)
+        self.assertFalse(res["guard_ok"])
+        self.assertTrue(res["ladder_exhausted_without_full_rewrite"])
+        self.assertEqual([a["result"] for a in res["handoff"]["level_attempts"]],
+                         ["count_mismatch", "count_mismatch", "count_mismatch"])
+        self.assertEqual(res["updated_text"], REP20_S2_CYCLE2_EN)
+        self.assertEqual(len(calls), 3)  # ①③④。⑥は既定OFFで呼ばない
+        self.assertFalse(any(c["label"].endswith("fulltext_fallback") for c in calls))
+
+    def test_g_writeback_recheck_failure_never_replaces_by_guess(self):
+        # 1つ目の範囲の書き換え結果が2つ目の範囲の文字列を含むと、書き戻し直前の再確認
+        # (ちょうど1箇所)が2つ目で失敗する → その水準は失敗、本文は変更しない
+        def fake(label, prompt, n):
+            if label.endswith("_e1_minimal_word"):
+                return json.dumps({"revised_ranges": ["They did not realize it. It was a person",
+                                                      "They did not realize it."]})
+            return json.dumps({"revised_ranges": []})
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP20_S2_CYCLE2_EN}
+        res, calls = _run_ladder(fixture, _claim(REP20_S2_C2_CLAIM), fake)
+        a0 = res["handoff"]["level_attempts"][0]
+        self.assertEqual(a0["result"], "writeback_failed")
+        self.assertEqual(a0["writeback_failed_index"], 1)
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(res["updated_text"], REP20_S2_CYCLE2_EN)
+
+    def test_g2_stale_range_not_found_at_writeback_is_a_level_failure(self):
+        # 範囲確定後に本文が変わって範囲が消えた場合を直接再現: vs_apply_replacementsの契約
+        new, bad = runner.vs_apply_replacements("A. B. C.", ["B.", "ZZZ"], ["x", "y"])
+        self.assertIsNone(new)
+        self.assertEqual(bad, 1)
+
+    def test_h_guard_fails_when_only_one_of_two_ranges_changed(self):
+        def fake(label, prompt, n):
+            if label.endswith("_e1_minimal_word"):
+                return json.dumps({"revised_ranges": ["They could not tell if it was AI or a person",  # 不変
+                                                      "They may not have realized it."]})
+            return json.dumps({"revised_ranges": []})
+
+        fixture = {"ledger_text": LEDGER, "article_text": REP20_S2_CYCLE2_EN}
+        res, calls = _run_ladder(fixture, _claim(REP20_S2_C2_CLAIM), fake)
+        a0 = res["handoff"]["level_attempts"][0]
+        self.assertEqual(a0["each_target_changed"], [False, True])
+        self.assertEqual(a0["result"], "guard_failed")
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(res["updated_text"], REP20_S2_CYCLE2_EN)
+
+    def test_h2_old_guard_blind_spot_is_closed_two_sentence_claim_with_only_first_sentence_changed(self):
+        # 旧guard(`claim_text.strip() not in candidate`)は引用符付き文字列では常に成立し、
+        # 2文のうち1文しか変えていなくても通っていた。新guardは範囲全体の変化を要求する
+        # (範囲=2文は1つの範囲なので、範囲として変化していればよい=範囲外へ広げない)。
+        revised = ("It said human staff made inappropriate comments about race during a call. "
+                   "These calls were about trying to lower internet or cable fees.")
+        res, _ = _run_ladder({"ledger_text": LEDGER, "article_text": REP21_S1_EN},
+                             _claim(REP21_S1_TWO_SENTENCE_CLAIM),
+                             lambda *a: json.dumps({"revised_ranges": [revised]}))
+        self.assertTrue(res["guard_ok"])  # 範囲(2文のまとまり)として変化している
+        self.assertTrue(res["handoff"]["level_attempts"][0]["each_target_changed"][0])
+        # 範囲が全く変わらなければ不成立
+        res2, _ = _run_ladder({"ledger_text": LEDGER, "article_text": REP21_S1_EN},
+                              _claim(REP21_S1_TWO_SENTENCE_CLAIM),
+                              lambda label, prompt, n: ("not json" if label.endswith("paragraph_rewrite") else
+                                                        json.dumps({"revised_ranges": [REP21_S1_TWO_SENTENCES]})))
+        self.assertFalse(res2["guard_ok"])
+        self.assertEqual([a["result"] for a in res2["handoff"]["level_attempts"]],
+                         ["guard_failed", "guard_failed", "parse_failure"])
+
+    def test_level1_declined_when_empty_string_returned(self):
+        def fake(label, prompt, n):
+            if label.endswith("_e1_minimal_word"):
+                return json.dumps({"revised_ranges": [""]})
+            return json.dumps({"revised_ranges": ["Also, some calls may need user information to continue."]})
+
+        res, calls = _run_ladder({"ledger_text": LEDGER, "article_text": REP21_S1_EN},
+                                 _claim("“Some calls needed user information to continue.”"), fake)
+        self.assertEqual(res["handoff"]["level_attempts"][0]["result"], "declined")
+        self.assertEqual(res["ladder_level_used"], "3_sentence")
+
+    def test_level4_paragraph_is_reached_only_after_level1_and_level3_fail(self):
+        order = []
+
+        def fake(label, prompt, n):
+            order.append(label)
+            if label.endswith("_e2_paragraph_rewrite"):
+                para = "Also, some calls may need user information to continue. That information might be shared."
+                return json.dumps({"revised_ranges": [para]})
+            return json.dumps({"revised_ranges": []})
+
+        res, calls = _run_ladder({"ledger_text": LEDGER, "article_text": REP21_S1_EN},
+                                 _claim("“Some calls needed user information to continue.”"), fake)
+        self.assertEqual(order, ["t_e1_minimal_word", "t_e2_rewrite", "t_e2_paragraph_rewrite"])
+        self.assertEqual(res["ladder_level_used"], "4_paragraph")
+        self.assertIsNone(res["after_fragment"])  # 段落水準では文単位のafterは確定しない(既存仕様)
+
+    def test_hint_quote_does_not_decide_the_target(self):
+        # 判定役のhintが別の文を引用していても、対象はCheckerの範囲だけ(hintは指示文としてのみ)
+        hint = "“Meta employees pointed this out inside the company as a privacy concern.” を直す。"
+        seen = {}
+
+        def fake(label, prompt, n):
+            seen["prompt"] = prompt
+            return json.dumps({"revised_ranges": ["some calls may need user information to continue."]})
+
+        res, _ = _run_ladder({"ledger_text": LEDGER, "article_text": REP21_S1_EN},
+                             _claim("“Some calls needed user information to continue.”", hint=hint), fake)
+        self.assertEqual(res["handoff"]["level_attempts"][0]["targets"],
+                         ["some calls needed user information to continue."])
+        self.assertIn("Meta employees pointed this out", seen["prompt"])  # 指示文としては渡る
+        self.assertIn("Meta employees pointed this out inside the company as a privacy concern.", res["updated_text"])
+
+    def test_old_four_stage_locators_are_not_called_in_new_mode(self):
+        boom = AssertionError("old locator must not be used in new mode")
+        fixture = {"ledger_text": LEDGER, "article_text": REP21_S1_EN}
+        with mock.patch.object(runner, "locate_target", side_effect=boom), \
+                mock.patch.object(runner, "locate_best_sentence", side_effect=boom), \
+                mock.patch.object(runner, "locate_multi_quote_span", side_effect=boom), \
+                mock.patch.object(runner.er010, "locate_target_sentence", side_effect=boom):
+            res, _ = _run_ladder(fixture, _claim(REP21_S1_TWO_SENTENCE_CLAIM),
+                                 lambda *a: json.dumps({"revised_ranges": [REP21_S1_TWO_SENTENCES + " (x)"]}))
+            self.assertTrue(res["guard_ok"])
+            res2, _ = _run_ladder(fixture, _claim("Totally unrelated paraphrase of nothing."),
+                                  lambda *a: self.fail("no API"))
+            self.assertTrue(res2["span_unverified"])
+            self.assertEqual(runner.detect_claim_section_type(REP21_S1_TWO_SENTENCE_CLAIM, REP21_S1_EN), "body")
+
+    def test_delete_kind_whole_sentence_is_deleted_deterministically_and_absence_verified(self):
+        text = "# T\n\nKeep this one. Remove this exact sentence. Keep the end.\n"
+        res, calls = _run_ladder({"ledger_text": LEDGER, "article_text": text},
+                                 _claim("“Remove this exact sentence.”", kind="delete"),
+                                 lambda *a: self.fail("delete is deterministic (no API)"))
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["ladder_level_used"], "0_delete")
+        self.assertNotIn("Remove this exact sentence.", res["updated_text"])
+        self.assertIn("Keep this one.", res["updated_text"])
+        self.assertIn("Keep the end.", res["updated_text"])
+        self.assertEqual(calls, [])
+
+    def test_delete_kind_with_partial_range_expands_to_containing_sentence_and_records_it(self):
+        res, _ = _run_ladder({"ledger_text": LEDGER, "article_text": REP21_S1_EN},
+                             _claim("“Some calls needed user information to continue.”", kind="delete"),
+                             lambda *a: self.fail("no API"))
+        self.assertTrue(res["guard_ok"])
+        self.assertTrue(res["handoff"]["delete_expanded_to_sentence"])
+        self.assertNotIn("Also, some calls needed user information to continue.", res["updated_text"])
+
+    def test_actor_guard_is_kept(self):
+        def fake(label, prompt, n):
+            if label.endswith("paragraph_rewrite"):
+                return "not json"
+            if label.endswith("_e2_rewrite"):
+                return json.dumps({"revised_ranges": ["Also, some customers needed user information to continue."]})
+            return json.dumps({"revised_ranges": ["some customers needed user information to continue."]})
+
+        res, _ = _run_ladder({"ledger_text": "[VERIFIED] x: nothing relevant here", "article_text": REP21_S1_EN},
+                             _claim("“Some calls needed user information to continue.”"), fake)
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual([a["result"] for a in res["handoff"]["level_attempts"]],
+                         ["actor_guard_rejected", "actor_guard_rejected", "parse_failure"])
+
+
+class TestHandoffStage3Routing(unittest.TestCase):
+    """委任_42 仕様(8): originとEN/JAどちらで確定したかによる振り分け(JA側は暫定)。"""
+
+    EN = "# T\n\nIt was one call. Another sentence here. They did not realize it.\n"
+    JA = "# タイトル\n\nこれは1回の電話でした。別の文です。彼らは気づきませんでした。\n"
+
+    def _fixture(self):
+        return {"ledger_text": LEDGER, "article_text": self.EN, "source_article_text": self.JA}
+
+    def test_translation_origin_resolved_in_en_uses_single_text_path(self):
+        with mock.patch.object(runner, "simple_llm_call",
+                               return_value=json.dumps({"revised_ranges": ["It was a single call."]})):
+            r = runner.run_stage3_for_claim(None, _state0(), [], [], "t", self._fixture(), self.EN, self.JA,
+                                            _claim("“It was one call.”", origin="translation"))
+        self.assertEqual(r["mechanism"], "single_text_local(E-2/delete-generic)")
+        self.assertTrue(r["guard_ok"])
+        self.assertIn("It was a single call.", r["en_text"])
+        self.assertEqual(r["ja_text"], self.JA)
+
+    def test_ja_source_single_en_range_uses_paired_rewrite_with_en_target_replaced_by_confirmed_range(self):
+        seen = {}
+
+        def fake_paired(client, state, errs, log, label, fixture, claim_rec):
+            seen["claim_rec"] = claim_rec
+            return {"updated_en_text": self.EN, "updated_ja_text": self.JA, "method": "x", "guard_ok": False,
+                    "en_target": "It was one call.", "ja_target": "ja", "before_fragment": None,
+                    "after_fragment": None, "ladder_level_used": None, "target_not_locatable": False,
+                    "handoff": {"mode": "violation_span"}}
+
+        with mock.patch.object(runner, "paired_rewrite", side_effect=fake_paired):
+            r = runner.run_stage3_for_claim(None, _state0(), [], [], "t", self._fixture(), self.EN, self.JA,
+                                            _claim("“It was one call.”", origin="ja_source"))
+        self.assertEqual(r["mechanism"], "paired_ja_en(J-1)")
+        self.assertEqual(seen["claim_rec"]["span_resolution"]["ranges"], ["It was one call."])
+        self.assertFalse(r["handoff"]["ja_provisional_path"])
+
+    def test_ja_source_multiple_en_ranges_goes_to_provisional_single_side_path(self):
+        en = "# T\n\nIt was one call. Middle sentence. They did not realize it.\n"
+        fixture = {"ledger_text": LEDGER, "article_text": en, "source_article_text": self.JA}
+        with mock.patch.object(runner, "simple_llm_call",
+                               return_value=json.dumps({"revised_ranges": ["It was a single call.",
+                                                                           "They may not have realized it."]})), \
+                mock.patch.object(runner, "paired_rewrite", side_effect=AssertionError("paired must not be used")):
+            r = runner.run_stage3_for_claim(
+                None, _state0(), [], [], "t", fixture, en, self.JA,
+                _claim("“It was one call.” and “They did not realize it.”", origin="ja_source"))
+        self.assertTrue(r["guard_ok"])
+        self.assertTrue(r["handoff"]["ja_provisional_path"])
+        self.assertEqual(r["handoff"]["ja_provisional_reason"], "en_multiple_ranges")
+        self.assertTrue(r["method"].startswith("j1_single_side_en("))
+        self.assertEqual(r["mechanism"], "paired_ja_en(J-1)")  # 既存のJA Recheckが走るよう維持
+        self.assertEqual(r["ja_text"], self.JA)  # JAは触らない(既存の再検査に任せる)
+        self.assertIn("They may not have realized it.", r["en_text"])
+
+    def test_ja_source_claim_confirmed_only_in_ja_edits_ja_side_provisionally(self):
+        with mock.patch.object(runner, "simple_llm_call",
+                               return_value=json.dumps({"revised_ranges": ["これは1件の報告でした。"]})):
+            r = runner.run_stage3_for_claim(None, _state0(), [], [], "t", self._fixture(), self.EN, self.JA,
+                                            _claim("これは1回の電話でした。", origin="ja_source"))
+        self.assertTrue(r["handoff"]["ja_provisional_path"])
+        self.assertEqual(r["handoff"]["ja_provisional_reason"], "ja_only_match")
+        self.assertTrue(r["guard_ok"])
+        self.assertIn("これは1件の報告でした。", r["ja_text"])
+        self.assertEqual(r["en_text"], self.EN)
+
+    def test_non_ja_source_claim_confirmed_only_in_ja_is_unverified_fail_closed(self):
+        r = runner.run_stage3_for_claim(None, _state0(), [], [], "t", self._fixture(), self.EN, self.JA,
+                                        _claim("これは1回の電話でした。", origin="translation"))
+        self.assertTrue(r["span_unverified"])
+        self.assertTrue(r["target_not_locatable"])
+        self.assertEqual(r["span_unverified_reason"], "ja_only_match_origin_not_ja_source")
+
+    def test_unresolvable_claim_is_unverified_without_api_call(self):
+        log = []
+        r = runner.run_stage3_for_claim(None, None, [0], log, "t", self._fixture(), self.EN, self.JA,
+                                        _claim("Paragraph beginning “People”", origin="ja_source"))
+        self.assertTrue(r["span_unverified"])
+        self.assertEqual(r["handoff"]["span_unverified_reason"], "explanatory_mixed")
+        self.assertEqual(log, [])
+        self.assertEqual((r["en_text"], r["ja_text"]), (self.EN, self.JA))
+
+    def test_paired_rewrite_new_mode_uses_range_at_level1_and_sentence_at_level3(self):
+        en = "# T\n\nAlso, it was one call today. Other.\n"
+        ja = "# タイトル\n\nまた、今日は1回の電話でした。他。\n"
+        fixture = {"ledger_text": LEDGER, "article_text": en, "source_article_text": ja}
+        prompts = []
+
+        def fake(client, state, errs, log, label, dev_msg, prompt, model=None):
+            prompts.append((label, prompt))
+            if label.endswith("_j1_e1_minimal_word"):
+                return json.dumps({"ja_revised": "", "en_revised": ""})
+            return json.dumps({"ja_revised": "また、今日は1件の報告でした。",
+                               "en_revised": "Also, it was one reported call today."})
+
+        claim = _claim("“It was one call today.”", origin="ja_source")
+        claim["span_resolution"] = runner.resolve_violation_spans(claim["claim_text"], en, ja)
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake), \
+                mock.patch.object(runner, "locate_target", side_effect=AssertionError("legacy locator")), \
+                mock.patch.object(runner, "locate_multi_quote_span", side_effect=AssertionError("legacy")):
+            res = runner.paired_rewrite(None, _state0(), [], [], "t", fixture, claim)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["en_target"], "it was one call today.")  # 水準①の対象=確定範囲(断片)
+        att = res["handoff"]["level_attempts"]
+        self.assertEqual(att[0]["targets"], ["it was one call today."])
+        self.assertTrue(att[0]["target_equals_confirmed_ranges"])
+        self.assertEqual(att[1]["targets"], ["Also, it was one call today."])  # ③で初めて文全体
+        self.assertEqual(res["ladder_level_used"], "3_sentence")
+        self.assertIn("Also, it was one reported call today.", res["updated_en_text"])
+
+    def test_paired_rewrite_new_mode_guard_requires_en_range_to_change(self):
+        en = "# T\n\nIt was one call today. Other.\n"
+        ja = "# タイトル\n\n今日は1回の電話でした。他。\n"
+        fixture = {"ledger_text": LEDGER, "article_text": en, "source_article_text": ja}
+        claim = _claim("“It was one call today.”", origin="ja_source")
+        def fake(client, state, errs, log, label, dev_msg, prompt, model=None):
+            if label.endswith("_paragraph"):
+                return "not json"
+            return json.dumps({"ja_revised": "今日は1件でした。", "en_revised": "It was one call today."})  # ENは不変
+
+        with mock.patch.object(runner, "simple_llm_call", side_effect=fake):
+            res = runner.paired_rewrite(None, _state0(), [], [], "t", fixture, claim)
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(res["updated_en_text"], en)
+        self.assertEqual([a["result"] for a in res["handoff"]["level_attempts"]],
+                         ["guard_failed", "guard_failed", "guard_failed"])
+
+
+class TestHandoffSectionTypeAndIdentity(unittest.TestCase):
+    ART = ("# Meta’s AI Calls Had Humans\n\nIt was a surprise. A service let people ask AI to call.\n\n"
+           "Body paragraph one has a unique body claim sentence. Another body sentence follows.\n\n"
+           "## In one line\nSome calls were handled by humans, but users were not told.\n")
+
+    def test_section_by_span_containment(self):
+        f = runner.detect_claim_section_type
+        self.assertEqual(f("“Meta’s AI Calls Had Humans”", self.ART), "title")
+        self.assertEqual(f("“Some calls were handled by humans, but users were not told.”", self.ART), "in_one_line")
+        self.assertEqual(f("“A service let people ask AI to call.”", self.ART), "hook")
+        self.assertEqual(f("“Body paragraph one has a unique body claim sentence.”", self.ART), "body")
+
+    def test_section_multiple_ranges_across_sections_takes_strongest(self):
+        claim = "“A service let people ask AI to call.” and “Another body sentence follows.”"
+        self.assertEqual(runner.detect_claim_section_type(claim, self.ART), "hook")
+        claim2 = ("“Another body sentence follows.” and "
+                  "“Some calls were handled by humans, but users were not told.”")
+        self.assertEqual(runner.detect_claim_section_type(claim2, self.ART), "in_one_line")
+
+    def test_section_of_unverified_claim_is_body_and_not_similarity_based(self):
+        self.assertEqual(runner.detect_claim_section_type("A service let people ask AI to phone someone.", self.ART),
+                         "body")
+
+    def test_legacy_section_function_is_kept_for_rollback(self):
+        self.assertEqual(runner.detect_claim_section_type_legacy("A service let people ask AI to call.", self.ART),
+                         "hook")
+        with mock.patch.object(runner, "HANDOFF_MODE", runner.HANDOFF_MODE_LEGACY):
+            self.assertEqual(runner.detect_claim_section_type("A service let people ask AI to call.", self.ART),
+                             "hook")
+
+    def test_claim_span_text_and_identity_use_the_confirmed_range_not_the_raw_quoted_string(self):
+        c = {"claim_text": REP20_S2_C2_CLAIM}
+        runner.annotate_claim_span_identity(c, REP20_S2_CYCLE2_EN, None)
+        self.assertEqual(c["claim_span_text"], "They could not tell if it was AI or a person\nThey did not realize it.")
+        self.assertEqual(c["span_resolution_cycle_start"]["status"], "resolved")
+        c2 = {"claim_text": "Paragraph beginning “People asking Muse to call”"}
+        runner.annotate_claim_span_identity(c2, REP20_S2_CYCLE2_EN, None)
+        self.assertIsNone(c2["claim_span_text"])
+        self.assertEqual(c2["span_resolution_cycle_start"]["reason"], "explanatory_mixed")
+
+    def test_find_matching_prior_record_uses_claim_norm_when_given(self):
+        prior = [{"identity": "fact:F1", "fact_id": "F1",
+                  "claim_text_norm": runner.normalize_claim_text("It was one call."), "escalated_to_paragraph": False}]
+        dev = {"related_fact_id": "F1", "claim_in_article": "“It was one call.” (raw quoted + extra words here)"}
+        # 生の文字列では一致しない(同一判定が揺れる)が、確定範囲の正規化表現なら一致する
+        self.assertIsNone(runner.find_matching_prior_record(dev, prior))
+        self.assertIsNotNone(runner.find_matching_prior_record(
+            dev, prior, claim_norm=runner.normalize_claim_text("It was one call.")))
+
+    def test_run_instance_wiring_uses_span_text_for_identity_and_prior_issues(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("annotate_claim_span_identity(c, current_en_text, current_ja_text)", src)
+        self.assertIn('"claim_in_article": c.get("claim_span_text") or c["claim_text"]', src)
+        self.assertIn("claim_norm=(normalize_claim_text(_span_txt) if _span_txt else None)", src)
+        self.assertIn('stage4_reason = "violation_span_unverified" if span_unverified_records', src)
+
+    def test_stage2_input_claim_text_display_is_unchanged(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn('"claim_text": d.get("claim_in_article", "")', src)
+
+    def test_handoff_mode_default_is_new_and_legacy_is_selectable(self):
+        self.assertEqual(runner.HANDOFF_MODE, "violation_span")
+        self.assertEqual(runner.HANDOFF_MODE_LEGACY, "legacy")
+
+    def test_legacy_mode_single_text_rewrite_still_runs_old_path(self):
+        text = "# T\n\nSome sentence with a problem in it.\n"
+        claim = _claim("Some sentence with a problem in it.")
+        with mock.patch.object(runner, "HANDOFF_MODE", runner.HANDOFF_MODE_LEGACY), \
+                mock.patch.object(runner, "simple_llm_call", return_value="Some sentence without it."):
+            res = runner.single_text_rewrite(None, _state0(), [], [], "t",
+                                             {"ledger_text": LEDGER, "article_text": text}, "article_text", claim)
+        self.assertTrue(res["guard_ok"])
+        self.assertNotIn("handoff", res)
+
+
+
+class TestHandoffCarryForwardWithinCycle(unittest.TestCase):
+    """委任_42(rep22 T3で判明した不具合の是正): 同じ文を指す2つのclaim(LLM claim+precheck
+    floor claim)で、先行claimのRewriteが文を書き換えると後続claimの文字列が現在の本文から消える。
+    これを確定不能(Stage 4)と誤認せず、「先行Rewriteで既に書き換え済み」として扱う。"""
+
+    START = "# T\n\nResearchers studied 30 million payments in taxis. Another sentence stays.\n"
+    AFTER_FIRST = "# T\n\nResearchers studied over 3 million payments in taxis. Another sentence stays.\n"
+    SENT = "Researchers studied 30 million payments in taxis."
+
+    def _claim_rec(self, text=None):
+        rec = _claim(text or self.SENT, kind="replace_with_ledger_value", origin="translation")
+        rec["cycle_start_en_text"] = self.START
+        rec["cycle_start_ja_text"] = None
+        rec["cycle_replaced_units"] = [{"claim_identity": "claim:first", "lang": "EN",
+                                        "before_units": [self.SENT],
+                                        "after_units": ["Researchers studied over 3 million payments in taxis."]}]
+        return rec
+
+    def test_claim_already_rewritten_by_earlier_claim_is_skipped_not_unverified(self):
+        log = []
+        r = runner.run_stage3_for_claim(None, None, [0], log, "t",
+                                        {"ledger_text": LEDGER, "article_text": self.AFTER_FIRST},
+                                        self.AFTER_FIRST, None, self._claim_rec())
+        self.assertEqual(log, [])
+        self.assertFalse(r["target_not_locatable"])
+        self.assertFalse(r["span_unverified"])
+        self.assertEqual(r["method"], "covered_by_earlier_rewrite_in_cycle")
+        self.assertTrue(r["handoff"]["skipped_covered_by_earlier_rewrite"])
+        self.assertEqual(r["handoff"]["carry_forward_covered"][0]["covered_by_claim"], "claim:first")
+        self.assertEqual(r["en_text"], self.AFTER_FIRST)
+
+    def test_without_earlier_rewrite_the_vanished_string_is_still_unverified(self):
+        rec = self._claim_rec()
+        rec["cycle_replaced_units"] = []
+        r = runner.run_stage3_for_claim(None, None, [0], [], "t",
+                                        {"ledger_text": LEDGER, "article_text": self.AFTER_FIRST},
+                                        self.AFTER_FIRST, None, rec)
+        self.assertTrue(r["span_unverified"])
+        self.assertEqual(r["span_unverified_reason"], "mismatch")
+
+    def test_string_absent_in_cycle_start_text_too_is_unverified(self):
+        r = runner.run_stage3_for_claim(None, None, [0], [], "t",
+                                        {"ledger_text": LEDGER, "article_text": self.AFTER_FIRST},
+                                        self.AFTER_FIRST, None, self._claim_rec("Nothing like this sentence."))
+        self.assertTrue(r["span_unverified"])
+
+    def test_partially_covered_claim_rewrites_only_the_remaining_range(self):
+        # 2範囲のclaimのうち1つは先行Rewriteで書き換え済み、もう1つは現存 → 現存するものだけRewrite
+        start = "# T\n\nFirst flagged one. Middle. Second flagged two.\n"
+        now = "# T\n\nFirst revised one. Middle. Second flagged two.\n"
+        rec = _claim("“First flagged one.” and “Second flagged two.”", origin="translation")
+        rec.update({"cycle_start_en_text": start, "cycle_start_ja_text": None,
+                    "cycle_replaced_units": [{"claim_identity": "claim:first", "lang": "EN",
+                                              "before_units": ["First flagged one."],
+                                              "after_units": ["First revised one."]}]})
+        with mock.patch.object(runner, "simple_llm_call",
+                               return_value=json.dumps({"revised_ranges": ["Second revised two."]})):
+            r = runner.run_stage3_for_claim(None, _state0(), [], [], "t",
+                                            {"ledger_text": LEDGER, "article_text": now}, now, None, rec)
+        self.assertTrue(r["guard_ok"])
+        self.assertEqual(r["handoff"]["level_attempts"][0]["targets"], ["Second flagged two."])
+        self.assertEqual(r["handoff"]["carry_forward_covered"][0]["range"], "First flagged one.")
+        self.assertIn("First revised one. Middle. Second revised two.", r["en_text"])
+
+    def test_collect_replaced_units_from_successful_result(self):
+        res = {"guard_ok": True, "handoff": {"text_lang": "EN", "level_attempts": [
+            {"level": "1_word_connective", "result": "declined", "targets": ["a"]},
+            {"level": "3_sentence", "result": "success", "targets": ["A sentence."], "revised": ["B sentence."],
+             "before_after": [{"before": "A sentence.", "after": "B sentence."}]}]}}
+        units = runner.collect_replaced_units(res, "claim:x")
+        self.assertEqual(units, [{"claim_identity": "claim:x", "lang": "EN", "before_units": ["A sentence."],
+                                  "after_units": ["B sentence."]}])
+        self.assertEqual(runner.collect_replaced_units({"guard_ok": False, "handoff": res["handoff"]}, "c"), [])
+
+    def test_run_instance_cycle_passes_replaced_units_to_following_claims(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn('c2["cycle_replaced_units"] = list(cycle_replaced_units)', src)
+        self.assertIn('cycle_replaced_units.extend(collect_replaced_units(r, claim_identity(c["dev"])))', src)
 
 
 if __name__ == "__main__":

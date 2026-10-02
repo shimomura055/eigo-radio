@@ -1,0 +1,471 @@
+{
+  "sample": 1,
+  "input": {
+    "claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+    "origin": "ja_source",
+    "related_fact_id": "MUSE-HC-012",
+    "materiality": "BLOCKING",
+    "span_resolution_cycle_start": {
+      "status": "resolved",
+      "lang": "EN",
+      "level": "L4",
+      "reason": null,
+      "ranges": [
+        "They could not tell if it was AI or a person",
+        "They did not realize it."
+      ],
+      "both_langs_ok": false,
+      "per_lang": {
+        "EN": {
+          "status": "ok",
+          "level": "L4"
+        },
+        "JA": {
+          "status": "frag_unresolved",
+          "level": "L4"
+        }
+      },
+      "detail": null
+    }
+  },
+  "recorded_cycle2_old_method": {
+    "final_state": "STAGE4_ESCALATION",
+    "stage4_reason": "ladder_exhausted_without_full_rewrite",
+    "rewrite_records": [
+      {
+        "claim_identity": "fact:MUSE-HC-012",
+        "rewrite_kind": "narrow_scope",
+        "mechanism": "paired_ja_en(J-1)",
+        "method": "+ladder6_disabled",
+        "guard_ok": false,
+        "ladder_level_used": null,
+        "section_type": "body",
+        "target_not_locatable": false,
+        "ladder_exhausted_without_full_rewrite": true
+      }
+    ]
+  },
+  "stage3_first": {
+    "claim_identity": "fact:MUSE-HC-012",
+    "rewrite_kind": "narrow_scope",
+    "mechanism": "paired_ja_en(J-1)",
+    "method": "j1_single_side_en(e2_paragraph_rewrite(violation_span(EN,L4)))",
+    "guard_ok": true,
+    "ladder_level_used": "4_paragraph",
+    "section_type": "body",
+    "target_not_locatable": false,
+    "ladder_exhausted_without_full_rewrite": false,
+    "span_unverified": false,
+    "handoff": {
+      "mode": "violation_span",
+      "checker_claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+      "text_lang": "EN",
+      "resolution": {
+        "status": "resolved",
+        "lang": "EN",
+        "level": "L4",
+        "reason": null,
+        "detail": null,
+        "ranges": [
+          "They could not tell if it was AI or a person",
+          "They did not realize it."
+        ],
+        "raw_spans": [
+          [
+            841,
+            885
+          ],
+          [
+            952,
+            976
+          ]
+        ],
+        "spans": [
+          [
+            841,
+            885
+          ],
+          [
+            952,
+            976
+          ]
+        ],
+        "per_lang": {
+          "EN": {
+            "status": "ok",
+            "level": "L4"
+          },
+          "JA": {
+            "status": "frag_unresolved",
+            "level": "L4"
+          }
+        },
+        "both_langs_ok": false,
+        "frag_levels": [
+          "L0",
+          "L0"
+        ],
+        "stripped": false
+      },
+      "level_attempts": [
+        {
+          "level": "1_word_connective",
+          "targets": [
+            "They could not tell if it was AI or a person",
+            "They did not realize it."
+          ],
+          "target_equals_confirmed_ranges": true,
+          "result": "declined"
+        },
+        {
+          "level": "3_sentence",
+          "targets": [
+            "They could not tell if it was AI or a person.",
+            "They did not realize it."
+          ],
+          "revised": [
+            "Without a clear explanation, users might not know if it was AI or a person.",
+            ""
+          ],
+          "each_target_changed": [
+            true,
+            true
+          ],
+          "result": "actor_guard_rejected"
+        },
+        {
+          "level": "4_paragraph",
+          "targets": [
+            "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes."
+          ],
+          "revised": [
+            "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+          ],
+          "each_target_changed": [
+            true
+          ],
+          "result": "success",
+          "before_after": [
+            {
+              "before": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.",
+              "after": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+            }
+          ]
+        }
+      ],
+      "level_used": "4_paragraph",
+      "span_unverified": false,
+      "problem_kind": "term_scope",
+      "levels_planned": [
+        "1_word_connective",
+        "3_sentence",
+        "4_paragraph"
+      ],
+      "ja_provisional_path": true,
+      "ja_provisional_reason": "en_multiple_ranges",
+      "ja_provisional_note": "暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに任せる。JA側の構造見直しは別委任"
+    }
+  },
+  "quality_degradation_v2": {
+    "duplicate_paragraphs": [],
+    "duplicate_paragraph_detected": false,
+    "orphan_contrastive_paragraphs": [],
+    "orphan_contrastive_detected": false,
+    "stats_before": {
+      "avg_sentence_len": 10.19,
+      "difficult_word_ratio": 0.109,
+      "word_count": 367
+    },
+    "stats_after": {
+      "avg_sentence_len": 10.47,
+      "difficult_word_ratio": 0.1134,
+      "word_count": 335
+    },
+    "sentence_len_increase": 0.28,
+    "difficulty_ratio_increase": 0.0044,
+    "fragment_stats_before": null,
+    "fragment_stats_after": null,
+    "fragment_sentence_len_increase": 0.0,
+    "fragment_difficulty_ratio_increase": 0.0,
+    "vocab_difficulty_increased_wholetext": false,
+    "vocab_difficulty_increased_fragment": false,
+    "vocab_difficulty_increased": false,
+    "title_changed": false,
+    "first_paragraph_changed": false,
+    "hook_or_title_changed": false,
+    "needs_regeneration": false,
+    "reasons": ""
+  },
+  "section_role_violation": {
+    "in_one_line_length_increase_ratio": 0.0,
+    "in_one_line_too_long": false,
+    "numbers_added_to_title": false,
+    "numbers_added_to_in_one_line": false,
+    "hook_word_count_before": 31,
+    "hook_word_count_after": 31,
+    "hook_shrank": false,
+    "hook_rhetorical_markers_lost": false,
+    "title_rhetorical_markers_lost": false,
+    "title_word_count_after": 9,
+    "title_degenerate": false,
+    "hook_degenerate": false,
+    "iol_degenerate": false,
+    "section_role_violated": false,
+    "reasons": ""
+  },
+  "regenerated": false,
+  "ja_fail_open_guard": {
+    "ok": true,
+    "violations": [],
+    "checked": false,
+    "indeterminate": false
+  },
+  "en_text_before": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during a call. This call was about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+  "en_text_after": "# Some AI Phone Calls Had Humans Behind the Scenes\n\nIt was a small surprise. A service let people ask AI to make phone calls. But humans made some of the calls behind the scenes. This was part of a test.\n\nThe main player was Muse, Meta’s AI assistant. Muse can call businesses and stores in the United States. It can book haircuts and check if items are in stock. It can also get price estimates from businesses. If AI can handle difficult calls, it seems very useful.\n\nIn some tests, trained human contract workers made the calls, not AI. They handled each conversation until it ended.\n\nThe problem was not that humans made the calls. The problem was telling users who was speaking.\n\nPeople asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly.\n\nAlso, some calls needed user information to continue. That information might accidentally be shared with contract workers at a call center. Meta employees pointed this out inside the company as a privacy concern.\n\nNews reports also cited one employee’s report. It said human staff made inappropriate comments about race during a call. This call was about trying to lower internet or cable fees. However, this is only one report. It would be wrong to say all contract workers did this.\n\nA Meta executive admitted the test began without a clear explanation. That was a mistake. The company also restored its human help feature to its earlier form, at least for now.\n\nThe real challenge for AI calls is not only how they talk. They must also be honest about who is on the other end. The more useful a service is, the less it should hide workers behind the scenes. The Muse case showed this simple but important point.\n\n## In one line\nSome calls through Meta’s AI assistant were actually handled by humans, but users were not properly told.",
+  "ja_text_changed": false,
+  "ja_en_equivalence_verdict": "PASS",
+  "ja_en_equivalence_reason": {
+    "notes": "重要な事実、因果関係、結論、一言まとめの趣旨は維持されています。",
+    "meaning_changes": [],
+    "important_omissions": [],
+    "unsupported_additions": [],
+    "number_name_negation_issues": []
+  },
+  "full_recheck_required": true,
+  "full_recheck_required_reasons": [
+    "paragraph_or_full_or_delete_rewrite",
+    "both_ja_en_changed(paired_j1)"
+  ],
+  "recheck_en": {
+    "overall_status": "LEDGER_COMPLIANT",
+    "all_prior_issues_resolved": true,
+    "deviations": []
+  },
+  "recheck_ja": {
+    "overall_status": "LEDGER_DEVIATION",
+    "all_prior_issues_resolved": false,
+    "deviations": [
+      {
+        "claim_in_article": "「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません。」",
+        "severity": "MAJOR",
+        "related_fact_id": "MUSE-HC-012",
+        "issue": "Ledgerは、適切な開示なしに人間の契約スタッフが電話を担当したテストがあったことは確認していますが、利用者が相手を識別できなかったことまでは示していません。条件付きの表現ではあるものの、「知ることができません」と利用者の認識可能性を断定しています。"
+      }
+    ]
+  },
+  "en_ok": true,
+  "ja_ok": false,
+  "final_state": "UNRESOLVED_AFTER_ONE_CYCLE(次周回=cycle3はこの再現の範囲外)",
+  "stage4_reason": null,
+  "rewrite_records": [
+    {
+      "claim_identity": "fact:MUSE-HC-012",
+      "rewrite_kind": "narrow_scope",
+      "mechanism": "paired_ja_en(J-1)",
+      "method": "j1_single_side_en(e2_paragraph_rewrite(violation_span(EN,L4)))",
+      "guard_ok": true,
+      "ladder_level_used": "4_paragraph",
+      "section_type": "body",
+      "target_not_locatable": false,
+      "ladder_exhausted_without_full_rewrite": false,
+      "span_unverified": false,
+      "handoff": {
+        "mode": "violation_span",
+        "checker_claim_text": "“They could not tell if it was AI or a person” and “They did not realize it.”",
+        "text_lang": "EN",
+        "resolution": {
+          "status": "resolved",
+          "lang": "EN",
+          "level": "L4",
+          "reason": null,
+          "detail": null,
+          "ranges": [
+            "They could not tell if it was AI or a person",
+            "They did not realize it."
+          ],
+          "raw_spans": [
+            [
+              841,
+              885
+            ],
+            [
+              952,
+              976
+            ]
+          ],
+          "spans": [
+            [
+              841,
+              885
+            ],
+            [
+              952,
+              976
+            ]
+          ],
+          "per_lang": {
+            "EN": {
+              "status": "ok",
+              "level": "L4"
+            },
+            "JA": {
+              "status": "frag_unresolved",
+              "level": "L4"
+            }
+          },
+          "both_langs_ok": false,
+          "frag_levels": [
+            "L0",
+            "L0"
+          ],
+          "stripped": false
+        },
+        "level_attempts": [
+          {
+            "level": "1_word_connective",
+            "targets": [
+              "They could not tell if it was AI or a person",
+              "They did not realize it."
+            ],
+            "target_equals_confirmed_ranges": true,
+            "result": "declined"
+          },
+          {
+            "level": "3_sentence",
+            "targets": [
+              "They could not tell if it was AI or a person.",
+              "They did not realize it."
+            ],
+            "revised": [
+              "Without a clear explanation, users might not know if it was AI or a person.",
+              ""
+            ],
+            "each_target_changed": [
+              true,
+              true
+            ],
+            "result": "actor_guard_rejected"
+          },
+          {
+            "level": "4_paragraph",
+            "targets": [
+              "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes."
+            ],
+            "revised": [
+              "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+            ],
+            "each_target_changed": [
+              true
+            ],
+            "result": "success",
+            "before_after": [
+              {
+                "before": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. If no one explained this clearly, users could not know. They could not tell if it was AI or a person. They enjoyed AI’s convenience, but a human was on the other end. They did not realize it. That was happening behind the scenes.",
+                "after": "People asking Muse to call might think AI was calling. But sometimes, a human was speaking instead. Meta later called the test a mistake because people were not told clearly."
+              }
+            ]
+          }
+        ],
+        "level_used": "4_paragraph",
+        "span_unverified": false,
+        "problem_kind": "term_scope",
+        "levels_planned": [
+          "1_word_connective",
+          "3_sentence",
+          "4_paragraph"
+        ],
+        "ja_provisional_path": true,
+        "ja_provisional_reason": "en_multiple_ranges",
+        "ja_provisional_note": "暫定(委任_42): 確定できた言語側だけを直し、もう一方は既存のJA Recheckに任せる。JA側の構造見直しは別委任"
+      }
+    }
+  ],
+  "call_log": [
+    {
+      "label": "meta_run03_standard_t2s1_c2_j1_single_side_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1192,
+      "usage": {
+        "input_tokens": 3976,
+        "cached_input_tokens": 0,
+        "output_tokens": 725,
+        "reasoning_tokens": 700
+      },
+      "elapsed_seconds": 10.335,
+      "prompt_sha256": "1966fd73ca3073ef2a352d249556baa2f91b303fce8014c2a4e1bb143efa9c79"
+    },
+    {
+      "label": "meta_run03_standard_t2s1_c2_j1_single_side_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0868,
+      "usage": {
+        "input_tokens": 3811,
+        "cached_input_tokens": 0,
+        "output_tokens": 344,
+        "reasoning_tokens": 314
+      },
+      "elapsed_seconds": 4.212,
+      "prompt_sha256": "5d1acceb7cae103f2fc2857b5a900fba0e324c6dea134e2fda2cb2afea2a5ff2"
+    },
+    {
+      "label": "meta_run03_standard_t2s1_c2_j1_single_side_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.14,
+      "usage": {
+        "input_tokens": 3815,
+        "cached_input_tokens": 0,
+        "output_tokens": 1022,
+        "reasoning_tokens": 975
+      },
+      "elapsed_seconds": 9.032,
+      "prompt_sha256": "5ccbc673cdd51d1acd56c627a30a947117a7e8b1fa7bd86c862ae3a41fd4f669"
+    },
+    {
+      "label": "meta_run03_standard_t2s1_c2_ja_en_equivalence",
+      "recovery_stage": "ja_en_equivalence",
+      "cost_jpy": 0.1318,
+      "usage": {
+        "input_tokens": 1479,
+        "cached_input_tokens": 0,
+        "output_tokens": 1385,
+        "reasoning_tokens": 1317
+      },
+      "elapsed_seconds": 13.131,
+      "prompt_sha256": "43463363a4963811a39b84d6b7f3a23d7944de42c5931f33ad9f78ea38349427",
+      "verdict": "PASS",
+      "notes": "重要な事実、因果関係、結論、一言まとめの趣旨は維持されています。"
+    },
+    {
+      "label": "meta_run03_standard_t2s1_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2259,
+      "usage": {
+        "input_tokens": 6490,
+        "cached_input_tokens": 0,
+        "output_tokens": 1582,
+        "reasoning_tokens": 1502
+      },
+      "elapsed_seconds": 18.02,
+      "prompt_sha256": "75ae90718d98a25a40abb2b17d34a98b722ab838f6db0cda0868d23f8ff1dd5f",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "meta_run03_standard_t2s1_c2_ja_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3301,
+      "usage": {
+        "input_tokens": 6728,
+        "cached_input_tokens": 0,
+        "output_tokens": 2863,
+        "reasoning_tokens": 2393
+      },
+      "elapsed_seconds": 28.079,
+      "prompt_sha256": "f17870d7fb76231263abb75574fc4fb67e7db53206a74b4164ba62e91fe1e6a3",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 1.0338,
+  "total_calls": 6
+}

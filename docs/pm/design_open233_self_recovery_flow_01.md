@@ -3392,6 +3392,92 @@ REWRITE`(floorが弱まっていないことを確認)。
 ¥0.1991)=**¥3.561**(Guardrail¥7のうち約51%)。Phase累計¥482.3665+
 ¥3.561=**¥485.9275**/総枠¥600、残**¥114.0725**。詳細REPORT§34。
 
+### 6-18. 受け渡し修正(Checkerの違反範囲をそのまま渡す)の実装と限定Trial(委任_42、2026-10-02、REPORT§35)
+
+**区分**: Trial/検証用の実装(Production正式path・Checker/Stage 2のPrompt・rubric・floor・cycle上限・⑥既定OFFは無変更)。
+Opus独立技術レビュー#5(`docs/pm/opus_l2_review_open233_self_recovery_05.md`)済みの設計
+(`docs/pm/design_open233_violation_span_handoff_01.md`)から、ユーザー決定(2026-10-02、DECISION_LOG)で項目を減らした範囲
+(Checker Prompt変更なし・別AI引用救済なし・文単位スナップなし)だけを実装した。
+
+**実装(`er052_open233_self_recovery_flow_runner_01.py`、Trial専用runner)**:
+
+| 仕様 | 実装 |
+|---|---|
+| (1)範囲の確定 | `resolve_violation_spans`(2955付近)+`vs_match_levels`/`vs_resolve_in_text`/`vs_merge_spans`(2876〜2950付近)。無料集計`aggregate_01.py`(委任_41)のL0〜L4・「ちょうど1箇所」を移植(import無し)。EN・JA両本文で照合し確定した言語を保持。確定不能の理由は`mismatch`/`multi_match`/`explanatory_mixed`(記録) |
+| (2)対象決定の置換 | `HANDOFF_MODE`(323、既定`violation_span`、`legacy`で旧方式)。新方式では`locate_target`4段を呼ばない(`single_text_rewrite`冒頭の分岐=3410付近、`paired_rewrite`のEN対象=`_paired_en_target_from_span`)。区分判定は`detect_claim_section_type_by_spans`(1879付近、確定範囲の包含判定、title>in_one_line>hook>body)。旧`detect_claim_section_type_legacy`・`locate_target`等は残置(legacy専用) |
+| (3)呼び出し単位 | `rewrite_ranges_ladder`(3198付近): 1指摘=1回の呼び出し、`{"revised_ranges": [...]}`の同個数・同順序の配列、範囲を含む段落を読み取り専用文脈(`E1/E2/E4_RANGES_PROMPT_TEMPLATE`、3094〜3160付近)。hintは「書き換え指示文」としてのみ渡す |
+| (4)最小修正優先 | 水準①=確定範囲そのもの、③=`vs_expand_to_sentences`(範囲を含む文全体)、④=範囲を含む段落。`filter_levels_by_problem_kind`・`escalate_to_paragraph`・⑥既定OFFは無変更 |
+| (5)書き戻し | `vs_replace_once`/`vs_apply_replacements`(3040/3186付近): 書き戻し直前に現在の本文で「ちょうど1箇所」を再確認、失敗した水準は`writeback_failed`(推測で置換しない) |
+| (6)guard | 各対象(①範囲・③④拡張後)が`revised != target`であること+主体置換ガード維持。delete型は確定範囲(正規化後)の完全一致で本文に残っていないことを確認 |
+| (7)周回間同一判定 | `annotate_claim_span_identity`(3058付近)→`find_matching_prior_record(claim_norm=)`・`prior_blocking_records.claim_text_norm`・Recheckの`prior_issues`が確定範囲(複数なら改行連結)を使用(`run_instance`5080付近ほか)。Stage 2へ渡す`claim_text`表示は無変更 |
+| (8)日本語側(暫定) | `run_stage3_for_claim_spans`/`_run_stage3_spans_core`(4011〜4150付近): ja_source+EN単一範囲=既存`paired_rewrite`(EN対象のみ確定範囲、JA対応決定の既存処理は無変更)。ja_source+EN複数範囲またはJAのみ確定=暫定で確定できた言語側だけを直す片側経路、もう一方は既存JA Recheckに任せる。`handoff["ja_provisional_path"]`に記録。**暫定**(JA側の構造見直し[英語だけ直す化]は並行調査+Opusレビュー後の別委任) |
+| (9)記録 | 各`rewrite_records[*].handoff`(Checker文字列/確定範囲/照合レベル/確定不能理由/水準別の対象・結果・before/after・各対象の変化/JA暫定経路/carry-forward) |
+| (10)テスト | 新規64件(合計381件)。意図的に書き換えた既存テスト: 旧方式を明示する`@_legacy_handoff`化7件(旧`locate_target`経由のladder順序・paired partial-locate)、`stage4_reason`のソース検査1件。旧`locate_target`/`locate_multi_quote_span`の関数単体テスト(`TestLocateTarget*`等)は旧関数を残すため維持 |
+
+**仕様どおりにできなかった点・判断した点**:
+- delete型で確定範囲が文の一部の場合: 決定論的削除の対象は範囲を含む文(文の断片だけを削除すると不自然な断片が残るため)。`handoff.delete_expanded_to_sentence`に記録(文全体の場合は範囲のまま削除)。
+- JA本文でのみ確定し、originが`ja_source`でない指摘: JA側を直す経路がないため`violation_span_unverified`(`ja_only_match_origin_not_ja_source`、fail-closed)。
+- 限定Trialで判明した実装不具合(下記)の是正として`carry_forward_resolution`/`collect_replaced_units`を追加した(設計書・Opusレビューにない小機構。要Fable確認)。
+
+**限定Trial(rep22、固定Stage 1=rep19 frozen、TTSなし、`er052_open233_self_recovery_flow_runner_01_rep22_representative_01.py`)**:
+
+| 部分 | run | 最終状態 | stage4_reason | cycle | call | 費用 |
+|---|---|---|---|---|---|---|
+| T1 | s1 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | 4 | ¥1.1210 |
+| T1 | s2 | `STAGE4_ESCALATION` | `cycle_limit_exhausted` | 3 | 7 | ¥2.1773 |
+| T1 | s3 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | 4 | ¥1.3140 |
+| T1 | s4 | `RESOLVED_REWRITE_THEN_DOWNGRADE` | - | 2 | 4 | ¥1.0118 |
+| T2(rep20 s2 cycle2再現) | s1 | EN: 前回指摘は解消、JA: 未解消(`ja_ok=False`)。1周で終了(cycle3は再現範囲外) | - | 1 | 6 | ¥1.0338 |
+| T2 | s2 | EN: 前回指摘は解消+Recheckが別の新規MAJOR(MUSE-HC-010)、JA: 未解消 | - | 1 | 6 | ¥1.0143 |
+| T3 Safety(changed_number) run1 | - | `STAGE4_ESCALATION` | `violation_span_unverified`(実装不具合、下記) | 1 | 2 | ¥0.1992 |
+| T3 run2(是正後) | - | `RESOLVED_REWRITE`(30 million→13 million、Ledger値) | - | 1 | 3 | ¥0.2311 |
+
+合計¥8.1025(委任_42 Guardrail¥15の54%)。Phase累計¥485.9275+¥8.1025=**¥494.0300**/総枠¥600、残**¥105.9700**。
+
+**成功条件ごとの実測(記録値`er052_output/open233_self_recovery_flow_runner_01_rep22/analysis_rep22.json`、`--parts agg`)**:
+1. 2文取りこぼしによるHuman Review: T1 n=4で2文claim(MUSE-HC-011)が1周目に2文とも水準①の対象になった=4/4(対象=「It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.」の2文1範囲、L1)。Stage 4は1/4(s2、`cycle_limit_exhausted`)で、取りこぼし起因のStage 4は0。s2の原因は受け渡し以外(下記)。**達成(取りこぼし起因0)**。ただしs2のStage 4は残る(受け渡し以外の原因)。
+2. 範囲の縮小: 水準①の試行6件(T1 4+T2 2)で「対象==確定範囲」6/6、不一致0。**達成**。
+3. 誤PASS: T3でfloorが両claimともBLOCKING(`deterministic_floor:changed_number`+`precheck_floor`)、Recheck=LEDGER_COMPLIANTで本文はLedger値(1,300万件=13 million)へ修正、false PASS 0。T1の`RESOLVED_REWRITE_THEN_DOWNGRADE`3件は既存の仕組み(Stage 2が最終cycleで残りのclaimを既存floor`disclosure_gap_negative_inference_downgrade`等でQUALITY/ACCEPTABLEとした)で、未解消のBLOCKINGが残った例は0件。旧方式の同じ固定入力でも同じ最終状態(`RESOLVED_REWRITE_THEN_DOWNGRADE`)が出ている(rep20 s1・rep21 s2)。**達成(Fable確認事項: 上記3件の最終cycleでQUALITY扱いになった文のレビュー)**。
+4. 最小修正優先: ①から開始したのは6/7件(T1 4、T2 2、T1 s2 cycle2の1件[MUSE-HC-010、確定範囲=記事中の文の断片]は既存の問題種類→初期水準の規則[`multi_sentence`=初期④、委任_27]によりSTAGE④から開始)。水準別の成立: T1 ①4件・④1件、T2 ④2件(①は「最小編集では解消できない」[declined]、③は主体置換ガードで棄却[新語`users`]の後)、T3 ③1件(既存規則で③開始)+後続claimは先行Rewriteで書き換え済みとしてスキップ。**達成(開始水準は既存の水準選択規則に従う)**。
+5. 不要な段落・全文Rewrite: ⑥は0件(既定OFF)。④はT1で1/4 run(s2 cycle2、問題種類規則による初期④)、旧方式の同じ固定入力(rep20 s1・s2、rep21 s1・s2)でも④成立1/4 run。T2は④が2/2だが、旧方式は同じ状態(rep20 s2 cycle2)で①③④全不成立→Stage 4(`ladder_exhausted_without_full_rewrite`)。**T1では増加なし。T2は④でしか成立せず、これが「不要」かの判断はFable**。
+
+**FAIL→修正→再確認(T3、1回)**: 初回T3 run1が`violation_span_unverified`でStage 4になった。原因: 同じcycleにLLM claimとprecheck floor claimが同じ文を指しており、先行claimのRewriteで文が書き換わった結果、後続claimのCheckerの文字列が現在の本文から消え、確定不能(不一致)と誤判定した(受け渡しの実装不具合)。修正(本委任の範囲内): `carry_forward_resolution`(cycle開始時点の本文でCheckerの文字列を照合し、その範囲が同一cycleの先行claimのRewrite対象に含まれていれば「先行Rewriteで書き換え済み」としてRewriteを重ねない[解消判定は全文Recheck]。先行Rewrite対象に含まれず現存もしない範囲は従来どおり確定不能)。テスト6件追加。T3だけ再実行(¥0.2311): `RESOLVED_REWRITE`。
+
+**受け渡し以外の原因でStage 4になった run(T1 s2、周回ごとの指摘)**:
+- cycle1(固定Stage 1): BLOCKING 1件=MUSE-HC-011「It said human staff ... calls. These calls were about trying to lower internet or cable fees.」(MAJOR→BLOCKING、`deterministic_floor:changed_number`)→水準①成立(2文を「during a call」「This call」へ)。Recheck: 前回指摘は解消(`recheck_all_prior_issues_resolved=True`)、次cycleへ持ち越したMAJORは2件(同じHC-012の文[cycle1でQUALITY]とHC-010)。
+- cycle2: 新規BLOCKING=MUSE-HC-010「some calls needed user information to continue」(元記事「Also, some calls needed user information to continue.」、元記事に最初からあった問題で固定Stage 1は検出していない)。QUALITY=MUSE-HC-012「They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.」(`disclosure_gap_negative_inference_downgrade`でQUALITYへ降格)。HC-010は問題種類規則で④開始→成立。Recheck: 前回指摘は解消(`recheck_all_prior_issues_resolved=True`)、新規MAJOR。
+- cycle3: MUSE-HC-012「They enjoyed AI’s convenience ...」が**今度はBLOCKING**(cycle1・2は既存floorでQUALITY=判定役の重大度の揺れ)→cycle上限(`MAX_CYCLES=2`、blocking件数が減少せず、新しいfact_idでもないため追加cycle不可)で`cycle_limit_exhausted`。
+- 切り分け: 受け渡し起因ではない(各周回で対象になった範囲はCheckerの文字列どおり)。元記事にあった問題の周回ごとの新規検出(再検査の揺れ)と、同一問題のMinor→Major(Stage 2判定の揺れ)。本委任の範囲外(並行調査委任_44)のため修正せず。
+
+**暫定事項(JA側)に該当した件数**: T2のn=2で2/2(いずれも`en_multiple_ranges`、確定できたEN側だけを直し、JAは既存のJA Recheckに任せた)。JAのみ確定は0件。結果: 両sampleでJA Recheckが「未解消」(`ja_ok=False`、s1: JA「適切な説明がないままなら、利用者は相手がAIなのか人間なのかを知ることができません。」、s2: 同様の2箇所)。T1(origin=translation)はJA暫定経路に入っていない。
+
+**残る問題**: (1)T2の再現は1周のみで、JA暫定経路の結果が「JA未解消」のため、実際の周回では次cycleでJA側のRewriteへ進む。JA側の構造見直しが別委任で必要。(2)T1 s2型(周回ごとの新規指摘・重大度の揺れ)は受け渡し修正では解消しない(並行調査委任_44の対象)。(3)主体置換ガード(`users`)がT2の③を2/2棄却した(既存ガード、新方式のJA/EN比較の問題ではなく範囲だけを比較する既存仕様)。(4)最終的な分類(`REJECTED`/`VALIDATED`/`USER_DECISION_REQUIRED`)はFable。
+
+**ユーザー指示(2026-10-02)との対応表(PM_GOVERNANCE 22節、Trial開始前チェック。未反映0件を確認してから課金Trialを開始した)**:
+
+| # | ユーザー指示 | 反映先 | 実測 |
+|---|---|---|---|
+| §1-1 | Checkerが示した違反範囲を後段で再推測しない | `resolve_violation_spans`(照合のみ)、新方式で`locate_target`4段を呼ばない | 全rewrite記録のmethodが`violation_span(...)`(旧4段の識別子なし)。unittest`test_old_four_stage_locators_are_not_called_in_new_mode`(旧locatorを例外化しても動作) |
+| §1-2 | 複数文なら複数文のままRewriteへ | 複数文=結合した1範囲を①の対象にする | T1 4/4で2文が1範囲として①の対象 |
+| §1-3 | 離れた複数箇所なら複数範囲 | L4、配列呼び出し | T2 2/2で2範囲が配列で渡った(間の文は対象外) |
+| §1-4 | 別AIの引用でRewrite対象を決めない | hintは指示文のみ | unittest`test_hint_quote_does_not_decide_the_target` |
+| §1-5 | 類似度・単語重なりで勝手に1文へ縮小しない | 確定不能は`violation_span_unverified`でStage 4 | 縮小0(①対象==確定範囲6/6) |
+| §1-6 | 文ID・文字オフセット方式は採用しない | 書き戻しは文字列の「ちょうど1箇所」再確認のみ(位置は範囲の結合・文への拡張の計算とログにだけ使い、持ち回らない) | 採用なし |
+| §1-7 | 最小修正優先ルールを維持 | `filter_levels_by_problem_kind`/`escalate_to_paragraph`/⑥既定OFF無変更 | ⑥0件 |
+| §1-8 | 語句→文全体→必要最小範囲 | ①=範囲、③=範囲を含む文、④=段落 | 水準別の対象を記録(例: 「some calls needed ...」断片→「Also, some calls ...」文) |
+| §1-9 | 文の一部が違反でも最初から文全体Rewriteへ広げない | ①の対象=確定範囲(断片) | unittest(d)、T1 s2 cycle2を除き①から開始 |
+| §1-10 | 語句だけで済むもの(oil prices→Brent futures型)は語句だけ修正 | ①のPrompt(語句・接続詞・限定句の最小編集、範囲内で変更不要な部分は一字一句そのまま) | T1 ①4件 |
+| §2-1 | 受け渡し修正後に限定Trial | rep22 | 実施 |
+| §2-2 | meta_run03_standard中心 | T1/T2 | 実施 |
+| §2-3 | 2文取りこぼし型・離れた複数箇所型・Safety対照 | T1/T2/T3 | 実施(T2は再現入力から1周のみ) |
+| §2-4 | 成功条件5項目 | 確認項目1〜5(`--parts agg`) | 上記 |
+| §2-5 | 費用は既存予算内で最小限 | Guardrail¥15、n=4/2/1 | ¥8.1025 |
+| §8-1 | STOP条件6件のみUSER_DECISION_REQUIRED | 該当確認(新Product原則・Safety原則変更・Production正式仕様変更判断・¥600超過・Opusとの重要点の対立・QCD上のユーザー判断のいずれも該当せず) | STOPなし |
+| §8-2 | 1回のFAILや新変種だけで戻さず、原因特定→対策→限定再確認 | T3 FAIL→carry-forward→T3再確認 | 実施 |
+| §8-3 | Production正式pathは変更禁止 | 変更はrunner・テスト・rep22スクリプトのみ | `git grep "er052_open233" -- "er003*.py" "er0[0-4]*.py"`=0件 |
+| §8-4 | Trial終了時にREJECTED/VALIDATED/USER_DECISION_REQUIREDへ分類 | 実測値と所見を提示、分類はFable | 未分類(Fable) |
+| §8-5 | VALIDATEDでもProduction採用ではない | 本節はTrial結果であり`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない | - |
+
 ## 7. Trial上の正解ラベル(claim単位、最終到達状態ベース)とfixture群の再編
 
 **位置づけ・用語(委任_03で全面改訂)**: 本節は「gold」という語を使わず
