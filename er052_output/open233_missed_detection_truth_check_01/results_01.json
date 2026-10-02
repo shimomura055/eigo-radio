@@ -1,0 +1,5372 @@
+{
+ "scope": {
+  "n_runs_target": 277,
+  "n_runs_extra_rep22": 6,
+  "en_original_variants_per_instance": {
+   "bgroup_B3": 1,
+   "bgroup_B4": 1,
+   "hormuz_run01_advanced": 1,
+   "hormuz_run03_advanced": 1,
+   "hormuz_run03_standard": 1,
+   "meta_run03_advanced": 1,
+   "meta_run03_standard": 1,
+   "neg1_meta_b3prod_a2": 1,
+   "neg2_meta_refresh_a2": 1,
+   "neg3_hormuz_prodrunner_b1b": 1,
+   "neg4_smallbag_div_a2": 1,
+   "neg6_smallbag_div_b1b": 1,
+   "safety_A2A3": 1,
+   "safety_A4": 1,
+   "safety_A5": 1,
+   "safety_er009_changed_actor": 1,
+   "safety_er009_changed_causality": 1,
+   "safety_er009_changed_certainty": 1,
+   "safety_er009_changed_comparison": 1,
+   "safety_er009_changed_negation": 1,
+   "safety_er009_changed_number": 1,
+   "safety_er009_changed_scope": 1,
+   "safety_er009_changed_time": 1,
+   "safety_er009_unsupported_new_claim": 1,
+   "bgroup_B2_hormuz": 1,
+   "hormuz_run02_advanced": 1
+  },
+  "ja_original_variants_per_instance": {
+   "bgroup_B4": 1,
+   "hormuz_run03_standard": 1,
+   "meta_run03_advanced": 1,
+   "meta_run03_standard": 1,
+   "safety_A2A3": 1,
+   "safety_A4": 1,
+   "bgroup_B3": 1,
+   "neg3_hormuz_prodrunner_b1b": 1
+  }
+ },
+ "A1_ledger": {
+  "source": "er019_output\\family_x_refresh_e2e_01\\meta\\run_03\\a2\\audit\\deviation_checks\\standard_attempt1.json",
+  "MUSE-HC-010": "[VERIFIED] MUSE-HC-010: Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。\n  scope: 人間の契約スタッフがMuse経由の電話を担当するテスト\n  conditions: 電話の遂行にユーザー情報が必要となる場合\n  date_or_period: 2026年9月中旬〜2026年9月22日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "neighbors": {
+   "MUSE-HC-009": "[VERIFIED] MUSE-HC-009: 社内投稿では、MuseがAIだと認識した相手側から電話を切られる事例が報告された。報道では、保険会社がMuseのAI発信だと分かると繰り返し電話を切ったという従業員の報告が紹介された。\n  scope: Museが発信した電話の一部\n  conditions: 電話の相手が発信者をAIだと認識した場合\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「AI電話は一般に切られる」と拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "MUSE-HC-011": "[VERIFIED] MUSE-HC-011: Museにインターネット・ケーブル料金の交渉を依頼した従業員は、電話の記録に人間の契約スタッフによる人種に関する不適切な発言があったと報告した。\n  scope: インターネット・ケーブル料金交渉の1件として報道された事例\n  conditions: 人間の契約スタッフが電話を担当したケース\n  numeric_value: 1件の従業員報告 (numeric_scope: 報道で紹介された個別事例)\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 従業員の報告として記録する。契約スタッフ全体の行動や実験全体の性質へ一般化しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "MUSE-HC-012": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "MUSE-HC-015": "[VERIFIED] MUSE-HC-015: Metaは公式説明で、Museについて、ユーザーが接続アプリとアクセス権限を選択でき、メール送信や購入などの敏感な操作の前に確認を求め、操作履歴を表示すると説明している。\n  scope: Museの公式製品仕様\n  conditions: Metaが公開した通常の製品設計\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: 公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))\n",
+   "MUSE-HC-003": "[VERIFIED] MUSE-HC-003: Metaの公式説明では、Muse Secure VMではユーザーごとに専用のクラウドコンピューターが割り当てられ、接続サービスのデータや認証情報を保存する。Sentinelという別のエージェントが外部通信やコネクター操作の許可を管理する。\n  scope: Museの公式セキュリティ設計\n  conditions: Metaが公開した製品設計上の説明\n  date_or_period: 2026年9月8日時点\n  notes_for_writer: Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))"
+  }
+ },
+ "A2_en_context": [
+  "They did not realize it.",
+  "That was happening behind the scenes.",
+  "Also, some calls needed user information to continue.",
+  "That information might accidentally be shared with contract workers at a call center.",
+  "Meta employees pointed this out inside the company as a privacy concern."
+ ],
+ "A2_ja_context": [
+  "AIの便利さを楽しんでいたら、いつの間にか電話の向こうに人間がいた。",
+  "そんな舞台裏です。",
+  "さらに、電話を進めるために利用者の情報が必要になる場合、その情報がコールセンターの契約スタッフに意図せず共有される可能性もあります。",
+  "Metaの従業員は、この点をプライバシー上の懸念として社内で示しました。",
+  "報道では、インターネットやケーブル料金を交渉する電話で、人間のスタッフによる人種に関する不適切な発言があったという従業員の報告も紹介されています。"
+ ],
+ "A2_ja_original_equals_recorded_c1_ja": true,
+ "A2_en_original_equals_audit_article": true,
+ "A3_flagged_rechecks": [
+  {
+   "run": "iter8/instances_s1/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "claim_in_article": "Some calls needed user information to continue.",
+   "issue": "The article says some calls actually needed user information, whereas the Ledger records a privacy concern conditional on user information being needed; it does not establish that this occurred in some calls.",
+   "severity": "MAJOR",
+   "true_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "related_fact_id": "MUSE-HC-010",
+   "origin": "translation",
+   "llm_materiality": "BLOCKING",
+   "final_materiality": "BLOCKING",
+   "floor_reason": null,
+   "floor_cited_materiality": "BLOCKING",
+   "floor_cited_reason": null,
+   "stage2_route": "body",
+   "basis": "ledger_conditions",
+   "rewrite_kind": "narrow_scope",
+   "auto_downgraded": false,
+   "severity_final": "BLOCKING",
+   "detected_by": "stage1_llm",
+   "qualifier_present": true,
+   "explanation": "“Some calls needed” presents the condition as an actual occurrence. The following “might” hedges possible sharing, but does not hedge the claim that some calls needed the information.",
+   "ledger_field_basis": "ledger_fact"
+  },
+  {
+   "run": "rep19/instances_s1/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "claim_in_article": "“some calls needed user information to continue.”",
+   "issue": "The Ledger describes a concern that information could be needed for a call and might be shared; it does not establish that some calls actually required user information. The English wording turns a conditional into an asserted occurrence.",
+   "severity": "MAJOR",
+   "true_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "related_fact_id": "MUSE-HC-010",
+   "origin": "translation",
+   "llm_materiality": "BLOCKING",
+   "final_materiality": "BLOCKING",
+   "floor_reason": null,
+   "floor_cited_materiality": "BLOCKING",
+   "floor_cited_reason": null,
+   "stage2_route": "body",
+   "basis": "ledger_conditions",
+   "rewrite_kind": "narrow_scope",
+   "auto_downgraded": false,
+   "severity_final": "BLOCKING",
+   "detected_by": "stage1_llm",
+   "qualifier_present": true,
+   "explanation": "The article asserts that such calls occurred, while the Ledger records the information-sharing concern conditionally.",
+   "ledger_field_basis": "ledger_fact"
+  },
+  {
+   "run": "rep20/instances_s1/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "claim_in_article": "“Some calls needed user information to continue.”",
+   "issue": "This asserts that user information was needed in some calls. The Ledger records a concern about possible sharing in cases where user information is needed, but does not establish that this occurred in some calls.",
+   "severity": "MAJOR",
+   "true_flags": [
+    "changed_fact",
+    "changed_certainty"
+   ],
+   "related_fact_id": "MUSE-HC-010",
+   "origin": "translation",
+   "llm_materiality": "BLOCKING",
+   "final_materiality": "BLOCKING",
+   "floor_reason": null,
+   "floor_cited_materiality": "BLOCKING",
+   "floor_cited_reason": null,
+   "stage2_route": "body",
+   "basis": "ledger_conditions",
+   "rewrite_kind": "narrow_scope",
+   "auto_downgraded": false,
+   "severity_final": "BLOCKING",
+   "detected_by": "stage1_llm",
+   "qualifier_present": true,
+   "explanation": "The Japanese source describes the need for user information conditionally; the English version states that it happened in some calls. This changes certainty, while the underlying conditional scenario is present in MUSE-HC-010.",
+   "ledger_field_basis": "ledger_fact"
+  },
+  {
+   "run": "rep21/instances_s1/meta_run03_standard.json",
+   "cycle": 3,
+   "sentence_present_in_rechecked_text": true,
+   "claim_in_article": "“Some calls needed user information to continue.”",
+   "issue": "The Ledger describes a privacy concern in the event that user information is needed to carry out a call; it does not establish that some calls actually required such information.",
+   "severity": "MAJOR",
+   "true_flags": [
+    "changed_fact",
+    "changed_certainty",
+    "unsupported_new_claim"
+   ],
+   "related_fact_id": "MUSE-HC-010",
+   "origin": "translation",
+   "llm_materiality": "BLOCKING",
+   "final_materiality": "BLOCKING",
+   "floor_reason": null,
+   "floor_cited_materiality": "BLOCKING",
+   "floor_cited_reason": null,
+   "stage2_route": "body",
+   "basis": "ledger_conditions",
+   "rewrite_kind": "narrow_scope",
+   "auto_downgraded": false,
+   "severity_final": "BLOCKING",
+   "detected_by": "stage1_llm",
+   "qualifier_present": true,
+   "explanation": "The source uses a conditional (“when user information is needed”), but the translation asserts that this occurred in some calls.",
+   "ledger_field_basis": "ledger_fact"
+  }
+ ],
+ "A3_unflagged_rechecks": [
+  {
+   "run": "iter8/instances_s1/meta_run03_standard.json",
+   "cycle": 3,
+   "sentence_present_in_rechecked_text": false,
+   "n_stage2_results": 9,
+   "results": [
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it."
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "It said human staff made inappropriate comments about race during one call."
+    ],
+    [
+     "MUSE-HC-012",
+     "QUALITY",
+     "People asking Muse to call might think AI was calling."
+    ],
+    [
+     "MUSE-HC-012",
+     "QUALITY",
+     "If no one explained this clearly, users could not know."
+    ],
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "They could not tell if it was AI or a person."
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "News reports also cited one employee’s report of an inappropriate remark during one call."
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "This call was about trying to lower internet or cable fees."
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "However, this was one reported case."
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "It would be wrong to say many contract workers did this."
+    ]
+   ]
+  },
+  {
+   "run": "iter8/instances_s2/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "n_stage2_results": 8,
+   "results": [
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "“These calls were about trying to lower internet or cable fees.”"
+    ],
+    [
+     "MUSE-HC-007",
+     "BLOCKING",
+     "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”"
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "It said human staff made inappropriate comments about race during one call."
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "However, this is only one case."
+    ],
+    [
+     "MUSE-HC-007",
+     "QUALITY",
+     "People asking Muse to call might think AI was calling."
+    ],
+    [
+     "MUSE-HC-007",
+     "QUALITY",
+     "If no one explained this clearly, users could not know."
+    ],
+    [
+     "MUSE-HC-007",
+     "BLOCKING",
+     "They could not tell if it was AI or a person."
+    ],
+    [
+     "MUSE-HC-007",
+     "QUALITY",
+     "Some calls through Meta’s AI assistant were actually handled by humans, but users were not properly told."
+    ]
+   ]
+  },
+  {
+   "run": "rep19/instances_s1/meta_run03_standard.json",
+   "cycle": 3,
+   "sentence_present_in_rechecked_text": false,
+   "n_stage2_results": 5,
+   "results": [
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "“If no one explained this clearly, users could not know. They could not tell if it was AI or a person.” / “Som"
+    ],
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "The problem was telling users who was speaking."
+    ],
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "People asking Muse to call might think AI was calling."
+    ],
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "But sometimes, a human was speaking instead."
+    ],
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "Meta said it was a mistake to start the test without clear notice."
+    ]
+   ]
+  },
+  {
+   "run": "rep20/instances_s1/meta_run03_standard.json",
+   "cycle": 3,
+   "sentence_present_in_rechecked_text": false,
+   "n_stage2_results": 1,
+   "results": [
+    [
+     "MUSE-HC-012",
+     "QUALITY",
+     "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”"
+    ]
+   ]
+  },
+  {
+   "run": "rep20/instances_s2/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "n_stage2_results": 1,
+   "results": [
+    [
+     "MUSE-HC-012",
+     "BLOCKING",
+     "“They could not tell if it was AI or a person” and “They did not realize it.”"
+    ]
+   ]
+  },
+  {
+   "run": "rep21/instances_s1/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "n_stage2_results": 2,
+   "results": [
+    [
+     "MUSE-HC-012",
+     "QUALITY",
+     "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”"
+    ],
+    [
+     "MUSE-HC-011",
+     "BLOCKING",
+     "“These calls were about trying to lower internet or cable fees.”"
+    ]
+   ]
+  },
+  {
+   "run": "rep21/instances_s2/meta_run03_standard.json",
+   "cycle": 2,
+   "sentence_present_in_rechecked_text": true,
+   "n_stage2_results": 1,
+   "results": [
+    [
+     "MUSE-HC-012",
+     "QUALITY",
+     "“They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”"
+    ]
+   ]
+  }
+ ],
+ "A5_table": [
+  {
+   "run": "iter5/instances_s1/meta_run03_standard.json",
+   "dir": "iter5",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, if a call needed user information, it might reach contract workers at a call center by mistake."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter5/instances_s2/meta_run03_standard.json",
+   "dir": "iter5",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "If a call needed user information, it might be shared by mistake with call center contractors."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter6/instances_s1/meta_run03_standard.json",
+   "dir": "iter6",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 2,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "same_claim_fact_id_reblocked",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter6/instances_s2/meta_run03_standard.json",
+   "dir": "iter6",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 3,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "cycle_limit_exhausted",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter7/instances_s1/meta_run03_standard.json",
+   "dir": "iter7",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 1,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter7/instances_s2/meta_run03_standard.json",
+   "dir": "iter7",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 1,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter8/instances_s1/meta_run03_standard.json",
+   "dir": "iter8",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 3,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "same_claim_fact_id_reblocked",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, Meta employees worried that, if a call needed user information, it might reach call center contract workers."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    2
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    2
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "iter8/instances_s2/meta_run03_standard.json",
+   "dir": "iter8",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 2,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "target_not_locatable",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep11/instances_s1/meta_run03_standard.json",
+   "dir": "rep11",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 3,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "ja_deviation_unresolved",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep11/instances_s2/meta_run03_standard.json",
+   "dir": "rep11",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep12/instances_s1/meta_run03_standard.json",
+   "dir": "rep12",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 1,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep12/instances_s2/meta_run03_standard.json",
+   "dir": "rep12",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 1,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls could need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep16/instances_s1/meta_run03_standard.json",
+   "dir": "rep16",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 1,
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "original_no_rewrite_recorded",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep16/instances_s2/meta_run03_standard.json",
+   "dir": "rep16",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 1,
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "original_no_rewrite_recorded",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep18/instances_s1/meta_run03_standard.json",
+   "dir": "rep18",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 0,
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "final_text_source": "original_no_rewrite_recorded",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep18/instances_s2/meta_run03_standard.json",
+   "dir": "rep18",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 0,
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "final_text_source": "original_no_rewrite_recorded",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep19/instances_s1/meta_run03_standard.json",
+   "dir": "rep19",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 3,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "cycle_limit_exhausted_after_recheck",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, a call might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    2
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    2
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep20/instances_s1/meta_run03_standard.json",
+   "dir": "rep20",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 3,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "If a call needed user information, it might be shared by mistake with call center contract workers."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    2
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    2
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep20/instances_s2/meta_run03_standard.json",
+   "dir": "rep20",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 2,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "ladder_exhausted_without_full_rewrite",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep21/instances_s1/meta_run03_standard.json",
+   "dir": "rep21",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 3,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "cycle_limit_exhausted",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [
+    3
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    3
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep21/instances_s2/meta_run03_standard.json",
+   "dir": "rep21",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep9/instances_s1/meta_run03_standard.json",
+   "dir": "rep9",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls could need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep9/instances_s2/meta_run03_standard.json",
+   "dir": "rep9",
+   "excluded_inprogress_rep22": false,
+   "stage1_frozen_fixture": false,
+   "n_cycles": 3,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "Also, some calls might need user information to continue."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    1
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    1
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep22/instances_s1/meta_run03_standard.json",
+   "dir": "rep22",
+   "excluded_inprogress_rep22": true,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep22/instances_s2/meta_run03_standard.json",
+   "dir": "rep22",
+   "excluded_inprogress_rep22": true,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 3,
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "cycle_limit_exhausted",
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": false,
+   "final_article_sentences_with_'user information'": [
+    "If a call needs user information, it may be shared by mistake with call center contract workers."
+   ],
+   "BLOCKING_flag_cycles_sentence_level": [
+    2
+   ],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [
+    2
+   ],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": false,
+   "target_pattern(原文残存&未指摘&解消)": false
+  },
+  {
+   "run": "rep22/instances_s3/meta_run03_standard.json",
+   "dir": "rep22",
+   "excluded_inprogress_rep22": true,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  },
+  {
+   "run": "rep22/instances_s4/meta_run03_standard.json",
+   "dir": "rep22",
+   "excluded_inprogress_rep22": true,
+   "stage1_frozen_fixture": true,
+   "n_cycles": 2,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "final_text_source": "recorded_after_rewrite",
+   "sentence_in_final_article_verbatim": true,
+   "final_article_sentences_with_'user information'": null,
+   "BLOCKING_flag_cycles_sentence_level": [],
+   "BLOCKING_flag_cycles_factid_MUSE-HC-010": [],
+   "nonblocking_flag_cycles_sentence_level": [],
+   "resolved_without_human": true,
+   "target_pattern(原文残存&未指摘&解消)": true
+  }
+ ],
+ "A5_counts": {
+  "n_runs(excl rep22)": 23,
+  "n_runs_with_rep22": 27,
+  "sentence_verbatim_in_final": 8,
+  "target_pattern(原文残存&未指摘&解消)": 5,
+  "target_pattern_with_rep22": 8,
+  "by_final_state": {
+   "RESOLVED_REWRITE": 7,
+   "STAGE4_ESCALATION": 8,
+   "RESOLVED_REWRITE_THEN_DOWNGRADE": 4,
+   "RESOLVED_STAGE2_DOWNGRADE": 2,
+   "ACCEPTABLE_STAGE1": 2
+  },
+  "frozen_runs": 7,
+  "frozen_runs_target_pattern": 1,
+  "nonfrozen_runs_target_pattern": 4,
+  "flagged_blocking_runs": 16
+ },
+ "B1": {
+  "n_rows_P2a_P2b": 34,
+  "n_rows_P2a": 18,
+  "n_rows_P2b": 16,
+  "n_kinds": 23
+ },
+ "B_kinds": [
+  {
+   "kind_id": "K01",
+   "instance": "bgroup_B4",
+   "fact": "MUSE-HC-006",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter6/instances_s1/bgroup_B4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "“A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.”"
+   ],
+   "representative": "A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.",
+   "lang": "EN",
+   "n_runs_same_instance": 5,
+   "qualifying": [
+    {
+     "run": "iter6/instances_s2/bgroup_B4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/bgroup_B4.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/bgroup_B4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/bgroup_B4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/bgroup_B4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2,
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 2,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K02",
+   "instance": "hormuz_run03_standard",
+   "fact": "HF-009",
+   "n_rows": 3,
+   "rows": [
+    {
+     "run": "rep14/instances_s1/hormuz_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    },
+    {
+     "run": "rep14/instances_s2/hormuz_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    },
+    {
+     "run": "rep15/instances_s1/hormuz_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "Oil prices moved briefly, then returned to a high level."
+   ],
+   "representative": "Oil prices moved briefly, then returned to a high level.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "iter8/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep10/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/hormuz_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/hormuz_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep16/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep7/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep7/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter5/instances_s2/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "rep14/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep14/instances_s2/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter7/instances_s2/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep15/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 16,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K03",
+   "instance": "hormuz_run03_standard",
+   "fact": "HF-009",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter7/instances_s2/hormuz_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued."
+   ],
+   "representative": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "iter8/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep10/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/hormuz_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/hormuz_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep16/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep7/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep7/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s1/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/hormuz_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter5/instances_s2/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter7/instances_s2/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep14/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep14/instances_s2/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep15/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/hormuz_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2,
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 16,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K04",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-010",
+   "n_rows": 4,
+   "rows": [
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    },
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "cycle": "3",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "Some calls needed user information to continue.",
+    "“some calls needed user information to continue.”",
+    "“Some calls needed user information to continue.”"
+   ],
+   "representative": "some calls needed user information to continue.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 5,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K05",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-011",
+   "n_rows": 2,
+   "rows": [
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_number",
+     "final_state": "RESOLVED_REWRITE"
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_number",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    }
+   ],
+   "claim_variants": [
+    "“Human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”"
+   ],
+   "representative": "human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2,
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 9,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K06",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-011",
+   "n_rows": 2,
+   "rows": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_number",
+     "final_state": "RESOLVED_REWRITE"
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_number",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "“It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.”"
+   ],
+   "representative": "It said human staff made inappropriate comments about race during calls. These calls were about trying to lower internet or cable fees.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2,
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 9,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K07",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-011",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_number",
+     "final_state": "RESOLVED_REWRITE"
+    }
+   ],
+   "claim_variants": [
+    "“These calls were about trying to lower internet or cable fees.”"
+   ],
+   "representative": "These calls were about trying to lower internet or cable fees.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2,
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 9,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K08",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-012",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "cycle": "3",
+     "cls": "P2a",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "ACCEPTABLE",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "But sometimes, a human was speaking instead."
+   ],
+   "representative": "But sometimes, a human was speaking instead.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      3
+     ]
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 15,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K09",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-012",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "cycle": "3",
+     "cls": "P2a",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "QUALITY",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "The problem was telling users who was speaking."
+   ],
+   "representative": "The problem was telling users who was speaking.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 15,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K10",
+   "instance": "meta_run03_standard",
+   "fact": "MUSE-HC-012",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "They enjoyed AI’s convenience, but a human was on the other end."
+   ],
+   "representative": "They enjoyed AI’s convenience, but a human was on the other end.",
+   "lang": "EN",
+   "n_runs_same_instance": 23,
+   "qualifying": [
+    {
+     "run": "iter7/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep12/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep16/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep18/instances_s1/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/meta_run03_standard.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1,
+      2,
+      3
+     ]
+    },
+    {
+     "run": "rep21/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1,
+      2
+     ]
+    },
+    {
+     "run": "rep9/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      3
+     ]
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep20/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep21/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1,
+      2,
+      3
+     ]
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "iter8/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": [
+      1,
+      2
+     ]
+    },
+    {
+     "run": "iter8/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/meta_run03_standard.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep19/instances_s1/meta_run03_standard.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    }
+   ],
+   "n_qualifying": 13,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K11",
+   "instance": "neg1_meta_b3prod_a2",
+   "fact": "MUSE-HC-012",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter7/instances_s1/neg1_meta_b3prod_a2.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "ACCEPTABLE",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "A Meta executive admitted the mistake. The test had begun without clearly telling users."
+   ],
+   "representative": "A Meta executive admitted the mistake. The test had begun without clearly telling users.",
+   "lang": "EN",
+   "n_runs_same_instance": 22,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep12/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep16/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep17/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep7/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep7/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter7/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 19,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K12",
+   "instance": "neg1_meta_b3prod_a2",
+   "fact": "MUSE-HC-012",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter7/instances_s1/neg1_meta_b3prod_a2.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "QUALITY",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "A user might think the exchange was with AI, even though a person was involved."
+   ],
+   "representative": "A user might think the exchange was with AI, even though a person was involved.",
+   "lang": "EN",
+   "n_runs_same_instance": 22,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep12/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep16/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep17/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep7/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep7/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter7/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    }
+   ],
+   "n_qualifying": 19,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K13",
+   "instance": "neg1_meta_b3prod_a2",
+   "fact": "MUSE-HC-012",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter7/instances_s1/neg1_meta_b3prod_a2.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "ACCEPTABLE",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "The test began without clearly telling users that contract workers would make the calls."
+   ],
+   "representative": "The test began without clearly telling users that contract workers would make the calls.",
+   "lang": "EN",
+   "n_runs_same_instance": 22,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "ACCEPTABLE_STAGE1",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep11/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep12/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep12/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep16/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep16/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    },
+    {
+     "run": "rep17/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep7/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    },
+    {
+     "run": "rep7/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep8/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter7/instances_s1/neg1_meta_b3prod_a2.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": [
+      2
+     ]
+    }
+   ],
+   "n_qualifying": 19,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K14",
+   "instance": "neg3_hormuz_prodrunner_b1b",
+   "fact": "HF-003",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "ACCEPTABLE",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。"
+   ],
+   "representative": "トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。",
+   "lang": "JA",
+   "n_runs_same_instance": 15,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter5/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [],
+   "n_qualifying": 11,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K15",
+   "instance": "neg3_hormuz_prodrunner_b1b",
+   "fact": "HF-009",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "ACCEPTABLE",
+     "floor_reason": "deterministic_floor:changed_time",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued."
+   ],
+   "representative": "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+   "lang": "EN",
+   "n_runs_same_instance": 15,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter5/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter8/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 7,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K16",
+   "instance": "neg3_hormuz_prodrunner_b1b",
+   "fact": "HF-009",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_time",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+   ],
+   "representative": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "lang": "EN",
+   "n_runs_same_instance": 15,
+   "qualifying": [],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [],
+   "present_flagged": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 0,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K17",
+   "instance": "neg3_hormuz_prodrunner_b1b",
+   "fact": "HF-009",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K2",
+     "materiality": "BLOCKING",
+     "llm_materiality": "QUALITY",
+     "floor_reason": "deterministic_floor:changed_time",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement."
+   ],
+   "representative": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+   "lang": "EN",
+   "n_runs_same_instance": 15,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter5/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "rep16/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter8/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep17/instances_s2/neg3_hormuz_prodrunner_b1b.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 7,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K18",
+   "instance": "safety_A2A3",
+   "fact": "HF-003",
+   "n_rows": 2,
+   "rows": [
+    {
+     "run": "iter7/instances_s1/safety_A2A3.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_actor",
+     "final_state": "STAGE4_ESCALATION"
+    },
+    {
+     "run": "iter7/instances_s2/safety_A2A3.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "アメリカが海峡の安全を守るために使う費用を、貨物を運ぶ側に返してもらうという考えです。"
+   ],
+   "representative": "アメリカが海峡の安全を守るために使う費用を、貨物を運ぶ側に返してもらうという考えです。",
+   "lang": "JA",
+   "n_runs_same_instance": 13,
+   "qualifying": [
+    {
+     "run": "iter8/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter8/instances_s1/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s1/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 4,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K19",
+   "instance": "safety_A2A3",
+   "fact": "HF-009",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter6/instances_s1/safety_A2A3.json",
+     "cycle": "2",
+     "cls": "P2b",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "deterministic_floor:changed_comparison",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    }
+   ],
+   "claim_variants": [
+    "“Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level.”"
+   ],
+   "representative": "Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level.",
+   "lang": "EN",
+   "n_runs_same_instance": 13,
+   "qualifying": [
+    {
+     "run": "iter5/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep10/instances_s2/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep9/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter7/instances_s1/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter7/instances_s2/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter8/instances_s1/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s1/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "rep18/instances_s2/safety_A2A3.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [],
+   "absent_in_final": [
+    {
+     "run": "iter6/instances_s1/safety_A2A3.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 7,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K20",
+   "instance": "safety_A4",
+   "fact": "MUSE-HC-006",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter6/instances_s2/safety_A4.json",
+     "cycle": "3",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "“The idea was practical: when AI struggled, a person could help.”"
+   ],
+   "representative": "The idea was practical: when AI struggled, a person could help.",
+   "lang": "EN",
+   "n_runs_same_instance": 5,
+   "qualifying": [],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter8/instances_s1/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "iter6/instances_s2/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 0,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K21",
+   "instance": "safety_A4",
+   "fact": "MUSE-HC-006",
+   "n_rows": 2,
+   "rows": [
+    {
+     "run": "iter5/instances_s1/safety_A4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    },
+    {
+     "run": "iter5/instances_s2/safety_A4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    }
+   ],
+   "claim_variants": [
+    "“The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.”"
+   ],
+   "representative": "The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.",
+   "lang": "EN",
+   "n_runs_same_instance": 5,
+   "qualifying": [],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter8/instances_s1/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "iter6/instances_s2/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": [
+      3
+     ]
+    }
+   ],
+   "n_qualifying": 0,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K22",
+   "instance": "safety_A4",
+   "fact": "MUSE-HC-006",
+   "n_rows": 1,
+   "rows": [
+    {
+     "run": "iter6/instances_s1/safety_A4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    }
+   ],
+   "claim_variants": [
+    "“when AI struggled, a person could help”"
+   ],
+   "representative": "when AI struggled, a person could help",
+   "lang": "EN",
+   "n_runs_same_instance": 5,
+   "qualifying": [],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [
+    {
+     "run": "iter8/instances_s1/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "present_flagged": [
+    {
+     "run": "iter6/instances_s2/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      3
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 0,
+   "n_unconfirmable": 0
+  },
+  {
+   "kind_id": "K23",
+   "instance": "safety_A4",
+   "fact": "MUSE-HC-012",
+   "n_rows": 3,
+   "rows": [
+    {
+     "run": "iter5/instances_s1/safety_A4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    },
+    {
+     "run": "iter6/instances_s1/safety_A4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE"
+    },
+    {
+     "run": "iter6/instances_s2/safety_A4.json",
+     "cycle": "2",
+     "cls": "P2a",
+     "kind": "K1",
+     "materiality": "BLOCKING",
+     "llm_materiality": "BLOCKING",
+     "floor_reason": "",
+     "final_state": "STAGE4_ESCALATION"
+    }
+   ],
+   "claim_variants": [
+    "“An AI called. That was what people thought as they spoke.”"
+   ],
+   "representative": "An AI called. That was what people thought as they spoke.",
+   "lang": "EN",
+   "n_runs_same_instance": 5,
+   "qualifying": [],
+   "unconfirmable": [],
+   "present_unflagged_but_stage4": [],
+   "present_flagged": [
+    {
+     "run": "iter8/instances_s1/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "original_no_rewrite_recorded",
+     "BLOCKING_flag_cycles": [
+      1
+     ],
+     "nonblocking_flag_cycles": [
+      1
+     ]
+    }
+   ],
+   "absent_in_final": [
+    {
+     "run": "iter5/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter5/instances_s2/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s1/safety_A4.json",
+     "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    },
+    {
+     "run": "iter6/instances_s2/safety_A4.json",
+     "final_state": "STAGE4_ESCALATION",
+     "final_text_source": "recorded_after_rewrite",
+     "BLOCKING_flag_cycles": [
+      1,
+      2
+     ],
+     "nonblocking_flag_cycles": []
+    }
+   ],
+   "n_qualifying": 0,
+   "n_unconfirmable": 0
+  }
+ ],
+ "B_instance_run_totals": {
+  "bgroup_B4": 5,
+  "hormuz_run03_standard": 23,
+  "meta_run03_standard": 23,
+  "neg1_meta_b3prod_a2": 22,
+  "neg3_hormuz_prodrunner_b1b": 15,
+  "safety_A2A3": 13,
+  "safety_A4": 5
+ },
+ "B_total_runs_of_these_instances": 106,
+ "B_rank_by_qualifying": [
+  [
+   "K11",
+   "neg1_meta_b3prod_a2",
+   19
+  ],
+  [
+   "K12",
+   "neg1_meta_b3prod_a2",
+   19
+  ],
+  [
+   "K13",
+   "neg1_meta_b3prod_a2",
+   19
+  ],
+  [
+   "K02",
+   "hormuz_run03_standard",
+   16
+  ],
+  [
+   "K03",
+   "hormuz_run03_standard",
+   16
+  ],
+  [
+   "K08",
+   "meta_run03_standard",
+   15
+  ],
+  [
+   "K09",
+   "meta_run03_standard",
+   15
+  ],
+  [
+   "K10",
+   "meta_run03_standard",
+   13
+  ],
+  [
+   "K14",
+   "neg3_hormuz_prodrunner_b1b",
+   11
+  ],
+  [
+   "K05",
+   "meta_run03_standard",
+   9
+  ],
+  [
+   "K06",
+   "meta_run03_standard",
+   9
+  ],
+  [
+   "K07",
+   "meta_run03_standard",
+   9
+  ],
+  [
+   "K15",
+   "neg3_hormuz_prodrunner_b1b",
+   7
+  ],
+  [
+   "K17",
+   "neg3_hormuz_prodrunner_b1b",
+   7
+  ],
+  [
+   "K19",
+   "safety_A2A3",
+   7
+  ],
+  [
+   "K04",
+   "meta_run03_standard",
+   5
+  ],
+  [
+   "K18",
+   "safety_A2A3",
+   4
+  ],
+  [
+   "K01",
+   "bgroup_B4",
+   2
+  ],
+  [
+   "K16",
+   "neg3_hormuz_prodrunner_b1b",
+   0
+  ],
+  [
+   "K20",
+   "safety_A4",
+   0
+  ],
+  [
+   "K21",
+   "safety_A4",
+   0
+  ],
+  [
+   "K22",
+   "safety_A4",
+   0
+  ],
+  [
+   "K23",
+   "safety_A4",
+   0
+  ]
+ ],
+ "B2_summary": {
+  "n_kinds": 23,
+  "kinds_with_qualifying": 18,
+  "sum_qualifying_kind_run_pairs": 202,
+  "distinct_runs_with_any_qualifying": 70,
+  "sum_unconfirmable_pairs": 0,
+  "kinds_unconfirmable": []
+ },
+ "C2_all_blocking_rows": 346,
+ "C2_heading_hit_rows": 6,
+ "C2_heading_hit": [
+  {
+   "run": "iter5/instances_s1/bgroup_B4.json",
+   "instance": "bgroup_B4",
+   "cycle": 3,
+   "fact": "MUSE-HC-012",
+   "claim": "“I Thought It Was an AI Call—But There Was a Person Inside?” and “Meta had run a test that produced exactly this kind of surprise.”",
+   "heading_hit": true,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": false,
+   "resolve": "fragments",
+   "heading": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "iter5/instances_s2/bgroup_B4.json",
+   "instance": "bgroup_B4",
+   "cycle": 2,
+   "fact": "MUSE-HC-006",
+   "claim": "“I Thought It Was an AI Call—But There Was a Person Inside?”; “A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.”; “Meta had run a test that produced exactly this kind of surprise.”",
+   "heading_hit": true,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": false,
+   "resolve": "fragments",
+   "heading": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "kind": "K1"
+  },
+  {
+   "run": "iter6/instances_s1/bgroup_B4.json",
+   "instance": "bgroup_B4",
+   "cycle": 3,
+   "fact": "MUSE-HC-006",
+   "claim": "The headline says “I Thought It Was an AI Call—But There Was a Person Inside?” and the opening says, “A call came from an AI agent. That was what it seemed.”",
+   "heading_hit": true,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": false,
+   "resolve": "fragments",
+   "heading": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+   "instance": "neg1_meta_b3prod_a2",
+   "cycle": 2,
+   "fact": "MUSE-HC-006",
+   "claim": "“Meta had run a test that caused exactly this surprise,” reinforced by the headline “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”",
+   "heading_hit": true,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": false,
+   "resolve": "fragments",
+   "heading": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+   "instance": "neg1_meta_b3prod_a2",
+   "cycle": 3,
+   "fact": "MUSE-HC-006",
+   "claim": "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”",
+   "heading_hit": true,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": false,
+   "resolve": "fragments",
+   "heading": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "rep9/instances_s1/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 3,
+   "fact": "HF-009",
+   "claim": "“High Oil Prices Stay” (headline); “oil prices stayed high” (one-line summary).",
+   "heading_hit": true,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": false,
+   "resolve": "fragments",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  }
+ ],
+ "C2_by_instance_fact": {
+  "bgroup_B4|MUSE-HC-006": 2,
+  "bgroup_B4|MUSE-HC-012": 1,
+  "hormuz_run03_standard|HF-009": 1,
+  "neg1_meta_b3prod_a2|MUSE-HC-006": 2
+ },
+ "C2_heading_in_same_fact_locations_only": [
+  {
+   "run": "iter7/instances_s2/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "“Oil prices moved briefly, then returned to a high level.” The headline and one-line summary also state this more broadly as a claim about oil prices generally.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": true,
+   "resolve": "fragments",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "iter7/instances_s2/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K2"
+  },
+  {
+   "run": "rep14/instances_s1/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "Oil prices moved briefly, then returned to a high level.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "rep14/instances_s1/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "Brent futures did not fall across the whole market after the plan was withdrawn.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K2"
+  },
+  {
+   "run": "rep14/instances_s2/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "Oil prices moved briefly, then returned to a high level.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "rep14/instances_s2/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "Brent futures prices did not fall across the whole market after the plan was withdrawn.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K2"
+  },
+  {
+   "run": "rep15/instances_s1/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "Oil prices moved briefly, then returned to a high level.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "rep16/instances_s1/neg1_meta_b3prod_a2.json",
+   "instance": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "fact": "MUSE-HC-006",
+   "claim": "Meta had run a test that caused exactly this surprise.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "RESOLVED_REWRITE",
+   "kind": "K1"
+  },
+  {
+   "run": "rep16/instances_s2/neg1_meta_b3prod_a2.json",
+   "instance": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "fact": "MUSE-HC-006",
+   "claim": "Meta had run a test that caused exactly this surprise.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": false,
+   "resolve": "whole",
+   "heading": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "RESOLVED_REWRITE",
+   "kind": "K1"
+  }
+ ],
+ "C2_position_word_only": [
+  {
+   "run": "iter7/instances_s2/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "“Oil prices moved briefly, then returned to a high level.” The headline and one-line summary also state this more broadly as a claim about oil prices generally.",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": true,
+   "position_word_only": true,
+   "resolve": "fragments",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  },
+  {
+   "run": "rep9/instances_s1/hormuz_run03_standard.json",
+   "instance": "hormuz_run03_standard",
+   "cycle": 2,
+   "fact": "HF-009",
+   "claim": "“Oil prices moved briefly, then returned to a high level”; “oil prices stayed high” (also reflected in the headline).",
+   "heading_hit": false,
+   "heading_in_same_fact_locations": false,
+   "position_word_only": true,
+   "resolve": "fragments",
+   "heading": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "materiality": "BLOCKING",
+   "llm_materiality": "BLOCKING",
+   "floor_reason": null,
+   "final_state": "STAGE4_ESCALATION",
+   "kind": "K1"
+  }
+ ],
+ "C2_ja_title_hit_rows": [],
+ "C2_union_any_heading_touch_rows": 16,
+ "C2_union_by_instance_fact": {
+  "bgroup_B4|MUSE-HC-006": 2,
+  "bgroup_B4|MUSE-HC-012": 1,
+  "hormuz_run03_standard|HF-009": 9,
+  "neg1_meta_b3prod_a2|MUSE-HC-006": 4
+ },
+ "C2_unresolved_none_rows": 34,
+ "C2_ja_claim_rows": 3,
+ "C2_no_en_text_rows": 0,
+ "C2_unresolved_blocking_rows": 37,
+ "C3_headings": {
+  "bgroup_B4": {
+   "en_heading_original": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test",
+   "ja_first_line_of_source_article": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+   "audit_source": "er019_output/family_x_b3_production_wiring_01/run_01/b1b/audit/deviation_checks/advanced_attempt1.json",
+   "ja_title_runtime_evidence": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+   "ja_writer_runtime_evidence_path": "er019_output\\family_x_b3_production_wiring_01\\run_01\\ja_writer\\runtime_evidence.json",
+   "ja_writer_revision2.md_first_line": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+   "ja_writer_revision1.md_first_line": "AIからの電話に出たら、声の主は人間？　Metaの「Muse」で起きた“中の人”問題",
+   "ja_writer_original.md_first_line": "AIに電話を頼んだら、相手は人間だった？　Metaの「Muse」が見せた落とし穴"
+  },
+  "hormuz_run03_standard": {
+   "en_heading_original": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "ja_first_line_of_source_article": "料金案は退場、原油高は居残り",
+   "audit_source": "er019_output/family_x_refresh_e2e_01/hormuz/run_03/a2/audit/deviation_checks/standard_attempt1.json",
+   "ja_title_runtime_evidence": "二十パーセントの料金案、翌日には退場。それでも原油は高値に戻った",
+   "ja_writer_runtime_evidence_path": "er019_output\\family_x_refresh_e2e_01\\hormuz\\run_03\\ja_writer\\runtime_evidence.json",
+   "ja_writer_revision2.md_first_line": "料金案は退場、原油高は居残り",
+   "ja_writer_revision1.md_first_line": "二割の料金案を引っ込めたのに、原油はすぐ元の高値へ",
+   "ja_writer_original.md_first_line": "二割の料金案を消しても、原油高は消えなかった"
+  },
+  "neg1_meta_b3prod_a2": {
+   "en_heading_original": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+   "ja_first_line_of_source_article": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+   "audit_source": "er019_output/family_x_b3_production_wiring_01/run_01/a2/audit/deviation_checks/standard_attempt1.json",
+   "ja_title_runtime_evidence": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+   "ja_writer_runtime_evidence_path": "er019_output\\family_x_b3_production_wiring_01\\run_01\\ja_writer\\runtime_evidence.json",
+   "ja_writer_revision2.md_first_line": "AIからの電話だと思ったら…中に“人”がいた？　MetaのMuseで起きたまさかの展開",
+   "ja_writer_revision1.md_first_line": "AIからの電話に出たら、声の主は人間？　Metaの「Muse」で起きた“中の人”問題",
+   "ja_writer_original.md_first_line": "AIに電話を頼んだら、相手は人間だった？　Metaの「Muse」が見せた落とし穴"
+  }
+ }
+}
