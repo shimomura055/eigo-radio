@@ -343,6 +343,25 @@ JA_MODE = JA_MODE_PAIRED
 VS_STRUCTURAL_LABELS = frozenset({"in one line"})
 VS_EDGE_PUNCT = ".,;:!?"
 
+# 委任_53(2026-10-03、OPEN-233 Checker説明文混入12件の対策、設計書 design_open233_countermeasures_after_
+# handoff_01.md §3、Opus独立レビュー#6 論点6でレビュー済みの形): Trial専用スイッチ、既定"legacy"=現行の挙動のまま。
+# Productionに存在しない。判定基準(何を逸脱とするか・severity・10種類のflag)は変えない。変えるのは
+# 「違反箇所の出力形式」だけ。
+# - "violation_spans": Trial側のStage 1初回・Recheckのschemaから`claim_in_article`を外し、代わりに
+#   `violation_spans`(文字列配列、記事本文の逐語引用だけ。位置の説明・理由・接続語は`issue`/`explanation`へ)を
+#   要求する。受け取り側は各要素を既存の照合(`_resolve_claim_string`、VS_MATCH_EXT=ONならL5・単語境界も)で
+#   要素ごとに確定し、全要素が確定した場合だけ確定とする(1つでも確定不能なら全体を確定不能=人間確認)。
+#   空配列は確定不能(`violation_spans_empty`)。`claim_in_article`(Stage 2への表示・prior_issues・同一判定の
+#   元)はコードが配列から組み立てる(改行区切り)。`same_fact_id_locations`は別のまま(統合しない)。
+#   固定fixture(配列が無い)は既存の`claim_in_article`経路で読む(アダプタ)。
+CHECKER_SPANS_MODE_LEGACY = "legacy"
+CHECKER_SPANS_MODE_VIOLATION_SPANS = "violation_spans"
+CHECKER_SPANS_MODE = CHECKER_SPANS_MODE_LEGACY
+# 配列から組み立てたclaim文字列→要素listの対応(`resolve_violation_spans`が配列経路へ入るための索引)。
+# `claim_text`は多数の関数を文字列のまま渡るため、文字列そのものを鍵にする(組み立ては決定論)。
+_VS_SPANS_REGISTRY: dict = {}
+VS_SPANS_EMPTY_PREFIX = "(violation_spans empty) "
+
 # 委任_30 Part2(design書§0/§9-1「既定構成の確定(要素Trial反映)」):
 # 上位原則「重大誤解原則」(2026-10-01ユーザー指示)をStage1/Stage2(body)/
 # Hook専用Stage2の既定経路へ実配線する。委任_27〜29の要素Trial(Hormuz
@@ -1177,6 +1196,63 @@ def build_deviation_schema_with_enumeration(item_schema: dict) -> dict:
     return {"type": "object", "properties": props, "required": required, "additionalProperties": False}
 
 
+# 委任_53: 違反箇所の出力形式(Trial専用追記ブロック、`CHECKER_SPANS_MODE="violation_spans"`のときだけ
+# Stage 1初回・Recheckの両方のPromptへ追記する)。設計書§3-2(委任_48修正版)の文面。「文の一部だけが
+# 問題でも、その語句を含む文全体を引用」の行は使わない(最初から文全体Rewriteへ広げないため)。
+# 判定基準(何を逸脱とするか、severity、10種類のflag)には触れない。
+VIOLATION_SPANS_INSTRUCTION = """
+
+【追加指示: 違反箇所の書き方(Trial専用。判定基準は変えない)】
+この指示は「違反箇所の書き方」だけに関するものです。どの箇所をdeviationとして報告するか、severityや10種類のフラグの判定基準は変えないでください。ここでいう逐語は【検証対象の記事】本文からの引用であり、Ledgerとの文言一致の話ではありません。引用は英語の記事本文からのみ行ってください。
+各deviationについて、"violation_spans"(文字列の配列)に、その逸脱に該当する箇所を、記事本文から一字一句そのまま引用してください。要約・言い換え・勝手な結合は禁止です。複数箇所なら、別々の原文範囲として、箇所ごとに別の配列要素にしてください。
+- 各要素は、記事本文をそのままコピーした文字列にします。語の置換・語順変更・省略(…や...)・翻訳・要約はしません。
+- 文の一部だけが問題の場合は、その語句・節だけを引用してかまいません(文全体に広げる必要はありません)。ただし、引用は記事内でちょうど1箇所に定まる長さにしてください。同じ語句が記事内の別の場所にも出てくる場合は、前後の語を足して1箇所に定まるようにしてください(足すのは問題の語句の前後の連続した語だけで、説明や接続語は入れないでください)。
+- どの語句が問題かはissueに書いてください。
+- 大文字・小文字、句読点、アポストロフィ、ダッシュ、空白を変えないでください。文末の句読点を補ったり別の記号に替えたりしないでください(記事で「,」や「:」が続くところを「.」で終えない)。引用符(“ ”)で囲まないでください。見出しは先頭の「#」を除いた文字列で引用してください。
+- 位置の説明(「見出し」「冒頭」「段落5」「…で始まる段落」など)、あなた自身の説明文、接続語(and / および 等)を、各要素に入れないでください。位置や理由はissue・explanationに書いてください。
+- 見出し・冒頭文・"In one line"が同じ事実を主張しているなら、それぞれ別の要素として、本文のとおりに引用してください。
+- 離れた複数箇所は1つの文字列につなげず、別々の要素にしてください。間にある逸脱でない文は含めないでください。連続した複数文が1つの逸脱を構成する場合に限り、記事のとおり連続した1要素にしてください。
+- 該当箇所を記事本文の特定の文字列として指せない場合(記事全体の含意など)は、violation_spansを空配列にし、issueにその理由を書いてください。推測で引用を作らないでください。引用できないことを理由に、deviationの報告を省略しないでください。"""
+
+
+def build_deviation_schema_with_spans(item_schema: dict) -> dict:
+    """委任_53: deviation item schemaから`claim_in_article`を外し、`violation_spans`(文字列配列)を足す
+    (`build_deviation_schema_with_enumeration`と同じ「ローカルにコピーして拡張する」手口。er003・er051は
+    変更しない)。strictモードなので全propertyをrequiredへ入れる。"""
+    props = {k: v for k, v in item_schema["properties"].items() if k != "claim_in_article"}
+    props["violation_spans"] = {"type": "array", "items": {"type": "string"}}
+    required = [k for k in item_schema["required"] if k != "claim_in_article"] + ["violation_spans"]
+    return {"type": "object", "properties": props, "required": required, "additionalProperties": False}
+
+
+def assemble_claim_from_violation_spans(deviation: dict) -> dict:
+    """委任_53: `violation_spans`(配列)を持つdeviationの`claim_in_article`を、コードが配列から組み立てる
+    (要素を改行で連結)。組み立てた文字列と要素listの対応を`_VS_SPANS_REGISTRY`へ登録し、
+    `resolve_violation_spans`が配列経路(要素ごとの照合)へ入れるようにする。空配列は、Stage 2への表示用に
+    `issue`を添えた文字列にし(確定は`violation_spans_empty`で不能=人間確認)、配列が無いdeviation
+    (固定fixture)は何もしない(既存の`claim_in_article`経路)。"""
+    spans = deviation.get("violation_spans")
+    if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_VIOLATION_SPANS or not isinstance(spans, list):
+        return deviation
+    elems = [(s if isinstance(s, str) else "").strip() for s in spans]
+    if not elems:
+        text = (VS_SPANS_EMPTY_PREFIX + (deviation.get("issue") or "")).strip()
+    else:
+        text = "\n".join(elems)
+    _VS_SPANS_REGISTRY[text.strip()] = elems
+    d2 = dict(deviation)
+    d2["claim_in_article"] = text
+    d2["claim_assembled_from_violation_spans"] = True
+    return d2
+
+
+def adopt_violation_spans(deviations: list) -> list:
+    """委任_53: deviations全体へ`assemble_claim_from_violation_spans`を適用する(legacyでは恒等)。"""
+    if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_VIOLATION_SPANS:
+        return deviations
+    return [assemble_claim_from_violation_spans(d) for d in deviations]
+
+
 def expand_same_fact_id_locations(deviations: list, article_text: str) -> list:
     """委任_20 W2: 各deviationの`same_fact_id_locations`を、独立した追加
     deviationへ展開する(¥0・決定論)。展開後は既存の複数claim処理
@@ -1203,6 +1279,10 @@ def expand_same_fact_id_locations(deviations: list, article_text: str) -> list:
             if loc_s not in article_text:
                 continue  # fail-closed: 逐語で実在しない候補は採用しない
             new_dev = dict(d)
+            # 委任_53: 展開された別箇所のdeviationは、元の`violation_spans`(その逸脱の範囲)を引き継がない
+            # (`same_fact_id_locations`は別のまま、既存の`claim_in_article`経路で照合する)。legacyではキー自体が無い。
+            new_dev.pop("violation_spans", None)
+            new_dev.pop("claim_assembled_from_violation_spans", None)
             new_dev["claim_in_article"] = loc_s
             new_dev["detected_by_enumeration"] = True
             new_dev["enumeration_source_claim"] = (d.get("claim_in_article") or "").strip()
@@ -1343,6 +1423,9 @@ def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, l
     prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
     item_schema = build_deviation_schema_with_enumeration(
         trial.build_trial_deviation_item_schema(True, include_origin))
+    if CHECKER_SPANS_MODE == CHECKER_SPANS_MODE_VIOLATION_SPANS:  # 委任_53(既定OFF)
+        prompt += VIOLATION_SPANS_INSTRUCTION
+        item_schema = build_deviation_schema_with_spans(item_schema)
     schema = {
         "name": "open233_self_recovery_stage1_v4a_enum",
         "schema": {"type": "object", "properties": {"deviations": {"type": "array", "items": item_schema}},
@@ -1372,6 +1455,7 @@ def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, l
     raw_parsed = json.loads(response.output_text)
     parsed = vfl01._apply_deviation_post_hoc_validation(raw_parsed)
     parsed_trial = trial.classify_parsed_result_trial(parsed, "V4A")
+    parsed_trial["deviations"] = adopt_violation_spans(parsed_trial["deviations"])  # 委任_53(legacyでは恒等)
     parsed_trial["deviations"] = expand_same_fact_id_locations(parsed_trial["deviations"], fixture["article_text"])
     usage = s2p._extract_usage(response)
     cost = round(s2p.official_cost_jpy(usage), 4)
@@ -1512,6 +1596,8 @@ def build_recheck_schema(include_related_fact_id: bool, include_origin: bool) ->
     # 追加callなし)。
     item_schema = build_deviation_schema_with_enumeration(
         trial.build_trial_deviation_item_schema(include_related_fact_id, include_origin))
+    if CHECKER_SPANS_MODE == CHECKER_SPANS_MODE_VIOLATION_SPANS:  # 委任_53(既定OFF)
+        item_schema = build_deviation_schema_with_spans(item_schema)
     props = {"deviations": {"type": "array", "items": item_schema},
               "prior_issues_resolved": {"type": "array", "items": vfl01.PRIOR_ISSUE_RESOLVED_ITEM_SCHEMA}}
     required = ["deviations", "prior_issues_resolved"]
@@ -1547,6 +1633,8 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     prompt += vfl01.build_prior_issues_instruction(prior_issues)
     if enable_fact_id_enumeration:
         prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
+    if CHECKER_SPANS_MODE == CHECKER_SPANS_MODE_VIOLATION_SPANS:  # 委任_53(既定OFF、schemaは下で差し替え)
+        prompt += VIOLATION_SPANS_INSTRUCTION
     schema = build_recheck_schema(True, include_origin)
 
     last_err = None
@@ -1575,6 +1663,7 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     raw_parsed = json.loads(response.output_text)
     parsed = vfl01._apply_deviation_post_hoc_validation(raw_parsed)
     parsed_trial = trial.classify_parsed_result_trial(parsed, "V4A")
+    parsed_trial["deviations"] = adopt_violation_spans(parsed_trial["deviations"])  # 委任_53(legacyでは恒等)
     # 委任_20 W2(委任_35で既定False化、§6-16): Recheckが検出した同一
     # fact_id別箇所の展開は、enable_fact_id_enumeration=True明示時のみ行う。
     if enable_fact_id_enumeration:
@@ -3045,6 +3134,60 @@ def vs_merge_spans(spans: list, text: str) -> list:
 
 
 def resolve_violation_spans(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
+    """委任_53: 入口。`CHECKER_SPANS_MODE="violation_spans"`で、`claim_text`が
+    `assemble_claim_from_violation_spans`が配列から組み立てた文字列なら、配列の各要素を
+    `_resolve_claim_string`(委任_42の照合そのまま)で要素ごとに確定し、全要素が確定したときだけ確定
+    (`_resolve_spans_array`)。それ以外(legacy・固定fixture・same_fact_id_locationsの展開文字列)は
+    従来どおり`_resolve_claim_string`(挙動不変)。"""
+    if CHECKER_SPANS_MODE == CHECKER_SPANS_MODE_VIOLATION_SPANS:
+        key = (claim_text or "").strip()
+        if key in _VS_SPANS_REGISTRY:
+            return _resolve_spans_array(claim_text, _VS_SPANS_REGISTRY[key], en_text, ja_text)
+    return _resolve_claim_string(claim_text, en_text, ja_text)
+
+
+def _resolve_spans_array(claim_text: str, elems: list, en_text: str | None, ja_text: str | None) -> dict:
+    """委任_53 設計書§3-1: 配列の各要素を既存の照合で確定する。1要素でも確定不能なら全体を確定不能
+    (fail-closed、`reason`は要素の理由、`failed_span_index`・`reason_detail`に要素番号)。空配列は
+    `violation_spans_empty`。要素ごとの結果は`array_elements`に残す(集計用)。確定した範囲は同じ言語の
+    本文で記事順に結合する(`vs_merge_spans`)。言語が要素で割れた場合は確定不能(`mixed_lang`)。"""
+    out = {"status": "unverified", "reason": None, "claim_text": claim_text, "lang": None, "level": None,
+           "ranges": [], "spans": [], "raw_spans": [], "per_lang": {}, "both_langs_ok": False,
+           "from_violation_spans": True, "array_elements": []}
+    if not elems:
+        out["reason"] = "violation_spans_empty"
+        return out
+    results = []
+    for i, e in enumerate(elems):
+        r = _resolve_claim_string(e, en_text, ja_text)
+        results.append(r)
+        out["array_elements"].append({"index": i, "text": e, "status": r["status"], "reason": r.get("reason"),
+                                       "lang": r.get("lang"), "level": r.get("level")})
+    bad = next((i for i, r in enumerate(results) if r["status"] != "resolved"), None)
+    if bad is not None:
+        out["reason"] = results[bad].get("reason") or "mismatch"
+        out["failed_span_index"] = bad
+        out["reason_detail"] = f"span[{bad}]:{out['reason']}"
+        if results[bad].get("detail"):
+            out["detail"] = results[bad]["detail"]
+        return out
+    langs = {r["lang"] for r in results}
+    if len(langs) != 1:
+        out["reason"] = "mixed_lang"
+        out["reason_detail"] = "span_langs:" + ",".join(str(r["lang"]) for r in results)
+        return out
+    lang = langs.pop()
+    text = en_text if lang == "EN" else ja_text
+    raw = [sp for r in results for sp in r["raw_spans"]]
+    merged = vs_merge_spans(raw, text)
+    out.update({"status": "resolved", "lang": lang, "level": "SPANS:" + ",".join(str(r["level"]) for r in results),
+                "raw_spans": raw, "spans": merged, "ranges": [text[a:b] for a, b in merged],
+                "both_langs_ok": all(r["both_langs_ok"] for r in results),
+                "per_lang": results[0]["per_lang"], "stripped": any(r.get("stripped") for r in results)})
+    return out
+
+
+def _resolve_claim_string(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
     """委任_42 仕様(1): Checkerの`claim_text`だけを入力に、記事側の範囲を確定する
     (再推測ではなく照合)。類似度・単語重なり・判定役の引用・位置比は使わない。
     返値: {"status": "resolved"|"unverified", "lang": "EN"|"JA"|None,
@@ -5293,7 +5436,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) for c in call_log), 4),
             "total_calls": len(call_log), "elapsed_seconds": elapsed,
             # 委任_49 作業2(記録専用)
-            "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE},
+            "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
+                         **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -5970,7 +6114,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) for c in call_log), 4),
         "total_calls": len(call_log), "elapsed_seconds": elapsed,
         # 委任_49 作業2(記録専用。合否・重大度・書き換え対象の決定には使わない)
-        "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE},
+        "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
+                         **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
@@ -6731,9 +6876,13 @@ def main():
                          help="委任_49: 照合の追補(L5末尾句読点・位置ラベル・単語境界)を有効化(既定OFF=委任_42の照合)")
     parser.add_argument("--ja-mode", default=JA_MODE_PAIRED, choices=[JA_MODE_PAIRED, JA_MODE_ENGLISH_ONLY],
                          help="委任_49: english_onlyで日本語側の処理を迂回(既定paired=現行)")
+    parser.add_argument("--checker-spans-mode", default=CHECKER_SPANS_MODE_LEGACY,
+                         choices=[CHECKER_SPANS_MODE_LEGACY, CHECKER_SPANS_MODE_VIOLATION_SPANS],
+                         help="委任_53: violation_spansでCheckerの違反箇所を配列で受ける(既定legacy=現行)")
     args = parser.parse_args()
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
     globals()["JA_MODE"] = args.ja_mode
+    globals()["CHECKER_SPANS_MODE"] = args.checker_spans_mode
     selected_groups = {g.strip() for g in args.groups.split(",") if g.strip()}
     selected_instance_ids = (
         {s.strip() for s in args.instance_ids.split(",") if s.strip()} if args.instance_ids else None

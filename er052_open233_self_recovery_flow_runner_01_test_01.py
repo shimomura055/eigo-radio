@@ -5154,5 +5154,203 @@ class TestRecordsOnly49(unittest.TestCase):
         self.assertEqual(res2["en_title_changes"], [])
 
 
+
+# 委任_53: 違反箇所の出力形式(CHECKER_SPANS_MODE="violation_spans"、Trial専用、既定OFF)のテスト。
+# U01〜U13は委任_45 §2の13種類(Checkerが実際に返した文字列、記事は§2に記載の該当箇所)。
+_ART_META53 = ("# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test\n\n"
+               "Ring, ring... A call came from an AI agent. That was what it seemed. But while the conversation "
+               "continued, the voice on the other end was not AI. It was a person.\n\n"
+               "Meta had run a test that produced exactly this kind of surprise.\n\n## In one line\nA short summary.")
+_ART_SAFETY53 = ("# A Title\n\nAn AI called. That was what people thought as they spoke. But a human appeared from "
+                 "behind the scenes.\n\nSo people who thought they were speaking with AI were actually speaking "
+                 "with human staff.")
+_ART_NEG53 = ("# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\n"
+              "Meta had run a test that caused exactly this surprise.\n\n## In one line\nA short summary.")
+_ART_HORMUZ53 = ("# The Fee Plan Leaves, But High Oil Prices Stay\n\n"
+                 "Oil prices moved briefly, then returned to a high level.\n\n## In one line\n"
+                 "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.")
+_HEAD_META53 = "I Thought It Was an AI Call—But There Was a Person Inside?"
+_OPEN_META53 = "A call came from an AI agent. That was what it seemed."
+_OPEN_META_FULL53 = ("A call came from an AI agent. That was what it seemed. But while the conversation continued, "
+                     "the voice on the other end was not AI. It was a person.")
+# (記事, 実際に混入したChecker文字列, 配列で返った場合の正しい要素)
+_CASES53 = {
+    "U01": (_ART_META53,
+            "“" + _OPEN_META_FULL53 + "” Meta’s test “produced exactly this kind of surprise.”",
+            [_OPEN_META_FULL53, "Meta had run a test that produced exactly this kind of surprise."]),
+    "U02": (_ART_SAFETY53,
+            "“people who thought they were speaking with AI were actually speaking with human staff”"
+            "および冒頭の「That was what people thought as they spoke.」",
+            ["people who thought they were speaking with AI were actually speaking with human staff",
+             "That was what people thought as they spoke."]),
+    "U06": (_ART_SAFETY53,
+            "“That was what people thought as they spoke.” The opening also presents the call as one people "
+            "believed was from an AI.",
+            ["That was what people thought as they spoke."]),
+    "U08": (_ART_META53,
+            "The headline says “" + _HEAD_META53 + "” and the opening says, “" + _OPEN_META53 + "”",
+            [_HEAD_META53, _OPEN_META53]),
+    "U09": (_ART_NEG53,
+            "“Meta had run a test that caused exactly this surprise,” reinforced by the headline “We Thought It "
+            "Was AI—But There Was a Person Inside Meta’s Muse.”",
+            ["Meta had run a test that caused exactly this surprise.",
+             "We Thought It Was AI—But There Was a Person Inside Meta’s Muse"]),
+    "U10": (_ART_NEG53,
+            "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”",
+            ["We Thought It Was AI—But There Was a Person Inside Meta’s Muse"]),
+    "U11": (_ART_HORMUZ53,
+            "“Oil prices moved briefly, then returned to a high level.” The headline and one-line summary also "
+            "state this more broadly as a claim about oil prices generally.",
+            ["Oil prices moved briefly, then returned to a high level.", "The Fee Plan Leaves, But High Oil Prices Stay",
+             "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued."]),
+    "U12": (_ART_HORMUZ53,
+            "“Oil prices moved briefly, then returned to a high level”; “oil prices stayed high” (also reflected "
+            "in the headline).",
+            ["Oil prices moved briefly, then returned to a high level", "oil prices stayed high"]),
+    "U13": (_ART_HORMUZ53,
+            "“High Oil Prices Stay” (headline); “oil prices stayed high” (one-line summary).",
+            ["High Oil Prices Stay", "oil prices stayed high"]),
+}
+
+
+class TestCheckerSpansFormat53(unittest.TestCase):
+    def setUp(self):
+        runner._VS_SPANS_REGISTRY.clear()
+        self._p1 = mock.patch.object(runner, "CHECKER_SPANS_MODE", "violation_spans")
+        self._p2 = mock.patch.object(runner, "VS_MATCH_EXT", True)
+        self._p1.start()
+        self._p2.start()
+
+    def tearDown(self):
+        self._p2.stop()
+        self._p1.stop()
+        runner._VS_SPANS_REGISTRY.clear()
+
+    def _resolve_array(self, article, elems, issue="issue text"):
+        dev = {"violation_spans": list(elems), "issue": issue, "severity": "MAJOR"}
+        d2 = runner.assemble_claim_from_violation_spans(dev)
+        return d2, runner.resolve_violation_spans(d2["claim_in_article"], article, None)
+
+    def test_default_is_legacy(self):
+        self._p1.stop()
+        try:
+            self.assertEqual(runner.CHECKER_SPANS_MODE, "legacy")
+        finally:
+            self._p1.start()
+
+    def test_u01_to_u13_correct_array_elements_resolve_per_element(self):
+        for uid, (art, _mixed, elems) in _CASES53.items():
+            with self.subTest(uid=uid):
+                d2, res = self._resolve_array(art, elems)
+                self.assertEqual(res["status"], "resolved", (uid, res.get("reason"), res.get("array_elements")))
+                self.assertEqual(len(res["array_elements"]), len(elems))
+                self.assertTrue(all(e["status"] == "resolved" for e in res["array_elements"]))
+                self.assertEqual(d2["claim_in_article"], "\n".join(elems))
+                # 確定範囲は各要素そのもの(記事順)。複数範囲は複数範囲のまま(段落をまたいで結合しない)。
+                for e in elems:
+                    self.assertTrue(any(e in r or r == e for r in res["ranges"]), (uid, e, res["ranges"]))
+
+    def test_u01_to_u13_explanation_mixed_element_is_unverified(self):
+        # 説明文・位置ラベル・接続語・日本語のつなぎが混じった文字列が1要素として返った場合は確定不能
+        for uid, (art, mixed, _elems) in _CASES53.items():
+            with self.subTest(uid=uid):
+                _d2, res = self._resolve_array(art, [mixed])
+                self.assertEqual(res["status"], "unverified", uid)
+                self.assertEqual(res["failed_span_index"], 0)
+                self.assertTrue(res["reason_detail"].startswith("span[0]:"))
+
+    def test_one_bad_element_makes_all_unverified_with_index(self):
+        art, _m, elems = _CASES53["U13"]
+        _d2, res = self._resolve_array(art, [elems[0], "not in the article at all"])
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "mismatch")
+        self.assertEqual(res["failed_span_index"], 1)
+        self.assertEqual(res["reason_detail"], "span[1]:mismatch")
+        self.assertEqual(res["array_elements"][0]["status"], "resolved")
+
+    def test_multi_match_element_is_unverified(self):
+        art = "A cat sat. A cat ran away.\n\nOther text."
+        _d2, res = self._resolve_array(art, ["A cat"])
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "multi_match")
+        self.assertEqual(res["failed_span_index"], 0)
+
+    def test_empty_array_is_unverified_human_review(self):
+        d2, res = self._resolve_array(_ART_META53, [], issue="whole-article implication")
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["reason"], "violation_spans_empty")
+        # Stage 2への表示にはissueを添える(確定には使わない)
+        self.assertIn("whole-article implication", d2["claim_in_article"])
+
+    def test_blank_element_is_unverified(self):
+        _d2, res = self._resolve_array(_ART_META53, [_OPEN_META53, "  "])
+        self.assertEqual(res["status"], "unverified")
+        self.assertEqual(res["failed_span_index"], 1)
+
+    def test_fixture_without_array_uses_claim_in_article_path(self):
+        dev = {"claim_in_article": _OPEN_META53, "issue": "x"}
+        self.assertIs(runner.assemble_claim_from_violation_spans(dev), dev)
+        self.assertEqual(runner.adopt_violation_spans([dev]), [dev])
+        res = runner.resolve_violation_spans(_OPEN_META53, _ART_META53, None)
+        self.assertEqual(res, runner._resolve_claim_string(_OPEN_META53, _ART_META53, None))
+        self.assertEqual(res["status"], "resolved")
+        self.assertNotIn("from_violation_spans", res)
+
+    def test_legacy_mode_unchanged(self):
+        self._p1.stop()
+        try:
+            dev = {"violation_spans": [_OPEN_META53], "claim_in_article": "orig", "issue": "x"}
+            self.assertIs(runner.assemble_claim_from_violation_spans(dev), dev)
+            self.assertEqual(runner.adopt_violation_spans([dev]), [dev])
+            self.assertEqual(runner._VS_SPANS_REGISTRY, {})
+            for uid, (art, mixed, _e) in _CASES53.items():
+                self.assertEqual(runner.resolve_violation_spans(mixed, art, None),
+                                 runner._resolve_claim_string(mixed, art, None), uid)
+        finally:
+            self._p1.start()
+
+    def test_same_fact_id_locations_stay_separate_and_drop_array(self):
+        art = _ART_HORMUZ53
+        dev = {"violation_spans": ["Oil prices moved briefly, then returned to a high level."], "issue": "i",
+               "same_fact_id_locations": ["The Fee Plan Leaves, But High Oil Prices Stay"]}
+        out = runner.expand_same_fact_id_locations(runner.adopt_violation_spans([dev]), art)
+        self.assertEqual(len(out), 2)
+        self.assertEqual(out[1]["claim_in_article"], "The Fee Plan Leaves, But High Oil Prices Stay")
+        self.assertNotIn("violation_spans", out[1])
+        self.assertTrue(out[1]["detected_by_enumeration"])
+        self.assertTrue(out[0]["claim_assembled_from_violation_spans"])
+
+    def test_schema_swap_and_recheck_schema(self):
+        item = trial.build_trial_deviation_item_schema(True, False)
+        enum_item = runner.build_deviation_schema_with_enumeration(item)
+        self.assertIn("claim_in_article", enum_item["properties"])
+        sp = runner.build_deviation_schema_with_spans(enum_item)
+        self.assertNotIn("claim_in_article", sp["properties"])
+        self.assertNotIn("claim_in_article", sp["required"])
+        self.assertEqual(sp["properties"]["violation_spans"], {"type": "array", "items": {"type": "string"}})
+        self.assertIn("violation_spans", sp["required"])
+        self.assertIn("same_fact_id_locations", sp["properties"])
+        self.assertEqual(set(sp["properties"]), set(sp["required"]))
+        rs = runner.build_recheck_schema(True, False)
+        rs_item = rs["schema"]["properties"]["deviations"]["items"]
+        self.assertIn("violation_spans", rs_item["properties"])
+        self.assertNotIn("claim_in_article", rs_item["properties"])
+        self._p1.stop()
+        try:
+            rs0 = runner.build_recheck_schema(True, False)["schema"]["properties"]["deviations"]["items"]
+            self.assertIn("claim_in_article", rs0["properties"])
+            self.assertNotIn("violation_spans", rs0["properties"])
+        finally:
+            self._p1.start()
+
+    def test_instruction_text_policy(self):
+        ins = runner.VIOLATION_SPANS_INSTRUCTION
+        self.assertNotIn("その語句を含む文全体", ins)
+        self.assertIn("ちょうど1箇所", ins)
+        self.assertIn("英語の記事本文からのみ", ins)
+        self.assertIn("空配列", ins)
+        self.assertIn("判定基準は変えない", ins)
+
+
 if __name__ == "__main__":
     unittest.main()
