@@ -45,6 +45,18 @@ MATERIALITY_RUBRIC = """【材料性(materiality)の判定基準】
   背景説明・条件付きの一般論にとどまる。
 - 上記のどれに該当するか迷う場合は、BLOCKINGとしてください(fail-closed)。"""
 
+# 委任_55(2026-10-03、ユーザー決定=線引きの正式採用、`APPROVED_FOR_PRODUCTION`、
+# `PRODUCTION_WIRED`未達): 上記`MATERIALITY_RUBRIC`の末尾「迷う場合はBLOCKING
+# (fail-closed)」を、「重大な誤解になるかで決める」へ置き換えた版。旧版
+# (`MATERIALITY_RUBRIC`)は定数として残す。QUALITYの「動機の帰属」は変更しない。
+_V7_OLD_TIEBREAK = "- 上記のどれに該当するか迷う場合は、BLOCKINGとしてください(fail-closed)。"
+_V7_NEW_TIEBREAK = """- 上記のどれに該当するか迷う場合は、読者(英語学習者)がこの文を信じたときに事実関係の
+  重大な誤解につながるかで決めてください。つながるならBLOCKING、つながらないならQUALITY
+  としてください。数値・主体・否定・比較・時期の差は、この原則の対象外で、従来どおり
+  機械的にBLOCKINGとします。"""
+MATERIALITY_RUBRIC_V7 = MATERIALITY_RUBRIC.replace(_V7_OLD_TIEBREAK, _V7_NEW_TIEBREAK)
+assert MATERIALITY_RUBRIC_V7 != MATERIALITY_RUBRIC
+
 REWRITE_HINT_INSTRUCTION = """
 【rewrite_hint(委任_10で追加)】
 materialityがBLOCKINGの場合のみ、rewrite_hintに以下を全て含めてください:
@@ -242,7 +254,7 @@ def run_stage2_per_claim(client, verified_ledger_text: str, source_article_text:
         local_context=local_context,
         origin=origin or "(不明)",
         related_fact_id=related_fact_id or "(不明)",
-        materiality_rubric=MATERIALITY_RUBRIC,
+        materiality_rubric=MATERIALITY_RUBRIC_V7,
         rewrite_hint_instruction=REWRITE_HINT_INSTRUCTION,
     )
     t0 = time.time()
@@ -281,7 +293,7 @@ def run_stage2_batch(client, verified_ledger_text: str, source_article_text: str
         verified_ledger_text=verified_ledger_text,
         source_article_text=source_article_text or "(なし)",
         claims_block=claims_block,
-        materiality_rubric=MATERIALITY_RUBRIC,
+        materiality_rubric=MATERIALITY_RUBRIC_V7,
         rewrite_hint_instruction=REWRITE_HINT_INSTRUCTION,
     )
     t0 = time.time()

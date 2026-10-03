@@ -3708,6 +3708,35 @@ Production(er003/er006/er009/er010/er012/er019)・既存iteration/rep
 Production導入を検討される際に解消すべき既知のSafety側残存リスクとして
 記録する。
 
+### 7-0-iter33. 線引きの正式採用に伴う正解ラベル更新(委任_55、2026-10-03ユーザー決定[2回目]、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)
+
+ユーザー決定(`DECISION_LOG.md`末尾)で「重大/軽微/問題なし」の線引きが正式採用された(基準文言は`docs/pm/open233_materiality_criteria_2026-10-03.md` 5節)。これに伴い、**上記7-0〜7-0-iter29のラベルは歴史的記録として変更せず**、本節が委任_55(2026-10-03)以降の現行の正解ラベルである。旧ラベルは「旧: …(〜2026-10-02)」として残す。分類の根拠は再分類doc(`docs/pm/open233_missed_candidates_reclassification_2026-10-03.md`)の表(K01〜K23)を正とする。
+
+| claim | 現行ラベル(2026-10-03〜) | 旧ラベル(〜2026-10-02) | 根拠 |
+|---|---|---|---|
+| Meta-1/Meta-2(MUSE-HC-010/HC-012「Also, some calls needed user information to continue.」、K04) | **QUALITY(軽微)**(ユーザー決定、例1) | 旧: BLOCKING(Safety-critical、§7-0-iter29) | 共有は`might`で留保、懸念の主体はMeta従業員のまま。`SAFETY_CRITICAL_SUB_IDS`から除外(8件→6件)、runner `SAFETY_CRITICAL_CLAIM_DEFS`では`expected: "QUALITY"`の過剰品質監視用 |
+| MUSE-HC-012「They enjoyed AI’s convenience, but a human was on the other end. …」(K10) | **ACCEPTABLE(問題なし)**(ユーザー決定、例2) | 旧: BLOCKING(Checker指摘、旧判定。QUALITYとの境界) | 確認済みFactから自然に導かれる利用者の状態の描写で、新しい具体的事実を追加しない(否定形・肯定形を問わない) |
+| HF-009「Just after the charge plan disappeared, prices began to fall.」(K19) | **QUALITY(軽微)**(ユーザー決定) | 旧: BLOCKING(境界。再分類docで重大(境界)) | 核心(いったん値動きがあり、すぐ高い水準へ戻った)は保たれ、表現の精度が少し落ちるだけ。注意: 機械floor(`changed_comparison`)は不変のため、Checkerがcomparisonフラグを立てた場合はfloorでBLOCKINGに引き上げられる(下記「食い違いの残り」) |
+| K01(bgroup_B4 / HC-006) | ACCEPTABLE | 旧: BLOCKING(LLMのみ) | 再分類doc |
+| K02/K03(hormuz HF-009、一般化・言い換え) | QUALITY | 旧: BLOCKING | 再分類doc |
+| K05〜K07(HC-011、単数→複数形、境界) | QUALITY(境界) | 旧: BLOCKING(floor/number) | 再分類doc。同じ段落が件数を固定しているため軽微。単複を数量変更とみなすかは未決(再分類doc 2-3節) |
+| K08/K09(HC-012、floorのみactor) | ACCEPTABLE | 旧: BLOCKING | 再分類doc(floorは不変のためfloorで引き上げられる実行は残る) |
+| K11(neg1 HC-012「A Meta executive admitted the mistake…」) | QUALITY | 旧: BLOCKING | 再分類doc |
+| K12/K13(neg1 HC-012) | ACCEPTABLE | 旧: BLOCKING | 再分類doc |
+| K14/K15(neg3、floorのみ) | ACCEPTABLE | 旧: BLOCKING | 再分類doc |
+| K17(neg3 HF-009) | QUALITY | 旧: BLOCKING | 再分類doc |
+| K23(HC-012「An AI called. That was what people thought…」) | ACCEPTABLE | 旧: BLOCKING | 再分類doc |
+| K16(neg3 HF-009「…the events driving oil prices—and the prices themselves—quickly returned.」) | **BLOCKING**(変更なし、見逃し0) | BLOCKING | 再分類doc |
+| K18(A2A3-0、HF-003、支払う側の特定) | **BLOCKING**(変更なし) | BLOCKING | 再分類doc。V6が明示的にBLOCKING |
+| K20〜K22(B4-a型、動機・機構の新規主張) | **BLOCKING**(境界、変更なし) | BLOCKING | 新しい具体的事実の追加(V7(1)(イ)で拾う) |
+| B2(HF-009 因果連結"so") | QUALITY(変更なし) | QUALITY | — |
+| B3(HF-007 因果"so")・A2A3-0・A4-0・A4-1・A5-0・B4-a・Safety12 | BLOCKING(変更なし) | BLOCKING | Safety-critical 6件+Safety12は不変 |
+
+**食い違いの残り(報告事項、勝手に直していない)**:
+1. K19: ユーザー決定はQUALITYだが、`changed_comparison`のfloor(`FLOOR_FLAGS`)は不変のため、Checkerがcomparisonフラグを立てるとLLM判定がQUALITYでもfloorでBLOCKINGになる(ユーザー指示「数値・主体・否定・比較・時期の機械的な安全装置は緩めない」を優先)。K19をfloorの対象から外すかはユーザー判断事項。
+2. 「動機の帰属=QUALITY」(production `MATERIALITY_RUBRIC`)と§0-2・K20〜K22(動機の創作=重大)の食い違いは未解消(V7(1)(イ)で「新しい具体的事実の追加」として拾う設計。委任_55 3-4)。
+3. 決定論的な降格(`DISCLOSURE_GAP_NEGATION_RE`)は否定形限定のまま(肯定形の許容はrubric本文のみ)。
+
 ### 7-1. Safety群(Stage 1/2で必ずBLOCKING維持、その後Rewrite→PASSが期待到達経路)
 
 | fixture | 正解ラベル | 理由(floor/rubric) | 期待到達経路 |
@@ -3716,7 +3745,7 @@ Production導入を検討される際に解消すべき既知のSafety側残存�
 | er009_changed_scope/causality/certainty/unsupported_new_claim(4種) | BLOCKING | floor対象外だがrubric基準1(Ledgerとの明示矛盾)に該当 | S1 BLOCK→S2 rubric判定でBLOCKING→S3 Rewrite→S1 Recheck→PASS |
 | A2A3/A4/A5(実データ、価格反転・対象取り違え・意味反転) | BLOCKING | rubric基準1(Ledger矛盾) | 同上 |
 | hormuz_run03_standard(HF-009 changed_scope) | BLOCKING(Confirmed) | rubric「scopeと矛盾」該当(Brent先物→市場全体への一般化) | S1 BLOCK(recall問題あり、§10リスク6/§14)→S2 rubric判定でBLOCKING→S3局所Rewrite→S1 Recheck→PASS |
-| Meta_run03_standard(negative control) | BLOCKING | rubric基準1 | 同上 |
+| Meta_run03_standard(negative control) | **QUALITY(ユーザー決定2026-10-03、§7-0-iter33)**。旧: BLOCKING(〜2026-10-02) | 旧: rubric基準1。新: 線引きの正式採用(例1=軽微) | S1 BLOCK→S2 QUALITY通過(Rewriteしない) |
 
 ### 7-2. QUALITY群(Stage 2でQUALITY通過が期待、Rewrite不要、ただし要観察ログ)
 

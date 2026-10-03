@@ -62,3 +62,59 @@
 
 - 未精査: Hook専用rubric(`er052_open233_self_recovery_stage2_hook_01.py`、`HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V4`)は本委任の事前指定Readに無く、内容を読んでいない。(ii)hookの扱いとの整合は未確認。
 - 一覧外のRead/確認: `er052_open233_self_recovery_flow_runner_01.py`の`build_target_instances()`をimportして呼び出し(fixtureの`ledger_text`取得、API呼び出しなし、¥0)、`er051_output/.../step1/A2A3/V4A/run_1.json`(K19の固定Stage 1出力の確認)、各instance JSON(K18・K19の再確認)、`docs/pm/design_open233_self_recovery_flow_01.md`の追加行範囲(3503〜3514、3737〜3745)、`calibration` 385〜470・509〜530行。
+
+## 5. 正式採用(2026-10-03、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達、委任_55で追記)
+
+ユーザーは2026-10-03(2回目の決定、`DECISION_LOG.md`末尾エントリ)に、上記のFable案を土台とした一般ルールを正式採用した。Statusは`APPROVED_FOR_PRODUCTION`。再較正・テスト・runtime evidence・SSOT更新が終わるまで、またSelf-Recovery Flow自体がProduction未接続のため、`PRODUCTION_WIRED`ではない。
+
+### 5-1. 正式な基準(ユーザー原文、逐語)
+
+- **重大**
+  - 英語学習者に事実関係の重大な誤解を与えるもの
+- **軽微**
+  - 事実関係の核心は保たれているが、表現の精度が少し落ちるもの
+- **問題なし**
+  - 確認済みFactから自然に導ける描写・推論で、新しい具体的事実を追加しないもの
+
+例として、すでにユーザー判断済みの以下を必ず基準にしてください。
+
+- `Also, some calls needed user information to continue.`
+  → 軽微
+- `They enjoyed AI's convenience, but a human was on the other end. They did not realize it.`
+  → 問題なし
+- `Just after the charge plan disappeared, prices began to fall.`
+  → 軽微
+
+特に、
+
+- 条件付き→断定を一律Majorにしない
+- 自然な推論は否定形だけでなく肯定形も許容
+- 「迷ったら重大」に機械的に寄せず、重大な誤解になるかで判断
+
+という方向へ合わせてください。
+
+ただし、数値・主体・否定・比較・時期などの機械的な安全装置については、今回の採用内容だけを理由に勝手に緩めないでください。
+
+### 5-2. Fable案との対応
+
+- Fable案(1節)は、上記3定義の具体化として維持する(重大の(1)〜(7)、軽微の(a)〜(c)、問題なしの(i)〜(iii)。判定の順序も維持)。
+- ただし1節「判定の順序」末尾の「迷う場合は、読者がこの文を信じたとき、実害のある誤った行動・認識につながるかで決める」は、ユーザーの「『迷ったら重大』に機械的に寄せず、重大な誤解になるかで判断」で**置き換える**(ユーザー文言が正)。
+- 機械的な安全装置(`FLOOR_FLAGS`によるfloor、precheck、主体置換ガード)は不変。数値・主体・否定・比較・時期の差は、この原則(迷ったら重大な誤解になるかで決める)の対象外で、従来どおり機械的にBLOCKINGとする。
+- K19(`prices began to fall`)は、ユーザー決定により軽微(旧: 重大(境界))。Fable案の(7)・(a)の境界を、K19の側(軽微)へ引く事例になった。
+
+### 5-3. 3節の指摘7点の「正式採用後の扱い」
+
+1. (7)と(a)の境界が文の位置に依存する: 正式採用後も、境界は「核心の主張に留保が残り、主体の帰属が保たれるか」で判断する(rubric V7の3-1の文)。留保が隣接する文にある型(K04)は軽微のまま。同一文内か隣接文かの線引きは未規定のため、再較正の対象外(未決のまま残る)。
+2. (1)「数量の変更」の範囲: K05〜K07(単数→複数形)は、ユーザー決定の例には含まれない。再分類docのとおり軽微(境界)のまま。ユーザー決定の追加は無く、未決のまま残る(再分類doc 2-3節の感度どおり)。
+3. (4)に「動機・意図の創作」を含めるか: rubricの「動機の帰属=QUALITY」(production `MATERIALITY_RUBRIC`)は変更しない(委任_55 3-4)。新しい基準の「新しい具体的事実の追加」に当たる動機の創作(K20〜K22、B4-a)は、V7の3-1の文(Ledgerに無い新しい具体的事実の追加はBLOCKING)で拾う。食い違いの残り(production `MATERIALITY_RUBRIC`と設計書§0-2)は未解消として記録する。
+4. 「迷う場合」のルールが既存のfail-closedと逆向き: ユーザーが「迷ったら重大に機械的に寄せず、重大な誤解になるかで判断」と明示したため、Safety原則の変更としてユーザー承認済み。rubric V7で置き換える(旧版は定数として残す)。機械的な安全装置は不変。
+5. (b)=軽微と§0-2「原則許容」の対応: 現行flowはQUALITYを非BLOCKINGとして通す(軽微は記事に残してよい)。ユーザー決定の例1・K19も「軽微な品質問題として許容」であり、Rewriteしない。軽微を記事に残す扱いはそのまま正式化された。
+6. K19・K18の判断が分かれる: K19はユーザー決定で軽微に確定。K18(日本語文の支払い主体)は、日本語本文は原則修正しない方針(ユーザー判断2026-10-03)のもとで、英語側の同内容文がBLOCKING検出済みのため、重大だが内容として見逃しなしの扱いのまま。
+7. 「20」「18」の対応づけ: ユーザーが再度の確認をしていないため、対応案A・Bの2案併記のまま(再分類doc 2-2節、K19更新後の値で更新済み: 案A 18/20過剰・0/20重大見逃し、案B 17/18過剰・0/18重大見逃し)。
+
+### 5-4. 実装への反映(委任_55)
+
+- Stage 2のbody rubric: `MISCONCEPTION_PRINCIPLE_TEXT_V7`(V6に追記、旧版は残す)へ昇格。差分は設計書§4-23と再較正の`rubric_diff.md`。
+- 正解ラベル: Meta-1/Meta-2=QUALITY、MUSE-HC-012「They enjoyed…」=ACCEPTABLE、HF-009「prices began to fall」=QUALITY(いずれもユーザー決定)。`SAFETY_CRITICAL_CLAIM_DEFS`のMeta-1/Meta-2は「過剰品質の監視用」(期待QUALITY)へ移し、Safety-critical検出の対象外とした。
+- 決定論的な降格(`DISCLOSURE_GAP_NEGATION_RE`、否定形限定)は変更しない。肯定形の推論の許容は、rubric本文(V7)の追加文だけで行う。
+- Production配線時は、`PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で、本線引き・rubric V7・句読点差対策を併せて確認する。

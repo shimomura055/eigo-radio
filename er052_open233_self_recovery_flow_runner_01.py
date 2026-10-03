@@ -388,8 +388,12 @@ VS_SPANS_EMPTY_PREFIX = "(violation_spans empty) "
 # 済み(詳細はREPORT§31)。Falseに戻すと重大誤解原則配線前(iteration1〜7・
 # rep7〜15と同一)の挙動に戻る。
 ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT = True
+# 委任_55(design書§4-26、2026-10-03): 線引きの正式採用(ユーザー決定、
+# `APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)に伴いV6→V7へ昇格(V6は
+# 定数として残す)。V7は条件付き→断定の一律BLOCKINGと「迷えばBLOCKING」を
+# 置き換え、肯定形の自然な推論を許容する。機械floor等は不変。
 BODY_RUBRIC_DEFAULT = (
-    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6
+    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7
     if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2c.RUBRIC_R3_TRIPLE_PRIME
 )
 HOOK_RUBRIC_DEFAULT = (
@@ -5234,7 +5238,7 @@ def compute_residual_at_pass(instance_id: str, final_state: str | None, final_en
     `detect_safety_critical_misdowngrades`(指摘された後の降格のみ)とは別(併存)。
     記録: 該当定義名・残存の有無・その実行で一度でもBLOCKINGで指摘されたか(Stage 2の最終materialityが
     BLOCKINGで、claim_textに部分文字列を含む=fact_idは問わない/同一fact_idも別記録)。"""
-    defs = SAFETY_CRITICAL_CLAIM_DEFS.get(instance_id) or []
+    defs = _safety_critical_defs(instance_id)  # 委任_55: 期待QUALITYの監視用定義(Meta-1/2)は対象外
     passed = final_state in PASS_FINAL_STATES
     out = {"applicable_defs": len(defs), "final_state": final_state, "final_state_is_pass_family": passed,
            "defs": []}
@@ -6159,17 +6163,57 @@ SAFETY_CRITICAL_CLAIM_DEFS = {
         {"sub_id": "A5-0", "related_fact_id": "MUSE-HC-012",
          "text_substring": "temporarily put back the feature"},
     ],
+    # 委任_55(2026-10-03、ユーザー決定=線引きの正式採用、`APPROVED_FOR_PRODUCTION`、
+    # `PRODUCTION_WIRED`未達): Meta-1/Meta-2(「Also, some calls needed user
+    # information to continue.」)は軽微(QUALITY)と確定したため、Safety-criticalから
+    # 外した。削除はせず`expected: "QUALITY"`を付けて「過剰品質の監視用」として残す
+    # (`detect_safety_critical_misdowngrades`/`compute_residual_at_pass`の対象外、
+    # `_safety_critical_defs`が`expected`がBLOCKINGの定義だけを返す)。旧: Safety-critical
+    # (BLOCKING維持、〜2026-10-02、委任_29〜委任_49)。監視は
+    # `detect_over_quality_monitor_blocks`(最終materialityがBLOCKINGのまま=過剰品質の記録)。
     "meta_run03_standard": [
         {"sub_id": "Meta-1", "related_fact_id": "MUSE-HC-010",
-         "text_substring": "needed user information to continue"},
+         "text_substring": "needed user information to continue", "expected": "QUALITY"},
         {"sub_id": "Meta-2", "related_fact_id": "MUSE-HC-012",
-         "text_substring": "needed user information to continue"},
+         "text_substring": "needed user information to continue", "expected": "QUALITY"},
     ],
     "bgroup_B4": [
         {"sub_id": "B4-a", "related_fact_id": "MUSE-HC-002",
          "text_substring": "take over when AI alone has trouble"},
     ],
 }
+
+
+def _safety_critical_defs(instance_id) -> list:
+    """`SAFETY_CRITICAL_CLAIM_DEFS`のうち、期待がBLOCKINGの定義(`expected`省略時=BLOCKING)だけ。
+    `expected`がQUALITY等の定義は「過剰品質の監視用」でSafety-critical検出の対象外(委任_55)。"""
+    return [d for d in (SAFETY_CRITICAL_CLAIM_DEFS.get(instance_id) or [])
+            if d.get("expected", "BLOCKING") == "BLOCKING"]
+
+
+def detect_over_quality_monitor_blocks(instance_results: list) -> list:
+    """委任_55: `expected`がBLOCKING以外の監視用定義(Meta-1/Meta-2等、期待QUALITY)について、
+    最終materialityがBLOCKINGのまま(=過剰品質)だった箇所を記録する(¥0、記録専用、判定・状態遷移
+    には使わない)。`detect_safety_critical_misdowngrades`とは逆向き。"""
+    rows = []
+    for r in instance_results:
+        defs = [d for d in (SAFETY_CRITICAL_CLAIM_DEFS.get(r.get("instance_id")) or [])
+                if d.get("expected", "BLOCKING") != "BLOCKING"]
+        for cycle_idx, c in enumerate(r.get("cycles", [])):
+            for sr in c.get("stage2_results", []):
+                fact_id = (sr.get("related_fact_id") or "").strip()
+                text = sr.get("claim_text") or ""
+                for d in defs:
+                    if d["related_fact_id"] != fact_id or d["text_substring"] not in text:
+                        continue
+                    if sr.get("materiality") == "BLOCKING":
+                        rows.append({
+                            "instance_id": r["instance_id"], "sub_id": d["sub_id"],
+                            "cycle_index": cycle_idx, "expected": d.get("expected"),
+                            "materiality": sr.get("materiality"),
+                            "llm_materiality": sr.get("llm_materiality"),
+                            "floor_reason": sr.get("floor_reason"), "claim_text": text})
+    return rows
 
 
 def detect_safety_critical_misdowngrades(instance_results: list) -> list:
@@ -6179,7 +6223,7 @@ def detect_safety_critical_misdowngrades(instance_results: list) -> list:
     出しなし、既存run_instance結果jsonへの後処理のみ)。"""
     rows = []
     for r in instance_results:
-        defs = SAFETY_CRITICAL_CLAIM_DEFS.get(r.get("instance_id"))
+        defs = _safety_critical_defs(r.get("instance_id"))
         if not defs:
             continue
         for cycle_idx, c in enumerate(r.get("cycles", [])):
@@ -6342,6 +6386,8 @@ def aggregate_measurements(instance_results: list) -> dict:
                 for row in safety_critical_misdowngrade_rows
             }),
             "silent_pass_candidate_rows": safety_critical_misdowngrade_rows,
+            # 委任_55: 過剰品質の監視用(Meta-1/Meta-2、期待QUALITY)。記録専用。
+            "over_quality_monitor_rows": detect_over_quality_monitor_blocks(instance_results),
         },
         "quality_claims": quality_claims,
         "qcd": {

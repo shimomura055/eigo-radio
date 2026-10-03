@@ -56,6 +56,8 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
     "A4-2": "QUALITY",   # 新規是正(委任_13、Opus L2 #3論点1)
     "A5-1": "QUALITY",   # 新規是正(委任_29、上記SAFETY_CRITICAL_SUB_IDS
                          # コメント参照。役職の同一対象内一般化のためQUALITY)
+    "Meta-1": "QUALITY",  # 委任_55(ユーザー決定2026-10-03、例1=軽微)。旧: BLOCKING(〜2026-10-02)
+    "Meta-2": "QUALITY",  # 同上(MUSE-HC-012側の同文)
 }
 
 # 委任_13 論点1(是正2): 「Safety側誤降格0件」を、名指しした10claimへ限定。
@@ -84,8 +86,15 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
 # (Safety原則自体の変更ではなく、既存A2A3-1/A4-2/B1-c/B4-dと同じ「機械
 # コピー由来ラベルの是正」の前例を踏襲するのみ)。根拠はDECISION_LOG.md
 # (OPEN-233-SELF-RECOVERY-TRIAL-01、委任_29)参照。
+#
+# 委任_55(2026-10-03、ユーザー決定=線引きの正式採用、`APPROVED_FOR_PRODUCTION`、
+# `PRODUCTION_WIRED`未達): Meta-1/Meta-2(「Also, some calls needed user
+# information to continue.」)は軽微(QUALITY)と確定したため、このリストから
+# 除外した(8件→6件)。旧: Safety-critical(BLOCKING維持、〜2026-10-02)。正解ラベルは
+# `CORRECT_LABEL_OVERRIDES_R3DPRIME`で"QUALITY"。runner側の
+# `SAFETY_CRITICAL_CLAIM_DEFS`では`expected: "QUALITY"`の過剰品質監視用として残す。
 SAFETY_CRITICAL_SUB_IDS = frozenset({
-    "A2A3-0", "A4-0", "A4-1", "A5-0", "Meta-1", "Meta-2",
+    "A2A3-0", "A4-0", "A4-1", "A5-0",
     "B3", "B4-a",
 })
 

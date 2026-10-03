@@ -3327,7 +3327,8 @@ class TestSafetyCriticalSubIdsHormuzExclusion(unittest.TestCase):
     def test_other_eight_still_present(self):
         # 委任_29 Part1でA5-1もこのリストから除外されたため、期待集合を
         # 8件(A5-1除く)へ更新する(TestSafetyCriticalSubIdsA5_1Exclusion参照)。
-        expected = {"A2A3-0", "A4-0", "A4-1", "A5-0", "Meta-1", "Meta-2", "B3", "B4-a"}
+        # 委任_55(ユーザー決定2026-10-03): Meta-1/Meta-2もQUALITY(軽微)と確定し除外(8件→6件)。
+        expected = {"A2A3-0", "A4-0", "A4-1", "A5-0", "B3", "B4-a"}
         self.assertEqual(set(r3d.SAFETY_CRITICAL_SUB_IDS), expected)
 
 
@@ -3454,6 +3455,103 @@ class TestMisconceptionPrincipleRubricV6(unittest.TestCase):
                 s2c.RUBRIC_R3_TRIPLE_PRIME))
         self.assertIn(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6,
                        s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6)
+
+
+class TestMeta12MovedToOverQualityMonitor55(unittest.TestCase):
+    """委任_55(ユーザー決定2026-10-03、例1=軽微): Meta-1/Meta-2はSafety-criticalから外れ、
+    `expected: "QUALITY"`の過剰品質監視用として残る(¥0、合成データのみ)。"""
+
+    def _r(self, materiality):
+        return {"instance_id": "meta_run03_standard", "cycles": [{"stage2_results": [
+            {"claim_text": "Also, some calls needed user information to continue.",
+             "related_fact_id": "MUSE-HC-010", "materiality": materiality,
+             "llm_materiality": materiality, "floor_reason": None}]}]}
+
+    def test_defs_kept_with_expected_quality(self):
+        defs = runner.SAFETY_CRITICAL_CLAIM_DEFS["meta_run03_standard"]
+        self.assertEqual([d["sub_id"] for d in defs], ["Meta-1", "Meta-2"])
+        self.assertTrue(all(d.get("expected") == "QUALITY" for d in defs))
+
+    def test_not_safety_critical_any_more(self):
+        self.assertEqual(runner._safety_critical_defs("meta_run03_standard"), [])
+        # 他のSafety-critical定義はそのまま(expected省略=BLOCKING)
+        self.assertEqual([d["sub_id"] for d in runner._safety_critical_defs("bgroup_B3")], ["B3"])
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([self._r("QUALITY")]), [])
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([self._r("ACCEPTABLE")]), [])
+
+    def test_residual_at_pass_excludes_meta(self):
+        out = runner.compute_residual_at_pass(
+            "meta_run03_standard", "ACCEPTABLE_STAGE1", "x. Also, some calls needed user information to continue.",
+            [], [], [])
+        self.assertEqual(out["applicable_defs"], 0)
+        self.assertEqual(out["defs"], [])
+
+    def test_over_quality_monitor_records_blocking_only(self):
+        rows = runner.detect_over_quality_monitor_blocks([self._r("BLOCKING")])
+        self.assertEqual([x["sub_id"] for x in rows], ["Meta-1"])
+        self.assertEqual(rows[0]["expected"], "QUALITY")
+        self.assertEqual(runner.detect_over_quality_monitor_blocks([self._r("QUALITY")]), [])
+        self.assertEqual(runner.detect_over_quality_monitor_blocks([self._r("ACCEPTABLE")]), [])
+
+    def test_r3d_labels(self):
+        self.assertNotIn("Meta-1", r3d.SAFETY_CRITICAL_SUB_IDS)
+        self.assertNotIn("Meta-2", r3d.SAFETY_CRITICAL_SUB_IDS)
+        self.assertEqual(r3d.CORRECT_LABEL_OVERRIDES_R3DPRIME.get("Meta-1"), "QUALITY")
+        self.assertEqual(r3d.CORRECT_LABEL_OVERRIDES_R3DPRIME.get("Meta-2"), "QUALITY")
+
+
+class TestRubricV7LineDrawing55(unittest.TestCase):
+    """委任_55(design書§4-26): 線引きの正式採用に伴うV7。旧版は残り、V7はV6へ追記する形。
+    機械的な安全装置(FLOOR_FLAGS等)は不変(¥0)。"""
+
+    def test_v6_unchanged_and_v7_extends_v6(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        self.assertTrue(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7.startswith(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6))
+        self.assertIn("支払義務者は未提示", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7)
+        self.assertTrue(s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7.startswith(
+            s2c.RUBRIC_R3_TRIPLE_PRIME))
+        self.assertIn(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7,
+                       s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7)
+        self.assertNotIn("線引きの正式採用", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V6)
+
+    def test_v7_has_three_user_examples_with_expected_labels(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        t = s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7
+        tail = t[t.index("判定済みの例"):]
+        lines = [x for x in tail.splitlines() if x.startswith("- ")]
+        self.assertEqual(len(lines), 3)  # 例示は3行まで(委任_16 B-2のpriming前例)
+        self.assertIn("some calls needed user information to continue", lines[0])
+        self.assertTrue(lines[0].endswith("QUALITY"))
+        self.assertIn("They did not realize it", lines[1])
+        self.assertTrue(lines[1].endswith("ACCEPTABLE"))
+        self.assertIn("prices began to fall", lines[2])
+        self.assertTrue(lines[2].endswith("QUALITY"))
+
+    def test_v7_no_blanket_blocking_and_replaces_when_in_doubt(self):
+        import er052_open233_self_recovery_stage2_calibration_01 as s2c
+        t = "".join(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7.split())  # 改行・空白を除いて照合
+        self.assertIn("被害・結果にあたる核心の主張", t)
+        self.assertIn("核心の主張に留保が残り", t)
+        self.assertIn("肯定形", t)
+        self.assertIn("事実関係の重大な誤解につながるか", t)
+        self.assertIn("数値・主体・否定・比較・時期の差は、この原則の対象外", t)
+
+    def test_production_stage2_rubric_v7_replaces_fail_closed_only(self):
+        import er052_open233_self_recovery_stage2_production_01 as s2p
+        self.assertIn("(fail-closed)", s2p.MATERIALITY_RUBRIC)  # 旧版は残る
+        self.assertNotIn("(fail-closed)", s2p.MATERIALITY_RUBRIC_V7)
+        v7 = "".join(s2p.MATERIALITY_RUBRIC_V7.split())
+        self.assertIn("重大な誤解につながるかで決めてください", v7)
+        self.assertIn("動機の帰属", v7)  # 3-4: 変更しない
+        old_head = s2p.MATERIALITY_RUBRIC.split("- 上記のどれに")[0]
+        self.assertEqual(old_head, s2p.MATERIALITY_RUBRIC_V7.split("- 上記のどれに")[0])
+
+    def test_mechanical_safeguards_unchanged(self):
+        # FLOOR_FLAGS(5種)・disclosure_gap否定形限定は変更していない
+        self.assertEqual(set(runner.FLOOR_FLAGS), {"changed_actor", "changed_number", "changed_negation",
+                                                    "changed_comparison", "changed_time"})
+        self.assertTrue(runner.DISCLOSURE_GAP_NEGATION_RE.search("They did not realize it."))
+        self.assertIsNone(runner.DISCLOSURE_GAP_NEGATION_RE.search("They thought it was AI."))
 
 
 class TestSafetyCriticalMisdowngradeDetection(unittest.TestCase):
@@ -3650,12 +3748,13 @@ class TestMisconceptionPrincipleDefaultWiring(unittest.TestCase):
     def test_enable_flag_defaults_true(self):
         self.assertTrue(runner.ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT)
 
-    def test_body_rubric_default_is_v6_when_enabled(self):
-        # 委任_33(design書§4-25)でV5からV6へ昇格(広いTrial iteration8で
-        # 検出したB3/A2A3-0誤降格の是正、rep18でSafety-critical 8claim/
-        # Hormuz許容5・NG5/bgroup_B3・safety_A2A3のfull flow再確認済み)。
+    def test_body_rubric_default_is_v7_when_enabled(self):
+        # 委任_33(design書§4-25)でV5からV6へ昇格。委任_55(design書§4-26、
+        # 2026-10-03、線引きの正式採用)でV6からV7へ昇格(V6は定数として残る)。
         self.assertEqual(runner.BODY_RUBRIC_DEFAULT,
-                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6)
+                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7)
+        self.assertNotEqual(runner.BODY_RUBRIC_DEFAULT,
+                             s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6)
 
     def test_hook_rubric_default_is_v4_when_enabled(self):
         self.assertEqual(runner.HOOK_RUBRIC_DEFAULT,
@@ -4782,6 +4881,15 @@ U047_ARTICLE = ("# T\n\n## In one line\n\nConcerns about US-Iran attacks, the se
 META_TARGET = "Also, some calls needed user information to continue."
 
 
+def _meta_as_safety_critical():
+    """委任_55: Meta-1は期待QUALITYの監視用へ移ったため、`detect_safety_critical_misdowngrades`/
+    `compute_residual_at_pass`の機構そのものの試験(Meta文を使う既存テスト)では、機構が使うキーを
+    持つ合成の定義(expected省略=BLOCKING)へ一時的に差し替える。"""
+    return mock.patch.dict(runner.SAFETY_CRITICAL_CLAIM_DEFS, {"meta_run03_standard": [
+        {"sub_id": "Meta-1", "related_fact_id": "MUSE-HC-010",
+         "text_substring": "needed user information to continue"}]})
+
+
 def _ext(on: bool = True):
     return mock.patch.object(runner, "VS_MATCH_EXT", on)
 
@@ -5050,6 +5158,7 @@ class TestRecordsOnly49(unittest.TestCase):
         r2, _ = _run_instance49([_dev49(META_TARGET), _dev49("Calls happened.", sev="MINOR")])
         self.assertEqual((r1["final_state"], len(r1["cycles"])), (r2["final_state"], len(r2["cycles"])))
 
+    @_meta_as_safety_critical()
     def test_residual_at_pass_stage1_pass_with_minor_only_deviation(self):
         # rep22 T1 s1/s3/s4型: 対象文が元のまま残り、Checkerが(MINORでも)BLOCKINGでも指摘せずに合格
         minor = _dev49("Also, some calls needed user information to continue", sev="MINOR")
@@ -5062,6 +5171,7 @@ class TestRecordsOnly49(unittest.TestCase):
         self.assertTrue(d["pass_with_residual_unflagged"])
         self.assertEqual(d["in_checker_raw_deviations_any_severity"][0]["severity"], "MINOR")
 
+    @_meta_as_safety_critical()
     def test_residual_at_pass_values(self):
         cyc_block = [{"stage2_results": [{"claim_text": "needed user information to continue",
                                           "related_fact_id": "MUSE-HC-010", "materiality": "BLOCKING"}]}]
@@ -5082,6 +5192,7 @@ class TestRecordsOnly49(unittest.TestCase):
         self.assertFalse(d["defs"][0]["remains_in_final_en"])
         self.assertEqual(f("unknown_instance", "RESOLVED_REWRITE", txt, [], [], [])["defs"], [])
 
+    @_meta_as_safety_critical()
     def test_existing_misdowngrade_detector_unchanged(self):
         r = {"instance_id": "meta_run03_standard", "cycles": [{"stage2_results": [
             {"claim_text": "needed user information to continue", "related_fact_id": "MUSE-HC-010",

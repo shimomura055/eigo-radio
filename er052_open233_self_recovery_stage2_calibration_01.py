@@ -536,6 +536,59 @@ RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6 = (
 )
 
 
+# ------------------------------------------------------------
+# 委任_55(OPEN-233-SELF-RECOVERY-TRIAL-01、design書§4-26、2026-10-03):
+# ユーザー決定(2回目、`DECISION_LOG.md`末尾)で「重大/軽微/問題なし」の線引き
+# が正式採用(`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)された
+# ことに伴うbody rubricの昇格(V6→V7)。V4の「条件付き→断定=一律BLOCKING」
+# と「迷えばBLOCKING」を、ユーザーの基準(重大な誤解になるかで判断)へ置き換え、
+# 肯定形の自然な推論を許容し、判定済みの3例を最小限(各1行)で載せる。
+# 旧版(V4〜V6)は定数として残し、V7はV6へ追記する形(旧版の再現性維持)。
+# 数値・主体・否定・比較・時期の機械的な安全装置(`FLOOR_FLAGS`、precheck、
+# 主体置換ガード)は本rubricの対象外で、変更していない。Hook専用rubric(V3/V4)
+# も変更していない。
+# ------------------------------------------------------------
+MISCONCEPTION_PRINCIPLE_TEXT_V7 = MISCONCEPTION_PRINCIPLE_TEXT_V6 + """
+
+【線引きの正式採用(2026-10-03ユーザー決定、委任_55。以下は、上記V4の
+「条件付き→断定は一律BLOCKING」および、上記の判定全体のうち「迷う場合」の
+扱いより優先します)】
+判定は次の3区分です。
+- BLOCKING(重大): 英語学習者に事実関係の重大な誤解を与えるもの。
+- QUALITY(軽微): 事実関係の核心は保たれているが、表現の精度が少し落ちるもの。
+- ACCEPTABLE(問題なし): 確認済みFactから自然に導ける描写・推論で、新しい
+  具体的事実を追加しないもの。
+
+(1) 条件つき→断定: Ledgerが条件つき・可能性・懸念として書く内容を、記事が
+発生したこととして書く場合、次のいずれかに該当するときはBLOCKINGとして
+ください: (ア)被害・結果にあたる核心の主張まで断定している、(イ)Ledgerに
+無い新しい具体的事実(人物・出来事・発言・数値)を加えている、(ウ)Ledgerの
+notes_for_writerが明示的に禁じる断定をしている。核心の主張に留保が残り、
+帰属(誰の懸念・誰の主張か)が保たれている場合はQUALITYとしてください
+(例: 『some calls needed user information to continue』は、共有が
+『might』で留保され、懸念の主体がMeta従業員のままなのでQUALITY)。
+
+(2) 自然な推論: 開示がなかった等の確認済み事実から自然に導かれる利用者の
+状態・認識・反応の描写は、否定形(『気づかなかった』)も肯定形(『AIだと
+思っていた』『楽しんでいた』)も、新しい具体的事実を加えなければ
+ACCEPTABLEとしてください。この場合、上記の「他者の内心を断定する記述」の
+BLOCKING条件は、新しい具体的事実を加えていない描写には適用しません。
+
+(3) 判断に迷う場合: 読者(英語学習者)がこの文を信じたときに事実関係の重大な
+誤解につながるかで決めてください。つながるならBLOCKING、つながらないなら
+QUALITYとしてください。数値・主体・否定・比較・時期の差は、この原則の対象外
+で、従来どおり明確にBLOCKINGとします。
+
+判定済みの例(ユーザー決定):
+- "Also, some calls needed user information to continue." → QUALITY
+- "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it." → ACCEPTABLE
+- "Just after the charge plan disappeared, prices began to fall." → QUALITY"""
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7 = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V7
+)
+
+
 class TrialAbort(RuntimeError):
     pass
 
