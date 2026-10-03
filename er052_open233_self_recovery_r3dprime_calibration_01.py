@@ -58,6 +58,10 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
                          # コメント参照。役職の同一対象内一般化のためQUALITY)
     "Meta-1": "QUALITY",  # 委任_55(ユーザー決定2026-10-03、例1=軽微)。旧: BLOCKING(〜2026-10-02)
     "Meta-2": "QUALITY",  # 同上(MUSE-HC-012側の同文)
+    # 委任_57(2026-10-03、Fable判断=正式採用基準の適用): A4-1(「people who thought they were speaking
+    # with AI were actually speaking with human staff」等)はユーザー判断済みの例2(利用者がAIだと
+    # 思っていた、気づかなかった)と同型で、事実部分はLedgerが支持するため問題なし。旧: BLOCKING。
+    "A4-1": "ACCEPTABLE",
 }
 
 # 委任_13 論点1(是正2): 「Safety側誤降格0件」を、名指しした10claimへ限定。
@@ -93,8 +97,13 @@ CORRECT_LABEL_OVERRIDES_R3DPRIME = {
 # 除外した(8件→6件)。旧: Safety-critical(BLOCKING維持、〜2026-10-02)。正解ラベルは
 # `CORRECT_LABEL_OVERRIDES_R3DPRIME`で"QUALITY"。runner側の
 # `SAFETY_CRITICAL_CLAIM_DEFS`では`expected: "QUALITY"`の過剰品質監視用として残す。
+#
+# 委任_57(2026-10-03、Fable判断=ユーザー正式採用の線引き[例2]の適用): A4-1も上記と同型(利用者が
+# AIだと思っていた、という推論+事実部分はLedgerが支持)のため問題なし(ACCEPTABLE)と再ラベルし、
+# このリストから除外した(6件→5件)。旧: Safety-critical(BLOCKING維持、〜2026-10-03)。
+# runner側`SAFETY_CRITICAL_CLAIM_DEFS`では`expected: "ACCEPTABLE"`の監視用として残す。
 SAFETY_CRITICAL_SUB_IDS = frozenset({
-    "A2A3-0", "A4-0", "A4-1", "A5-0",
+    "A2A3-0", "A4-0", "A5-0",
     "B3", "B4-a",
 })
 

@@ -3328,7 +3328,8 @@ class TestSafetyCriticalSubIdsHormuzExclusion(unittest.TestCase):
         # 委任_29 Part1でA5-1もこのリストから除外されたため、期待集合を
         # 8件(A5-1除く)へ更新する(TestSafetyCriticalSubIdsA5_1Exclusion参照)。
         # 委任_55(ユーザー決定2026-10-03): Meta-1/Meta-2もQUALITY(軽微)と確定し除外(8件→6件)。
-        expected = {"A2A3-0", "A4-0", "A4-1", "A5-0", "B3", "B4-a"}
+        # 委任_57(2026-10-03、正式採用基準の適用): A4-1もACCEPTABLEへ再ラベルし除外(6件→5件)。
+        expected = {"A2A3-0", "A4-0", "A5-0", "B3", "B4-a"}
         self.assertEqual(set(r3d.SAFETY_CRITICAL_SUB_IDS), expected)
 
 
@@ -3498,6 +3499,34 @@ class TestMeta12MovedToOverQualityMonitor55(unittest.TestCase):
         self.assertNotIn("Meta-2", r3d.SAFETY_CRITICAL_SUB_IDS)
         self.assertEqual(r3d.CORRECT_LABEL_OVERRIDES_R3DPRIME.get("Meta-1"), "QUALITY")
         self.assertEqual(r3d.CORRECT_LABEL_OVERRIDES_R3DPRIME.get("Meta-2"), "QUALITY")
+
+
+class TestA41MovedToMonitor57(unittest.TestCase):
+    """委任_57(2026-10-03、Fable判断): A4-1は`expected: "ACCEPTABLE"`の監視用へ移り、
+    `detect_safety_critical_misdowngrades`の対象外(¥0、合成データのみ)。"""
+
+    def _r(self, materiality):
+        return {"instance_id": "safety_A4", "cycles": [{"stage2_results": [
+            {"claim_text": "people who thought they were speaking with AI were actually speaking with human staff",
+             "related_fact_id": "MUSE-HC-012", "materiality": materiality,
+             "llm_materiality": materiality, "floor_reason": None}]}]}
+
+    def test_a41_def_expected_acceptable(self):
+        defs = {d["sub_id"]: d for d in runner.SAFETY_CRITICAL_CLAIM_DEFS["safety_A4"]}
+        self.assertEqual(defs["A4-1"].get("expected"), "ACCEPTABLE")
+        self.assertEqual([d["sub_id"] for d in runner._safety_critical_defs("safety_A4")], ["A4-0"])
+
+    def test_a41_not_misdowngrade_target(self):
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([self._r("ACCEPTABLE")]), [])
+        self.assertEqual(runner.detect_safety_critical_misdowngrades([self._r("QUALITY")]), [])
+        rows = runner.detect_over_quality_monitor_blocks([self._r("BLOCKING")])
+        self.assertEqual([x["sub_id"] for x in rows], ["A4-1"])
+        self.assertEqual(runner.detect_over_quality_monitor_blocks([self._r("ACCEPTABLE")]), [])
+
+    def test_a41_r3d_labels(self):
+        self.assertNotIn("A4-1", r3d.SAFETY_CRITICAL_SUB_IDS)
+        self.assertIn("A4-0", r3d.SAFETY_CRITICAL_SUB_IDS)
+        self.assertEqual(r3d.CORRECT_LABEL_OVERRIDES_R3DPRIME.get("A4-1"), "ACCEPTABLE")
 
 
 class TestRubricV7LineDrawing55(unittest.TestCase):

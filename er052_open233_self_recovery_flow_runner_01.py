@@ -6157,7 +6157,9 @@ SAFETY_CRITICAL_CLAIM_DEFS = {
         {"sub_id": "A4-0", "related_fact_id": "MUSE-HC-006",
          "text_substring": "completed the exchanges with users"},
         {"sub_id": "A4-1", "related_fact_id": "MUSE-HC-012",
-         "text_substring": "actually speaking with human staff"},
+         "text_substring": "actually speaking with human staff", "expected": "ACCEPTABLE"},
+        # 委任_57(2026-10-03、Fable判断=ユーザー正式採用の線引き[例2]の適用): A4-1は問題なし
+        # (ACCEPTABLE)へ再ラベルし、Meta-1/Meta-2と同じ監視用へ移した。旧: BLOCKING(Safety-critical)。
     ],
     "safety_A5": [
         {"sub_id": "A5-0", "related_fact_id": "MUSE-HC-012",

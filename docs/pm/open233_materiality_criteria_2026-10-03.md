@@ -118,3 +118,5 @@
 - 正解ラベル: Meta-1/Meta-2=QUALITY、MUSE-HC-012「They enjoyed…」=ACCEPTABLE、HF-009「prices began to fall」=QUALITY(いずれもユーザー決定)。`SAFETY_CRITICAL_CLAIM_DEFS`のMeta-1/Meta-2は「過剰品質の監視用」(期待QUALITY)へ移し、Safety-critical検出の対象外とした。
 - 決定論的な降格(`DISCLOSURE_GAP_NEGATION_RE`、否定形限定)は変更しない。肯定形の推論の許容は、rubric本文(V7)の追加文だけで行う。
 - Production配線時は、`PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で、本線引き・rubric V7・句読点差対策を併せて確認する。
+
+- 委任_57(2026-10-03、Fable判断): Safety-critical登録のA4-1は、例2(利用者がAIだと思っていた、という推論+事実部分はLedger支持)と同型のため問題なし(ACCEPTABLE)へ再ラベルし、監視用へ移した(登録6件→5件)。機械的な安全装置・rubric V7は変更しない。

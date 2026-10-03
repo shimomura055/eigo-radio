@@ -581,3 +581,5 @@
 - 古い実行(iter5〜iter8)は現行のPrompt・floor・rubricと異なる(特に委任_33のV6、委任_35のfloor是正の前)ため、現在の挙動を表さない。
 - 日本語2種類(K14、K18)の最終JA本文は、JAが変更されなかった実行では元記事と同じと推定(runnerはJA本文を変更時のみ記録)。
 - 委任_46の対象は7記事の既知の実行に限られ、他の記事の見逃しは含まない。
+
+- 委任_57(2026-10-03、Fable判断): 較正のA4-1(safety_A4、MUSE-HC-012「were actually speaking with human staff」ほか)は、例2およびK23と同型のため正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。Safety-critical登録は6件→5件。詳細は設計書§7-1付近(委任_57)。

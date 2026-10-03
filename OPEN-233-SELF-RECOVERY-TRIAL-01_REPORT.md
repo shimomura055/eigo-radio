@@ -4040,3 +4040,49 @@ Ledgerが条件つき・可能性・懸念として書いている内容を、�
 | false PASS | 1/15 | 4/15 |
 | 対照どうしの一致率 | 0.67 | - |
 
+
+
+## §39. 2026-10-03ユーザー決定(2回目)の反映: 線引きの正式採用・rubric V7・再較正(委任_55)
+
+管理ID: `OPEN-233-SELF-RECOVERY-TRIAL-01`(委任_55)。ユーザー決定(逐語は`DECISION_LOG.md`末尾エントリ)=`prices began to fall`は軽微/線引き(重大・軽微・問題なし)の正式採用=`APPROVED_FOR_PRODUCTION`(`PRODUCTION_WIRED`ではない)/句読点差対策は自己修復機構のProduction配線時の必須構成要素(`OPEN-233-A1-PROD`)/説明文混入12件は見送らない(委任_56)/英語だけ修正を維持/次Trial・29件横断は開始禁止。
+
+### 39-1. Production未変更の確認
+
+`git grep -n "er052_open233" -- "er003*.py" "er009*.py" "er010*.py" "er012*.py" "er019*.py"`: 0件(編集前に確認)。編集した対象は`er052_open233_*`のみ(runner、runnerテスト、Stage 2 calibration/production、r3dprime calibration[Safety-critical登録の定義ファイル、委任文の対象外だが正解ラベル・Safety-critical登録の更新に必要だったため追加]、新スクリプト`er052_open233_element_trial_safety_control_05.py`、診断`er052_open233_safety_control_03_ablation_a41.py`)。機械的な安全装置(`FLOOR_FLAGS`・precheck・主体置換ガード・`MAX_CYCLES`・`DISCLOSURE_GAP_NEGATION_RE`・Hook専用rubric)は不変(テストで確認)。
+
+### 39-2. rubric差分の要点(逐語は`er052_output/open233_safety_control_03/rubric_diff.md`)
+
+body rubric V7(`MISCONCEPTION_PRINCIPLE_TEXT_V7`)=V6へ追記: 3区分の定義(ユーザー原文)、(1)条件つき→断定(核心の主張まで断定/新しい具体的事実/`notes_for_writer`の禁止の断定ならBLOCKING、核心に留保が残り帰属が保たれていればQUALITY)、(2)自然な推論(否定形・肯定形とも新しい具体的事実を加えなければACCEPTABLE。「内心を断定する記述」のBLOCKING条件は新しい具体的事実を加えない描写には適用しない)、(3)迷う場合は「重大な誤解につながるか」で決める(数値・主体・否定・比較・時期の差は対象外で機械的にBLOCKING)、判定済みの例3行。Stage 2 production既定は`MATERIALITY_RUBRIC_V7`(「迷えばBLOCKING」の1行のみ置換、「動機の帰属=QUALITY」は不変)。旧版は定数として残し、`BODY_RUBRIC_DEFAULT`はV6→V7。
+
+### 39-3. ラベル更新一覧(旧→新)
+
+- Meta-1/Meta-2(HC-010/HC-012、K04): BLOCKING(Safety-critical)→QUALITY(`SAFETY_CRITICAL_SUB_IDS`から除外=8件→6件、runner `SAFETY_CRITICAL_CLAIM_DEFS`は`expected: "QUALITY"`の監視用)。
+- HC-012「They enjoyed…」(K10): BLOCKING(Checker指摘)→ACCEPTABLE。HF-009「prices began to fall」(K19): BLOCKING(境界)→QUALITY。
+- 再分類docの表(K01〜K23)に合わせた更新: K01/K08/K09/K12/K13/K14/K15/K23=ACCEPTABLE、K02/K03/K05〜K07/K11/K17=QUALITY、K16/K18/K20〜K22=BLOCKING(変更なし)。設計書§7-0-iter33、§7-1。再分類docはK19=軽微へ更新(重大5/軽微9/問題なし9、真の重大見逃し0/23)。
+
+### 39-4. 再較正の集計(Stage 2単体、n=2、26 call、¥4.3666、`er052_output/open233_safety_control_03/results_01.json`)
+
+| 較正セット | 合否基準 | 結果 |
+|---|---|---|
+| (a) Safety-critical 6claim | misdowngrade 0 | **誤降格2件(A4-1 2/2 ACCEPTABLE)**。他5claimは2/2 BLOCKING |
+| (b) Safety12 | 0 | 0/18 |
+| (c) Hormuz許容5/NG5 | 従来と同じ | 10件とも合否はV6と同じ(false BLOCK 0、false PASS 0) |
+| (d) 新しい例3件 | 期待どおり(n=2両方) | 例1 QUALITY、例2 ACCEPTABLE、K19 QUALITY(各2/2) |
+| (e) K16・K20 | 0 | 0(2/2 BLOCKING) |
+| (f) 負例K11〜K13 | false BLOCK増えない | 0 |
+
+**合否: (a)で外れたため、修正を重ねずに止まった(Fable判断)**。原因切り分け(診断、n=1×7変種、¥2.1157、`ablation_a41/`): V7の(2)の段落、または判定済みの例2行が、それぞれ単独でA4-1をACCEPTABLEへ寄せる(冗長)。V6+3区分の定義のみ・V6+(3)のみはBLOCKING。A4-1の対象文は例2・K23と同じ型で、A4-1のSafety-critical(BLOCKING)ラベル自体が新しい線引きと食い違う可能性がある(設計書§4-26に選択肢(イ)(ロ)(ハ))。
+
+費用: 本委任=¥4.3666(再較正、probe含む)+¥2.1157(診断)=¥6.4823(Guardrail¥15以内)。Phase累計=¥530.0107+¥6.4823=¥536.4930(上限¥900、残¥363.5070)。
+
+### 39-5. テスト・回帰
+
+- `python -m unittest er052_open233_self_recovery_flow_runner_01_test_01`: 428件OK(新規: Meta-1/2の監視用移行5件、V7の線引き5件、既存3テストはMeta文を使うため合成の定義へ差し替え)。`er052*_test_*.py`回帰: 472件passed。全体回帰: 4395件、passed 4384、failed 6、errors 5(実質11件、委任_42・49・54の基準11件と同一、新規なし)。回帰で書き換わった`budget_state_c233an_42_rep22.json`は`git checkout`で戻した。
+
+### 39-6. 未解決・Fableへ戻す事項
+
+1. 再較正(a)のA4-1(上記)。ラベル再判定かV7(2)の範囲か。
+2. K19はユーザー決定でQUALITYだが`changed_comparison`のfloorは不変のため、Checkerがcomparisonを立てた実行ではBLOCKINGになる。floorからK19を外すかはユーザー判断(機械的な安全装置を緩める変更のため、本委任は実装していない)。
+3. 「動機の帰属=QUALITY」(production rubric)と§0-2・K20〜K22の食い違いの残り、`DISCLOSURE_GAP_NEGATION_RE`が否定形限定のままなこと。
+4. 命名: 委任文の`er052_open233_element_trial_safety_control_03.py`は既存の別スクリプトがあるため`_05`、設計書§4-23は使用済みのため§4-26とした。
+5. 説明文混入12件の対策は委任_56の範囲(未実施)。次Trial・29件横断は開始していない。

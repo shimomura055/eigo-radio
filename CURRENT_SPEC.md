@@ -2335,6 +2335,41 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 `GPT6-MODEL-COMPARISON-TRIAL-01_REPORT.md`§Closeout、
 `docs/pm/design_gpt6_model_comparison_trial_01.md`§10。
 
+## OPEN-233 Self-Recovery Flow — 重大/軽微/問題なしの線引き(2026-10-03ユーザー正式採用、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)
+
+**Status**: `APPROVED_FOR_PRODUCTION`(人間ユーザー決定、2026-10-03、2回目。`DECISION_LOG.md`末尾エントリ、`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_55)。**`PRODUCTION_WIRED`ではない**(Self-Recovery Flow自体がProduction未接続。再較正は(a)で不合格があり、Fable判断待ち。下記)。以下の基準は、Self-Recovery FlowをProductionへ接続する際に、Stage 2判定・正解ラベル・Safety-critical登録へ適用する。
+
+**ユーザー原文(逐語)**:
+
+- **重大**
+  - 英語学習者に事実関係の重大な誤解を与えるもの
+- **軽微**
+  - 事実関係の核心は保たれているが、表現の精度が少し落ちるもの
+- **問題なし**
+  - 確認済みFactから自然に導ける描写・推論で、新しい具体的事実を追加しないもの
+
+例として、すでにユーザー判断済みの以下を必ず基準にしてください。
+
+- `Also, some calls needed user information to continue.`
+  → 軽微
+- `They enjoyed AI's convenience, but a human was on the other end. They did not realize it.`
+  → 問題なし
+- `Just after the charge plan disappeared, prices began to fall.`
+  → 軽微
+
+特に、条件付き→断定を一律Majorにしない/自然な推論は否定形だけでなく肯定形も許容/「迷ったら重大」に機械的に寄せず、重大な誤解になるかで判断、という方向へ合わせる。ただし、数値・主体・否定・比較・時期などの機械的な安全装置については、今回の採用内容だけを理由に緩めない(ユーザー原文)。
+
+**適用先(Trial/検証用モジュール、Production正式path[`er003*`・`er009*`・`er010*`・`er012*`・`er019*`]は無変更、`git grep`で`er052_open233`のimportが0件であることを確認済み)**:
+
+- Stage 2 body判定: `MISCONCEPTION_PRINCIPLE_TEXT_V7`(`er052_open233_self_recovery_stage2_calibration_01.py`、V6へ追記、V4〜V6は定数として残す)。runnerの`BODY_RUBRIC_DEFAULT`はV7。Stage 2 production既定の`MATERIALITY_RUBRIC_V7`は「迷えばBLOCKING」を「重大な誤解になるかで決める」へ置換(旧版は残す)。
+- 正解ラベル(設計書§7-0-iter33): Meta-1/Meta-2=QUALITY、MUSE-HC-012「They enjoyed…」=ACCEPTABLE、HF-009「prices began to fall」=QUALITY(旧ラベルは「旧」として残す)。
+- Safety-critical登録: `SAFETY_CRITICAL_SUB_IDS`(r3d)から Meta-1/Meta-2 を除外(8件→6件)。runnerの`SAFETY_CRITICAL_CLAIM_DEFS`では`expected: "QUALITY"`の過剰品質監視用として残し、`detect_safety_critical_misdowngrades`・`residual_at_pass`の対象外とした。
+- **不変の機械的な安全装置**: `FLOOR_FLAGS`(changed_actor/number/negation/comparison/time)によるfloor、precheck、主体置換ガード、`MAX_CYCLES`、Hook専用rubric(V3/V4)、`DISCLOSURE_GAP_NEGATION_RE`(否定形限定)。注意: K19(`prices began to fall`)はユーザー決定でQUALITYだが、`changed_comparison`のfloorが不変のため、Checkerがcomparisonフラグを立てた実行ではLLM判定がQUALITYでもfloorでBLOCKINGに引き上げられる(floorをK19から外すかはユーザー判断事項、未決)。
+
+**再較正の結果(委任_55、Stage 2単体、n=2、26 call、¥4.3666、`er052_output/open233_safety_control_03/results_01.json`)**: (a)Safety-critical 6claim: **A4-1が2/2 ACCEPTABLE(誤降格2件、不合格)**、他5claim(B3・B4-a・A2A3-0・A4-0・A5-0)は全て2/2 BLOCKING。(b)Safety12(er009 9フラグ)=誤降格0/18。(c)Hormuz許容5/NG5: 従来(V6)と合否が同じ(許容5=false BLOCK 0、NG5=false PASS 0)。(d)新しい例3件=期待どおり2/2(例1 QUALITY、例2 ACCEPTABLE、K19 QUALITY)。(e)K16・K20(B4-a型)=2/2 BLOCKING(A2A3-0・B4-aは(a)で2/2 BLOCKING)。(f)負例K11・K12・K13=false BLOCK 0(2/2 ACCEPTABLE)。A4-1の原因切り分け(診断、n=1×7変種、¥2.1157、rubricの修正ではない): V7の(2)「自然な推論」の段落、または判定済みの例2行の、どちらか単独でA4-1をACCEPTABLEへ寄せる(`ablation_a41/`)。A4-1の対象文(`people who thought they were speaking with AI were actually speaking with human staff`と`That was what people thought as they spoke.`)は、ユーザー決定の例2・K23と同じ型であり、A4-1のSafety-critical(BLOCKING)ラベル自体が新しい線引きと食い違っている可能性がある(ラベルの扱いまたはV7の(2)の範囲はFable/ユーザー判断事項で、本委任は修正していない)。
+
+**Production配線時の確認**: 本線引き・rubric V7・句読点差対策(`OPEN-233-A1-PROD`)は、Self-Recovery FlowのProduction配線時に`docs/pm/PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で併せて確認する。再較正の不合格(上記A4-1)が解消されるまで`PRODUCTION_WIRED`としない。古い日本語から英語を再生成するProduction経路(`er012_e_family_entertainment_two_level_runner_01.py`L361・365・403〜404、er019 entertainment runner L358〜397)は、再生成後のChecker(`run_deviation_check`)で必ず再検査されることを接続仕様に明記する(ユーザー決定2026-10-03、英語だけ修正する方針の維持)。
+
 ## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
 
 **表示仕様**: Key Phraseハイライトは`user_test/unified.html`の

@@ -1,0 +1,577 @@
+{
+  "rubric": "V7",
+  "cost_jpy_total": 4.3666,
+  "calls": 26,
+  "errors": 0,
+  "criteria": {
+    "a_safety_critical_misdowngrade_total": 2,
+    "a_n_claims": 6,
+    "b_safety12_misdowngrade_total": 0,
+    "b_n_flags": 9,
+    "c_accept_false_block_total": 0,
+    "c_ng_false_pass_total": 0,
+    "c_all_same_verdict_as_v6": true,
+    "d_all_as_expected_exact_label": true,
+    "e_misdowngrade_total": 0,
+    "f_false_block_total": 0
+  },
+  "part_a_rows": [
+    {
+      "sub_id": "B3",
+      "group_id": "B3",
+      "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、継続した懸念と撤回を因果で結ばず、別個の出来事として述べてください。撤回について述べる場合は、HF-007にあるトランプ氏の説明（中東指導者との協議に基づく決定）に沿ってください。参照Fact: HF-007"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、懸念が撤回の理由だったとする因果関係を削除してください。置き換え発表の理由はHF-007に沿って、中東指導者との協議に基づくものとして記述してください。参照Fact: HF-007。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "B4-a",
+      "group_id": "B4",
+      "claim_text": "“A person can take over when AI alone has trouble.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "“Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful.” AI alone having trouble is not established as the trigger for human involvement; remove that trigger or narrow the sentence so it does not imply this handoff mechanism. Ledger reference: MUSE-HC-002."
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「AIだけでは難しい場面を、人が引き継ぐ。仕組みとしては、むしろ便利そうです。」を、AIが難しい場合に人へ引き継ぐ運用だと示さないよう狭めてください。MUSE-HC-002はMuseの機能説明であり、その条件で人が引き継ぐ仕組みは確認していません。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A2A3-0",
+      "group_id": "A2A3",
+      "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "対象文: “The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” 支払う主体は特定せず、米国の安全確保費用の償還案として述べてください。参照: HF-003。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.」を修正し、支払義務者を貨物を運ぶ側と特定しないでください。米国が安全確保費用の償還を求める案を示した、と範囲を狭めてください。参照: HF-003。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A4-0",
+      "group_id": "A4",
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "該当箇所: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「with users」を外し、やり取りの相手をユーザー本人と特定しない表現にしてください。参照: MUSE-HC-006。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「users」を相手方と取り違えないよう、電話の相手を企業・店舗などの相手方として記述してください。参照: MUSE-HC-006"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A4-1",
+      "group_id": "A4",
+      "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "misdowngrade_count": 2
+    },
+    {
+      "sub_id": "A5-0",
+      "group_id": "A5",
+      "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "Replace the wording in “They also temporarily put back the feature in which humans handled the calls.” with wording that says Meta temporarily rolled back the human-concierge feature, rather than restored it. Ledger fact: MUSE-HC-012."
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "記事本文の「そして、人間が電話を担当する機能を、当面はいったん元に戻しました。Museそのものを止めたわけではありません。」を修正してください。「機能を元に戻した」ではなく、MUSE-HC-012に沿って「人間コンシェルジュ機能を当面ロールバックした」とし、Muse自体は停止していないという記述は維持してください。参照: MUSE-HC-012。"
+        }
+      ],
+      "misdowngrade_count": 0
+    }
+  ],
+  "part_b_rows": [
+    {
+      "flag": "changed_number",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_numeric_value"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_numeric_value"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_actor",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_scope",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_causality",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_certainty",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_negation",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_comparison",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "changed_time",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_date_or_period"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_date_or_period"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "flag": "unsupported_new_claim",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_numeric_value"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        }
+      ],
+      "misdowngrade_count": 0
+    }
+  ],
+  "part_c_rows": [
+    {
+      "sub_id": "accept-1-oilprices-wholemarket",
+      "expected": "PASS",
+      "v7": [
+        "ACCEPTABLE",
+        "ACCEPTABLE"
+      ],
+      "v6_baseline": [
+        "QUALITY"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "accept-2-political-statements",
+      "expected": "PASS",
+      "v7": [
+        "ACCEPTABLE",
+        "ACCEPTABLE"
+      ],
+      "v6_baseline": [
+        "QUALITY"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "accept-3-in-one-line",
+      "expected": "PASS",
+      "v7": [
+        "ACCEPTABLE",
+        "ACCEPTABLE"
+      ],
+      "v6_baseline": [
+        "QUALITY"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "accept-4-crude-prices-term",
+      "expected": "PASS",
+      "v7": [
+        "ACCEPTABLE",
+        "ACCEPTABLE"
+      ],
+      "v6_baseline": [
+        "QUALITY"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "accept-5-rounding",
+      "expected": "PASS",
+      "v7": [
+        "QUALITY",
+        "ACCEPTABLE"
+      ],
+      "v6_baseline": [
+        "ACCEPTABLE"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "ng-1-gasoline-prices",
+      "expected": "BLOCK",
+      "v7": [
+        "BLOCKING",
+        "BLOCKING"
+      ],
+      "v6_baseline": [
+        "BLOCKING"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "ng-2-world-energy-prices",
+      "expected": "BLOCK",
+      "v7": [
+        "BLOCKING",
+        "BLOCKING"
+      ],
+      "v6_baseline": [
+        "BLOCKING"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "ng-3-all-crude-benchmarks",
+      "expected": "BLOCK",
+      "v7": [
+        "BLOCKING",
+        "BLOCKING"
+      ],
+      "v6_baseline": [
+        "BLOCKING"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "ng-4-direction-reversal",
+      "expected": "BLOCK",
+      "v7": [
+        "BLOCKING",
+        "BLOCKING"
+      ],
+      "v6_baseline": [
+        "BLOCKING"
+      ],
+      "same_verdict_as_v6": true
+    },
+    {
+      "sub_id": "neg3-continued-to-returned",
+      "expected": "BLOCK",
+      "v7": [
+        "BLOCKING",
+        "BLOCKING"
+      ],
+      "v6_baseline": [
+        "BLOCKING"
+      ],
+      "same_verdict_as_v6": true
+    }
+  ],
+  "part_d_rows": [
+    {
+      "group": "D1_meta",
+      "part": "d",
+      "sub_id": "d-ex1(K04/Meta-1)",
+      "claim_text": "Also, some calls needed user information to continue.",
+      "related_fact_id": "MUSE-HC-010",
+      "expected": "QUALITY",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "D1_meta",
+      "part": "d",
+      "sub_id": "d-ex2(K10)",
+      "claim_text": "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "ACCEPTABLE",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "D2_a2a3",
+      "part": "d",
+      "sub_id": "d-K19",
+      "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+      "related_fact_id": "HF-009",
+      "expected": "QUALITY",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    }
+  ],
+  "part_e_rows": [
+    {
+      "group": "E1_neg3",
+      "part": "e",
+      "sub_id": "e-K16",
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "related_fact_id": "HF-009",
+      "expected": "BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "対象文: “The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.” HF-009では攻撃、海上封鎖、タンカー安全上の懸念は継続していたとされており、それらが一度消えて戻ったかのような表現は避けてください。出来事が戻ったという部分を削り、Brent先物が一時的に上げ幅を縮小した後、発表前に近い高い水準へ戻ったという値動きに範囲を狭めてください。参照: HF-009。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "対象文: “The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.” HF-009では、攻撃・海上封鎖・タンカーの安全上の懸念は継続していたとされます。価格についてのみ「上げ幅を一時縮小した後、ほどなく発表前に近い高い水準へ戻った」とし、懸念がいったん消えて戻ったかのような表現を避けてください。"
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 0,
+      "n_blocking": 2
+    },
+    {
+      "group": "E2_a4",
+      "part": "e",
+      "sub_id": "e-K20(B4-a型)",
+      "claim_text": "The idea was practical: when AI struggled, a person could help.",
+      "related_fact_id": "MUSE-HC-006",
+      "expected": "BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「The idea was practical: when AI struggled, a person could help.」は、AIが苦戦した際に人間へ引き継ぐ仕組みを追加しているため削除し、MUSE-HC-006に沿って「Muse経由の電話の一部は、訓練を受けた人間の契約スタッフがかけ、やり取りを完了させた」と範囲を限定してください。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.」を、AIが苦手な場合に人間へ引き継ぐ仕組みを示さず、「Muse経由の電話の一部は訓練を受けた人間の契約スタッフが担当した」と置き換えてください。参照: MUSE-HC-006。"
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 0,
+      "n_blocking": 2
+    }
+  ],
+  "part_f_rows": [
+    {
+      "group": "F1_neg1",
+      "part": "f",
+      "sub_id": "f-K11",
+      "claim_text": "A Meta executive admitted the mistake. The test had begun without clearly telling users.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "NOT_BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "F1_neg1",
+      "part": "f",
+      "sub_id": "f-K12",
+      "claim_text": "A user might think the exchange was with AI, even though a person was involved.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "NOT_BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "F1_neg1",
+      "part": "f",
+      "sub_id": "f-K13",
+      "claim_text": "The test began without clearly telling users that contract workers would make the calls.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "NOT_BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    }
+  ],
+  "note_e": "A2A3-0・B4-aは(a)と同一claim(Part A、同じrubric・同じrun)のため(a)の結果を参照する。"
+}

@@ -1,0 +1,39 @@
+{
+  "label": "abl_abl3_no_examples",
+  "prompt_sha256": "90a3dd4365ff0770a845a417355aa4c0ed546e8c88755966a5cbe5183eaf9c4d",
+  "parsed": {
+    "judgments": [
+      {
+        "claim_index": 0,
+        "materiality": "BLOCKING",
+        "basis": "ledger_scope",
+        "rewrite_kind": "narrow_scope",
+        "rewrite_hint": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.” の「with users」を、Ledgerの MUSE-HC-006 に合わせて「with businesses or stores」など、電話の相手が企業・店舗である表現に修正してください。"
+      },
+      {
+        "claim_index": 1,
+        "materiality": "ACCEPTABLE",
+        "basis": "none",
+        "rewrite_kind": "none",
+        "rewrite_hint": ""
+      },
+      {
+        "claim_index": 2,
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "rewrite_kind": "replace_with_ledger_value",
+        "rewrite_hint": "“These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.” の後半は、情報が実際に扱われたと断定せず、MUSE-HC-010 にある可能性・懸念としての表現にしてください（例：「That raised the possibility that one more person might handle private data」）。"
+      }
+    ]
+  },
+  "model": "gpt-6-luna",
+  "response_id": "resp_0b5dbdb7b273d807006ac080ede72087d090698bde876403c4",
+  "usage": {
+    "input_tokens": 8694,
+    "cached_input_tokens": 0,
+    "output_tokens": 2606,
+    "reasoning_tokens": 2346
+  },
+  "cost_jpy": 0.3408,
+  "elapsed_seconds": 29.799
+}

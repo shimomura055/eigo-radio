@@ -1,0 +1,113 @@
+{
+  "per_claim_rows": [
+    {
+      "sub_id": "B3",
+      "group_id": "B3",
+      "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、継続した懸念と撤回を因果で結ばず、別個の出来事として述べてください。撤回について述べる場合は、HF-007にあるトランプ氏の説明（中東指導者との協議に基づく決定）に沿ってください。参照Fact: HF-007"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、懸念が撤回の理由だったとする因果関係を削除してください。置き換え発表の理由はHF-007に沿って、中東指導者との協議に基づくものとして記述してください。参照Fact: HF-007。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "B4-a",
+      "group_id": "B4",
+      "claim_text": "“A person can take over when AI alone has trouble.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "“Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful.” AI alone having trouble is not established as the trigger for human involvement; remove that trigger or narrow the sentence so it does not imply this handoff mechanism. Ledger reference: MUSE-HC-002."
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「AIだけでは難しい場面を、人が引き継ぐ。仕組みとしては、むしろ便利そうです。」を、AIが難しい場合に人へ引き継ぐ運用だと示さないよう狭めてください。MUSE-HC-002はMuseの機能説明であり、その条件で人が引き継ぐ仕組みは確認していません。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A2A3-0",
+      "group_id": "A2A3",
+      "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "対象文: “The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” 支払う主体は特定せず、米国の安全確保費用の償還案として述べてください。参照: HF-003。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.」を修正し、支払義務者を貨物を運ぶ側と特定しないでください。米国が安全確保費用の償還を求める案を示した、と範囲を狭めてください。参照: HF-003。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A4-0",
+      "group_id": "A4",
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "該当箇所: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「with users」を外し、やり取りの相手をユーザー本人と特定しない表現にしてください。参照: MUSE-HC-006。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "対象文: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” 「users」を相手方と取り違えないよう、電話の相手を企業・店舗などの相手方として記述してください。参照: MUSE-HC-006"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A4-1",
+      "group_id": "A4",
+      "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "misdowngrade_count": 2
+    },
+    {
+      "sub_id": "A5-0",
+      "group_id": "A5",
+      "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "Replace the wording in “They also temporarily put back the feature in which humans handled the calls.” with wording that says Meta temporarily rolled back the human-concierge feature, rather than restored it. Ledger fact: MUSE-HC-012."
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "記事本文の「そして、人間が電話を担当する機能を、当面はいったん元に戻しました。Museそのものを止めたわけではありません。」を修正してください。「機能を元に戻した」ではなく、MUSE-HC-012に沿って「人間コンシェルジュ機能を当面ロールバックした」とし、Muse自体は停止していないという記述は維持してください。参照: MUSE-HC-012。"
+        }
+      ],
+      "misdowngrade_count": 0
+    }
+  ],
+  "misdowngrade_total": 2
+}

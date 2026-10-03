@@ -1643,6 +1643,65 @@ DEFAULT=True`は維持、Falseに戻すと重大誤解原則配線前の挙動�
 `TestMisconceptionPrincipleRubricV6`3件・`TestSafetyCriticalMisdowngrade
 Detection`8件を追加(§8-4参照)。
 
+### 4-26. 線引きの正式採用に伴うbody rubric V7(委任_55、2026-10-03)
+
+(委任文は「§4-23」と指定したが、§4-23〜§4-25は既に使用済み[Hook専用V4/主体置換ガード/V6]のため、次の空き番号§4-26とした。)
+
+**背景**: ユーザー決定(2026-10-03、2回目)で「重大/軽微/問題なし」の線引きが正式採用(`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)。基準文言は`docs/pm/open233_materiality_criteria_2026-10-03.md` 5節、正解ラベルは§7-0-iter33。本節は、判定役(Stage 2)のrubric修正と、その再較正の結果。
+
+**変更**(旧版は定数として残し、V7はV6へ追記する形。Stage 2のPromptに使う版を`BODY_RUBRIC_DEFAULT`でV6→V7へ切り替え):
+1. 条件つき→断定(V4原則文の「一律BLOCKING」を置換): Ledgerが条件つき・可能性・懸念として書く内容を記事が発生したこととして書く場合、(ア)被害・結果にあたる核心の主張まで断定、(イ)Ledgerに無い新しい具体的事実(人物・出来事・発言・数値)の追加、(ウ)`notes_for_writer`が明示的に禁じる断定、のいずれかならBLOCKING。核心の主張に留保が残り帰属が保たれていればQUALITY(例1)。
+2. 自然な推論の肯定形: 開示がなかった等の確認済み事実から自然に導かれる利用者の状態・認識・反応の描写は、否定形も肯定形(「AIだと思っていた」「楽しんでいた」)も、新しい具体的事実を加えなければACCEPTABLE。決定論的な降格`DISCLOSURE_GAP_NEGATION_RE`(否定形限定)は**変更しない**。
+3. 「迷えばBLOCKING」の置換: 迷う場合は、読者が信じたときに事実関係の重大な誤解につながるかで決める(つながるならBLOCKING、つながらないならQUALITY)。数値・主体・否定・比較・時期の差は対象外で、従来どおり機械的にBLOCKING。
+4. 「動機の帰属=QUALITY」(production `MATERIALITY_RUBRIC`)は変更しない(動機の創作は1の(イ)で拾う)。Stage 2 production既定rubricは`MATERIALITY_RUBRIC_V7`(「迷えばBLOCKING」の1行のみ置換、旧版は残す)。
+5. 例示3行(例1=QUALITY、例2=ACCEPTABLE、K19=QUALITY)のみ。Hook専用rubric(V3/V4)・`FLOOR_FLAGS`・precheck・主体置換ガード・`MAX_CYCLES`は不変。
+
+逐語の差分: `er052_output/open233_safety_control_03/rubric_diff.md`。
+
+**再較正**(`er052_open233_element_trial_safety_control_05.py`[委任文の`_03`は既存ファイルがあるため`_05`で作成]、Stage 2単体、n=2、26 call、¥4.3666、`er052_output/open233_safety_control_03/`):
+
+| 較正セット | 合否基準 | 結果 |
+|---|---|---|
+| (a) Safety-critical 6claim(B3・B4-a・A2A3-0・A4-0・A4-1・A5-0) | misdowngrade 0 | **誤降格2件(A4-1が2/2 ACCEPTABLE)。不合格**。他5claimは2/2 BLOCKING |
+
+(委任_57追記: A4-1の正解ラベルは「ACCEPTABLE(2026-10-03、正式採用基準の適用。旧: BLOCKING Safety-critical)」へ修正。上の(a)は修正後ラベルでは「Safety-critical 5claim 誤降格0」で合格。下記「委任_57」参照)
+| (b) Safety12(er009 9フラグ) | misdowngrade 0 | 0/18(全て2/2 BLOCKING) |
+| (c) Hormuz許容5/NG5 | 従来(V6)と同じ | 許容5=false BLOCK 0(V6のQUALITY/ACCEPTABLE→V7は主にACCEPTABLE)、NG5=false PASS 0。合否は10件ともV6と同じ |
+| (d) 新しい例3件 | n=2とも期待どおり | 例1 QUALITY 2/2、例2 ACCEPTABLE 2/2、K19 QUALITY 2/2。合格 |
+| (e) K16・K20(B4-a型)(A2A3-0・B4-aは(a)で確認) | misdowngrade 0 | 0(2/2 BLOCKING) |
+| (f) 負例K11・K12・K13 | false BLOCK 従来より増えない | 0(全て2/2 ACCEPTABLE。K11〜K13のLLM判定は従来もACCEPTABLE/QUALITY[floorでBLOCKING化した実行はあるが機械floorは不変]) |
+
+**不合格の原因切り分け(診断。rubricの修正ではない、修正は行わずFable判断)**: A4-1の対象文は`people who thought they were speaking with AI were actually speaking with human staff`と`That was what people thought as they spoke.`(MUSE-HC-012)。V6(委任_33、sc04 n=1)ではBLOCKINGだった。A4グループ(A4-0/A4-1/A4-2)のStage 2のみを、V7の変種でn=1ずつ実行した(`ablation_a41/`、7 call、¥2.1157)。
+
+| 変種 | A4-1 |
+|---|---|
+| V7全体(本実測、n=2) | ACCEPTABLE 2/2 |
+| V7から(2)自然な推論の段落を除く | ACCEPTABLE |
+| V7から(2)内の「内心を断定する記述のBLOCKING条件は適用しない」の一文を除く | ACCEPTABLE |
+| V7から判定済みの例3行を除く | ACCEPTABLE |
+| V7から(3)判断に迷う場合の段落を除く | ACCEPTABLE |
+| V6+3区分の定義のみ | BLOCKING |
+| V6+(2)の段落のみ | ACCEPTABLE |
+| V6+(3)の段落のみ | BLOCKING |
+
+読み取り(n=1、非決定性があるため示唆に留まる): (2)の段落が単独でA4-1をACCEPTABLEへ寄せ、(2)を除いても判定済みの例2行が同じ向きに効くため、(2)と例2は互いに冗長で、どちらか一方の除去では解消しない。(3)・3区分の定義・(1)は単独では寄せない。判断材料: A4-1の対象文は、ユーザー決定の例2(肯定形「AIだと思っていた」の描写=問題なし)・再分類docのK23(「That was what people thought as they spoke.」=問題なし)と同じ型であり、V7が例2どおりに判定した結果とも読める。すなわち、A4-1をSafety-critical(BLOCKING)とする旧ラベル自体が新しい線引きと食い違っている可能性がある(ただし対象文の後半「were actually speaking with human staff」は事実の主張を含む)。選択肢(Fable/ユーザー判断、本委任は実装していない): (イ)A4-1のラベルを新しい線引きに合わせて再判定、(ロ)V7の(2)の範囲を狭める(肯定形の許容を、事実の主張を含まない描写に限る等)、(ハ)A4-1の記事側の文を機械的に守る別の仕組み。いずれもPriming(rubric文の追加が別claimの判定へ波及する現象、委任_16)に注意して再較正が必要。
+
+**未解決・注意**: K19はユーザー決定でQUALITYだが、`changed_comparison`のfloor不変により、Checkerがcomparisonを立てた実行ではBLOCKINGになる(§7-0-iter33)。
+
+**委任_57: A4-1の再ラベル(2026-10-03、Fable判断=ユーザー正式採用の線引きの適用。選択肢(イ))**: A4-1の正解ラベルは**ACCEPTABLE(2026-10-03、正式採用基準の適用。旧: BLOCKING Safety-critical)**。理由: 対象文はユーザー判断済みの例2(利用者がAIだと思っていた、気づかなかった、という推論)と同型で、「were actually speaking with human staff」の事実部分はLedger(人間の契約スタッフが一部の電話を担当)に支持される。rubric V7は変更しない。`SAFETY_CRITICAL_SUB_IDS`は6件→5件(A2A3-0・A4-0・A5-0・B3・B4-a)、runnerの`SAFETY_CRITICAL_CLAIM_DEFS`では`expected:"ACCEPTABLE"`の監視用として残す(Meta-1/Meta-2と同じ扱い)。再較正は再実行せず、結果ファイルは改変せず、注記を`er052_output/open233_safety_control_03/relabel_note_a41.md`へ別ファイルで追加。**再較正の最終判定: 合格(ラベル修正後)**: (a)Safety-critical 5claim 誤降格0、(b)Safety12 0/18、(c)Hormuz V6と同じ、(d)例3件期待どおり、(e)K16・K20 BLOCKING、(f)false BLOCK 0。
+
+残るSafety-critical 5件を正式採用基準の3定義に当てた確認(変更は例2と同型がもう1件あった場合のみ。該当なし):
+
+| sub_id | 対象文(要旨) | 3定義への当てはめ | 結論 |
+|---|---|---|---|
+| B3(HF-007) | 「Concerns about US-Iran attacks... continued on July 14, so the flashy 20% plan left the stage」(継続する懸念→計画撤回の因果接続) | 重大(4)因果の創作。Ledgerが示していない因果。例2のような「自然な推論」ではなく新しい因果の具体的事実 | 重大のまま |
+| B4-a(MUSE-HC-002) | 「A person can take over when AI alone has trouble.」(AI失敗時の人間引き継ぎ機構) | 重大(4)(6)未確認の仕組み・設計意図の新規主張。Ledgerに無い具体的事実の追加(K20〜K22と同型) | 重大のまま |
+| A2A3-0(HF-003) | 「those carrying the cargo would repay the money...」 | 重大(2)主体の取り違え。Ledgerは支払義務者を未提示としているのに記事が具体的主体を追加 | 重大のまま |
+| A4-0(MUSE-HC-006) | 「trained human contract workers made some calls and completed the exchanges with users」 | 重大(2)やり取りの相手(カウンターパート)の取り違え。Ledgerが示すのは電話の相手先(企業・店舗等)で、利用者ではない | 重大のまま |
+| A5-0(MUSE-HC-012) | 「They also temporarily put back the feature in which humans handled the calls」 | 重大(4)時期・経過の創作(継続していた出来事を一度消えて戻った出来事にする)。例2のような利用者の認識の推論ではなく、出来事そのものの追加 | 重大のまま |
+
+例2と同型(利用者の認識の推論+事実部分はLedger支持)のものは、この5件には無かった(A4-1のみ)。確認は対象文の要旨とLedger要旨(既存の設計書・較正コードの記載)に基づく机上確認で、LLM呼び出しはしていない。
+
 ## 5. Stage 3 Automatic Rewrite設計
 
 ### 5-0. 既存機構棚卸しの統合(委任_05/_06、三分類表)
