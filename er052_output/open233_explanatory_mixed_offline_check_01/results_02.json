@@ -1,0 +1,1129 @@
+{
+ "constants": {
+  "CONTRAST_REF_EN_RE": "\\b(ledger|source|but|instead|not|should|however|rather|whereas|contrary|versus)\\b|n't",
+  "CONTRAST_REF_JA_RE": "台帳|原文|ではなく|ではない|しかし|べき|一方|対して|ところが",
+  "POSITION_REJECT_RE": "\\b(paragraph|closing|elsewhere|section|ending|conclusion)\\b|段落|末尾|結び",
+  "CLOSED_MAX_EN_WORDS": 6,
+  "CLOSED_MAX_JA_CHARS": 11,
+  "MIN_WORDS_VERBATIM": 3
+ },
+ "synthetic_closed": [
+  {
+   "name": "C01 採用の対照: 引用1箇所+3語の説明(headline名指しは断片が見出しと重なる)",
+   "claim": "The headline says “Headline Here About Oil”.",
+   "status": "resolved",
+   "reason": null,
+   "closed_reason": null,
+   "ranges": [
+    "Headline Here About Oil"
+   ],
+   "expect": "resolved",
+   "ok": true
+  },
+  {
+   "name": "C02 採用の対照: 2断片+短い接続/位置語",
+   "claim": "First “Another paragraph has a unique line.” then also “Oil stayed high today.” per summary",
+   "status": "resolved",
+   "reason": null,
+   "closed_reason": null,
+   "ranges": [
+    "Another paragraph has a unique line.",
+    "Oil stayed high today."
+   ],
+   "expect": "resolved",
+   "ok": true
+  },
+  {
+   "name": "C03 採用の対照: 引用符内が部分語句",
+   "claim": "Problem: “unique line”",
+   "status": "resolved",
+   "reason": null,
+   "closed_reason": null,
+   "ranges": [
+    "unique line"
+   ],
+   "expect": "resolved",
+   "ok": true
+  },
+  {
+   "name": "N01 複数一致(2箇所)",
+   "claim": "See “The second sentence repeats.” for the problem.",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:fragment_multi_match",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "N02 閉じ忘れ",
+   "claim": "Problem is “Another paragraph has a unique line.",
+   "status": "unverified",
+   "reason": "mismatch",
+   "closed_reason": "explain_split_rejected:no_quote",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "N03 引用符なし",
+   "claim": "Another paragraph has one special line.",
+   "status": "unverified",
+   "reason": "mismatch",
+   "closed_reason": "explain_split_rejected:no_quote",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "N04 断片が記事に無い",
+   "claim": "Reason: “Another paragraph has one special line.”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:fragment_not_in_article",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "N05 構造ラベルだけ",
+   "claim": "See “In one line”: also unsupported.",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:label_only",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "N06 入れ子",
+   "claim": "“He said “Another paragraph has a unique line.” loudly”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:unbalanced_quote",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "N07 外側に記事の3語以上の逐語",
+   "claim": "The first sentence is here. “Another paragraph has a unique line.”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:remainder_verbatim_in_article",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S1 対比の引用(Y・Xとも記事に1箇所)",
+   "claim": "The article says “Another paragraph has a unique line.” but the Ledger says “Oil stayed high today.”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:contrast_or_reference_word:but",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S1b 対比の引用(but無し、Ledger語だけ)",
+   "claim": "The article says “Another paragraph has a unique line.” and Ledger says “Oil stayed high today.”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:contrast_or_reference_word:Ledger",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S1c 対比の引用(日本語: 原文では)",
+   "claim": "記事は「Another paragraph has a unique line.」だが原文では “Oil stayed high today.”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:contrast_or_reference_word:原文",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S2 記事内の発言引用(断片の直前に逐語で連続)",
+   "claim": "He said “prices will fall soon” in the opening",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:remainder_adjacent_in_article",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S3a 日本語「」引用(日本語本文のみ、英語本文なし)",
+   "claim": "「価格は近く下がる」と冒頭にある",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:no_en_text",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S3b 日本語「」引用(断片は日本語本文にだけ在る。英語本文あり)",
+   "claim": "「価格は近く下がる」と冒頭にある",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:fragment_not_in_article",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S4a 位置語 paragraph 5",
+   "claim": "See “Another paragraph has a unique line.” in paragraph 5",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:position_word:paragraph",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S4b 位置語 closing",
+   "claim": "See “Another paragraph has a unique line.” at the closing",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:position_word:closing",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S4c 位置語 elsewhere",
+   "claim": "“Another paragraph has a unique line.” and elsewhere",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:position_word:elsewhere",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S5a 残りが断片の直前に連続(記事: It then moves on…)",
+   "claim": "The sentence “moves on to a new idea here” It then",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:remainder_adjacent_in_article",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S5b 残りが断片の直後に連続(記事: The first… The second…)",
+   "claim": "“The first sentence is here.” The second",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:remainder_adjacent_in_article",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S6 英語6語以上の説明文",
+   "claim": "See “Another paragraph has a unique line.” which is a totally invented description here",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:remainder_too_long",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S7 日本語11文字以上の説明文",
+   "claim": "See “Another paragraph has a unique line.” これは記事には存在しない長い説明文です",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:remainder_too_long",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  },
+  {
+   "name": "S8 宙に浮いた見出し名指し(P-strictの拒否を維持)",
+   "claim": "“Another paragraph has a unique line.” (also reflected in the headline)",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "closed_reason": "explain_split_rejected:dangling_position:headline",
+   "ranges": [],
+   "expect": "unverified",
+   "ok": true
+  }
+ ],
+ "selfcheck_vs_replay49": {
+  "n_compared": 346,
+  "n_mismatch": 0
+ },
+ "b_blocking346": {
+  "n_rows": 346,
+  "transitions": {
+   "確定→確定(同じ範囲)": 320,
+   "確定不能→確定不能(同じ)": 16,
+   "確定不能→確定": 10
+  },
+  "worsen_rows": [],
+  "newly_resolved": [
+   {
+    "uid": "U01",
+    "run": "iter5/instances_s1/bgroup_B4.json",
+    "cycle": 2,
+    "ranges": [
+     "A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.",
+     "produced exactly this kind of surprise."
+    ]
+   },
+   {
+    "uid": "U02",
+    "run": "iter5/instances_s1/safety_A4.json",
+    "cycle": 1,
+    "ranges": [
+     "That was what people thought as they spoke.",
+     "people who thought they were speaking with AI were actually speaking with human staff"
+    ]
+   },
+   {
+    "uid": "U02",
+    "run": "iter5/instances_s2/safety_A4.json",
+    "cycle": 1,
+    "ranges": [
+     "That was what people thought as they spoke.",
+     "people who thought they were speaking with AI were actually speaking with human staff"
+    ]
+   },
+   {
+    "uid": "U08",
+    "run": "iter6/instances_s1/bgroup_B4.json",
+    "cycle": 3,
+    "ranges": [
+     "I Thought It Was an AI Call—But There Was a Person Inside?",
+     "A call came from an AI agent. That was what it seemed."
+    ]
+   },
+   {
+    "uid": "U09",
+    "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+    "cycle": 2,
+    "ranges": [
+     "We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+     "Meta had run a test that caused exactly this surprise"
+    ]
+   },
+   {
+    "uid": "U10",
+    "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+    "cycle": 3,
+    "ranges": [
+     "We Thought It Was AI—But There Was a Person Inside Meta’s Muse"
+    ]
+   },
+   {
+    "uid": "U02",
+    "run": "iter6/instances_s1/safety_A4.json",
+    "cycle": 1,
+    "ranges": [
+     "That was what people thought as they spoke.",
+     "people who thought they were speaking with AI were actually speaking with human staff"
+    ]
+   },
+   {
+    "uid": "U02",
+    "run": "iter6/instances_s2/safety_A4.json",
+    "cycle": 1,
+    "ranges": [
+     "That was what people thought as they spoke.",
+     "people who thought they were speaking with AI were actually speaking with human staff"
+    ]
+   },
+   {
+    "uid": "U02",
+    "run": "iter8/instances_s1/safety_A4.json",
+    "cycle": 1,
+    "ranges": [
+     "That was what people thought as they spoke.",
+     "people who thought they were speaking with AI were actually speaking with human staff"
+    ]
+   },
+   {
+    "uid": "U13",
+    "run": "rep9/instances_s1/hormuz_run03_standard.json",
+    "cycle": 3,
+    "ranges": [
+     "High Oil Prices Stay",
+     "oil prices stayed high"
+    ]
+   }
+  ],
+  "reason_changed": [],
+  "p_tried_and_rejected": [
+   {
+    "uid": null,
+    "run": "iter5/instances_s1/bgroup_B3.json",
+    "cycle": 1,
+    "claim": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "iter5/instances_s1/bgroup_B3.json",
+    "cycle": 1,
+    "claim": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "iter5/instances_s1/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "iter5/instances_s2/bgroup_B3.json",
+    "cycle": 1,
+    "claim": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "iter5/instances_s2/bgroup_B3.json",
+    "cycle": 1,
+    "claim": "percent values found in article not matching any ledger fact: [2.0, 3.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": "U05",
+    "run": "iter5/instances_s2/hormuz_run03_advanced.json",
+    "cycle": 1,
+    "claim": "“attacks by the United States and Iran ... continued”",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:fragment_not_in_article"
+   },
+   {
+    "uid": "U06",
+    "run": "iter5/instances_s2/safety_A4.json",
+    "cycle": 2,
+    "claim": "“That was what people thought as they spoke.” The opening also presents the call as one people believed was from an AI.",
+    "base_reason": "explanatory_mixed",
+    "p_reason": "explain_split_rejected:remainder_too_long"
+   },
+   {
+    "uid": null,
+    "run": "iter5/instances_s2/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "iter6/instances_s1/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "iter6/instances_s2/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": "U11",
+    "run": "iter7/instances_s2/hormuz_run03_standard.json",
+    "cycle": 2,
+    "claim": "“Oil prices moved briefly, then returned to a high level.” The headline and one-line summary also state this more broadly as a claim about oil prices generally.",
+    "base_reason": "explanatory_mixed",
+    "p_reason": "explain_split_rejected:dangling_position:headline,one_line"
+   },
+   {
+    "uid": null,
+    "run": "rep7/instances_s1/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "rep7/instances_s2/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "rep8/instances_s1/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": null,
+    "run": "rep8/instances_s2/safety_er009_changed_number.json",
+    "cycle": 1,
+    "claim": "count values found in article not matching any ledger fact: [30000000.0]",
+    "base_reason": "mismatch",
+    "p_reason": "explain_split_rejected:no_quote"
+   },
+   {
+    "uid": "U12",
+    "run": "rep9/instances_s1/hormuz_run03_standard.json",
+    "cycle": 2,
+    "claim": "“Oil prices moved briefly, then returned to a high level”; “oil prices stayed high” (also reflected in the headline).",
+    "base_reason": "explanatory_mixed",
+    "p_reason": "explain_split_rejected:dangling_position:headline"
+   }
+  ]
+ },
+ "a_table": [
+  {
+   "uid": "U01",
+   "run": "iter5/instances_s1/bgroup_B4.json",
+   "cycle": 2,
+   "claim": "“A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.” Meta’s test “produced exactly this kind of surprise.”",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.",
+    "produced exactly this kind of surprise."
+   ],
+   "segments": [
+    {
+     "seg": "Meta’s test",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.",
+    "produced exactly this kind of surprise."
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U02",
+   "run": "iter5/instances_s1/safety_A4.json",
+   "cycle": 1,
+   "claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "people who thought they were speaking with AI were actually speaking with human staff",
+    "That was what people thought as they spoke."
+   ],
+   "segments": [
+    {
+     "seg": "および冒頭の",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "That was what people thought as they spoke.",
+    "people who thought they were speaking with AI were actually speaking with human staff"
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U02",
+   "run": "iter5/instances_s2/safety_A4.json",
+   "cycle": 1,
+   "claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "people who thought they were speaking with AI were actually speaking with human staff",
+    "That was what people thought as they spoke."
+   ],
+   "segments": [
+    {
+     "seg": "および冒頭の",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "That was what people thought as they spoke.",
+    "people who thought they were speaking with AI were actually speaking with human staff"
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U06",
+   "run": "iter5/instances_s2/safety_A4.json",
+   "cycle": 2,
+   "claim": "“That was what people thought as they spoke.” The opening also presents the call as one people believed was from an AI.",
+   "status": "unverified",
+   "reason": "explain_split_rejected:remainder_too_long",
+   "fragments": [
+    "That was what people thought as they spoke."
+   ],
+   "segments": [
+    {
+     "seg": "The opening also presents the call as one people believed was from an AI",
+     "verdict": "remainder_too_long"
+    }
+   ],
+   "ranges": [],
+   "level": null
+  },
+  {
+   "uid": "U08",
+   "run": "iter6/instances_s1/bgroup_B4.json",
+   "cycle": 3,
+   "claim": "The headline says “I Thought It Was an AI Call—But There Was a Person Inside?” and the opening says, “A call came from an AI agent. That was what it seemed.”",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "I Thought It Was an AI Call—But There Was a Person Inside?",
+    "A call came from an AI agent. That was what it seemed."
+   ],
+   "segments": [
+    {
+     "seg": "The headline says",
+     "verdict": "dropped"
+    },
+    {
+     "seg": "and the opening says",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "I Thought It Was an AI Call—But There Was a Person Inside?",
+    "A call came from an AI agent. That was what it seemed."
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U09",
+   "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+   "cycle": 2,
+   "claim": "“Meta had run a test that caused exactly this surprise,” reinforced by the headline “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "Meta had run a test that caused exactly this surprise,",
+    "We Thought It Was AI—But There Was a Person Inside Meta’s Muse."
+   ],
+   "segments": [
+    {
+     "seg": "reinforced by the headline",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+    "Meta had run a test that caused exactly this surprise"
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U10",
+   "run": "iter6/instances_s1/neg1_meta_b3prod_a2.json",
+   "cycle": 3,
+   "claim": "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse.”",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "We Thought It Was AI—But There Was a Person Inside Meta’s Muse."
+   ],
+   "segments": [
+    {
+     "seg": "Headline",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "We Thought It Was AI—But There Was a Person Inside Meta’s Muse"
+   ],
+   "level": "P:1"
+  },
+  {
+   "uid": "U02",
+   "run": "iter6/instances_s1/safety_A4.json",
+   "cycle": 1,
+   "claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "people who thought they were speaking with AI were actually speaking with human staff",
+    "That was what people thought as they spoke."
+   ],
+   "segments": [
+    {
+     "seg": "および冒頭の",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "That was what people thought as they spoke.",
+    "people who thought they were speaking with AI were actually speaking with human staff"
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U02",
+   "run": "iter6/instances_s2/safety_A4.json",
+   "cycle": 1,
+   "claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "people who thought they were speaking with AI were actually speaking with human staff",
+    "That was what people thought as they spoke."
+   ],
+   "segments": [
+    {
+     "seg": "および冒頭の",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "That was what people thought as they spoke.",
+    "people who thought they were speaking with AI were actually speaking with human staff"
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U11",
+   "run": "iter7/instances_s2/hormuz_run03_standard.json",
+   "cycle": 2,
+   "claim": "“Oil prices moved briefly, then returned to a high level.” The headline and one-line summary also state this more broadly as a claim about oil prices generally.",
+   "status": "unverified",
+   "reason": "explain_split_rejected:dangling_position:headline,one_line",
+   "fragments": [
+    "Oil prices moved briefly, then returned to a high level."
+   ],
+   "segments": [
+    {
+     "seg": "The headline and one-line summary also state this more broadly as a claim about oil prices generally",
+     "verdict": "dangling_position:headline,one_line"
+    }
+   ],
+   "ranges": [],
+   "level": null
+  },
+  {
+   "uid": "U02",
+   "run": "iter8/instances_s1/safety_A4.json",
+   "cycle": 1,
+   "claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "people who thought they were speaking with AI were actually speaking with human staff",
+    "That was what people thought as they spoke."
+   ],
+   "segments": [
+    {
+     "seg": "および冒頭の",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "That was what people thought as they spoke.",
+    "people who thought they were speaking with AI were actually speaking with human staff"
+   ],
+   "level": "P:2"
+  },
+  {
+   "uid": "U12",
+   "run": "rep9/instances_s1/hormuz_run03_standard.json",
+   "cycle": 2,
+   "claim": "“Oil prices moved briefly, then returned to a high level”; “oil prices stayed high” (also reflected in the headline).",
+   "status": "unverified",
+   "reason": "explain_split_rejected:dangling_position:headline",
+   "fragments": [
+    "Oil prices moved briefly, then returned to a high level",
+    "oil prices stayed high"
+   ],
+   "segments": [
+    {
+     "seg": "also reflected in the headline",
+     "verdict": "dangling_position:headline"
+    }
+   ],
+   "ranges": [],
+   "level": null
+  },
+  {
+   "uid": "U13",
+   "run": "rep9/instances_s1/hormuz_run03_standard.json",
+   "cycle": 3,
+   "claim": "“High Oil Prices Stay” (headline); “oil prices stayed high” (one-line summary).",
+   "status": "resolved",
+   "reason": null,
+   "fragments": [
+    "High Oil Prices Stay",
+    "oil prices stayed high"
+   ],
+   "segments": [
+    {
+     "seg": "headline",
+     "verdict": "dropped"
+    },
+    {
+     "seg": "one-line summary",
+     "verdict": "dropped"
+    }
+   ],
+   "ranges": [
+    "High Oil Prices Stay",
+    "oil prices stayed high"
+   ],
+   "level": "P:2"
+  }
+ ],
+ "c_ctl_arm": {
+  "n_deviations": 62,
+  "transitions": {
+   "確定→確定(同じ範囲)": 62
+  }
+ },
+ "d_nonblocking_unresolved_K1": [
+  {
+   "run": "iter5/instances_s1/hormuz_run01_advanced.json",
+   "cycle": 2,
+   "claim": "“The price movement seemed to show that people were watching not only whether there was a fee plan, but also the danger of the strait itself.”",
+   "base_reason": "mismatch",
+   "closed_status": "unverified",
+   "closed_reason": "mismatch",
+   "closed_ranges": [],
+   "segments": []
+  },
+  {
+   "run": "iter5/instances_s2/safety_A4.json",
+   "cycle": 3,
+   "claim": "The human backup plan; “But that backup plan changed the meaning of the call.”",
+   "base_reason": "explanatory_mixed",
+   "closed_status": "unverified",
+   "closed_reason": "explanatory_mixed",
+   "closed_ranges": [],
+   "segments": [
+    {
+     "seg": "The human backup plan",
+     "verdict": "remainder_verbatim_in_article"
+    }
+   ]
+  },
+  {
+   "run": "iter6/instances_s1/safety_A4.json",
+   "cycle": 3,
+   "claim": "“Keeping a human in reserve seemed safer than leaving everything to AI” and the description of this as a “human backup plan.”",
+   "base_reason": "explanatory_mixed",
+   "closed_status": "unverified",
+   "closed_reason": "explanatory_mixed",
+   "closed_ranges": [],
+   "segments": [
+    {
+     "seg": "and the description of this as a",
+     "verdict": "remainder_too_long"
+    }
+   ]
+  },
+  {
+   "run": "rep7/instances_s1/neg1_meta_b3prod_a2.json",
+   "cycle": 2,
+   "claim": "Headline: “We Thought It Was AI—But There Was a Person Inside Meta’s Muse”; also, “Meta had run a test that caused exactly this surprise.”",
+   "base_reason": "explanatory_mixed",
+   "closed_status": "resolved",
+   "closed_reason": null,
+   "closed_ranges": [
+    "We Thought It Was AI—But There Was a Person Inside Meta’s Muse",
+    "Meta had run a test that caused exactly this surprise."
+   ],
+   "segments": [
+    {
+     "seg": "Headline",
+     "verdict": "dropped"
+    },
+    {
+     "seg": "also",
+     "verdict": "connective"
+    }
+   ]
+  },
+  {
+   "run": "rep9/instances_s1/meta_run03_standard.json",
+   "cycle": 2,
+   "claim": "“They did not realize it” (in the passage stating that users could not know whether the caller was AI or a person).",
+   "base_reason": "explanatory_mixed",
+   "closed_status": "unverified",
+   "closed_reason": "explanatory_mixed",
+   "closed_ranges": [],
+   "segments": [
+    {
+     "seg": "in the passage stating that users could not know whether the caller was AI or a person",
+     "verdict": "contrast_or_reference_word:not"
+    }
+   ]
+  },
+  {
+   "run": "rep9/instances_s2/meta_run03_standard.json",
+   "cycle": 2,
+   "claim": "“They did not realize it.” (referring to users who asked Muse to make calls)",
+   "base_reason": "explanatory_mixed",
+   "closed_status": "unverified",
+   "closed_reason": "explanatory_mixed",
+   "closed_ranges": [],
+   "segments": [
+    {
+     "seg": "referring to users who asked Muse to make calls",
+     "verdict": "remainder_too_long"
+    }
+   ]
+  }
+ ],
+ "d_dropped_same_fact_locations": {
+  "n": 14,
+  "rows": [
+   {
+    "run": "rep20/instances_s1/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph beginning “Also, some calls needed user information…”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep20/instances_s2/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph beginning “People asking Muse to call”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s1/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph 7",
+    "base": [
+     "unverified",
+     "mismatch"
+    ],
+    "closed": [
+     "unverified",
+     "mismatch"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s1/meta_run03_standard.json",
+    "cycle": 3,
+    "loc": "“That information might accidentally be shared with contract workers at a call center.”",
+    "base": [
+     "resolved",
+     null
+    ],
+    "closed": [
+     "resolved",
+     null
+    ],
+    "closed_ranges": [
+     "That information might accidentally be shared with contract workers at a call center."
+    ],
+    "tr": "確定→確定(同じ範囲)"
+   },
+   {
+    "run": "iter7/instances_s1/safety_A2A3.json",
+    "cycle": 3,
+    "loc": "市場が見ていたのは、料金の有無だけではなかったからです。",
+    "base": [
+     "resolved",
+     null
+    ],
+    "closed": [
+     "resolved",
+     null
+    ],
+    "closed_ranges": [
+     "市場が見ていたのは、料金の有無だけではなかったからです。"
+    ],
+    "tr": "確定→確定(同じ範囲)"
+   },
+   {
+    "run": "rep20/instances_s1/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph beginning “People asking Muse to call…”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep20/instances_s1/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "“In one line”",
+    "base": [
+     "unverified",
+     "label_only"
+    ],
+    "closed": [
+     "unverified",
+     "label_only"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep20/instances_s1/meta_run03_standard.json",
+    "cycle": 3,
+    "loc": "Paragraph 5: “They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep20/instances_s1/meta_run03_standard.json",
+    "cycle": 3,
+    "loc": "“In one line”: “users were not properly told”",
+    "base": [
+     "unverified",
+     "label_only"
+    ],
+    "closed": [
+     "unverified",
+     "label_only"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s1/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph 5",
+    "base": [
+     "unverified",
+     "mismatch"
+    ],
+    "closed": [
+     "unverified",
+     "mismatch"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s1/meta_run03_standard.json",
+    "cycle": 3,
+    "loc": "“In one line”: “users were not properly told.”",
+    "base": [
+     "unverified",
+     "label_only"
+    ],
+    "closed": [
+     "unverified",
+     "label_only"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s2/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph 5: “They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s2/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "Paragraph 8: “A Meta executive admitted the test began without a clear explanation.”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed_ranges": [],
+    "tr": "確定不能→確定不能(同じ)"
+   },
+   {
+    "run": "rep21/instances_s2/meta_run03_standard.json",
+    "cycle": 2,
+    "loc": "In one line: “users were not properly told.”",
+    "base": [
+     "unverified",
+     "explanatory_mixed"
+    ],
+    "closed": [
+     "resolved",
+     null
+    ],
+    "closed_ranges": [
+     "users were not properly told."
+    ],
+    "tr": "確定不能→確定"
+   }
+  ],
+  "transitions": {
+   "確定不能→確定不能(同じ)": 11,
+   "確定→確定(同じ範囲)": 2,
+   "確定不能→確定": 1
+  }
+ },
+ "judgement_3_3": {
+  "b_confirmed_to_unconfirmed": 0,
+  "b_range_changed": 0,
+  "synthetic_all_expected": true,
+  "a_rows": 13,
+  "a_adopted_rows": 10,
+  "a_rejected_uids": [
+   "U06",
+   "U11",
+   "U12"
+  ],
+  "pass": true
+ }
+}

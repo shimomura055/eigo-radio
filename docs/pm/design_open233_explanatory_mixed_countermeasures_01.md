@@ -293,3 +293,12 @@
 - 作成: `docs/pm/design_open233_explanatory_mixed_countermeasures_01.md`(本書)、`er052_output/open233_explanatory_mixed_offline_check_01/`の4ファイル。
 - 変更なし: runner・Prompt・テスト・SSOT・既存doc。`er052_open233_self_recovery_flow_runner_01.py`と`er052_open233_self_recovery_stage2_*.py`は委任_55が編集中のため、runnerを`import`するスクリプトは使わず、`check_01.py`は標準ライブラリのみ。
 - LLM/API呼び出し: なし(¥0)。git操作: なし。
+
+
+## 5. Opusレビュー#7後の採否と事前確認・実装結果(委任_57)
+
+- Opus独立レビュー#7(`docs/pm/opus_l2_review_open233_self_recovery_07.md`)と、そのFable PM評価(同ファイル(4))を受け、採否は次のとおり。採用: 原因の順位づけ(主因=置き場の欠如、従=エコー、補助=指示文)、前回方式の検出低下の説明にH6、対策=案P-strict-closed(4ガード付き)をTrial専用スイッチ(既定OFF)で実装。採らない: 案Q・案Q'・案R・配列方式の再試行・案S2。U06・U11・U12は人間確認のまま。
+- P-strict-closedの規則: 引用符の断片を全て英語本文で既存照合により「ちょうど1箇所」に確定し、引用符の外の残りが、(v)位置語(paragraph/closing/elsewhere等は無条件に拒否、見出し・In one line・冒頭は断片と重ならなければ拒否)、(iii)対比・参照語、(ii)長さ(英語6語以上・日本語11文字以上)、(i)記事の3語以上の逐語、(iv)記事内で断片の直前・直後に逐語で連続、のいずれにも当たらないときだけ採用。
+- 事前確認(¥0、`check_02.py`): 346行で確定→確定不能0・範囲変化0・確定不能→確定10(確定不能のまま16)、13行中10行採用(U06・U11・U12は確定不能)、委任_53対照腕62件は全て不変、合成24件期待どおり、非BLOCKING K1は6行中1行のみ確定(P-strictの4行から減=安全側)。エコーは既存記録で観測0件=検証不能。
+- 実装(Trial専用、既定OFF): runner `VS_EXPLAIN_SPLIT`・`vs_explain_split_resolve`・`_resolve_claim_string`。runner単体440件・er052回帰484件OK、全体回帰は基準11件以外に新規失敗なし。詳細は`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§40。
+- 有効化・Production採用はユーザー承認待ち(判断A)。`OPEN-233-A1-PROD`へ、Production配線時の必須確認(実記事でのオフライン再生と目視、同値テスト、runtime evidence、局所QA fastpath条件(e)の置き換え)を追加済み。

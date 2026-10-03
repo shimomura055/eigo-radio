@@ -5492,5 +5492,145 @@ class TestCheckerSpansFormat53(unittest.TestCase):
         self.assertIn("判定基準は変えない", ins)
 
 
+class TestExplainSplitStrictClosed57(unittest.TestCase):
+    """委任_57(Opus独立レビュー#7の4ガード付き説明文後段分離P-strict-closed、Trial専用スイッチ`VS_EXPLAIN_SPLIT`、
+    既定OFF)。¥0。基準実装は`er052_output/open233_explanatory_mixed_offline_check_01/check_02.py`(オフライン再生で
+    346行・委任_53対照腕62件・合成テストを検証済み)。runnerの`vs_explain_split_resolve`が同じ結果を返すことを確認する。"""
+
+    @classmethod
+    def setUpClass(cls):
+        import importlib.util
+        import sys
+        here = os.path.dirname(os.path.abspath(__file__))
+        path = os.path.join(here, "er052_output", "open233_explanatory_mixed_offline_check_01", "check_02.py")
+        spec = importlib.util.spec_from_file_location("check_02_for_test57", path)
+        cls.c2 = importlib.util.module_from_spec(spec)
+        sys.modules["check_02_for_test57"] = cls.c2
+        spec.loader.exec_module(cls.c2)
+        runs = cls.c2.load_runs()
+        cls.blocking, cls.nonblocking = cls.c2.collect_rows(runs)
+        with open(os.path.join(here, "er052_output", "open233_handoff_log_aggregation_01",
+                               "unverified35_classification_01.csv"), encoding="utf-8-sig") as fh:
+            import csv
+            cls.uid = {}
+            for r in csv.DictReader(fh):
+                cls.uid.setdefault(r["claim"].strip(), r["unique_id"])
+
+    def _on(self):
+        return mock.patch.multiple(runner, VS_EXPLAIN_SPLIT=True, VS_MATCH_EXT=True)
+
+    def _u_rows(self):
+        out = []
+        for r in self.blocking:
+            if r["en"] is None and r["ja"] is None:
+                continue
+            base = self.c2.base_resolve(r["claim"], r["en"], r["ja"], True)
+            if base["reason"] == "explanatory_mixed" and base["status"] != "resolved":
+                out.append((self.uid.get(r["claim"].strip(), "?"), r))
+        return out
+
+    def test_default_is_off_and_cli_flag_exists(self):
+        self.assertFalse(runner.VS_EXPLAIN_SPLIT)
+        import inspect
+        self.assertIn("--vs-explain-split", inspect.getsource(runner.main))
+
+    def test_u01_to_u13_real_strings_10_adopted_3_rejected(self):
+        rows = self._u_rows()
+        self.assertEqual(len(rows), 13)
+        adopted = [u for u, _ in rows if u in ("U01", "U02", "U08", "U09", "U10", "U13")]
+        self.assertEqual(len(adopted), 10)  # U02が5行
+        with self._on():
+            for u, r in rows:
+                res = runner._resolve_claim_string(r["claim"], r["en"], r["ja"])
+                ref = self.c2.closed_resolve(r["claim"], r["en"], r["ja"], True)
+                if u in ("U06", "U11", "U12"):
+                    self.assertEqual(res["status"], "unverified", u)
+                    self.assertTrue(res["explain_split"]["reason"].startswith("explain_split_rejected:"), u)
+                    self.assertEqual(res["explain_split"]["reason"], ref["reason"], u)
+                    self.assertEqual(res["reason"], "explanatory_mixed", u)  # 下流の分岐を変えない
+                else:
+                    self.assertEqual(res["status"], "resolved", u)
+                    self.assertEqual(res["lang"], "EN")
+                    self.assertEqual(res["ranges"], ref["ranges"], u)
+                    self.assertTrue(res["level"].startswith("P:"), u)
+                    self.assertEqual(res["explain_split"]["fragments"], ref["fragments"])
+                    self.assertTrue(res["explain_split"]["dropped_remainders"] is not None)
+                    for rng in res["ranges"]:
+                        self.assertEqual(r["en"].count(rng), 1)
+
+    def test_synthetic_cases_all_as_expected(self):
+        with self._on():
+            for name, claim, en, ja, expect in self.c2.synthetic_closed_cases():
+                res = runner._resolve_claim_string(claim, en, ja)
+                self.assertEqual(res["status"], expect, name)
+                if expect == "unverified":
+                    ref = self.c2.closed_resolve(claim, en, ja, True)
+                    # 現行照合で確定不能の文字列だけがP-strict-closedの対象(それ以外は理由コードなし)
+                    if res.get("explain_split"):
+                        self.assertEqual(res["explain_split"]["reason"], ref["reason"], name)
+
+    def test_off_is_identical_to_base_on_all_346_rows(self):
+        with mock.patch.multiple(runner, VS_EXPLAIN_SPLIT=False, VS_MATCH_EXT=True):
+            for r in self.blocking:
+                if r["en"] is None and r["ja"] is None:
+                    continue
+                self.assertEqual(runner._resolve_claim_string(r["claim"], r["en"], r["ja"]),
+                                 runner._resolve_claim_string_base(r["claim"], r["en"], r["ja"]))
+
+    def test_on_never_changes_already_confirmed_ranges_346_rows(self):
+        n_new, n_chk = 0, 0
+        for r in self.blocking:
+            if r["en"] is None and r["ja"] is None:
+                continue
+            with mock.patch.multiple(runner, VS_EXPLAIN_SPLIT=False, VS_MATCH_EXT=True):
+                base = runner._resolve_claim_string(r["claim"], r["en"], r["ja"])
+            with self._on():
+                on = runner._resolve_claim_string(r["claim"], r["en"], r["ja"])
+            n_chk += 1
+            if base["status"] == "resolved":
+                self.assertEqual(on["status"], "resolved")
+                self.assertEqual((on["lang"], on["spans"], on["ranges"], on["level"]),
+                                 (base["lang"], base["spans"], base["ranges"], base["level"]))
+                self.assertNotIn("explain_split", on)
+            elif on["status"] == "resolved":
+                n_new += 1
+        self.assertGreater(n_chk, 300)
+        self.assertEqual(n_new, 10)
+
+    def test_multi_match_and_empty_not_attempted(self):
+        en = "# T\n\nThe second sentence repeats. The second sentence repeats.\n"
+        with self._on():
+            res = runner._resolve_claim_string("“The second sentence repeats.”", en, None)
+            self.assertEqual(res["reason"], "multi_match")
+            self.assertNotIn("explain_split", res)
+            self.assertEqual(runner._resolve_claim_string("", en, None)["reason"], "empty_claim")
+
+    def test_japanese_text_only_never_newly_confirmed(self):
+        ja = "# タイトル\n\n彼は「価格は近く下がる」と述べた。\n"
+        with self._on():
+            res = runner._resolve_claim_string("「価格は近く下がる」と冒頭にある", None, ja)
+            self.assertEqual(res["status"], "unverified")
+            self.assertEqual(res["explain_split"]["reason"], "explain_split_rejected:no_en_text")
+
+    def test_legacy_handoff_mode_unaffected(self):
+        claim = {"claim_text": "“That was what people thought as they spoke.” The opening also presents x"}
+        with mock.patch.multiple(runner, VS_EXPLAIN_SPLIT=True, HANDOFF_MODE=runner.HANDOFF_MODE_LEGACY):
+            out = runner.annotate_claim_span_identity(dict(claim), "x", None)
+        self.assertEqual(out, claim)
+
+    def test_constants_verbatim(self):
+        self.assertEqual(runner.VS_EXPLAIN_CONTRAST_REF_EN_RE.pattern,
+                         r"\b(ledger|source|but|instead|not|should|however|rather|whereas|contrary|versus)\b|n't")
+        self.assertEqual(runner.VS_EXPLAIN_CONTRAST_REF_JA_RE.pattern,
+                         "台帳|原文|ではなく|ではない|しかし|べき|一方|対して|ところが")
+        self.assertEqual(runner.VS_EXPLAIN_POSITION_REJECT_RE.pattern,
+                         r"\b(paragraph|closing|elsewhere|section|ending|conclusion)\b|段落|末尾|結び")
+        self.assertEqual((runner.VS_EXPLAIN_MAX_EN_WORDS, runner.VS_EXPLAIN_MAX_JA_CHARS,
+                          runner.VS_EXPLAIN_MIN_VERBATIM_WORDS), (6, 11, 3))
+        self.assertEqual(self.c2.CONTRAST_REF_EN_RE.pattern, runner.VS_EXPLAIN_CONTRAST_REF_EN_RE.pattern)
+        self.assertEqual(self.c2.CONTRAST_REF_JA_RE.pattern, runner.VS_EXPLAIN_CONTRAST_REF_JA_RE.pattern)
+        self.assertEqual(self.c2.POSITION_REJECT_RE.pattern, runner.VS_EXPLAIN_POSITION_REJECT_RE.pattern)
+
+
 if __name__ == "__main__":
     unittest.main()

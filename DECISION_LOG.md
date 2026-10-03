@@ -17918,3 +17918,46 @@ Ledgerとの差異が英語側にあるなら、原則として英語だけ修�
 - 委任_55(本委任): 線引き(重大/軽微/問題なし)の正式採用の反映(正解ラベル・Safety-critical登録・Stage 2 rubric V7)、再較正、`OPEN-233-A1-PROD`追跡の更新(自己修復機構のProduction配線時の必須構成要素)、英語だけ修正の接続仕様メモ(再生成経路は再生成後に`run_deviation_check`で必ず再検査)。
 - 委任_56: 説明文混入12件の原因深掘りと複数案(その後Opus独立技術レビュー→Fable再評価→ユーザー提示前の自己点検)。
 - 次Trial(5記事×2レベル)・29件横断は開始禁止。`APPROVED_FOR_PRODUCTION`は線引きと句読点差対策の2点のみ。どちらも`PRODUCTION_WIRED`ではない。説明文混入対策はUSER_DECISION_REQUIREDまで。
+
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01(2026-10-03、委任_55〜57、Fable判断。`USER_DECISION_REQUIRED`で停止)
+
+性質: 線引き正式採用の反映と再較正の完了(委任_55・57)、説明文混入の原因深掘り・Opus独立レビュー#7・事前確認・Trial実装(既定OFF)(委任_56・57)。ユーザー決定(2026-10-03、2回目)の原文は上のエントリに逐語記録済み。Production正式path(`er003*`〜`er019*`)・機械的な安全装置(`FLOOR_FLAGS`のfloor、precheck、主体置換ガード、`DISCLOSURE_GAP_NEGATION_RE`)は未変更。
+
+### (1) 線引き正式採用の反映(`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)
+
+- Stage 2 body rubric: `MISCONCEPTION_PRINCIPLE_TEXT_V7`(V6に追記、旧版は残す)。「迷えばBLOCKING」を「読者が信じたとき事実関係の重大な誤解につながるか」へ置換。数値・主体・否定・比較・時期の機械的floorは不変。
+- 正解ラベル更新: Meta-1/Meta-2=QUALITY(例1=軽微)、MUSE-HC-012「They enjoyed…」=ACCEPTABLE(例2)、HF-009「prices began to fall」=QUALITY、**A4-1=ACCEPTABLE(委任_57で追加)**。
+- Safety-critical登録: 10件→8件(A5-1は委任_29、hormuz-HF009は委任_28)→**5件(A2A3-0・A4-0・A5-0・B3・B4-a)**。Meta-1/Meta-2は委任_55、A4-1は委任_57(いずれも正式採用基準の適用)で外し、runner `SAFETY_CRITICAL_CLAIM_DEFS`では`expected`付きの監視用として残す(`detect_safety_critical_misdowngrades`の対象外、`detect_over_quality_monitor_blocks`で過剰品質を記録)。
+- 再較正(Stage 2単体、n=2、26 call、¥4.3666、`er052_output/open233_safety_control_03/`)と診断(7 call、¥2.1157)。費用合計¥6.4823(Phase累計¥536.4930、残¥363.5070)。委任_55時点では(a)Safety-critical 6claimでA4-1が2/2 ACCEPTABLE=不合格だった。
+- **A4-1の再ラベル理由(委任_57、Fable判断)**: 対象文(`people who thought they were speaking with AI were actually speaking with human staff`、`That was what people thought as they spoke.`)は、ユーザー判断済みの例2(利用者がAIだと思っていた、気づかなかった、という推論)と同型で、「were actually speaking with human staff」の事実部分はLedger(人間の契約スタッフが一部の電話を担当)に支持される。正式採用基準では問題なし。旧ラベル(BLOCKING)が新基準と食い違っていたためラベル側を直した(rubric V7は変更しない、再較正は再実行せず注記を`er052_output/open233_safety_control_03/relabel_note_a41.md`へ別ファイルで追加、元の結果は不変)。**再較正の最終判定: 合格(ラベル修正後)**: (a)Safety-critical 5claim 誤降格0、(b)Safety12 0/18、(c)Hormuz V6と同じ、(d)例3件期待どおり、(e)K16・K20 BLOCKING、(f)false BLOCK 0。
+- 残るSafety-critical 5件を3定義へ当てた机上確認(例2と同型のものは無し): B3=因果の創作(重大)、B4-a=未確認の仕組み・設計意図の追加(重大)、A2A3-0=主体の取り違え(重大)、A4-0=やり取りの相手の取り違え(重大)、A5-0=時期・経過の創作(重大)。いずれも重大のまま(`docs/pm/design_open233_self_recovery_flow_01.md`§7-1付近の委任_57追記)。
+
+### (2) 残る食い違い(受容または追跡)
+
+- K19(`prices began to fall`)はユーザー決定でQUALITYだが、`changed_comparison`のfloorは機械的な安全装置のため不変。Checkerがcomparisonを立てた実行ではBLOCKINGになりうる。**受容(機械的安全装置は緩めない方針どおり、ユーザー判断Bで確認)**。
+- 「動機の帰属=QUALITY」(production `MATERIALITY_RUBRIC`)はFable案(4)・設計書§0-2・K20〜K22と食い違うが、現行flowは`BODY_RUBRIC_DEFAULT`=V6/V7を使うため実害なし。Production配線時に再確認。
+- `DISCLOSURE_GAP_NEGATION_RE`は否定形限定のまま(肯定形の推論の許容はrubric側[V7]で扱う)。
+
+### (3) 説明文混入(Checker引用への説明文混入12件)
+
+- 原因深掘り(委任_56)とOpus独立技術レビュー#7(条件A、`docs/pm/opus_l2_review_open233_self_recovery_07.md`、依頼文逐語・Opus全文逐語・Fable PM評価を保存): 主因=複数箇所を書く置き場の欠如(Recheck出力に`same_fact_id_locations`欄を常設し、`prior_issues`へ確定範囲を渡す形で既に解消。現行構成で混入0/35)、従=エコー、補助=指示文。前回方式(violation_spans)の検出低下の説明に仮説H6(証拠負担の増加で境界的な指摘を出さなくなった)を追加。Opusは「T+監視」も正解としつつ、¥0の安全網としてP-strictを4ガードで締めた形(P-strict-closed)を推奨。
+- Fable PM評価(Opus#7の保存ファイル(4)に全文): 採用=原因の順位づけ・P-strict-closed(4ガード: 残りの長さ制限、対比・参照語、断片への連続、英語本文限定)をTrial専用スイッチ(既定OFF)で実装。採らない=案Q・案Q'・案R・配列方式の再試行・案S2。「現行構成で実害ほぼ0」は「安全網の価値は低いが0ではない」と評価。
+- **事前確認(委任_57、¥0、`er052_output/open233_explanatory_mixed_offline_check_01/`の`echo_check_01.py`・`check_02.py`・`results_02.json`・`cases_02.csv`)**: (a)エコー確認=既存記録で複数範囲の`claim_span_text`は観測できなかった(実記録のclaim_span_textは10件で全て単一範囲、現行照合で再構成した136件のBLOCKING指摘のうち複数範囲は2件で、いずれも最終周回のため次周回なし)=エコーの有無は**検証不能**(0件観測)。(b)346行: 確定→確定不能0・範囲変化0・確定不能→確定10(説明文混入の10行)・確定不能のまま16(数値検査の文字列12・U05・U06・U11・U12)・理由変化0。(c)委任_53対照腕62件: 全て確定済みのまま(同じ範囲62)。(d)非BLOCKING K1の確定不能6行: P-strictでは4行が確定したが、P-strict-closedでは1行のみ確定(3行は長い説明文で拒否=安全側)。`same_fact_id_locations`14件: 新たに確定1件(P-strictは5件)、現行で確定済み2件は不変。(a)13行: 10行採用(U01・U02×5・U08・U09・U10・U13)、U06(説明文が長い)・U11・U12(名指しした見出し等が断片と重ならない)は確定不能のまま。合成テスト24件(採用の対照3、確定不能21: 対比の引用・発言の引用・日本語「」・paragraph 5/closing/elsewhere・断片への連続・英語6語以上・日本語11文字以上など)全て期待どおり。自己検証(現行照合のコピーが委任_49の再生と346行で不一致0)。Fable基準(3-3)を全て満たした。
+- **Trial実装(既定OFF)あり**: `er052_open233_self_recovery_flow_runner_01.py`の`VS_EXPLAIN_SPLIT`(既定False、CLI`--vs-explain-split`)、`vs_explain_split_resolve`、`_resolve_claim_string`(照合の入口1箇所。既存の照合は`_resolve_claim_string_base`へ改名)。ONのときだけ、既存の照合で確定不能(explanatory_mixed/mismatch/label_only)の場合に試す。拒否時も`reason`は既存の値のまま(下流の分岐を変えない)、拒否理由コード`explain_split_rejected:<理由>`は`explain_split.reason`へ記録。採用時`level="P:<断片数>"`、`explain_split`に採用した断片・捨てた残りの文字列。複数範囲の`claim_span_text`は変更なし。テスト: runner単体440件OK(新規9件+A4-1の3件)、er052回帰484件OK、全体回帰4407件中11件は基準どおり既存の失敗(新規なし)。
+- 対比・参照語の定数(逐語): `VS_EXPLAIN_CONTRAST_REF_EN_RE=\b(ledger|source|but|instead|not|should|however|rather|whereas|contrary|versus)\b|n't`(大文字小文字無視)、`VS_EXPLAIN_CONTRAST_REF_JA_RE=台帳|原文|ではなく|ではない|しかし|べき|一方|対して|ところが`、`VS_EXPLAIN_POSITION_REJECT_RE=\b(paragraph|closing|elsewhere|section|ending|conclusion)\b|段落|末尾|結び`、残り1区間の長さ=英語6語以上・日本語(CJK含む)11文字以上で拒否、記事本文の逐語として拒否=3語以上(日本語8文字以上)。
+
+### (4) `OPEN-233-A1-PROD`の条件追加(Production配線時の必須確認)
+
+発言の引用符を多く含む実記事でのオフライン再生と確定範囲の目視確認、Trial runnerとProductionの同値テスト、runtime evidence(P確定レベル・捨てた残りの文字列)、局所QA fastpathの条件(e)のProduction信号への置き換え。P-strict-closedをProductionへ入れる場合は、上記を満たし、ユーザー判断Aで承認を得ること。
+
+### (5) ユーザー判断事項(未決。`USER_DECISION_REQUIRED`)
+
+- 判断A: P-strict-closedを次Trialで有効化し、自己修復機構のProduction配線時の構成要素に含めるか(Fable推奨: 有効化する。¥0・決定論・fail-closed・Opusレビュー済み)。
+- 判断B: K19が`changed_comparison`のfloorでBLOCKINGになる残りを受容するか(Fable推奨: 受容。機械的安全装置は緩めない方針どおり)。
+- 判断C: 次Trial(5記事×2レベル)の前に行う限定flow確認と29件横断(1回)の実施可否。
+- 次Trial・29件横断は開始していない。`APPROVED_FOR_PRODUCTION`は線引きと句読点差対策の2点のみ。説明文混入対策はTrial実装(既定OFF)までで、有効化・Production採用はユーザー承認待ち。
+
+### (6) 予算
+
+Phase累計¥536.4930、残¥363.5070(上限¥900)。委任_57の費用は¥0。

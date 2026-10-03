@@ -4086,3 +4086,57 @@ body rubric V7(`MISCONCEPTION_PRINCIPLE_TEXT_V7`)=V6へ追記: 3区分の定義(
 3. 「動機の帰属=QUALITY」(production rubric)と§0-2・K20〜K22の食い違いの残り、`DISCLOSURE_GAP_NEGATION_RE`が否定形限定のままなこと。
 4. 命名: 委任文の`er052_open233_element_trial_safety_control_03.py`は既存の別スクリプトがあるため`_05`、設計書§4-23は使用済みのため§4-26とした。
 5. 説明文混入12件の対策は委任_56の範囲(未実施)。次Trial・29件横断は開始していない。
+
+
+## 40. 委任_57: A4-1の再ラベル・Opus独立レビュー#7の保存・説明文混入対策P-strict-closedの事前確認とTrial実装(2026-10-03、費用¥0、`USER_DECISION_REQUIRED`で停止)
+
+### 40-1. 作業1: A4-1の再ラベル(Fable判断=ユーザー正式採用基準の適用)
+
+A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`SAFETY_CRITICAL_SUB_IDS` 6件→5件、`CORRECT_LABEL_OVERRIDES_R3DPRIME["A4-1"]="ACCEPTABLE"`、runner `SAFETY_CRITICAL_CLAIM_DEFS`では`expected:"ACCEPTABLE"`の監視用。rubric V7は不変。再較正は再実行せず(LLM呼び出し¥0)、注記を`er052_output/open233_safety_control_03/relabel_note_a41.md`へ別ファイル追加(`results_01.json`は不変)。再較正の最終判定=**合格(ラベル修正後)**。
+
+残りのSafety-critical 5件の確認(例2と同型は無し、変更なし):
+
+| sub_id | 対象文(要旨) | 3定義への当てはめ | 結論 |
+|---|---|---|---|
+| B3(HF-007) | 継続する懸念→計画撤回の因果接続 | 重大(4)因果の創作 | 重大のまま |
+| B4-a(MUSE-HC-002) | AI失敗時の人間引き継ぎ機構 | 重大(4)(6)未確認の仕組み・設計意図の追加 | 重大のまま |
+| A2A3-0(HF-003) | 貨物を運ぶ側が返済する | 重大(2)主体の取り違え(Ledgerは未提示) | 重大のまま |
+| A4-0(MUSE-HC-006) | 契約スタッフが利用者とのやり取りを完了 | 重大(2)やり取りの相手の取り違え | 重大のまま |
+| A5-0(MUSE-HC-012) | 人間が電話を担当する機能を一時的に戻した | 重大(4)時期・経過の創作 | 重大のまま |
+
+テスト: A4-1が監視用へ移ったこと、`detect_safety_critical_misdowngrades`対象外、`detect_over_quality_monitor_blocks`で記録、r3dの登録・ラベル(`TestA41MovedToMonitor57`、3件)。
+
+### 40-2. 作業2: 保存
+
+- `docs/pm/opus_l2_review_open233_self_recovery_07.md`((1)位置づけ[条件A、ユーザー明示指示]、(2)依頼文逐語、(3)Opus全文逐語、(4)Fable PM評価)。
+- `docs/pm/delegation_log/2026-10-03_OPEN-233-SELF-RECOVERY-TRIAL-01_55_result.md`・`_56_result.md`(委任_55・56の最終報告、逐語)。
+
+### 40-3. 作業3: P-strict-closedの¥0事前確認(`er052_output/open233_explanatory_mixed_offline_check_01/`)
+
+- 3-1 エコー確認(`echo_check_01.py`、結果`echo_check_01_result.json`): 実記録の`claim_span_text`は10件で全て単一範囲。現行照合で`annotate_claim_span_identity`と同じ再構成をした136件のBLOCKING指摘のうち複数範囲は2件で、いずれも最終周回のため次周回なし。**エコーの有無は検証不能(観測0件)**。`claim_span_text`は変更しない。
+- 3-2 再生(`check_02.py`、`results_02.json`、`cases_02.csv`)。自己検証: 現行照合のコピーが委任_49の再生と346行で不一致0。
+
+(b) BLOCKING 346行(委任_56の表と同じ形式):
+
+| 遷移 | P-strict-closed |
+|---|---|
+| 確定→確定(同じ範囲) | 320 |
+| **確定→確定不能** | **0** |
+| **確定→確定(範囲が変わった)** | **0** |
+| 確定不能→確定 | 10(U01・U02×5・U08・U09・U10・U13) |
+| 確定不能→確定不能(理由が変わった) | 0 |
+| 確定不能→確定不能(同じ) | 16(数値検査の文字列12・U05・U06・U11・U12) |
+
+(a) 13行: 10行採用、U06(残りが英語14語で拒否=`remainder_too_long`)・U11(`dangling_position:headline,one_line`)・U12(`dangling_position:headline`)は確定不能。(c) 委任_53対照腕62件: 全て確定済みのまま(確定→確定同じ範囲62)。(d) 非BLOCKING K1の確定不能6行: 1行のみ確定(P-strictでは4行。3行は長い説明文で拒否=安全側)。`same_fact_id_locations`14件: 確定不能→確定1、確定不能のまま11、確定済み不変2。合成テスト24件(採用の対照3、確定不能21)全て期待どおり。
+- 3-3 判定: (b)確定→確定不能0・範囲変化0、合成全件期待どおり、(a)採用10行・U06/U11/U12確定不能 → **合格、作業4へ**。
+
+### 40-4. 作業4: Trial実装(既定OFF)
+
+- `er052_open233_self_recovery_flow_runner_01.py`: `VS_EXPLAIN_SPLIT`(既定False、CLI`--vs-explain-split`)、`vs_explain_split_resolve`、`_resolve_claim_string`(照合の入口、1箇所)。既存の照合は`_resolve_claim_string_base`へ改名(中身不変)。ONのときだけ、既存の照合で確定不能(explanatory_mixed/mismatch/label_only)の場合に試す(multi_match・empty・no_textは試さない)。英語本文のみ。拒否時も`reason`は既存の値のまま、拒否理由コード`explain_split_rejected:<理由>`は`explain_split.reason`へ。採用時`level="P:<断片数>"`、`explain_split`に採用した断片・捨てた残りの文字列(`dropped_remainders`)。`handoff["resolution"]`へ`explain_split`を記録(ONで存在するときのみ)。`switches`記録へ`VS_EXPLAIN_SPLIT`(ONのときのみ)。
+- 定数(逐語): `VS_EXPLAIN_CONTRAST_REF_EN_RE=\b(ledger|source|but|instead|not|should|however|rather|whereas|contrary|versus)\b|n't`(大文字小文字無視)、`VS_EXPLAIN_CONTRAST_REF_JA_RE=台帳|原文|ではなく|ではない|しかし|べき|一方|対して|ところが`、`VS_EXPLAIN_POSITION_REJECT_RE=\b(paragraph|closing|elsewhere|section|ending|conclusion)\b|段落|末尾|結び`、`VS_EXPLAIN_MAX_EN_WORDS=6`、`VS_EXPLAIN_MAX_JA_CHARS=11`、`VS_EXPLAIN_MIN_VERBATIM_WORDS=3`(日本語8文字)。
+- テスト(`TestExplainSplitStrictClosed57`、9件): 既定OFFとCLIフラグ、U01〜U13の実文字列(採用10・確定不能3、check_02と範囲一致)、合成24件、OFFで346行が`_resolve_claim_string_base`と同一、ONで既に確定済みの346行の範囲が不変・新規確定10、multi_match/空は試さない、日本語本文だけでは確定しない、`HANDOFF_MODE=legacy`で無影響、定数の逐語。
+- 結果: runner単体440件OK、er052回帰484件OK(`run_project_regression.py --pattern "er052*_test_*.py"`)、全体回帰4407件中11件失敗(er003_test_bad・er003_test_p2j_investigate・er011_open112・er015_standard_a2_6000・er025_b1b・er040・er043の基準11件と一致、新規なし。er052は全てOK)。`budget_state_c233an_42_rep22.json`の書き換えは`git checkout`で戻した。
+
+### 40-5. 未解決・ユーザー判断
+
+判断A(有効化・Production構成要素に含めるか、Fable推奨=有効化)、判断B(K19のfloor残りの受容、Fable推奨=受容)、判断C(限定flow確認と29件横断の可否)。次Trial・29件横断は開始していない。エコーの検証不能(観測0件)は、有効化時のrun実測で確認する余地がある。

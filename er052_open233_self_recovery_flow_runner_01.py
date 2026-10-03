@@ -343,6 +343,28 @@ JA_MODE = JA_MODE_PAIRED
 VS_STRUCTURAL_LABELS = frozenset({"in one line"})
 VS_EDGE_PUNCT = ".,;:!?"
 
+# 委任_57(2026-10-03、Opus独立レビュー#7の4ガード付き説明文後段分離「P-strict-closed」、設計書
+# design_open233_explanatory_mixed_countermeasures_01.md §5): Trial専用スイッチ、既定False=委任_55時点と同一。
+# Productionに存在しない。有効化・Production採用はユーザー承認待ち(`USER_DECISION_REQUIRED`)。
+# ONのとき、`_resolve_claim_string`で既存の照合(L0〜L5・label_only)が確定不能(explanatory_mixed/mismatch/
+# label_only)だった場合にのみ`vs_explain_split_resolve`を試す(照合経路は`_resolve_claim_string`の1箇所のまま。
+# Stage 1初回・Recheck・Rewrite周回・retry・fallbackは全て同じ経路)。規則(英語本文のみ。日本語本文だけでは新たに確定しない):
+#   引用符(“ ” " 「」『』)で囲まれた断片を全て取り出し、各断片を英語本文で既存照合(L0〜L3、VS_MATCH_EXT=ONなら
+#   L5・単語境界)により「ちょうど1箇所」に確定。引用符の外の残り(各区間)が、(v)位置語(VS_EXPLAIN_POSITION_REJECT_RE。
+#   見出し・In one line・冒頭を名指しするものは、どの断片もその要素と重ならなければ拒否)、(iii)対比・参照語
+#   (VS_EXPLAIN_CONTRAST_REF_EN_RE/_JA_RE)、(ii)長さ(英語6語以上・日本語11文字以上)、(i)記事本文の3語以上の逐語、
+#   (iv)記事内で断片の直前・直後に逐語で連続、のいずれにも当たらないときだけ採用。断片なし・不一致・複数一致・
+#   閉じ忘れ・入れ子・構造ラベルだけ・上記のいずれかに該当は確定不能(`explain_split_rejected:<理由>`)。
+VS_EXPLAIN_SPLIT = False
+VS_EXPLAIN_CONTRAST_REF_EN_RE = re.compile(
+    r"\b(ledger|source|but|instead|not|should|however|rather|whereas|contrary|versus)\b|n't", re.I)
+VS_EXPLAIN_CONTRAST_REF_JA_RE = re.compile(r"台帳|原文|ではなく|ではない|しかし|べき|一方|対して|ところが")
+VS_EXPLAIN_POSITION_REJECT_RE = re.compile(
+    r"\b(paragraph|closing|elsewhere|section|ending|conclusion)\b|段落|末尾|結び", re.I)
+VS_EXPLAIN_MAX_EN_WORDS = 6   # 残りの1区間が英語でこの語数以上なら拒否
+VS_EXPLAIN_MAX_JA_CHARS = 11  # 残りの1区間が(CJKを含み)この文字数以上なら拒否
+VS_EXPLAIN_MIN_VERBATIM_WORDS = 3  # 残りが記事本文の逐語で、かつこの語数以上なら拒否(日本語は8文字以上)
+
 # 委任_53(2026-10-03、OPEN-233 Checker説明文混入12件の対策、設計書 design_open233_countermeasures_after_
 # handoff_01.md §3、Opus独立レビュー#6 論点6でレビュー済みの形): Trial専用スイッチ、既定"legacy"=現行の挙動のまま。
 # Productionに存在しない。判定基準(何を逸脱とするか・severity・10種類のflag)は変えない。変えるのは
@@ -3191,7 +3213,7 @@ def _resolve_spans_array(claim_text: str, elems: list, en_text: str | None, ja_t
     return out
 
 
-def _resolve_claim_string(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
+def _resolve_claim_string_base(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
     """委任_42 仕様(1): Checkerの`claim_text`だけを入力に、記事側の範囲を確定する
     (再推測ではなく照合)。類似度・単語重なり・判定役の引用・位置比は使わない。
     返値: {"status": "resolved"|"unverified", "lang": "EN"|"JA"|None,
@@ -3244,6 +3266,183 @@ def _resolve_claim_string(claim_text: str, en_text: str | None, ja_text: str | N
         out["detail"] = "fragment_unresolved"
     else:
         out["reason"] = "mismatch"
+    return out
+
+
+_VS_EXPLAIN_OPEN_CLOSE = {"“": "”", "「": "」", "『": "』"}
+_VS_EXPLAIN_CONNECTIVE = frozenset({"and", "or", "also", "&", "および", "と", "かつ", "また"})
+_VS_EXPLAIN_HEAD_RE = re.compile(r"\b(headline|title|heading)\b|見出し|タイトル", re.I)
+_VS_EXPLAIN_ONELINE_RE = re.compile(r"in one line|one-line|one line|\bsummary\b|要約", re.I)
+_VS_EXPLAIN_OPENING_RE = re.compile(r"\b(opening|lead|hook)\b|冒頭", re.I)
+_VS_EXPLAIN_SEG_EDGE = " \t\r\n.,;:、，；。:()（）[]【】—–-/…\"'“”‘’「」『』"
+_VS_EXPLAIN_CJK_RE = re.compile(r"[぀-ヿ一-鿿]")
+
+
+def _vs_explain_extract_fragments(claim: str) -> tuple:
+    """引用符で囲まれた断片を出現順に取り出す。返値 (frags[(start,end,inner)], balanced, remainder_segments[str])。
+    “”「」『』は入れ子なしの単純対応。直線"は交互。閉じ忘れ・閉じだけが残る場合は balanced=False。"""
+    frags, i, n = [], 0, len(claim)
+    balanced = True
+    segs, last = [], 0
+    while i < n:
+        ch = claim[i]
+        if ch in _VS_EXPLAIN_OPEN_CLOSE or ch == '"':
+            close = _VS_EXPLAIN_OPEN_CLOSE.get(ch, '"')
+            j = claim.find(close, i + 1)
+            if j < 0:
+                balanced = False
+                break
+            frags.append((i, j + 1, claim[i + 1:j]))
+            segs.append(claim[last:i])
+            last = j + 1
+            i = j + 1
+            continue
+        if ch in "”」』":
+            balanced = False
+            break
+        i += 1
+    segs.append(claim[last:])
+    return frags, balanced, segs
+
+
+def _vs_explain_structure_elements(text: str) -> dict:
+    """記事の構造から決定論的に取れる要素: 見出し行(最初の`# `行)・`## In one line`直下の1行・見出し直後の最初の段落。"""
+    out = {}
+    m = re.search(r"(?m)^#\s+(.+?)\s*$", text)
+    if m:
+        out["headline"] = (m.start(1), m.end(1))
+    m = re.search(r"(?mi)^##[ \t]*In one line[ \t]*\n(.+?)(?:\n[ \t]*\n|\Z)", text, re.S)
+    if m:
+        out["one_line"] = (m.start(1), m.start(1) + len(m.group(1).rstrip()))
+    m = re.search(r"(?m)^#[ \t]+.+?$", text)
+    if m:
+        mm = re.search(r"\S.*?(?:\n[ \t]*\n|\Z)", text[m.end():], re.S)
+        if mm:
+            out["opening"] = (m.end() + mm.start(), m.end() + mm.end())
+    return out
+
+
+def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
+    """委任_57 P-strict-closed(Trial専用、`VS_EXPLAIN_SPLIT`ON時のみ`_resolve_claim_string`から呼ばれる)。
+    英語本文のみ。返値: {"status": "resolved"/"unverified", "reason": None / "explain_split_rejected:<理由>",
+    "fragments": [断片(逐語)], "dropped_remainders": [{"seg", "verdict"}], "spans": [(a,b)(結合後)],
+    "raw_spans": [(a,b)(結合前)], "ranges": [記事側の文字列], "level": "P:<断片数>"}。
+    語は足さない・落とさない・置換しない(断片は逐語で本文にちょうど1箇所、残りは確定範囲に含めず捨てる)。"""
+    claim = (claim_text or "").strip()
+    out = {"status": "unverified", "reason": None, "fragments": [], "dropped_remainders": [], "spans": [],
+           "raw_spans": [], "ranges": [], "level": None}
+
+    def rej(r: str, **kw) -> dict:
+        out["reason"] = "explain_split_rejected:" + r
+        out.update(kw)
+        return out
+    en = en_text
+    if en is None:
+        return rej("no_en_text")
+    frags, balanced, segs = _vs_explain_extract_fragments(claim)
+    if not frags:
+        return rej("no_quote")
+    if not balanced:
+        return rej("unbalanced_quote")
+    out["fragments"] = [f[2] for f in frags]
+    spans = []
+    for (_s, _e, inner) in frags:
+        st, _lv, _stp, sp = vs_match_levels(inner, en, "EN")
+        if st == "ok":
+            spans.append(sp[0])
+            continue
+        if st == "none":
+            e = vs_edge_punct_match(inner, en, "EN")
+            if e is not None and e["status"] == "ok":
+                spans.append(e["spans"][0])
+                continue
+            if e is not None and e["status"] == "multi":
+                return rej("fragment_multi_match", detail=inner)
+        return rej("fragment_multi_match" if st == "multi" else "fragment_not_in_article", detail=inner)
+    merged = vs_merge_spans(spans, en)
+    if VS_MATCH_EXT and any(vs_is_structural_label_range(en, m) for m in merged):
+        return rej("label_only")
+    nt, _ = vs_norm_with_map(en, True)
+    el = _vs_explain_structure_elements(en)
+    seginfo = []
+    for sg in segs:
+        s = sg.strip(_VS_EXPLAIN_SEG_EDGE).strip()
+        if not s:
+            continue
+        rec = {"seg": s}
+        seginfo.append(rec)
+        out["dropped_remainders"] = seginfo
+        m = VS_EXPLAIN_POSITION_REJECT_RE.search(s)
+        if m:
+            rec["verdict"] = "position_word:" + m.group(0)
+            return rej(rec["verdict"])
+        want = []
+        if _VS_EXPLAIN_HEAD_RE.search(s):
+            want.append("headline")
+        if _VS_EXPLAIN_ONELINE_RE.search(s):
+            want.append("one_line")
+        if _VS_EXPLAIN_OPENING_RE.search(s):
+            want.append("opening")
+        dang = [w for w in want if w in el and not any(sa < el[w][1] and el[w][0] < sb for sa, sb in spans)]
+        if dang:
+            rec["verdict"] = "dangling_position:" + ",".join(dang)
+            return rej(rec["verdict"])
+        m = VS_EXPLAIN_CONTRAST_REF_EN_RE.search(s) or VS_EXPLAIN_CONTRAST_REF_JA_RE.search(s)
+        if m:
+            rec["verdict"] = "contrast_or_reference_word:" + m.group(0)
+            return rej(rec["verdict"])
+        if s.lower() in _VS_EXPLAIN_CONNECTIVE:
+            rec["verdict"] = "connective"
+            continue
+        cjk = bool(_VS_EXPLAIN_CJK_RE.search(s))
+        if (len(s) >= VS_EXPLAIN_MAX_JA_CHARS) if cjk else (len(s.split()) >= VS_EXPLAIN_MAX_EN_WORDS):
+            rec["verdict"] = "remainder_too_long"
+            return rej("remainder_too_long")
+        ns = vs_norm_str(s, True)
+        if ns and ns in nt and s.lower().lstrip("#").strip() not in VS_STRUCTURAL_LABELS:
+            long_ok = (len(s) >= 8) if cjk else (len(s.split()) >= VS_EXPLAIN_MIN_VERBATIM_WORDS)
+            if long_ok:
+                rec["verdict"] = "remainder_verbatim_in_article"
+                return rej("remainder_verbatim_in_article")
+        nss = ns.strip(_VS_EXPLAIN_SEG_EDGE)
+        adj = False
+        for (a, b) in spans:
+            pre = vs_norm_with_map(en[max(0, a - 400):a], True)[0].rstrip(_VS_EXPLAIN_SEG_EDGE)
+            post = vs_norm_with_map(en[b:b + 400], True)[0].lstrip(_VS_EXPLAIN_SEG_EDGE)
+            if nss and (pre.endswith(nss) or post.startswith(nss)):
+                adj = True
+                break
+        if adj:
+            rec["verdict"] = "remainder_adjacent_in_article"
+            return rej("remainder_adjacent_in_article")
+        rec["verdict"] = "dropped"
+    out.update({"status": "resolved", "reason": None, "spans": merged, "raw_spans": list(spans),
+                "ranges": [en[a:b] for a, b in merged], "level": "P:%d" % len(frags)})
+    return out
+
+
+def _resolve_claim_string(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
+    """照合の入口(1箇所)。既存の照合(`_resolve_claim_string_base`)で確定しない(explanatory_mixed/mismatch/
+    label_only)場合にだけ、`VS_EXPLAIN_SPLIT`ONなら委任_57の`vs_explain_split_resolve`(P-strict-closed)を試す。
+    OFF(既定)なら既存の照合の結果をそのまま返す(挙動不変)。拒否時も`reason`は既存の値のまま(下流の分岐を
+    変えない)で、拒否理由コードは`explain_split`(`reason`=`explain_split_rejected:<理由>`)へ記録する。"""
+    out = _resolve_claim_string_base(claim_text, en_text, ja_text)
+    if (not VS_EXPLAIN_SPLIT or out["status"] == "resolved"
+            or out.get("reason") not in ("explanatory_mixed", "mismatch", "label_only")):
+        return out
+    r = vs_explain_split_resolve(claim_text, en_text)
+    info = {"attempted": True, "status": r["status"], "reason": r["reason"], "fragments": r["fragments"],
+            "dropped_remainders": r["dropped_remainders"], "base_reason": out.get("reason")}
+    if r["status"] != "resolved":
+        out["explain_split"] = info
+        return out
+    pl = dict(out.get("per_lang") or {})
+    pl["EN"] = {"status": "ok", "level": r["level"]}
+    out.update({"status": "resolved", "reason": None, "lang": "EN", "level": r["level"], "ranges": r["ranges"],
+                "spans": r["spans"], "raw_spans": r["raw_spans"], "per_lang": pl, "both_langs_ok": False,
+                "stripped": False, "explain_split": info})
+    out.pop("label_only_ranges", None)
+    out.pop("detail", None)
     return out
 
 
@@ -3483,7 +3682,8 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
     handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text, "text_lang": lang,
                "resolution": {k: resolution.get(k) for k in (
                    "status", "lang", "level", "reason", "detail", "ranges", "raw_spans", "spans",
-                   "per_lang", "both_langs_ok", "frag_levels", "stripped")},
+                   "per_lang", "both_langs_ok", "frag_levels", "stripped", "explain_split")
+                   if k != "explain_split" or resolution.get("explain_split") is not None},
                "level_attempts": [], "level_used": None, "span_unverified": False}
 
     if resolution["status"] != "resolved":
@@ -5441,7 +5641,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             "total_calls": len(call_log), "elapsed_seconds": elapsed,
             # 委任_49 作業2(記録専用)
             "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
-                         **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {})},
+                         **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
+                         **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -6119,7 +6320,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         "total_calls": len(call_log), "elapsed_seconds": elapsed,
         # 委任_49 作業2(記録専用。合否・重大度・書き換え対象の決定には使わない)
         "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
-                         **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {})},
+                         **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
+                         **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
@@ -6922,6 +7124,8 @@ def main():
                               "実行させる、既定None=無効)")
     parser.add_argument("--vs-match-ext", action="store_true",
                          help="委任_49: 照合の追補(L5末尾句読点・位置ラベル・単語境界)を有効化(既定OFF=委任_42の照合)")
+    parser.add_argument("--vs-explain-split", action="store_true",
+                         help="委任_57: 説明文混入のTrial専用後段分離P-strict-closedを有効化(既定OFF。有効化・Production採用はユーザー承認待ち)")
     parser.add_argument("--ja-mode", default=JA_MODE_PAIRED, choices=[JA_MODE_PAIRED, JA_MODE_ENGLISH_ONLY],
                          help="委任_49: english_onlyで日本語側の処理を迂回(既定paired=現行)")
     parser.add_argument("--checker-spans-mode", default=CHECKER_SPANS_MODE_LEGACY,
@@ -6929,6 +7133,7 @@ def main():
                          help="委任_53: violation_spansでCheckerの違反箇所を配列で受ける(既定legacy=現行)")
     args = parser.parse_args()
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
+    globals()["VS_EXPLAIN_SPLIT"] = bool(args.vs_explain_split)
     globals()["JA_MODE"] = args.ja_mode
     globals()["CHECKER_SPANS_MODE"] = args.checker_spans_mode
     selected_groups = {g.strip() for g in args.groups.split(",") if g.strip()}
