@@ -1,0 +1,77 @@
+{
+ "n_records": 1014,
+ "floor_fired_recorded": 258,
+ "floor_recs_ledger_unavailable": {
+  "n": 8,
+  "instances": {
+   "bgroup_B1": 3,
+   "neg6_smallbag_div_b1b": 3,
+   "neg4_smallbag_div_a2": 2
+  }
+ },
+ "population": {
+  "floor_recs_evaluable": 250,
+  "floor_only(llm!=BLOCKING)": 54,
+  "  うち列挙複製(委任_35で是正済み、現行コードではfloor対象外)": 36,
+  "  うち非列挙(現行コードでも残る)": 18,
+  "非列挙floor_only: F1判定": {
+   "UNDETERMINED": 12,
+   "CONFIRMED": 5,
+   "CLEARED": 1
+  },
+  "floor+LLM_BLOCKING(LLMだけでも止まる)": 196,
+  "floor+LLM_BLOCKING: F1判定": {
+   "UNDETERMINED": 131,
+   "CONFIRMED": 64,
+   "CLEARED": 1
+  }
+ }
+}
+--- 非列挙floor_only一覧 ---
+_iter2 bgroup_B2_hormuz 1 QUALITY [] UNDETERMINED | The disappearance of the fee plan did not lead to a large, lasting fall in prices.
+_iter2 hormuz_run03_advanced 1 ACCEPTABLE ['changed_actor'] CONFIRMED | At the same time, attacks by the United States and Iran, a sea blockade, and concerns abou
+_iter3 bgroup_B2_hormuz 1 QUALITY [] UNDETERMINED | “The disappearance of the fee plan did not lead to a large, lasting fall in prices.”
+_iter3 hormuz_run01_advanced_n2 2 QUALITY [] UNDETERMINED | In one line: Trump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high 
+_iter3 neg1_meta_b3prod_a2 2 QUALITY [] UNDETERMINED | “Meta had run a test that caused exactly this surprise.”
+_iter5 hormuz_run03_advanced 1 ACCEPTABLE ['changed_actor'] CONFIRMED | At the same time, attacks by the United States and Iran, a sea blockade, and concerns abou
+_iter5 safety_A4 1 ACCEPTABLE ['changed_actor'] UNDETERMINED | “Through Muse, trained human contract workers made some calls and completed the exchanges 
+_iter5 bgroup_B2_hormuz 1 ACCEPTABLE ['changed_time'] UNDETERMINED | “Trump’s proposed Hormuz fee vanished overnight.”
+_iter5 hormuz_run03_advanced 1 ACCEPTABLE ['changed_actor'] CONFIRMED | “attacks by the United States and Iran ... continued”
+_iter6 bgroup_B4 2 QUALITY ['changed_comparison'] UNDETERMINED | “Names, plans, and private matters are easier to share when you know who is hearing them.”
+_iter7 neg1_meta_b3prod_a2 2 ACCEPTABLE ['changed_actor'] UNDETERMINED | The test began without clearly telling users that contract workers would make the calls.
+_iter8 meta_run03_standard 3 ACCEPTABLE ['changed_number'] CLEARED | It said human staff made inappropriate comments about race during one call.
+_rep16 neg3_hormuz_prodrunner_b1b 1 ACCEPTABLE ['changed_actor'] CONFIRMED | Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 perce
+_rep16 neg3_hormuz_prodrunner_b1b 2 ACCEPTABLE ['changed_actor'] UNDETERMINED | トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。
+_rep19 meta_run03_standard 2 QUALITY ['changed_number'] UNDETERMINED | “These calls were about trying to lower internet or cable fees.”
+_rep19 meta_run03_standard 3 QUALITY ['changed_actor'] CONFIRMED | “If no one explained this clearly, users could not know. They could not tell if it was AI 
+_rep21 meta_run03_standard 1 QUALITY ['changed_number'] UNDETERMINED | “It said human staff made inappropriate comments about race during calls. These calls were
+_rep9 neg3_hormuz_prodrunner_b1b 1 QUALITY ['changed_time'] UNDETERMINED | The fee plan left the stage, but the events driving oil prices—and the prices themselves—q
+--- K要約 ---
+K04 [] n= 2 enum= 0 floor_now= 0 F1= {None: 2} llm= {'BLOCKING': 2}
+K08 ['changed_actor'] n= 1 enum= 1 floor_now= 0 F1= {'UNDETERMINED': 1} llm= {'ACCEPTABLE': 1}
+K09 ['changed_actor'] n= 1 enum= 1 floor_now= 0 F1= {'UNDETERMINED': 1} llm= {'QUALITY': 1}
+K11 ['changed_actor'] n= 1 enum= 1 floor_now= 0 F1= {'UNDETERMINED': 1} llm= {'ACCEPTABLE': 1}
+K12 ['changed_actor'] n= 1 enum= 1 floor_now= 0 F1= {'UNDETERMINED': 1} llm= {'QUALITY': 1}
+K13 ['changed_actor'] n= 1 enum= 0 floor_now= 1 F1= {'UNDETERMINED': 1} llm= {'ACCEPTABLE': 1}
+K14 ['changed_actor'] n= 1 enum= 0 floor_now= 1 F1= {'UNDETERMINED': 1} llm= {'ACCEPTABLE': 1}
+K15 ['changed_time'] n= 5 enum= 5 floor_now= 0 F1= {'UNDETERMINED': 5} llm= {'ACCEPTABLE': 5}
+K17 ['changed_time'] n= 5 enum= 5 floor_now= 0 F1= {'UNDETERMINED': 5} llm= {'QUALITY': 5}
+K19 ['changed_comparison'] n= 1 enum= 0 floor_now= 1 F1= {'CLEARED': 1} llm= {'BLOCKING': 1}
+K16 ['changed_time'] n= 19 enum= 0 floor_now= 19 F1= {'UNDETERMINED': 19} llm= {'BLOCKING': 18, 'QUALITY': 1}
+K18 ['changed_actor'] n= 1 enum= 0 floor_now= 1 F1= {'UNDETERMINED': 1} llm= {'BLOCKING': 1}
+--- safety12 ---
+changed_actor ['changed_actor'] BLOCKING CONFIRMED  {'changed_actor': "CONFIRMED: Ledger全文に無い固有名詞: ['Harvard Business School', 'New York City'](注: 日本語Ledgerの訳語[United States等]も新規と誤判定し得る=安全側)"}
+changed_causality [] BLOCKING None floor対象フラグ無し(LLMのみ=floor変更の影響なし) {}
+changed_certainty [] BLOCKING None floor対象フラグ無し(LLMのみ=floor変更の影響なし) {}
+changed_comparison ['changed_comparison'] BLOCKING UNDETERMINED  {'changed_comparison': 'UNDETERMINED: related_fact_id無し'}
+changed_negation ['changed_negation', 'changed_comparison'] BLOCKING UNDETERMINED  {'changed_negation': 'UNDETERMINED: related_fact_id無し', 'changed_comparison': 'UNDETERMINED: related_fact_id無し'}
+changed_number ['changed_number'] BLOCKING CONFIRMED  {'changed_number': 'CONFIRMED: claimの数値がLedger全文に無い'}
+changed_scope ['changed_actor'] BLOCKING CONFIRMED  {'changed_actor': "CONFIRMED: Ledger全文に無い固有名詞: ['New York City'](注: 日本語Ledgerの訳語[United States等]も新規と誤判定し得る=安全側)"}
+changed_time ['changed_time'] BLOCKING CONFIRMED  {'changed_time': 'CONFIRMED: claimの年月日がLedger全文に無い'}
+unsupported_new_claim [] BLOCKING None floor対象フラグ無し(LLMのみ=floor変更の影響なし) {}
+--- safety_critical ---
+{'sc': 'bgroup_B3', 'n_records': 32, 'llm_labels': {'BLOCKING': 26, 'QUALITY': 6}, 'n_with_floor_flag': 0, 'flag_union': [], 'F1_of_flagged': {}, 'n_held_only_by_floor(llm!=BLOCKING,非列挙)': 0, 'held_only_by_floor_F1': []}
+{'sc': 'safety_A2A3', 'n_records': 22, 'llm_labels': {'BLOCKING': 20, 'QUALITY': 2}, 'n_with_floor_flag': 1, 'flag_union': ['changed_actor'], 'F1_of_flagged': {'CONFIRMED': 1}, 'n_held_only_by_floor(llm!=BLOCKING,非列挙)': 0, 'held_only_by_floor_F1': []}
+{'sc': 'safety_A4', 'n_records': 13, 'llm_labels': {'BLOCKING': 12, 'ACCEPTABLE': 1}, 'n_with_floor_flag': 13, 'flag_union': ['changed_actor'], 'F1_of_flagged': {'UNDETERMINED': 13}, 'n_held_only_by_floor(llm!=BLOCKING,非列挙)': 1, 'held_only_by_floor_F1': ['UNDETERMINED']}
+{'sc': 'safety_A5', 'n_records': 14, 'llm_labels': {'BLOCKING': 14}, 'n_with_floor_flag': 0, 'flag_union': [], 'F1_of_flagged': {}, 'n_held_only_by_floor(llm!=BLOCKING,非列挙)': 0, 'held_only_by_floor_F1': []}
+{'sc': 'bgroup_B4', 'n_records': 9, 'llm_labels': {'BLOCKING': 9}, 'n_with_floor_flag': 0, 'flag_union': [], 'F1_of_flagged': {}, 'n_held_only_by_floor(llm!=BLOCKING,非列挙)': 0, 'held_only_by_floor_F1': []}
