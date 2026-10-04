@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n\ndate_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは20％償還料の提案が7月13日、投資案件への置換が7月14日です。対象claimはこの順序を逆転させており、出来事の時間軸について重大な誤解を招きます。",
+        "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+        "cost_jpy": 0.0511,
+        "response_id": "resp_094cd178b8a1a19b006ac1b855b67887d083dd0284f786fbd8",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "HF-002 notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。／HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、7月14日に湾岸諸国との貿易・投資案件へ置き換えられています。対象claimはこの順序を逆転させており、重大な時期の取り違えです。",
+        "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+        "cost_jpy": 0.0486,
+        "response_id": "resp_0277bd6af6c4f455006ac1b85b44fc87d088115473a0530c85",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.0997
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n\ndate_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは20％償還料の提案が7月13日、投資案件への置換が7月14日です。対象claimはこの順序を逆転させており、出来事の時間軸について重大な誤解を招きます。"
+      },
+      "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+      "cost_jpy": 0.0511,
+      "usage": {
+        "input_tokens": 5757,
+        "cached_input_tokens": 5754,
+        "output_tokens": 536,
+        "reasoning_tokens": 300
+      },
+      "response_id": "resp_094cd178b8a1a19b006ac1b855b67887d083dd0284f786fbd8",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "HF-002 notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。／HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、7月14日に湾岸諸国との貿易・投資案件へ置き換えられています。対象claimはこの順序を逆転させており、重大な時期の取り違えです。"
+      },
+      "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+      "cost_jpy": 0.0486,
+      "usage": {
+        "input_tokens": 5757,
+        "cached_input_tokens": 5754,
+        "output_tokens": 504,
+        "reasoning_tokens": 295
+      },
+      "response_id": "resp_0277bd6af6c4f455006ac1b85b44fc87d088115473a0530c85",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

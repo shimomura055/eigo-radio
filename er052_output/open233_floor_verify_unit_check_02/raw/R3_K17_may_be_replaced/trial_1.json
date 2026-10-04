@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Checkerの指摘は当たりません。Ledgerは撤回発表に加えてこれらの事象・懸念が継続していたと明記しており、発表と同じ時期にも続いていたというclaimの時期は裏付けられています。",
+        "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+        "cost_jpy": 0.1246,
+        "response_id": "resp_0c2c2a023e1027b2006ac1b98c476887d0b302ec093fd12b66",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "explanation": "Ledgerは撤回発表後の取引時間中に、発表以外の攻撃・海上封鎖・タンカー安全上の懸念が継続していたと記録しています。「同じ時期に続く出来事は、発表一つで消えない」という表現はこの条件の自然な要約であり、時期の取り違えはありません。",
+        "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+        "cost_jpy": 0.0618,
+        "response_id": "resp_0c6bc697885a42ab006ac1b991c11887d0a3e17ed0048b8ef9",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1864
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの指摘は当たりません。Ledgerは撤回発表に加えてこれらの事象・懸念が継続していたと明記しており、発表と同じ時期にも続いていたというclaimの時期は裏付けられています。"
+      },
+      "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+      "cost_jpy": 0.1246,
+      "usage": {
+        "input_tokens": 5164,
+        "cached_input_tokens": 0,
+        "output_tokens": 556,
+        "reasoning_tokens": 418
+      },
+      "response_id": "resp_0c2c2a023e1027b2006ac1b98c476887d0b302ec093fd12b66",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "basis": "ledger_conditions",
+        "explanation": "Ledgerは撤回発表後の取引時間中に、発表以外の攻撃・海上封鎖・タンカー安全上の懸念が継続していたと記録しています。「同じ時期に続く出来事は、発表一つで消えない」という表現はこの条件の自然な要約であり、時期の取り違えはありません。"
+      },
+      "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+      "cost_jpy": 0.0618,
+      "usage": {
+        "input_tokens": 5164,
+        "cached_input_tokens": 5161,
+        "output_tokens": 684,
+        "reasoning_tokens": 495
+      },
+      "response_id": "resp_0c6bc697885a42ab006ac1b991c11887d0a3e17ed0048b8ef9",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

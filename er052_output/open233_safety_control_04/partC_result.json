@@ -1,0 +1,186 @@
+{
+  "per_claim_rows": [
+    {
+      "group": "accept",
+      "sub_id": "accept-1-oilprices-wholemarket",
+      "claim_text": "Oil prices did not fall across the whole market after the plan was withdrawn.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-2-political-statements",
+      "claim_text": "Political statements changed greatly. Oil prices moved briefly, then returned to a high level.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-3-in-one-line",
+      "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-4-crude-prices-term",
+      "claim_text": "Crude prices briefly lost some of their gains after the plan was withdrawn, then returned to a high level near their earlier level.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "accept",
+      "sub_id": "accept-5-rounding",
+      "claim_text": "At the time of reporting, they were up about 3 percent, about 85 dollars a barrel.",
+      "expected": "PASS",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-1-gasoline-prices",
+      "claim_text": "Gasoline prices did not fall across the whole market after the plan was withdrawn.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-2-world-energy-prices",
+      "claim_text": "World energy prices did not fall after the plan was withdrawn, and stayed high across all energy markets.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-3-all-crude-benchmarks",
+      "claim_text": "All crude benchmarks moved the same way after the plan was withdrawn, staying high across the board.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "ng",
+      "sub_id": "ng-4-direction-reversal",
+      "claim_text": "Oil prices fell sharply across the whole market after the plan was withdrawn.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    },
+    {
+      "group": "ng",
+      "sub_id": "neg3-continued-to-returned",
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "expected": "BLOCK",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions"
+        }
+      ],
+      "false_pass_count": 0,
+      "false_block_count": 0
+    }
+  ],
+  "accept_false_block_total": 0,
+  "ng_false_pass_total": 0
+}

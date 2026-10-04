@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "explanation": "Ledgerは攻撃、海上封鎖、タンカー安全上の懸念が継続していたと明記し、対象期間も撤回発表後の取引時間中としています。「During that period」はこの文脈の期間を指す自然な表現で、Checkerの時期に関する指摘は当たりません。",
+        "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+        "cost_jpy": 0.0581,
+        "response_id": "resp_07f3d4f4ad4493e9006ac1b976bed887d09cc033cdb77751a6",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Checkerの指摘は当たりません。Ledgerは、撤回発表以外にも列挙された事象・懸念が継続していたと明記しています。claimの「During that period」は直前の値動きの文脈を受けていますが、Ledgerの日付・期間も撤回発表後の取引時間中としています。重大な時期の取り違えはありません。",
+        "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+        "cost_jpy": 0.0406,
+        "response_id": "resp_0782a3fe214a2fa5006ac1b97d99d487d0b975d353b4709a59",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.0987
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "basis": "ledger_conditions",
+        "explanation": "Ledgerは攻撃、海上封鎖、タンカー安全上の懸念が継続していたと明記し、対象期間も撤回発表後の取引時間中としています。「During that period」はこの文脈の期間を指す自然な表現で、Checkerの時期に関する指摘は当たりません。"
+      },
+      "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+      "cost_jpy": 0.0581,
+      "usage": {
+        "input_tokens": 5217,
+        "cached_input_tokens": 5214,
+        "output_tokens": 636,
+        "reasoning_tokens": 457
+      },
+      "response_id": "resp_07f3d4f4ad4493e9006ac1b976bed887d09cc033cdb77751a6",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの指摘は当たりません。Ledgerは、撤回発表以外にも列挙された事象・懸念が継続していたと明記しています。claimの「During that period」は直前の値動きの文脈を受けていますが、Ledgerの日付・期間も撤回発表後の取引時間中としています。重大な時期の取り違えはありません。"
+      },
+      "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+      "cost_jpy": 0.0406,
+      "usage": {
+        "input_tokens": 5217,
+        "cached_input_tokens": 5214,
+        "output_tokens": 413,
+        "reasoning_tokens": 243
+      },
+      "response_id": "resp_0782a3fe214a2fa5006ac1b97d99d487d0b975d353b4709a59",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

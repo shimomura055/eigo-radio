@@ -1,0 +1,95 @@
+{
+  "per_claim_rows": [
+    {
+      "sub_id": "B3",
+      "group_id": "B3",
+      "claim_text": "“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” links the continuing concerns causally to the plan’s withdrawal.",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、懸念の継続を撤回の理由として結び付けないでください。懸念は続いていた一方、トランプ氏は中東指導者との協議に基づき置き換えると説明した、と因果を分けて記述してください。参照: HF-007"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage」を修正し、継続する懸念を撤回の原因とする因果関係を削除してください。置き換える場合は、撤回・置換は中東指導者との「非常に生産的な協議」に基づく決定だったと記述してください（HF-007）。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "B4-a",
+      "group_id": "B4",
+      "claim_text": "“A person can take over when AI alone has trouble.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「AIだけでは難しい場面を、人が引き継ぐ。仕組みとしては、むしろ便利そうです。」のうち、AIが難しい場面で人に引き継ぐという未確認の仕組みを削り、人間のスタッフが一部の電話を担当したという確認済みの範囲に限定してください。関連Ledger: MUSE-HC-002"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "対象文：「AIだけでは難しい場面を、人が引き継ぐ。仕組みとしては、むしろ便利そうです。」AIが難しい場合に人へ引き継ぐという条件・仕組みは確認されていないため、その因果を削り、人間が電話を担当した事実の範囲に限定してください。参照: MUSE-HC-002。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A2A3-0",
+      "group_id": "A2A3",
+      "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "該当箇所: “The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” 支払義務者を「貨物を運ぶ側」と特定せず、米国が償還を求める案を示したという範囲に狭めてください。参照Ledger: HF-003。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "記事の該当箇所：「アメリカが海峡の安全を守るために使う費用を、貨物を運ぶ側に返してもらうという考えです。」支払義務者は未提示なので、「貨物を運ぶ側」が返済すると特定する部分を削り、案が米国の海峡警備費用の償還として提示されたことにとどめてください。参照: HF-003。"
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A4-0",
+      "group_id": "A4",
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_hint": "「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」の「with users」を、電話の相手とのやり取りを完了したという範囲に狭めてください。参照: MUSE-HC-006。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "Quote: “Through Muse, trained human contract workers made some calls and completed the exchanges with users.” Remove “with users” so the sentence does not identify users as the people the contractors spoke with. Fact: MUSE-HC-006."
+        }
+      ],
+      "misdowngrade_count": 0
+    },
+    {
+      "sub_id": "A5-0",
+      "group_id": "A5",
+      "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "本文の逐語引用: “They also temporarily put back the feature in which humans handled the calls.” 「put back」を「rolled back」または「temporarily withdrew」に置き換え、人間コンシェルジュ機能をロールバックしたと記述してください。Muse自体は停止しなかった点は維持してください。参照: MUSE-HC-012"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_hint": "対象文: “They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.” 「put back the feature」は人間コンシェルジュ機能を再導入したという意味に読め、Ledgerの「当面ロールバックした」と逆になります。人間コンシェルジュ機能を一時的にロールバックした、と修正してください。参照: MUSE-HC-012"
+        }
+      ],
+      "misdowngrade_count": 0
+    }
+  ],
+  "misdowngrade_total": 0
+}

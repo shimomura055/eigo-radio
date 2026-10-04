@@ -1,0 +1,33 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": true,
+    "confirmed_basis": [
+      {
+        "flag": "changed_time",
+        "missing_in_fact_block": [
+          [
+            "md",
+            9,
+            30
+          ]
+        ]
+      }
+    ],
+    "fact_block_found": true,
+    "calls": [],
+    "n_calls": 0,
+    "released": false,
+    "blocking_fixed_reason": "confirmed_by_deterministic_mismatch",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.0
+  },
+  "raw_calls": []
+}

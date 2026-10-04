@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\nHF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、7月14日に貿易・投資案件へ置き換えられています。対象claimは順序を逆転させており、重大な時期の取り違えです。",
+        "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+        "cost_jpy": 0.1259,
+        "response_id": "resp_09ba633c574437f5006ac1b84c820c87d087baf247f2c18f76",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\n  date_or_period: 2026-07-13 10:16 EDT\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料\n  date_or_period: 2026-07-14 11:04 EDT",
+        "explanation": "指摘は正しいです。Ledgerでは20％償還料の提案が7月13日、貿易・投資案件への置換が7月14日です。対象claimは順序を逆転させており、記事の時間軸について重大な誤解を与えます。",
+        "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+        "cost_jpy": 0.0472,
+        "response_id": "resp_0b3fa39b548c51a5006ac1b850e60487d09b865c0190c2fb2f",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1731
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\nHF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、7月14日に貿易・投資案件へ置き換えられています。対象claimは順序を逆転させており、重大な時期の取り違えです。"
+      },
+      "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+      "cost_jpy": 0.1259,
+      "usage": {
+        "input_tokens": 5757,
+        "cached_input_tokens": 0,
+        "output_tokens": 454,
+        "reasoning_tokens": 200
+      },
+      "response_id": "resp_09ba633c574437f5006ac1b84c820c87d087baf247f2c18f76",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\n  date_or_period: 2026-07-13 10:16 EDT\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料\n  date_or_period: 2026-07-14 11:04 EDT",
+        "basis": "ledger_date_or_period",
+        "explanation": "指摘は正しいです。Ledgerでは20％償還料の提案が7月13日、貿易・投資案件への置換が7月14日です。対象claimは順序を逆転させており、記事の時間軸について重大な誤解を与えます。"
+      },
+      "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+      "cost_jpy": 0.0472,
+      "usage": {
+        "input_tokens": 5757,
+        "cached_input_tokens": 5754,
+        "output_tokens": 486,
+        "reasoning_tokens": 158
+      },
+      "response_id": "resp_0b3fa39b548c51a5006ac1b850e60487d09b865c0190c2fb2f",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

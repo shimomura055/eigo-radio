@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_claim",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "explanation": "台帳は人間コンシェルジュ機能を当面ロールバックしたと記録しています。一方、claimの「put back the feature」は、人間が電話を担当する機能を再び戻したという時間軸を述べており、単なる時期のニュアンスではなく、機能の扱いを逆方向にしています。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.1,
+        "response_id": "resp_0c6e0675629a2168006ac1b8d2c7b887d085644bff4c4e75fc",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "explanation": "The Ledger says the human-concierge feature was rolled back for now. “Put back the feature” ordinarily says it was restored, adding a reversal in the timeline that the Ledger does not support and materially misstates what happened. The statement that Muse itself was not stopped is consistent with the Ledger’s scope note.",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.0843,
+        "response_id": "resp_0dc99961b3d3bdfc006ac1b8dd3a9c87d0a48d615a0d9b5774",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "verify_blocking_both",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1843
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "basis": "ledger_claim",
+        "explanation": "台帳は人間コンシェルジュ機能を当面ロールバックしたと記録しています。一方、claimの「put back the feature」は、人間が電話を担当する機能を再び戻したという時間軸を述べており、単なる時期のニュアンスではなく、機能の扱いを逆方向にしています。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.1,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 1172,
+        "reasoning_tokens": 993
+      },
+      "response_id": "resp_0c6e0675629a2168006ac1b8d2c7b887d085644bff4c4e75fc",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "The Ledger says the human-concierge feature was rolled back for now. “Put back the feature” ordinarily says it was restored, adding a reversal in the timeline that the Ledger does not support and materially misstates what happened. The statement that Muse itself was not stopped is consistent with the Ledger’s scope note."
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.0843,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 971,
+        "reasoning_tokens": 797
+      },
+      "response_id": "resp_0dc99961b3d3bdfc006ac1b8dd3a9c87d0a48d615a0d9b5774",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

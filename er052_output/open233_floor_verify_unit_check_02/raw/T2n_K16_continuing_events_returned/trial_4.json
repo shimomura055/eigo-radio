@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Checkerの指摘は妥当です。Ledgerでは価格を動かす要因は撤回発表後も「継続していた」とされていますが、claimはそれらの出来事が「quickly returned」と述べ、一度途切れてから再発したように時間軸を変えています。価格の回復はLedgerに沿っていますが、この出来事の時期の取り違えは重大です。",
+        "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+        "cost_jpy": 0.0499,
+        "response_id": "resp_09338e61b6dce0e5006ac1b83193d087d0bd228b038fdacfec",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。観測されたのは一時的な上げ幅縮小と、その後の回復。",
+        "explanation": "Checkerの指摘は妥当です。価格の回復は台帳に記録されていますが、価格を動かす出来事は「継続していた」とされており、claimの「returned」は一度途切れてから再発したという重大な時間軸の変更を加えています。",
+        "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+        "cost_jpy": 0.0628,
+        "response_id": "resp_02cc3c223b075676006ac1b8375ebc87d094379c5c4f56fbee",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1127
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの指摘は妥当です。Ledgerでは価格を動かす要因は撤回発表後も「継続していた」とされていますが、claimはそれらの出来事が「quickly returned」と述べ、一度途切れてから再発したように時間軸を変えています。価格の回復はLedgerに沿っていますが、この出来事の時期の取り違えは重大です。"
+      },
+      "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+      "cost_jpy": 0.0499,
+      "usage": {
+        "input_tokens": 5134,
+        "cached_input_tokens": 5131,
+        "output_tokens": 533,
+        "reasoning_tokens": 363
+      },
+      "response_id": "resp_09338e61b6dce0e5006ac1b83193d087d0bd228b038fdacfec",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。観測されたのは一時的な上げ幅縮小と、その後の回復。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの指摘は妥当です。価格の回復は台帳に記録されていますが、価格を動かす出来事は「継続していた」とされており、claimの「returned」は一度途切れてから再発したという重大な時間軸の変更を加えています。"
+      },
+      "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+      "cost_jpy": 0.0628,
+      "usage": {
+        "input_tokens": 5134,
+        "cached_input_tokens": 5131,
+        "output_tokens": 697,
+        "reasoning_tokens": 533
+      },
+      "response_id": "resp_02cc3c223b075676006ac1b8375ebc87d094379c5c4f56fbee",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

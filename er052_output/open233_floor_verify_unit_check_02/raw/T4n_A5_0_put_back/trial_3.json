@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_claim",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。",
+        "explanation": "台帳が確認しているのは人間コンシェルジュ機能を当面ロールバックしたことです。「temporarily put back」は機能を再び導入したという逆向きの経過を示し、台帳にない復旧を追加しています。「Muse自体は停止しなかった」という部分は、サービス全体の停止ではないという注記と整合します。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.0661,
+        "response_id": "resp_0e5957f19fb8e29d006ac1b8ab7f3887d09183c4bc2ed213bb",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "機能を当面ロールバックしたと社内投稿で説明した。",
+        "explanation": "Ledgerが確認しているのは、人間コンシェルジュ機能を当面ロールバックしたことです。「put back」はその機能を復元したことを述べており、Ledgerにない復元の出来事を加えて時系列を変えています。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.0776,
+        "response_id": "resp_07f9105bd863a762006ac1b8b3628087d0b56ba2a9a8d43bf2",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1437
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。",
+        "basis": "ledger_claim",
+        "explanation": "台帳が確認しているのは人間コンシェルジュ機能を当面ロールバックしたことです。「temporarily put back」は機能を再び導入したという逆向きの経過を示し、台帳にない復旧を追加しています。「Muse自体は停止しなかった」という部分は、サービス全体の停止ではないという注記と整合します。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.0661,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 739,
+        "reasoning_tokens": 516
+      },
+      "response_id": "resp_0e5957f19fb8e29d006ac1b8ab7f3887d09183c4bc2ed213bb",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "機能を当面ロールバックしたと社内投稿で説明した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Ledgerが確認しているのは、人間コンシェルジュ機能を当面ロールバックしたことです。「put back」はその機能を復元したことを述べており、Ledgerにない復元の出来事を加えて時系列を変えています。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.0776,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 886,
+        "reasoning_tokens": 770
+      },
+      "response_id": "resp_07f9105bd863a762006ac1b8b3628087d0b56ba2a9a8d43bf2",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

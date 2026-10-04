@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\nnotes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。",
+        "explanation": "原油価格の回復自体はLedgerに沿っています。一方、価格を動かす出来事についてLedgerは「継続していた」と記録しており、「quickly returned」は、それらがいったん途絶えてから再開したという時間軸に変えています。これは継続中の出来事を消えて戻った出来事として述べる重大な時期の変更です。",
+        "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+        "cost_jpy": 0.1471,
+        "response_id": "resp_06574e2612ed2e00006ac1b80a900887d09508d0fef7ebb747",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "ledger_citation": "Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "価格の回復自体は台帳に沿っていますが、価格を動かす出来事は「継続していた」と記録されています。claimはそれらが一度止まり、再び戻ったように述べ、重大な時間軸の変更を加えています。",
+        "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+        "cost_jpy": 0.0669,
+        "response_id": "resp_0cb50665d70004c5006ac1b813af5c87d0b848bf933e9fb5af",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.214
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\nnotes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。",
+        "basis": "ledger_conditions",
+        "explanation": "原油価格の回復自体はLedgerに沿っています。一方、価格を動かす出来事についてLedgerは「継続していた」と記録しており、「quickly returned」は、それらがいったん途絶えてから再開したという時間軸に変えています。これは継続中の出来事を消えて戻った出来事として述べる重大な時期の変更です。"
+      },
+      "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+      "cost_jpy": 0.1471,
+      "usage": {
+        "input_tokens": 5134,
+        "cached_input_tokens": 0,
+        "output_tokens": 849,
+        "reasoning_tokens": 635
+      },
+      "response_id": "resp_06574e2612ed2e00006ac1b80a900887d09508d0fef7ebb747",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "価格の回復自体は台帳に沿っていますが、価格を動かす出来事は「継続していた」と記録されています。claimはそれらが一度止まり、再び戻ったように述べ、重大な時間軸の変更を加えています。"
+      },
+      "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+      "cost_jpy": 0.0669,
+      "usage": {
+        "input_tokens": 5134,
+        "cached_input_tokens": 5131,
+        "output_tokens": 750,
+        "reasoning_tokens": 581
+      },
+      "response_id": "resp_0cb50665d70004c5006ac1b813af5c87d0b848bf933e9fb5af",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

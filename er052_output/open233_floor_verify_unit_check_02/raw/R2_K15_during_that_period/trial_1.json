@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Ledgerは、撤回発表後の取引時間中にこれらの状況が継続していたと明記しています。対象claimの「During that period」は直前の価格推移の期間を指しており、時期の重大な取り違えはありません。",
+        "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+        "cost_jpy": 0.1154,
+        "response_id": "resp_08b82d3028796b06006ac1b96b836487d0ac24f6a30f821c7c",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Ledgerは、撤回発表後の取引時間中にこれらの状況が継続していたと明記しています。「During that period」はこの時期を指す自然な表現であり、時期の取り違えはありません。",
+        "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+        "cost_jpy": 0.0532,
+        "response_id": "resp_0d420330d270d222006ac1b970a5c487d0a6b1141e20cbb476",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": true,
+    "blocking_fixed_reason": null,
+    "release_note": "2回の追加確認とも非BLOCKING(逐語引用あり)。最終値はStage2+確認2回のうち最も重い非BLOCKING値",
+    "final_materiality": "QUALITY",
+    "cost_jpy": 0.1686
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Ledgerは、撤回発表後の取引時間中にこれらの状況が継続していたと明記しています。対象claimの「During that period」は直前の価格推移の期間を指しており、時期の重大な取り違えはありません。"
+      },
+      "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+      "cost_jpy": 0.1154,
+      "usage": {
+        "input_tokens": 5217,
+        "cached_input_tokens": 0,
+        "output_tokens": 428,
+        "reasoning_tokens": 291
+      },
+      "response_id": "resp_08b82d3028796b06006ac1b96b836487d0ac24f6a30f821c7c",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Ledgerは、撤回発表後の取引時間中にこれらの状況が継続していたと明記しています。「During that period」はこの時期を指す自然な表現であり、時期の取り違えはありません。"
+      },
+      "prompt_sha256": "ade39e84f9a51c5419677097f6323fba7d18152f3b6b2700708f6bc86c52aa6e",
+      "cost_jpy": 0.0532,
+      "usage": {
+        "input_tokens": 5217,
+        "cached_input_tokens": 5214,
+        "output_tokens": 573,
+        "reasoning_tokens": 443
+      },
+      "response_id": "resp_0d420330d270d222006ac1b970a5c487d0a6b1141e20cbb476",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

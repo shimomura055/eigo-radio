@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  scope: ホルムズ海峡の貨物通航に対する米国の償還料案\n  date_or_period: 2026-07-13\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "explanation": "Checkerの指摘は正しいです。台帳では提案が7月13日、撤回が7月14日です。対象claimは撤回が提案より前だったと述べており、時系列を逆転させています。",
+        "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+        "cost_jpy": 0.0851,
+        "response_id": "resp_0fd31b7aafb57171006ac1b7e2651c87d0b45b94cb5f68cb78",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\ndate_or_period: 2026-07-13\nHF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "explanation": "Ledgerでは20％案の投稿・発言が7月13日、撤回・置換発表が7月14日です。対象claimは撤回が提案より先だったと順序を逆転させており、重大な時期の矛盾です。",
+        "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+        "cost_jpy": 0.0571,
+        "response_id": "resp_09a0ba0f4afbb9d7006ac1b7ea8b7487d0a4afbd778488d41e",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1422
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  scope: ホルムズ海峡の貨物通航に対する米国の償還料案\n  date_or_period: 2026-07-13\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。台帳では提案が7月13日、撤回が7月14日です。対象claimは撤回が提案より前だったと述べており、時系列を逆転させています。"
+      },
+      "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+      "cost_jpy": 0.0851,
+      "usage": {
+        "input_tokens": 5741,
+        "cached_input_tokens": 5738,
+        "output_tokens": 970,
+        "reasoning_tokens": 670
+      },
+      "response_id": "resp_0fd31b7aafb57171006ac1b7e2651c87d0b45b94cb5f68cb78",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\ndate_or_period: 2026-07-13\nHF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "basis": "ledger_date_or_period",
+        "explanation": "Ledgerでは20％案の投稿・発言が7月13日、撤回・置換発表が7月14日です。対象claimは撤回が提案より先だったと順序を逆転させており、重大な時期の矛盾です。"
+      },
+      "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+      "cost_jpy": 0.0571,
+      "usage": {
+        "input_tokens": 5741,
+        "cached_input_tokens": 5738,
+        "output_tokens": 612,
+        "reasoning_tokens": 342
+      },
+      "response_id": "resp_09a0ba0f4afbb9d7006ac1b7ea8b7487d0a4afbd778488d41e",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

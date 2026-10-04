@@ -1,0 +1,16 @@
+case_id,category,expected,version,n_trials,target,confirmed,n_calls,call_labels,n_citation_verbatim,n_released,blocking_fixed_by_reason,matches_expectation,cost_jpy
+T1c_date_swap_July13,serious_expected,BLOCKING(日付の取り違え、CONFIRMED版),C,1,True,True,0,{},0,0,"{""confirmed_by_deterministic_mismatch"": 1}",True,0.0
+T1n_order_withdrawn_before_proposed,serious_expected,BLOCKING(前後関係反転、非抽出版),N,5,True,False,10,"{""BLOCKING"": 10}",0,0,"{""ledger_citation_not_verbatim"": 5}",True,0.6797
+T2c_K16_dated_return,serious_expected,BLOCKING(K16型+日付・期間、CONFIRMED版),C,1,True,True,0,{},0,0,"{""confirmed_by_deterministic_mismatch"": 1}",True,0.0
+T2n_K16_continuing_events_returned,serious_expected,BLOCKING(K16=継続中の出来事を一度消えて戻ったとする、非抽出版),N,5,True,False,10,"{""BLOCKING"": 10}",6,0,"{""ledger_citation_not_verbatim"": 3, ""verify_blocking_both"": 2}",True,0.6083
+T3c_safety12_year_2019,serious_expected,BLOCKING(Safety12 changed_time fixture、年の取り違え、CONFIRMED版),C,1,True,True,0,{},0,0,"{""confirmed_by_deterministic_mismatch"": 1}",True,0.0
+T3n_order_reversed_deal_first,serious_expected,BLOCKING(順序の反転、非抽出版),N,5,True,False,10,"{""BLOCKING"": 10}",0,0,"{""ledger_citation_not_verbatim"": 5}",True,0.6098
+T4c_A5_0_put_back_dated,serious_expected,BLOCKING(A5-0=時期・経過の創作、CONFIRMED版),C,1,True,True,0,{},0,0,"{""confirmed_by_deterministic_mismatch"": 1}",True,0.0
+T4n_A5_0_put_back,serious_expected,BLOCKING(A5-0=時期・経過の創作、非抽出版),N,5,True,False,10,"{""BLOCKING"": 10}",8,0,"{""verify_blocking_both"": 3, ""ledger_citation_not_verbatim"": 2}",True,1.0103
+T5c_duration_3_days,serious_expected,BLOCKING(期間の付け替え、CONFIRMED版),C,1,True,True,0,{},0,0,"{""confirmed_by_deterministic_mismatch"": 1}",True,0.0
+T5n_duration_long_time,serious_expected,BLOCKING(期間の付け替え、非抽出版),N,5,True,False,10,"{""BLOCKING"": 10}",5,0,"{""ledger_citation_not_verbatim"": 5}",True,0.626
+X1_direction_reversal_out_of_scope,exclusion_check,BLOCKING(方向反転。changed_comparisonは対象外=決定論BLOCKINGのまま、委任_60 S1),-,1,False,False,0,{},0,0,"{""unknown"": 1}",True,0.0
+X2_actor_plus_time_out_of_scope,exclusion_check,BLOCKING(主体+時期。changed_actorが立つため対象外),-,1,False,False,0,{},0,0,"{""unknown"": 1}",True,0.0
+R1_B2_vanished_overnight,release_expected,QUALITY以下(B2、実run記録LLM=ACCEPTABLE、changed_timeのみ),N,3,True,False,6,"{""QUALITY"": 6}",0,0,"{""ledger_citation_not_verbatim"": 3}",,0.5919
+R2_K15_during_that_period,release_expected,ACCEPTABLE(設計書K15=問題なし、changed_time),N,3,True,False,6,"{""ACCEPTABLE"": 6}",4,1,"{""ledger_citation_not_verbatim"": 2}",,0.3607
+R3_K17_may_be_replaced,release_expected,QUALITY(設計書K17=軽微、changed_time),N,3,True,False,6,"{""ACCEPTABLE"": 6}",5,2,"{""ledger_citation_not_verbatim"": 1}",,0.3861

@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n  date_or_period: 2026-07-14 11:04 EDT\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "Ledgerでは置換は提案から約24時間48分後です。「only after a long time」は、翌日には置き換えられたという時系列を長い遅れとして描き、出来事の核心的な時間軸を誤認させます。Checkerの指摘は妥当です。",
+        "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+        "cost_jpy": 0.0646,
+        "response_id": "resp_008d3612183fffdb006ac1b90b5d2c87d08872bb313dc2f67e",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "Ledgerは置き換えが提案から約24時間48分後だったと記録しています。「only after a long time」は、約1日後という時期を長く待った後のように伝え、時間軸を重大に誤認させます。Checkerの指摘は正しいです。",
+        "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+        "cost_jpy": 0.0444,
+        "response_id": "resp_0ab3d837fb9638d1006ac1b912e53087d0867ef74ef4fbc583",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.109
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n  date_or_period: 2026-07-14 11:04 EDT\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Ledgerでは置換は提案から約24時間48分後です。「only after a long time」は、翌日には置き換えられたという時系列を長い遅れとして描き、出来事の核心的な時間軸を誤認させます。Checkerの指摘は妥当です。"
+      },
+      "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+      "cost_jpy": 0.0646,
+      "usage": {
+        "input_tokens": 5745,
+        "cached_input_tokens": 5742,
+        "output_tokens": 708,
+        "reasoning_tokens": 459
+      },
+      "response_id": "resp_008d3612183fffdb006ac1b90b5d2c87d08872bb313dc2f67e",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Ledgerは置き換えが提案から約24時間48分後だったと記録しています。「only after a long time」は、約1日後という時期を長く待った後のように伝え、時間軸を重大に誤認させます。Checkerの指摘は正しいです。"
+      },
+      "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+      "cost_jpy": 0.0444,
+      "usage": {
+        "input_tokens": 5745,
+        "cached_input_tokens": 5742,
+        "output_tokens": 450,
+        "reasoning_tokens": 307
+      },
+      "response_id": "resp_0ab3d837fb9638d1006ac1b912e53087d0867ef74ef4fbc583",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

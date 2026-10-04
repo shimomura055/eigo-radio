@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Checkerの指摘は当たりません。Ledgerは撤回発表と並行してこれらの事象が継続していたと明記しており、対象claimはその内容を自然に言い換えています。",
+        "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+        "cost_jpy": 0.0458,
+        "response_id": "resp_075e1526342bb6d2006ac1b9a5144887d094bb095add46cf9f",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "ACCEPTABLE",
+        "basis": "ledger_conditions",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Checkerの仮説は支持されません。Ledgerは撤回発表と並行してこれらの出来事や懸念が「継続していた」と明記しており、「one announcement」で消えなかったという表現は、その時期の事実を自然に述べています。",
+        "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+        "cost_jpy": 0.0423,
+        "response_id": "resp_0c18b23f7e4d04ee006ac1b9aa02d887d09e41e360a03589c1",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": true,
+    "blocking_fixed_reason": null,
+    "release_note": "2回の追加確認とも非BLOCKING(逐語引用あり)。最終値はStage2+確認2回のうち最も重い非BLOCKING値",
+    "final_materiality": "QUALITY",
+    "cost_jpy": 0.0881
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの指摘は当たりません。Ledgerは撤回発表と並行してこれらの事象が継続していたと明記しており、対象claimはその内容を自然に言い換えています。"
+      },
+      "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+      "cost_jpy": 0.0458,
+      "usage": {
+        "input_tokens": 5164,
+        "cached_input_tokens": 5161,
+        "output_tokens": 480,
+        "reasoning_tokens": 352
+      },
+      "response_id": "resp_075e1526342bb6d2006ac1b9a5144887d094bb095add46cf9f",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "ACCEPTABLE",
+        "ledger_citation": "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの仮説は支持されません。Ledgerは撤回発表と並行してこれらの出来事や懸念が「継続していた」と明記しており、「one announcement」で消えなかったという表現は、その時期の事実を自然に述べています。"
+      },
+      "prompt_sha256": "3a55e8ad77dd608f95fbefe2055c4d7b0f72825072f9964dd5bc19b4c291acae",
+      "cost_jpy": 0.0423,
+      "usage": {
+        "input_tokens": 5164,
+        "cached_input_tokens": 5161,
+        "output_tokens": 436,
+        "reasoning_tokens": 292
+      },
+      "response_id": "resp_0c18b23f7e4d04ee006ac1b9aa02d887d09e41e360a03589c1",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

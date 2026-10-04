@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "Checkerの指摘は妥当です。Ledgerでは置き換えは提案から約24時間48分後とされており、「a long time」は実際より大幅に長い時間が経過したという誤解を招くため、時期の重大な誤りです。",
+        "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+        "cost_jpy": 0.1187,
+        "response_id": "resp_00ee8e152de765df006ac1b8e62b1c87d0ab39759068e5e20e",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n date_or_period: 2026-07-14 11:04 EDT\n notes_for_writer: この投稿は7月13日の提案から約24時間48分後。",
+        "explanation": "指摘は正しいです。置き換えは提案から約24時間48分後であり、「only after a long time」は長い時間が経過したという印象を与え、Ledgerが示す翌日の置き換えと時期を重大に食い違わせます。",
+        "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+        "cost_jpy": 0.0498,
+        "response_id": "resp_03805c24bb418f7d006ac1b8ebe35487d0be369cbe26eb8ffb",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1685
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は妥当です。Ledgerでは置き換えは提案から約24時間48分後とされており、「a long time」は実際より大幅に長い時間が経過したという誤解を招くため、時期の重大な誤りです。"
+      },
+      "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+      "cost_jpy": 0.1187,
+      "usage": {
+        "input_tokens": 5745,
+        "cached_input_tokens": 0,
+        "output_tokens": 364,
+        "reasoning_tokens": 219
+      },
+      "response_id": "resp_00ee8e152de765df006ac1b8e62b1c87d0ab39759068e5e20e",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n date_or_period: 2026-07-14 11:04 EDT\n notes_for_writer: この投稿は7月13日の提案から約24時間48分後。",
+        "basis": "ledger_date_or_period",
+        "explanation": "指摘は正しいです。置き換えは提案から約24時間48分後であり、「only after a long time」は長い時間が経過したという印象を与え、Ledgerが示す翌日の置き換えと時期を重大に食い違わせます。"
+      },
+      "prompt_sha256": "6ae1992a7e503f91b1a7c938418f5d2a875641c711aaa9f2e42d0a5941cee02d",
+      "cost_jpy": 0.0498,
+      "usage": {
+        "input_tokens": 5745,
+        "cached_input_tokens": 5742,
+        "output_tokens": 520,
+        "reasoning_tokens": 362
+      },
+      "response_id": "resp_03805c24bb418f7d006ac1b8ebe35487d0be369cbe26eb8ffb",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

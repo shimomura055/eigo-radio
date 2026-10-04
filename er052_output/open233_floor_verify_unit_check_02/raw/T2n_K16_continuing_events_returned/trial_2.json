@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_conditions",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは価格を動かす要因は発表後も「継続」していた一方、claimはそれらの要因がいったん消えてから「quickly returned」と述べています。出来事の時間軸を変えるため、重大な誤解につながります。価格の回復自体はLedgerに沿っています。",
+        "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+        "cost_jpy": 0.0439,
+        "response_id": "resp_0b4ab408ac881d16006ac1b81c410c87d096c0e8824f05c7a0",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。／ほどなく発表前に近い高い水準へ戻った",
+        "explanation": "Ledgerでは価格を動かす要因は継続していたと記録されていますが、claimはそれらの出来事自体がいったん止まり、すぐ戻ったと読めます。価格の回復は裏付けられていますが、出来事の時間軸を変える重大な相違です。",
+        "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+        "cost_jpy": 0.0546,
+        "response_id": "resp_0a3109ae302a54be006ac1b821259087d08216b98842f4acc7",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.0985
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "basis": "ledger_conditions",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは価格を動かす要因は発表後も「継続」していた一方、claimはそれらの要因がいったん消えてから「quickly returned」と述べています。出来事の時間軸を変えるため、重大な誤解につながります。価格の回復自体はLedgerに沿っています。"
+      },
+      "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+      "cost_jpy": 0.0439,
+      "usage": {
+        "input_tokens": 5134,
+        "cached_input_tokens": 5131,
+        "output_tokens": 457,
+        "reasoning_tokens": 296
+      },
+      "response_id": "resp_0b4ab408ac881d16006ac1b81c410c87d096c0e8824f05c7a0",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。／ほどなく発表前に近い高い水準へ戻った",
+        "basis": "ledger_date_or_period",
+        "explanation": "Ledgerでは価格を動かす要因は継続していたと記録されていますが、claimはそれらの出来事自体がいったん止まり、すぐ戻ったと読めます。価格の回復は裏付けられていますが、出来事の時間軸を変える重大な相違です。"
+      },
+      "prompt_sha256": "01d79c24f9583df71ad85270531e4bf123bcdf63aefbb72bd5874758d46b0b38",
+      "cost_jpy": 0.0546,
+      "usage": {
+        "input_tokens": 5134,
+        "cached_input_tokens": 5131,
+        "output_tokens": 593,
+        "reasoning_tokens": 428
+      },
+      "response_id": "resp_0a3109ae302a54be006ac1b821259087d08216b98842f4acc7",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

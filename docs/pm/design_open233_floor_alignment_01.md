@@ -260,3 +260,12 @@
 - 単体安全確認(`er052_open233_floor_verify_unit_check_01.py`、¥2.336/23 call): **STOP**。重大期待の合成ケースS1(方向反転「After the plan was withdrawn, oil prices fell.」)が、trial2で確認2回とも非BLOCKING(QUALITY)=解放された。確認の説明は「Ledgerは上げ幅の一時縮小を確認しており、`fell`はその短時間の下落を指すなら矛盾しない」というもの(HF-009の「上げ幅を縮小」を根拠にした)。他: K19=3/3解放、B4「Names…」=2/3解放、B2「vanished overnight」=0/3(引用が逐語でないためBLOCKING固定)。
 - 再較正(V7b): 単体確認STOPのため未実施。限定flow・29件横断は未実施。
 - Fableへの論点(判断・修正は行っていない): (1)S1型(台帳に下向きの語[縮小]がある方向反転)は、確認promptが禁じた「上昇/下落語が台帳にあるだけ」に近い根拠で解放された。(2)判定原則文の「prices began to fall=軽微」の例が確認Promptに含まれており、方向反転の一部を軽微と読ませている可能性(例示によるpriming)。(3)対策案の例(未実装): 方向を決定論で扱う(台帳の符号と一致しない方向語はCONFIRMED扱い)、確認Promptから例を外す、確認を3回以上にする等。いずれも既存より厳しくなる/ユーザー判断事項のため実装していない。
+
+## 9. 対象縮小(時期のみ)・単体確認・再較正(委任_61、2026-10-04、ユーザー決定[5回目]=選択肢3)
+
+- 決定: 追加確認による解放対象を時期(`changed_time`)のみに縮小。比較・方向・主体・数値・否定は従来どおり決定論でBLOCKING維持。`prices began to fall`型の過剰Majorは受容。委任_60で方向反転S1が解放されたため比較・方向を除外(`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`ではない)。
+- 実装: §8のF5実装を時期のみへ縮小(`FLOOR_VERIFY_MODE`=`off`/`time_only`、`comparison_time`廃止)。対象外の理由コード`out_of_scope_flag:<flag名>`。確認promptは時期のみの文言(比較・方向の記述なし)。
+- 単体確認(ケース版別): T1〜T5の各CONFIRMED版(確認callなしで5/5 BLOCKING固定)と非抽出版(各n=5×2=10 call、計50 call、全てBLOCKING、解放0)。X1(方向反転)・X2(主体+時期)は対象外でBLOCKING維持。解放期待は参考値でB2 0/3・K15 1/3・K17 2/3(逐語引用不備によるBLOCKING固定が含まれる)。費用¥5.0099。**PASS**。
+- 再較正(V7b、n=2、24 call、¥4.3753): a/b/c/d/e/f全てPASS。**PASS**。
+- 整合: 時期以外のfloorはLLM判定に関係なくBLOCKING維持、時期は追加確認2回(逐語引用必須)で解放可能だが重大は解放されない、が両立。
+- 残: 少数flow・29件横断(1回)は委任_62。次Trial禁止。

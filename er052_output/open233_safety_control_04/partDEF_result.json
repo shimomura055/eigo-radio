@@ -1,0 +1,196 @@
+{
+  "rows": [
+    {
+      "group": "D1_meta",
+      "part": "d",
+      "sub_id": "d-ex1(K04/Meta-1)",
+      "claim_text": "Also, some calls needed user information to continue.",
+      "related_fact_id": "MUSE-HC-010",
+      "expected": "QUALITY",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_conditions",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "D1_meta",
+      "part": "d",
+      "sub_id": "d-ex2(K10)",
+      "claim_text": "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "ACCEPTABLE",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "D2_a2a3",
+      "part": "d",
+      "sub_id": "d-K19",
+      "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+      "related_fact_id": "HF-009",
+      "expected": "QUALITY",
+      "observed_labels": [
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "E1_neg3",
+      "part": "e",
+      "sub_id": "e-K16",
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "related_fact_id": "HF-009",
+      "expected": "BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "引用: “The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.” 「events driving oil prices」は戻ったのではなく継続していたとし、価格だけが一時的に上げ幅を縮めた後に戻った形へ修正してください（HF-009）。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_hint": "「The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.」を、価格の上げ幅はいったん縮小した後に戻った一方、海上封鎖やタンカー安全上の懸念は継続していた、という範囲に狭めてください（HF-009）。"
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 0,
+      "n_blocking": 2
+    },
+    {
+      "group": "E2_a4",
+      "part": "e",
+      "sub_id": "e-K20(B4-a型)",
+      "claim_text": "The idea was practical: when AI struggled, a person could help.",
+      "related_fact_id": "MUSE-HC-006",
+      "expected": "BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "該当箇所: “The idea was practical: when AI struggled, a person could help.” AIが苦手な場合に人へ引き継ぐ仕組みだったとは確認できないため、その条件を外し、人間の契約スタッフが一部の電話を担当したという範囲に限定してください。参照Ledger: MUSE-HC-006。"
+        },
+        {
+          "materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_hint": "「The idea was practical: when AI struggled, a person could help.」を削除してください。Ledgerは人間の契約スタッフが電話の一部を担当したテストを確認していますが、AIが苦戦した場合に人間が助けるという仕組みは確認していません（MUSE-HC-006）。"
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 0,
+      "n_blocking": 2
+    },
+    {
+      "group": "F1_neg1",
+      "part": "f",
+      "sub_id": "f-K11",
+      "claim_text": "A Meta executive admitted the mistake. The test had begun without clearly telling users.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "NOT_BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "F1_neg1",
+      "part": "f",
+      "sub_id": "f-K12",
+      "claim_text": "A user might think the exchange was with AI, even though a person was involved.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "NOT_BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    },
+    {
+      "group": "F1_neg1",
+      "part": "f",
+      "sub_id": "f-K13",
+      "claim_text": "The test began without clearly telling users that contract workers would make the calls.",
+      "related_fact_id": "MUSE-HC-012",
+      "expected": "NOT_BLOCKING",
+      "observed_labels": [
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        },
+        {
+          "materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_hint": ""
+        }
+      ],
+      "n_observed": 2,
+      "n_as_expected": 2,
+      "n_not_blocking": 2,
+      "n_blocking": 0
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\nYahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "explanation": "Ledgerでは20％償還料案が7月13日に投稿・発言され、撤回・置換の発表は7月14日と記録されています。対象claimは順序を逆転させているため、重大な時期の矛盾です。",
+        "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+        "cost_jpy": 0.1269,
+        "response_id": "resp_0098a998aab5bb58006ac1b7cb7d9087d094c8c508e73b3ee6",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\nYahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerは7月13日に20％償還料案が投稿・発言されたことを記録し、7月14日の撤回・置換発表を記録しています。対象claimは撤回が提案より先だったと時系列を逆転させており、重大な時期の取り違えです。",
+        "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+        "cost_jpy": 0.0455,
+        "response_id": "resp_06a6f5a043c956f2006ac1b7d01ab087d0964b719151cf1930",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1724
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\nYahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Ledgerでは20％償還料案が7月13日に投稿・発言され、撤回・置換の発表は7月14日と記録されています。対象claimは順序を逆転させているため、重大な時期の矛盾です。"
+      },
+      "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+      "cost_jpy": 0.1269,
+      "usage": {
+        "input_tokens": 5741,
+        "cached_input_tokens": 0,
+        "output_tokens": 470,
+        "reasoning_tokens": 245
+      },
+      "response_id": "resp_0098a998aab5bb58006ac1b7cb7d9087d094c8c508e73b3ee6",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\nYahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerは7月13日に20％償還料案が投稿・発言されたことを記録し、7月14日の撤回・置換発表を記録しています。対象claimは撤回が提案より先だったと時系列を逆転させており、重大な時期の取り違えです。"
+      },
+      "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+      "cost_jpy": 0.0455,
+      "usage": {
+        "input_tokens": 5741,
+        "cached_input_tokens": 5738,
+        "output_tokens": 465,
+        "reasoning_tokens": 219
+      },
+      "response_id": "resp_06a6f5a043c956f2006ac1b7d01ab087d0964b719151cf1930",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

@@ -4162,3 +4162,14 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - 動機: 設計書§0-2更新、criteria doc §6追加。V7(1)(イ)は不変。
 - 単体確認(`er052_output/open233_floor_verify_unit_check_01/`、¥2.336、23 call、probe単価¥0.1219/call): **STOP**(S1=合成方向反転が確認2回とも非BLOCKINGで解放)。ケース別: R1 K19 3/3解放、R2 B2 0/3(引用非逐語でBLOCKING固定)、R3 B4 2/3解放(1回BLOCKINGで食い違い)、S1 2試行目で解放→STOP。S2〜S8は未実行(S3・S5はCONFIRMED、S4・S8は対象外であることを¥0の事前確認で確認したのみ)。
 - 未実施: V7b再較正、限定flow、29件横断。次Trial禁止。`PRODUCTION_WIRED`ではない。詳細は設計書`docs/pm/design_open233_floor_alignment_01.md` §8。
+
+## 43. 委任_61: 選択肢3(追加確認による解放対象を時期のみに縮小)の記録・実装・単体安全確認・V7b再較正(2026-10-04)
+
+- 記録: ユーザー決定[5回目]を`DECISION_LOG.md`末尾へ逐語記録(委任文の原文ブロックと一致)。`APPROVED_FOR_PRODUCTION`として追跡、`PRODUCTION_WIRED`ではない。
+- 実装(runner): `FLOOR_VERIFY_MODE`を`off`(既定)/`time_only`へ変更、`comparison_time`廃止(`validate_floor_verify_mode`が`ValueError`、CLI choicesからも除外)。対象判定は`changed_time`のみtrueのfloor指摘に限定、比較・方向・主体・数値・否定のいずれかがtrueなら`out_of_scope_flag:<flag名>`で対象外。`floor_verify_comparison_numbers`は未使用(関数残置)。確認promptから比較・方向の記述を外した(軽微例は元々promptに含めていない)。summaryに`out_of_scope_flag`件数を追加。rubric本体(V7b)・解放条件・BLOCKING固定条件・`dev`不変・2-of-2除外・cycleごと再評価は不変。
+- テスト: runner単体473件OK、er052回帰517件OK、全体回帰4440件で失敗6・エラー5(基準11件と同一、新規なし)。
+- 単体安全確認(`er052_open233_floor_verify_unit_check_02.py`、`er052_output/open233_floor_verify_unit_check_02/`、費用¥5.0099、69 call、probe単価¥0.137/call): **PASS**。重大期待T1〜T5を各2版(C=決定論CONFIRMED版、N=抽出トークンを含まず確認callが動く版)で実施。C版5件は確認callなしで`confirmed_by_deterministic_mismatch`のBLOCKING固定。N版5件(T1n前後関係反転・T2n K16・T3n順序反転・T4n A5-0・T5n期間付け替え)は各n=5×確認2回=50 call全てBLOCKING、解放0(BLOCKING固定理由: `ledger_citation_not_verbatim`・`verify_blocking_both`)。対象外確認X1(方向反転`changed_comparison`)・X2(主体+時期)は対象外でBLOCKING維持(確認callなし)。解放期待(参考値): R1 B2 0/3(確認ラベル6/6=QUALITYだが引用が台帳の逐語でなく3/3 BLOCKING固定)、R2 K15 1/3(ラベル6/6=ACCEPTABLE)、R3 K17 2/3(ラベル6/6=ACCEPTABLE)。STOP非該当。
+- V7b再較正(`er052_open233_element_trial_safety_control_06.py`、`er052_output/open233_safety_control_04/`、n=2、24 call、¥4.3753): **PASS**(a誤降格0、b 0/18、cはV6と同じ判定、d期待どおり、e BLOCKING、f false BLOCK 0)。
+- 整合: 再較正はStage 2 rubric単体で追加確認を含まない。時期以外のfloorはLLM判定に関係なく決定論でBLOCKING維持・時期は追加確認2回で解放可能だが重大期待ケースは解放されない、が両立している(`results_01.json`の`consistency_note_61`)。
+- 費用: 合計¥9.3852、Phase累計約¥548.214(上限¥900)。未実施: 少数flow・29件横断(委任_62)。次Trial禁止。
+- 確認できたこと/推測: 上記の数値は`results_01.json`・`cases_01.csv`の実測。N版の解放0がn=5×5ケースの範囲であり、より多くのパターンでの保証ではない(推測の余地)。引用が逐語でないことによるBLOCKING固定が多く、解放期待ケースの解放率が低い(B2は0/3)のは保守側の挙動(過剰Majorの残存)。

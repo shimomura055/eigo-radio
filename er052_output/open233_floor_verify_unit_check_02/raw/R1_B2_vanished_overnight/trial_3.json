@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  date_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "提案から置換までは約24時間48分後で、「overnight」は時間をやや圧縮した表現です。ただし翌日に置換されたという大筋は保たれており、時期の重大な取り違えではなくQUALITYと判定します。",
+        "prompt_sha256": "3c5c25d67a89119d7ca82bed25bef598084612f5bffbae4437cc6a4ecfbcb866",
+        "cost_jpy": 0.1255,
+        "response_id": "resp_0977dc56ff9abb63006ac1b95484b087d09b77923e8e9e0766",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\ndate_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "提案は7月13日、置換は約24時間48分後の7月14日です。「overnight」は時間をやや圧縮した表現ですが、短期間で提案が置き換わったという核心の時間軸は保たれており、重大な時期の取り違えとはいえません。",
+        "prompt_sha256": "3c5c25d67a89119d7ca82bed25bef598084612f5bffbae4437cc6a4ecfbcb866",
+        "cost_jpy": 0.0822,
+        "response_id": "resp_0ac896efd188e66d006ac1b962a53087d09a2e4716923e5063",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.2077
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  date_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "提案から置換までは約24時間48分後で、「overnight」は時間をやや圧縮した表現です。ただし翌日に置換されたという大筋は保たれており、時期の重大な取り違えではなくQUALITYと判定します。"
+      },
+      "prompt_sha256": "3c5c25d67a89119d7ca82bed25bef598084612f5bffbae4437cc6a4ecfbcb866",
+      "cost_jpy": 0.1255,
+      "usage": {
+        "input_tokens": 5392,
+        "cached_input_tokens": 5389,
+        "output_tokens": 1491,
+        "reasoning_tokens": 1197
+      },
+      "response_id": "resp_0977dc56ff9abb63006ac1b95484b087d09b77923e8e9e0766",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\ndate_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "提案は7月13日、置換は約24時間48分後の7月14日です。「overnight」は時間をやや圧縮した表現ですが、短期間で提案が置き換わったという核心の時間軸は保たれており、重大な時期の取り違えとはいえません。"
+      },
+      "prompt_sha256": "3c5c25d67a89119d7ca82bed25bef598084612f5bffbae4437cc6a4ecfbcb866",
+      "cost_jpy": 0.0822,
+      "usage": {
+        "input_tokens": 5392,
+        "cached_input_tokens": 5389,
+        "output_tokens": 939,
+        "reasoning_tokens": 701
+      },
+      "response_id": "resp_0ac896efd188e66d006ac1b962a53087d09a2e4716923e5063",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

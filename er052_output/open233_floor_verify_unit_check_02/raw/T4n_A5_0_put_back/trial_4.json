@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_claim",
+        "ledger_citation": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "explanation": "Ledgerが確認しているのは人間コンシェルジュ機能を当面ロールバックしたことです。「put back the feature」は、その機能を再び戻したという出来事を加えており、ロールバックのみの記録からは確認できない復元の時系列を生じさせます。Checkerの指摘は妥当です。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.118,
+        "response_id": "resp_02c611571531429a006ac1b8bbf64087d0869d60df09505cf0",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\nnotes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。",
+        "explanation": "「temporarily put back」は人間が電話を担当する機能を一度ロールバックした後に復活させたことを述べています。Ledgerが確認しているのはその機能を当面ロールバックしたことまでで、復活したという後続の出来事は記録されていません。時系列上の重大な追加・変更です。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.0894,
+        "response_id": "resp_0eceabe73152f2f9006ac1b8c890cc87d0bd6e37a5016e5ef3",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.2074
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "basis": "ledger_claim",
+        "explanation": "Ledgerが確認しているのは人間コンシェルジュ機能を当面ロールバックしたことです。「put back the feature」は、その機能を再び戻したという出来事を加えており、ロールバックのみの記録からは確認できない復元の時系列を生じさせます。Checkerの指摘は妥当です。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.118,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 1401,
+        "reasoning_tokens": 1210
+      },
+      "response_id": "resp_02c611571531429a006ac1b8bbf64087d0869d60df09505cf0",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\nnotes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。",
+        "basis": "ledger_date_or_period",
+        "explanation": "「temporarily put back」は人間が電話を担当する機能を一度ロールバックした後に復活させたことを述べています。Ledgerが確認しているのはその機能を当面ロールバックしたことまでで、復活したという後続の出来事は記録されていません。時系列上の重大な追加・変更です。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.0894,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 1036,
+        "reasoning_tokens": 816
+      },
+      "response_id": "resp_0eceabe73152f2f9006ac1b8c890cc87d0bd6e37a5016e5ef3",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

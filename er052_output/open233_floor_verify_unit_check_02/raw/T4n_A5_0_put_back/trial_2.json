@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "explanation": "台帳が確認しているのは機能を当面ロールバックしたことです。一方、対象claimの「put back the feature」は通常、機能を復元したことを意味し、ロールバック後に再開したという台帳にない時系列を加えています。事実関係の時間軸を変えるためBLOCKINGです。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.08,
+        "response_id": "resp_0dfbf5e3f863631d006ac1b89b61b087d0b27468ffbc736c59",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "explanation": "Checkerの指摘は正しいです。「temporarily put back」は人間が電話を担当する機能を復元したという時系列を示しますが、Ledgerが確認しているのはその機能を当面ロールバックしたことです。時期・方向の重大な取り違えです。Muse自体を停止しなかったという後半は、Ledgerのnotes_for_writerと整合します。",
+        "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+        "cost_jpy": 0.0682,
+        "response_id": "resp_09a3d39f0beee92b006ac1b8a3de6087d0aec2768ec029904b",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "verify_blocking_both",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1482
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "台帳が確認しているのは機能を当面ロールバックしたことです。一方、対象claimの「put back the feature」は通常、機能を復元したことを意味し、ロールバック後に再開したという台帳にない時系列を加えています。事実関係の時間軸を変えるためBLOCKINGです。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.08,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 916,
+        "reasoning_tokens": 736
+      },
+      "response_id": "resp_0dfbf5e3f863631d006ac1b89b61b087d0b27468ffbc736c59",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。「temporarily put back」は人間が電話を担当する機能を復元したという時系列を示しますが、Ledgerが確認しているのはその機能を当面ロールバックしたことです。時期・方向の重大な取り違えです。Muse自体を停止しなかったという後半は、Ledgerのnotes_for_writerと整合します。"
+      },
+      "prompt_sha256": "b36f4905aadf56f5b6718c7457fa2af17093176f5cd08431a6fc2138fb7bf0bf",
+      "cost_jpy": 0.0682,
+      "usage": {
+        "input_tokens": 5143,
+        "cached_input_tokens": 5140,
+        "output_tokens": 766,
+        "reasoning_tokens": 576
+      },
+      "response_id": "resp_09a3d39f0beee92b006ac1b8a3de6087d0aec2768ec029904b",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  date_or_period: 2026-07-13\n  notes_for_writer: 「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "explanation": "Checkerの指摘は正しいです。Ledgerは7月13日に20％償還料が提案されたことと、7月14日に撤回・置換が発表されたことを示しています。対象claimは撤回が提案より先だったと時系列を逆転させており、重大な誤解を招きます。",
+        "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+        "cost_jpy": 0.071,
+        "response_id": "resp_03ff52457506af05006ac1b7d59cb887d0b702dadcf31ac086",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  date_or_period: 2026-07-13\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "explanation": "台帳では7月13日に20％償還料が投稿・提案され、7月14日に撤回・置換が発表されたと記録されています。対象claimは撤回が提案より前だったと順序を逆転させており、重大な時期の取り違えです。",
+        "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+        "cost_jpy": 0.0405,
+        "response_id": "resp_01fa8d72882a26d7006ac1b7de0ad887d08b443b119ce16954",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1115
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  date_or_period: 2026-07-13\n  notes_for_writer: 「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerは7月13日に20％償還料が提案されたことと、7月14日に撤回・置換が発表されたことを示しています。対象claimは撤回が提案より先だったと時系列を逆転させており、重大な誤解を招きます。"
+      },
+      "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+      "cost_jpy": 0.071,
+      "usage": {
+        "input_tokens": 5741,
+        "cached_input_tokens": 5738,
+        "output_tokens": 790,
+        "reasoning_tokens": 449
+      },
+      "response_id": "resp_03ff52457506af05006ac1b7d59cb887d0b702dadcf31ac086",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  date_or_period: 2026-07-13\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "basis": "ledger_date_or_period",
+        "explanation": "台帳では7月13日に20％償還料が投稿・提案され、7月14日に撤回・置換が発表されたと記録されています。対象claimは撤回が提案より前だったと順序を逆転させており、重大な時期の取り違えです。"
+      },
+      "prompt_sha256": "5395c12a771db0f637987c6dd22b6a02a278bf962e45fd21a04962b6c9e691dd",
+      "cost_jpy": 0.0405,
+      "usage": {
+        "input_tokens": 5741,
+        "cached_input_tokens": 5738,
+        "output_tokens": 401,
+        "reasoning_tokens": 112
+      },
+      "response_id": "resp_01fa8d72882a26d7006ac1b7de0ad887d08b443b119ce16954",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

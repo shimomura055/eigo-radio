@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "time_only",
+    "target": true,
+    "target_reason": "time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、翌14日に対米貿易・投資案件へ置き換えられたと明記されています。対象claimはこの順序を逆転させており、出来事の時間軸について重大な誤解を招きます。",
+        "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+        "cost_jpy": 0.0568,
+        "response_id": "resp_0ec3bbcbdf517483006ac1b8772a9487d0a0c8fa8f27680fed",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "BLOCKING",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "HF-002: 7月13日の提案が先で、7月14日の撤回・置換が後。／HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日の償還料提案が先で、7月14日に投資案件へ置き換えられています。対象claimはこの順序を逆転させており、重大な時期の誤りです。",
+        "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+        "cost_jpy": 0.0545,
+        "response_id": "resp_0dcee6791f0a8d63006ac1b87c43cc87d0b68e23740c33ce8b",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.1113
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、翌14日に対米貿易・投資案件へ置き換えられたと明記されています。対象claimはこの順序を逆転させており、出来事の時間軸について重大な誤解を招きます。"
+      },
+      "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+      "cost_jpy": 0.0568,
+      "usage": {
+        "input_tokens": 5757,
+        "cached_input_tokens": 5754,
+        "output_tokens": 609,
+        "reasoning_tokens": 283
+      },
+      "response_id": "resp_0ec3bbcbdf517483006ac1b8772a9487d0a0c8fa8f27680fed",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "HF-002: 7月13日の提案が先で、7月14日の撤回・置換が後。／HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘は正しいです。Ledgerでは7月13日の償還料提案が先で、7月14日に投資案件へ置き換えられています。対象claimはこの順序を逆転させており、重大な時期の誤りです。"
+      },
+      "prompt_sha256": "f5f771bfa7e4288d208589169a0d9e0d7fc293b884422bb5b34ccb129f96986f",
+      "cost_jpy": 0.0545,
+      "usage": {
+        "input_tokens": 5757,
+        "cached_input_tokens": 5754,
+        "output_tokens": 579,
+        "reasoning_tokens": 384
+      },
+      "response_id": "resp_0dcee6791f0a8d63006ac1b87c43cc87d0b68e23740c33ce8b",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

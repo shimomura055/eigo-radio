@@ -1,0 +1,576 @@
+{
+  "stage_info": {
+    "stage": "main",
+    "n_serious": 5,
+    "n_release": 3,
+    "stopped": false,
+    "stop_reason": null,
+    "cumulative_jpy": 5.0099,
+    "cumulative_calls": 69,
+    "cumulative_errors": 0
+  },
+  "cost_jpy_total": 5.0099,
+  "calls": 69,
+  "errors": 0,
+  "serious_or_exclusion_released_total": 0,
+  "acceptance": "PASS(重大期待・対象外の解放0)",
+  "results": [
+    {
+      "case_id": "T1c_date_swap_July13",
+      "version": "C",
+      "category": "serious_expected",
+      "expected": "BLOCKING(日付の取り違え、CONFIRMED版)",
+      "claim_text": "On July 13, the plan was withdrawn and replaced with an investment deal.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "synthetic(委任_60 S3)",
+      "n_trials": 1,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": true,
+      "confirmed_basis": [
+        {
+          "flag": "changed_time",
+          "missing_in_fact_block": [
+            [
+              "md",
+              7,
+              13
+            ]
+          ]
+        }
+      ],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "confirmed_by_deterministic_mismatch": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T1n_order_withdrawn_before_proposed",
+      "version": "N",
+      "category": "serious_expected",
+      "expected": "BLOCKING(前後関係反転、非抽出版)",
+      "claim_text": "The plan was withdrawn before the charge was ever proposed.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-003, HF-009",
+      "issue_source": "synthetic",
+      "n_trials": 5,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 10,
+      "call_label_distribution": {
+        "BLOCKING": 10
+      },
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 5
+      },
+      "cost_jpy": 0.6797,
+      "sample_citations": [
+        "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\nYahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\nYahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。\n  date_or_period: 2026-07-13\n  notes_for_writer: 「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。\n\n[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n  date_or_period: 2026-07-14、撤回発表後の取引時間中"
+      ],
+      "sample_explanations": [
+        "Ledgerでは20％償還料案が7月13日に投稿・発言され、撤回・置換の発表は7月14日と記録されています。対象claimは順序を逆転させているため、重大な時期の矛盾です。",
+        "Checkerの指摘は正しいです。Ledgerは7月13日に20％償還料案が投稿・発言されたことを記録し、7月14日の撤回・置換発表を記録しています。対象claimは撤回が提案より先だったと時系列を逆転させており、重大な時期の取り違えです。"
+      ],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T2c_K16_dated_return",
+      "version": "C",
+      "category": "serious_expected",
+      "expected": "BLOCKING(K16型+日付・期間、CONFIRMED版)",
+      "claim_text": "The fee plan left the stage on July 15, but the events driving oil prices—and the prices themselves—returned within 3 days.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "synthetic(K16型)",
+      "n_trials": 1,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": true,
+      "confirmed_basis": [
+        {
+          "flag": "changed_time",
+          "missing_in_fact_block": [
+            [
+              "md",
+              7,
+              15
+            ],
+            [
+              "period",
+              3.0,
+              "day"
+            ]
+          ]
+        }
+      ],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "confirmed_by_deterministic_mismatch": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T2n_K16_continuing_events_returned",
+      "version": "N",
+      "category": "serious_expected",
+      "expected": "BLOCKING(K16=継続中の出来事を一度消えて戻ったとする、非抽出版)",
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "recorded(iter8 neg3、委任_60 S2)",
+      "n_trials": 5,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 10,
+      "call_label_distribution": {
+        "BLOCKING": 10
+      },
+      "n_citation_verbatim": 6,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 3,
+        "verify_blocking_both": 2
+      },
+      "cost_jpy": 0.6083,
+      "sample_citations": [
+        "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\nnotes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。",
+        "Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。\n米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。"
+      ],
+      "sample_explanations": [
+        "原油価格の回復自体はLedgerに沿っています。一方、価格を動かす出来事についてLedgerは「継続していた」と記録しており、「quickly returned」は、それらがいったん途絶えてから再開したという時間軸に変えています。これは継続中の出来事を消えて戻った出来事として述べる重大な時期の変更です。",
+        "価格の回復自体は台帳に沿っていますが、価格を動かす出来事は「継続していた」と記録されています。claimはそれらが一度止まり、再び戻ったように述べ、重大な時間軸の変更を加えています。"
+      ],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T3c_safety12_year_2019",
+      "version": "C",
+      "category": "serious_expected",
+      "expected": "BLOCKING(Safety12 changed_time fixture、年の取り違え、CONFIRMED版)",
+      "claim_text": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "F-001",
+      "issue_source": "synthetic(委任_60 S5)",
+      "n_trials": 1,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": true,
+      "confirmed_basis": [
+        {
+          "flag": "changed_time",
+          "missing_in_fact_block": [
+            [
+              "y",
+              2019
+            ]
+          ]
+        }
+      ],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "confirmed_by_deterministic_mismatch": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T3n_order_reversed_deal_first",
+      "version": "N",
+      "category": "serious_expected",
+      "expected": "BLOCKING(順序の反転、非抽出版)",
+      "claim_text": "The investment deal was announced first, and the 20% reimbursement fee was proposed only afterwards.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-002, HF-007",
+      "issue_source": "synthetic(HF系の順序反転)",
+      "n_trials": 5,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 10,
+      "call_label_distribution": {
+        "BLOCKING": 10
+      },
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 5
+      },
+      "cost_jpy": 0.6098,
+      "sample_citations": [
+        "HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\nHF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+        "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。\n  date_or_period: 2026-07-13 10:16 EDT\n[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料\n  date_or_period: 2026-07-14 11:04 EDT",
+        "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\n\ndate_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘は正しいです。Ledgerでは7月13日に20％償還料が提案され、7月14日に貿易・投資案件へ置き換えられています。対象claimは順序を逆転させており、重大な時期の取り違えです。",
+        "指摘は正しいです。Ledgerでは20％償還料の提案が7月13日、貿易・投資案件への置換が7月14日です。対象claimは順序を逆転させており、記事の時間軸について重大な誤解を与えます。"
+      ],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T4c_A5_0_put_back_dated",
+      "version": "C",
+      "category": "serious_expected",
+      "expected": "BLOCKING(A5-0=時期・経過の創作、CONFIRMED版)",
+      "claim_text": "They put the feature back on September 30, so humans handled the calls again. They did not stop Muse itself.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "MUSE-HC-012",
+      "issue_source": "synthetic",
+      "n_trials": 1,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": true,
+      "confirmed_basis": [
+        {
+          "flag": "changed_time",
+          "missing_in_fact_block": [
+            [
+              "md",
+              9,
+              30
+            ]
+          ]
+        }
+      ],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "confirmed_by_deterministic_mismatch": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T4n_A5_0_put_back",
+      "version": "N",
+      "category": "serious_expected",
+      "expected": "BLOCKING(A5-0=時期・経過の創作、非抽出版)",
+      "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "MUSE-HC-012",
+      "issue_source": "synthetic(委任_60 S7)",
+      "n_trials": 5,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 10,
+      "call_label_distribution": {
+        "BLOCKING": 10
+      },
+      "n_citation_verbatim": 8,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "verify_blocking_both": 3,
+        "ledger_citation_not_verbatim": 2
+      },
+      "cost_jpy": 1.0103,
+      "sample_citations": [
+        "機能を当面ロールバックした",
+        "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+        "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。"
+      ],
+      "sample_explanations": [
+        "Ledgerが確認しているのは人間コンシェルジュ機能のロールバックです。対象claimは、その機能を一時的に復活させたという別の動きを述べており、復活の時系列を追加しているため、重要な事実関係の違いです。",
+        "Ledgerが確認しているのは人間コンシェルジュ機能のロールバックであり、機能を後から「put back（戻した・再導入した）」という出来事は記録されていません。対象claimは復元を時系列上の事実として加えており、時期・経過の重大な誤認です。"
+      ],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T5c_duration_3_days",
+      "version": "C",
+      "category": "serious_expected",
+      "expected": "BLOCKING(期間の付け替え、CONFIRMED版)",
+      "claim_text": "The Hormuz fee proposal was replaced about 3 days later.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-002, HF-007",
+      "issue_source": "synthetic",
+      "n_trials": 1,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": true,
+      "confirmed_basis": [
+        {
+          "flag": "changed_time",
+          "missing_in_fact_block": [
+            [
+              "period",
+              3.0,
+              "day"
+            ]
+          ]
+        }
+      ],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "confirmed_by_deterministic_mismatch": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "T5n_duration_long_time",
+      "version": "N",
+      "category": "serious_expected",
+      "expected": "BLOCKING(期間の付け替え、非抽出版)",
+      "claim_text": "The Hormuz fee proposal was replaced only after a long time.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-002, HF-007",
+      "issue_source": "synthetic",
+      "n_trials": 5,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 10,
+      "call_label_distribution": {
+        "BLOCKING": 10
+      },
+      "n_citation_verbatim": 5,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 5
+      },
+      "cost_jpy": 0.626,
+      "sample_citations": [
+        "notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "date_or_period: 2026-07-13 10:16 EDT\n date_or_period: 2026-07-14 11:04 EDT\n notes_for_writer: この投稿は7月13日の提案から約24時間48分後。",
+        "この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘は妥当です。Ledgerでは置き換えは提案から約24時間48分後とされており、「a long time」は実際より大幅に長い時間が経過したという誤解を招くため、時期の重大な誤りです。",
+        "指摘は正しいです。置き換えは提案から約24時間48分後であり、「only after a long time」は長い時間が経過したという印象を与え、Ledgerが示す翌日の置き換えと時期を重大に食い違わせます。"
+      ],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "X1_direction_reversal_out_of_scope",
+      "version": "-",
+      "category": "exclusion_check",
+      "expected": "BLOCKING(方向反転。changed_comparisonは対象外=決定論BLOCKINGのまま、委任_60 S1)",
+      "claim_text": "After the plan was withdrawn, oil prices fell.",
+      "flags": [
+        "changed_comparison"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "synthetic(委任_60 S1)",
+      "n_trials": 1,
+      "target": false,
+      "target_reason": "out_of_scope_flag:changed_comparison",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "unknown": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "X2_actor_plus_time_out_of_scope",
+      "version": "-",
+      "category": "exclusion_check",
+      "expected": "BLOCKING(主体+時期。changed_actorが立つため対象外)",
+      "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+      "flags": [
+        "changed_actor",
+        "changed_time"
+      ],
+      "related_fact_id": "HF-003",
+      "issue_source": "recorded(iter6 K18、フラグ合成)",
+      "n_trials": 1,
+      "target": false,
+      "target_reason": "out_of_scope_flag:changed_actor",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 0,
+      "call_label_distribution": {},
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "unknown": 1
+      },
+      "cost_jpy": 0.0,
+      "sample_citations": [],
+      "sample_explanations": [],
+      "matches_expectation": true
+    },
+    {
+      "case_id": "R1_B2_vanished_overnight",
+      "version": "N",
+      "category": "release_expected",
+      "expected": "QUALITY以下(B2、実run記録LLM=ACCEPTABLE、changed_timeのみ)",
+      "claim_text": "Trump’s proposed Hormuz fee vanished overnight.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-002, HF-007",
+      "issue_source": "synthetic(委任_60 R2)",
+      "n_trials": 3,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 6,
+      "call_label_distribution": {
+        "QUALITY": 6
+      },
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 3
+      },
+      "cost_jpy": 0.5919,
+      "sample_citations": [
+        "date_or_period: 2026-07-13 10:16 EDT\n  date_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "HF-002: date_or_period: 2026-07-13 10:16 EDT\nHF-007: date_or_period: 2026-07-14 11:04 EDT\nHF-007: notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "HF-002 date_or_period: 2026-07-13 10:16 EDT; HF-007 date_or_period: 2026-07-14 11:04 EDT; HF-007 notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘どおり、置換は提案から約24時間48分後です。ただし「overnight」は一晩をまたいで翌日に起きたという概略的な表現で、提案が7月13日、置換が翌7月14日という核心の時間軸は保たれています。精度の軽微な差であり、重大な時期の取り違えとは判定しません。",
+        "Checkerの指摘どおり、置換は提案の約24時間48分後です。「overnight」は時期をやや圧縮した表現ですが、提案が翌日に置き換えられたという時間軸の核心は保たれており、重大な時期の取り違えではありません。"
+      ],
+      "matches_expectation": null,
+      "release_rate_reference": "0/3"
+    },
+    {
+      "case_id": "R2_K15_during_that_period",
+      "version": "N",
+      "category": "release_expected",
+      "expected": "ACCEPTABLE(設計書K15=問題なし、changed_time)",
+      "claim_text": "During that period, attacks between the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "synthetic(設計書K15の文、issue文は合成)",
+      "n_trials": 3,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 6,
+      "call_label_distribution": {
+        "ACCEPTABLE": 6
+      },
+      "n_citation_verbatim": 4,
+      "n_released": 1,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 2
+      },
+      "cost_jpy": 0.3607,
+      "sample_citations": [
+        "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中"
+      ],
+      "sample_explanations": [
+        "Ledgerは、撤回発表後の取引時間中にこれらの状況が継続していたと明記しています。対象claimの「During that period」は直前の価格推移の期間を指しており、時期の重大な取り違えはありません。",
+        "Ledgerは、撤回発表後の取引時間中にこれらの状況が継続していたと明記しています。「During that period」はこの時期を指す自然な表現であり、時期の取り違えはありません。"
+      ],
+      "matches_expectation": null,
+      "release_rate_reference": "1/3"
+    },
+    {
+      "case_id": "R3_K17_may_be_replaced",
+      "version": "N",
+      "category": "release_expected",
+      "expected": "QUALITY(設計書K17=軽微、changed_time)",
+      "claim_text": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "synthetic(設計書K17の文、issue文は合成)",
+      "n_trials": 3,
+      "target": true,
+      "target_reason": "time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 6,
+      "call_label_distribution": {
+        "ACCEPTABLE": 6
+      },
+      "n_citation_verbatim": 5,
+      "n_released": 2,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 1
+      },
+      "cost_jpy": 0.3861,
+      "sample_citations": [
+        "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+        "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。\ndate_or_period: 2026-07-14、撤回発表後の取引時間中",
+        "conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘は当たりません。Ledgerは撤回発表に加えてこれらの事象・懸念が継続していたと明記しており、発表と同じ時期にも続いていたというclaimの時期は裏付けられています。",
+        "Ledgerは撤回発表後の取引時間中に、発表以外の攻撃・海上封鎖・タンカー安全上の懸念が継続していたと記録しています。「同じ時期に続く出来事は、発表一つで消えない」という表現はこの条件の自然な要約であり、時期の取り違えはありません。"
+      ],
+      "matches_expectation": null,
+      "release_rate_reference": "2/3"
+    }
+  ]
+}
