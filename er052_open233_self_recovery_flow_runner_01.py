@@ -427,7 +427,9 @@ KPI_TRIAL_SWITCHES = {
     # (コードは残置、既定OFF)。代わりにTier 0=因果floor、Tier 1'=S1(Stage 2第2意見)をON。
     # 注: 因果floor語彙の¥0 hold-out評価は採用条件(誤停止<=2%)を満たさなかった(replay_guards_04、REPORT§53)。語彙の最終採否は
     # Fable判断待ち。ここでの`CAUSAL_FLOOR`ONは「Fable指定の構成」の記録であり、有料runの実行可否を意味しない。
+    # 委任_04: 語彙は`known6`(既知G_H 6語+既存ヘッジ語。hold-out評価で誤停止0.19%・閉鎖15/16、Fable判断1で確定)。
     "CAUSAL_FLOOR": True,
+    "CAUSAL_FLOOR_VOCAB": "known6",
     "STAGE2_SECOND_OPINION": True,
 }
 
@@ -2790,6 +2792,12 @@ CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE = True
 # Production未配線・`APPROVED_FOR_PRODUCTION`ではない)。OFFのとき既存挙動と完全に同一。
 CAUSAL_FLOOR = False
 STAGE2_SECOND_OPINION = False
+# 委任_04(Fable判断1): Tier 0の有効語彙の選択。`"known6"`=既知G_H 6語(so/because/therefore/as a result/led to/leading to)+
+# 既存ヘッジ語(`AUX_CONN_RE`/`AUX_HEDGE_RE`、有効・既定)、`"inventory"`=目録由来の拡張語彙(評価用、無効=KPI構成では使わない)。
+# 根拠(`replay_guards_04_causal_floor.json`、降格534件・流出16行のhold-out評価): known6(+issue_actor)=閉鎖15/16
+# [「and」版除き15/15]・正当降格誤停止0.19%(1件)で事前基準(誤停止<=2%かつ閉鎖15/15)を満たす唯一の構成。inventory=閉鎖の上積み0・
+# 誤停止+13件(2.51%: `lead to`6[同一の否定文]/`as`4/`caused`3/`make`1)で不採用。語彙は結果を見て削らない(hold-outの趣旨)。
+CAUSAL_FLOOR_VOCAB = "known6"
 
 
 def _norm_apostrophe(s: str) -> str:
@@ -2832,6 +2840,12 @@ def causal_floor_guard(dev: dict, claim_text: str, can_would_as_hedge=None) -> t
     c = claim_text or ""
     if _AUX_JA_RE.search(c) or not (dev or {}).get("changed_causality"):
         return False, ""
+    if CAUSAL_FLOOR_VOCAB == "known6":
+        if AUX_CONN_RE.search(_norm_apostrophe(c)) and not AUX_HEDGE_RE.search(_norm_apostrophe(c)):
+            return True, "changed_causality_floor"
+        return False, ""
+    if CAUSAL_FLOOR_VOCAB != "inventory":
+        raise ValueError(f"unknown CAUSAL_FLOOR_VOCAB: {CAUSAL_FLOOR_VOCAB!r}")
     h = causal_vocab_hits(c, can_would_as_hedge)
     if h["connectives"] and not h["hedges"]:
         return True, "changed_causality_floor"

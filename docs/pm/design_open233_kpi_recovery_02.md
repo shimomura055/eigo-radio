@@ -287,3 +287,14 @@ D\*(G_H∨issue_actor+S1)は主構造にしない。S1(同一prompt2回目)は�
 - 採用条件(誤停止≤2%かつ閉鎖≥15/16「and」版除き15/15)は、因果floor単独(A/B)では**満たさない**(誤停止2.51%>2%。閉鎖13/15はA2A3の主体型2行が因果floorの対象外[`issue_actor`が閉じる]のため、単独では15/15にならない)。A/Bは完全に同値(`can`/`would`を含む該当claimが無い)。Tier 0全体(因果floor_A∨issue_actor)としても誤停止2.70%で不達。
 - 語彙拡張(G_H 6語→目録)の**上積みは閉鎖0件、新規誤停止13件**。13件の一致語は`lead to`(6件、同一文「The disappearance of the fee plan did not lead to a large, lasting fall in prices.」を含む[否定文])・`as`(4件)・`caused`(3件)・`makes/make`(1件)。13件は6文の重複で、全てQUALITY/ACCEPTABLEの正当降格。
 - Fable事前規則(「満たさない場合は語彙を削らず事実を記録しFableへ報告、Step 5以降へ進まない」)に従い、語彙は削らず、Step 5(rep26)以降の有料実行は行わなかった。
+
+## 11. Tier 0語彙の確定(Fable判断、委任_04、2026-10-04)
+
+委任_03のhold-out評価(`replay_guards_04_causal_floor.json`)を受けたFable判断(逐語):
+
+1. **Tier 0の有効語彙=既知G_H 6語+`issue_actor`**とする。根拠: 事前基準(誤停止≤2%かつ閉鎖15/15)を満たす唯一の構成(誤停止0.19%)。目録由来の拡張語彙は、同じ母集団で閉鎖の上積み0・誤停止+13件(`lead to`6[同一の否定文]、`as`4、`caused`3、`make`1)であり不採用。**語彙を結果を見て削る調整は行わない**(hold-outの趣旨)。拡張語彙の定数はコードに残し、`CAUSAL_FLOOR_VOCAB="known6"`(有効)/`"inventory"`(評価用、無効)で切替。
+2. **残存リスクの明示**: 6語は観測された流出クラス(`so`型)を閉じるが、未観測の接続語型の系統誤りには効かない。これはS1(偶発的な外れ)でも閉じないため、**Step 6の結果とともにユーザーへ正直に報告する**(KPI緩和の提案ではなく、Trial規模での達成状況と残存リスクの区別)。目録拡張が誤停止を生んだ事実は、「接続語の有無だけでは因果主張を判別できない(否定scope・多義語)」という知見として記録。
+3. Tier 1′ S1・Tier 2 hint・L6・prior_issues現行本文化・NORMAL群2-of-2 OFF・Q/U-2(1)は委任_03の実装のままKPI構成に含める。確認役・G_Lは無効。
+4. 「and」版(rep24 cycle 2 B3)=ACCEPTABLEのFable判断は登録済み(ユーザー未確認、否認されれば戻す)。
+
+実装(委任_04): `CAUSAL_FLOOR_VOCAB`(既定`"known6"`)。`causal_floor_guard`は`known6`のとき`AUX_CONN_RE`(so/because/therefore/as a result/led to/leading to)∧`changed_causality`∧`AUX_HEDGE_RE`なし(英語claimのみ)で判定し、`inventory`のとき目録語彙で判定する。`KPI_TRIAL_SWITCHES`に`CAUSAL_FLOOR: True`+`CAUSAL_FLOOR_VOCAB: "known6"`。補助ベルトG_H/issue_actorは従来どおり`stage2_release_guard`の後段で評価される(known6のG_Hは因果floorと同一集合のため、発火理由は`changed_causality_floor`として先に記録される)。Trial専用・Production未配線・`APPROVED_FOR_PRODUCTION`ではない。

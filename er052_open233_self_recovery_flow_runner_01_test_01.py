@@ -7350,10 +7350,50 @@ class TestCausalFloorAndS1_03(unittest.TestCase):
     def setUp(self):
         self._old = (runner.CAUSAL_FLOOR, runner.STAGE2_SECOND_OPINION, runner.CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE,
                      runner.STAGE2_DOWNGRADE_VERIFY)
+        self._old_vocab = runner.CAUSAL_FLOOR_VOCAB
+        runner.CAUSAL_FLOOR_VOCAB = "inventory"  # 既存テストは目録語彙(評価用)の挙動を検証する。known6は別テスト
 
     def tearDown(self):
         (runner.CAUSAL_FLOOR, runner.STAGE2_SECOND_OPINION, runner.CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE,
          runner.STAGE2_DOWNGRADE_VERIFY) = self._old
+        runner.CAUSAL_FLOOR_VOCAB = self._old_vocab
+
+    # --- 委任_04: known6確定 ---
+    def test_known6_is_default_and_in_kpi_config(self):
+        self.assertEqual(self._old_vocab, "known6")
+        self.assertEqual(runner.KPI_TRIAL_SWITCHES["CAUSAL_FLOOR_VOCAB"], "known6")
+        self.assertTrue(runner.KPI_TRIAL_SWITCHES["CAUSAL_FLOOR"])
+        self.assertTrue(runner.KPI_TRIAL_SWITCHES["STAGE2_SECOND_OPINION"])
+        self.assertNotIn("STAGE2_DOWNGRADE_VERIFY", runner.KPI_TRIAL_SWITCHES)
+        self.assertFalse(runner.TIER0_G_L_ENABLED)
+        keys = list(runner.KPI_TRIAL_SWITCHES)
+        saved = {kk: getattr(runner, kk) for kk in keys}
+        try:
+            applied = runner.apply_kpi_trial_switches()
+            self.assertEqual(applied["CAUSAL_FLOOR_VOCAB"], "known6")
+        finally:
+            for kk, v in saved.items():
+                setattr(runner, kk, v)
+
+    def test_known6_vs_inventory_switch(self):
+        dev = {"changed_causality": True}
+        # known6: 既知6語のみ。目録語(due to/caused/lead to/as)では止めない
+        runner.CAUSAL_FLOOR_VOCAB = "known6"
+        for c in ("Prices rose because supply was cut.", "So the plan left the stage.", "It therefore stopped.",
+                  "As a result, shipping stopped.", "It led to a sell-off.", "It was leading to a sell-off."):
+            self.assertEqual(runner.causal_floor_guard(dev, c), (True, "changed_causality_floor"), c)
+        for c in ("Prices rose due to the ban.", "Meta had run a test that caused exactly this surprise.",
+                  "The fee plan did not lead to a fall in prices.", "As AI makes calls, people ask questions."):
+            self.assertFalse(runner.causal_floor_guard(dev, c)[0], c)
+        self.assertFalse(runner.causal_floor_guard(dev, "Prices rose because supply may have been cut.")[0])
+        self.assertFalse(runner.causal_floor_guard({"changed_causality": False}, "It led to a sell-off.")[0])
+        # inventory: 拡張語彙(評価用)は目録語でも止める
+        runner.CAUSAL_FLOOR_VOCAB = "inventory"
+        self.assertTrue(runner.causal_floor_guard(dev, "Prices rose due to the ban.")[0])
+        self.assertTrue(runner.causal_floor_guard(dev, "Meta had run a test that caused exactly this surprise.")[0])
+        runner.CAUSAL_FLOOR_VOCAB = "bogus"
+        with self.assertRaises(ValueError):
+            runner.causal_floor_guard(dev, "x because y")
 
     # --- 語彙・floor ---
     def test_defaults_off_and_kpi_config(self):
