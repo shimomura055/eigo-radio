@@ -431,6 +431,9 @@ KPI_TRIAL_SWITCHES = {
     "CAUSAL_FLOOR": True,
     "CAUSAL_FLOOR_VOCAB": "known6",
     "STAGE2_SECOND_OPINION": True,
+    # 委任_06(Fable評価2・3): N1′=再確認結果・未解消prior issueを必ず次cycleのStage 2へ合流(`unconfirmed_after_reverify`廃止)。
+    # `RECHECK_BEFORE_AFTER_PAIRS`(N3′)はA/B(委任_06 作業4)で採否を決めるまで本構成へ含めない(既定OFF)。
+    "RECHECK_MERGE_UNRESOLVED": True,
 }
 
 
@@ -1710,8 +1713,13 @@ def build_recheck_schema(include_related_fact_id: bool, include_origin: bool) ->
 
 
 def run_recheck(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
-                 prior_issues: list, enable_fact_id_enumeration: bool = False) -> dict:
-    """委任_35(design書§6-16、追加原因(d)の是正): `same_fact_id_locations`
+                 prior_issues: list, enable_fact_id_enumeration: bool = False,
+                 before_after_pairs: list | None = None) -> dict:
+    """委任_06 N3′(`RECHECK_BEFORE_AFTER_PAIRS`ON かつ `before_after_pairs`が非空のときのみ): prompt末尾の
+    prior_issues指示の直後へ、再確認(`run_recheck_confirm`)と同形式の「書き換え前後の対」ブロックを追加する
+    (cite-or-release指示は含めない)。Checker本体template(er003/er051)・Schema・判定規則は不変。OFF時は従来とバイト同一。
+
+    委任_35(design書§6-16、追加原因(d)の是正): `same_fact_id_locations`
     列挙(委任_20 W2)は、初回Stage1検出(cycle1の入力を作る1回)でのみ行い、
     以後のRecheck呼び出し(cycle番号に関わらず、本関数の呼び出しは全て
     初回Stage1より後)では新規候補を再列挙しない(既定`enable_fact_id_
@@ -1732,6 +1740,10 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     if include_origin:
         prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=fixture["source_article_text"])
     prompt += vfl01.build_prior_issues_instruction(prior_issues)
+    ba_block = ""
+    if RECHECK_BEFORE_AFTER_PAIRS and before_after_pairs:
+        ba_block = build_before_after_instruction(before_after_pairs)
+        prompt += ba_block
     if enable_fact_id_enumeration:
         prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
     if CHECKER_SPANS_MODE == CHECKER_SPANS_MODE_VIOLATION_SPANS:  # 委任_53(既定OFF、schemaは下で差し替え)
@@ -1778,6 +1790,7 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
     cost = round(s2p.official_cost_jpy(usage), 4)
     call_log.append({"label": label, "recovery_stage": "stage1_recheck", "cost_jpy": cost, "usage": usage,
                       "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt),
+                      **({"before_after_block_len": len(ba_block)} if ba_block else {}),
                       "overall_status": parsed_trial["overall_status"],
                       "all_prior_issues_resolved": parsed_trial["all_prior_issues_resolved"]})
     record_call(state, consecutive_errors, label, cost, True, "stage1_recheck", usage)
@@ -1932,6 +1945,92 @@ def run_recheck_confirm(client, state, consecutive_errors, call_log, label, fixt
                       "cite_or_release_released_count": cite_result["released_count"]})
     record_call(state, consecutive_errors, label, cost, True, "stage1_recheck_confirm", usage)
     return parsed_trial
+
+
+# ------------------------------------------------------------
+# 委任_06(OPEN-233-KPI-RECOVERY-REDESIGN-02、Opus#12後): N1′ 再検査結果の正規化(純関数、追加call 0)。
+# 「未解消のprior issueは必ず次cycleのStage 2を通る」を1規則に統一する(再確認DEVIATIONを捨ててSTAGE4へ直行して
+# いた`unconfirmed_after_reverify`経路と、通常Recheckの`DEVIATION∧all_prior=False`で未解消priorがdeviationsに
+# 無いと脱落する潜在ギャップの両方を是正)。Trial専用(`RECHECK_MERGE_UNRESOLVED`、既定OFF)。Production未配線:
+# Productionが自己回復flowを持たない間は、呼び出し側が`NEXT_CYCLE`を`STOP`へ写像する(OPEN-233-A1-PROD)。
+# ------------------------------------------------------------
+RECHECK_MERGE_UNRESOLVED = False   # N1′(既定OFF=旧挙動: 再確認が解消未確認ならSTAGE4`unconfirmed_after_reverify`)
+RECHECK_BEFORE_AFTER_PAIRS = False  # N3′(既定OFF): 通常Recheckへも「書き換え前後の対」ブロックを渡す
+
+RECHECK_DECISION_PASS = "PASS"
+RECHECK_DECISION_NEXT_CYCLE = "NEXT_CYCLE"
+RECHECK_DECISION_STOP = "STOP"
+
+
+def _recheck_ok(r) -> bool:
+    return bool(r) and r.get("overall_status") == "LEDGER_COMPLIANT" and bool(r.get("all_prior_issues_resolved"))
+
+
+def _unresolved_prior_indices(source: dict, n_prior: int) -> list:
+    """sourceの`prior_issues_resolved`でresolved=falseの項目index(未返却のindexも未解消扱い=fail-closed)。
+    `all_prior_issues_resolved`がTrueなら空。"""
+    if source.get("all_prior_issues_resolved"):
+        return []
+    got = {}
+    for it in (source.get("prior_issues_resolved") or []):
+        try:
+            got[int(it.get("index"))] = bool(it.get("resolved"))
+        except (TypeError, ValueError):
+            continue
+    return [i for i in range(n_prior) if not got.get(i, False)]
+
+
+def normalize_recheck_outcome(recheck: dict, confirm: dict | None, prior_blocking_claims: list,
+                              prior_issues: list | None = None, api_failure_is_stop: bool = False) -> dict:
+    """再検査結果(Recheck、必要なら再確認)を`PASS`/`NEXT_CYCLE`/`STOP`へ正規化する純関数(API呼び出しなし)。
+    - PASS: Recheck、または(Recheckが`COMPLIANT∧all_prior=False`の自己矛盾で再確認を呼んだ場合)再確認が
+      `LEDGER_COMPLIANT∧all_prior=True`。
+    - NEXT_CYCLE: それ以外。次cycleのstage1_deviations=(i)判定元の全文検査deviationsのMAJOR ∪
+      (ii)判定元`prior_issues_resolved`でresolved=falseの元blocking claimのdev(fact_idで(i)と重複するものは除く)。
+      判定元=自己矛盾で再確認を呼んだ場合は再確認、そうでなければRecheck。(ii)のdevは、現行本文の置換後の文が
+      単一で特定できているとき`claim_in_article`をその文へ差し替える(Stage 2/Rewriteが現行本文で位置を引けるように)。
+      (i)(ii)とも空なら`deviations=[]`(呼び出し側の既存`not blocking_claims`経路でRESOLVED_REWRITE_THEN_DOWNGRADE。
+      再確認経由なら`reverify_deviation_without_major=True`を監査用に返す)。
+    - STOP: `api_failure_is_stop=True`かつ判定元がAPI失敗のときのみ(Production写像用。Trialは既定Falseで、API失敗は
+      未解消扱いとしてNEXT_CYCLEへ合流させる=fail-closed)。"""
+    ambiguous = (recheck.get("overall_status") == "LEDGER_COMPLIANT"
+                 and not recheck.get("all_prior_issues_resolved"))
+    used_confirm = ambiguous and confirm is not None
+    source = confirm if used_confirm else recheck
+    if _recheck_ok(recheck) or (used_confirm and _recheck_ok(confirm)):
+        return {"decision": RECHECK_DECISION_PASS, "deviations": [], "merged_from": [], "source": "recheck" if _recheck_ok(recheck) else "reverify",
+                "reverify_deviation_without_major": False, "n_dedup_dropped": 0}
+    if api_failure_is_stop and source.get("_recheck_api_failure"):
+        return {"decision": RECHECK_DECISION_STOP, "deviations": [], "merged_from": [], "source": "reverify" if used_confirm else "recheck",
+                "reverify_deviation_without_major": False, "n_dedup_dropped": 0}
+    major = [d for d in (source.get("deviations") or []) if d.get("severity") == "MAJOR"]
+    merged = list(major)
+    labels = ["reverify_major" if used_confirm else "recheck_major"] * len(major)
+    fids = {(d.get("related_fact_id") or "").strip() for d in major}
+    fids.discard("")
+    dropped = 0
+    seen_prior = set()
+    n_prior = len(prior_blocking_claims)
+    for i in _unresolved_prior_indices(source, n_prior):
+        dev = dict(prior_blocking_claims[i]["dev"])
+        fid = (dev.get("related_fact_id") or "").strip()
+        if fid and fid in fids:
+            dropped += 1
+            continue
+        if prior_issues is not None and i < len(prior_issues):
+            cur = (prior_issues[i].get("claim_in_article") or "").strip()
+            if cur and "\n" not in cur:
+                dev["claim_in_article"] = cur
+        key = (fid, (dev.get("claim_in_article") or "").strip())
+        if key in seen_prior:
+            dropped += 1
+            continue
+        seen_prior.add(key)
+        merged.append(dev)
+        labels.append("unresolved_prior" if used_confirm else "normal_gap")
+    return {"decision": RECHECK_DECISION_NEXT_CYCLE, "deviations": merged, "merged_from": labels,
+            "source": "reverify" if used_confirm else "recheck",
+            "reverify_deviation_without_major": bool(used_confirm and not merged), "n_dedup_dropped": dropped}
 
 
 # ------------------------------------------------------------
@@ -7608,7 +7707,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {}),
                          **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {}),
                          **({"CAUSAL_FLOOR": True} if CAUSAL_FLOOR else {}),
-                         **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {})},
+                         **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {}),
+                         **({"RECHECK_MERGE_UNRESOLVED": True} if RECHECK_MERGE_UNRESOLVED else {}),
+                         **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -8163,7 +8264,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             recheck_fixture["source_article_text"] = current_ja_text
         recheck_parsed = run_recheck(client, state, consecutive_errors, call_log,
                                       f"{instance_id}_c{cycle}_recheck", recheck_fixture, current_en_text,
-                                      prior_issues)
+                                      prior_issues, before_after_pairs=before_after_pairs)
+        if RECHECK_BEFORE_AFTER_PAIRS:
+            cycle_record["recheck_before_after_pairs_n"] = len(
+                [p_ for p_ in before_after_pairs if p_.get("before") and p_.get("after") is not None])
         # JA側も別途Recheck(paired rewriteが使われていた場合のみ、JA本文の
         # Ledger整合を独立に確認する。§5-4の「JA側1call+EN側1call」に対応)
         ja_recheck_parsed = None
@@ -8237,6 +8341,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # で再確認する(iteration 3で有効化)。
         en_ambiguous = (recheck_parsed.get("overall_status") == "LEDGER_COMPLIANT"
                         and not recheck_parsed.get("all_prior_issues_resolved"))
+        confirm_parsed = None
         if en_ambiguous and not en_ok:
             # 委任_13(iteration5、cite-or-release): run_recheck() ->
             # run_recheck_confirm()へ切替。remaining_sentence必須化+
@@ -8269,15 +8374,29 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             final_state = "RESOLVED_REWRITE"
             break
 
-        if cycle_record.get("recheck_reconfirmed") is False:
+        if cycle_record.get("recheck_reconfirmed") is False and not RECHECK_MERGE_UNRESOLVED:
             # 再確認でも解消未確認(自己矛盾が解消しない) -> 次cycleの空
             # deviationsによる静かな降格を許さずfail-closedでSTAGE4
+            # (旧挙動。委任_06 N1′ `RECHECK_MERGE_UNRESOLVED`ON時はこの経路を使わず、下で次cycleのStage 2へ合流させる)
             final_state = "STAGE4_ESCALATION"
             stage4_reason = "unconfirmed_after_reverify"
             break
 
         # 未解消 -> 次cycleのStage1 deviationsをRecheck結果から再構築
         stage1_deviations = [d for d in recheck_parsed.get("deviations", []) if d.get("severity") == "MAJOR"]
+        if RECHECK_MERGE_UNRESOLVED:
+            # 委任_06 N1′: 未解消のprior issueは必ず次cycleのStage 2を通す(純関数`normalize_recheck_outcome`)
+            _norm = normalize_recheck_outcome(recheck_parsed, confirm_parsed, blocking_claims, prior_issues)
+            cycle_record["recheck_merge"] = {
+                "decision": _norm["decision"], "source": _norm["source"], "merged_from": _norm["merged_from"],
+                "n_merged": len(_norm["deviations"]), "n_dedup_dropped": _norm["n_dedup_dropped"],
+                "reverify_deviation_without_major": _norm["reverify_deviation_without_major"],
+                "merged_claims": [{"fact_id": d_.get("related_fact_id"), "claim": d_.get("claim_in_article"),
+                                   "label": lb_} for d_, lb_ in zip(_norm["deviations"], _norm["merged_from"])]}
+            if _norm["reverify_deviation_without_major"]:
+                cycle_record["reverify_deviation_without_major"] = True
+            if _norm["decision"] == RECHECK_DECISION_NEXT_CYCLE:
+                stage1_deviations = _norm["deviations"]
         # 委任_20 W1(i)是正(Opus L2レビュー#4 §0): 旧実装はEN側
         # recheck_parsed[MAJOR deviations]のみから次cycleを再構築しており、
         # JA側ja_recheck_parsedのMAJOR deviationsが常に握り潰され(JA側
@@ -8328,7 +8447,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {}),
                          **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {}),
                          **({"CAUSAL_FLOOR": True} if CAUSAL_FLOOR else {}),
-                         **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {})},
+                         **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {}),
+                         **({"RECHECK_MERGE_UNRESOLVED": True} if RECHECK_MERGE_UNRESOLVED else {}),
+                         **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),

@@ -7744,5 +7744,301 @@ class TestL6CarryForwardPrecedence(unittest.TestCase):
         self.assertIsNone(cf)
 
 
+class TestRecheckMergeN1Prime(unittest.TestCase):
+    """委任_06(OPEN-233-KPI-RECOVERY-REDESIGN-02、Opus#12後): N1′(`normalize_recheck_outcome`)・潜在ギャップ是正・N3′。"""
+
+    def _claims(self, *fids):
+        return [{"dev": {"related_fact_id": f, "claim_in_article": f"orig sentence {i}.", "severity": "MAJOR",
+                         "issue": f"issue {i}", "explanation": f"expl {i}"}} for i, f in enumerate(fids)]
+
+    def _rc(self, status="LEDGER_COMPLIANT", all_prior=True, devs=None, resolved=None):
+        return {"overall_status": status, "all_prior_issues_resolved": all_prior, "deviations": devs or [],
+                "prior_issues_resolved": resolved}
+
+    def _maj(self, fid, claim="new claim."):
+        return {"severity": "MAJOR", "related_fact_id": fid, "claim_in_article": claim, "issue": "x"}
+
+    def test_pass_when_recheck_ok(self):
+        r = runner.normalize_recheck_outcome(self._rc(), None, self._claims("A"))
+        self.assertEqual(r["decision"], "PASS")
+
+    def test_pass_when_reverify_ok_after_ambiguous(self):
+        rc = self._rc(all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        cf = self._rc(all_prior=True)
+        r = runner.normalize_recheck_outcome(rc, cf, self._claims("A"))
+        self.assertEqual(r["decision"], "PASS")
+
+    def test_reverify_major_merged(self):
+        rc = self._rc(all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        cf = self._rc(status="LEDGER_DEVIATION", all_prior=True,
+                      devs=[self._maj("B"), {"severity": "MINOR", "related_fact_id": "C"}])
+        r = runner.normalize_recheck_outcome(rc, cf, self._claims("A"))
+        self.assertEqual(r["decision"], "NEXT_CYCLE")
+        self.assertEqual([d["related_fact_id"] for d in r["deviations"]], ["B"])
+        self.assertEqual(r["merged_from"], ["reverify_major"])
+        self.assertFalse(r["reverify_deviation_without_major"])
+
+    def test_reverify_unresolved_prior_merged_with_current_text(self):
+        rc = self._rc(all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        cf = self._rc(status="LEDGER_COMPLIANT", all_prior=False,
+                      resolved=[{"index": 0, "resolved": True}, {"index": 1, "resolved": False}])
+        pi = [{"claim_in_article": "cur 0."}, {"claim_in_article": "cur 1."}]
+        r = runner.normalize_recheck_outcome(rc, cf, self._claims("A", "B"), pi)
+        self.assertEqual(r["decision"], "NEXT_CYCLE")
+        self.assertEqual([d["related_fact_id"] for d in r["deviations"]], ["B"])
+        self.assertEqual(r["deviations"][0]["claim_in_article"], "cur 1.")   # 現行本文の文へ差し替え
+        self.assertEqual(r["merged_from"], ["unresolved_prior"])
+        self.assertEqual(self._claims("A", "B")[1]["dev"]["claim_in_article"], "orig sentence 1.")
+
+    def test_multiline_current_text_keeps_original_claim(self):
+        rc = self._rc(all_prior=False, resolved=[])
+        cf = self._rc(status="LEDGER_DEVIATION", all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        r = runner.normalize_recheck_outcome(rc, cf, self._claims("A"), [{"claim_in_article": "a.\nb."}])
+        self.assertEqual(r["deviations"][0]["claim_in_article"], "orig sentence 0.")
+
+    def test_dedup_by_fact_id(self):
+        rc = self._rc(all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        cf = self._rc(status="LEDGER_DEVIATION", all_prior=False, devs=[self._maj("A", "newer.")],
+                      resolved=[{"index": 0, "resolved": False}, {"index": 1, "resolved": False}])
+        r = runner.normalize_recheck_outcome(rc, cf, self._claims("A", "B"))
+        self.assertEqual([d["related_fact_id"] for d in r["deviations"]], ["A", "B"])
+        self.assertEqual(r["deviations"][0]["claim_in_article"], "newer.")
+        self.assertEqual(r["n_dedup_dropped"], 1)
+        self.assertEqual(r["merged_from"], ["reverify_major", "unresolved_prior"])
+
+    def test_empty_reverify_marks_audit_flag(self):
+        rc = self._rc(all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        cf = self._rc(status="LEDGER_DEVIATION", all_prior=True, devs=[{"severity": "MINOR", "related_fact_id": "Z"}])
+        r = runner.normalize_recheck_outcome(rc, cf, self._claims("A"))
+        self.assertEqual(r["decision"], "NEXT_CYCLE")
+        self.assertEqual(r["deviations"], [])
+        self.assertTrue(r["reverify_deviation_without_major"])
+
+    def test_latent_gap_normal_path_unresolved_prior_merged(self):
+        rc = self._rc(status="LEDGER_DEVIATION", all_prior=False, devs=[self._maj("B")],
+                      resolved=[{"index": 0, "resolved": False}, {"index": 1, "resolved": True}])
+        r = runner.normalize_recheck_outcome(rc, None, self._claims("A", "C"))
+        self.assertEqual(r["decision"], "NEXT_CYCLE")
+        self.assertEqual([d["related_fact_id"] for d in r["deviations"]], ["B", "A"])
+        self.assertEqual(r["merged_from"], ["recheck_major", "normal_gap"])
+        self.assertEqual(r["source"], "recheck")
+        self.assertFalse(r["reverify_deviation_without_major"])
+
+    def test_normal_deviation_all_prior_true_unchanged(self):
+        rc = self._rc(status="LEDGER_DEVIATION", all_prior=True, devs=[self._maj("B")])
+        r = runner.normalize_recheck_outcome(rc, None, self._claims("A"))
+        self.assertEqual([d["related_fact_id"] for d in r["deviations"]], ["B"])
+
+    def test_missing_resolved_list_is_all_unresolved_fail_closed(self):
+        rc = {"overall_status": "LEDGER_DEVIATION", "deviations": [], "all_prior_issues_resolved": False,
+              "_recheck_api_failure": True}
+        r = runner.normalize_recheck_outcome(rc, None, self._claims("A", "B"))
+        self.assertEqual(r["decision"], "NEXT_CYCLE")
+        self.assertEqual(len(r["deviations"]), 2)
+
+    def test_stop_only_when_flag_and_api_failure(self):
+        rc = {"overall_status": "LEDGER_DEVIATION", "deviations": [], "all_prior_issues_resolved": False,
+              "_recheck_api_failure": True}
+        self.assertEqual(runner.normalize_recheck_outcome(rc, None, self._claims("A"),
+                                                          api_failure_is_stop=True)["decision"], "STOP")
+        self.assertEqual(runner.normalize_recheck_outcome(
+            self._rc(status="LEDGER_DEVIATION", all_prior=False, devs=[self._maj("B")]), None, self._claims("A"),
+            api_failure_is_stop=True)["decision"], "NEXT_CYCLE")
+
+    def test_pure_function_does_not_mutate_inputs(self):
+        import copy
+        claims = self._claims("A", "B")
+        rc = self._rc(all_prior=False, resolved=[{"index": 0, "resolved": False}])
+        cf = self._rc(status="LEDGER_DEVIATION", all_prior=False, devs=[self._maj("A")],
+                      resolved=[{"index": 1, "resolved": False}])
+        b = copy.deepcopy((claims, rc, cf))
+        runner.normalize_recheck_outcome(rc, cf, claims, [{"claim_in_article": "x"}, {"claim_in_article": "y"}])
+        self.assertEqual((claims, rc, cf), b)
+
+    def test_kpi_switches_include_merge_but_not_n3(self):
+        self.assertTrue(runner.KPI_TRIAL_SWITCHES["RECHECK_MERGE_UNRESOLVED"])
+        self.assertNotIn("RECHECK_BEFORE_AFTER_PAIRS", runner.KPI_TRIAL_SWITCHES)
+        self.assertFalse(runner.RECHECK_BEFORE_AFTER_PAIRS)
+
+    # --- N3′ ---
+    def _capture_prompt(self, **kw):
+        captured = {}
+
+        class _Cap(BaseException):
+            pass
+
+        class _Resp:
+            def create(self_inner, **k):
+                captured["prompt"] = k["input"][1]["content"]
+                raise _Cap()
+
+        class _Client:
+            responses = _Resp()
+        fixture = {"ledger_text": "LEDGER", "article_text": "ART"}
+        try:
+            runner.run_recheck(_Client(), {"cumulative_jpy": 0.0}, [0], [], "t", fixture, "ART",
+                               [{"fact_id": "F", "claim_in_article": "c", "issue": "i", "explanation": "e"}], **kw)
+        except _Cap:
+            pass
+        return captured["prompt"]
+
+    def test_n3_prompt_diff_and_off_is_byte_identical(self):
+        pairs = [{"before": "Old sentence.", "after": "New sentence."}, {"before": "Gone.", "after": ""}]
+        base = self._capture_prompt()
+        off = self._capture_prompt(before_after_pairs=pairs)           # スイッチOFF: 渡しても変化なし
+        self.assertEqual(base, off)
+        saved = runner.RECHECK_BEFORE_AFTER_PAIRS
+        try:
+            runner.RECHECK_BEFORE_AFTER_PAIRS = True
+            on = self._capture_prompt(before_after_pairs=pairs)
+            on_empty = self._capture_prompt(before_after_pairs=[])
+        finally:
+            runner.RECHECK_BEFORE_AFTER_PAIRS = saved
+        block = runner.build_before_after_instruction(pairs)
+        self.assertTrue(block)
+        self.assertEqual(on, base + block)                              # 差分は前後の対ブロックのみ
+        self.assertIn("before: Old sentence.\n  after: New sentence.", on)
+        self.assertIn("(削除されました)", on)
+        self.assertNotIn("remaining_sentence", on)                     # cite-or-release指示は含めない
+        self.assertEqual(on_empty, base)                                # 対が無ければ変化なし
+
+    def test_checker_template_and_prior_issues_builder_byte_stable(self):
+        import hashlib
+        import inspect
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        self.assertEqual(hashlib.sha256(inspect.getsource(vfl01.build_prior_issues_instruction).encode()).hexdigest(),
+                         "893e145229678ebe3946911a4773591c45dedc6d5485de2b3843e0764d7f1901")
+        self.assertEqual(hashlib.sha256(runner.trial.build_trial_prompt_template("V4A").encode()).hexdigest(),
+                         "e9c939930496ebed00a198455279bac1d61e6f5a162063f41ef5fde52cf81c97")
+        self.assertEqual(hashlib.sha256(vfl01.build_prior_issues_instruction(
+            [{"fact_id": "F", "claim_in_article": "c", "issue": "i", "explanation": "e"}]).encode()).hexdigest(),
+            "f5b661068e0fb968be2b8acb9150adacc91b7753e6a0f70560df6cf406d9a241")
+
+
+def _run_instance_merge06(recheck_seq, confirm_seq, merge_on, before_after_on=False):
+    """委任_06: run_instanceを偽のChecker/Stage 2/Rewrite/Recheck/再確認で通す(ネットワークなし)。
+    recheck_seq・confirm_seq: 各呼び出しで返すdictのリスト(cycle順)。"""
+    seen = {"stage2_claims": [], "recheck_labels": [], "confirm_labels": [], "recheck_kwargs": []}
+    rs, cs = list(recheck_seq), list(confirm_seq)
+
+    def fake_stage1(client, state, ce, call_log, label, fixture, developer_message=None):
+        return {"overall_status": "LEDGER_DEVIATION", "deviations": [_dev49(META_TARGET, fid="FA")]}
+
+    def fake_stage2(client, state, ce, call_log, label, fixture, claims):
+        seen["stage2_claims"].append([(c["related_fact_id"], c["claim_text"]) for c in claims])
+        return [{**c, "materiality": "BLOCKING", "llm_materiality": "BLOCKING", "basis": "ledger_fact",
+                 "rewrite_kind": "narrow_scope", "rewrite_hint": "h", "floor_reason": None, "section_type": "body",
+                 "stage2_route": "body", "floor_cited_materiality": "BLOCKING", "floor_cited_reason": None}
+                for c in claims]
+
+    def fake_stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
+        new_en = en.replace(META_TARGET, "Some calls may have needed user information.")
+        return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": new_en, "ja_text": ja,
+                "method": "fake", "guard_ok": True, "before_fragment": META_TARGET,
+                "after_fragment": "Some calls may have needed user information.",
+                "ladder_level_used": "1_word_connective", "target_not_locatable": False, "span_unverified": False,
+                "ladder_exhausted_without_full_rewrite": False, "handoff": {"level_attempts": [], "text_lang": "EN"}}
+
+    def fake_recheck(client, state, ce, call_log, label, fixture, article_text, prior_issues, **k):
+        seen["recheck_labels"].append(label)
+        seen["recheck_kwargs"].append(k)
+        return dict(rs.pop(0))
+
+    def fake_confirm(client, state, ce, call_log, label, fixture, article_text, prior_issues, before_after_pairs):
+        seen["confirm_labels"].append(label)
+        return dict(cs.pop(0))
+
+    inst = {"instance_id": "unit06", "group": "unit", "expected_group_label": "unit", "stage1_mode": "fresh",
+            "fixture": {"ledger_text": "(ledger)", "article_text": EN49, "source_article_text": JA49}}
+    patches = [mock.patch.object(runner, "stage1_fresh_with_enumeration", fake_stage1),
+               mock.patch.object(runner, "run_stage2", fake_stage2),
+               mock.patch.object(runner, "apply_stage2_two_of_two", lambda *a, **k: (a[6], [])),
+               mock.patch.object(runner, "run_stage3_for_claim", fake_stage3),
+               mock.patch.object(runner, "run_local_qa_fastpath", lambda *a, **k: {"success": False, "results": []}),
+               mock.patch.object(runner, "run_recheck", fake_recheck),
+               mock.patch.object(runner, "run_recheck_confirm", fake_confirm),
+               mock.patch.object(runner, "save_json", lambda *a, **k: None),
+               mock.patch.object(runner, "JA_MODE", runner.JA_MODE_ENGLISH_ONLY),
+               mock.patch.object(runner, "RECHECK_MERGE_UNRESOLVED", merge_on),
+               mock.patch.object(runner, "RECHECK_BEFORE_AFTER_PAIRS", before_after_on)]
+    for p in patches:
+        p.start()
+    try:
+        res = runner.run_instance(object(), _state0(), [0], inst, stage1_cache={})
+    finally:
+        for p in reversed(patches):
+            p.stop()
+    return res, seen
+
+
+def _rr06(status="LEDGER_COMPLIANT", all_prior=True, devs=None, resolved=None):
+    return {"overall_status": status, "all_prior_issues_resolved": all_prior, "deviations": devs or [],
+            "prior_issues_resolved": resolved if resolved is not None else [
+                {"index": 0, "resolved": all_prior, "explanation": ""}]}
+
+
+class TestRecheckMergeIntegration06(unittest.TestCase):
+    """委任_06 N1′: run_instance統合(偽の応答)。再確認の結果が必ず次cycleのStage 2へ合流する。"""
+
+    AMBIG = _rr06(all_prior=False)
+
+    def test_off_keeps_stage4_unconfirmed_after_reverify(self):
+        res, seen = _run_instance_merge06([self.AMBIG], [_rr06("LEDGER_DEVIATION", True)], merge_on=False)
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "unconfirmed_after_reverify")
+
+    def test_on_empty_reverify_deviation_downgrades_with_audit_flag(self):
+        res, seen = _run_instance_merge06([self.AMBIG], [_rr06("LEDGER_DEVIATION", True)], merge_on=True)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE_THEN_DOWNGRADE")
+        self.assertIsNone(res["stage4_reason"])
+        c1 = res["cycles"][0]
+        self.assertTrue(c1["reverify_deviation_without_major"])
+        self.assertEqual(c1["recheck_merge"]["decision"], "NEXT_CYCLE")
+        self.assertEqual(c1["recheck_merge"]["n_merged"], 0)
+        self.assertEqual(len(seen["confirm_labels"]), 1)   # 追加callなし(再確認は従来どおり1回)
+
+    def test_on_reverify_major_flows_to_stage2_of_next_cycle(self):
+        major = {"severity": "MAJOR", "related_fact_id": "FB", "claim_in_article": "Calls happened.",
+                 "issue": "new", "origin": "translation"}
+        res, seen = _run_instance_merge06([self.AMBIG, _rr06()], [_rr06("LEDGER_DEVIATION", True, devs=[major])],
+                                          merge_on=True)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        self.assertEqual(seen["stage2_claims"][1], [("FB", "Calls happened.")])
+        self.assertEqual(res["cycles"][0]["recheck_merge"]["merged_from"], ["reverify_major"])
+
+    def test_on_unresolved_prior_flows_to_stage2(self):
+        cf = _rr06("LEDGER_COMPLIANT", False)    # 再確認でも解消未確認
+        res, seen = _run_instance_merge06([self.AMBIG, _rr06()], [cf], merge_on=True)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        fid, claim = seen["stage2_claims"][1][0]
+        self.assertEqual(fid, "FA")
+        self.assertEqual(claim, META_TARGET)  # 偽Rewriteは置換単位を持たず現行文を特定できない -> 元の文へfallback(現行文への差し替えは純関数テストで確認)
+        self.assertEqual(res["cycles"][0]["recheck_merge"]["merged_from"], ["unresolved_prior"])
+
+    def test_on_normal_path_latent_gap_closed(self):
+        rc = _rr06("LEDGER_DEVIATION", False)    # 通常Recheck: DEVIATION∧all_prior=False、deviationsなし
+        res_on, seen_on = _run_instance_merge06([rc, _rr06()], [], merge_on=True)
+        self.assertEqual(len(seen_on["stage2_claims"]), 2)          # 次cycleのStage 2を通る
+        self.assertEqual(res_on["cycles"][0]["recheck_merge"]["merged_from"], ["normal_gap"])
+        self.assertEqual(res_on["final_state"], "RESOLVED_REWRITE")
+        res_off, seen_off = _run_instance_merge06([rc], [], merge_on=False)
+        self.assertEqual(len(seen_off["stage2_claims"]), 1)         # 旧挙動: 未解消priorが脱落
+        self.assertEqual(res_off["final_state"], "RESOLVED_REWRITE_THEN_DOWNGRADE")
+
+    def test_on_does_not_add_new_loop_cycle_limit_unchanged(self):
+        rc = _rr06("LEDGER_COMPLIANT", False)
+        res, seen = _run_instance_merge06([rc, rc, rc], [rc, rc, rc], merge_on=True)
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertIn(res["stage4_reason"], ("same_claim_fact_id_reblocked", "cycle_limit_exhausted",
+                                              "cycle_limit_exhausted_after_recheck"))
+        self.assertLessEqual(len(res["cycles"]), runner.HARD_MAX_CYCLES)
+
+    def test_n3_pairs_passed_to_recheck_only_as_kwarg(self):
+        res, seen = _run_instance_merge06([_rr06()], [], merge_on=True, before_after_on=True)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        self.assertEqual(len(seen["recheck_kwargs"][0]["before_after_pairs"]), 1)
+        self.assertEqual(res["cycles"][0]["recheck_before_after_pairs_n"], 1)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -404,3 +404,50 @@ DEVIATIONになった2件はどちらも「継続していた出来事」の言�
 | `degenerate_rewrite_output` | 8055 | 2 | 0 | title/hook/In one lineの消失・極端短縮 | rep9の2件のみ。KPI構成で0件 |
 
 **棚卸しの限界**: 件数はinstance JSONが残る範囲(521件、旧構成を含む)。KPI構成(rep24・26・27、計84 instance-run)のSTAGE4は、`violation_span_unverified` 2・`unconfirmed_after_reverify` 1・`ladder_exhausted_without_full_rewrite` 2の計5件。是正後に残る経路は`unconfirmed_after_reverify`(設計N1)と、未観測の`ladder_exhausted`(L6以外の原因)・`violation_span_unverified`(L6が働かないcase)。Stage 1/API失敗等の例外終了は`run_log`の`exceptions`で別集計(rep27は例外0)。
+
+
+## 13. Opus#12後の採否と実装仕様(委任_06、2026-10-04): N1′/潜在ギャップ是正/N3′/停止経路定義
+
+Opus#12(`docs/pm/opus_l2_review_open233_kpi_recovery_02_12.md`、全文・Fable評価1〜8逐語)の採否: 是正(a)維持・規則(2)維持、N1-a不採用/N1′採用、通常経路の潜在ギャップを同時是正、N3′を技術是正(スイッチ付き・A/B測定)として採用、L6はON維持、停止経路の統一定義、旧`ladder_exhausted` 10件の¥0分類、N2・再確認call廃止は不採用。KPI(Human Review 0/重大見逃し0/+¥2/Cap+¥3)は不変。Production未変更(`er052_open233_*`のみ)、Checker本体Prompt文・Schema・判定規則・V7b不変、`MAX_CYCLES=2`/`HARD_MAX_CYCLES=3`不変、新しいretry loopなし。
+
+### 13-1 N1′: 再検査結果の合流(実装済み、スイッチ`RECHECK_MERGE_UNRESOLVED`、既定OFF、`KPI_TRIAL_SWITCHES`でON)
+
+純関数`normalize_recheck_outcome(recheck, confirm, prior_blocking_claims, prior_issues=None, api_failure_is_stop=False)`(`er052_open233_self_recovery_flow_runner_01.py`、`run_recheck_confirm`の直後)。API呼び出しなし・入力を破壊しない。出力`decision`は`PASS`/`NEXT_CYCLE`/`STOP`。
+
+- `PASS`: Recheckが`LEDGER_COMPLIANT∧all_prior=True`、またはRecheckが自己矛盾(`COMPLIANT∧all_prior=False`)で再確認を呼び、再確認が`COMPLIANT∧all_prior=True`。
+- `NEXT_CYCLE`: 上記以外。判定元(自己矛盾で再確認を呼んだ場合は再確認、そうでなければRecheck)について、次cycleの`stage1_deviations`=(i)判定元deviationsのMAJOR ∪ (ii)判定元`prior_issues_resolved`でresolved=falseの元blocking claimのdev。(i)とfact_idが重複する(ii)は除く(`n_dedup_dropped`に計上)。`prior_issues_resolved`に返ってこなかったindexは未解消扱い(fail-closed。API失敗応答=resolved無しなら全priorを合流)。(ii)のdevは、現行本文の置換後の文(`resolve_prior_issue_text`の`current_text`)が単一の文で特定できるときだけ`claim_in_article`をその文へ差し替える(Stage 2/Rewriteが現行本文で位置を引けるように。複数行・特定不能は元の文のまま)。(i)(ii)とも空なら`deviations=[]`で、呼び出し側の既存`not blocking_claims`経路(`RESOLVED_REWRITE_THEN_DOWNGRADE`)へ。再確認経由で空なら監査用`reverify_deviation_without_major=True`(`cycle_record`と`recheck_merge`)。
+- `STOP`: `api_failure_is_stop=True`かつ判定元がAPI失敗のときのみ(Production写像用)。Trialは既定False(API失敗は未解消としてNEXT_CYCLEへ合流=従来の「空deviationsで静かに降格」より安全側)。
+- runner側: `RECHECK_MERGE_UNRESOLVED`ON時は`unconfirmed_after_reverify`のSTAGE4を行わず、`PASS`以外を`normalize_recheck_outcome`の`deviations`で次cycleへ。JA側MAJORの合流(既存)・`ja_pending_deviation`・cycle上限(`cycle > HARD_MAX_CYCLES`→`cycle_limit_exhausted_after_recheck`)は不変。OFF時は旧挙動(STAGE4`unconfirmed_after_reverify`)。
+- 記録: `cycle_record["recheck_merge"]`(`decision`/`source`[recheck|reverify]/`merged_from`[`reverify_major`/`unresolved_prior`/`recheck_major`/`normal_gap`]/`n_merged`/`n_dedup_dropped`/`reverify_deviation_without_major`/`merged_claims`[fact_id・claim・label])。`switches`へ`RECHECK_MERGE_UNRESOLVED`・`RECHECK_BEFORE_AFTER_PAIRS`(ON時のみ)を記録。
+
+### 13-2 通常経路の潜在ギャップ是正(同スイッチ)
+
+通常のRecheckが`LEDGER_DEVIATION∧all_prior=False`で、未解消のprior issueがdeviationsに無い場合も、上記(ii)と同じく元claimを次cycleへ合流する(`merged_from=normal_gap`)。従来(OFF)は、そのprior issueが静かに消え、deviationsが空/無関係なら次cycleで`RESOLVED_REWRITE_THEN_DOWNGRADE`になり得た(Opus論点1・2)。規則は「未解消のprior issueは必ず次cycleのStage 2を通る」の1つに統一。
+
+### 13-3 N3′: 通常Recheckへの書き換え前後の対(実装済み、スイッチ`RECHECK_BEFORE_AFTER_PAIRS`、既定OFF)
+
+`run_recheck(..., before_after_pairs=None)`。スイッチONかつ対が非空のときだけ、prompt末尾の`build_prior_issues_instruction`の直後へ`build_before_after_instruction(pairs)`(再確認が使っているブロックと同一関数・同形式。cite-or-release指示`CITE_OR_RELEASE_INSTRUCTION`は含めない)を追加。Checker本体template(`er051`の`build_trial_prompt_template("V4A")`)・`er003`の`build_prior_issues_instruction`・Schema・判定規則はバイト不変(sha256固定テスト)。`call_log`へ`before_after_block_len`、`cycle_record`へ`recheck_before_after_pairs_n`を記録(prompt sha256は既存)。**境界事例**: 「Checker Prompt不変」の解釈次第の入力情報ブロックの追加。ユーザー指示が「Promptや入力設計の改善余地がある」「Rewrite前の古い文章をCheckerへ渡していた問題」を技術是正としているため、`issue`が指す元の文を入力に揃える完結として採用。判定基準・`issue`文言の書き換えはしない。KPI構成へ含めるかはA/B(§13-6)で決める(事前基準)。
+
+### 13-4 旧構成`ladder_exhausted_without_full_rewrite` 10件の¥0分類(確認、`er052_output/open233_kpi_recovery_02_offline_01/classify_ladder_exhausted_01.py`・`classify_ladder_exhausted_01_stdout.txt`)
+
+instance JSON全走査で`stage4_reason=ladder_exhausted_without_full_rewrite`は10件(rep14 A4、iter8 A4/A5/unsupported_new_claim、rep16 neg3、rep18 A2A3 s1・s2、rep20 meta s2、rep27 A4・A5)。旧ログは`handoff`・cycle開始本文を持たないため、分類は「枯渇したclaimと同cycleの他BLOCKING claimの`claim_text`(引用符除去・正規化)の包含/類似度0.8以上、およびRewrite成否・mechanism・method」による構造的分類(確認できるのは記録された範囲のみ)。
+
+| 型 | 件数 | 該当 | 原因(1行) | KPI構成での扱い |
+|---|---|---|---|---|
+| (A)同cycleで先行Rewrite済みの文を後続claimが再Rewrite(carry-forward/L6の順序) | 3 | iter8 A5、rep27 A4、rep27 A5 | 先行claimがRewrite成功した文を、後続の重複claimが再度対象にして`e2_paragraph_rewrite_guard_failed` | §12-1の是正(a)で解消済み(rep27の2件は¥0 replayで確認、iter8 A5は同型の推定) |
+| (B)旧`paired_ja_en(J-1)`機構のguard失敗(`JA_MODE=paired`時のみ) | 6 | iter8 A4、rep14 A4、rep16 neg3(c2)、rep18 A2A3 s1・s2、rep20 meta s2(c2) | paired(JA+EN同時)のRewriteがguardを通らず全水準枯渇。うち4件(iter8 A4・rep14 A4・rep18 s1・s2)は同cycleに同一文の重複claimを含み両方が枯渇(重複型だがL6/carry-forward順序ではなく、pairedのguard失敗そのもの) | `JA_MODE=english_only`(KPI構成)ではpaired機構を使わないため発生しない(rep24〜27で`paired`の枯渇は0件) |
+| (C)その他 | 1 | iter8 `safety_er009_unsupported_new_claim` | title節の`deterministic_delete(rewrite_hint_quote)`がguardを通らない(単一claim・fact_idなし・`JA_MODE=paired`時) | KPI構成のrep24・rep27では同instanceは`RESOLVED_REWRITE`(STAGE4なし、確認)。**L6以外の原因が残る可能性**は1件(旧構成のtitle削除guard)。KPI構成での再発は未観測 |
+
+結論(確認): 10件中、KPI構成(`english_only`)で再発し得るのは(A)の同cycle重複型3件のみで、(a)で是正済み。(B)の6件は機構が無効。(C)の1件はKPI構成で未再現。**L6以外の原因として残るのは(C)のtitle削除guard失敗1件(旧構成)**で、rep28で`ladder_exhausted`が出た場合は(C)型を疑う。
+
+### 13-5 停止経路の統一定義(Fable評価6)
+
+「Human Review相当」=最終`STAGE4_ESCALATION`(`stage4_reason`全種)+例外終了(API失敗・連続エラー・予算上限・`TrialAbort`でinstance JSONが残らないrun)。rep28集計で`stage4_reason`別件数+例外件数を併記する。N1′導入後の移動先(`same_claim_fact_id_reblocked`/`cycle_limit_exhausted`/`cycle_limit_exhausted_after_recheck`)を監視対象に加える(旧`unconfirmed_after_reverify`はON構成では発生しない)。
+
+### 13-6 A/Bの事前基準(委任_06 作業4。事後に変更しない)
+
+neg3・neg2×n=2×{A=KPI構成+N1′、B=A+N3′}=8 run。N3′採用の条件: Bの自己矛盾率(Recheckが`COMPLIANT∧all_prior=False`となる割合)がAより低い、かつ(ア)resolved=trueと判定されたprior issueのうち本文が実際に書き換わっていないもの(形だけの解消)が0件、(イ)STAGE4・重大見逃しが増えない。満たさなければN3′ OFF(N1′のみ)で29件。
+
+### 13-7 Production配線時の方針(記録のみ、実装は配線時)
+
+再検査結果を正規化する純関数(`normalize_recheck_outcome`、PASS/NEXT_CYCLE/STOP)をTrial/Productionで共有する。Production(`er012`再検査、410〜430行)は現在Stage 2・cycle・ladderを持たない(再生成→再検査→不成立ならSTOP)ため、自己回復flowを持たない間は`NEXT_CYCLE`を`STOP`へ写像(現行STOP相当、安全側)。N3′を入れる場合、Production共通の`build_prior_issues_instruction`(`er003` 678行)の扱いを同時に決める。Production採用可否は人間ユーザーのみが決める(本節は`APPROVED_FOR_PRODUCTION`ではない)。

@@ -1,0 +1,55 @@
+iter8 safety_A4.json cycle 1 blocking 7
+    (1, 'MUSE-HC-012', 'people who thought they were speaking with ai were actually speaking w', [])
+    (2, 'MUSE-HC-010', 'one helper meant one more person handling private data.', [(6, 1.0, 'not_ok', 'later')])
+    (5, 'MUSE-HC-012', 'so people who thought they were speaking with ai were actually speakin', [])
+    (6, 'MUSE-HC-010', 'one helper meant one more person handling private data.', [(2, 1.0, 'not_ok', 'earlier')])
+iter8 safety_A5.json cycle 1 blocking 2
+    (1, 'MUSE-HC-012', 'they also temporarily put back the feature in which humans handled the', [(0, 0.83, 'rewritten_ok', 'earlier')])
+iter8 safety_er009_unsupported_new_claim.json cycle 1 blocking 1
+    (0, None, 'the same new york city taxi researchers also found that male passenger', [])
+rep14 safety_A4.json cycle 1 blocking 5
+    (1, 'MUSE-HC-012', 'people who thought they were speaking with ai were actually speaking w', [])
+    (4, 'MUSE-HC-012', 'so people who thought they were speaking with ai were actually speakin', [])
+rep16 neg3_hormuz_prodrunner_b1b.json cycle 2 blocking 4
+    (3, 'HF-003', 'トランプ氏は、アメリカがホルムズ海峡の安全確保に使う費用について、海峡を通るすべての貨物に二割の償還を求めると投稿した。', [])
+rep18 safety_A2A3.json cycle 1 blocking 4
+    (0, 'HF-003', 'the idea was that those carrying the cargo would repay the money the u', [(2, 1.0, 'not_ok', 'later')])
+    (2, 'HF-003', 'the idea was that those carrying the cargo would repay the money the u', [(0, 1.0, 'not_ok', 'earlier')])
+    (3, 'HF-006', '6 percent, because attacks between the united states and iran continue', [(1, 0.41, 'rewritten_ok', 'earlier')])
+rep18 safety_A2A3.json cycle 1 blocking 4
+    (0, 'HF-003', 'the idea was that those carrying the cargo would repay the money the u', [(2, 1.0, 'not_ok', 'later')])
+    (2, 'HF-003', 'the idea was that those carrying the cargo would repay the money the u', [(0, 1.0, 'not_ok', 'earlier')])
+rep20 meta_run03_standard.json cycle 2 blocking 1
+    (0, 'MUSE-HC-012', 'they could not tell if it was ai or a person and they did not realize ', [])
+rep27 safety_A4.json cycle 1 blocking 4
+    (2, 'MUSE-HC-006', 'through muse, trained human contract workers made some calls and compl', [(0, 1.0, 'rewritten_ok', 'earlier')])
+rep27 safety_A5.json cycle 1 blocking 2
+    (1, 'MUSE-HC-012', 'they also temporarily put back the feature in which humans handled the', [(0, 0.83, 'rewritten_ok', 'earlier')])
+------ methods
+iter8 safety_A4.json switches None
+    1 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    2 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    5 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    6 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+iter8 safety_A5.json switches None
+    1 single_text_local(E-2/delete-generic) e2_paragraph_rewrite_guard_failed(sequence_matcher(ratio=0.94))+ladder6_disabled body handoff: null
+iter8 safety_er009_unsupported_new_claim.json switches None
+    0 single_text_local(E-2/delete-generic) deterministic_delete(rewrite_hint_quote)+ladder6_disabled title handoff: null
+rep14 safety_A4.json switches None
+    1 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    4 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+rep16 neg3_hormuz_prodrunner_b1b.json switches None
+    3 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+rep18 safety_A2A3.json switches None
+    0 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    2 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    3 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+rep18 safety_A2A3.json switches None
+    0 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+    2 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+rep20 meta_run03_standard.json switches None
+    0 paired_ja_en(J-1) +ladder6_disabled body handoff: null
+rep27 safety_A4.json switches {'JA_MODE': 'english_only', 'VS_MATCH_EXT': True, 'HANDOFF_MODE': 'violation_span', 'VS_EXPLAIN_SPLIT': True, 'VS_SENTENCE_RESTORE': True, 'FLOOR_VERIFY_MODE': 'time_only', 'CAUSAL_FLOOR': True, 'STAGE2_SECOND_OPINION': True}
+    2 single_text_local(E-2/delete-generic) e2_paragraph_rewrite_guard_failed(violation_span(EN,L6:sentence_restore))+ladder6_disabled body handoff: {"status": "resolved", "lang": "EN", "level": "L6:sentence_restore", "reason": null, "detail": null, "ranges": ["Through Muse, trained human contract workers made some calls and completed the exchange
+rep27 safety_A5.json switches {'JA_MODE': 'english_only', 'VS_MATCH_EXT': True, 'HANDOFF_MODE': 'violation_span', 'VS_EXPLAIN_SPLIT': True, 'VS_SENTENCE_RESTORE': True, 'FLOOR_VERIFY_MODE': 'time_only', 'CAUSAL_FLOOR': True, 'STAGE2_SECOND_OPINION': True}
+    1 single_text_local(E-2/delete-generic) e2_paragraph_rewrite_guard_failed(violation_span(EN,L6:sentence_restore))+ladder6_disabled body handoff: {"status": "resolved", "lang": "EN", "level": "L6:sentence_restore", "reason": null, "detail": null, "ranges": ["They also temporarily rolled back the feature in which humans handled the calls."], "ra
