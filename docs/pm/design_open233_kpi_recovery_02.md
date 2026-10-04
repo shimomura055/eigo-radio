@@ -589,3 +589,72 @@ Fable判断(逐語、委任_09委任文より):
 5. 委任_08の委任ログがOpus#13全文を要旨化していた点、T-0 FAIL(見出し語不足)は運用メモに記録(本委任では全文保存)。
 
 実装メモ(worker): `related_fact_id`の「空」= None/空文字/空白のみ/空list。idが指定されているがLedgerに無い(誤id)場合は従来どおりfail-closedでfallbackしない(Fable判断の「空のとき」の文言どおり)。判定記録に`related_fact_empty`を追加。`legacy`モード不変。同義語表は不変。
+
+## 17. 再設計ループ4(委任_10、2026-10-04): rep29 Human Review 3件の構造的RCAと後段設計の改善案A〜F比較(¥0。**実装しない**、Opus#14=条件B必須の前提)
+
+一次RCA: `docs/pm/rca_open233_rep29_stage4_01.md`(逐語の時系列・行番号)。証跡: `er052_output/open233_kpi_recovery_02_offline_01/agg_rep29_stage4_rca_01.py`・`.json`・`_stdout.txt`。KPI・Production・Checker・同義語表(`ACTOR_SYNONYM_CLASSES`)は不変。Trialのみ。Statusは`IN_PROGRESS`のまま。
+
+### 17-1. RCAの要約(確認)
+
+| # | instance | STAGE4理由 | 直接原因 | 構造原因 |
+|---|---|---|---|---|
+| (1) | s1 meta_run03_advanced | `same_claim_fact_id_reblocked` | `escalated_to_paragraph`を「flagが付いた」で記録(L8264)するがladderはflagを無視(L311/5952)。level 1のみ試行なのに「④まで昇段済みの再発」と判定(L8178〜8184)。cycle 2のRewriteが2範囲のため、Recheck merge(L2221)が古いclaimを現行文へ差し替えず、cycle 3のclaimは本文に無い文言 | S-1,S-2 |
+| (2) | s2 meta_run03_advanced | `violation_span_unverified` | Recheckの`claim_in_article`が「“A” and, in the one-line summary, … “B”」(地の文混じり)→`explanatory_mixed`(L4804)。引用ごとの分割replayで2片とも一意に解決(L3・L0)。cycle 1 level 1 `users→businesses`、cycle 2 level 1 `businesses→users`で**本文が原文に戻る振動** | S-1,S-2,S-3 |
+| (3) | s1 safety_A4 | `cycle_limit_exhausted_after_recheck` | Recheck新規MAJOR5件は全て原文既存の文(Rewrite起因0)。HC-012の認識主張が3箇所に分散し1cycle1箇所ずつ検出。上限到達後の残1件は同じ文がStage 2+S1で2回非BLOCKINGと確認済みだがStage 2を通らずSTAGE4。費用¥4.34(Recheck44%、Stage 2+S1 37%、Rewrite+regen 19%) | S-1,S-2,S-3 |
+
+共通の構造(確認+解釈): **S-1** Rewrite成功(文字列が変わった∧書き戻せた∧新主体語がLedger内、L6011〜6031)とissue解消が別物で、解消判定は1cycle後のRecheck(¥0.4〜0.8)のみ。**S-2** 履歴・再発判定のキーがclaim(fact_id+claim本文)で、記事内の「箇所」ではない(兄弟fact_idが同じ文を行き来する・合成claim・古いclaim)。**S-3** Human Reviewへ倒す出口が計数・形式条件(`same_claim`/`span未特定`/`cycle上限`)で、現行本文に対するmateriality判定(Stage 2+S1)を呼ぶ前に発火する。rep27〜29の9件は全て別の実装不整合で、「Rewriteが本当に直せない重大」は0件(確認)。
+
+### 17-2. 改善案A〜Fの比較
+
+凡例: ○=閉じる、×=閉じない、△=一部。「rep29の3件」は**判定フローのオフライン追跡**(LLMの新しい出力は未生成なので結果の保証ではない=推測を含む)。追加call/非決定性はLLM由来の増減。
+
+| 案 | 内容 | 閉じる穴 | 閉じない穴 | 不要Rewrite/非決定性/追加call/Production複雑度 | 既存Evidenceでの裏取り | rep29の3件(オフライン追跡) |
+|---|---|---|---|---|---|---|
+| **A1** ladder成功判定: 焦点主体語の残存 | level 1の「成功」に「issue対象の主体語(`_ACTOR_NOUN_PATTERN`)が元文にあり新文にも残る」を不成功扱い→同cycle内で③へ昇段(新loopなし) | (1)cycle 1 | 主体語表に無い語(`businesses`)、語の入替の正誤、`no`→`little`のような主張の表層変更(cycle 2) | 追加call: 不成功時のみ+1(③1文≈¥0.1〜0.2)で、その分の次cycle(≈¥1.1)を節約。決定論。不要Rewriteは増えない(昇段は元から必要だったもの)。コード≈20行 | 確認: rep29の level 1成功7試行のうち主体語残存3件(`actor_focus_check_rep29`: s1 cycle 1の`users`=真の未解消、A4 cycle 1の`workers`・A4 cycle 3の`staff`=元から正当な主語で残存して問題なし)=**3件中2件は誤検出**。A1は不要な昇段(不要Rewrite・費用)を生む恐れ | (1)cycle 1で昇段(○)、cycle 2は主体語なしで通過(×)。(2)cycle 1は`businesses`(表外)で通過(×)、cycle 2は`users`再導入でA2が必要。(3)関与小 |
+| **A2** ladder成功判定: 振動(revert)検出 | 同一箇所の過去の状態(Rewrite前の文)と一致する候補は`guard_failed`扱い→上位level。location単位(文)の状態列を保持(¥0、決定論) | (2)cycle 2(本文が原文に戻る) | 新しい別の誤りを生む編集(`businesses`)、初回の誤編集 | 不要Rewrite増なし。非決定性なし。追加call: 却下時+1。コード≈25行 | 確認: s2のcycle 2で`businesses`→`users`が原文(cycle 1 before)と逐語一致 | (2)cycle 2を却下→③へ(○)。(1)(3)は無関係 |
+| **A3** 焦点要素(数値・否定・時期)の残存/入替 | A1を主体以外へ拡張 | (rep29の3件は主体・因果が主で寄与なし) | 決定論でできる語に限られ、一般化は誤検出が増える(推測) | 3件には効果なし | 3件で未検証。他instanceは要追加¥0集計 | 寄与0(スコープ外にするのが妥当と推測) |
+| **B′** locationごとのlevel引継ぎ+記録バグ是正 | (i)`escalated_to_paragraph`を**実際にladderが④を試したか**で記録。(ii)**同じ箇所**(前Rewriteの置換後文と一致する文)が再BLOCKINGされたとき、前levelの上位から開始。`same_claim_fact_id_reblocked`は「④試行済み」のときだけ有効 | (1)(2)(3)の無駄な再試行、(1)の誤判定 | 別箇所への分散(3)、古いclaim・合成claim(→D)、④でも直らない場合(→T) | 追加call: 昇段分は元々必要だった試行。level 1の再試行を省く(−¥0.07〜0.2/回)。非決定性増なし。location状態(dict)≈30行 | 確認: level別解消率(rep27〜29の単独Rewrite 29 cycle): level 1=18/22、③=2/2、④=4/5(小標本)。旧`escalate_to_paragraph`はfact_id再出現ベースで§0-4により廃止済み | (1)cycle 2を③開始(○、cycle 3のSTAGE4は発生しない)。(2)cycle 2(`businesses`の文)を③開始(○。fact_id違いでもlocationで一致)。(3)cycle 2のHC-006は別文のためlevel 1(影響小) |
+| **C** `changed_actor`時の最小levelを③から | `PROBLEM_KIND_INITIAL_RANK["actor"]`を1→2 | (1)(2)cycle 1 | §0-4「主体違い→主体だけ」(ユーザー上位原則の明文化)と衝突。小さく直せる主体入替まで1文書換えにする不要Rewriteの増加 | 不要Rewriteが増える側(NORMAL群への影響は未集計)。追加call: なし | 確認: actorのlevel 1解消=2/5(失敗3件は同一instanceの別cycle=小標本・非独立) | (1)(2)cycle 1から③(○だがLLM案は未生成)。**ユーザー原則の変更を伴うため、B′+A2で足りるなら採用しない**(推奨) |
+| **D** span未特定の決定論fallback連鎖 | (i)claimの引用(`“…”`)ごとに分割して解決(replay: s2は2片とも解決)(ii)claimが現行本文に無い→前Rewriteの置換後文へ写像(`resolve_prior_issue_text`と同じ¥0情報。複数範囲は引用形式の合成に)(iii)それでも不能→**Rewriteせず**、そのcycleのRecheck(全文)に現行本文を再検証させる(cycle内の既存処理)。`related_fact_id`→fact→キーワード照合は(ii)(iii)の後ろ | (1)の古いclaim(L2221)、(2)の合成claim | Recheckが同じ指摘を返し続ける場合(→cycle上限、G) | ¥0。追加callは(iii)のRecheck 1回(≈¥0.5、cycleに元から含まれる)。非決定性なし。コード≈60行 | 確認: (i)replay成功(s2)、(ii)s1 cycle 2の`resolve_prior_issue_text`が`users had little way…\na human on the call`を返しL2221でskipされること(`s1_c2_prior_issue_text`) | (1)古いclaimを現行2文へ置換(○)、(2)引用分割(○)。(3)関与小 |
+| **E1** 複数claimを1 Rewriteへ | cycle内の全claimを1回で | (3)cycle 1の2 Rewrite→1(−¥0.07) | 箇所分散(3)、claim間の整合 | 非決定性増(1回で複数箇所)・品質劣化リスク。節約僅少 | 確認: 現行はclaimごと+`covered_by_earlier_rewrite_in_cycle`でskip済み | (3)の費用への寄与小。**不採用**(推奨) |
+| **E2** 同factの全箇所一括 | `expand_same_fact_id_locations`をRecheck結果にも適用(現行は既定OFF、L1975) | (3)の箇所分散(HC-012の3箇所を1cycleで) | S1降格確定済みの文を再びStage 2に通す=費用増、不要Rewriteの危険 | 追加call: Stage 2(+S1)が箇所数分。**NORMAL群への影響が未集計**=リスク | 不足: 有効性は(3)の再現が必要 | (3)でHC-012の全箇所を1cycleでStage 2へ(△)。**今回は採用せず、Opus#14の論点に** |
+| **G** 上限到達後の残Recheck MAJORをfunnelへ | `cycle>HARD_MAX_CYCLES`の直前に、cycle 3 Recheckで残った`recheck_major`/未解消priorを**既存のStage 2(+S1)に1回通す**(Rewriteなし)。非BLOCKING確定→`RESOLVED_REWRITE_THEN_DOWNGRADE`、BLOCKING→最終手段T | (3)(`cycle_limit_exhausted_after_recheck`の「materialityを見ずに倒す」部分) | 本当にBLOCKINGが残る場合(→T) | 追加call: 上限到達時のみStage 2(≈¥0.2〜0.3)+S1(≈¥0.2)。上限到達は38 runs中1(rep29)。新ゲートではなく既存funnelの再利用 | 確認: 残claimは同じ文でcycle 1・2のS1が降格確定済み。cycle 3のStage 2は隣接文でBLOCKINGを出しており、結果は確定不能(推測) | (3)(○か、BLOCKINGならT)。(1)(2)は上限未到達 |
+| **T** 最終手段(決定論) | ladder④でも再BLOCKING、またはG後もBLOCKINGの箇所: 構造要素でない文は既存`0_delete`(¥0、`delete_reoccurrence`確認、品質判定`quality_degradation_v2`)で当該文を削除→全文Recheck 1回 | `ladder_exhausted`系・cycle上限後のBLOCKING残存 | 構造要素(title/hook/In one line/見出し)・記事の唯一の根拠文の削除は品質を壊す | 追加call: Recheck 1回(≈¥0.5、まれ)。削除は新しい未確認claimを加えない(Safety方向に単調)。品質劣化リスク(§0-3) | 不足: 実発動例が0(rep27〜29では④で直らなかった例なし)。実装前に品質影響の限定確認が必要 | (1)(2)(3)では不発動の見込み |
+| **F1** 上限を変えずworst費用を抑える | 品質regen(¥0.399、A4の9%)の発火条件を、`vocab_difficulty_increased_fragment`の微増(+0.0083)では発火させない等 | (3)の費用 | 3 cycle消費自体 | 記事品質規則の変更で**Fable/ユーザー判断事項**(Productionの品質判定との整合) | 確認: A4でregen 4回=¥0.399 | worst ¥4.34→¥3.94(+¥3.34→+¥2.94)。ただし本筋はB′/D/Gでcycle数を減らすこと |
+| **F2** `MAX_CYCLES`/`HARD_MAX_CYCLES`を増やす | 3→4 | (3)の収束余地 | 費用 | A4型は+¥1.1〜1.4/cycle → Cap超過 | 確認: 1 cycle=¥1.1〜1.9 | **不採用**(KPI Capに反する) |
+
+### 17-3. 推奨組合せ(Fable評価用。Opus#14で批判させる)
+
+**B′+A2(+A1は誤検出を確認のうえ)+D+G(+T、実装は限定確認後)**。方針は「個別3件の穴埋め」ではなく、S-1〜S-3を一括で閉じる最小の構造変更:
+1. **location単位の履歴**(B′の土台): Rewriteごとに「置換前の文→置換後の文」と、その箇所に既に適用したlevelを保持する(`rewrite_records`に既にある情報、新しいLLM処理なし)。再発判定・昇段・振動検出(A2)・古いclaimの写像(D-ii)の全てがこの1つの状態を使う。`escalated_to_paragraph`の記録は実際に④を試したかへ是正。
+2. **Rewrite成功判定の強化**(A2、A1は誤検出次第): 「変わった」に加え「その箇所の過去の状態に戻っていない」(A1は「元の主体語が残っていない」)。不成功なら同じcycleのladder内で次のlevelへ(新しいretry loopなし)。
+3. **span解決の連鎖**(D): 引用分割→現行文への写像→Rewriteなしでの全文Recheck。`violation_span_unverified`というSTAGE4を、cycle内で既存のRecheckへ回す形にして出口を消す。
+4. **出口をfunnel経由に**(G): cycle上限に達したら倒す前に、残った指摘を既存のStage 2(+S1)に1回通す。
+5. **最終手段**(T): 本当にBLOCKINGが残る箇所だけ、既存の`0_delete`+全文Recheck 1回(構造要素以外)。実装・Production化は限定確認とOpus#14後。
+
+C(actorを③から)・E1・E2・F2は採用しない(C=ユーザー上位原則§0-4との衝突を避けられる限り不要、E1=節約僅少、E2=費用増とNORMAL群リスクが未集計、F2=KPI Cap違反)。A3は今回の3件に寄与がないため対象外。F1(品質regen条件)はFable判断へ。
+
+### 17-4. 設計後も残るHuman Review経路と、残る理由
+
+| 経路 | 設計後 | 理由 |
+|---|---|---|
+| `same_claim_fact_id_reblocked` | **条件付きで残る**: 同一箇所で④段落まで実際に試行済みで再BLOCKINGされ、かつT(削除)が構造要素・必須文のため使えないときのみ | 本当に後段で解けない可能性があるのは「④でも直らず、削除もできない構造要素」だけ。rep27〜29で実例0件(確認) |
+| `violation_span_unverified` | **残らない**(Dの連鎖の末尾が「Rewriteなし+全文Recheck」) | 位置が特定できないとき、人を呼ぶ必要はなく、Recheckが現行本文の問題を新しいclaimとして返す。出口はcycle上限のみ(→G) |
+| `cycle_limit_exhausted_after_recheck` | **Gで「重大でないもの」は消える。残るのは、Stage 2+S1が「BLOCKING」と確認した重大が3 cycle後も残った場合のみ(Tで削除、構造要素のみHuman Review)** | 本当に重大が残ったケース。決定論的に消す(T)かどうかはOpus#14・Fable判断。非構造要素ならTで解消できる |
+| `ladder_exhausted_without_full_rewrite`(guard全滅) | 設計後はB′のT(④後も不成功→削除)へ回す。rep29では0件(rep27・28の4件は是正済みの原因) | 実装不整合の是正済み |
+| その他(`ja_deviation_unresolved`・`unconfirmed_after_reverify`・`degenerate_rewrite_output`・API失敗) | 本委任の対象外(rep29で0件、既存) | — |
+
+「Human Review温存」はしない: 残る経路は**構造要素(title/hook等)の枯渇のみ**で、その実例は0件。Tの品質影響は実装前に限定確認する。
+
+### 17-5. 費用と限定確認→rep30の計画
+
+- worst(A4相当): cycle数が1減れば -¥1.1〜1.9(確認: cycle別費用)。Gは上限到達時のみ+¥0.4〜0.5。A4が3 cycle消費する限りCap(+¥3)超過は構造的に残るため、F1(regen)は補助。
+- 限定確認(≈¥5): (a)¥0: 記録済み状態でのunit/replay(B′・A1・A2・D・G各ルール、rep29の3件の入力で決定論部分が意図どおり動くこと、負例: 振動でない正当な再編集を誤却下しない・L2221変更が単一行を壊さない)。(b)有料: `meta_run03_advanced` s1・s2(≈¥2.5+¥1.7)と`safety_A4`のStage 2+S1のみの再判定(≈¥0.5)。
+- rep30(≈¥26)は限定確認で不具合がなければ1回。Phase累計¥695.39/¥900(残¥204.61)に収まる。
+- 事前基準(事後変更しない): Primary=Human Review 0件、Safety=見逃し0件、平均追加+¥2以内、Cap+¥3以内、不要Rewrite NORMAL群はrep29(5/14)以下。1つでも未達→Step 7再ループ(合理的な改善余地が残る限りKPI緩和は提案しない)。
+
+### 17-6. 既存原則との整合(Fable/Opus確認事項)
+
+- **§0-4/§5-11(ユーザー上位原則の明文化)**: 「同じFactが再登場したら段落Rewrite」の廃止・「各箇所は独立に初期単位から判断」。B′は**同一fact_idの再出現**ではなく**同一箇所に対するRewrite後の再BLOCKING**(前levelが効かなかった実証)を条件とするため、原則の趣旨(別箇所の独立性)とは衝突しないと解釈するが、解釈の最終判断はFable(ユーザー確認が必要か)。Cは表(主体違い→主体だけ)の変更でありユーザー原則の変更に当たるため推奨しない。
+- **既存retry/fallback**: A1/A2は同cycleのladder内の判定でretry loopを増やさない。Gは既存funnel(Stage 2+S1)の再利用。上限回数・既存Gateを回避しない。
+- Production未変更。Trialのみ。

@@ -1,0 +1,545 @@
+{
+ "span_replay": {
+  "s1_c3_HC006_claim_vs_cycle3_start_article": {
+   "claim": "“Users had no way to know whether AI or a person was making the call” and “a human on the other end of the call.”",
+   "status": "unverified",
+   "reason": "mismatch",
+   "level": null,
+   "ranges": [],
+   "claim_text_literally_in_article": false,
+   "stale_phrases_present": {
+    "had no way to know": false,
+    "on the other end of the call": true,
+    "had little way to know": true,
+    "a human on the call": true
+   }
+  },
+  "s2_c3_HC006_claim_vs_cycle3_start_article": {
+   "claim": "“Users had no way to know whether they were talking to AI or a person” and, in the one-line summary, calls were handled by humans “without users being properly told.”",
+   "status": "unverified",
+   "reason": "explanatory_mixed",
+   "quote_fragments": [
+    {
+     "fragment": "Users had no way to know whether they were talking to AI or a person",
+     "status": "resolved",
+     "reason": null,
+     "level": "L3",
+     "ranges": [
+      "users had no way to know whether they were talking to AI or a person"
+     ]
+    },
+    {
+     "fragment": "without users being properly told.",
+     "status": "resolved",
+     "reason": null,
+     "level": "L0",
+     "ranges": [
+      "without users being properly told."
+     ]
+    }
+   ],
+   "article_equals_original_before_cycle1": true
+  }
+ },
+ "a4_cost": {
+  "by_cycle": {
+   "1": {
+    "stage2_second_judge": 0.5071,
+    "s1_second_opinion": 0.2445,
+    "stage3_rewrite": 0.151,
+    "stage3_regen(quality_regen)": 0.1664,
+    "stage1_recheck": 0.8057,
+    "_cycle_total": 1.8747,
+    "_n_calls": {
+     "stage2_second_judge": 2,
+     "s1_second_opinion": 2,
+     "stage3_rewrite": 2,
+     "stage3_regen(quality_regen)": 2,
+     "stage1_recheck": 1
+    }
+   },
+   "2": {
+    "stage2_second_judge": 0.2728,
+    "s1_second_opinion": 0.1585,
+    "stage3_rewrite": 0.1036,
+    "stage1_recheck": 0.5657,
+    "_cycle_total": 1.1006,
+    "_n_calls": {
+     "stage2_second_judge": 1,
+     "s1_second_opinion": 1,
+     "stage3_rewrite": 1,
+     "stage1_recheck": 1
+    }
+   },
+   "3": {
+    "stage2_second_judge": 0.1768,
+    "s1_second_opinion": 0.2339,
+    "stage3_rewrite": 0.1732,
+    "stage3_regen(quality_regen)": 0.2326,
+    "stage1_recheck": 0.5517,
+    "_cycle_total": 1.3682,
+    "_n_calls": {
+     "stage2_second_judge": 1,
+     "s1_second_opinion": 1,
+     "stage3_rewrite": 2,
+     "stage3_regen(quality_regen)": 2,
+     "stage1_recheck": 1
+    }
+   }
+  },
+  "by_stage": {
+   "stage2_second_judge": 0.9567,
+   "s1_second_opinion": 0.6369,
+   "stage3_rewrite": 0.4278,
+   "stage3_regen(quality_regen)": 0.399,
+   "stage1_recheck": 1.9231
+  },
+  "sum_from_call_log": 4.3435,
+  "total_cost_jpy_field": 4.3435,
+  "n_calls": 20
+ },
+ "single_rewrite_cycles": {
+  "n": 29,
+  "by_level": {
+   "1_word_connective": {
+    "n": 22,
+    "resolved": 18
+   },
+   "4_paragraph": {
+    "n": 5,
+    "resolved": 4
+   },
+   "3_sentence": {
+    "n": 2,
+    "resolved": 2
+   }
+  },
+  "by_level_kind": {
+   "1_word_connective|causality": {
+    "n": 12,
+    "resolved": 12
+   },
+   "4_paragraph|term_scope": {
+    "n": 1,
+    "resolved": 1
+   },
+   "1_word_connective|actor": {
+    "n": 5,
+    "resolved": 2
+   },
+   "3_sentence|term_scope": {
+    "n": 2,
+    "resolved": 2
+   },
+   "4_paragraph|multi_sentence": {
+    "n": 4,
+    "resolved": 3
+   },
+   "1_word_connective|term_scope": {
+    "n": 3,
+    "resolved": 2
+   },
+   "1_word_connective|time": {
+    "n": 2,
+    "resolved": 2
+   }
+  },
+  "note": "recheck_prior_issues_sent_count==1かつ当cycleのguard_ok Rewrite==1件のcycleのみ(index 0=その1件に一意対応)。対象=rep27-29の全instance"
+ },
+ "stage4_rows_rep27_29": [
+  {
+   "run": "rep27",
+   "sample": "s1",
+   "instance": "neg3_hormuz_prodrunner_b1b",
+   "reason": "unconfirmed_after_reverify",
+   "n_cycles": 1,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:HF-009",
+     "1_word_connective",
+     "causality"
+    ]
+   ],
+   "cost": 0.9144
+  },
+  {
+   "run": "rep27",
+   "sample": "s1",
+   "instance": "safety_A4",
+   "reason": "ladder_exhausted_without_full_rewrite",
+   "n_cycles": 1,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:MUSE-HC-006",
+     "1_word_connective",
+     "actor"
+    ],
+    [
+     1,
+     "fact:MUSE-HC-010",
+     "1_word_connective",
+     "term_scope"
+    ],
+    [
+     1,
+     "fact:MUSE-HC-006",
+     null,
+     "actor"
+    ],
+    [
+     1,
+     "fact:MUSE-HC-010",
+     "1_word_connective",
+     "term_scope"
+    ]
+   ],
+   "cost": 1.4059
+  },
+  {
+   "run": "rep27",
+   "sample": "s1",
+   "instance": "safety_A5",
+   "reason": "ladder_exhausted_without_full_rewrite",
+   "n_cycles": 1,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:MUSE-HC-012",
+     "3_sentence",
+     "sentence_logic"
+    ],
+    [
+     1,
+     "fact:MUSE-HC-012",
+     null,
+     "sentence_logic"
+    ]
+   ],
+   "cost": 0.6448
+  },
+  {
+   "run": "rep28",
+   "sample": "s1",
+   "instance": "safety_er009_changed_scope",
+   "reason": "ladder_exhausted_without_full_rewrite",
+   "n_cycles": 2,
+   "rewrite_levels": [
+    [
+     1,
+     "claim:d3a7f9cf63dc204a",
+     "1_word_connective",
+     "term_scope"
+    ],
+    [
+     2,
+     "fact:F-004",
+     null,
+     "term_scope"
+    ]
+   ],
+   "cost": 1.4145
+  },
+  {
+   "run": "rep28",
+   "sample": "s1",
+   "instance": "safety_er009_unsupported_new_claim",
+   "reason": "degenerate_rewrite_output",
+   "n_cycles": 1,
+   "rewrite_levels": [
+    [
+     1,
+     "claim:40e72efd1108a93d",
+     "0_delete",
+     null
+    ]
+   ],
+   "cost": 0.1465
+  },
+  {
+   "run": "rep28",
+   "sample": "s2",
+   "instance": "meta_run03_advanced",
+   "reason": "ladder_exhausted_without_full_rewrite",
+   "n_cycles": 2,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:MUSE-HC-006",
+     "1_word_connective",
+     "term_scope"
+    ],
+    [
+     2,
+     "fact:MUSE-HC-006",
+     null,
+     "term_scope"
+    ]
+   ],
+   "cost": 1.1632
+  },
+  {
+   "run": "rep29",
+   "sample": "s1",
+   "instance": "meta_run03_advanced",
+   "reason": "same_claim_fact_id_reblocked",
+   "n_cycles": 3,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:MUSE-HC-006",
+     "1_word_connective",
+     "actor"
+    ],
+    [
+     2,
+     "fact:MUSE-HC-006",
+     "1_word_connective",
+     "actor"
+    ]
+   ],
+   "cost": 2.4818
+  },
+  {
+   "run": "rep29",
+   "sample": "s1",
+   "instance": "safety_A4",
+   "reason": "cycle_limit_exhausted_after_recheck",
+   "n_cycles": 3,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:MUSE-HC-006",
+     "1_word_connective",
+     "actor"
+    ],
+    [
+     1,
+     "fact:MUSE-HC-010",
+     "1_word_connective",
+     "term_scope"
+    ],
+    [
+     1,
+     "fact:MUSE-HC-006",
+     null,
+     null
+    ],
+    [
+     1,
+     "fact:MUSE-HC-010",
+     null,
+     null
+    ],
+    [
+     2,
+     "fact:MUSE-HC-006",
+     "4_paragraph",
+     "multi_sentence"
+    ],
+    [
+     3,
+     "fact:MUSE-HC-006",
+     "4_paragraph",
+     "multi_sentence"
+    ],
+    [
+     3,
+     "fact:MUSE-HC-012",
+     "1_word_connective",
+     "causality"
+    ]
+   ],
+   "cost": 4.3435
+  },
+  {
+   "run": "rep29",
+   "sample": "s2",
+   "instance": "meta_run03_advanced",
+   "reason": "violation_span_unverified",
+   "n_cycles": 3,
+   "rewrite_levels": [
+    [
+     1,
+     "fact:MUSE-HC-006",
+     "1_word_connective",
+     "actor"
+    ],
+    [
+     2,
+     "fact:MUSE-HC-012",
+     "1_word_connective",
+     "term_scope"
+    ],
+    [
+     2,
+     "fact:MUSE-HC-006",
+     null,
+     null
+    ],
+    [
+     3,
+     "fact:MUSE-HC-006",
+     null,
+     null
+    ]
+   ],
+   "cost": 1.7312
+  }
+ ],
+ "stage4_reason_by_run": {
+  "rep27|ladder_exhausted_without_full_rewrite": 2,
+  "rep27|unconfirmed_after_reverify": 1,
+  "rep28|degenerate_rewrite_output": 1,
+  "rep28|ladder_exhausted_without_full_rewrite": 2,
+  "rep29|cycle_limit_exhausted_after_recheck": 1,
+  "rep29|same_claim_fact_id_reblocked": 1,
+  "rep29|violation_span_unverified": 1
+ },
+ "same_claim_reblocked_vs_actual_ladder": [
+  {
+   "run": "rep29",
+   "sample": "s1",
+   "instance": "meta_run03_advanced",
+   "max_ladder_level_actually_used": 1,
+   "ladder_actually_exhausted_to_level4": false
+  }
+ ],
+ "actor_focus_check_rep29": [
+  {
+   "inst": "s1_meta",
+   "cycle": 1,
+   "claim": "fact:MUSE-HC-006",
+   "level": "1_word_connective",
+   "before_actor_nouns": [
+    "users"
+   ],
+   "after_actor_nouns": [
+    "users"
+   ],
+   "actor_noun_retained": true,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_meta",
+   "cycle": 2,
+   "claim": "fact:MUSE-HC-006",
+   "level": "1_word_connective",
+   "before_actor_nouns": [
+    "users"
+   ],
+   "after_actor_nouns": [
+    "users"
+   ],
+   "actor_noun_retained": true,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_meta",
+   "cycle": 2,
+   "claim": "fact:MUSE-HC-006",
+   "level": "1_word_connective",
+   "before_actor_nouns": [],
+   "after_actor_nouns": [],
+   "actor_noun_retained": false,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s2_meta",
+   "cycle": 1,
+   "claim": "fact:MUSE-HC-006",
+   "level": "1_word_connective",
+   "before_actor_nouns": [
+    "users"
+   ],
+   "after_actor_nouns": [],
+   "actor_noun_retained": false,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s2_meta",
+   "cycle": 2,
+   "claim": "fact:MUSE-HC-012",
+   "level": "1_word_connective",
+   "before_actor_nouns": [],
+   "after_actor_nouns": [
+    "users"
+   ],
+   "actor_noun_retained": false,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_A4",
+   "cycle": 1,
+   "claim": "fact:MUSE-HC-006",
+   "level": "1_word_connective",
+   "before_actor_nouns": [
+    "users",
+    "workers"
+   ],
+   "after_actor_nouns": [
+    "workers"
+   ],
+   "actor_noun_retained": true,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_A4",
+   "cycle": 1,
+   "claim": "fact:MUSE-HC-010",
+   "level": "1_word_connective",
+   "before_actor_nouns": [],
+   "after_actor_nouns": [],
+   "actor_noun_retained": false,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_A4",
+   "cycle": 2,
+   "claim": "fact:MUSE-HC-006",
+   "level": "4_paragraph",
+   "before_actor_nouns": [
+    "workers"
+   ],
+   "after_actor_nouns": [
+    "workers"
+   ],
+   "actor_noun_retained": true,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_A4",
+   "cycle": 3,
+   "claim": "fact:MUSE-HC-006",
+   "level": "4_paragraph",
+   "before_actor_nouns": [],
+   "after_actor_nouns": [
+    "workers"
+   ],
+   "actor_noun_retained": false,
+   "actor_noun_swapped": false
+  },
+  {
+   "inst": "s1_A4",
+   "cycle": 3,
+   "claim": "fact:MUSE-HC-012",
+   "level": "1_word_connective",
+   "before_actor_nouns": [
+    "staff"
+   ],
+   "after_actor_nouns": [
+    "staff"
+   ],
+   "actor_noun_retained": true,
+   "actor_noun_swapped": false
+  }
+ ],
+ "s1_c2_prior_issue_text": {
+  "cur": "users had little way to know whether AI or a person was making the call\na human on the call",
+  "source": "current_text",
+  "contains_newline": true,
+  "l2221_replacement_skipped": true,
+  "n_after_units": 2
+ }
+}
