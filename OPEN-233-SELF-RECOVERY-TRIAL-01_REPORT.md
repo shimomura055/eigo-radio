@@ -4396,3 +4396,19 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - **actor_guard是正設計(設計のみ、実装せず)**: AG1(Ledger照合型、決定論・追加call 0)/AG2(hint強化再試行)/AG3(同段で別案)。¥0 replay: AG1-strictは7試行中6(rep28の6試行全て関連factの日英同義語表のみで許容)、AG1-ledgerは7/7。正当拒否維持は実績が0のため合成対照42ケース(推測ベース)で全拒否維持。暫定推奨AG1-strict(Checker issueは「Ledgerにも存在する場合のみ」の補助)。残余リスク: 同義語表の整備・パラフレーズ、後ろ盾(Stage 2 floor `changed_actor`・Recheck)がCheckerの検出に依存。
 - **Opus#13 packet**: `docs/pm/opus_packet_open233_kpi_recovery_02_03.md`(条件A、独立レビューブロック逐語)。次: Opus#13→Fable→委任_08=実装+影響instance再確認+29件再確認。
 - Production整合: `er003_v1_en_direct_vfl_01_generate.py` 827行に同一の件数一致式、`actor_guard`相当はer003/er010に無い(`OPEN-233-A1-PROD`へ記録)。
+
+## 58. KPI-RECOVERY-REDESIGN-02 委任_08: Opus#13→Fable評価・AG1-strict+2条件AND/件数一致3穴/構造要素の対渡し/text_pattern実装・差分0確認・影響instance再確認rep29a【STAGE4 1件、Step 6未実行】(2026-10-04、費用¥2.56、Phase累計¥669.75)
+
+- **Opus#13・Fable評価**: `docs/pm/opus_l2_review_open233_kpi_recovery_02_13.md`(全文・評価1〜9逐語・11-3照合・STOP非該当)、設計書§15。
+- **同義語表の確定証跡**: runner `ACTOR_SYNONYM_CLASSES`(23クラス、employee/contractor/worker/staff・customer/client/user/passengerは別クラス、`contract worker(s)`/`contract staff`は`ACTOR_EN_COMPOUNDS`でcontractor)を、評価前にcommit `f513695c`で確定。以後変更なし。
+- **実装(Trial、Production未変更)**: `actor_rewrite_guard_decision`/`actor_rewrite_guard_ok`(`ACTOR_GUARD_MODE` legacy既定/ag1_strict=KPI構成ON、判定逐語を`actor_guard_decision`としてlevel_attemptsへ記録)、`aggregate_prior_issues_resolved`3穴修正、`STRUCTURAL_PAIRS_TO_RECHECK`(構造要素書き換えの対のみRecheckへ、追加call 0)、`text_pattern`+`remains_in_final_en_pattern`旧新並記。guardはscopeを守らない(scopeはRecheck)。
+- **テスト**: er052単体712件OK(新規: 負例(a)〜(e)各3ケース以上・正例rep28の6試行・rep22型2条件AND・legacy不変・件数一致3穴・構造要素の対・Productionフォーマット実記事5本・text_pattern)。全体回帰4635件、失敗は基準11件のみ(er052の新規失敗なし)。`git grep er052_open233`(er003/9/10/12/19)=0件。
+- **差分0確認**(`agg_actor_guard_diff_01.py`): 538 JSON・112試行(許容106+拒否6)。許容済み106試行のうち新主体クラスを含む試行は0件(guard対象外)のため許容→拒否0件(自明に近い点を明記)。拒否済み6試行(rep28)は全て許容(basis=related_fact)。rep22型(別形式のrepro)はユニットテストでissue名指しなし=拒否・名指しあり=許容(2条件AND)を確認。
+- **37件集計**(`agg_compliant_allprior_false_01.py`): LEDGER_COMPLIANT∧all_prior=False 37cycle。再確認の最終結果=PASS24・**PASS以外10**・未記録3。PASS以外10は全て旧経路のSTAGE4 `unconfirmed_after_reverify`(iter3〜6・rep9/23/27のneg2/neg3)で、N1′(`RECHECK_MERGE_UNRESOLVED`)でこの経路は廃止済み(旧経路では安全側にSTAGE4)。未記録3はiter2。結論: 「取りこぼし経路なし」とは言えない(0件でない)が、旧経路は見逃しではなくSTAGE4へ倒れていた。
+- **rep29a**(6 run、`safety_er009_changed_scope`/`safety_er009_unsupported_new_claim`/`meta_run03_advanced`×2、¥2.56[概算≈¥4]、worst ¥1.04、JA 0、Recheck自己矛盾0、見逃し0[旧・新パターン版とも]): 
+  - STAGE4 1件=s2 `safety_er009_changed_scope`(`ladder_exhausted_without_full_rewrite`)。Checkerが`related_fact_id`なし(Ledgerに無い「レストランで確認」の主張)で返し、Rewrite案(「credit-card passengers…」、F-004に乗客あり・内容はfaithful)の新主体`passengers`が(ii)関連fact不成立(fail-closed)・(iii)issueが日本語で名指し不成立→③・④とも拒否→枯渇。
+  - 構造要素書き換え(s1 `safety_er009_unsupported_new_claim`、title判定→④): 「…male passengers tipped twice as much as female passengers…」→「The same New York City taxi researchers also found that passengers shown higher suggested rates tipped more.」(男女差・2倍が除去、空でない、一般論でない、Recheckへ対渡し`recheck_structural_pairs_n`=1、RESOLVED_REWRITE)。
+  - meta_run03_advancedは2回ともACCEPTABLE_STAGE1(Rewrite不要でguard非発火)。
+- **全ログ集計**(`agg_related_fact_missing_01.py`): BLOCKING claim 690件中135件(19.6%)が`related_fact_id`空(safety_er009_*のみ)。AG1-strictのfail-closedは、新主体を導入するRewriteで頻発し得る(Opus#13「十分に答えられなかった点」への回答)。
+- **判定**: rep29a判定基準(STAGE4 0)を満たさず、原因は`related_fact_id`空時の扱いという設計事項(Fable評価1の「欠落はfail-closed」)のため、Step 6(rep29)は**未実行**。KPI Primary未達の恐れ。費用¥2.56、Phase累計¥669.75。
+- **Fableへの論点(設計判断。ユーザーへKPI緩和は提案しない)**: related_fact_id空のclaimの新主体判定(案: (a)Ledger全体の(ii)相当+同クラス表現[AG1-ledger相当、guardを関連factから全Ledgerへ広げる=Opus#13が「緩める」寄りと評価した方式]、(b)issueの日本語表現も名指し照合に含める[今回は客=customerで不一致のため非解決]、(c)Stage 1が`related_fact_id`を返せるようにする=Checker入力・出力の変更で境界事項、(d)現状維持=safety_er009_*系で再現し得る)。再ループ時の新規テスト・差分0確認の再実施が必要。

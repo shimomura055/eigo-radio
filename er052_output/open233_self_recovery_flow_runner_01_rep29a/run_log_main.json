@@ -1,0 +1,72 @@
+{
+  "switches": {
+    "HANDOFF_MODE": "violation_span",
+    "VS_MATCH_EXT": true,
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "JA_MODE": "english_only",
+    "FLOOR_VERIFY_MODE": "time_only",
+    "STAGE2_NORMAL_TWO_OF_TWO": false,
+    "CAUSAL_FLOOR": true,
+    "CAUSAL_FLOOR_VOCAB": "known6",
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true
+  },
+  "stopped": false,
+  "stop_reason": null,
+  "runs": [
+    {
+      "sample": 1,
+      "instance_id": "safety_er009_changed_scope",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cost": 1.0415,
+      "stop_check": []
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_er009_unsupported_new_claim",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cost": 0.4598,
+      "stop_check": []
+    },
+    {
+      "sample": 1,
+      "instance_id": "meta_run03_advanced",
+      "final_state": "ACCEPTABLE_STAGE1",
+      "stage4_reason": null,
+      "cost": 0.3068,
+      "stop_check": []
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_er009_changed_scope",
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "cost": 0.4858,
+      "stop_check": []
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_er009_unsupported_new_claim",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cost": 0.2648,
+      "stop_check": []
+    },
+    {
+      "sample": 2,
+      "instance_id": "meta_run03_advanced",
+      "final_state": "ACCEPTABLE_STAGE1",
+      "stage4_reason": null,
+      "cost": 0,
+      "stop_check": []
+    }
+  ],
+  "exceptions": [],
+  "cumulative_jpy": 2.5587
+}

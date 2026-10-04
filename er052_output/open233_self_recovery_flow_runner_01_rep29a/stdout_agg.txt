@@ -1,0 +1,172 @@
+{
+ "n_runs": 6,
+ "runs": [
+  {
+   "sample": 1,
+   "instance_id": "safety_er009_changed_scope",
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "cycles": 1,
+   "cost": 1.0415,
+   "ja_changed": false,
+   "rechecks": 1,
+   "self_contradictions": 0,
+   "reverify_calls": 0,
+   "residual_defs": []
+  },
+  {
+   "sample": 1,
+   "instance_id": "safety_er009_unsupported_new_claim",
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "cycles": 1,
+   "cost": 0.4598,
+   "ja_changed": false,
+   "rechecks": 1,
+   "self_contradictions": 0,
+   "reverify_calls": 0,
+   "residual_defs": []
+  },
+  {
+   "sample": 1,
+   "instance_id": "meta_run03_advanced",
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "cycles": 0,
+   "cost": 0.3068,
+   "ja_changed": false,
+   "rechecks": 0,
+   "self_contradictions": 0,
+   "reverify_calls": 0,
+   "residual_defs": []
+  },
+  {
+   "sample": 2,
+   "instance_id": "safety_er009_changed_scope",
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "ladder_exhausted_without_full_rewrite",
+   "cycles": 1,
+   "cost": 0.4858,
+   "ja_changed": false,
+   "rechecks": 0,
+   "self_contradictions": 0,
+   "reverify_calls": 0,
+   "residual_defs": []
+  },
+  {
+   "sample": 2,
+   "instance_id": "safety_er009_unsupported_new_claim",
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "cycles": 1,
+   "cost": 0.2648,
+   "ja_changed": false,
+   "rechecks": 1,
+   "self_contradictions": 0,
+   "reverify_calls": 0,
+   "residual_defs": []
+  },
+  {
+   "sample": 2,
+   "instance_id": "meta_run03_advanced",
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "cycles": 0,
+   "cost": 0,
+   "ja_changed": false,
+   "rechecks": 0,
+   "self_contradictions": 0,
+   "reverify_calls": 0,
+   "residual_defs": []
+  }
+ ],
+ "stage4": [
+  [
+   2,
+   "safety_er009_changed_scope",
+   "ladder_exhausted_without_full_rewrite"
+  ]
+ ],
+ "cost_total_jpy": 2.5587,
+ "cost_worst_run_jpy": 1.0415,
+ "ja_changed_runs": 0,
+ "self_contradictions": 0,
+ "reverify_calls": 0,
+ "actor_guard_decisions": {
+  "n": 2,
+  "allowed": 0,
+  "rejected": 2,
+  "by_basis": {
+   "None": 2
+  },
+  "rows": [
+   {
+    "sample": 2,
+    "iid": "safety_er009_changed_scope",
+    "cycle": 1,
+    "level": "3_sentence",
+    "result": "actor_guard_rejected",
+    "class": "passenger",
+    "new_words": [
+     "passengers"
+    ],
+    "ok": false,
+    "basis": null,
+    "related_fact_hits": [],
+    "ledger_hits": [
+     "èÊãq"
+    ],
+    "issue_named": [],
+    "before": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+    "after": "In the New York City taxi study, credit-card passengers who happened to see menus with higher suggested tip rates left more money."
+   },
+   {
+    "sample": 2,
+    "iid": "safety_er009_changed_scope",
+    "cycle": 1,
+    "level": "4_paragraph",
+    "result": "actor_guard_rejected",
+    "class": "passenger",
+    "new_words": [
+     "passengers"
+    ],
+    "ok": false,
+    "basis": null,
+    "related_fact_hits": [],
+    "ledger_hits": [
+     "èÊãq"
+    ],
+    "issue_named": [],
+    "before": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+    "after": "In the New York City taxi study, credit-card passengers who encountered menus with higher suggested tip rates left more money."
+   }
+  ]
+ },
+ "structural_rewrite": [
+  {
+   "sample": 1,
+   "iid": "safety_er009_unsupported_new_claim",
+   "cycle": 1,
+   "reasons": [
+    "title"
+   ],
+   "level_used": "4_paragraph",
+   "pair": {
+    "before": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+    "after": "The same New York City taxi researchers also found that passengers shown higher suggested rates tipped more."
+   },
+   "attempts": [
+    [
+     "4_paragraph",
+     "success"
+    ]
+   ],
+   "recheck_structural_pairs_n": 1,
+   "final_state": "RESOLVED_REWRITE",
+   "claim_identity": "claim:40e72efd1108a93d"
+  }
+ ],
+ "safety_critical_rows_old_and_pattern": [],
+ "pass_with_residual_unflagged_old": [],
+ "pass_with_residual_unflagged_pattern": []
+}
