@@ -5837,6 +5837,25 @@ def structural_element_reasons(full_text: str, spans: list, ranges: list) -> lis
     return reasons
 
 
+def structural_ladder_exhausted_verified(rewrite_records: list) -> dict:
+    """委任_12(Fable照合1、I-2整合): `blocking_structural_after_ladder`を返してよいかを関数内で検証する(名前の洗い替え防止)。
+    「構造要素であること(`structural_element_reasons`由来の`structural_element_rewrite`/`structural_blocking`印)∧
+    ladderの計画levelを全て実試行済み(昇段済み)」の両方を満たすrecordが1件以上あるときだけ`verified=True`。
+    degenerate(空・極端短縮)は「そのlevelの試行失敗」でありladder内で昇段される。構造要素でないdegenerate・
+    ladder未試行のdegenerateは`verified=False`(許可リスト外のまま記録される)。LLM callなし。"""
+    details = []
+    for r in rewrite_records or []:
+        h = (r.get("handoff") or {})
+        structural = bool(h.get("structural_element_rewrite") or h.get("structural_blocking"))
+        planned = list(h.get("levels_planned") or [])
+        attempted = set(h.get("levels_attempted") or [])
+        ladder_done = bool(h.get("structural_blocking")) or (bool(planned) and set(planned) <= attempted)
+        details.append({"claim_identity": r.get("claim_identity"), "structural": structural,
+                        "ladder_done": ladder_done, "levels_planned": planned, "levels_attempted": sorted(attempted)})
+    ok = any(d["structural"] and d["ladder_done"] for d in details)
+    return {"verified": ok, "details": details}
+
+
 def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_prefix, fixture,
                            target_text_field, claim_rec: dict) -> dict:
     """委任_42 仕様(2)〜(6)(9): 確定範囲を対象にした最小修正優先ラダー。
@@ -5884,8 +5903,11 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
     # 判定を任せる(Recheckで再指摘されれば次cycleで通常処理)。引用符付き語句が`issue`に無ければ通常どおりRewrite。
     l6 = resolution.get("sentence_restore") if resolution.get("level") == VS_L6_LEVEL else None
     if l6 and l6.get("status") == "restored":
-        fa = vs_l6_focus_absent(vs_l6_issue_quoted_phrases(dev.get("issue") or ""), "\n".join(ranges),
+        # 委任_12(Fable照合3a): 引用語句の非存在は「該当文(復元範囲)」ではなく「現行本文全体」に対して判定する
+        # (本文のどこかに存在するなら、Checkerの引用は実在する=Recheckのみで済ませず通常どおりRewrite側へ倒す)。
+        fa = vs_l6_focus_absent(vs_l6_issue_quoted_phrases(dev.get("issue") or ""), full_text,
                                 l6.get("claim_core") or claim_text)
+        fa["haystack"] = "current_full_text"
         handoff["issue_focus_check"] = fa
         if fa["absent"]:
             handoff["issue_focus_absent"] = True
@@ -6087,7 +6109,9 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                 attempt["result"] = "guard_failed"
                 method_used = f"{lv['tag']}_guard_failed({locate_method})"
                 continue
-            if structural_rewrite:
+            if structural_rewrite or STAGE4_ALLOWLIST:
+                # 委任_12(Fable照合1): degenerate(title/hook/In one lineの空・極端短縮)は構造要素書き換えに限らず「そのlevelの試行失敗」として
+                # 同cycle内で上位levelへ昇段する(許可リストON時。許可名への写像はしない)。
                 sr_chk = measure_section_role_violation(full_text, candidate)
                 if sr_chk.get("title_degenerate") or sr_chk.get("hook_degenerate") or sr_chk.get("iol_degenerate"):
                     attempt["result"] = "degenerate_structural"
@@ -6136,6 +6160,12 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
             updated_text = fallback_text
             method_used = (method_used or "") + "+fulltext_fallback"
             guard_ok = updated_text != full_text
+            if guard_ok and STAGE4_ALLOWLIST:
+                _sr6 = measure_section_role_violation(full_text, updated_text)
+                if _sr6.get("title_degenerate") or _sr6.get("hook_degenerate") or _sr6.get("iol_degenerate"):
+                    guard_ok = False  # 委任_12: degenerateなlevel6案は試行失敗(元本文のまま)
+                    updated_text = full_text
+                    method_used += "+degenerate_structural"
             if guard_ok:
                 ladder_level_used = "6_full_article"
                 handoff["level_used"] = "6_full_article"
@@ -8904,8 +8934,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             stage4_reason = "degenerate_rewrite_output"
             if _newroute:
                 # 委任_11 I-2: 構造要素(title/hook/In one line)を空・極端短縮にする書き換え=構造要素のladder枯渇として許可リスト内の出口へ
-                _allow("degenerate_rewrite_output", {"funnel_passed": True}, legacy="degenerate_rewrite_output")
-                d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                # 委任_12(Fable照合1): degenerateを許可名へ写像しない。構造要素∧ladder実試行済みを検証できたときだけ
+                # `blocking_structural_after_ladder`(通常はladder内で昇段済み=ここへは来ない防御経路)。検証できなければ許可リスト外として記録のまま。
+                _ver = structural_ladder_exhausted_verified(rewrite_records)
+                cycle_record["degenerate_structural_verification"] = _ver
+                if _ver["verified"]:
+                    d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                else:
+                    d_ = _allow("degenerate_rewrite_output", {"funnel_passed": True}, legacy="degenerate_rewrite_output")
                 stage4_reason = d_["reason"]
             cycle_record["degenerate_rewrite_detected"] = True
             cycles_log.append(cycle_record)

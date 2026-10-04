@@ -117,8 +117,11 @@ def route_stage4(d: dict, texts: list) -> dict:
     text = texts[k]
     out = {"legacy_reason": reason, "legacy_cycles": len(d["cycles"])}
     if reason == "degenerate_rewrite_output":
-        out.update(route="degenerate_rewrite_output -> blocking_structural_after_ladder", terminal="STAGE4:blocking_structural_after_ladder",
-                   terminal_allowed=True, deterministic=True, calls_needed=[])
+        # 委任_12(Fable照合1): degenerateは許可名へ写像せず、「そのlevelの試行失敗」として同cycle内で上位levelへ昇段(Rewrite call必要)。
+        # ladder枯渇後: 構造要素なら`blocking_structural_after_ladder`(T不可)、非構造ならT(決定論削除)→全文Recheck。
+        out.update(route="degenerate_rewrite_output(出口ではない) -> level試行失敗として上位levelへ昇段 -> 枯渇なら[構造要素: blocking_structural_after_ladder/非構造: T]",
+                   terminal="call必要(Rewrite 上位level→Recheck。ladder枯渇時のみ構造要素=STAGE4:blocking_structural_after_ladder/非構造=T)",
+                   terminal_allowed=True, deterministic=False, calls_needed=["rewrite(上位level) x1以上", "full_recheck x1"])
     elif reason == "ladder_exhausted_without_full_rewrite":
         recs = [r for r in last.get("rewrite_records", []) if r.get("ladder_exhausted_without_full_rewrite")]
         brs = blocking_results(last)

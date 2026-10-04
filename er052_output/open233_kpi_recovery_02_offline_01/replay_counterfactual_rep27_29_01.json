@@ -3,9 +3,9 @@
     "runs": 114,
     "legacy_stage4": 9,
     "stage4_rerouted": 9,
-    "needs_llm_call": 6,
+    "needs_llm_call": 7,
     "bprime_location_carry": 4,
-    "deterministic_terminal": 3,
+    "deterministic_terminal": 2,
     "a2_revert_would_reject": 1
   },
   "allowed_reasons": [
@@ -827,11 +827,14 @@
       "new_route": {
         "legacy_reason": "degenerate_rewrite_output",
         "legacy_cycles": 1,
-        "route": "degenerate_rewrite_output -> blocking_structural_after_ladder",
-        "terminal": "STAGE4:blocking_structural_after_ladder",
+        "route": "degenerate_rewrite_output(出口ではない) -> level試行失敗として上位levelへ昇段 -> 枯渇なら[構造要素: blocking_structural_after_ladder/非構造: T]",
+        "terminal": "call必要(Rewrite 上位level→Recheck。ladder枯渇時のみ構造要素=STAGE4:blocking_structural_after_ladder/非構造=T)",
         "terminal_allowed": true,
-        "deterministic": true,
-        "calls_needed": []
+        "deterministic": false,
+        "calls_needed": [
+          "rewrite(上位level) x1以上",
+          "full_recheck x1"
+        ]
       }
     },
     {

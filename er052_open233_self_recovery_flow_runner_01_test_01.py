@@ -8889,6 +8889,22 @@ class TestKpi11ForcedPathFixtures(unittest.TestCase):
         self.assertEqual(res["stage4_reason"], "blocking_structural_after_ladder")
         self._assert_allowlisted_or_resolved(res)
 
+    def test_degenerate_structural_promotes_levels_then_blocking_structural_only_when_verified(self):
+        """委任_12(Fable照合1): 構造要素のdegenerate(空・極端短縮)は各levelの試行失敗として昇段し、ladder枯渇後(構造要素∧実試行済み)
+        だけが`blocking_structural_after_ladder`。許可名への直接写像ではない。"""
+        dev = _dev49("Plan overview", fid="FS")
+        res, seen = _run_kpi11([dev], lambda c, t, f: "BLOCKING",
+                               lambda label, prompt: json.dumps({"revised_ranges": ["Tips."]}),
+                               lambda c, p, a: _rr11(True))
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "blocking_structural_after_ladder")
+        lv = [a["result"] for a in res["cycles"][0]["rewrite_records"][0]["handoff"]["level_attempts"]]
+        self.assertTrue(lv and all(r == "degenerate_structural" for r in lv))   # 全levelを実試行(昇段)した
+        self.assertGreaterEqual(len(lv), 2)
+        self.assertFalse(any(e["decision"]["reason"] == "degenerate_rewrite_output" and e["decision"]["allowed"]
+                             for e in res["stage4_allowlist"]["decisions"]))
+        self._assert_allowlisted_or_resolved(res)
+
     def test_api_failure_goes_to_allowlisted_api_failure(self):
         res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", lambda label, prompt: None,
                                lambda c, p, a: _rr11(True))
@@ -8914,6 +8930,56 @@ class TestKpi11ForcedPathFixtures(unittest.TestCase):
         self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
         self.assertEqual(res["stage4_reason"], "ladder_exhausted_without_full_rewrite")
         self.assertNotIn("stage4_allowlist", res)
+
+
+class TestDegenerateNotLaundered12(unittest.TestCase):
+    """委任_12: degenerateを許可名へ洗い替えない(Fable照合1)、focus_absentは現行本文全体で判定(Fable照合3a)。全て¥0。"""
+    TITLE = "Taxi tipping habits explained"
+
+    def test_verified_requires_structural_and_ladder_done(self):
+        f = runner.structural_ladder_exhausted_verified
+        mk = lambda **h: [{"claim_identity": "c", "handoff": h}]
+        self.assertTrue(f(mk(structural_element_rewrite={"reasons": ["title"]}, levels_planned=["1_word_connective", "3_sentence", "4_paragraph"],
+                             levels_attempted=["1_word_connective", "3_sentence", "4_paragraph"]))["verified"])
+        self.assertTrue(f(mk(structural_blocking=True))["verified"])                     # T経路(構造要素でTが不可)
+        self.assertFalse(f(mk(structural_element_rewrite={"reasons": ["title"]}, levels_planned=["1_word_connective", "3_sentence"],
+                              levels_attempted=["1_word_connective"]))["verified"])      # ladder未試行
+        self.assertFalse(f(mk(levels_planned=["1_word_connective"], levels_attempted=["1_word_connective"]))["verified"])  # 構造要素でない
+        self.assertFalse(f([])["verified"])
+
+    def test_non_structural_mode_degenerate_candidate_is_level_failure_when_allowlist_on(self):
+        art = self.TITLE + "\n\nSecond paragraph stays.\n"
+        claim_rec = {"claim_text": self.TITLE, "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "ledger_fact",
+                     "rewrite_hint": "h", "dev": {"issue": "x"}}
+        seq = iter([json.dumps({"revised_ranges": ["Tips."]}), json.dumps({"revised_ranges": ["Tips rose."]}),
+                    json.dumps({"revised_ranges": ["Passengers tipped more at higher suggested rates."]})])
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            return next(seq)
+        for allow, expect in ((True, ["degenerate_structural", "degenerate_structural", "success"]), ):
+            with mock.patch.object(runner, "STRUCTURAL_ELEMENT_REWRITE", False), mock.patch.object(runner, "STAGE4_ALLOWLIST", allow), \
+                    mock.patch.object(runner, "simple_llm_call", side_effect=llm):
+                res = runner.rewrite_ranges_ladder(None, _l6_state(), [0], [], "t", {"ledger_text": "[F-1] x", "article_text": art},
+                                                    "article_text", claim_rec)
+            got = [a["result"] for a in res["handoff"]["level_attempts"]]
+            self.assertEqual(got[:2], expect[:2])          # degenerate案は試行失敗として上位levelへ昇段
+            self.assertNotEqual(got[2], "degenerate_structural")
+
+    def test_residual_degenerate_not_mapped_to_allowed_name_source(self):
+        import inspect
+        src = inspect.getsource(runner.run_instance)
+        self.assertIn("structural_ladder_exhausted_verified(rewrite_records)", src)
+        self.assertNotIn('_allow("degenerate_rewrite_output", {"funnel_passed": True}, legacy="degenerate_rewrite_output")\n'
+                         '                d_ = _allow("blocking_structural_after_ladder"', src)
+
+    def test_focus_absent_is_judged_against_full_text_source(self):
+        import inspect
+        src = inspect.getsource(runner.rewrite_ranges_ladder)
+        self.assertIn('vs_l6_issue_quoted_phrases(dev.get("issue") or ""), full_text,', src)
+        self.assertNotIn('"\\n".join(ranges),\n                                l6.get("claim_core")', src)
+        # 関数自体: 引用語句が(渡された)文字列のどこかにあればabsentでない
+        fa = runner.vs_l6_focus_absent(["alpha rose"], "Intro line. The firm said alpha rose sharply. Tail.", "")
+        self.assertFalse(fa["absent"])
 
 
 class TestKpi11NegativeCases(unittest.TestCase):
