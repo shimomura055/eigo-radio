@@ -658,3 +658,34 @@ C(actorを③から)・E1・E2・F2は採用しない(C=ユーザー上位原則
 - **§0-4/§5-11(ユーザー上位原則の明文化)**: 「同じFactが再登場したら段落Rewrite」の廃止・「各箇所は独立に初期単位から判断」。B′は**同一fact_idの再出現**ではなく**同一箇所に対するRewrite後の再BLOCKING**(前levelが効かなかった実証)を条件とするため、原則の趣旨(別箇所の独立性)とは衝突しないと解釈するが、解釈の最終判断はFable(ユーザー確認が必要か)。Cは表(主体違い→主体だけ)の変更でありユーザー原則の変更に当たるため推奨しない。
 - **既存retry/fallback**: A1/A2は同cycleのladder内の判定でretry loopを増やさない。Gは既存funnel(Stage 2+S1)の再利用。上限回数・既存Gateを回避しない。
 - Production未変更。Trialのみ。
+
+
+## 18. Opus#14後のFable評価と採用設計(委任_11、2026-10-04)
+
+Opus#14全文: `docs/pm/opus_l2_review_open233_kpi_recovery_02_14.md`。以下はFable評価の逐語記録(変更しない)。
+
+**Fable評価(2026-10-04、Opus#14)**
+1. **条件B判定「根本設計の問題」を採用。** 9件の原因型は「LLM自由文字列`claim_in_article`を各cycleの決定論処理が再解釈し、失敗するとSTAGE4へ直行する出口が6種類並ぶ」ことである。不変条件 **I-1(箇所=本文中の位置オブジェクトとして入口で確定し、以降は文字列でなく座標を引き継ぐ)** と **I-2(STAGE4は許可リスト方式: 「現行本文の具体的箇所についてStage 2(+S1)がBLOCKINGを確定し、その箇所の打ち手[ladder→T]が尽きた」場合のみ。形式・件数・位置特定不能はHuman Review理由にせず、funnel[Stage 2+S1]か次cycleへ)** を採用設計の中心に置く。
+2. **I-1は最小実装で採用**: Rewrite後の範囲座標を`rewrite_records`等から置換ごとに写像し直して保持し、B′の「同一箇所」判定・A2の振動検出・D(ii)の写像に使う。claim文字列の再照合は新規claimにのみ行う。全面的なデータ構造再設計(全claimをオブジェクト化)は本Trialでは行わない(Production複雑化回避、QCD 6)。L2221の複数範囲skipは「`“A” and “B”`引用形式へ変換」で是正。
+3. **I-2採用**: 許可reasonは `blocking_confirmed_unlocatable_after_cap` / `blocking_structural_after_ladder` / `post_T_new_blocking` / `api_failure`(parse失敗含む)の4種のみ。許可リスト外の理由でSTAGE4条件に達した場合は、記録(`stage4_allowlist_violation`)したうえでfunnel(判定だけのcycle)または次cycleへ戻す。既存の`same_claim_fact_id_reblocked`/`violation_span_unverified`/`ladder_exhausted`系/`cycle_limit_exhausted(_after_recheck)`は許可リスト外とし、出口としては廃止(記録名は保持してよい)。
+4. **B′: 修正採用。** キーは位置のみ(fact_idは問わない。兄弟fact_idでも前Rewriteの出力箇所なら昇段)。同一箇所判定は「前cycleで置換した範囲(現行本文座標)と今回確定spanが1文字以上重なる」(逐語一致は使わない、H-4)。`escalated_to_paragraph`は「実際に`4_paragraph`を試行したか」(試行level一覧)へ是正。§0-4(「同じFactが別箇所に再登場したら段落Rewrite」の廃止)との関係: B′は「同じ箇所への前levelのRewrite結果が再びBLOCKING確定」という効果実証に基づく昇段で、§5-11「初期水準より上位への昇段を妨げない」のcycle横断適用と解釈し、衝突しないとFableが判断する。ユーザー原則の解釈であるため、Closeout報告の確認事項に記載する(実装は止めない)。
+5. **A2(振動検出): 採用。** 箇所ごとの過去状態列(原文, c1後, c2後…)と候補を正規化(空白・引用符字形)後に完全一致で比較、範囲ごとに判定。一致したら候補を却下し同cycle内で上位levelへ(既存ladder内の判定)。
+6. **A1(主体語残存チェック): 不採用**(誤検出2/3、不要Rewrite防止優先。B′で1cycle遅れで回収)。Rewrite promptへの「過去候補・元に戻す禁止」提示は後回し(本委任では実装しない)。
+7. **D: 修正採用(H-1是正必須)。** (i)引用分割は決定論で採用。`VS_EXPLAIN_MAX_EN_WORDS`の緩和は「残りが閉じた語彙の位置語(headline/one_line等U-2要素)を含み、かつ逐語一致・隣接一致の棄却に当たらない場合」に限定。`explain_split`の棄却理由を`annotate_claim_span_identity`の記録に追加(実装前に、¥0)。(ii)写像はI-1最小実装+引用形式変換で対応。(iii)「Rewriteせず全文Recheck」は**位置の再取得に限定**し、**「書き換えられなかったBLOCKING」をcarry listに保持、listが空でない間は`normalize_recheck_outcome`がPASSを返さない**(決定論、H-1)。次cycleでも位置を取り直せなければ上限→G→`blocking_confirmed_unlocatable_after_cap`(正当な残余)。
+8. **G: 修正採用。** 別機構にせず、`HARD_MAX_CYCLES`到達時のbreakを「判定だけのcycle」への遷移に変える(cycle==HARD_MAX_CYCLES+1ではループ冒頭のStage 2+S1のみ実行。Rewriteしない。same_claim/extra cycle判定を通らない)。Tier 0(因果floor)とS1を必ず適用(Stage 2単独で閉じない、H-2)。**本文が変わっていない箇所で過去にStage 2がBLOCKING確定したものはGで降格させない(BLOCKING固定)。** 非BLOCKINGなら既存`RESOLVED_REWRITE_THEN_DOWNGRADE`経路へ、BLOCKINGが残ればT。「上限はRewrite回数の上限であって判定回数の上限ではない」と定義。
+9. **T(最終手段): 修正採用。** 構造要素以外の該当文を既存`0_delete`+全文Recheck 1回。1記事1回まで。T後のRecheckで新規BLOCKINGが出たら追わず`post_T_new_blocking`(許可リスト)。構造要素(タイトル等)でladder枯渇なら`blocking_structural_after_ladder`。
+10. **S-4(同一本文の再判定)対策**: 「materialityを本文に紐づける」。キー=(箇所の正規化span集合, fact_id)。**BLOCKING固定は採用**(本文不変なら再判定でBLOCKINGを覆さない)。**一致した2-of-2非BLOCKINGの再利用はスイッチ`STAGE2_VERDICT_REUSE_NONBLOCKING`として実装し既定OFF**。rep30でONにする条件(事前固定): rep27〜29記録の¥0 replayで「再利用により抑制される判定のうち、正解ラベル上の重大が0件」。満たさなければOFFのまま。文単位への分解による再利用は禁止(span集合の完全一致のみ)。
+11. **第二段階案(同fact_id兄弟箇所をcycle 1のStage 2 batchへ前倒し、Rewriteへは渡さない)**: ¥0集計①(後cycleの新規MAJORのうちcycle 1のfact_id列挙で覆えた割合)②(NORMAL群で列挙により増えるStage 2判定件数)を先に行う。採用条件(事前固定): ①>0。採用時はスイッチ`STAGE2_SIBLING_LOCATIONS_CYCLE1`としてrep30でON、不要Rewrite(NORMAL群)がrep29の5/14から増えた場合は不採用候補として記録。
+12. **F1(品質regen条件)**: 本Trialでは**不採用(現状維持)**。記事品質規則の変更でProduction品質判定との整合が必要なため、Closeout報告の確認事項へ。
+13. **H-3**: 「残るHuman Reviewは構造要素だけ」は撤回。残る正当な経路は ①上限後に位置特定できないBLOCKING ②T後の新規BLOCKING ③構造要素/削除すると記事の核が壊れる文(ladder枯渇) ④API失敗、の4つ(実例0件、経路としては存在)と設計書に明記。
+14. **Trial設計**: Opus推奨の¥0準備(1)許可リスト関数(2)rep27〜29全instanceの反実仮想replay(3)強制経路fixture(4)H-1負例(5)explain_split棄却理由記録、を本委任で実施。事前基準に「許可リスト外STAGE4 0件」「G経路の降格は全件S1通過」「書き換えられていないBLOCKINGによるPASS 0件」を追加。その後、委任_12で限定確認(≈¥5)→rep30 1回(≈¥26〜30)。
+15. **STOP条件照合**: KPI緩和・Human Review温存・Production/Checker変更の提案なし→非該当。Fable判断でTrial工程へ進む(Opusレビューをユーザー承認Gateにしない、CLAUDE.md/PM_GOVERNANCE 11-3)。ユーザー確認事項(Closeoutで提示): B′の§0-4解釈、F1、非BLOCKING再利用スイッチの扱い。
+
+
+### 18-B. 実装記録(委任_11、2026-10-05、費用¥0)
+
+上記の採用設計の実装位置と結果(詳細・数値はREPORT§61、`er052_output/open233_kpi_recovery_02_offline_01/`)。
+
+- 許可リスト関数: `stage4_allowlist_decision`(許可4種のみ、BLOCKING由来3種はfunnel通過も要する)。残る正当なHuman Review経路(H-3、実例0件だが経路として存在)= ①上限後に位置特定できないBLOCKING(`blocking_confirmed_unlocatable_after_cap`)②T後の新規BLOCKING(`post_T_new_blocking`)③構造要素/削除すると記事の核が壊れる文のladder枯渇(`blocking_structural_after_ladder`)④API失敗(`api_failure`)。**18-Aの「残るHuman Reviewは構造要素だけ」は撤回済み。ただし反実仮想replayでは、rep28の3件が③(構造要素)として決定論でHuman Reviewのまま残る**(KPI Primary=0件を満たすには実LLM結果次第、Fable判断)。
+- I-1(最小): 置換後の文字列と試行levelを`rewritten_regions`として保持し、本文中の出現位置の重なり(1文字以上)で「同一箇所」を判定(B′のlevel昇段、A2は過去本文との位置つき照合)。claim文字列の再照合は新規claimにのみ行う。
+- 実装位置(runner): スイッチ定義=`STAGE4_ALLOWLIST`等(`STRUCTURAL_ELEMENT_REWRITE`の直後)、`KPI_TRIAL_SWITCHES`、ヘルパー=`run_instance`の直前(`stage4_allowlist_decision`/`revert_to_prior_state_detected`/`location_prior_levels`/`update_regions_after_rewrite`/`claim_materiality_key`)、`rewrite_ranges_ladder`(T=`last_resort_delete`、B′のlevel除外、A2却下、`levels_attempted`)、`vs_explain_split_resolve`(D(i)の狭い緩和)、`normalize_recheck_outcome`(D(ii)引用形式変換)、`annotate_claim_span_identity`(explain_splitの棄却理由の記録)、`run_instance`のループ(carry list・判定だけのcycle・BLOCKING固定・再利用・第二段階列挙・許可リスト経路)。

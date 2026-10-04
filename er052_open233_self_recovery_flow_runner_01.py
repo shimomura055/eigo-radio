@@ -438,6 +438,17 @@ KPI_TRIAL_SWITCHES = {
     # 委任_08(Opus#13・Fable評価1/2/5): actor_guardをAG1-strict+2条件ANDへ是正、構造要素書き換えの前後対をRecheckへ渡す。
     "ACTOR_GUARD_MODE": "ag1_strict",
     "STRUCTURAL_PAIRS_TO_RECHECK": True,
+    # 委任_11(Opus#14後のFable評価、設計書§18): 既定ONの新スイッチ(legacy挙動は各スイッチOFFで保持)
+    "STAGE4_ALLOWLIST": True,
+    "LADDER_LOCATION_CARRY": True,
+    "REWRITE_REVERT_GUARD": True,
+    "SPAN_FALLBACK_CHAIN": True,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": True,
+    "LAST_RESORT_DELETE": True,
+    "MATERIALITY_BLOCKING_PIN": True,
+    # 既定OFF(事前固定条件を¥0 replayで満たしたときだけ委任_12でON、`replay_verdict_reuse_01`/`agg_sibling_locations_cycle1_01`)
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": False,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": False,
 }
 
 
@@ -2156,6 +2167,18 @@ RECHECK_BEFORE_AFTER_PAIRS = False  # N3′(既定OFF): 通常Recheckへも「�
 # 書き換え案が空になる場合は却下して次の水準へ進める(Human Reviewへ倒す新経路なし)。既定OFF(旧挙動)、KPI構成でON。
 STRUCTURAL_ELEMENT_REWRITE = False
 
+# 委任_11(OPEN-233-KPI-RECOVERY-REDESIGN-02、Opus#14後のFable評価採用設計、設計書§18)。全て既定OFF(legacy挙動を保持)、
+# `KPI_TRIAL_SWITCHES`でON。Trial専用、Production未配線・`APPROVED_FOR_PRODUCTION`ではない。
+STAGE4_ALLOWLIST = False                # I-2: STAGE4の出口を許可リスト(`stage4_allowlist_decision`)へ集約。許可外は記録してfunnelへ
+LADDER_LOCATION_CARRY = False           # B′: 同一箇所(前cycleの置換範囲と1文字以上重なる)は前levelより上位から昇段(位置のみ、fact_idは問わない)
+REWRITE_REVERT_GUARD = False            # A2: 箇所の過去状態へ戻る候補を決定論で却下(同cycle内で上位levelへ)
+SPAN_FALLBACK_CHAIN = False             # D: 引用分割の狭い緩和・複数範囲の引用形式変換・位置を取れないBLOCKINGのcarry(H-1)
+JUDGE_ONLY_CYCLE_AFTER_CAP = False      # G: 上限到達後は「判定だけのcycle」(Stage 2+S1、Rewriteなし)へ遷移
+LAST_RESORT_DELETE = False              # T: ladder枯渇/上限後BLOCKINGの最終手段(構造要素以外の0_delete+全文Recheck、1記事1回)
+MATERIALITY_BLOCKING_PIN = False        # S-4: 本文が変わっていない箇所(正規化span集合+fact_id)で過去にBLOCKING確定したものは再判定で覆さない
+STAGE2_VERDICT_REUSE_NONBLOCKING = False   # S-4: 一致した2-of-2非BLOCKINGの再利用(既定OFF、¥0 replayで重大抑制0件が条件)
+STAGE2_SIBLING_LOCATIONS_CYCLE1 = False    # 第二段階案: 同fact_id兄弟箇所をcycle 1のStage 2 batchへ前倒し(Rewriteへは渡さない)
+
 RECHECK_DECISION_PASS = "PASS"
 RECHECK_DECISION_NEXT_CYCLE = "NEXT_CYCLE"
 RECHECK_DECISION_STOP = "STOP"
@@ -2177,6 +2200,14 @@ def _unresolved_prior_indices(source: dict, n_prior: int) -> list:
         except (TypeError, ValueError):
             continue
     return [i for i in range(n_prior) if not got.get(i, False)]
+
+
+def multi_range_to_quote_form(text: str) -> str:
+    """改行連結された複数範囲を`“A” and “B”`の引用形式へ変換する(単一範囲ならそのまま)。決定論・¥0。"""
+    parts = [p.strip() for p in (text or "").split("\n") if p.strip()]
+    if len(parts) < 2:
+        return (text or "").strip()
+    return " and ".join("“" + p + "”" for p in parts)
 
 
 def normalize_recheck_outcome(recheck: dict, confirm: dict | None, prior_blocking_claims: list,
@@ -2220,6 +2251,10 @@ def normalize_recheck_outcome(recheck: dict, confirm: dict | None, prior_blockin
             cur = (prior_issues[i].get("claim_in_article") or "").strip()
             if cur and "\n" not in cur:
                 dev["claim_in_article"] = cur
+            elif cur and SPAN_FALLBACK_CHAIN:
+                # 委任_11 D(ii)(Opus#14 L2221、Fable評価2/7): 複数範囲(改行連結)をskipせず`“A” and “B”`の引用形式へ変換する
+                # (次cycleの断片照合[`_vs_resolve_in_text_core`、接続詞だけの残り]が通る形)。
+                dev["claim_in_article"] = multi_range_to_quote_form(cur)
         key = (fid, (dev.get("claim_in_article") or "").strip())
         if key in seen_prior:
             dropped += 1
@@ -4965,8 +5000,13 @@ def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
             continue
         cjk = bool(_VS_EXPLAIN_CJK_RE.search(s))
         if (len(s) >= VS_EXPLAIN_MAX_JA_CHARS) if cjk else (len(s.split()) >= VS_EXPLAIN_MAX_EN_WORDS):
-            rec["verdict"] = "remainder_too_long"
-            return rej("remainder_too_long")
+            # 委任_11 D(i)(Fable評価7): 狭い緩和。残りが閉じた語彙の位置語(headline/one_line=U-2要素)を含み、かつ
+            # 以降の逐語一致・隣接一致の棄却(不完全な引用の兆候)に当たらない場合に限り語数制限を外す(それらの棄却は残す)。
+            if SPAN_FALLBACK_CHAIN and any(w in VS_EXPLAIN_U2_ELEMENTS and w in el for w in want):
+                rec["too_long_relaxed"] = True
+            else:
+                rec["verdict"] = "remainder_too_long"
+                return rej("remainder_too_long")
         ns = vs_norm_str(s, True)
         if ns and ns in nt and s.lower().lstrip("#").strip() not in VS_STRUCTURAL_LABELS:
             long_ok = (len(s) >= 8) if cjk else (len(s.split()) >= VS_EXPLAIN_MIN_VERBATIM_WORDS)
@@ -5602,6 +5642,8 @@ def annotate_claim_span_identity(claim: dict, en_text: str | None, ja_text: str 
     res = resolve_violation_spans(claim.get("claim_text", ""), en_text, ja_text)
     claim["span_resolution_cycle_start"] = {k: res.get(k) for k in (
         "status", "lang", "level", "reason", "ranges", "both_langs_ok", "per_lang", "detail")}
+    if res.get("explain_split") is not None:  # 委任_11(Opus#14 論点3、記録専用): explain_splitの棄却理由・断片・残りの判定を残す(従来は落ちていた)
+        claim["span_resolution_cycle_start"]["explain_split"] = res["explain_split"]
     if res.get("sentence_restore") is not None:  # 委任_66(記録専用): L6の試行結果
         claim["span_resolution_cycle_start"]["sentence_restore"] = res["sentence_restore"]
     claim["claim_span_text"] = claim_span_text(res)
@@ -5871,6 +5913,21 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
     # 委任_07(Fable事前判断2): 構造要素(タイトル・In one line・見出し・先頭段落)にかかるdeleteは常に劣化する(空のタイトル等
     # =`degenerate_rewrite_output`のhard block)。KPI構成(`STRUCTURAL_ELEMENT_REWRITE`ON)では、deleteを選ばず書き換え(E1→③→④)へ回し、
     # 空・劣化した案は却下して次の水準へ進める(Human Reviewへ倒す新経路なし)。
+    # 委任_11 T(最終手段、Fable評価9): ladderを経ず、構造要素以外の該当文を既存`0_delete`(決定論削除+再出現ガード)で削除する。
+    # 構造要素(title/heading/in_one_line/preflight_degenerate)にかかる場合は削除せず「ladder枯渇(構造要素)」として返す
+    # (呼び出し側が`blocking_structural_after_ladder`へ)。LLM callなし。1記事1回の制限は呼び出し側(run_instance)が持つ。
+    if claim_rec.get("last_resort_delete") and LAST_RESORT_DELETE:
+        rewrite_kind = "delete"
+        st_reasons_t = structural_element_reasons(full_text, spans, ranges)
+        handoff["last_resort_delete"] = {"structural_reasons": st_reasons_t}
+        if st_reasons_t:
+            handoff["structural_blocking"] = True
+            return {"updated_text": full_text, "method": "last_resort_delete_structural_blocked", "guard_ok": False,
+                    "target_sentence": " ".join(ranges), "locate_method": locate_method,
+                    "delete_reoccurrence_detected": False, "before_fragment": " ".join(ranges),
+                    "after_fragment": None, "ladder_level_used": None, "target_not_locatable": False,
+                    "ladder_exhausted_without_full_rewrite": True, "handoff": handoff}
+
     structural_rewrite = False
     if STRUCTURAL_ELEMENT_REWRITE and rewrite_kind == "delete":
         st_reasons = structural_element_reasons(full_text, spans, ranges)
@@ -5955,6 +6012,14 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
         claim_rec["problem_kind"] = problem_kind
         handoff["problem_kind"] = problem_kind
         levels = filter_levels_by_problem_kind(levels, dev)
+        # 委任_11 B′(Fable評価4): 同一箇所(前cycleで置換した範囲と今回確定spanが1文字以上重なる)は、前に試したlevel以下を飛ばして
+        # 上位から昇段する(位置のみで判定、fact_idは問わない)。呼び出し側が`location_prior_levels`を付与したときだけ効く。
+        _prior_lv = list(claim_rec.get("location_prior_levels") or [])
+        if _prior_lv:
+            _max_rank = max(LADDER_LEVEL_RANK.get(n, 1) for n in _prior_lv)
+            handoff["location_carry"] = {"prior_levels": _prior_lv, "skipped_levels": [
+                lv["name"] for lv in levels if LADDER_LEVEL_RANK.get(lv["name"], 1) <= _max_rank]}
+            levels = [lv for lv in levels if LADDER_LEVEL_RANK.get(lv["name"], 1) > _max_rank]
         handoff["levels_planned"] = [lv["name"] for lv in levels]
 
         for lv in levels:
@@ -5991,6 +6056,16 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
             attempt["revised"] = list(revised)
             changed = [r != t for t, r in zip(targets, revised)]
             attempt["each_target_changed"] = changed
+            # 委任_11 A2(Fable評価5): 範囲ごとに、箇所の過去状態(原文・前cycleまでの本文)へ戻る候補を決定論で却下する
+            # (同cycle内で上位levelへ進む。前後の文脈つきで照合するため、短い語が別の場所にあるだけでは却下しない)。
+            if REWRITE_REVERT_GUARD and claim_rec.get("article_state_history"):
+                rv = [revert_to_prior_state_detected(claim_rec["article_state_history"], full_text, t, r)
+                      for t, r in zip(targets, revised)]
+                if any(rv):
+                    attempt["result"] = "revert_rejected"
+                    attempt["revert_detected_by_range"] = rv
+                    method_used = f"{lv['tag']}_revert_rejected({locate_method})"
+                    continue
             if (lv["name"] == "1_word_connective" and l6 and l6.get("status") == "restored"
                     and l6.get("n_sentences") == 2 and len(targets) == 1):
                 # 委任_66(Opus#9論点4(b)): 2文復元時、E1の変更が「断片/アンカーを含む文」の外側に及んだら
@@ -6041,6 +6116,7 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                 after_fragment = " ".join(revised)
             break
 
+    handoff["levels_attempted"] = [a.get("level") for a in handoff["level_attempts"]]  # 委任_11: 実際に試行したlevel一覧(`escalated_to_paragraph`是正用)
     if not guard_ok:
         after_fragment = None
         if not ENABLE_LADDER_LEVEL_6_FULL_REWRITE:
@@ -7864,6 +7940,126 @@ def _record_carry_forward_recheck(rewrite_records: list, resolved_items, source:
             h["carry_forward_recheck_source"] = source
 
 
+# ============================================================
+# 委任_11(OPEN-233-KPI-RECOVERY-REDESIGN-02、Opus#14後のFable評価、設計書§18): 位置座標の引継ぎ(I-1最小実装)・STAGE4許可リスト(I-2)
+# の決定論ヘルパー。全て¥0・LLM callなし。Trial専用。
+# ============================================================
+STAGE4_ALLOWED_REASONS = frozenset({
+    "blocking_confirmed_unlocatable_after_cap", "blocking_structural_after_ladder", "post_T_new_blocking", "api_failure"})
+# 現行本文の具体的箇所についてStage 2(+S1)がBLOCKINGを確定したこと(funnel通過)を要する理由
+STAGE4_FUNNEL_REQUIRED_REASONS = frozenset({
+    "blocking_confirmed_unlocatable_after_cap", "blocking_structural_after_ladder", "post_T_new_blocking"})
+
+
+def stage4_allowlist_decision(reason: str, context: dict | None = None) -> dict:
+    """I-2: STAGE4(Human Review)へ進めてよいかを1箇所で決める。許可reason(4種)のみ許可し、BLOCKING由来の3種は
+    Stage 2(+S1)がその周で確定済み(`context["funnel_passed"]`)であることも要する。許可外は`action="funnel"`
+    (呼び出し側が判定だけのcycle/次cycleへ戻す)で、`violation`へ記録名を残す。"""
+    ctx = context or {}
+    if reason not in STAGE4_ALLOWED_REASONS:
+        return {"allowed": False, "reason": reason, "action": "funnel", "violation": "reason_not_in_allowlist"}
+    if reason in STAGE4_FUNNEL_REQUIRED_REASONS and not ctx.get("funnel_passed", False):
+        return {"allowed": False, "reason": reason, "action": "funnel", "violation": "not_funnelled"}
+    return {"allowed": True, "reason": reason, "action": "stage4", "violation": None}
+
+
+def _revert_norm(s: str) -> str:
+    return re.sub(r"\s+", " ", vs_quote_glyph_norm(s or "")).strip()
+
+
+def revert_to_prior_state_detected(prior_states: list, current_text: str, target: str, revised: str,
+                                   ctx_chars: int = 30) -> bool:
+    """A2: 書き換え候補`revised`(`target`の置換案)が、この箇所の過去の状態(prior_states=原文・前cycleまでの本文)と同じか。
+    現行本文での`target`の前後ctx_chars字(正規化後)を添えた形が過去本文に完全一致するときだけ真(位置つきの照合)。
+    削除案(空)・targetが現行本文に一意でない場合は判定しない。"""
+    if not (revised or "").strip() or not prior_states or current_text.count(target) != 1:
+        return False
+    pos = current_text.find(target)
+    left = _revert_norm(current_text[:pos])[-ctx_chars:]
+    right = _revert_norm(current_text[pos + len(target):])[:ctx_chars]
+    needle = left + (" " if left else "") + _revert_norm(revised) + (" " if right else "") + right
+    needle = needle.strip()
+    if _revert_norm(target) == _revert_norm(revised):
+        return False
+    return any(needle and needle in _revert_norm(p) for p in prior_states)
+
+
+def _occurrences(text: str, sub: str) -> list:
+    if not sub:
+        return []
+    out, i = [], text.find(sub)
+    while i >= 0:
+        out.append((i, i + len(sub)))
+        i = text.find(sub, i + 1)
+    return out
+
+
+def claim_ranges_in_text(claim: dict, text: str) -> list:
+    """claimの確定範囲(`span_resolution_cycle_start["ranges"]`)の現行本文での座標[(a,b)]。確定不能なら空。"""
+    sr = claim.get("span_resolution_cycle_start") or {}
+    if sr.get("status") != "resolved":
+        return []
+    out = []
+    for r in sr.get("ranges") or []:
+        occ = _occurrences(text, r)
+        if occ:
+            out.append(occ[0])
+    return out
+
+
+def location_prior_levels(regions: list, claim: dict, text: str) -> tuple:
+    """B′: claimの確定範囲が、前cycleまでの置換範囲(regions)と1文字以上重なるか。(重なったlevel名のlist, 重なった件数)。"""
+    cl = claim_ranges_in_text(claim, text)
+    levels: set = set()
+    n = 0
+    for rg in regions:
+        for (c, d) in _occurrences(text, rg["text"]):
+            if any(a < d and c < b for (a, b) in cl):
+                levels |= set(rg["levels"])
+                n += 1
+                break
+    return sorted(levels), n
+
+
+def update_regions_after_rewrite(regions: list, pre_text: str, rewrite_records: list, cycle: int) -> list:
+    """I-1最小実装: Rewriteで置換された範囲(置換後の文字列)を、前の置換範囲との重なりを引き継いで保持する。
+    置換後が空(削除)の範囲は保持しない。座標は文字列としてではなく本文中の出現位置で再計算される(`location_prior_levels`)。"""
+    out = list(regions)
+    for rec in rewrite_records:
+        h = rec.get("handoff") or {}
+        for att in h.get("level_attempts", []):
+            if att.get("result") != "success":
+                continue
+            lvl = att.get("level")
+            for t, r in zip(att.get("targets") or [], att.get("revised") or [""] * len(att.get("targets") or [])):
+                inherited: set = set()
+                tr = _occurrences(pre_text, t)
+                keep = []
+                for rg in out:
+                    ov = any(a < d and c < b for (c, d) in _occurrences(pre_text, rg["text"]) for (a, b) in tr[:1])
+                    if ov:
+                        inherited |= set(rg["levels"])
+                    else:
+                        keep.append(rg)
+                out = keep
+                if (r or "").strip():
+                    out.append({"text": r, "levels": sorted(inherited | {lvl}), "cycle": cycle})
+    return out
+
+
+def _span_key(text_ranges: list, fact_id: str):
+    return (frozenset(re.sub(r"\s+", " ", vs_quote_glyph_norm(r)).strip().lower() for r in text_ranges),
+            (fact_id or "").strip())
+
+
+def claim_materiality_key(claim_text: str, fact_id: str, en_text: str):
+    """S-4: materialityを本文に紐づけるキー=(箇所の正規化span集合, fact_id)。確定不能ならNone。"""
+    res = resolve_violation_spans(claim_text, en_text, None)
+    if res.get("status") != "resolved" or not res.get("ranges"):
+        return None
+    return _span_key(res["ranges"], fact_id)
+
+
 def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool = False,
                   stage1_cache: dict | None = None, instances_subdir: str = "instances",
                   use_enumeration_stage1: bool = True,
@@ -8042,11 +8238,50 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
     stage1_deviations = [d for d in stage1_parsed.get("deviations", []) if d.get("severity") == "MAJOR"]
     cycle = 1
+    # 委任_11: Opus#14後のFable評価の状態(全て新スイッチOFFなら未使用=legacy)
+    allowlist_log: list = []            # I-2: STAGE4許可リスト判定の記録(許可・許可外の両方)
+    switch_fired: dict = {}             # スイッチ別の発火回数(記録専用)
+    t_used = False                      # T(最終手段)は1記事1回
+    carry_blocking: list = []           # H-1: 書き換えられなかった(位置を取れなかった)BLOCKING。空でない間はPASSを返さない
+    rewritten_regions: list = []        # I-1最小: 前cycleまでの置換範囲(置換後文字列+試行level)
+    article_state_history: list = []    # A2: 過去の本文(原文・前cycleまで)
+    pinned_blocking: dict = {}          # S-4: キー(span集合,fact_id)->BLOCKING確定済みのStage 2結果
+    nonblocking_registry: dict = {}     # S-4: 一致した2-of-2非BLOCKINGの結果(再利用スイッチ用)
+    pass_blocked_by_carry = 0
+    unrewritten_blocking_pass = 0       # 事前基準: 書き換えられていないBLOCKINGによるPASS件数(0であること)
+
+    def _allow(reason: str, ctx: dict, legacy: str | None = None) -> dict:
+        d = stage4_allowlist_decision(reason, ctx)
+        allowlist_log.append({"cycle": cycle, "decision": d, "legacy_reason": legacy})
+        return d
+
     while True:
         working_fixture = dict(fixture)
         working_fixture["article_text"] = current_en_text
         if current_ja_text is not None:
             working_fixture["source_article_text"] = current_ja_text
+        judge_only = bool(STAGE4_ALLOWLIST and JUDGE_ONLY_CYCLE_AFTER_CAP and cycle > HARD_MAX_CYCLES)
+
+        # 第二段階案(既定OFF): cycle 1のStage 2 batchへ、同fact_id兄弟箇所の決定論列挙を足す(Rewriteへは渡さない=Stage 2がBLOCKINGにした箇所だけ)
+        if STAGE2_SIBLING_LOCATIONS_CYCLE1 and cycle == 1:
+            _base = [dict(d, same_fact_id_locations=None) for d in stage1_deviations]
+            _enum = deterministic_same_fact_id_location_fallback(_base, current_en_text)
+            _seen = {(d.get("claim_in_article") or "").strip() for d in stage1_deviations}
+            _added = []
+            for e in _enum:
+                for loc in (e.get("same_fact_id_locations") or []):
+                    ls = (loc or "").strip()
+                    if ls and ls not in _seen and ls in current_en_text:
+                        nd = dict(e)
+                        nd.pop("same_fact_id_locations", None)
+                        nd["claim_in_article"] = ls
+                        nd["detected_by_enumeration"] = True
+                        nd["enumeration_source_claim"] = (e.get("claim_in_article") or "").strip()
+                        _added.append(nd)
+                        _seen.add(ls)
+            if _added:
+                stage1_deviations = list(stage1_deviations) + _added
+                switch_fired["STAGE2_SIBLING_LOCATIONS_CYCLE1"] = switch_fired.get("STAGE2_SIBLING_LOCATIONS_CYCLE1", 0) + len(_added)
 
         existing_fact_ids = {(d.get("related_fact_id") or "") for d in stage1_deviations}
         precheck_claims = build_precheck_floor_claims(working_fixture, existing_fact_ids)
@@ -8055,6 +8290,38 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                        "related_fact_id": d.get("related_fact_id"), "dev": d, "detected_by": "stage1_llm"}
                       for d in stage1_deviations]
 
+        # 委任_11 D(iii)(H-1): 前cycleで書き換えられなかった(位置を取れなかった)BLOCKINGを、Stage 2を通さずBLOCKINGのまま持ち越す。
+        # 同fact_idのRecheck指摘があれば、その`claim_in_article`で位置を取り直す(Recheckは位置の再取得だけに使う)。
+        carried_results: list = []
+        if carry_blocking:
+            for cr in carry_blocking:
+                cfid = (cr["dev"].get("related_fact_id") or "").strip()
+                new_dev = dict(cr["dev"])
+                relocated = False
+                if cfid:
+                    for lc in list(llm_claims):
+                        if (lc["related_fact_id"] or "").strip() == cfid:
+                            new_dev["claim_in_article"] = lc["dev"].get("claim_in_article", new_dev.get("claim_in_article"))
+                            llm_claims.remove(lc)
+                            relocated = True
+                            break
+                carried_results.append({**cr, "dev": new_dev, "claim_text": new_dev.get("claim_in_article", ""),
+                                        "carried_blocking": True, "carried_relocated": relocated})
+            switch_fired["SPAN_FALLBACK_CHAIN.carry_injected"] = switch_fired.get("SPAN_FALLBACK_CHAIN.carry_injected", 0) + len(carried_results)
+            carry_blocking = []
+        # S-4(既定OFF): 一致した2-of-2非BLOCKING(span集合+fact_idの完全一致)の再利用。Stage 2 callを省く。
+        reused_results: list = []
+        if STAGE2_VERDICT_REUSE_NONBLOCKING and nonblocking_registry:
+            _keep = []
+            for lc in llm_claims:
+                k_ = claim_materiality_key(lc["claim_text"], lc["related_fact_id"], current_en_text)
+                if k_ is not None and k_ in nonblocking_registry:
+                    reused_results.append({**nonblocking_registry[k_], "claim_text": lc["claim_text"], "dev": lc["dev"],
+                                           "reused_nonblocking_verdict": True})
+                    switch_fired["STAGE2_VERDICT_REUSE_NONBLOCKING"] = switch_fired.get("STAGE2_VERDICT_REUSE_NONBLOCKING", 0) + 1
+                else:
+                    _keep.append(lc)
+            llm_claims = _keep
         stage2_input_claims = [c for c in llm_claims]
         stage2_results = []
         if stage2_input_claims:
@@ -8095,6 +8362,30 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         else:
             stage2_two_of_two_log = []
 
+        # S-4 BLOCKING固定: 本文が変わっていない箇所(正規化span集合+fact_id)で過去にBLOCKING確定したものは、再判定の揺れで覆さない
+        # (判定だけのcycle[G]でも同じ。S1を通った後の結果にだけ適用する=Stage 2単独の非BLOCKINGで閉じない)。
+        if MATERIALITY_BLOCKING_PIN and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+            for i_, r_ in enumerate(stage2_results):
+                if r_["materiality"] == "BLOCKING":
+                    continue
+                k_ = claim_materiality_key(r_.get("claim_text", ""), (r_["dev"].get("related_fact_id") or ""), current_en_text)
+                if k_ is not None and k_ in pinned_blocking:
+                    pr_ = pinned_blocking[k_]
+                    stage2_results[i_] = {**r_, "materiality": "BLOCKING", "basis": "materiality_pinned",
+                                          "floor_reason": "materiality_pinned", "pinned_from_cycle": pr_["_cycle"],
+                                          "rewrite_kind": pr_.get("rewrite_kind") or r_.get("rewrite_kind"),
+                                          "rewrite_hint": pr_.get("rewrite_hint") or r_.get("rewrite_hint"),
+                                          "pinned_original_materiality": r_["materiality"]}
+                    switch_fired["MATERIALITY_BLOCKING_PIN"] = switch_fired.get("MATERIALITY_BLOCKING_PIN", 0) + 1
+        if STAGE2_VERDICT_REUSE_NONBLOCKING and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+            for r_ in stage2_results:
+                so_ = r_.get("second_opinion") or {}
+                if r_["materiality"] != "BLOCKING" and so_.get("confirmed_downgrade") and not r_.get("floor_reason"):
+                    k_ = claim_materiality_key(r_.get("claim_text", ""), (r_["dev"].get("related_fact_id") or ""), current_en_text)
+                    if k_ is not None:
+                        nonblocking_registry[k_] = {kk: vv for kk, vv in r_.items() if kk not in ("claim_text", "dev")}
+        stage2_results = stage2_results + carried_results + reused_results
+
         blocking_claims = [c for c in stage2_results if c["materiality"] == "BLOCKING"]
         non_blocking_claims = [c for c in stage2_results if c["materiality"] != "BLOCKING"]
         # 委任_42 仕様(7): cycle開始時点の本文で、各BLOCKING claimの範囲を確定して
@@ -8103,8 +8394,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # 表示は変更しない)。確定不能の場合は従来どおり生のclaim文字列を使う。
         for c in blocking_claims:
             annotate_claim_span_identity(c, current_en_text, current_ja_text)
+            if MATERIALITY_BLOCKING_PIN and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
+                _sr = c.get("span_resolution_cycle_start") or {}
+                if _sr.get("status") == "resolved" and _sr.get("ranges"):
+                    pinned_blocking[_span_key(_sr["ranges"], c["dev"].get("related_fact_id") or "")] = {
+                        "rewrite_kind": c.get("rewrite_kind"), "rewrite_hint": c.get("rewrite_hint"), "_cycle": cycle}
 
         cycle_record = {
+            **({"judge_only_cycle": True} if judge_only else {}),
             "cycle": cycle, "stage2_results": stage2_results,
             "blocking_count": len(blocking_claims), "non_blocking_count": len(non_blocking_claims),
             "stage2_two_of_two_log": stage2_two_of_two_log,
@@ -8132,6 +8429,24 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cycles_log.append(cycle_record)
             break
 
+        _newroute = bool(STAGE4_ALLOWLIST and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN)
+        # 委任_11 T後: 最終手段(削除)の後にStage 2(+S1)がBLOCKINGを確定したら、追わずに許可リスト内の出口へ(Fable評価9)
+        if _newroute and LAST_RESORT_DELETE and t_used:
+            d_ = _allow("post_T_new_blocking", {"funnel_passed": True})
+            final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+            cycles_log.append(cycle_record)
+            break
+        # 委任_11 D(iii): 前cycleで位置を取り直そうとして取れなかった持ち越しBLOCKINGだけが残る(再取得されず・他に処理対象なし)
+        # なら、これ以上同じ文字列で再試行しない(Recheckで位置の再取得は既に1回試みた)。上限後に位置特定不能のBLOCKINGとして許可リストの出口へ。
+        if _newroute and SPAN_FALLBACK_CHAIN and carried_results and all(
+                c.get("carried_blocking") and not c.get("carried_relocated") and
+                (c.get("span_resolution_cycle_start") or {}).get("status") != "resolved" for c in blocking_claims):
+            d_ = _allow("blocking_confirmed_unlocatable_after_cap", {"funnel_passed": True})
+            final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+            cycle_record["unlocatable_carried_claim_ids"] = sorted({claim_identity(c["dev"]) for c in blocking_claims})
+            cycles_log.append(cycle_record)
+            break
+
         # 委任_11 作業B-3(§3-3停止判定の是正、Opus L2 #2論点1推奨3): fact_id
         # 一致だけでなく正規化claim本文の近似一致も要求する
         # (find_matching_prior_record)。一致すれば「Rewriteが当該claimに
@@ -8144,7 +8459,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # 是正)。
         matched_records = []
         matched_claim_by_identity = {}
-        if cycle > 1:
+        if cycle > 1 and not judge_only:
             for c in blocking_claims:
                 _span_txt = c.get("claim_span_text")
                 m = find_matching_prior_record(
@@ -8177,6 +8492,17 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # open封鎖・等価FAIL gatingは無変更。
         exhausted_matched_records = [m for m in matched_records if m.get("escalated_to_paragraph")]
         escalatable_matched_records = [m for m in matched_records if not m.get("escalated_to_paragraph")]
+        if exhausted_matched_records and _newroute:
+            # 委任_11 I-2: `same_claim_fact_id_reblocked`は出口として廃止(許可リスト外)。記録して、④段落まで試行済みの箇所として
+            # Rewriteへ進め(ladderに残りlevelなし)、枯渇したらT/構造要素の出口(許可リスト内)へ。
+            _allow("same_claim_fact_id_reblocked", {"funnel_passed": True}, legacy="same_claim_fact_id_reblocked")
+            cycle_record["repeat_claim_ids"] = sorted({m["identity"] for m in exhausted_matched_records})
+            cycle_record["same_claim_reblocked_rerouted_to_ladder_exhaust"] = True
+            for m in exhausted_matched_records:
+                claim = matched_claim_by_identity.get(m["identity"])
+                if claim is not None:
+                    claim["location_prior_levels"] = sorted(set(claim.get("location_prior_levels") or []) | {"4_paragraph"})
+            exhausted_matched_records = []
         if exhausted_matched_records:
             final_state = "STAGE4_ESCALATION"
             stage4_reason = "same_claim_fact_id_reblocked"
@@ -8192,6 +8518,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 if claim is not None:
                     claim["escalate_to_paragraph"] = True
 
+        cap_terminal_T = False
         if cycle > MAX_CYCLES:
             # 委任_18 2-3(b)(meta_run03_standard sample2実測、disclosure
             # §1-3-2): 同一fact_idのclaimが記事内の複数箇所に分散し、
@@ -8212,7 +8539,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 prev_cycle_blocking_count is not None and len(blocking_claims) < prev_cycle_blocking_count
             )
             allow_extra_cycle = (
-                not extra_cycle_granted and cycle == MAX_CYCLES + 1
+                not extra_cycle_granted and cycle == MAX_CYCLES + 1 and not judge_only
                 and (progress_shown or same_fact_id_new_location)
             )
             if allow_extra_cycle:
@@ -8220,6 +8547,28 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 cycle_record["extra_cycle_granted"] = True
                 if same_fact_id_new_location and not progress_shown:
                     cycle_record["extra_cycle_reason"] = "same_fact_id_new_location(委任_18 2-3b)"
+            elif _newroute and JUDGE_ONLY_CYCLE_AFTER_CAP:
+                # 委任_11 G/T(Fable評価8/9): 上限=Rewrite回数の上限であって判定回数の上限ではない。この周のStage 2+S1(Tier 0・BLOCKING固定を
+                # 含む経路)が既にBLOCKINGを確定している。`cycle_limit_exhausted`は出口として廃止(許可リスト外)し、
+                # 位置を特定できなければ`blocking_confirmed_unlocatable_after_cap`、できればT(最終手段)へ。
+                _allow("cycle_limit_exhausted", {"funnel_passed": True}, legacy="cycle_limit_exhausted")
+                _unloc = [c for c in blocking_claims
+                          if (c.get("span_resolution_cycle_start") or {}).get("status") != "resolved"]
+                if _unloc:
+                    d_ = _allow("blocking_confirmed_unlocatable_after_cap", {"funnel_passed": True})
+                    final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                    cycle_record["unlocatable_claim_ids"] = sorted({claim_identity(c["dev"]) for c in _unloc})
+                    cycles_log.append(cycle_record)
+                    break
+                if not LAST_RESORT_DELETE or t_used:
+                    d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                    final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                    cycles_log.append(cycle_record)
+                    break
+                cap_terminal_T = True
+                cycle_record["cap_terminal_last_resort"] = True
+                for c in blocking_claims:
+                    c["last_resort_delete"] = True
             else:
                 final_state = "STAGE4_ESCALATION"
                 stage4_reason = "cycle_limit_exhausted"
@@ -8265,6 +8614,18 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             })
         prev_cycle_blocking_count = len(blocking_claims)
 
+        # 委任_11 B′(Fable評価4): 同一箇所(前cycleの置換範囲と1文字以上重なる)は、前levelより上位から昇段する(位置のみ、fact_idは問わない)
+        if LADDER_LOCATION_CARRY and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN and rewritten_regions:
+            _lc_rec = {}
+            for c in blocking_claims:
+                lv_, n_ = location_prior_levels(rewritten_regions, c, current_en_text)
+                if lv_:
+                    c["location_prior_levels"] = sorted(set(c.get("location_prior_levels") or []) | set(lv_))
+                    _lc_rec[claim_identity(c["dev"])] = c["location_prior_levels"]
+            if _lc_rec:
+                cycle_record["location_carry"] = _lc_rec
+                switch_fired["LADDER_LOCATION_CARRY"] = switch_fired.get("LADDER_LOCATION_CARRY", 0) + len(_lc_rec)
+
         # 委任_12(iteration4、§8): Rewrite品質劣化候補判定用にRewrite前
         # テキストを保持する(¥0、決定論比較)。
         en_text_before_rewrite = current_en_text
@@ -8293,6 +8654,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 c2["cycle_start_en_text"] = en_text
                 c2["cycle_start_ja_text"] = ja_text
                 c2["cycle_replaced_units"] = list(cycle_replaced_units)
+                if REWRITE_REVERT_GUARD and article_state_history:
+                    c2["article_state_history"] = list(article_state_history)  # A2: 過去状態(原文・前cycleまでの本文)
                 r = run_stage3_for_claim(
                     client, state, consecutive_errors, call_log,
                     f"{instance_id}_c{cycle}_{claim_identity(c['dev'])[:20]}{label_suffix}",
@@ -8338,6 +8701,24 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # cycleを打ち切り、Stage4(target_not_locatable)へ回す(⑥全体
         # フォールバックを未試行の代替として使わない、2-1(d))。
         unlocatable_records = [r for r in rewrite_records if r.get("target_not_locatable")]
+        carry_new: list = []
+        if unlocatable_records and _newroute and SPAN_FALLBACK_CHAIN:
+            # 委任_11 D(iii)/I-2: `violation_span_unverified`/`target_not_locatable`は出口として廃止(許可リスト外)。位置を取れなかった
+            # BLOCKINGはRewriteせずcarry listへ保持し(PASS禁止、H-1)、全文Recheckで位置を再取得させる。取れなければ上限後に
+            # `blocking_confirmed_unlocatable_after_cap`(許可リスト内)。
+            for r_ in unlocatable_records:
+                _allow("violation_span_unverified" if r_.get("span_unverified") else "target_not_locatable",
+                       {"funnel_passed": True},
+                       legacy="violation_span_unverified" if r_.get("span_unverified") else "target_not_locatable")
+            _ids = {r_["claim_identity"] for r_ in unlocatable_records}
+            for c in blocking_claims:
+                if claim_identity(c["dev"]) in _ids:
+                    carry_new.append({k_: v_ for k_, v_ in c.items() if k_ not in ("last_resort_delete",)})
+            cycle_record["carry_blocking_unlocatable_ids"] = sorted(_ids)
+            cycle_record["violation_span_unverified_claim_ids"] = sorted(
+                {r["claim_identity"] for r in unlocatable_records if r.get("span_unverified")})
+            switch_fired["SPAN_FALLBACK_CHAIN.carry_new"] = switch_fired.get("SPAN_FALLBACK_CHAIN.carry_new", 0) + len(carry_new)
+            unlocatable_records = []
         if unlocatable_records:
             final_state = "STAGE4_ESCALATION"
             # 委任_42: 新方式で範囲を確定できなかった指摘(0箇所/複数箇所/説明文混在)は
@@ -8360,7 +8741,64 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # で⑥使用7件全てが最終的にSTAGE4だった=⑥が必要だったEvidenceが
         # 0件だったため)。
         ladder_exhausted_records = [r for r in rewrite_records if r.get("ladder_exhausted_without_full_rewrite")]
-        if ladder_exhausted_records:
+        if ladder_exhausted_records and _newroute:
+            # 委任_11 I-2/T: `ladder_exhausted_without_full_rewrite`は出口として廃止(許可リスト外)。API失敗だけで枯渇したなら`api_failure`、
+            # 既にTを試みた/構造要素/T無効なら`blocking_structural_after_ladder`、それ以外はT(構造要素以外の0_delete+全文Recheck、1記事1回)。
+            _ex_ids = {r_["claim_identity"] for r_ in ladder_exhausted_records}
+            _api_only = all(
+                (r_.get("handoff") or {}).get("level_attempts") and all(
+                    a_.get("result") in ("api_failure", "parse_failure") for a_ in (r_.get("handoff") or {}).get("level_attempts", []))
+                for r_ in ladder_exhausted_records)
+            _allow("ladder_exhausted_without_full_rewrite", {"funnel_passed": True}, legacy="ladder_exhausted_without_full_rewrite")
+            _already_T = any(c.get("last_resort_delete") for c in blocking_claims
+                             if claim_identity(c["dev"]) in _ex_ids)
+            _struct = any(((r_.get("handoff") or {}).get("structural_blocking")) for r_ in ladder_exhausted_records)
+            if _api_only:
+                d_ = _allow("api_failure", {})
+                _stop = d_["reason"]
+            elif _already_T or _struct or t_used or not LAST_RESORT_DELETE:
+                d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                _stop = d_["reason"]
+            else:
+                _stop = None
+            if _stop:
+                final_state, stage4_reason = "STAGE4_ESCALATION", _stop
+                cycle_record["rewrite_records"] = rewrite_records
+                cycle_record["ladder_exhausted_claim_ids"] = sorted(_ex_ids)
+                cycles_log.append(cycle_record)
+                break
+            # T: 枯渇したclaimだけを構造要素以外の決定論削除へ(他のclaimの結果は保持)
+            t_claims = [c for c in blocking_claims if claim_identity(c["dev"]) in _ex_ids]
+            for c in t_claims:
+                c["last_resort_delete"] = True
+            _t_en, _t_ja, t_records, t_pairs = _run_stage3_cycle(
+                t_claims, current_en_text, current_ja_text, base_constraint, label_suffix="_T")
+            _t_fail = [r_ for r_ in t_records if not r_.get("guard_ok")]
+            if _t_fail:
+                d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                cycle_record["rewrite_records"] = rewrite_records + t_records
+                cycle_record["ladder_exhausted_claim_ids"] = sorted(_ex_ids)
+                cycle_record["last_resort_delete_failed"] = True
+                cycles_log.append(cycle_record)
+                break
+            # 削除を現行本文へ反映(_run_stage3_cycleは各claimの結果を連鎖させて返す)
+            current_en_text, current_ja_text = _t_en, _t_ja
+            t_used = True
+            switch_fired["LAST_RESORT_DELETE"] = switch_fired.get("LAST_RESORT_DELETE", 0) + len(t_claims)
+            cycle_record["last_resort_delete_applied"] = sorted(_ex_ids)
+            _rec_by = {r_["claim_identity"]: r_ for r_ in t_records}
+            _pair_by = {r_["claim_identity"]: p_ for r_, p_ in zip(t_records, t_pairs)}
+            new_records, new_pairs = [], []
+            for r_, p_ in zip(rewrite_records, before_after_pairs):
+                if r_["claim_identity"] in _rec_by:
+                    new_records.append(_rec_by[r_["claim_identity"]])
+                    new_pairs.append(_pair_by[r_["claim_identity"]])
+                else:
+                    new_records.append(r_)
+                    new_pairs.append(p_)
+            rewrite_records, before_after_pairs = new_records, new_pairs
+        if ladder_exhausted_records and not _newroute:
             final_state = "STAGE4_ESCALATION"
             stage4_reason = "ladder_exhausted_without_full_rewrite"
             cycle_record["rewrite_records"] = rewrite_records
@@ -8399,6 +8837,22 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             section_role_after_regen = None
 
         cycle_record["rewrite_records"] = rewrite_records
+        if cap_terminal_T:
+            t_used = True
+            switch_fired["LAST_RESORT_DELETE"] = switch_fired.get("LAST_RESORT_DELETE", 0) + len(blocking_claims)
+        # 委任_11: `escalated_to_paragraph`を「実際に4_paragraphを試行したか」(試行level一覧)へ是正し、置換範囲(I-1最小)・過去本文(A2)を更新する
+        if LADDER_LOCATION_CARRY or REWRITE_REVERT_GUARD:
+            _base_i = len(prior_blocking_records) - len(blocking_claims)
+            for i_, (c_, r_) in enumerate(zip(blocking_claims, rewrite_records)):
+                if _base_i + i_ >= 0:
+                    _lv_att = list(((r_.get("handoff") or {}).get("levels_attempted")) or [])
+                    prior_blocking_records[_base_i + i_]["levels_attempted"] = _lv_att
+                    if LADDER_LOCATION_CARRY:
+                        prior_blocking_records[_base_i + i_]["escalated_to_paragraph"] = "4_paragraph" in _lv_att
+            if current_en_text != en_text_before_rewrite:
+                rewritten_regions = update_regions_after_rewrite(rewritten_regions, en_text_before_rewrite,
+                                                                 rewrite_records, cycle)
+                article_state_history.append(en_text_before_rewrite)
         # 委任_49 2-5(記録専用): 英語の見出し(`# `行)が書き換えられたら前後を記録
         _t_before, _t_after = _en_title_line(en_text_before_rewrite), _en_title_line(current_en_text)
         cycle_record["en_title_rewritten"] = bool(_t_before != _t_after)
@@ -8448,6 +8902,11 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 or final_section_role.get("iol_degenerate")):
             final_state = "STAGE4_ESCALATION"
             stage4_reason = "degenerate_rewrite_output"
+            if _newroute:
+                # 委任_11 I-2: 構造要素(title/hook/In one line)を空・極端短縮にする書き換え=構造要素のladder枯渇として許可リスト内の出口へ
+                _allow("degenerate_rewrite_output", {"funnel_passed": True}, legacy="degenerate_rewrite_output")
+                d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                stage4_reason = d_["reason"]
             cycle_record["degenerate_rewrite_detected"] = True
             cycles_log.append(cycle_record)
             break
@@ -8509,6 +8968,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if ja_guard_result is not None and ja_guard_result.get("indeterminate"):
             recheck_required = True
             recheck_required_reasons = recheck_required_reasons + ["ja_fail_open_guard_indeterminate"]
+        if carry_new:  # 委任_11 D(iii): 位置を取れなかったBLOCKINGがある周は、局所QAで閉じず必ず全文Recheck(位置の再取得)
+            recheck_required = True
+            recheck_required_reasons = recheck_required_reasons + ["carry_blocking_unlocated_relocate_via_recheck"]
         cycle_record["full_recheck_required"] = recheck_required
         cycle_record["full_recheck_required_reasons"] = recheck_required_reasons
         if not recheck_required:
@@ -8668,11 +9130,17 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
         cycles_log.append(cycle_record)
 
+        carry_blocking = list(carry_new)  # 次cycleへ持ち越す(空でない間はPASSを返さない)
+        if en_ok and ja_ok and carry_new:
+            # 委任_11 H-1(Opus#14): Stage 2がBLOCKINGと確定し、書き換えられなかった箇所を、Recheck1回の「解消/準拠」だけでPASSさせない
+            pass_blocked_by_carry += 1
+            cycle_record["pass_blocked_by_carry_blocking"] = True
+            en_ok = False
         if en_ok and ja_ok:
             final_state = "RESOLVED_REWRITE"
             break
 
-        if cycle_record.get("recheck_reconfirmed") is False and not RECHECK_MERGE_UNRESOLVED:
+        if cycle_record.get("recheck_reconfirmed") is False and not RECHECK_MERGE_UNRESOLVED and not _newroute:
             # 再確認でも解消未確認(自己矛盾が解消しない) -> 次cycleの空
             # deviationsによる静かな降格を許さずfail-closedでSTAGE4
             # (旧挙動。委任_06 N1′ `RECHECK_MERGE_UNRESOLVED`ON時はこの経路を使わず、下で次cycleのStage 2へ合流させる)
@@ -8682,7 +9150,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
         # 未解消 -> 次cycleのStage1 deviationsをRecheck結果から再構築
         stage1_deviations = [d for d in recheck_parsed.get("deviations", []) if d.get("severity") == "MAJOR"]
-        if RECHECK_MERGE_UNRESOLVED:
+        if RECHECK_MERGE_UNRESOLVED or _newroute:
+            if _newroute and not RECHECK_MERGE_UNRESOLVED and cycle_record.get("recheck_reconfirmed") is False:
+                # 委任_11 I-2: `unconfirmed_after_reverify`は出口として廃止(許可リスト外)。次cycleのStage 2(funnel)へ合流させる
+                _allow("unconfirmed_after_reverify", {"funnel_passed": False}, legacy="unconfirmed_after_reverify")
             # 委任_06 N1′: 未解消のprior issueは必ず次cycleのStage 2を通す(純関数`normalize_recheck_outcome`)
             _norm = normalize_recheck_outcome(recheck_parsed, confirm_parsed, blocking_claims, prior_issues)
             cycle_record["recheck_merge"] = {
@@ -8722,10 +9193,22 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                     existing_dev_fact_ids.add(fid)
         cycle += 1
         if cycle > HARD_MAX_CYCLES:
-            final_state = "STAGE4_ESCALATION"
-            stage4_reason = "cycle_limit_exhausted_after_recheck"
-            break
+            if _newroute and JUDGE_ONLY_CYCLE_AFTER_CAP:
+                # 委任_11 G: 上限到達はRewriteの上限であって判定の上限ではない。`cycle_limit_exhausted_after_recheck`は出口として廃止
+                # (許可リスト外)し、ループ冒頭で「判定だけのcycle」(Stage 2+S1、Rewriteなし)へ遷移する。
+                _allow("cycle_limit_exhausted_after_recheck", {"funnel_passed": False},
+                       legacy="cycle_limit_exhausted_after_recheck")
+                switch_fired["JUDGE_ONLY_CYCLE_AFTER_CAP"] = switch_fired.get("JUDGE_ONLY_CYCLE_AFTER_CAP", 0) + 1
+                if cycle > HARD_MAX_CYCLES + 2:  # 無限ループ防止(通常は到達しない: 判定cycleは必ずbreakするか、T後に1回だけ続く)
+                    final_state, stage4_reason = "STAGE4_ESCALATION", "cycle_limit_exhausted_after_recheck"
+                    break
+            else:
+                final_state = "STAGE4_ESCALATION"
+                stage4_reason = "cycle_limit_exhausted_after_recheck"
+                break
 
+    if final_state in ("RESOLVED_REWRITE", "RESOLVED_STAGE2_DOWNGRADE", "RESOLVED_REWRITE_THEN_DOWNGRADE") and carry_blocking:
+        unrewritten_blocking_pass += 1  # 事前基準: 0であること(構造上は起きない。起きたら記録して検知する)
     elapsed = round(time.time() - t0, 3)
     result = {
         "instance_id": instance_id, "group": inst["group"], "expected_group_label": inst["expected_group_label"],
@@ -8757,6 +9240,20 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         "severity_wobble": severity_wobble_records, "en_title_rewritten": bool(en_title_changes),
         "en_title_changes": en_title_changes,
     }
+    _new_sw = {k: globals()[k] for k in ("STAGE4_ALLOWLIST", "LADDER_LOCATION_CARRY", "REWRITE_REVERT_GUARD",
+                                          "SPAN_FALLBACK_CHAIN", "JUDGE_ONLY_CYCLE_AFTER_CAP", "LAST_RESORT_DELETE",
+                                          "MATERIALITY_BLOCKING_PIN", "STAGE2_VERDICT_REUSE_NONBLOCKING",
+                                          "STAGE2_SIBLING_LOCATIONS_CYCLE1") if globals()[k]}
+    if _new_sw:  # 委任_11(記録専用): 新スイッチの状態・許可リスト判定・発火回数・事前基準の計測値
+        result["switches"] = {**result["switches"], **_new_sw}
+        _viol = [e for e in allowlist_log if not e["decision"]["allowed"]]
+        result["stage4_allowlist"] = {
+            "decisions": allowlist_log, "n_rerouted_legacy_exits": len(_viol),
+            "final_reason_outside_allowlist": bool(final_state == "STAGE4_ESCALATION"
+                                                   and stage4_reason not in STAGE4_ALLOWED_REASONS),
+            "t_used": t_used, "carry_blocking_remaining": len(carry_blocking),
+            "pass_blocked_by_carry": pass_blocked_by_carry, "switch_fired": switch_fired,
+            "unrewritten_blocking_pass": unrewritten_blocking_pass}
     save_json(f"{OUT_DIR}/{instances_subdir}/{instance_id}.json", result)
     return result
 

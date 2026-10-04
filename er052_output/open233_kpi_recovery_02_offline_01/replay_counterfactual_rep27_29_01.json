@@ -1,0 +1,1470 @@
+{
+  "summary": {
+    "runs": 114,
+    "legacy_stage4": 9,
+    "stage4_rerouted": 9,
+    "needs_llm_call": 6,
+    "bprime_location_carry": 4,
+    "deterministic_terminal": 3,
+    "a2_revert_would_reject": 1
+  },
+  "allowed_reasons": [
+    "api_failure",
+    "blocking_confirmed_unlocatable_after_cap",
+    "blocking_structural_after_ladder",
+    "post_T_new_blocking"
+  ],
+  "rows": [
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "bgroup_B1",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "bgroup_B2_hormuz",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "bgroup_B4",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "hormuz_run01_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "hormuz_run02_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "hormuz_run03_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "meta_run03_advanced",
+      "group": "meta",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg2_meta_refresh_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "unconfirmed_after_reverify",
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": [],
+      "new_route": {
+        "legacy_reason": "unconfirmed_after_reverify",
+        "legacy_cycles": 1,
+        "route": "unconfirmed_after_reverify(出口廃止) -> 次cycleのStage 2(funnel)へ合流",
+        "terminal": "call必要(Stage 2+S1)",
+        "terminal_allowed": true,
+        "deterministic": false,
+        "calls_needed": [
+          "stage2+s1 x1(次cycle)"
+        ]
+      }
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg4_smallbag_div_a2",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg5_hormuz_div_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg6_smallbag_div_b1b",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "neg7_meta_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_A2A3",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_A4",
+      "group": "safety",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": [],
+      "new_route": {
+        "legacy_reason": "ladder_exhausted_without_full_rewrite",
+        "legacy_cycles": 1,
+        "t_results": [
+          {
+            "status": "deleted",
+            "deleted_chars": 100
+          }
+        ],
+        "route": "exhausted -> T(決定論削除) -> 全文Recheck 1回",
+        "terminal": "call必要(Recheck 1回→RESOLVED_REWRITE/judge-only cycle/post_T_new_blocking)",
+        "terminal_allowed": true,
+        "deterministic": false,
+        "calls_needed": [
+          "full_recheck x1"
+        ]
+      }
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_A5",
+      "group": "safety",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": [],
+      "new_route": {
+        "legacy_reason": "ladder_exhausted_without_full_rewrite",
+        "legacy_cycles": 1,
+        "t_results": [
+          {
+            "status": "deleted",
+            "deleted_chars": 77
+          }
+        ],
+        "route": "exhausted -> T(決定論削除) -> 全文Recheck 1回",
+        "terminal": "call必要(Recheck 1回→RESOLVED_REWRITE/judge-only cycle/post_T_new_blocking)",
+        "terminal_allowed": true,
+        "deterministic": false,
+        "calls_needed": [
+          "full_recheck x1"
+        ]
+      }
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_actor",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_causality",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_certainty",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_comparison",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_negation",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_number",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_scope",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_time",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s1",
+      "instance_id": "safety_er009_unsupported_new_claim",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "hormuz_run03_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "meta_run03_advanced",
+      "group": "meta",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "neg2_meta_refresh_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 27,
+      "sample": "s2",
+      "instance_id": "safety_A2A3",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "bgroup_B1",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "bgroup_B2_hormuz",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "bgroup_B4",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "hormuz_run01_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "hormuz_run02_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "hormuz_run03_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "meta_run03_advanced",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg2_meta_refresh_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg4_smallbag_div_a2",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg5_hormuz_div_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg6_smallbag_div_b1b",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "neg7_meta_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_A2A3",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_A4",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_A5",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_actor",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_causality",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_certainty",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_comparison",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_negation",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_number",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_scope",
+      "group": "safety",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "legacy_cycles": 2,
+      "counters": {
+        "bprime_location_carry": 1
+      },
+      "flagged": [
+        {
+          "cycle": 2,
+          "kind": "B'",
+          "claim": "The taxi study's results have now been directly confirmed in New York City taxis",
+          "prior_levels": [
+            "1_word_connective"
+          ]
+        }
+      ],
+      "new_route": {
+        "legacy_reason": "ladder_exhausted_without_full_rewrite",
+        "legacy_cycles": 2,
+        "t_results": [
+          {
+            "status": "structural",
+            "reasons": [
+              "title"
+            ]
+          }
+        ],
+        "route": "exhausted -> T(構造要素/削除不可) -> blocking_structural_after_ladder",
+        "terminal": "STAGE4:blocking_structural_after_ladder",
+        "terminal_allowed": true,
+        "deterministic": true,
+        "calls_needed": []
+      }
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_time",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s1",
+      "instance_id": "safety_er009_unsupported_new_claim",
+      "group": "safety",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "degenerate_rewrite_output",
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": [],
+      "new_route": {
+        "legacy_reason": "degenerate_rewrite_output",
+        "legacy_cycles": 1,
+        "route": "degenerate_rewrite_output -> blocking_structural_after_ladder",
+        "terminal": "STAGE4:blocking_structural_after_ladder",
+        "terminal_allowed": true,
+        "deterministic": true,
+        "calls_needed": []
+      }
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "hormuz_run03_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "meta_run03_advanced",
+      "group": "meta",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": [],
+      "new_route": {
+        "legacy_reason": "ladder_exhausted_without_full_rewrite",
+        "legacy_cycles": 2,
+        "t_results": [
+          {
+            "status": "structural",
+            "reasons": [
+              "in_one_line"
+            ]
+          }
+        ],
+        "route": "exhausted -> T(構造要素/削除不可) -> blocking_structural_after_ladder",
+        "terminal": "STAGE4:blocking_structural_after_ladder",
+        "terminal_allowed": true,
+        "deterministic": true,
+        "calls_needed": []
+      }
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "neg2_meta_refresh_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 28,
+      "sample": "s2",
+      "instance_id": "safety_A2A3",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "bgroup_B1",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "bgroup_B2_hormuz",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "bgroup_B4",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "hormuz_run01_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "hormuz_run02_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "hormuz_run03_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "meta_run03_advanced",
+      "group": "meta",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "same_claim_fact_id_reblocked",
+      "legacy_cycles": 3,
+      "counters": {
+        "bprime_location_carry": 1
+      },
+      "flagged": [
+        {
+          "cycle": 2,
+          "kind": "B'",
+          "claim": "users had no way to know whether AI or a person was making the call\na human on t",
+          "prior_levels": [
+            "1_word_connective"
+          ]
+        }
+      ],
+      "new_route": {
+        "legacy_reason": "same_claim_fact_id_reblocked",
+        "legacy_cycles": 3,
+        "location_carry": [
+          {
+            "claim": "“Users had no way to know whether AI or a person was making the call” ",
+            "span_status": "unverified",
+            "prior_levels": []
+          }
+        ],
+        "route": "same_claim_fact_id_reblocked(出口廃止) -> ladderへ(B′で前levelより上位から昇段、枯渇ならT)",
+        "terminal": "call必要(Rewrite L3/L4→Recheck)",
+        "terminal_allowed": true,
+        "deterministic": false,
+        "calls_needed": [
+          "rewrite(上位level) x1以上",
+          "full_recheck x1"
+        ]
+      }
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg2_meta_refresh_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg4_smallbag_div_a2",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg5_hormuz_div_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg6_smallbag_div_b1b",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "neg7_meta_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_A2A3",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_A4",
+      "group": "safety",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "cycle_limit_exhausted_after_recheck",
+      "legacy_cycles": 3,
+      "counters": {},
+      "flagged": [],
+      "new_route": {
+        "legacy_reason": "cycle_limit_exhausted_after_recheck",
+        "legacy_cycles": 3,
+        "recheck_major": [
+          {
+            "claim": "“An AI called. That was what people thought as they spoke.”",
+            "fact": "MUSE-HC-012",
+            "span": "resolved",
+            "reason": null
+          }
+        ],
+        "route": "cycle_limit_exhausted_after_recheck(出口廃止) -> 判定だけのcycle(Stage 2+S1、Rewriteなし)",
+        "terminal": "call必要(Stage 2+S1 x1 claim。非BLOCKING→RESOLVED_REWRITE_THEN_DOWNGRADE、BLOCKING→T/位置不明なら blocking_confirmed_unlocatable_after_cap)",
+        "terminal_allowed": true,
+        "deterministic": false,
+        "calls_needed": [
+          "stage2+s1 x1(判定だけのcycle)"
+        ]
+      }
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_A5",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_actor",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_causality",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_certainty",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_comparison",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_negation",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_number",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_scope",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_changed_time",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s1",
+      "instance_id": "safety_er009_unsupported_new_claim",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 2,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "bgroup_B3",
+      "group": "b_group",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "hormuz_run03_advanced",
+      "group": "hormuz",
+      "legacy_final_state": "ACCEPTABLE_STAGE1",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 0,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "hormuz_run03_standard",
+      "group": "hormuz",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "meta_run03_advanced",
+      "group": "meta",
+      "legacy_final_state": "STAGE4_ESCALATION",
+      "legacy_stage4_reason": "violation_span_unverified",
+      "legacy_cycles": 3,
+      "counters": {
+        "bprime_location_carry": 2,
+        "a2_revert_would_reject": 1
+      },
+      "flagged": [
+        {
+          "cycle": 2,
+          "kind": "B'",
+          "claim": "And if this was not properly explained, businesses had no way to know whether th",
+          "prior_levels": [
+            "1_word_connective"
+          ]
+        },
+        {
+          "cycle": 2,
+          "kind": "B'",
+          "claim": "And if this was not properly explained, businesses had no way to know whether th",
+          "prior_levels": [
+            "1_word_connective"
+          ]
+        },
+        {
+          "cycle": 2,
+          "kind": "A2",
+          "target": "And if this was not properly explained, businesses had no way to know whether th",
+          "revised": "And if this was not properly explained, users had no way to know whether they we"
+        }
+      ],
+      "new_route": {
+        "legacy_reason": "violation_span_unverified",
+        "legacy_cycles": 3,
+        "span_retry": [
+          {
+            "claim": "“Users had no way to know whether they were talking to AI or a person” and, in the one-lin",
+            "legacy_reason": "explanatory_mixed",
+            "now_status": "resolved",
+            "now_reason": null,
+            "now_level": "P:2",
+            "explain_split": null
+          }
+        ],
+        "route": "violation_span_unverified(出口廃止) -> D(i)緩和で位置を確定 -> Rewrite",
+        "terminal": "call必要(Rewrite→Recheck)",
+        "terminal_allowed": true,
+        "deterministic": false,
+        "calls_needed": [
+          "rewrite x1以上",
+          "full_recheck x1"
+        ]
+      }
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "meta_run03_standard",
+      "group": "meta",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "neg1_meta_b3prod_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "neg2_meta_refresh_a2",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "group": "negative",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    },
+    {
+      "rep": 29,
+      "sample": "s2",
+      "instance_id": "safety_A2A3",
+      "group": "safety",
+      "legacy_final_state": "RESOLVED_REWRITE",
+      "legacy_stage4_reason": null,
+      "legacy_cycles": 1,
+      "counters": {},
+      "flagged": []
+    }
+  ],
+  "note": "決定論部分のみ。LLM callが必要な分岐は'call必要'として件数化(結果は推測しない)。"
+}

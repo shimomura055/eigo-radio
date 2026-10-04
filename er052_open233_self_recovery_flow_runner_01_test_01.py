@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import unittest
 from unittest import mock
 
@@ -8543,6 +8544,432 @@ class TestSafetyCriticalTextPattern08(unittest.TestCase):
         self.assertFalse(row["remains_in_final_en_pattern"])     # 新: 因果パターン不一致
         self.assertTrue(row["pass_with_residual_unflagged"])
         self.assertFalse(row["pass_with_residual_unflagged_pattern"])
+
+
+# ============================================================
+# 委任_11(OPEN-233-KPI-RECOVERY-REDESIGN-02、Opus#14後のFable評価、設計書§18): STAGE4許可リスト・位置引継ぎ・A2・D・G・T・BLOCKING固定の
+# 強制経路fixture・負例(H-1/H-2/rounding)。全て¥0(偽のStage1/2/3 LLM・Recheck、ネットワークなし)。
+# ============================================================
+ART11 = ("# Plan overview\n\n## In one line\nA short summary line.\n\n"
+         "The firm said alpha rose sharply. Other news was calm today.\n\n"
+         "The firm said beta fell hard. Another calm remark ends here.\n\n"
+         "The firm said gamma shifted a lot. A last calm remark follows.\n")
+_K11_NEW = ("STAGE4_ALLOWLIST", "LADDER_LOCATION_CARRY", "REWRITE_REVERT_GUARD", "SPAN_FALLBACK_CHAIN",
+            "JUDGE_ONLY_CYCLE_AFTER_CAP", "LAST_RESORT_DELETE", "MATERIALITY_BLOCKING_PIN",
+            "STAGE2_VERDICT_REUSE_NONBLOCKING", "STAGE2_SIBLING_LOCATIONS_CYCLE1")
+
+
+def _rr11(ok=True, devs=None, resolved=None, status=None):
+    st = status or ("LEDGER_COMPLIANT" if ok else "LEDGER_DEVIATION")
+    return {"overall_status": st, "all_prior_issues_resolved": ok, "deviations": devs or [],
+            "prior_issues_resolved": resolved if resolved is not None else [{"index": 0, "resolved": ok, "explanation": ""}]}
+
+
+def _run_kpi11(stage1_devs, stage2_fn, llm_fn, recheck_fn, stage3_fn=None, overrides=None, article=ART11,
+               iid="unit11", ledger="(ledger)"):
+    """run_instanceを偽のStage1/Stage2/S1/Recheck/Rewrite-LLMで通す。stage2_fn(cycle, claim_text, fid)->materiality、
+    llm_fn(label, prompt)->応答文字列(またはNone)、recheck_fn(cycle, prior_issues, article)->Recheck dict。"""
+    seen = {"s1_calls": [], "stage2": [], "llm_labels": [], "recheck_prior": []}
+
+    def _cyc(label):
+        m = re.search(r"_c(\d+)_", label)
+        return int(m.group(1)) if m else 0
+
+    def fake_stage1(client, state, ce, call_log, label, fixture, developer_message=None):
+        return {"overall_status": "LEDGER_DEVIATION", "deviations": [dict(d) for d in stage1_devs]}
+
+    def fake_stage2(client, state, ce, call_log, label, fixture, claims):
+        c_ = _cyc(label)
+        seen["stage2"].append((c_, [c["claim_text"] for c in claims]))
+        out = []
+        for c in claims:
+            mat = stage2_fn(c_, c["claim_text"], c["related_fact_id"])
+            out.append({**c, "materiality": mat, "llm_materiality": mat, "basis": "ledger_fact",
+                        "rewrite_kind": "narrow_scope", "rewrite_hint": "h", "floor_reason": None, "section_type": "body",
+                        "stage2_route": "body", "floor_cited_materiality": mat, "floor_cited_reason": None})
+        return out
+
+    def fake_s1(client, state, ce, call_log, label_prefix, fixture, results, instance_id=None, cycle=None):
+        seen["s1_calls"].append(cycle)
+        return results, []
+
+    def fake_recheck(client, state, ce, call_log, label, fixture, article_text, prior_issues, **k):
+        seen["recheck_prior"].append(prior_issues)
+        return dict(recheck_fn(_cyc(label), prior_issues, article_text))
+
+    def fake_llm(client, state, ce, call_log, label, dev_msg, prompt, model=None):
+        seen["llm_labels"].append(label)
+        return llm_fn(label, prompt)
+
+    sw = {**runner.KPI_TRIAL_SWITCHES, **(overrides or {})}
+    patches = [mock.patch.object(runner, k, v) for k, v in sw.items() if k != "FLOOR_VERIFY_MODE"]
+    patches += [mock.patch.object(runner, "stage1_fresh_with_enumeration", fake_stage1),
+                mock.patch.object(runner, "run_stage2", fake_stage2),
+                mock.patch.object(runner, "apply_stage2_second_opinion", fake_s1),
+                mock.patch.object(runner, "run_local_qa_fastpath", lambda *a, **k: {"success": False, "results": []}),
+                mock.patch.object(runner, "run_recheck", fake_recheck),
+                mock.patch.object(runner, "run_recheck_confirm", lambda *a, **k: _rr11(False, status="LEDGER_DEVIATION")),
+                mock.patch.object(runner, "simple_llm_call", fake_llm),
+                mock.patch.object(runner, "save_json", lambda *a, **k: None)]
+    if stage3_fn is not None:
+        patches.append(mock.patch.object(runner, "run_stage3_for_claim", stage3_fn))
+    inst = {"instance_id": iid, "group": "unit", "expected_group_label": "unit", "stage1_mode": "fresh",
+            "fixture": {"ledger_text": ledger, "article_text": article, "source_article_text": JA49}}
+    for p in patches:
+        p.start()
+    try:
+        res = runner.run_instance(object(), _state0(), [0], inst, stage1_cache={})
+    finally:
+        for p in reversed(patches):
+            p.stop()
+    return res, seen
+
+
+def _llm_replace(mapping):
+    """プロンプト中の`<<<...>>>`範囲(Flagged range(s)/sentence(s)/paragraph block(s))を、mapping{旧->新}で置換して返す偽LLM。"""
+    def fn(label, prompt):
+        head = prompt.split("[Checker's issue]", 1)[0]
+        if "[Paragraph block(s) flagged" in head:
+            head = head.split("[Text originally flagged", 1)[0]
+        elif "[Paragraph context (read-only)]" in head:
+            head = head.split("[Paragraph context (read-only)]", 1)[0]
+        out = []
+        for r in re.findall(r"<<<\n(.*?)\n>>>", head, re.S):
+            t = r
+            for o, n in mapping.items():
+                t = t.replace(o, n)
+            out.append(t)
+        return json.dumps({"revised_ranges": out})
+    return fn
+
+
+class TestKpi11AllowlistFunction(unittest.TestCase):
+    def test_allowed_four_reasons_only(self):
+        self.assertEqual(runner.STAGE4_ALLOWED_REASONS, frozenset({
+            "blocking_confirmed_unlocatable_after_cap", "blocking_structural_after_ladder", "post_T_new_blocking", "api_failure"}))
+        for r in ("blocking_confirmed_unlocatable_after_cap", "blocking_structural_after_ladder", "post_T_new_blocking"):
+            self.assertTrue(runner.stage4_allowlist_decision(r, {"funnel_passed": True})["allowed"])
+            d = runner.stage4_allowlist_decision(r, {})
+            self.assertFalse(d["allowed"])
+            self.assertEqual(d["action"], "funnel")
+        self.assertTrue(runner.stage4_allowlist_decision("api_failure")["allowed"])
+
+    def test_legacy_reasons_are_not_allowed_and_funnel(self):
+        for r in ("same_claim_fact_id_reblocked", "violation_span_unverified", "ladder_exhausted_without_full_rewrite",
+                  "cycle_limit_exhausted", "cycle_limit_exhausted_after_recheck", "target_not_locatable",
+                  "unconfirmed_after_reverify", "degenerate_rewrite_output", "anything_new"):
+            d = runner.stage4_allowlist_decision(r, {"funnel_passed": True})
+            self.assertFalse(d["allowed"], r)
+            self.assertEqual(d["action"], "funnel")
+            self.assertEqual(d["violation"], "reason_not_in_allowlist")
+
+    def test_new_switches_default_off_and_on_in_kpi_config(self):
+        for k in _K11_NEW:
+            self.assertIn(k, runner.KPI_TRIAL_SWITCHES)
+            self.assertFalse(getattr(runner, k), k)   # モジュールの既定(apply前)はlegacy=OFF
+        for k in ("STAGE4_ALLOWLIST", "LADDER_LOCATION_CARRY", "REWRITE_REVERT_GUARD", "SPAN_FALLBACK_CHAIN",
+                  "JUDGE_ONLY_CYCLE_AFTER_CAP", "LAST_RESORT_DELETE", "MATERIALITY_BLOCKING_PIN"):
+            self.assertTrue(runner.KPI_TRIAL_SWITCHES[k], k)
+        self.assertFalse(runner.KPI_TRIAL_SWITCHES["STAGE2_VERDICT_REUSE_NONBLOCKING"])
+        self.assertFalse(runner.KPI_TRIAL_SWITCHES["STAGE2_SIBLING_LOCATIONS_CYCLE1"])
+
+
+class TestKpi11HelpersUnit(unittest.TestCase):
+    def test_revert_detected_with_context(self):
+        cur = "A. The firm said alpha rose. B."
+        prior = ["A. The firm said alpha rose sharply. B."]
+        self.assertTrue(runner.revert_to_prior_state_detected(prior, cur, "The firm said alpha rose.",
+                                                              "The firm said alpha rose sharply."))
+        self.assertFalse(runner.revert_to_prior_state_detected(prior, cur, "The firm said alpha rose.",
+                                                               "The firm said alpha rose slightly."))
+        # 短い語が別の場所にあるだけでは却下しない
+        self.assertFalse(runner.revert_to_prior_state_detected(["so it ran. so"], "A. because X. B.", "because", "so"))
+        # 削除案は判定しない
+        self.assertFalse(runner.revert_to_prior_state_detected(prior, cur, "The firm said alpha rose.", ""))
+
+    def test_multi_range_quote_form_resolves_two_ranges(self):
+        q = runner.multi_range_to_quote_form("The firm said alpha rose sharply.\nThe firm said beta fell hard.")
+        self.assertEqual(q, "“The firm said alpha rose sharply.” and “The firm said beta fell hard.”")
+        res = runner.resolve_violation_spans(q, ART11, None)
+        self.assertEqual(res["status"], "resolved", res.get("reason"))
+        self.assertEqual(len(res["ranges"]), 2)
+        self.assertEqual(runner.multi_range_to_quote_form("single"), "single")
+
+    def test_normalize_recheck_outcome_multirange_converted_only_with_switch(self):
+        prior_claims = [{"dev": {"related_fact_id": "FA", "claim_in_article": "x"}}]
+        prior_issues = [{"claim_in_article": "S one.\nS two."}]
+        rc = _rr11(False, status="LEDGER_DEVIATION")
+        with mock.patch.object(runner, "SPAN_FALLBACK_CHAIN", False):
+            off = runner.normalize_recheck_outcome(rc, None, prior_claims, prior_issues)
+        with mock.patch.object(runner, "SPAN_FALLBACK_CHAIN", True):
+            on = runner.normalize_recheck_outcome(rc, None, prior_claims, prior_issues)
+        self.assertEqual(off["deviations"][0]["claim_in_article"], "x")
+        self.assertEqual(on["deviations"][0]["claim_in_article"], "“S one.” and “S two.”")
+
+    def test_explain_split_too_long_relaxed_only_for_closed_position_words(self):
+        art = ("# Head line\n\n## In one line\nA short summary line.\n\n"
+               "The firm said alpha rose sharply. Other news was calm today.\n")
+        claim = ("“The firm said alpha rose sharply.” and, in the one-line summary, calls were handled by "
+                 "humans in the end")
+        with mock.patch.object(runner, "SPAN_FALLBACK_CHAIN", False):
+            off = runner.vs_explain_split_resolve(claim, art)
+        with mock.patch.object(runner, "SPAN_FALLBACK_CHAIN", True):
+            on = runner.vs_explain_split_resolve(claim, art)
+        self.assertEqual(off["status"], "unverified")
+        self.assertIn("remainder_too_long", off["reason"])
+        self.assertEqual(on["status"], "resolved", on)
+        self.assertTrue(any("A short summary line." in r for r in on["ranges"]))  # U-2: one_line要素が範囲へ加わる
+        # 位置語を含まない長い残りは緩和しない(棄却のまま)
+        claim2 = "“The firm said alpha rose sharply.” and calls were handled by humans in the very end of day"
+        with mock.patch.object(runner, "SPAN_FALLBACK_CHAIN", True):
+            self.assertEqual(runner.vs_explain_split_resolve(claim2, art)["status"], "unverified")
+
+    def test_regions_inherit_levels_and_overlap_location(self):
+        pre = ART11
+        rec = [{"handoff": {"level_attempts": [{"result": "success", "level": "1_word_connective",
+                                                  "targets": ["The firm said alpha rose sharply."],
+                                                  "revised": ["The firm said alpha rose."]}]}}]
+        regs = runner.update_regions_after_rewrite([], pre, rec, 1)
+        self.assertEqual(regs[0]["levels"], ["1_word_connective"])
+        post = pre.replace("alpha rose sharply", "alpha rose")
+        claim = {"span_resolution_cycle_start": {"status": "resolved", "ranges": ["The firm said alpha rose."]}}
+        lv, n = runner.location_prior_levels(regs, claim, post)
+        self.assertEqual(lv, ["1_word_connective"])
+        other = {"span_resolution_cycle_start": {"status": "resolved", "ranges": ["The firm said beta fell hard."]}}
+        self.assertEqual(runner.location_prior_levels(regs, other, post)[0], [])  # 兄弟箇所(別位置)は昇段しない
+        # 1文字以上の重なりで同一箇所(逐語一致でなくてよい、H-4)
+        part = {"span_resolution_cycle_start": {"status": "resolved", "ranges": ["alpha rose."]}}
+        self.assertEqual(runner.location_prior_levels(regs, part, post)[0], ["1_word_connective"])
+        # 二度目の置換は前のlevelを引き継ぐ
+        rec2 = [{"handoff": {"level_attempts": [{"result": "success", "level": "3_sentence",
+                                                   "targets": ["The firm said alpha rose."],
+                                                   "revised": ["The firm said alpha climbed."]}]}}]
+        regs2 = runner.update_regions_after_rewrite(regs, post, rec2, 2)
+        self.assertEqual(len(regs2), 1)
+        self.assertEqual(regs2[0]["levels"], ["1_word_connective", "3_sentence"])
+
+
+class TestKpi11ForcedPathFixtures(unittest.TestCase):
+    """強制経路fixture: 各fixtureで終端reasonが許可リスト内か、funnelを通ったかを検証する。"""
+
+    def DEV_A(self):
+        return _dev49("The firm said alpha rose sharply.", fid="FA")
+
+    def _assert_allowlisted_or_resolved(self, res):
+        if res["final_state"] == "STAGE4_ESCALATION":
+            self.assertIn(res["stage4_reason"], runner.STAGE4_ALLOWED_REASONS)
+        self.assertFalse(res["stage4_allowlist"]["final_reason_outside_allowlist"])
+        self.assertEqual(res["stage4_allowlist"]["unrewritten_blocking_pass"], 0)
+
+    def _three_cycle_recheck(self, last_dev=None):
+        sentences = {1: "The firm said beta fell hard.", 2: "The firm said gamma shifted a lot."}
+
+        def rc(c, prior, art):
+            if c in sentences:
+                return _rr11(False, devs=[_dev49(sentences[c], fid="FA")])
+            if c == 3 and last_dev:
+                return _rr11(False, devs=[last_dev])
+            return _rr11(True)
+        return rc
+
+    def _llm3(self):
+        return _llm_replace({"alpha rose sharply": "alpha rose", "beta fell hard": "beta fell",
+                             "gamma shifted a lot": "gamma shifted"})
+
+    def test_cap_reached_goes_to_judge_only_cycle_with_s1_and_downgrades(self):
+        last = _dev49("A last calm remark follows.", fid="FA")
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING" if c <= 3 else "ACCEPTABLE",
+                               self._llm3(), self._three_cycle_recheck(last))
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE_THEN_DOWNGRADE")
+        self.assertEqual(len(res["cycles"]), 4)
+        self.assertTrue(res["cycles"][3].get("judge_only_cycle"))
+        self.assertNotIn("rewrite_records", res["cycles"][3])        # Rewriteしない
+        self.assertIn(4, seen["s1_calls"])                            # G経路でもS1(第2意見)を必ず通る(H-2)
+        self.assertFalse(any("_c4_" in l for l in seen["llm_labels"]))
+        self._assert_allowlisted_or_resolved(res)
+        self.assertTrue(any(e["legacy_reason"] == "cycle_limit_exhausted_after_recheck"
+                            for e in res["stage4_allowlist"]["decisions"]))
+
+    def test_cap_reached_blocking_then_T_then_clean_recheck_resolves(self):
+        last = _dev49("A last calm remark follows.", fid="FA")
+
+        def rc(c, prior, art):
+            return self._three_cycle_recheck(last)(c, prior, art) if c <= 3 else _rr11(True)
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", self._llm3(), rc)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        self.assertTrue(res["stage4_allowlist"]["t_used"])
+        c4 = res["cycles"][3]
+        self.assertTrue(c4.get("judge_only_cycle"))
+        self.assertTrue(c4.get("cap_terminal_last_resort"))
+        self.assertEqual(c4["rewrite_records"][0]["ladder_level_used"], "0_delete")
+        self.assertFalse(any("_c4_" in l for l in seen["llm_labels"]))    # Tは決定論削除=LLM callなし
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_T_then_new_blocking_after_recheck_goes_to_post_T_new_blocking(self):
+        last = _dev49("A last calm remark follows.", fid="FA")
+        new_dev = _dev49("Other news was calm today.", fid="FZ")
+
+        def rc(c, prior, art):
+            if c <= 3:
+                return self._three_cycle_recheck(last)(c, prior, art)
+            return _rr11(False, devs=[new_dev])
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", self._llm3(), rc)
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "post_T_new_blocking")
+        self.assertIn(5, seen["s1_calls"])        # T後の新規MAJORも判定だけのcycle(Stage 2+S1)を通ってからSTAGE4
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_oscillation_revert_rejected_and_location_carry_escalates(self):
+        def llm(label, prompt):
+            if "_e1_minimal_word" in label:
+                return _llm_replace({"alpha rose sharply": "alpha rose"})(label, prompt)
+            if "_e2_rewrite" in label:  # 元に戻す案(振動)
+                return _llm_replace({"alpha rose.": "alpha rose sharply."})(label, prompt)
+            return _llm_replace({"alpha rose.": "alpha eased."})(label, prompt)  # ④段落: 別の案
+
+        def rc(c, prior, art):
+            if c == 1:
+                return _rr11(False, devs=[_dev49("The firm said alpha rose.", fid="FA")])
+            return _rr11(True)
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", llm, rc)
+        c2 = res["cycles"][1]
+        att = c2["rewrite_records"][0]["handoff"]["level_attempts"]
+        self.assertEqual(c2["location_carry"], {"fact:FA": ["1_word_connective"]})   # B′: 同一箇所は①を飛ばして昇段
+        self.assertEqual([a["level"] for a in att][:2], ["3_sentence", "4_paragraph"])
+        self.assertEqual(att[0]["result"], "revert_rejected")                          # A2: 原文へ戻る案を却下、同cycle内で上位levelへ
+        self.assertEqual(att[1]["result"], "success")
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_oscillation_revert_guard_off_accepts_revert_legacy(self):
+        def llm(label, prompt):
+            if "_c1_" in label:
+                return _llm_replace({"alpha rose sharply": "alpha rose"})(label, prompt)
+            return _llm_replace({"alpha rose.": "alpha rose sharply."})(label, prompt)   # c2: 原文へ戻る案(ガードOFFなら採用される)
+
+        def rc(c, prior, art):
+            return _rr11(False, devs=[_dev49("The firm said alpha rose.", fid="FA")]) if c == 1 else _rr11(True)
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", llm, rc,
+                               overrides={"REWRITE_REVERT_GUARD": False, "LADDER_LOCATION_CARRY": False})
+        att = res["cycles"][1]["rewrite_records"][0]["handoff"]["level_attempts"]
+        self.assertEqual(att[0]["level"], "1_word_connective")
+        self.assertEqual(att[0]["result"], "success")
+
+    def test_multi_match_unlocatable_blocking_is_carried_and_never_passes_h1(self):
+        art = ART11.replace("A short summary line.", "The firm said alpha rose sharply.")  # 同じ文が2箇所(multi_match)
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", self._llm3(),
+                               lambda c, p, a: _rr11(True), article=art)
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "blocking_confirmed_unlocatable_after_cap")
+        self.assertEqual(res["stage4_allowlist"]["pass_blocked_by_carry"], 1)        # H-1: Recheck1回の「準拠」でPASSしない
+        self.assertTrue(res["cycles"][0]["pass_blocked_by_carry_blocking"])
+        self.assertTrue(any(e["legacy_reason"] == "violation_span_unverified" for e in res["stage4_allowlist"]["decisions"]))
+        self.assertFalse(any("e1" in l for l in seen["llm_labels"]))                  # Rewriteは試みていない
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_multi_match_relocated_by_recheck_then_rewritten_and_resolved(self):
+        art = ART11.replace("A short summary line.", "The firm said alpha rose sharply.")
+
+        def rc(c, prior, a):
+            if c == 1:   # 位置の再取得: 本文中の別の一意な断片で指摘し直す
+                return _rr11(False, devs=[_dev49("Other news was calm today.", fid="FA")])
+            return _rr11(True)
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING",
+                               _llm_replace({"Other news was calm today.": "Other news was calm."}), rc, article=art)
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        self.assertEqual(res["stage4_allowlist"]["carry_blocking_remaining"], 0)
+        self.assertTrue(res["cycles"][1]["stage2_results"][-1]["carried_blocking"])
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_structural_element_ladder_exhaustion_goes_to_blocking_structural_after_ladder(self):
+        dev = _dev49("Plan overview", fid="FS")
+        res, seen = _run_kpi11([dev], lambda c, t, f: "BLOCKING",
+                               lambda label, prompt: json.dumps({"revised_ranges": ["Plan overview"]}),
+                               lambda c, p, a: _rr11(True))
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "blocking_structural_after_ladder")
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_api_failure_goes_to_allowlisted_api_failure(self):
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING", lambda label, prompt: None,
+                               lambda c, p, a: _rr11(True))
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "api_failure")
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_ladder_exhausted_non_structural_goes_to_T_not_stage4(self):
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING",
+                               _llm_replace({}),
+                               lambda c, p, a: _rr11(True))
+        self.assertEqual(res["final_state"], "RESOLVED_REWRITE")
+        self.assertTrue(res["stage4_allowlist"]["t_used"])
+        self.assertEqual(res["cycles"][0]["rewrite_records"][0]["ladder_level_used"], "0_delete")
+        self.assertNotIn("alpha rose sharply", res["cycles"][0]["en_text_after_rewrite"])
+        self._assert_allowlisted_or_resolved(res)
+
+    def test_legacy_switches_off_keeps_legacy_reasons(self):
+        off = {k: False for k in _K11_NEW}
+        res, seen = _run_kpi11([self.DEV_A()], lambda c, t, f: "BLOCKING",
+                               _llm_replace({}),
+                               lambda c, p, a: _rr11(True), overrides=off)
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "ladder_exhausted_without_full_rewrite")
+        self.assertNotIn("stage4_allowlist", res)
+
+
+class TestKpi11NegativeCases(unittest.TestCase):
+    def test_h1_unrewritten_blocking_does_not_pass_on_single_clean_recheck(self):
+        """H-1: Stage 2がBLOCKINGと確定した箇所を書き換えずに、Recheck1回の「解消/準拠」だけでPASSできない。"""
+        art = ART11.replace("A short summary line.", "The firm said alpha rose sharply.")
+        res, _ = _run_kpi11([_dev49("The firm said alpha rose sharply.", fid="FA")], lambda c, t, f: "BLOCKING",
+                            lambda l, p: None, lambda c, p, a: _rr11(True), article=art)
+        self.assertNotIn(res["final_state"], ("RESOLVED_REWRITE", "RESOLVED_STAGE2_DOWNGRADE", "RESOLVED_REWRITE_THEN_DOWNGRADE"))
+        self.assertEqual(res["stage4_allowlist"]["unrewritten_blocking_pass"], 0)
+
+    def test_h1_with_D_chain_off_but_allowlist_on_no_pass_either(self):
+        art = ART11.replace("A short summary line.", "The firm said alpha rose sharply.")
+        res, _ = _run_kpi11([_dev49("The firm said alpha rose sharply.", fid="FA")], lambda c, t, f: "BLOCKING",
+                            lambda l, p: None, lambda c, p, a: _rr11(True), article=art,
+                            overrides={"SPAN_FALLBACK_CHAIN": False})
+        self.assertNotEqual(res["final_state"], "RESOLVED_REWRITE")
+
+    def test_h2_pinned_blocking_not_downgraded_by_second_verdict_and_judge_only_uses_s1(self):
+        """H-2: 本文が変わっていない箇所の再判定の揺れ(BLOCKING→非BLOCKING)で降格しない。G経路でもS1を通る。"""
+        dev = _dev49("The firm said alpha rose sharply.", fid="FA")
+
+        def stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):  # 書き換えが起きない(本文不変)
+            return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": en, "ja_text": ja,
+                    "method": "fake_no_change", "guard_ok": False, "before_fragment": None, "after_fragment": None,
+                    "ladder_level_used": None, "target_not_locatable": False, "span_unverified": False,
+                    "ladder_exhausted_without_full_rewrite": False, "handoff": {"level_attempts": [], "text_lang": "EN"}}
+        rc = lambda c, p, a: _rr11(False, devs=[_dev49("The firm said alpha rose sharply.", fid="FA")])
+        res, seen = _run_kpi11([dev], lambda c, t, f: "BLOCKING" if c == 1 else "ACCEPTABLE", lambda l, p: None,
+                               rc, stage3_fn=stage3)
+        c2 = res["cycles"][1]["stage2_results"][0]
+        self.assertEqual(c2["materiality"], "BLOCKING")
+        self.assertEqual(c2["basis"], "materiality_pinned")
+        self.assertEqual(c2["pinned_original_materiality"], "ACCEPTABLE")
+        self.assertNotIn(res["final_state"], ("RESOLVED_STAGE2_DOWNGRADE", "RESOLVED_REWRITE_THEN_DOWNGRADE"))
+        for c in res["cycles"]:   # G経路を含め、S1を飛ばした降格なし
+            if c.get("judge_only_cycle"):
+                self.assertIn(c["cycle"], seen["s1_calls"])
+        self.assertIn("MATERIALITY_BLOCKING_PIN", res["stage4_allowlist"]["switch_fired"])
+        # ピン止めOFFなら再判定で降格する(S-4の実在確認)
+        res_off, _ = _run_kpi11([dev], lambda c, t, f: "BLOCKING" if c == 1 else "ACCEPTABLE", lambda l, p: None,
+                                rc, stage3_fn=stage3, overrides={"MATERIALITY_BLOCKING_PIN": False})
+        self.assertEqual(res_off["final_state"], "RESOLVED_REWRITE_THEN_DOWNGRADE")
+
+    def test_rounding_blocking_never_passes_without_rewrite(self):
+        """rounding(levels=[]、Rewriteしない)のBLOCKINGが、Rewriteなしでは決してPASSしない(Opus推測の同型、コードで確認)。"""
+        dev = _dev49("The firm said alpha rose sharply.", fid="FA", changed_number=True,
+                     changed_number_suppressed_reason="natural_rounding")
+        self.assertEqual(runner.classify_problem_kind(dev), "rounding")
+        legacy, _ = _run_kpi11([dev], lambda c, t, f: "BLOCKING", lambda l, p: None, lambda c, p, a: _rr11(True),
+                               overrides={k: False for k in _K11_NEW})
+        self.assertEqual(legacy["final_state"], "STAGE4_ESCALATION")      # 旧: ladder枯渇でSTAGE4(PASSしない)
+        new, _ = _run_kpi11([dev], lambda c, t, f: "BLOCKING", lambda l, p: None, lambda c, p, a: _rr11(True))
+        # 新: Rewriteは試みず(levels=[])、T(決定論削除)を経由してRecheckを受けた結果だけがPASSになる(書き換えなしのPASSではない)
+        self.assertEqual(new["cycles"][0]["rewrite_records"][0]["ladder_level_used"], "0_delete")
+        self.assertTrue(new["stage4_allowlist"]["t_used"])
 
 
 if __name__ == "__main__":
