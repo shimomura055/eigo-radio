@@ -328,3 +328,88 @@ CURRENT_SPEC OPEN-233節へ: ladder/位置引継ぎ/許可リスト/判定専用
 ## 付録: 確認/推測の区別と調査範囲
 - 確認: runner定義行・関数行(AST+Grep)、rep30スクリプトassert、summary_kpi_01.json、Production各経路の該当行、`git grep er052_open233`0件、`s2p`importerが`er052_*`のみ、CURRENT_SPEC/DECISION_LOG/OPEN_ITEMSのGrep件数。
 - 推測/要確認: P6経路のMAJOR時挙動、K9以外の細部、工数、費用、`MATERIALITY_BLOCKING_PIN`のCURRENT_SPEC言及の文脈、「基準11件」の出典、複製(コピー)が「暗黙参照禁止」に当たらない解釈。
+
+---
+
+## 6. 追加確認(委任_03、2026-10-05、¥0・コード変更なし)
+
+区別: **確認**=Grep/Read/スクリプト実行で実物確認、**推測**=推論、**要確認**=判定できず。比較スクリプトはスクラッチ(`checker_diff.py`、リポジトリ外)で実行。
+
+### 6-1. (a) Trial Stage 1 CheckerとProduction vfl01 Checkerの差(確認)
+
+**Trial Stage 1 Checkerの構成要素**(runner `stage1_fresh_with_enumeration`@L1672、`run_recheck`@L1914):
+- prompt: `trial.build_trial_prompt_template("V4A")`(`er051_open233_checker_trial_variant_01.py` L232)= `vfl01.DEVIATION_PROMPT_TEMPLATE` + `TRIAL_PROMPT_DIFF_BLOCK_V01`(L184、qualifier/ledger_field_basis/observation_consistent) + `TRIAL_PROMPT_DIFF_BLOCK_V4A`(L216、カテゴリ非排他・actor/number/negation/comparison重複true指示)。その後ろにrunnerが`vfl01.RELATED_FACT_ID_INSTRUCTION`・`vfl01.ORIGIN_INSTRUCTION_TEMPLATE`・`SAME_FACT_ID_ENUMERATION_INSTRUCTION`(runner L1453、fresh Stage 1のみ。Recheckは既定OFF)を連結。Recheckは`vfl01.build_prior_issues_instruction`(Production関数)を直接使う。
+- developer message: `trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE`(er051 L61)= `vfl01.DEVIATION_DEVELOPER_MESSAGE` + 重大誤解原則(15行)。
+- schema: `vfl01._extended_deviation_item_schema`(Production関数)+ Trial 5フィールド(`qualifier_present`/`qualifier_text`/`ledger_field_basis`/`observation_consistent`/`matched_notes_id`、er051 L249)+ runnerの`same_fact_id_locations`(L1463)。
+- 後処理: `vfl01._apply_deviation_post_hoc_validation`(Production関数、共通)→ `trial.classify_parsed_result_trial(V4A)`(post-hoc v2: changed_actor/number/negation/comparisonがtrueでMINORならBLOCKINGへ昇格、er051 L71)。
+
+**逐語比較の結果**(`difflib`/`diff`でprompt文字列比較):
+
+| 対象 | Production(vfl01) | Trial V4A | 差分 |
+|---|---|---|---|
+| prompt template | 40行 | 73行 | 追加33行・削除0行(`diff`上の`<`1行は「末尾改行なし」の表示差のみ)。Trialは**Production templateで始まる**(`startswith`=True)。追加は上記2ブロック |
+| developer message | 1行 | 16行 | 追加15行・削除0行(重大誤解原則)。Production文字列で始まる |
+| deviation item schema | 16キー(10 flag+claim_in_article/issue/explanation/severity+related_fact_id/origin) | +6キー | **追加のみ**(上記5+`same_fact_id_locations`)、削除0。`DEVIATION_FLAG_KEYS`10種は同一 |
+| post-hoc | `_apply_deviation_post_hoc_validation` | 同関数+Trial昇格ルール(V4A) | Trialは上乗せ |
+
+**結論(確認)**: 関係は「同一」でも「別物」でもなく、**Productionの上に追加のみで構築されたTrial上位版**(コピー後に乖離ではなく、vfl01をimportして文字列連結)。Production vfl01本体は変更されていない(それがTrialの制約だった)。ただし「Checker本体Prompt・Schema・判定方法は変更しない」という前提は**Trial内**では成立していた(V4A以降は固定)が、**Production vfl01 Checkerに対しては成立していない**: rep30の有効Checkerは vfl01 に対して (i) promptに33行、(ii) developer messageに15行、(iii) schemaに6フィールド、(iv) post-hoc昇格ルール、が追加されたものである。Production vfl01(現状)はこれらを持たない。
+
+**rep30がこのTrial Checkerをどこまで実際に通ったか(確認、`er052_output/open233_self_recovery_flow_runner_01_rep30/instances_s*/*.json` 38件)**: `stage1_call_used=True`は**3 instance-run**、`False`(frozen Stage 1出力の再利用、`stage1_reuse`@runner L8103)が**35 instance-run**。つまりrep30のStage 1検出の大半(35/38)は過去Trialで保存されたCheckerの出力を再利用しており、**Production正式経路で新規にCheckerが実行された例は0**。Stage 1を新規に実行した3件はTrial Checker(`gpt-6-luna`+V4A+誤解原則+列挙)。なお再利用元fixtureが具体的にどのvariantで生成されたかは**要確認**(推測: V4A系・iteration別)。Recheck(各cycle)は実LLMでTrial Checker(`run_recheck`)が動く。
+
+**含意(推測)**: Production初回Checkerは常に新規実行であり、rep30の「Stage 1再利用35件」は構成上Productionに存在しない。Production Checker(現vfl01)でStage 1を新規に走らせたときのrecall・flag分布がTrial V4A版と同等かは、rep30では**検証されていない**(検証されているのはStage 2以降・Rewrite・Recheckの挙動)。配線案は(A)Production vfl01をTrial V4A版へ昇格(opt-inまたは置換)する、(B)現vfl01のまま配線して追加検証する、のどちらかであり、(A)は`run_deviation_check`の40超の呼出元へ波及する(§4-3 K6。既存opt-in方式で後方互換を保てる)。いずれでもrep30と**同一構成にならない部分**が出るため、「Stage 1の新規検出」を対象とした最小の追加検証(例: Production Checker×既存fixture記事の新規Stage 1とfrozen出力の比較、費用は小)が要る可能性がある(判断はOpus#15/Fable)。
+
+### 6-2. (b) モデル(確認)
+
+| 経路 | モデルの決まり方 | 値 | 根拠 |
+|---|---|---|---|
+| Trial runner(Stage 1新規・Recheck・Stage 2・S1・Rewrite・floor_verify等すべて) | 定数`MODEL`ハードコード、routing非経由 | `gpt-6-luna` | runner L278、`s2p.MODEL`(stage2_production L27)、`summary_kpi_01.json`の`models.runner_MODEL` |
+| Production Checker(`vfl01.run_deviation_check`) | `model=MODEL` 既定、`MODEL=routing.WRITER_MODEL`(vfl01 L57) | `gpt-5.6-luna` | `er006_model_routing_contract_01.py` L33。P3/P4/P5は呼出元が`ledger_model=routing.require_model(...WRITER_MODEL)`(P3 L325/611、P4 L1141、P5 L1735/1832)を渡す |
+| Production Rewrite(`er010.rewrite_ng_item`) | 呼出元が渡す`ledger_model`(=WRITER_MODEL) | `gpt-5.6-luna` | P3 L239、P4 L1209、P5 L1553 |
+| Production Recheck(Local Rewrite後の全文再判定) | `run_deviation_check(model=ledger_model)` | `gpt-5.6-luna` | P3 L262、P4 L1264、P5 L1595 |
+| Production Writer Fact Check(diff QA等) | `routing.require_model("WRITER_FACT_CHECK", ...)` | `gpt-5.6-luna` | P3 L243/310 |
+| Family X(P1/P2) | `run_deviation_check`既定(`MODEL`) | `gpt-5.6-luna` | er012_e L382等(model引数なし=既定) |
+
+- Model Routing Contract(`CURRENT_SPEC.md` L2291〜): Checker相当(B1/A2 Writer、Deviation Check含む)は`gpt-5.6-luna`=`DECIDED`。Fail-Closed契約(規定外モデルは`ModelContractViolation`)。同節L2323〜: **`gpt-6-luna`はChecker採用候補だがProduction routingは未変更・「Routing変更は別途ユーザー判断」**と明記(Trial=`VALIDATED`、`APPROVED_FOR_PRODUCTION`ではない)。
+- 価格(CURRENT_SPEC L2330〜、一次ソースopenai pricing 2026-09-29確認と記載): `gpt-6-luna` Input $0.10/Cached $0.01/Output $0.50 per 1M、`gpt-5.6-luna` $0.20/$0.02/$1.20(同箇所は「正確に半額」と書くが、Output $0.50 vs $1.20は半額でない=記述の不整合、要確認)。
+- **事実(確認)**: rep30の`VALIDATED`は**`gpt-6-luna`のみ**で成立。2026-10-05一括承認の本文(DECISION_LOG L18785〜)にProduction routingを`gpt-6-luna`へ変更する明示はGrep上見つからない(「actual model_id/routing確認」が完了条件6にあるのみ)。したがって「Productionで`gpt-6-luna`を使う」ことが承認済みかは**要確認**(推測: 未承認。Model Routing変更は別途ユーザー判断と明記されている)。
+- **整理**: (案ア)Productionの経路で`gpt-6-luna`を使う: rep30と同一モデルになるが、Routing Contract変更(Contract表・`PROCESS_MODEL_MAP`・Fail-Closed契約・価格表)でユーザー判断が必要。コストは安価。(案イ)Productionは`gpt-5.6-luna`のまま配線: Contract不変だが、rep30は`gpt-5.6-luna`では未検証→Checker/Stage 2/S1/Rewrite各層の判定挙動(特にSafety系の見逃し0・Human Review 0)は別モデルでの再検証が要る。費用は単価約2倍(Output約2.4倍)、runtime evidence規模は上がる(8〜10 run×約2倍≒¥20〜40、**推定**)。(案ウ)混在(Stage 2/S1のみ`gpt-6-luna`等): 検証済み構成の分解でありrep30と一致しないため不採用寄り(推測)。いずれもOpus#15/ユーザー判断事項。
+
+### 6-3. (c) K8: Checker出力形式変更の不採用と`same_fact_id_locations`(確認)
+
+- **不採用の対象は`CHECKER_SPANS_MODE=violation_spans`**(`claim_in_article`を外し`violation_spans`配列を要求する出力形式変更)。出典: `DECISION_LOG.md` L17604(2026-10-03エントリ内の「Fable判断: `VALIDATED`にしない。既定OFFのまま。…現時点では採用しない」)、`docs/pm/open233_closeout_check_2026-10-04.md` L75・L146(「出力形式変更はユーザー決定2026-10-03で不採用」)。**注(確認)**: DECISION_LOG内に「出力形式変更を不採用とする」というユーザー逐語は本調査のGrepでは見つからず、実体は上記Fable判断(BLOCKING検出12/18→8/18の低下のため)。closeout文書がそれをユーザー決定と表記している。ユーザー逐語の有無は**要確認**(Fableが再照合)。
+- **`same_fact_id_locations`は別機構で、より前から採用済み**: 委任_20 W2(Opus L2#4、`DECISION_LOG.md` L14858〜)でStage 1・Recheckのschemaへ追加(追加call 0、¥0)。`DECISION_LOG.md` L17944(Opus#7評価)は「Recheck出力に`same_fact_id_locations`欄を常設…で解消、混入0/35」と評価している。rep30でもschema上は存在(`build_deviation_schema_with_enumeration`、runner L1463/L1870)。
+- **`STAGE2_SIBLING_LOCATIONS_CYCLE1`(rep30でON)は、Checker出力もschema変更も使わない**: 実装(runner L8296〜8314)は`deterministic_same_fact_id_location_fallback`(L1622、数値トークン・キーワード重複の決定論)で兄弟箇所を得て、`ls in current_en_text`の逐語実在確認(fail-closed)後にStage 2 batchへ足す。`expand_same_fact_id_locations`(L1529)自体も展開と実在確認の決定論処理であり、入力のうちLLM由来なのはfresh Stage 1(rep30で3 instance-run)の`same_fact_id_locations`フィールドのみ。reuse 35 instance-runは`deterministic_same_fact_id_location_fallback`(L8114)で埋める。
+- **結論(確認+推測)**: rep30有効構成の兄弟箇所列挙は**決定論の後段処理が主**で、Checker出力のschema変更を**必須とはしない**。Productionでは「fresh Stage 1でLLM列挙を使うか、決定論fallbackのみとするか」の選択になる。決定論のみならばK8は競合ではなく、設計で吸収可能(**推測**: rep30は35/38が決定論fallbackで検証済み。fresh Stage 1でLLM列挙を使った3件との同等性は未比較)。LLM列挙を使う場合も`same_fact_id_locations`は`violation_spans`(不採用)とは別機構(claim_in_articleを残す加算フィールド)であり、vfl01の既存opt-in方式(L782〜787)で後方互換に入れられるが、「Checker出力形式変更」にあたるか否かはユーザー確認候補(Fable/Opus判断)。K8は§4-3の「競合の可能性高」から「**競合ではない/設計で吸収可能(決定論のみの場合)**」へ見直しを推奨する。
+
+### 6-4. (d) K1: cycle上限(確認)
+
+- Production(`er010_ledger_local_rewrite_09.py` L29・L38): `MAX_REWRITE_ATTEMPTS=3`、`MAX_REWRITE_CYCLES = MAX_REWRITE_ATTEMPTS`(L38)。ユーザーがER-010-NO9で許可した「既存上限の適用範囲整理」(L31〜36コメント)。**記事全体のRewrite-Recheck cycle最大3、無条件**(cycleごとに文単位attempt最大3)。
+- Trial(runner L279・L283): `MAX_CYCLES=2`、`HARD_MAX_CYCLES=MAX_CYCLES+1=3`(L8572: cycle==MAX_CYCLES+1は「別claimでblocking厳密減少」のとき1回だけ許可)。上限後に**判定専用cycle**(`JUDGE_ONLY_CYCLE_AFTER_CAP`、L8293、cycle>HARD_MAX_CYCLES、Rewriteなし=Stage 2+S1のみ、API呼出あり)→T(最終手段)→許可リスト4理由。
+- **差(確認)**: Rewrite実行cycleは両者とも最大3であり、Trialは「3以内かつ条件付き(2+条件付き1)」でProduction以下。違いは(i)cycle 3が条件付きか無条件か、(ii)上限後の判定専用cycle(Rewriteしない、設計B §18-8で「上限=Rewrite回数、判定回数ではない」と整理)とT(削除)が追加されること、(iii)出口が`NG_REVIEW_REQUIRED`/STOPから許可リスト4理由へ変わること。
+- **事実(確認)**: rep30の費用(平均¥0.573/run)・Human Review 0・STAGE4 0は、**Trial定義(2+条件付き1+判定専用cycle+T)で得た値**。Production `MAX_REWRITE_CYCLES=3`(無条件cycle 3)へ変えるとrep30と異なる構成になる(費用・Human Reviewとも未検証、推測: cycle 3が無条件なら費用は増え得る)。
+- **見立て(推測)**: Rewrite回数の上限を超えないため「既存上限の回避」にはあたらない。Trial定義をそのままProduction新module側の上限として使い、`er010.MAX_REWRITE_CYCLES`は旧経路用に据え置く設計なら吸収可能。ただし「判定専用cycleは上限に含めない」は既存上限の意味の再定義でありユーザー確認候補(Opus#15/Fable判断)。
+
+### 6-5. (e) K4: Family XのRuntimeError STOPとladder④・T(確認)
+
+- P1 Advanced(`er012_e_family_entertainment_two_level_runner_01.py`): MAJORかつ`origin==ja_source`→`JARecheckRequiredError`(L392〜399)。それ以外はmust-fixで**全文を1回だけ再生成**(L401〜404「must-fixで1回だけ再生成します」)。再生成後`split_family_x_article_text_v2`が`status!="OK"`(paragraph_count<3)なら`RuntimeError("[STOP] ... 段落数retryは既に使用済みのため、これ以上自動再生成せずSTOPします")`(L409〜414)。再検査(`prior_issues=must_fix_used`、L415〜417)で`LEDGER_COMPLIANT`かつ`all_prior_issues_resolved`でなければ`rejected_advanced_attempt2.md`保存後`RuntimeError("[STOP] ... 再生成後もMAJOR、または前回指摘の未解消あり ... 本文を手で直さずSTOPします")`(L423〜432)。P2 Standardは同型(L478〜523付近)。
+- Trial側(rep30): 全文再生成retryは存在しない(Rewriteはladder①〜④/⑥・T。④=段落Rewrite、T=1記事1回の削除最終手段、出口は許可リスト4理由、`JA_MODE=english_only`でJA本文は修正しない)。
+- **関係(確認+推測)**: (1)現行P1/P2の「1回の全文再生成→STOP」は、**Local Rewriteが存在しない**Family X固有の唯一の自己修復+終端であり、Trialのladder/T/許可リストはこれと同じ位置(MAJOR検出後〜終端)を置き換える。(2)両者を同時に残すと順序規定が要る(Local Rewrite→不成立→全文再生成、または全文再生成→再検査→Local Rewrite)。全文再生成を廃止するとP1/P2の既存retry機構を落とす=「既存のretry/fallback/regeneration機構との整合」の確認対象。残す場合、`_family_x_ensure_split_or_paragraph_retry`(L294、段落数retry、独立軸)と、ladder④(段落Rewrite)後の段落数再検証を衝突させない規定が要る。(3)`JARecheckRequiredError`(origin=ja_source)はTrialの`JA_MODE=english_only`(JAは修正しない)と整合するかが**要確認**(runnerのja_pending扱い、Opus#15論点)。(4)終端が`RuntimeError`(プロセスSTOP)から許可リスト出口(Human Review)に変わる点は、Family Xのoperator運用(STOP→手動対応)と整合するか要確認。
+- 見立て(推測): 「全文再生成を残すか廃止するか」「JA由来MAJORの扱い」は設計で吸収できるが、品質・費用・STOP運用に影響する選択のため、競合の可能性は残る。Opus#15で本物の競合か切り分け、必要ならユーザー判断候補。
+
+### 6-6. (f) OPEN-233-A1-PROD必須確認「解放claimを2-of-2降格の対象から外す」(確認)
+
+- 該当行(`OPEN_ITEMS.md` L727、委任_59・Fable判断2(g)): 「機械判定の解放(F5、LLM確認)をProduction配線する場合の必須対策: (1)解放されたclaimを2-of-2降格の対象から外す、(2)`dev`のフラグを書き換えない、(3)確認callの失敗はBLOCKING固定、(4)cycleごとに再評価する」。同行の別箇所(委任_68追記、Opus#10): 「S1(降格2-of-2、修正版=2回目の最終materialityで比較・NORMAL群2-of-2は既定OFF)はStage 2と一体で配線」「NORMAL群2-of-2(`apply_stage2_two_of_two`、正解ラベル依存・向きが逆)は配線しない」。
+- 「2-of-2」には2種ある: (i)NORMAL群2-of-2(Trial補助、`STAGE2_NORMAL_TWO_OF_TWO=OFF`、配線しない)、(ii)S1(Stage 2第2意見、`STAGE2_SECOND_OPINION=ON`、配線対象)。(1)の文意は元々「floor_verifyで解放済みのclaimを、確認役/2-of-2系の降格で二重に扱わない」。
+- **確認**: runnerの`checker_major_downgraded_target`(L3326〜3337、確認役・Tier 0・S1共通の対象判定)が`floor_verify_rec.released`を`False, "floor_verify_released"`として降格対象から**既に除外**している。この除外は`STAGE2_NORMAL_TWO_OF_TWO`スイッチと無関係に効く。
+- **読替案**: 「解放claimを2-of-2降格の対象から除外」を「`floor_verify`解放済みclaimをS1の降格対象から除外する(`checker_major_downgraded_target`相当を新Production moduleに移す)。NORMAL群2-of-2は配線しないため(1)の旧文面の対象外」へ置換する。K13は非競合のまま、SSOT上の文言整理(DRC①)で足りる。ユーザー判断は不要(通常のSSOT整合)。
+
+### 6-7. §4-3 K判定の更新(委任_03時点、推測を含む。最終判定はOpus#15→Fable)
+
+| ID | 委任_02時点 | 委任_03時点の見立て |
+|---|---|---|
+| K1 | 競合の可能性高 | 吸収可能寄り(Rewrite cycle最大3は同じ、Trialは条件付き)。「判定専用cycleは上限に含めない」の再定義のみユーザー確認候補 |
+| K4 | 競合の可能性 | 競合の可能性が残る(全文再生成の存廃・順序・JA由来MAJOR・終端がSTOPから許可リスト出口へ変わる点)。Opus#15で切り分け |
+| K7 | 設計/ユーザー確認 | 要ユーザー判断の可能性高(Contractが「Routing変更は別途ユーザー判断」と明記、rep30は`gpt-6-luna`のみで成立) |
+| K8 | 競合の可能性高 | 競合ではない/設計で吸収可能(決定論のみの場合)。`violation_spans`不採用と`same_fact_id_locations`は別機構 |
+| K13 | 非競合 | 非競合(S1側で既に実現)。読替のみ |
+| 新規K14 | - | **Production初回CheckerはTrial V4A版ではない**(6-1)。rep30は35/38でStage 1を再利用し、Production新規Stage 1は未検証。要設計+最小追加検証 |

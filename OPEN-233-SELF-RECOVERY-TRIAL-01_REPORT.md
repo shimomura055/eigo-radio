@@ -4481,9 +4481,16 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - **最終数値(rep30)**: 29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run(rep24比+¥0.13/run)・不要Rewrite 3/14・worst +¥3.135(1/38 run、報告対象。単発+¥3 Capは撤回済み)。
 - **Human Review推移**: iter7 7 → rep24 2 → rep27 3 → rep28 3 → rep29 3 → rep30 0。
 - **Safety-critical 6件**: 全て検出・解消。
-- **費用**: Phase累計¥720.20。rep29 ¥24.67・rep30a ¥3.02・rep30 ¥21.79。(注: §62本文はrep29を¥24.43と記載。差異はFable確認事項)
+- **費用**: Phase累計¥720.20(予算state基準)。rep29 ¥24.67・rep30a ¥3.02・rep30 ¥21.79。(統一注記[委任_03]: rep29は「run合計¥24.43/予算state¥24.667」で、Phase累計は予算state基準。§59/§62の¥24.43はrun合計、本節の¥24.67は予算state。差異は同一費用の集計基準の違い)
 - **使用モデル**: `gpt-6-luna`のみ(Sol未使用)。
-- **Opus#8〜#14の指摘と対応**: 詳細は各`docs/pm/opus_l2_review_open233_*`・`DECISION_LOG.md`のFable評価転記(委任_01b)を参照。本節では個別の1行要約を再掲しない(逐語の転記漏れ防止のため。要約が必要な場合はFable指示で追補)。
+- **Opus#8〜#14の指摘と対応**(委任_03で各1行を追補。出典: `docs/pm/opus_l2_review_open233_*`の結論部・設計書の採否小節、逐語は各ファイル/`DECISION_LOG.md`のFable評価転記):
+  - #8(`..._self_recovery_08.md`): 機械判定の整合は必要だが小規模、F1自動解放・F4再判定は不採用、代替F5(決定論CONFIRMEDはBLOCKING確定、食い違いのみ別call確認)を採用→時期のみ`floor_verify`として配線対象(F5拡張は不採用)。
+  - #9(`..._self_recovery_09.md`): L6完結文復元は必要、残余包含・アンカー間隔検査・略語分割・`issue_focus_absent`はRecheckのみ・共有module化を追加→L6を実装(`VS_SENTENCE_RESTORE`、委任_66)、共有module化は配線時課題。
+  - #10(`..._self_recovery_10.md`): 1回LLMで重大を降格できる構造は是正必要、S1(2回目のStage 2で2回とも非BLOCKINGのみ降格)を3点修正して採用(最終materialityで比較・NORMAL群2-of-2を構成から外す・Safety KPIを条件付き/通しで分離)→S1配線対象、NORMAL群2-of-2は配線しない。
+  - #11(`..._kpi_recovery_02_11.md`): 後段の解除構造是正が必要、Tier 0(G_L決定論)+Tier 1確認役+失敗時BLOCKING→Rewriteを推奨→確認役・G_Lは実測(NORMAL群47.3%/誤停止)で不採用、Tier 0因果floor(known6)+S1に置換(設計B §9〜§11)。
+  - #12(`..._kpi_recovery_02_12.md`): carry-forward先適用は妥当、N1-aは不十分でN1′(再確認結果・未解消priorを必ず次cycleのStage 2へ合流)を推奨、Recheckに書換前後の対が無いことが主因と指摘→N1′採用(`RECHECK_MERGE_UNRESOLVED`)、前後対はN3′全対でなく構造要素限定(`STRUCTURAL_PAIRS_TO_RECHECK`)に縮小。
+  - #13(`..._kpi_recovery_02_13.md`): actor_guard是正(AG1-strict)必要、構造要素のdelete禁止必要、件数一致の是正は安全側に倒しきれていない3点を要修正→AG1-strict+2条件AND・件数一致3穴・構造要素の対渡しを実装(委任_08、§58)。
+  - #14(`..._kpi_recovery_02_14.md`): 条件B=個別バグでなく根本設計(自由文字列の各cycle再解釈+STAGE4出口6種)と判定、位置のオブジェクト化(I-1)・STAGE4許可リスト化(I-2)、B′修正採用・A2採用・A1不採用・D/G/T修正採用→許可リスト4理由・位置carry・判定専用cycle・T(1記事1回)を実装(委任_11、§61)。
 - **分類(REJECTED/VALIDATED/USER_DECISION)**: `DECISION_LOG.md` 2026-10-05エントリ・`CURRENT_SPEC.md` OPEN-233 Trial Closeout節。配線しない: F1/確認役/N3'/G_L/NORMAL群2-of-2/CAUSAL_FLOOR_VOCAB=inventory/A1/C/E1/E2/F2。
 - **未解決(配線時に扱う)**: (1)`blocking_structural_after_ladder`未検証経路 (2)`issue_focus_absent_recheck_only` (3)「and」版ACCEPTABLE判断(ユーザー未確認)。
 - **未処理USER_DECISION**: なし。

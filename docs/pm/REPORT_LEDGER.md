@@ -138,3 +138,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 
 - 2026-10-05 | OPEN-233-KPI-RECOVERY-REDESIGN-02 委任_13 | rep30 KPI 3/4達成(Human Review 0・見逃し0・平均+¥0.13、worst+¥3.135でCap超過0.135)によりUSER_DECISION_REQUIREDでSTOP(Status記録のみ、¥0)。
 - 2026-10-05 | OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01 委任_01c | Closeout SSOT記録(CURRENT_SPEC採用対象・配線しない項目・Cost KPI更新、OPEN_ITEMS、PM_GOVERNANCE 11-4改善ループ3回Cap、REPORT §63)。対象=APPROVED_FOR_PRODUCTION、PRODUCTION_WIREDではない(¥0)。
+- 2026-10-05 | OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01 委任_03 | Gap文書commit、Trial/Production Checker差(追加のみ・Production本体不変・rep30のStage 1は35/38再利用)・モデル差(gpt-6-luna vs gpt-5.6-luna)・K1/K4/K8事実確認(Gap文書§6)、Opus#15 packet作成、REPORT §63にOpus#8〜#14各1行+rep29費用表記統一。Status記録のみ(APPROVED_FOR_PRODUCTION、PRODUCTION_WIREDではない、¥0)。
