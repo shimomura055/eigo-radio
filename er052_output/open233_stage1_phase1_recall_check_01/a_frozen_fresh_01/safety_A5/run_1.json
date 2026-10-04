@@ -1,0 +1,80 @@
+{
+ "instance": "safety_A5",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "a_frozen_config",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+    "issue": "「put back the feature」は人間が電話を担当する機能を再開した意味になるが、Ledgerでは当面ロールバックしたとされている。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "機能をロールバックしたという事実を、機能を再開したという反対の事実に変えているため、changed_factのみtrue。原文の「元に戻しました」はこの誤りを含まず、翻訳・適応時に生じた逸脱。",
+    "related_fact_id": "MUSE-HC-012",
+    "origin": "translation",
+    "qualifier_present": true,
+    "qualifier_text": "temporarily",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 6266,
+  "cached_input_tokens": 0,
+  "output_tokens": 3319,
+  "reasoning_tokens": 3060
+ },
+ "prompt_sha256": "7b3121a05db1249a9c403961bc44303d39df001e064974cfe05808a4f14270e2",
+ "model_returned": "gpt-6-luna",
+ "response_id": "resp_04f8835775f92895006ac2e4febf6487d0a6f06d34d5fa1264",
+ "raw_parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+    "issue": "「put back the feature」は人間が電話を担当する機能を再開した意味になるが、Ledgerでは当面ロールバックしたとされている。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "機能をロールバックしたという事実を、機能を再開したという反対の事実に変えているため、changed_factのみtrue。原文の「元に戻しました」はこの誤りを含まず、翻訳・適応時に生じた逸脱。",
+    "related_fact_id": "MUSE-HC-012",
+    "origin": "translation",
+    "qualifier_present": true,
+    "qualifier_text": "temporarily",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": ""
+   }
+  ]
+ },
+ "cost_jpy": 0.358643368,
+ "elapsed": 28.31
+}

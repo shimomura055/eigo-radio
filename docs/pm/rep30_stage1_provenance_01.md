@@ -95,3 +95,23 @@
 - 確認済み: 区分(fresh/frozen/V0差替え)・件数・出力元path・生成日・model・Stage 2へ渡した件数・6 claimの出所・freshのprompt構成(sha一致)・frozen 22 runのprompt構成(sha一致)・列挙フィールドの有無。
 - 推測: frozen出力のdeveloper messageが原則なしだったこと(コード履歴からの推測)、frozen 9 run(safety_er009_*)のprompt不一致の原因、Phase 1の0/2とrep30構成差の因果。
 - 範囲外で未実施: rep30以前のiter等のfresh出力の精査、候補構成とfrozen構成のどちらがよいかの比較(行わない)。
+
+## 7. A構成(rep30 frozen出力の生成構成)の復元(委任_08 / CORRECTION-02、0円で確定)
+
+集計: `er052_output/open233_kpi_recovery_02_offline_01/agg_a_config_sha_check_02.py`(出力同名.json)。API呼び出しなし。
+
+### 7-1. A構成の定義(再現可能な形)
+- 生成元: `er051_open233_checker_trial_02_run.py`(09-29、step1/2/3)と`er052_open233_self_recovery_phase1_step3_stage1_compare_01.py`系(09-30、負例群)。いずれも`trial.run_trial_deviation_check(client, ledger_text, article_text, MODEL, "V4A", include_related_fact_id=fixture.get("include_related_fact_id", False), source_article_text=fixture.get("source_article_text"))`を呼ぶ(当時commit `3db494bc`のer051。HEADとの差は`developer_message_override`引数追加のみで、未指定=従来動作、コード差分で確認)。
+- prompt組立: `build_trial_prompt_template("V4A")`(=`vfl01.DEVIATION_PROMPT_TEMPLATE`+`TRIAL_PROMPT_DIFF_BLOCK_V01`+`TRIAL_PROMPT_DIFF_BLOCK_V4A`).format(ledger,article) +(`include_related_fact_id`が真なら`RELATED_FACT_ID_INSTRUCTION`)+(sourceがあれば`ORIGIN_INSTRUCTION_TEMPLATE`)。列挙instructionなし。
+- developer message: `vfl01.DEVIATION_DEVELOPER_MESSAGE`(重大誤解原則なし)。`er003`の同定数は09-27以降commitなし(`git diff`で確認)=当時と現在で同一。
+- schema: `build_trial_deviation_schema("V4A", include_related_fact_id, include_origin)`(V4A標準、`same_fact_id_locations`なし)。
+- model: `gpt-6-luna`、params: `reasoning={"effort": vfl01.REASONING_EFFORT}`のみ(temperature等の指定なし=コードにも記録jsonにも無い、確認)。post処理: `_apply_deviation_post_hoc_validation`→`classify_parsed_result_trial`(`severity_final`は付与されるが選別は`severity`のみ)。
+
+### 7-2. sha一致と`safety_er009_*`不一致の原因(確認)
+- 委任_06の不一致9 runの原因: er009合成fixtureは`include_related_fact_id`が**False**(er051 trial_02_runが`fixture.get("include_related_fact_id", False)`で呼ぶため`RELATED_FACT_ID_INSTRUCTION`が付かない)。委任_06の再計算は常にTrue扱いだった。
+- fixtureフラグを反映して再計算した結果、reuse 26 instance(frozen run元)**26/26でsha256一致**(フラグ常時True扱いでは17/26)。委任_06の「22 run一致+9 run不一致」は同一原因(フラグ処理)で全て説明でき、未特定は0。
+- developer message・paramsは保存jsonに記録がないため、コード(当時commit)と定数の不変性からの確認とする(保存データによる直接確認ではない)。
+
+### 7-3. fresh限定確認の結果(委任_08、A構成、n=2、実費¥11.42、詳細はREPORT §65)
+- 対象15 instance・32 call(30+A4補完2)、promptの`sha256`はfrozen記録と全件一致(sha比較可能な対象)。SC検出: B3 2/2、B4-a 2/2、A2A3-0 2/2、A5-0 2/2、A4-0 2/4(補完後)。neg5 B3-same 0/2、B2_hormuz HF-011 0/2。負例/NORMAL MAJOR run率 fresh 58.3%(7/12) vs rep30実使用54.5%(6/11)。claim一致率平均0.658。
+- 復元差(prompt/schema/model/params)は見つからず、frozenが単発サンプルであることによるrun間変動が主因と見られる(推測)。

@@ -19261,3 +19261,123 @@ PRODUCTION_WIRED
 ### Fable判断
 委任_05の2×2比較(V0×gpt-6-luna/候補×gpt-5.6-luna)は、rep30構成の忠実な再現に必要な原因調査ではなく、Checker/モデルの再選定に当たるため、ユーザー是正指示に従い中止する。既に発生した費用は記録し、結果はRegression参考値として保存のみとする(採否判断に使わない)。今後の作業は「rep30でVALIDATEDされた構成の忠実なProduction再現」に限定し、Checker/モデル候補の新設・比較は行わない。
 Production未変更、`PRODUCTION_WIRED`ではない(`APPROVED_FOR_PRODUCTION`のまま)。
+
+
+## 2026-10-05 ユーザー是正指示 OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01-CORRECTION-02(Status是正・A構成fresh限定確認・PASSなら配線継続)
+
+### ユーザー指示原文(逐語)
+
+出典: docs/pm/delegation_log/2026-10-05_OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01-CORRECTION-02_08.md L43-151
+
+Claude Code 指示
+管理ID：OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01-CORRECTION-02
+目的
+前回の USER_DECISION_REQUIRED 判定を是正する。
+ユーザーはすでに、
+rep30でTrialに織り込まれ、Production未実装の仕様はすべて正式採用し、Productionへ忠実に配線する
+
+と明示している。
+したがって、Production初回CheckerについてA/B/Cをユーザー選択肢として再提示する必要はない。
+今回の正式方針は以下。
+rep30の大部分で実際に使われたgpt-6-lunaのChecker構成を正本候補としてfreshで限定確認し、再現性が確認できればそのままProduction Wiringを継続する。
+これは新しいProduct判断ではなく、既承認rep30構成をProductionへ忠実に移すための技術確認である。
+1. Status是正
+現時点のStatusは、
+APPROVED_FOR_PRODUCTION
+を維持する。
+Stage 1 fresh Checkerの再現性未確認は、Production Wiringの未充足事項ではあるが、現時点で直ちに USER_DECISION_REQUIRED ではない。
+以下の場合のみSTOPして USER_DECISION_REQUIRED 候補として報告すること。
+- rep30由来Checker構成をfresh実行した結果、Safety-criticalを再現できない
+- rep30と大きく異なる検出傾向になる
+- 正式仕様を変更しないとProduction成立しない
+- 品質・費用・運用上、ユーザーのProduct判断が必要になる
+2. Stage 1 Checkerの正本候補
+対象はA案。
+gpt-6-luna + rep30 frozen出力を生成したV4A系Checker構成
+を正本候補として扱う。
+新しいCheckerを作らないこと。
+現行Production V0を採用し直すB案、今回新設した拡張Checker C案は、今回のProduction Wiring対象にしない。
+理由：
+- Bはrep30との一致性が低い
+- Cはrep30の正本ではなく、かつB4等で見逃し実績あり
+- ユーザー指示は「rep30をProductionへ忠実に反映」であり、Aが最もその指示に一致する
+3. fresh限定確認
+A構成をfresh実行し、必要最小限の確認を行う。
+目的はA/B/C比較ではなく、
+「rep30で再利用していたChecker出力を、同じ構成でfresh実行しても実用上再現できるか」
+の確認である。
+対象は最低限、
+- Safety-critical群
+- B群
+- 正常/負例群
+とする。
+費用目安は既報どおり 約¥5〜8以内。
+不要なN増し・モデル比較・Checker比較は行わない。
+4. 受入条件
+fresh確認で最低限、
+- 重大Fact見逃し 0
+- Safety-criticalで既知重大問題を拾える
+- 正常ケースへの重大誤検出が許容範囲
+- rep30 frozen結果と重大な乖離なし
+- Human Review 0を壊す構造的問題なし
+- 平均費用が既存KPI内
+を確認する。
+単発¥3超はFAIL条件ではないが、発生したら必ず記録・報告する。
+5. PASSした場合
+ユーザーへ追加判断を求めず、そのままProduction Wiringを継続すること。
+後段については既に準備済みのOpus#15/Fable評価に従い、
+- Production正式初回path
+- Stage 1 → Stage 2
+- Rewrite
+- Recheck
+- retry
+- fallback
+- regeneration
+- Human Review出口
+- runtime evidence
+- regression / integration test
+- actual model_id / routing
+- CURRENT_SPEC
+- DECISION_LOG
+- OPEN_ITEMS
+- Git反映
+- Dangling Reference Check
+まで進める。
+すべて満たした場合のみ PRODUCTION_WIRED とする。
+6. FAILした場合
+fresh確認で重大な不一致が出た場合は、勝手にB/Cへ切り替えない。
+まず、
+- 何が再現できなかったか
+- frozen出力との差
+- Prompt差
+- developer message差
+- schema差
+- model/routing差
+- 当時の生成条件を復元できているか
+を技術的に調査する。
+合理的な是正でA構成を再現できるなら自律的に修正・再確認する。
+それでも成立しない場合のみSTOPし、ユーザーへ報告する。
+7. 不要な作業は禁止
+今回の目的はChecker再選定ではない。
+以下は行わない。
+- A/B/Cの追加比較Trial
+- V0とAの勝敗判定
+- 新Checker Promptの提案
+- Sol等へのモデル変更Trial
+- Production採用条件の再定義
+- 追加N増し
+- ユーザーへ技術選択を戻すこと
+必要な作業だけを実施すること。
+8. 委任_05費用
+委任_05で発生した ¥20.10 は管理不備として記録のみ。
+追加のユーザー判断事項にしない。
+9. Closeout
+Stage 1 fresh確認がPASSし、Production Wiring Checklistをすべて満たした場合のみ、
+PRODUCTION_WIRED
+へ更新する。
+未充足項目が1つでもあれば、
+APPROVED_FOR_PRODUCTION
+のまま報告すること。
+
+### Fable判断
+ユーザー是正に従いUSER_DECISION_REQUIREDを撤回、APPROVED_FOR_PRODUCTION維持。A構成をfresh限定確認し、事前固定受入条件(委任_08)でPASSなら後段配線へ継続。委任_05費用¥20.10は管理不備として記録のみ。

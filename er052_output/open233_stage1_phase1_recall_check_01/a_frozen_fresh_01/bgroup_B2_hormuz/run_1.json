@@ -1,0 +1,80 @@
+{
+ "instance": "bgroup_B2_hormuz",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "a_frozen_config",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "It looked like a very large fee would appear every time a ship passed through the strait.",
+    "issue": "The proposal is framed as a fee assessed per ship passage, whereas the Ledger specifies a 20% rate on all cargo and does not specify a per-vessel charge or its calculation method.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "The per-ship-passage charging basis is not established by the Ledger, changing the proposal’s scope and adding a specific unsupported claim (changed_fact, changed_scope, unsupported_new_claim). The nearby caveat says collection had not begun, but does not establish that charging basis.",
+    "related_fact_id": "HF-002",
+    "origin": "ja_source",
+    "qualifier_present": true,
+    "qualifier_text": "“It looked like”; “The fee was not actually being collected yet. It was still only at the stage of announcing the policy.”",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 6234,
+  "cached_input_tokens": 0,
+  "output_tokens": 2722,
+  "reasoning_tokens": 2445
+ },
+ "prompt_sha256": "870b5a61e34b363297ccabc47f25e0f7d2e8d37fc8aa8104a7f72849b6e32056",
+ "model_returned": "gpt-6-luna",
+ "response_id": "resp_0db4e83004ecc952006ac2e556de5487d0af44813b70572876",
+ "raw_parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "It looked like a very large fee would appear every time a ship passed through the strait.",
+    "issue": "The proposal is framed as a fee assessed per ship passage, whereas the Ledger specifies a 20% rate on all cargo and does not specify a per-vessel charge or its calculation method.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "The per-ship-passage charging basis is not established by the Ledger, changing the proposal’s scope and adding a specific unsupported claim (changed_fact, changed_scope, unsupported_new_claim). The nearby caveat says collection had not begun, but does not establish that charging basis.",
+    "related_fact_id": "HF-002",
+    "origin": "ja_source",
+    "qualifier_present": true,
+    "qualifier_text": "“It looked like”; “The fee was not actually being collected yet. It was still only at the stage of announcing the policy.”",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": ""
+   }
+  ]
+ },
+ "cost_jpy": 0.31131267199999996,
+ "elapsed": 24.3
+}
