@@ -4786,7 +4786,10 @@ class TestHandoffSectionTypeAndIdentity(unittest.TestCase):
         import inspect
         src = inspect.getsource(runner.run_instance)
         self.assertIn("annotate_claim_span_identity(c, current_en_text, current_ja_text)", src)
-        self.assertIn('"claim_in_article": c.get("claim_span_text") or c["claim_text"]', src)
+        # 委任_01(KPI-RECOVERY-REDESIGN-02): prior_issuesのclaim_in_articleは、確定範囲(claim_span_text)を
+        # 元textとしつつ、Rewrite後の現行本文の置換後の文があればそちらを渡す(resolve_prior_issue_text)。
+        self.assertIn('_orig = c.get("claim_span_text") or c["claim_text"]', src)
+        self.assertIn("resolve_prior_issue_text(_orig,", src)
         self.assertIn("claim_norm=(normalize_claim_text(_span_txt) if _span_txt else None)", src)
         self.assertIn('stage4_reason = "violation_span_unverified" if span_unverified_records', src)
 
@@ -6685,6 +6688,148 @@ class TestL6CarryForwardRecord66(unittest.TestCase):
         self.assertEqual(r["ranges"], [L6_S_JULY])
         s = runner.sentence_restore_summarize([{"instance_id": "x", "cycles": [{"cycle": 1, "rewrite_records": [{"handoff": res["handoff"]}]}]}])
         self.assertEqual((s["restored"], s["l6_fired"]), (1, 1))
+
+
+class TestKpiRecovery02PriorIssueCurrentText(unittest.TestCase):
+    """委任_01(OPEN-233-KPI-RECOVERY-REDESIGN-02) 作業2-1: prior_issuesへ現行本文(Rewrite後)の置換後の文を渡す。"""
+    NEW = "Some calls may have needed user information."
+
+    @staticmethod
+    def _rec(before, after, ident="fact:MUSE-HC-010", ok=True):
+        return {"claim_identity": ident, "guard_ok": ok,
+                "handoff": {"text_lang": "EN", "level_attempts": [
+                    {"result": "success", "targets": [before], "before_after": [{"before": before, "after": after}]}]}}
+
+    def test_current_text_replaces_original_when_after_unit_exists_in_article(self):
+        rec = self._rec(META_TARGET, self.NEW)
+        en_now = "Calls happened. " + self.NEW + " The end."
+        txt, src = runner.resolve_prior_issue_text(META_TARGET, rec, [], en_now, None)
+        self.assertEqual((txt, src), (self.NEW, "current_text"))
+
+    def test_fallback_to_original_when_not_resolvable(self):
+        en_now = "Calls happened. The end."
+        # (a)置換後の文が現行本文に存在しない
+        rec = self._rec(META_TARGET, self.NEW)
+        self.assertEqual(runner.resolve_prior_issue_text(META_TARGET, rec, [], en_now, None),
+                         (META_TARGET, "original_text"))
+        # (b)delete型(後が空)
+        rec = self._rec(META_TARGET, "")
+        self.assertEqual(runner.resolve_prior_issue_text(META_TARGET, rec, [], en_now, None),
+                         (META_TARGET, "original_text"))
+        # (c)Rewrite未成功(guard_ok=False)・record無し
+        rec = self._rec(META_TARGET, self.NEW, ok=False)
+        self.assertEqual(runner.resolve_prior_issue_text(META_TARGET, rec, [], self.NEW, None),
+                         (META_TARGET, "original_text"))
+        self.assertEqual(runner.resolve_prior_issue_text(META_TARGET, None, [], self.NEW, None),
+                         (META_TARGET, "original_text"))
+
+    def test_carry_forward_uses_earlier_claims_after_unit(self):
+        earlier = self._rec("S before. Also x.", "S after.", ident="fact:A")
+        units = runner.collect_replaced_units(earlier, "fact:A")
+        later = {"claim_identity": "fact:B", "guard_ok": False,
+                 "handoff": {"carry_forward_covered": [{"range": "Also x.", "covered_by_claim": "fact:A"}]}}
+        txt, src = runner.resolve_prior_issue_text("Also x.", later, units, "Intro. S after. End.", None)
+        self.assertEqual((txt, src), ("S after.", "current_text"))
+        # 置換元が見つからないcarry-forwardは元text
+        later2 = {"claim_identity": "fact:C", "guard_ok": False,
+                  "handoff": {"carry_forward_covered": [{"range": "zzz", "covered_by_claim": "fact:A"}]}}
+        self.assertEqual(runner.resolve_prior_issue_text("zzz", later2, units, "Intro. S after. End.", None),
+                         ("zzz", "original_text"))
+
+    def test_run_instance_passes_current_text_to_recheck_and_records_source(self):
+        def stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
+            new_en = en.replace(META_TARGET, self.NEW)
+            return {"mechanism": "single_text_local(E-2/delete-generic)", "en_text": new_en, "ja_text": ja,
+                    "method": "fake", "guard_ok": True, "before_fragment": META_TARGET,
+                    "after_fragment": self.NEW, "ladder_level_used": "1_word_connective",
+                    "target_not_locatable": False, "span_unverified": False,
+                    "ladder_exhausted_without_full_rewrite": False,
+                    "handoff": {"text_lang": "EN", "level_attempts": [
+                        {"result": "success", "targets": [META_TARGET],
+                         "before_after": [{"before": META_TARGET, "after": self.NEW}]}]}}
+        res, seen = _run_instance49([_dev49(META_TARGET, origin="ja_source")], ja_mode=runner.JA_MODE_ENGLISH_ONLY,
+                                    stage3_fn=stage3)
+        self.assertEqual([p["claim_in_article"] for p in seen["prior_issues"]], [self.NEW])
+        self.assertEqual(res["cycles"][0]["prior_issue_text_sources"], ["current_text"])
+
+    def test_run_instance_falls_back_to_original_when_handoff_has_no_units(self):
+        res, seen = _run_instance49([_dev49(META_TARGET, origin="ja_source")], ja_mode=runner.JA_MODE_ENGLISH_ONLY)
+        self.assertEqual([p["claim_in_article"] for p in seen["prior_issues"]], [META_TARGET])
+        self.assertEqual(res["cycles"][0]["prior_issue_text_sources"], ["original_text"])
+
+    def test_checker_prompt_template_bytes_unchanged(self):
+        """Checker Promptの文面(er003の`build_prior_issues_instruction`)はバイト不変(sha256固定、2026-10-04時点)。"""
+        import hashlib
+        import er003_v1_en_direct_vfl_01_generate as vfl01
+        s0 = vfl01.build_prior_issues_instruction([])
+        s1 = vfl01.build_prior_issues_instruction(
+            [{"fact_id": "HF-1", "claim_in_article": "X y.", "issue": "i", "explanation": "e"}])
+        self.assertEqual(hashlib.sha256(s0.encode()).hexdigest(),
+                         "a43f09d3624032f40a8deff40d3d98ab96f8ebe975ada3a6c3ff70358953ee67")
+        self.assertEqual(hashlib.sha256(s1.encode()).hexdigest(),
+                         "7cf0da0ac184aa6068c6d33eda09fff6c90c199c7547cc4cddbeb0ae1085b6e6")
+
+
+class TestKpiRecovery02Switches(unittest.TestCase):
+    """委任_01 作業2-2/2-3: KPI確認構成とNORMAL群2-of-2の既定OFF。"""
+
+    def test_normal_two_of_two_default_off(self):
+        self.assertFalse(runner.STAGE2_NORMAL_TWO_OF_TWO)
+
+    def test_kpi_trial_switches_definition(self):
+        k = runner.KPI_TRIAL_SWITCHES
+        self.assertTrue(k["VS_SENTENCE_RESTORE"])
+        self.assertTrue(k["VS_MATCH_EXT"])
+        self.assertTrue(k["VS_EXPLAIN_SPLIT"])
+        self.assertFalse(k["STAGE2_NORMAL_TWO_OF_TWO"])
+        self.assertEqual(k["JA_MODE"], runner.JA_MODE_ENGLISH_ONLY)
+        self.assertEqual(k["FLOOR_VERIFY_MODE"], runner.FLOOR_VERIFY_MODE_TIME_ONLY)
+        self.assertEqual(k["HANDOFF_MODE"], runner.HANDOFF_MODE_VIOLATION_SPAN)
+
+    def test_apply_kpi_trial_switches_sets_globals_and_defaults_untouched_before(self):
+        keys = list(runner.KPI_TRIAL_SWITCHES)
+        saved = {kk: getattr(runner, kk) for kk in keys}
+        try:
+            # 既定のglobal(適用前)はL6 OFF・NORMAL群2-of-2 OFF
+            self.assertFalse(runner.VS_SENTENCE_RESTORE)
+            applied = runner.apply_kpi_trial_switches()
+            self.assertEqual(applied, runner.KPI_TRIAL_SWITCHES)
+            self.assertTrue(runner.VS_SENTENCE_RESTORE)
+            self.assertFalse(runner.STAGE2_NORMAL_TWO_OF_TWO)
+        finally:
+            for kk, v in saved.items():
+                setattr(runner, kk, v)
+
+    def test_two_of_two_not_applied_by_default_but_applied_when_switch_on(self):
+        import contextlib
+        calls = []
+
+        def spy(*a, **k):
+            calls.append(1)
+            return a[6], []
+        dev = [_dev49(META_TARGET, origin="ja_source")]
+
+        def stage2(c, s, ce, cl, lb, fx, claims):
+            return [{**x, "materiality": "QUALITY", "llm_materiality": "QUALITY", "basis": "none",
+                     "rewrite_kind": "none", "rewrite_hint": "", "floor_reason": None, "section_type": "body",
+                     "stage2_route": "body", "floor_cited_materiality": "QUALITY", "floor_cited_reason": None}
+                    for x in claims]
+
+        def stage1(c, s, ce, cl, lb, fx, developer_message=None):
+            return {"overall_status": "LEDGER_DEVIATION", "deviations": [dict(d) for d in dev]}
+        for sw in (False, True):
+            calls.clear()
+            with contextlib.ExitStack() as st:
+                st.enter_context(mock.patch.object(runner, "STAGE2_NORMAL_TWO_OF_TWO", sw))
+                st.enter_context(mock.patch.object(runner, "stage1_fresh_with_enumeration", stage1))
+                st.enter_context(mock.patch.object(runner, "run_stage2", stage2))
+                st.enter_context(mock.patch.object(runner, "apply_stage2_two_of_two", spy))
+                st.enter_context(mock.patch.object(runner, "save_json", lambda *a, **k: None))
+                inst = {"instance_id": "unit_kpi02", "group": "unit", "expected_group_label": "unit",
+                        "stage1_mode": "fresh",
+                        "fixture": {"ledger_text": "(ledger)", "article_text": EN49, "source_article_text": JA49}}
+                runner.run_instance(object(), _state0(), [0], inst, stage1_cache={})
+            self.assertEqual(len(calls), 1 if sw else 0, "switch=%s" % sw)
 
 
 if __name__ == "__main__":

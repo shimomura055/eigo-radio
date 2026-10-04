@@ -18511,3 +18511,272 @@ Production量産性を成立させるためのTrialであることを忘れな�
 
 ### (e) ユーザー判断待ち項目(`USER_DECISION_REQUIRED`、STOP条件: Safety原則に関わる判断[KPI 0件の扱い]・既存より厳しくする変更[S1])
 (1)S1採用 (2)Safety KPI 0件の扱い(確率的極小化+Stage 1 recall別管理) (3)NORMAL群2-of-2の既定OFF化 (4)アンカー型L6の確認 (5)prior_issuesにRewrite後の文を渡す是正(Checker入力の変更) (6)U-2(1)位置語→構造要素 (7)Stage 1 recall対策の方向。承認後の流れ: S1+(3)(5)実装→単体テスト→rep25再開(A2A3/B3 n=2)→29件再確認→STOP報告。次Trial(10本)は開始しない。本エントリはFableの照合・整理の記録であり、ユーザー決定でも`APPROVED_FOR_PRODUCTION`でもない。Production未接続、`PRODUCTION_WIRED`なし。
+
+
+## OPEN-233-KPI-RECOVERY-REDESIGN-02(2026-10-04、ユーザー指示: KPI変更・緩和禁止、後段誤降格の根本原因分析と後段設計の見直し、Opusを改善工程に組み込むループ、技術是正3件、Human Review残存4件の解消検討、Stage 1 recallは第二段階、強モデル限定利用の比較、Status/Closeout条件)
+
+### ユーザー指示全文(逐語)
+
+Claude Code 指示
+管理ID：OPEN-233-KPI-RECOVERY-REDESIGN-02
+目的
+OPEN-233について、KPIを変更・緩和せず、現行KPIを達成するために設計をやり直すこと。
+前回報告で提示された、
+- Safety KPIを「Checkerが検出したものだけ」に分割する
+- Human Reviewを少数残す
+- LLMだから0件保証は難しいとしてKPI側を調整する
+という方向は不採用です。
+ユーザーが求めているのは「将来1万記事作って永久に流出ゼロを数学的に保証せよ」ではありません。
+少なくとも現在のTrial規模・Safetyケース・29件横断程度では、Human Review 0件・重大見逃し0件にならなければProduction候補として成立しない、という意味です。
+現行KPI — 変更禁止
+- Primary：USER_DECISION_REQUIRED / Human Review 0件
+- Safety：重大Fact見逃し 0件
+- Cost：平均追加コスト +¥2/記事以内
+- Cost Cap：+¥3/記事以内
+診断目的で内訳を分けて計測することはよいですが、KPIそのものを分割・緩和して達成扱いにしてはいけません。
+KPI変更が必要だとユーザーへ相談してよいのは、合理的な改善案を十分に検討・試行し、それでも達成困難であるEvidenceが揃った場合だけです。
+今回の最優先問題
+今回B3では、
+1. Checkerは重大違反を検出できていた
+2. 後段の重大度判定が、それを「問題なし」へ降格
+3. Rewriteされず流出
+という動作が起きています。
+したがって、現時点で第一に疑うべきなのはCheckerではなく後段判定の設計です。
+「Checkerを2回回す」「KPIを分ける」へ直行してはいけません。
+必須作業1：重大→問題なし誤降格の根本原因分析
+まずB3について、なぜ後段が重大を問題なしへ落としたのかを詳細に分析してください。
+最低限確認すること：
+- 後段に渡った実際の入力
+- Checkerから渡された指摘内容
+- Ledger / 記事本文 / context
+- 後段Prompt
+- materiality基準
+- deterministic safety ruleとの関係
+- 過去9件の同経路流出との共通点
+- 1回だけ誤判定した理由が単なる乱数的揺らぎなのか、Prompt・入力構造・判定権限に設計上の弱点があるのか
+- なぜ「重大→軽微」ではなく「重大→問題なし」まで落とせたのか
+- Checkerの重大判定を後段が打ち消すための現在の条件が妥当か
+「同じ入力を10回回したら10/10重大だった」だけで原因分析完了としないこと。
+今回1回実際に流出した以上、なぜその1回がシステム上成立したのかを構造として説明してください。
+必須作業2：後段設計を見直す
+原因分析後、KPIを維持したまま後段のSafetyを改善する設計案を比較してください。
+少なくとも以下を検討対象に含めること。
+A. Checkerが重大としたclaimを後段が解除できる条件の見直し
+現在の「AI1回で重大→問題なし」が可能な構造は禁止候補です。
+ただし単純に2回確認へする前に、
+- deterministic ruleで守れる部分
+- CheckerのEvidenceを後段へ強く引き継ぐ方法
+- 「問題なし」まで落とす条件を厳格化する方法
+- Major→MinorとMajor→No issueで解除条件を分ける方法
+- LedgerとChecker根拠を利用した決定論的Guard
+- confidenceや明示Evidence不足時はMajor維持
+等、より筋のよい方法を比較してください。
+B. 不要Rewriteとの両立
+Safetyを上げるために、すべてMajor固定にして不要Rewriteを増やすだけでは不十分です。
+既存原則：
+「英語学習者に記事の本質について重大な誤解を与えるものだけを止める」
+を維持してください。
+必須作業3：Opusを「レビューして終わる道具」にしない
+今回、Opusレビュー自体は入っています。
+問題は、
+設計 → Opusレビュー → ユーザー報告
+で止まっていることです。
+今後は以下の改善ループを必須とします。
+原因分析
+→ 設計案作成
+→ Opus批判レビュー
+→ Fable / Claudeが指摘を評価
+→ KPI内で直せるものは自律的に設計改善
+→ 限定Trial
+→ KPI確認
+→ 未達なら再設計
+→ 必要なら再度Opusレビュー
+→ 本当に判断が必要な場合だけユーザーへ
+Opusレビューは報告材料ではなく改善工程の一部です。
+Opusから問題を指摘されたら、そのままユーザーへ投げず、
+- 採用
+- 不採用
+- 修正して採用
+をFable/Claudeで判断し、Guardrail内で改善してください。
+必須作業4：今回すでに判明している技術是正
+以下は新しいProduct判断としてユーザーへ戻さず、技術是正として処理してください。
+1. Rewrite前の古い文章をCheckerへ渡していた問題
+prior_issuesには現在のRewrite後本文を渡すこと。
+これは仕様判断ではなく明確な不具合是正です。
+2. 不完全spanの復元
+Checkerの返却範囲が、
+- 途中から始まる
+- ...で省略される
+- 1〜数語の余分な語を含む
+場合でも、
+記事内で逐語的な手掛かりから対象の完結文を一意に特定できるなら、その完結文へ復元する。
+類似度推測で無理に選ばないこと。
+複数候補になる場合は別途技術的に解消可能か検討する。
+既知29件のHuman Review 2件はこの処理で0件にできる見込みなので、実flowで確認してください。
+3. Trial専用NORMAL群2-of-2
+現在の評価を見かけ上改善している可能性があるため、既定OFFで再測定すること。
+Productionに存在しないTrial補助でKPI達成を演出してはいけません。
+必須作業5：Human Review残存4件も放置しない
+報告には、過去の説明文混入型5件のうち、
+- 1件は決定論的に解決可能
+- 4件は現時点で未解決
+とあります。
+Primary KPIはHuman Review 0件です。
+したがって、
+「4件は現時点では自動解決できない」
+
+で終わらせないこと。
+まず、
+- なぜ現在の後段ガードでは解けないのか
+- 原文のどの情報を使えば特定できるか
+- section / heading / surrounding sentence / claim / Ledger / current article structureを使えないか
+- Checker出力を変えず後段だけで解決できないか
+- 決定論的処理が本当に不可能か
+を検討してください。
+それでも本当に解けない場合のみ、Evidence付きでSTOPしてください。
+必須作業6：Stage 1 Checker見逃しは第二段階として対策
+B3今回流出の直接原因は後段なので、まずそこを直してください。
+その後、Stage 1 Checker自身のrecall不足を別途改善します。
+単純なChecker全面2回実行は第一候補にしないこと。
+コストをほぼ倍増させるため筋が悪いです。
+まず以下を比較してください。
+- Checker Prompt / 入力改善
+- deterministic pre-check
+- Safety系Factだけの安価な補助check
+- Stage 1がPASSした場合だけ限定的に再確認
+- 特定risk flagだけ再確認
+- 既存Ledger構造の再利用
+- Stage 2/後段Evidenceの利用
+- その他、より低コストなrecall改善方法
+強いモデルの限定利用も検討すること
+後段設計を改善しても重大誤降格が残る場合には、
+全面的なモデル置換ではなく、重大判定の解除判断など危険度の高い局所だけ、より強いモデルを使う比較Trial
+を検討してください。
+候補としてSolの限定利用も比較対象に含めること。
+ただし、
+- 最新価格を実行時に確認
+- 発火率を測る
+- 平均+¥2/記事、Cap+¥3/記事以内
+- Luna等の安価な通常経路を基本とし、必要ケースだけ強モデル
+を前提とすること。
+最初から全面Sol化しない。
+QCD上の優先順位
+1. 重大見逃し0
+2. Human Review 0
+3. 不要Rewriteを増やさない
+4. 平均追加費用+¥2以内
+5. 非決定性・追加callを最小化
+6. Production運用が複雑になりすぎない
+Safetyを理由にHuman Reviewへ逃がさないこと。
+Human Reviewゼロ自体がKPIです。
+Trialの進め方
+いきなり次の10本Trialへ行かないでください。
+まず今回の既知問題を閉じます。
+Step 1
+B3重大誤降格の根本原因分析。
+Step 2
+改善案比較＋Opusレビュー。
+Step 3
+Fable/Claudeでレビュー内容を咀嚼し設計改善。
+Step 4
+必要な技術是正をTrial側へ実装。
+Step 5
+B3/A2A3等の既知caseで限定確認。
+Step 6
+Safety-critical群＋既存29件を再確認。
+ここで最低限、
+- Human Review 0件
+- 重大見逃し 0件
+を同じ構成で同時に確認すること。
+Step 7
+まだ未達なら、自律的に原因分析→改善ループをもう一度回す。
+合理的な改善余地が残っている限り、ユーザーへKPI緩和を提案しない。
+費用
+現在Phase累計：
+¥584.07 / ¥900
+残：
+¥315.93
+まず原因分析・既存Evidence再利用・オフラインreplayを優先してください。
+新しいAPI Trialを行う前に費用概算を出し、既存予算内で最小限に実施すること。
+現在Status
+OPEN-233はまだProduction採用判断の段階ではありません。
+今回の作業はTrial改善継続です。
+今回到達してよいStatus：
+- VALIDATED
+- USER_DECISION_REQUIRED
+のみ。
+APPROVED_FOR_PRODUCTION / PRODUCTION_WIREDへ勝手に進まないこと。
+既存の個別APPROVED項目のStatusも勝手に変更しない。
+USER_DECISION_REQUIREDにしてよい条件
+以下の場合のみSTOPしてユーザーへ上げてください。
+- Productの価値判断が必要
+- 現行KPIを守る合理的な技術案を十分試したが、Evidence上達成困難
+- +¥3/記事Cap超過が不可避
+- Safetyを緩和しなければ解決できない
+- Production正式採用判断が必要
+- 既存正式仕様と矛盾し、どちらを優先するかユーザー判断が必要
+以下はUSER_DECISION_REQUIREDではありません。
+- 実装バグ
+- 古い本文を渡していた
+- Trial補助が評価を歪めていた
+- Promptや入力設計の改善余地がある
+- 後段の判定ロジックにSafety holeがある
+- Opusが改善案を出した
+- 「LLMなので絶対保証は難しい」
+- 「件数が少ないのでHuman Reviewでもよい」
+Opusレビュー必須
+今回の後段Safety設計変更は処理フローに関わるため、実装前にOpusレビューを入れること。
+レビューでは特に、
+- なぜ重大→問題なしが可能だったか
+- 新設計がその穴を本当に閉じるか
+- 不要Rewriteを増やさないか
+- Human Reviewへ逃げていないか
+- より単純・決定論的な方法がないか
+- 既存Evidenceを再利用できないか
+- Sol等の強モデルが本当に必要か
+- cost / nondeterminism / retry loopを増やしすぎないか
+を批判的に確認すること。
+レビュー後、必ずFable/Claudeで改善してからTrialへ進むこと。
+Productionとの区別
+今回Production正式pathは変更禁止。
+Trial成功だけでProduction採用扱いにしない。
+後続のProduction採用時には改めて、
+- initial path
+- retry
+- fallback
+- regeneration
+- runtime evidence
+- actual model/routing
+- regression/integration test
+- CURRENT_SPEC
+- DECISION_LOG
+- OPEN_ITEMS
+- Git反映
+- Dangling Reference
+まで確認が必要。
+Closeout
+Trial終了時に必ず、
+- REJECTED
+- VALIDATED
+- USER_DECISION_REQUIRED
+のいずれかへ分類すること。
+加えて、
+- Human Review件数
+- 重大見逃し件数
+- 不要Rewrite
+- 平均追加cost
+- worst cost
+- どのモデルをどの条件で使ったか
+- Opusレビュー指摘と、それをどう改善したか
+- 未解決事項
+- 未処理USER_DECISION_REQUIRED
+- APPROVEDだが未配線の既存項目
+- 未報告Trial有無
+- Dangling Reference
+を確認すること。
+「設計した→レビューした→報告した」で終わらない。
+KPIを満たすまで、Guardrail内で自分たちで改善ループを回すこと。
+
+### Fableの受け止めと分担(委任文から逐語。ユーザー決定の追加ではない)
+
+前回報告の「KPI分割」「Human Review少数残存」「LLMだから0保証困難」の方向は撤回。委任_01=記録・Step 1・技術是正3件・必須作業5分析・Step 2設計案・Stage 1 recall案・強モデル比較前提・Opus packet。Opus批判レビュー#11→Fable評価→委任_02=設計改善+実装+Step 5限定確認→委任_03=Step 6[Safety-critical群+29件]→未達なら再ループ。本エントリはユーザー指示の逐語記録であり、`APPROVED_FOR_PRODUCTION`ではない。Production未変更。

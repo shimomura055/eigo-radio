@@ -401,6 +401,39 @@ FLOOR_VERIFY_MODE_TIME_ONLY = "time_only"
 FLOOR_VERIFY_MODES = (FLOOR_VERIFY_MODE_OFF, FLOOR_VERIFY_MODE_TIME_ONLY)
 FLOOR_VERIFY_MODE = FLOOR_VERIFY_MODE_OFF
 
+# OPEN-233-KPI-RECOVERY-REDESIGN-02 委任_01 作業2-3(2026-10-04、ユーザー指示の技術是正): NORMAL群の
+# Stage 2「2-of-2」(`apply_stage2_two_of_two`、1回目BLOCKING→2回目が非BLOCKINGなら降格)は、Productionに
+# 存在しない評価用Trial補助(`NORMAL_GROUP_INSTANCE_IDS`=正解ラベル付きinstance限定)で、過剰Majorの
+# 見かけ上の改善に寄与している(委任_68 recount: 14件降格)。KPI評価を歪めないため既定OFFとする
+# (旧挙動は`STAGE2_NORMAL_TWO_OF_TWO=True`で再現。既存テストの旧挙動確認用)。適用位置は`run_instance`の
+# 呼び出し側(関数自体は不変)。Production未変更。有効化はTrial比較の再現目的のみ。
+STAGE2_NORMAL_TWO_OF_TWO = False
+
+# 作業2-2: 「KPI確認構成」(rep23〜25の構成[`HANDOFF_MODE`=violation_span、`VS_MATCH_EXT`、
+# `VS_EXPLAIN_SPLIT`、`JA_MODE`=english_only、`FLOOR_VERIFY_MODE`=time_only]に、L6完結文復元
+# `VS_SENTENCE_RESTORE`を加え、NORMAL群2-of-2をOFFにしたもの)。各Trial起動スクリプトは
+# `apply_kpi_trial_switches()`でこの構成を適用する(個別に4〜6個のglobalを書き換えない)。
+# 既定のglobal値は変更しない(`apply_kpi_trial_switches`を呼ぶまで旧既定のまま)。Trial専用、
+# Production未配線・`APPROVED_FOR_PRODUCTION`ではない。
+KPI_TRIAL_SWITCHES = {
+    "HANDOFF_MODE": "violation_span",
+    "VS_MATCH_EXT": True,
+    "VS_EXPLAIN_SPLIT": True,
+    "VS_SENTENCE_RESTORE": True,
+    "JA_MODE": "english_only",
+    "FLOOR_VERIFY_MODE": "time_only",
+    "STAGE2_NORMAL_TWO_OF_TWO": False,
+}
+
+
+def apply_kpi_trial_switches() -> dict:
+    """`KPI_TRIAL_SWITCHES`をこのモジュールのglobalへ適用し、適用後の値を返す(Trial起動スクリプト用)。"""
+    g = globals()
+    for k, v in KPI_TRIAL_SWITCHES.items():
+        g[k] = v
+    g["FLOOR_VERIFY_MODE"] = validate_floor_verify_mode(KPI_TRIAL_SWITCHES["FLOOR_VERIFY_MODE"])
+    return {k: g[k] for k in KPI_TRIAL_SWITCHES}
+
 
 def validate_floor_verify_mode(mode: str) -> str:
     """`off`/`time_only`以外(廃止した`comparison_time`を含む)は`ValueError`。"""
@@ -5510,6 +5543,60 @@ def collect_replaced_units(result: dict, claim_identity_str: str) -> list:
     return units
 
 
+PRIOR_ISSUE_TEXT_SOURCE_CURRENT = "current_text"
+PRIOR_ISSUE_TEXT_SOURCE_ORIGINAL = "original_text"
+
+
+def resolve_prior_issue_text(original_text: str, rewrite_record: dict | None, all_units: list,
+                             en_now: str | None, ja_now: str | None) -> tuple:
+    """委任_01(OPEN-233-KPI-RECOVERY-REDESIGN-02) 作業2-1(不具合是正、ユーザー指示):
+    Recheckへ渡す`prior_issues`の`claim_in_article`は、Rewrite**前**のspan文ではなく、現行本文
+    (Rewrite後)の置換後の文でなければならない(旧: Rewrite前の文を渡していたため、Checkerが本文に
+    存在しない文を検証対象として受け取っていた)。決定論(¥0、追加call・類似度推測なし)。
+    置換後の文は、このclaimのRewriteで実際に置換された範囲(`collect_replaced_units`)の`after_units`、
+    またはcarry-forward(同一cycleの先行claimが既に書き換えた範囲)なら、先行claimの置換単位の`after`。
+    全ての範囲について置換後の文が非空で、かつ現行本文(単位の言語側)に逐語で存在するときだけ
+    `("\n".join(after), "current_text")`を返す。それ以外(Rewrite未成功・delete型で後が空・carry-forwardの
+    置換元が見つからない・現行本文に無い等)は従来どおり元のtextと`"original_text"`を返す
+    (Checker Prompt・Schema・er003の`build_prior_issues_instruction`は不変)。"""
+    rec = rewrite_record or {}
+    ident = rec.get("claim_identity", "")
+    own = collect_replaced_units(rec, ident) if rec else []
+    afters: list = []
+    langs: list = []
+    for u in own[:1]:  # 最初の単位=主たる書き換え(pairedのJA副単位は使わない)
+        for a in u["after_units"]:
+            afters.append(a)
+            langs.append(u["lang"])
+    h = rec.get("handoff") or {}
+    for cov in (h.get("carry_forward_covered") or []):
+        r = cov.get("range")
+        found = None
+        for u in all_units:
+            for i, b in enumerate(u["before_units"]):
+                if r and r in b and i < len(u["after_units"]):
+                    found = (u["after_units"][i], u["lang"])
+                    break
+            if found:
+                break
+        if found is None:
+            return original_text, PRIOR_ISSUE_TEXT_SOURCE_ORIGINAL
+        afters.append(found[0])
+        langs.append(found[1])
+    if not afters:
+        return original_text, PRIOR_ISSUE_TEXT_SOURCE_ORIGINAL
+    seen, uniq = set(), []
+    for a, lg in zip(afters, langs):
+        s = (a or "").strip()
+        now = ja_now if lg == "JA" else en_now
+        if not s or now is None or s not in now:
+            return original_text, PRIOR_ISSUE_TEXT_SOURCE_ORIGINAL
+        if s not in seen:
+            seen.add(s)
+            uniq.append(s)
+    return "\n".join(uniq), PRIOR_ISSUE_TEXT_SOURCE_CURRENT
+
+
 def carry_forward_resolution(claim_rec: dict, claim_text: str, en_now: str | None, ja_now: str | None):
     """委任_42(rep22 T3で判明): 同一cycleで先行claimのRewriteが同じ文を書き換えた結果、後続
     claimのCheker文字列が現在の本文から消えている場合の扱い。cycle開始時点の本文で
@@ -6727,6 +6814,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
                          **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
                          **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
+                         **({"STAGE2_NORMAL_TWO_OF_TWO": True} if STAGE2_NORMAL_TWO_OF_TWO else {}),
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
@@ -6807,9 +6895,13 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 
         # 委任_13(iteration5、Stage2 2-of-2安定化): precheck floor claim
         # (floor_reason="precheck_floor")は対象外なので混在させても安全。
-        stage2_results, stage2_two_of_two_log = apply_stage2_two_of_two(
-            client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}", working_fixture,
-            stage2_results, inst)
+        # 委任_01(KPI-RECOVERY-REDESIGN-02) 作業2-3: 既定OFF(`STAGE2_NORMAL_TWO_OF_TWO`)。
+        if STAGE2_NORMAL_TWO_OF_TWO:
+            stage2_results, stage2_two_of_two_log = apply_stage2_two_of_two(
+                client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}", working_fixture,
+                stage2_results, inst)
+        else:
+            stage2_two_of_two_log = []
 
         blocking_claims = [c for c in stage2_results if c["materiality"] == "BLOCKING"]
         non_blocking_claims = [c for c in stage2_results if c["materiality"] != "BLOCKING"]
@@ -7244,11 +7336,24 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # Recheck(全文、prior_issuesあり、A1。局所QA fastpathが不成立
         # [未該当、または局所QAが問題を検出]の場合のみ到達する、既存挙動
         # は無変更)
-        prior_issues = [{"fact_id": c["dev"].get("related_fact_id", ""),
-                          # 委任_42 仕様(7): 新方式では確定範囲(複数なら記事順に連結)。
-                          "claim_in_article": c.get("claim_span_text") or c["claim_text"],
-                          "issue": c["dev"].get("issue", ""), "explanation": c["dev"].get("explanation", "")}
-                         for c in blocking_claims]
+        # 委任_01(KPI-RECOVERY-REDESIGN-02) 作業2-1(不具合是正): `claim_in_article`は、Rewrite前の
+        # span文ではなく現行本文(Rewrite後)の置換後の文を渡す。特定できなければ従来の元text
+        # (`prior_issue_text_source`=original_text)。Checker Prompt・Schemaは不変。
+        _rec_by_ident = {r_["claim_identity"]: r_ for r_ in rewrite_records}
+        _all_units = [u_ for r_ in rewrite_records
+                      for u_ in collect_replaced_units(r_, r_["claim_identity"])]
+        prior_issues = []
+        prior_issue_text_sources = []
+        for c in blocking_claims:
+            _orig = c.get("claim_span_text") or c["claim_text"]  # 委任_42 仕様(7): 新方式では確定範囲
+            _txt, _src = resolve_prior_issue_text(_orig, _rec_by_ident.get(claim_identity(c["dev"])),
+                                                  _all_units, current_en_text, current_ja_text)
+            prior_issue_text_sources.append(_src)
+            prior_issues.append({"fact_id": c["dev"].get("related_fact_id", ""),
+                                 "claim_in_article": _txt,
+                                 "issue": c["dev"].get("issue", ""),
+                                 "explanation": c["dev"].get("explanation", "")})
+        cycle_record["prior_issue_text_sources"] = prior_issue_text_sources
         recheck_fixture = dict(working_fixture)
         recheck_fixture["article_text"] = current_en_text
         if current_ja_text is not None:
@@ -7408,6 +7513,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
                          **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
                          **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
+                         **({"STAGE2_NORMAL_TWO_OF_TWO": True} if STAGE2_NORMAL_TWO_OF_TWO else {}),
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
@@ -8223,13 +8329,20 @@ def main():
     parser.add_argument("--floor-verify-mode", default=FLOOR_VERIFY_MODE_OFF,
                          choices=list(FLOOR_VERIFY_MODES),
                          help="委任_61: time_onlyで時期のfloorだけ追加確認(2回とも非重大のときだけ解放)を有効化(既定off=従来、比較・方向等は決定論維持)")
+    parser.add_argument("--stage2-normal-two-of-two", action="store_true",
+                         help="委任_01(KPI-RECOVERY-REDESIGN-02): NORMAL群Stage 2 2-of-2をON(旧挙動の再現用、既定OFF=Production非存在のTrial補助を使わない)")
+    parser.add_argument("--kpi-trial-config", action="store_true",
+                         help="委任_01: KPI確認構成(KPI_TRIAL_SWITCHES: rep23〜25構成+L6完結文復元+NORMAL群2-of-2 OFF)を適用。個別の--vs-*等より優先")
     args = parser.parse_args()
+    globals()["STAGE2_NORMAL_TWO_OF_TWO"] = bool(args.stage2_normal_two_of_two)
     globals()["FLOOR_VERIFY_MODE"] = validate_floor_verify_mode(args.floor_verify_mode)
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
     globals()["VS_EXPLAIN_SPLIT"] = bool(args.vs_explain_split)
     globals()["VS_SENTENCE_RESTORE"] = bool(args.vs_sentence_restore)
     globals()["JA_MODE"] = args.ja_mode
     globals()["CHECKER_SPANS_MODE"] = args.checker_spans_mode
+    if args.kpi_trial_config:
+        apply_kpi_trial_switches()
     selected_groups = {g.strip() for g in args.groups.split(",") if g.strip()}
     selected_instance_ids = (
         {s.strip() for s in args.instance_ids.split(",") if s.strip()} if args.instance_ids else None
