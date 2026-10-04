@@ -1,0 +1,358 @@
+{
+  "instance_id": "safety_er009_changed_actor",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerが示す研究者はKareem HaggagとGiovanni Paciで、Harvard Business Schoolとの関係は確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Harvard Business School所属というLedgerにない具体的事実を加え、研究主体を置き換えているため、changed_fact・changed_actor・unsupported_new_claimがtrueです。取引件数と研究結果の記述はLedgerと一致します。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis」を修正。LedgerにないHarvard Business Schoolとの所属関係を削除し、Ledgerが確認する研究対象と結果の範囲に限定してください（F-002、F-004）。",
+          "floor_reason": "deterministic_floor:changed_actor",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "floor_verify": {
+            "mode": "time_only",
+            "target": false,
+            "target_reason": "llm_materiality_blocking",
+            "triggered_flags": [
+              "changed_actor"
+            ],
+            "llm_materiality": "BLOCKING",
+            "confirmed": false,
+            "confirmed_basis": [],
+            "fact_block_found": null,
+            "calls": [],
+            "n_calls": 0,
+            "released": false,
+            "blocking_fixed_reason": null,
+            "release_note": null,
+            "final_materiality": "BLOCKING",
+            "cost_jpy": 0.0
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:7b2fca543a4fc34a",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+              ],
+              "raw_spans": [
+                [
+                  0,
+                  185
+                ]
+              ],
+              "spans": [
+                [
+                  0,
+                  185
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "A team studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                    "after": "A team studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "actor",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 31.0,
+          "difficult_word_ratio": 0.0968,
+          "word_count": 31
+        },
+        "stats_after": {
+          "avg_sentence_len": 27.0,
+          "difficult_word_ratio": 0.0741,
+          "word_count": 27
+        },
+        "sentence_len_increase": -4.0,
+        "difficulty_ratio_increase": -0.0227,
+        "fragment_stats_before": {
+          "avg_sentence_len": 31.0,
+          "difficult_word_ratio": 0.0968,
+          "word_count": 31
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 27.0,
+          "difficult_word_ratio": 0.0741,
+          "word_count": 27
+        },
+        "fragment_sentence_len_increase": -4.0,
+        "fragment_difficulty_ratio_increase": -0.0227,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 31,
+        "hook_word_count_after": 27,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 27,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "en_text_after_rewrite": "A team studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim",
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_actor_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1527,
+      "usage": {
+        "input_tokens": 6096,
+        "cached_input_tokens": 0,
+        "output_tokens": 728,
+        "reasoning_tokens": 611
+      },
+      "elapsed_seconds": 6.294,
+      "prompt_sha256": "0b5b3d8ee693193b1dc157055287ee30c051f0c282bcfbc3ebc19b71821eab85"
+    },
+    {
+      "label": "safety_er009_changed_actor_c1_claim:7b2fca543a4fc3_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0832,
+      "usage": {
+        "input_tokens": 4661,
+        "cached_input_tokens": 0,
+        "output_tokens": 129,
+        "reasoning_tokens": 85
+      },
+      "elapsed_seconds": 2.256,
+      "prompt_sha256": "3cebd7d3e3746b0abae06bffbfe511c8cabb34c63f8dac0638f55d7d58dd22fd"
+    },
+    {
+      "label": "safety_er009_changed_actor_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1211,
+      "usage": {
+        "input_tokens": 6268,
+        "cached_input_tokens": 0,
+        "output_tokens": 290,
+        "reasoning_tokens": 201
+      },
+      "elapsed_seconds": 3.585,
+      "prompt_sha256": "35b3481fef93beb5344e432191a4d9e843a65b8caba86c562a8f4b793978b75b",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.357,
+  "total_calls": 3,
+  "elapsed_seconds": 12.155,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "FLOOR_VERIFY_MODE": "time_only"
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "related_fact_id": null,
+        "origin": null,
+        "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerが示す研究者はKareem HaggagとGiovanni Paciで、Harvard Business Schoolとの関係は確認されていません。",
+        "explanation": "Harvard Business School所属というLedgerにない具体的事実を加え、研究主体を置き換えているため、changed_fact・changed_actor・unsupported_new_claimがtrueです。取引件数と研究結果の記述はLedgerと一致します。",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

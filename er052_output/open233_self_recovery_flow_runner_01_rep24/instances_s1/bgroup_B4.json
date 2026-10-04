@@ -1,0 +1,1379 @@
+{
+  "instance_id": "bgroup_B4",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Meta had run a test that produced exactly this kind of surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“Meta had run a test that produced exactly this kind of surprise.”",
+            "issue": "記事は、テストが実際にこのような驚きを生じさせたと述べている。原文は、その展開を思わせるテストと表現しており、実際に誰かが驚いたという報告ではない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "原文の「思わせる」から、実際に驚きが生じたという具体的事実へ強めている。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“That was what it seemed.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Meta had run a test that produced exactly this kind of surprise."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Ring, ring... A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.\n\nMeta had run a test that produced exactly this kind of surprise.\n\nThe setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“A person can take over when AI alone has trouble.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-002",
+          "dev": {
+            "claim_in_article": "“A person can take over when AI alone has trouble.”",
+            "issue": "人間がAIだけでは難しい場面で引き継ぐ、という運用上の条件・能力が加わっている。Ledgerは人間の契約スタッフが一部の電話を担当したことを示すが、AIが困難に直面したため引き継いだとはしていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "電話を人間が担当した事実に、AIの困難を引き継ぎの条件とする未確認の説明を加えている。",
+            "related_fact_id": "MUSE-HC-002",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“can take over”; “may even seem useful”",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-002",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "A person can take over when AI alone has trouble."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.\n\nIt was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful.\n\nBut then a problem appeared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“A person can take over when AI alone has trouble. As a system, that may even seem useful.” Limit this to saying that trained contract workers handled some Muse calls; do not imply they took over because the AI had trouble. Related fact: MUSE-HC-002.",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L1",
+            "reason": null,
+            "ranges": [
+              "A person can take over when AI alone has trouble."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L1"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "A person can take over when AI alone has trouble."
+        },
+        {
+          "claim_text": "“People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "“People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.”",
+            "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+              "Names, plans, and private matters are easier to share when you know who is hearing them.",
+              "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "“As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.”",
+            "issue": "便利なAI機能が、人々に相手がAIか人間かを知りたいと思わせるという一般的な因果・心理上の主張はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "電話機能等の存在は確認されているが、それによって人々の希望が生じるという主張は確認されていない。",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+              "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+              "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The Reveal Behind the AI Sign\n\nThe reveal was not AI learning to sound human. A human was behind the AI sign. As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end. A Meta executive called the undisclosed test a “mistake,” and the “human concierge” feature was rolled back for now.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "Meta had run a test that produced exactly this kind of surprise.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta had run a test that produced exactly this kind of surprise.",
+            "issue": "記事は、テストが実際にこのような驚きを生じさせたと述べている。原文は、その展開を思わせるテストと表現しており、実際に誰かが驚いたという報告ではない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "原文の「思わせる」から、実際に驚きが生じたという具体的事実へ強めている。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“That was what it seemed.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Meta had run a test that produced exactly this kind of surprise."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“Meta had run a test that produced exactly this kind of surprise.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Ring, ring... A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.\n\nMeta had run a test that produced exactly this kind of surprise.\n\nThe setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "A person can take over when AI alone has trouble.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-002",
+          "dev": {
+            "claim_in_article": "A person can take over when AI alone has trouble.",
+            "issue": "人間がAIだけでは難しい場面で引き継ぐ、という運用上の条件・能力が加わっている。Ledgerは人間の契約スタッフが一部の電話を担当したことを示すが、AIが困難に直面したため引き継いだとはしていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "電話を人間が担当した事実に、AIの困難を引き継ぎの条件とする未確認の説明を加えている。",
+            "related_fact_id": "MUSE-HC-002",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“can take over”; “may even seem useful”",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-002",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "A person can take over when AI alone has trouble."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“A person can take over when AI alone has trouble.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.\n\nIt was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful.\n\nBut then a problem appeared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“A person can take over when AI alone has trouble. As a system, that may even seem useful.” Limit this to saying that trained contract workers handled some Muse calls; do not imply they took over because the AI had trouble. Related fact: MUSE-HC-002.",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "A person can take over when AI alone has trouble."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "A person can take over when AI alone has trouble."
+        },
+        {
+          "claim_text": "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+            "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+              "Names, plans, and private matters are easier to share when you know who is hearing them.",
+              "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "Names, plans, and private matters are easier to share when you know who is hearing them.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "Names, plans, and private matters are easier to share when you know who is hearing them.",
+            "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+              "Names, plans, and private matters are easier to share when you know who is hearing them.",
+              "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+            "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+              "Names, plans, and private matters are easier to share when you know who is hearing them.",
+              "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The Reveal Behind the AI Sign\n\nThe reveal was not AI learning to sound human. A human was behind the AI sign. As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end. A Meta executive called the undisclosed test a “mistake,” and the “human concierge” feature was rolled back for now.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-004",
+          "dev": {
+            "claim_in_article": "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+            "issue": "便利なAI機能が、人々に相手がAIか人間かを知りたいと思わせるという一般的な因果・心理上の主張はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "電話機能等の存在は確認されているが、それによって人々の希望が生じるという主張は確認されていない。",
+            "related_fact_id": "MUSE-HC-004",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+              "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+              "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nIn the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 8,
+      "stage2_two_of_two_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-002",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(violation_span(EN,L1))",
+          "guard_ok": true,
+          "ladder_level_used": "4_paragraph",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "“A person can take over when AI alone has trouble.”",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L1",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "A person can take over when AI alone has trouble."
+              ],
+              "raw_spans": [
+                [
+                  640,
+                  689
+                ]
+              ],
+              "spans": [
+                [
+                  640,
+                  689
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L1"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": true
+            },
+            "level_attempts": [
+              {
+                "level": "4_paragraph",
+                "targets": [
+                  "It was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful."
+                ],
+                "revised": [
+                  "It was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "It was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful.",
+                    "after": "It was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad."
+                  }
+                ]
+              }
+            ],
+            "level_used": "4_paragraph",
+            "span_unverified": false,
+            "problem_kind": "multi_sentence",
+            "levels_planned": [
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-002",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "A person can take over when AI alone has trouble.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "A person can take over when AI alone has trouble."
+              ]
+            },
+            "carry_forward_covered": [
+              {
+                "range": "A person can take over when AI alone has trouble.",
+                "covered_by_claim": "fact:MUSE-HC-002"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:MUSE-HC-002",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "人間がAIだけでは難しい場面で引き継ぐ、という運用上の条件・能力が加わっている。Ledgerは人間の契約スタッフが一部の電話を担当したことを示すが、AIが困難に直面したため引き継いだとはしていない。",
+                "following_issue": "人間がAIだけでは難しい場面で引き継ぐ、という運用上の条件・能力が加わっている。Ledgerは人間の契約スタッフが一部の電話を担当したことを示すが、AIが困難に直面したため引き継いだとはしていない。",
+                "prior_related_fact_id": "MUSE-HC-002",
+                "following_related_fact_id": "MUSE-HC-002",
+                "prior_true_flags": [
+                  "changed_fact",
+                  "unsupported_new_claim"
+                ],
+                "following_true_flags": [
+                  "changed_fact",
+                  "unsupported_new_claim"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.75,
+          "difficult_word_ratio": 0.0948,
+          "word_count": 306
+        },
+        "stats_after": {
+          "avg_sentence_len": 13.09,
+          "difficult_word_ratio": 0.0938,
+          "word_count": 288
+        },
+        "sentence_len_increase": 0.34,
+        "difficulty_ratio_increase": -0.001,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 32,
+        "hook_word_count_after": 32,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 18,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 24,
+        "sentence_count_after": 22,
+        "sentence_drop_rate": 0.0833,
+        "hedge_word_count_before": 6,
+        "hedge_word_count_after": 4,
+        "hedge_word_increase": -2,
+        "paragraph_count_before": 13,
+        "paragraph_count_after": 13,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test\n\nRing, ring... A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.\n\nMeta had run a test that produced exactly this kind of surprise.\n\nThe setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.\n\nIt was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad. A person can take over when AI alone has trouble. As a system, that may even seem useful.\n\nBut then a problem appeared.\n\n### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.\n\n### The Reveal Behind the AI Sign\n\nThe reveal was not AI learning to sound human. A human was behind the AI sign. As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end. A Meta executive called the undisclosed test a “mistake,” and the “human concierge” feature was rolled back for now.\n\n## In one line\n\nIn the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+      "en_text_after_rewrite": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test\n\nRing, ring... A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.\n\nMeta had run a test that produced exactly this kind of surprise.\n\nThe setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.\n\nIt was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad.\n\nBut then a problem appeared.\n\n### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.\n\n### The Reveal Behind the AI Sign\n\nThe reveal was not AI learning to sound human. A human was behind the AI sign. As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end. A Meta executive called the undisclosed test a “mistake,” and the “human concierge” feature was rolled back for now.\n\n## In one line\n\nIn the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "english_only_ja_source_requires_full_recheck",
+        "multiple_claims_rewritten_same_cycle"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The headline says “I Thought It Was an AI Call,” and the opening says the call seemed to be from AI but the person on the other end was human; it adds that Meta’s test produced “exactly this kind of surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "The headline says “I Thought It Was an AI Call,” and the opening says the call seemed to be from AI but the person on the other end was human; it adds that Meta’s test produced “exactly this kind of surprise.”",
+            "issue": "The headline introduces a first-person experience, and the opening presents a particular recipient’s mistaken belief and surprise as an event produced by the test. The Japanese source evokes this scenario more tentatively; the Ledger verifies that trained contract staff handled some calls, but does not establish that a recipient believed a particular call was AI or was surprised.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The Ledger supports human-handled calls, but not this specific recipient’s belief or the claim that the test produced that exact surprise. The stronger, more definite framing is introduced in the adapted article.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“That was what it seemed.”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "Headline",
+              "Opening paragraphs beginning “Ring, ring...” and “Meta had run a test...”"
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# I Thought It Was an AI Call—But There Was a Person Inside? Meta’s Unexpected Muse Test\n\nRing, ring... A call came from an AI agent. That was what it seemed. But while the conversation continued, the voice on the other end was not AI. It was a person.\n\nMeta had run a test that produced exactly this kind of surprise.\n\nThe setting was the phone feature of Muse, an AI agent. In some calls made through Muse, trained contract workers, not AI, made the calls and carried the conversations through to the end.\n\nIt was like an AI costume: take it off, and a person steps out. Of course, having a person handle a call is not automatically bad.\n\nBut then a problem appeared.\n\n### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.\n\n### The Reveal Behind the AI Sign\n\nThe reveal was not AI learning to sound human. A human was behind the AI sign. As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end. A Meta executive called the undisclosed test a “mistake,” and the “human concierge” feature was rolled back for now.\n\n## In one line\n\nIn the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+          "fallback_used": true,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“People feel differently when they think they are speaking to a machine and when they know a person is listening.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "“People feel differently when they think they are speaking to a machine and when they know a person is listening.”",
+            "issue": "This presents a general claim about people’s reactions. The Ledger records privacy concerns raised by Meta employees in the human-staff test; it does not establish this broader population-level claim.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The claim broadens test-specific employee concerns to people generally, a scope expansion also present in the Japanese source.",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "### What Callers Were Not Told, paragraph beginning “When contract workers handled calls...”"
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        },
+        {
+          "claim_text": "“Names, plans, and private matters are easier to share when you know who is hearing them.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "“Names, plans, and private matters are easier to share when you know who is hearing them.”",
+            "issue": "This adds an unsupported claim that knowing who is listening makes personal information easier to share. The source says the listener’s identity matters, but does not make this causal claim.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The adapted wording adds a cause-and-effect claim about ease of sharing that is not in the Ledger or the Japanese source.",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "translation",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "### What Callers Were Not Told, paragraph beginning “When contract workers handled calls...”"
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### What Callers Were Not Told\n\nWhen contract workers handled calls, sensitive user information could be shared with call-center staff. People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them. The test began without explaining that contract staff might call.\n\nThis was where the story changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 3,
+      "stage2_two_of_two_log": [],
+      "severity_wobble": [
+        {
+          "related_fact_id": "MUSE-HC-010",
+          "range": "Names, plans, and private matters are easier to share when you know who is hearing them.",
+          "from": {
+            "cycle": 1,
+            "materiality": "QUALITY",
+            "llm_materiality": "QUALITY",
+            "floor_reason": null,
+            "basis": "unsupported_relationship",
+            "true_flags": [
+              "changed_fact",
+              "changed_scope",
+              "unsupported_new_claim"
+            ],
+            "range_resolved": true
+          },
+          "to": {
+            "cycle": 2,
+            "materiality": "ACCEPTABLE",
+            "llm_materiality": "ACCEPTABLE",
+            "floor_reason": null,
+            "basis": "none",
+            "true_flags": [
+              "changed_causality",
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "range_resolved": true
+          }
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "bgroup_B4_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4038,
+      "usage": {
+        "input_tokens": 9590,
+        "cached_input_tokens": 0,
+        "output_tokens": 3230,
+        "reasoning_tokens": 2883
+      },
+      "elapsed_seconds": 19.401,
+      "prompt_sha256": "3281f16f2ced80a593ed35dd01346905715e0ca01b71e256c67436ee99204814"
+    },
+    {
+      "label": "bgroup_B4_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1506,
+      "usage": {
+        "input_tokens": 5912,
+        "cached_input_tokens": 0,
+        "output_tokens": 738,
+        "reasoning_tokens": 663
+      },
+      "elapsed_seconds": 7.264,
+      "prompt_sha256": "b5b27498b6f3dcf64fdd70940681e7ac78a7291d523a3afad5dbcaf55f433874"
+    },
+    {
+      "label": "bgroup_B4_c1_fact:MUSE-HC-002_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0838,
+      "usage": {
+        "input_tokens": 3640,
+        "cached_input_tokens": 0,
+        "output_tokens": 340,
+        "reasoning_tokens": 296
+      },
+      "elapsed_seconds": 3.799,
+      "prompt_sha256": "776d35f4bea7f0f7ee3843fe715aa6f1ed5124c71305bacf7bcbac978854dc8c"
+    },
+    {
+      "label": "bgroup_B4_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.6832,
+      "usage": {
+        "input_tokens": 6656,
+        "cached_input_tokens": 0,
+        "output_tokens": 7379,
+        "reasoning_tokens": 6318
+      },
+      "elapsed_seconds": 59.632,
+      "prompt_sha256": "072355130aa52340f70bf4854958e1db58021ed3682a649fc5372d956519a3a7",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "bgroup_B4_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2477,
+      "usage": {
+        "input_tokens": 9126,
+        "cached_input_tokens": 0,
+        "output_tokens": 1332,
+        "reasoning_tokens": 1229
+      },
+      "elapsed_seconds": 9.332,
+      "prompt_sha256": "43de4ba7992181ead197571e766fb6ebcd8c5f962b4d163c537a5a3a1b6dab00"
+    }
+  ],
+  "total_cost_jpy": 1.5691,
+  "total_calls": 5,
+  "elapsed_seconds": 99.469,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "FLOOR_VERIFY_MODE": "time_only"
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“Meta had run a test that produced exactly this kind of surprise.”",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "記事は、テストが実際にこのような驚きを生じさせたと述べている。原文は、その展開を思わせるテストと表現しており、実際に誰かが驚いたという報告ではない。",
+        "explanation": "原文の「思わせる」から、実際に驚きが生じたという具体的事実へ強めている。",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "Meta had run a test that produced exactly this kind of surprise."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“A person can take over when AI alone has trouble.”",
+        "related_fact_id": "MUSE-HC-002",
+        "origin": "ja_source",
+        "issue": "人間がAIだけでは難しい場面で引き継ぐ、という運用上の条件・能力が加わっている。Ledgerは人間の契約スタッフが一部の電話を担当したことを示すが、AIが困難に直面したため引き継いだとはしていない。",
+        "explanation": "電話を人間が担当した事実に、AIの困難を引き継ぎの条件とする未確認の説明を加えている。",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "A person can take over when AI alone has trouble."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“People feel differently when they think they are speaking to a machine and when they know a person is listening. Names, plans, and private matters are easier to share when you know who is hearing them.”",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": "ja_source",
+        "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+        "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "Names, plans, and private matters are easier to share when you know who is hearing them.",
+          "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.”",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": "ja_source",
+        "issue": "便利なAI機能が、人々に相手がAIか人間かを知りたいと思わせるという一般的な因果・心理上の主張はLedgerにない。",
+        "explanation": "電話機能等の存在は確認されているが、それによって人々の希望が生じるという主張は確認されていない。",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+          "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta had run a test that produced exactly this kind of surprise.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "記事は、テストが実際にこのような驚きを生じさせたと述べている。原文は、その展開を思わせるテストと表現しており、実際に誰かが驚いたという報告ではない。",
+        "explanation": "原文の「思わせる」から、実際に驚きが生じたという具体的事実へ強めている。",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "Meta had run a test that produced exactly this kind of surprise."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A person can take over when AI alone has trouble.",
+        "related_fact_id": "MUSE-HC-002",
+        "origin": "ja_source",
+        "issue": "人間がAIだけでは難しい場面で引き継ぐ、という運用上の条件・能力が加わっている。Ledgerは人間の契約スタッフが一部の電話を担当したことを示すが、AIが困難に直面したため引き継いだとはしていない。",
+        "explanation": "電話を人間が担当した事実に、AIの困難を引き継ぎの条件とする未確認の説明を加えている。",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "A person can take over when AI alone has trouble."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": "ja_source",
+        "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+        "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "Names, plans, and private matters are easier to share when you know who is hearing them.",
+          "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Names, plans, and private matters are easier to share when you know who is hearing them.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": "ja_source",
+        "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+        "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "Names, plans, and private matters are easier to share when you know who is hearing them.",
+          "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": "ja_source",
+        "issue": "人々一般の安心感や、相手を知っている場合に個人情報を話しやすくなるという心理・行動上の主張はLedgerに確認されていない。",
+        "explanation": "従業員がプライバシー上の懸念を示した事実から、人々一般の心理や情報共有行動へ広げている。",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "Names, plans, and private matters are easier to share when you know who is hearing them.",
+          "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end.",
+        "related_fact_id": "MUSE-HC-004",
+        "origin": "ja_source",
+        "issue": "便利なAI機能が、人々に相手がAIか人間かを知りたいと思わせるという一般的な因果・心理上の主張はLedgerにない。",
+        "explanation": "電話機能等の存在は確認されているが、それによって人々の希望が生じるという主張は確認されていない。",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "People feel differently when they think they are speaking to a machine and when they know a person is listening.",
+          "As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.",
+          "In the AI age, making a voice sound human is not enough: people must first be told who is on the other end."
+        ],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "The headline says “I Thought It Was an AI Call,” and the opening says the call seemed to be from AI but the person on the other end was human; it adds that Meta’s test produced “exactly this kind of surprise.”",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "issue": "The headline introduces a first-person experience, and the opening presents a particular recipient’s mistaken belief and surprise as an event produced by the test. The Japanese source evokes this scenario more tentatively; the Ledger verifies that trained contract staff handled some calls, but does not establish that a recipient believed a particular call was AI or was surprised.",
+            "explanation": "The Ledger supports human-handled calls, but not this specific recipient’s belief or the claim that the test produced that exact surprise. The stronger, more definite framing is introduced in the adapted article.",
+            "true_flags": [
+              "changed_certainty",
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "Headline",
+              "Opening paragraphs beginning “Ring, ring...” and “Meta had run a test...”"
+            ],
+            "passed_downstream": true
+          },
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "“People feel differently when they think they are speaking to a machine and when they know a person is listening.”",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "issue": "This presents a general claim about people’s reactions. The Ledger records privacy concerns raised by Meta employees in the human-staff test; it does not establish this broader population-level claim.",
+            "explanation": "The claim broadens test-specific employee concerns to people generally, a scope expansion also present in the Japanese source.",
+            "true_flags": [
+              "changed_fact",
+              "changed_scope",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "### What Callers Were Not Told, paragraph beginning “When contract workers handled calls...”"
+            ],
+            "passed_downstream": true
+          },
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "“Names, plans, and private matters are easier to share when you know who is hearing them.”",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "translation",
+            "issue": "This adds an unsupported claim that knowing who is listening makes personal information easier to share. The source says the listener’s identity matters, but does not make this causal claim.",
+            "explanation": "The adapted wording adds a cause-and-effect claim about ease of sharing that is not in the Ledger or the Japanese source.",
+            "true_flags": [
+              "changed_causality",
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "### What Callers Were Not Told, paragraph beginning “When contract workers handled calls...”"
+            ],
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 1,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": [
+      {
+        "sub_id": "B4-a",
+        "related_fact_id": "MUSE-HC-002",
+        "text_substring": "take over when AI alone has trouble",
+        "remains_in_final_en": false,
+        "ever_blocking_flagged": true,
+        "ever_blocking_flagged_same_fact_id": true,
+        "ever_flagged_but_never_blocking": false,
+        "in_checker_raw_deviations_any_severity": [
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "MUSE-HC-002"
+          },
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "MUSE-HC-002"
+          }
+        ],
+        "pass_with_residual_unflagged": false
+      }
+    ]
+  },
+  "severity_wobble": [
+    {
+      "related_fact_id": "MUSE-HC-010",
+      "range": "Names, plans, and private matters are easier to share when you know who is hearing them.",
+      "from": {
+        "cycle": 1,
+        "materiality": "QUALITY",
+        "llm_materiality": "QUALITY",
+        "floor_reason": null,
+        "basis": "unsupported_relationship",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "range_resolved": true
+      },
+      "to": {
+        "cycle": 2,
+        "materiality": "ACCEPTABLE",
+        "llm_materiality": "ACCEPTABLE",
+        "floor_reason": null,
+        "basis": "none",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "range_resolved": true
+      }
+    }
+  ],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}
