@@ -2388,6 +2388,23 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 **Trial確認結果(2026-10-04、rep23/rep24、委任_62〜64、Fable照合判断。ユーザー決定ではなく、仕様本文は変更しない)**: rep23(少数実flow、6 instance×n=2、¥7.9137)・rep24(29件横断1回、38 instance-run、¥16.7238、Phase累計¥572.8515)を、承認済み対策(P-strict-closed=`APPROVED_FOR_PRODUCTION`[ユーザー決定[3回目]2026-10-04]・句読点差対策・英語だけ修正・時期のみの追加確認・V7b)をすべて有効にしたTrial専用構成で実施した。安全項目=PASS(真の重大見逃し0・重大ケースの誤解放0・日本語変更0・例外0。rep24 B3 s1の`residual_at_pass`残存はsentinelの位置目印のみで、因果「So」はcycle1でBLOCKING検出→「and」へ修正→cycle2 ACCEPTABLEと解消済み)。注意項目=不要Rewrite(rep24 21.43%でiteration 7と同率、neg3のBLOCKING claimはK16型でLLM・floor双方が重大判定のため不要と断定できない、neg3除外8.3%同率)・Human Review(STAGE4 7→2、いずれもSafety-criticalのfail-closed、B3 0/2→1/2は末尾`...`省略の照合不能で安全側)・過剰Major(Stage 2 BLOCKING 39→35、floor単独4→4、軽微以下の疑い3件はchanged_actorでユーザー決定[4回目]の受容範囲)。未発火項目=時期のみの追加確認・P-strict-closedの採用側は、rep23/rep24の実flowで発火機会がなく(対象claimはLLMも重大判定、またはfail-closed棄却)、解放側・採用側の実flow検証は未達(単体確認のみ)で、次Trialで観測する。自己修復機構本体はProduction未接続で、新しい線引き(V7b)・句読点差対策・説明文混入の後段分離(P-strict-closed、`APPROVED_FOR_PRODUCTION`)・英語だけ修正・時期のみの追加確認はいずれも`PRODUCTION_WIRED`ではない(`OPEN-233-A1-PROD`で一体追跡)。**次Trial(5記事×Standard/Advanced=10本)は開始しない(ユーザーGO待ち)**。ユーザー判断待ち: (A)Checker範囲の切断型の照合許容、(B)changed_actor floor単独の受容継続、(C)次TrialのGO。Closeout必須確認8項目の結果: `docs/pm/open233_closeout_check_2026-10-04.md`。
 
+### OPEN-233 Trial Closeout・Production正式採用(2026-10-05ユーザー決定、`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`)
+
+**Status**: 対象仕様=`APPROVED_FOR_PRODUCTION`(人間ユーザー決定)。**`PRODUCTION_WIRED`ではない**(配線の完了条件1〜12達成後のみ)。ユーザー決定原文(逐語)・Fable評価は`DECISION_LOG.md`の2026-10-05エントリ(`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`)が正本。
+
+- **Trial結果**: rep30 `VALIDATED`(29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run・rep24比+¥0.13/run・不要Rewrite 3/14、worst +¥3.135[1/38 run、報告対象])。
+- **採用対象**: ユーザー列挙22項目(`DECISION_LOG.md`参照)+rep30有効構成のスイッチ全体:
+  - HANDOFF_MODE=violation_span / VS_MATCH_EXT / VS_EXPLAIN_SPLIT(+Q, U-2(1)) / JA_MODE=english_only / V7b / FLOOR_VERIFY_MODE=time_only
+  - VS_SENTENCE_RESTORE(L6、focus_absentは本文全体判定) / CAUSAL_FLOOR known6+issue_actor / STAGE2_SECOND_OPINION(S1) / RECHECK_MERGE_UNRESOLVED(N1') / STRUCTURAL_ELEMENT_REWRITE / STRUCTURAL_PAIRS_TO_RECHECK
+  - ACTOR_GUARD_MODE=ag1_strict+related_fact欠落時Ledger全体fallback+同義語表 / 件数一致index別集約 / prior_issues現行本文
+  - STAGE4_ALLOWLIST / LADDER_LOCATION_CARRY(B') / REWRITE_REVERT_GUARD(A2) / SPAN_FALLBACK_CHAIN(D+carry list) / JUDGE_ONLY_CYCLE_AFTER_CAP(G) / LAST_RESORT_DELETE(T)
+  - MATERIALITY_BLOCKING_PIN / STAGE2_VERDICT_REUSE_NONBLOCKING / STAGE2_SIBLING_LOCATIONS_CYCLE1 / degenerate是正
+- **配線しない(REJECTED/OFF)**: F1(品質regen条件の緩和) / 確認役(STAGE2_DOWNGRADE_VERIFY) / N3'(RECHECK_BEFORE_AFTER_PAIRS) / G_L(TIER0_G_L_ENABLED) / NORMAL群2-of-2(STAGE2_NORMAL_TWO_OF_TWO) / CAUSAL_FLOOR_VOCAB=inventory / A1 / C / E1 / E2 / F2。
+- **Cost KPI(2026-10-05更新)**: 平均追加費用を主要KPIとして継続監視(基準不変)。1記事/runで¥3超は必ず報告・記録。¥3超だけを理由に自動STOP・KPI FAILとはしない。従来の単発+¥3/記事Capは撤回。
+- **残る正当なHuman Review経路(許可リスト4種)**: blocking_confirmed_unlocatable_after_cap / blocking_structural_after_ladder / post_T_new_blocking / api_failure。
+- **合流・運用**: 既存`OPEN-233-A1-PROD`束は本決定の採用対象に合流。追加N増しTrialは行わず、Production運用中の問題は個別改善する。
+- 詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md` §63。
+
 ## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
 
 **表示仕様**: Key Phraseハイライトは`user_test/unified.html`の

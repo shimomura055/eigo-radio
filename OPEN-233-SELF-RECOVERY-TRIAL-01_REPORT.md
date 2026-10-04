@@ -4474,3 +4474,20 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - **ユーザー確認事項(Closeoutで提示)**: Cap未達の扱い、B′の§0-4解釈、F1(品質規則の変更)、非BLOCKING再利用スイッチの扱い、`issue_focus_absent_recheck_only`(L6既存承認経路、本文全体判定へ是正済み、rep30発火0件)、`blocking_structural_after_ladder`の検証範囲(上記)。
 - **T-0**: 委任文`docs/pm/delegation_log/2026-10-05_OPEN-233-KPI-RECOVERY-REDESIGN-02_12.md`を全文保存、`check_delegation_prompt.py`=PASS(reasons空)。
 - **成果物**: runner/テスト/設計書§18-C、replay更新、`er052_output/open233_self_recovery_flow_runner_01_rep30a/`、`er052_output/open233_self_recovery_flow_runner_01_rep30/`(`summary_kpi_01.json`、`summary_rep30_new_01.json`、`instances_s*/`)。
+
+## 63. Trial Closeout(VALIDATED)・Production正式採用(2026-10-05、委任_01c、¥0・SSOT記録のみ)
+
+- **Status**: Trial `VALIDATED`(rep30)。対象仕様=`APPROVED_FOR_PRODUCTION`(ユーザー決定、`DECISION_LOG.md` 2026-10-05エントリ)。`PRODUCTION_WIRED`ではない(管理ID`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`、完了条件1〜12達成後のみ)。
+- **最終数値(rep30)**: 29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run(rep24比+¥0.13/run)・不要Rewrite 3/14・worst +¥3.135(1/38 run、報告対象。単発+¥3 Capは撤回済み)。
+- **Human Review推移**: iter7 7 → rep24 2 → rep27 3 → rep28 3 → rep29 3 → rep30 0。
+- **Safety-critical 6件**: 全て検出・解消。
+- **費用**: Phase累計¥720.20。rep29 ¥24.67・rep30a ¥3.02・rep30 ¥21.79。(注: §62本文はrep29を¥24.43と記載。差異はFable確認事項)
+- **使用モデル**: `gpt-6-luna`のみ(Sol未使用)。
+- **Opus#8〜#14の指摘と対応**: 詳細は各`docs/pm/opus_l2_review_open233_*`・`DECISION_LOG.md`のFable評価転記(委任_01b)を参照。本節では個別の1行要約を再掲しない(逐語の転記漏れ防止のため。要約が必要な場合はFable指示で追補)。
+- **分類(REJECTED/VALIDATED/USER_DECISION)**: `DECISION_LOG.md` 2026-10-05エントリ・`CURRENT_SPEC.md` OPEN-233 Trial Closeout節。配線しない: F1/確認役/N3'/G_L/NORMAL群2-of-2/CAUSAL_FLOOR_VOCAB=inventory/A1/C/E1/E2/F2。
+- **未解決(配線時に扱う)**: (1)`blocking_structural_after_ladder`未検証経路 (2)`issue_focus_absent_recheck_only` (3)「and」版ACCEPTABLE判断(ユーザー未確認)。
+- **未処理USER_DECISION**: なし。
+- **APPROVEDだが未配線**: 採用対象の全項目。
+- **未報告Trial**: なし。
+- **Dangling Reference**: 配線時に全件確認する。
+- **T-0**: 委任文全文を`docs/pm/delegation_log/2026-10-05_OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01_01c.md`へ保存(check PASS)。

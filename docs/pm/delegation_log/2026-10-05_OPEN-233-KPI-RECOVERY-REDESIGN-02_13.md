@@ -12,3 +12,5 @@
 2. OPEN_ITEMS.md KPI-RECOVERY-02行Status更新、REPORT_LEDGER.md 1行。
 3. commit/push(明示add)。
 (固定ブロックE-1/D-1/G-1/F-1/T-0/T-2/T-3は委任元記載の通り。)
+
+- T-0違反: 要約版保存(Fable運用メモ)
