@@ -2327,7 +2327,7 @@ Trial(84 call実測、`er050_gpt6_checker_comparison_trial_01.py`、
 model引数のみ差し替えて実行)の結果、`gpt-6-luna`はChecker(Ledger Deviation
 Checker)の**採用候補**としてユーザーが次工程(OPEN-233 Checker再設計)へ進める
 ことを決定した(Trial Status=`VALIDATED`。**`APPROVED_FOR_PRODUCTION`ではない**、
-Routing変更は別途ユーザー判断)。単価は`gpt-5.6-luna`の正確に半額
+Routing変更は別途ユーザー判断)。単価は`gpt-5.6-luna`より安い(2026-10-05訂正: 「正確に半額」は誤り、Input/Cachedは半額だが出力単価は$0.50 vs $1.20で半額ではない)
 (Input $0.10/Cached $0.01/Cache writes $0.125/Output $0.50 vs $0.20/$0.02/
 $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/pricing`
 2026-09-29確認)。`gpt-6-sol`は互換性probe(1 call)SUCCESSだが本比較は保留
@@ -2404,6 +2404,26 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 - **残る正当なHuman Review経路(許可リスト4種)**: blocking_confirmed_unlocatable_after_cap / blocking_structural_after_ladder / post_T_new_blocking / api_failure。
 - **合流・運用**: 既存`OPEN-233-A1-PROD`束は本決定の採用対象に合流。追加N増しTrialは行わず、Production運用中の問題は個別改善する。
 - 詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md` §63。
+
+### OPEN-233 Self-Recovery Production Flow仕様(`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`は完了条件1〜12達成後、2026-10-05、委任_09、`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`)
+
+承認済み内容(`DECISION_LOG.md` 2026-10-05ユーザー決定、`docs/pm/production_wiring_gap_open233_01.md` §1/§7 Fable評価、`docs/pm/opus_l2_review_open233_production_wiring_15.md`[Opus#15])のみを記す。新仕様ではない。**未配線**(Production未変更)。詳細・根拠: `docs/pm/production_wiring_report_open233_01.md`。
+
+1. **位置づけ・入口条件**: Production正式初回path(Ledger+英語本文+日本語本文+family profileを入力とする)。Feature flagで制御、Production初期値OFF、family単位で有効化、順序はP3/P4→P5→P1/P2。P6は配線対象外(監視専用)。(Opus#15論点10、Gap文書§7)
+2. **Stage 1 Checker**: A構成(`gpt-6-luna`+rep30 frozen出力を生成したV4A系構成、CORRECTION-02)。**詳細定義は委任_08の`docs/pm/rep30_stage1_provenance_01.md` §7で確定後に転記(プレースホルダ)**。昇格ルール(`severity_final`)は選別に使わない。`severity=="MAJOR"`のみStage 2へ渡し、MINORは渡さない。Stage 1が非検出でもprecheck結果をログする。(Opus#15 F2、DECISION_LOG 2026-10-05)
+3. **Model/Routing**: Self-Recovery経路(Stage 1/Stage 2/S1/floor_verify/Rewrite/Recheck)は`gpt-6-luna`。Model Routing Contractに新processを追加し`require_model`経由で呼ぶ。モデル不可時はfail-closedで`api_failure`とし、`gpt-5.6-luna`へ自動切替しない。Writerは不変。(Opus#15 K7)
+4. **Stage 2 materiality**: V7b(正本=`er052_open233_self_recovery_stage2_calibration_01.py` `RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7B` L612。`stage2_production` moduleの`MATERIALITY_RUBRIC_V7B`は別物で使わない)。決定論floor 5種+因果known6+issue_actor。時期(time_only)のみ追加確認2回の逐語一致で解放(FLOOR_VERIFY_MODE=time_only、2026-10-04決定)。S1第2意見は2回一致で降格、割れたらBLOCKING(`floor_verify`で解放済みclaimは除外)。BLOCKING固定(本文不変なら再判定で覆さない)。非BLOCKINGの2-of-2一致は再利用(span集合完全一致のみ)。兄弟箇所(同fact_id)は決定論列挙し、cycle 1のStage 2 batchへ入れる(Rewriteへは渡さない)。「AI1回で重大→問題なし」となる構造は禁止。(Opus#15論点10)
+5. **span解決**: L0〜L6、P-strict-closed(2026-10-04ユーザー決定[3回目])、句読点差許容、説明文混入の分解(Q/U-2(1))、L6完結文復元(focus_absentは本文全体判定)。prior_issuesは現行本文を使う。
+6. **Rewrite ladder**: 水準①語句・③文・④段落(⑥はOFF)。english_only(日本語本文は不変)。actor_guardはAG1-strict+related_fact欠落時Ledger全体fallback+同義語表。構造要素はdelete禁止→書き換え。位置座標の引継ぎ(B′: 同一箇所の再BLOCKINGで前levelの上位から開始)。振動検出(A2、REWRITE_REVERT_GUARD)。degenerateは試行失敗として一段上へ昇段。
+7. **Recheck**: 全文Recheck。N1′(未解消priorは次cycleのStage 2へ渡す)。件数一致index別集約。構造要素はbefore/afterを対にして渡す(STRUCTURAL_PAIRS_TO_RECHECK)。carry list: 位置特定不能BLOCKINGは書き換えず位置を再取得し、listが空でない間はPASS禁止。
+8. **cycle定義**: MAX_CYCLES=2+条件付きcycle 3。上限後は判定専用cycle(Stage 2+S1、Rewriteなし、JUDGE_ONLY_CYCLE_AFTER_CAP)。T(最終手段=構造要素以外の該当文delete+全文Recheck、1記事1回)。Tを含め本文変更が計4回になりうる(Opus#15 K1、開示事項)。
+9. **Human Review出口(許可リスト4種)**: `blocking_confirmed_unlocatable_after_cap` / `blocking_structural_after_ladder`(構造要素∧ladder④実試行の検証付き) / `post_T_new_blocking` / `api_failure`。sub_reason必須(`t_already_used`/`t_delete_failed`/`t_disabled`/`cap_no_t`等)。4種以外はAssertionErrorで安全側STOP。familyごとの終端への写し方: P1/P2は`RuntimeError("[STOP] <reason>")`、P3/P4は`NG_REVIEW_REQUIRED`、P5は戻り値flag。(Opus#15 Safety hole 3、論点10)
+10. **Family X固有**: Self-Recovery経路ではmust-fix全文再生成を廃止。ladder④/T後に`split_family_x_article_text_v2`の段落数ガードを行い、NGはRewrite不成立として ladderを一段上げる。逸脱チェック前の段落数retryは残す。`JARecheckRequiredError`はenglish_only+全文Recheck必須に置換(ja_source件数を監査ログでmonitor)。**開示**: 日本語側の誤りは残る(K4、Opus#15)。
+11. **retry/fallback/regeneration**: 新本文は同じ入口へfresh Stage 1から入り直す。全文再生成時は位置履歴とT使用回数をリセットする。費用は累積して報告する。
+12. **Trial依存禁止**: Production module(新規`er0XX_self_recovery_flow_01.py`、番号は実装時に採番)は`er050`/`er051`/`er052_*`をimportしない(`git grep`で機械検査)。Trial runnerの新moduleへの切替は別タスク。
+13. **Cost KPI**: 平均追加費用+¥2/記事以内(KPI値不変)。Productionでの「追加」の基準=現行Production 1記事費用(委任_04c算出: JA側Checker+loop 平均¥2.77/中央値¥2.50、n=8。EN側Checkerは未分離=未確認)。¥3超のrunは必ず報告・記録し、¥3超のみで自動STOP/FAILにはしない(単発Capは2026-10-05撤回)。
+14. **配線しない(REJECTED/OFF)**: F1 / 確認役 / N3′ / G_L / NORMAL群2-of-2 / CAUSAL_FLOOR_VOCAB=inventory / A1 / C / E1 / E2 / F2 / CHECKER_SPANS_MODE=violation_spans / Trial計測専用コード。
+15. **完了条件1〜12**(`DECISION_LOG.md` 2026-10-05ユーザー決定が正本): (1)Production正式初回path配線 (2)retry/fallback/regeneration整合 (3)Trial専用依存なし (4)Production runtime evidence (5)Regression/integration PASS (6)actual routing/model確認 (7)CURRENT_SPEC更新 (8)DECISION_LOG更新 (9)OPEN_ITEMS更新/close (10)Git commit/push (11)ユーザー承認内容とProduction挙動一致 (12)Dangling Referenceなし。1つでも欠ければ`APPROVED_FOR_PRODUCTION`のまま。**runtime evidence計画(Phase 2)**: 既存テーマの再生成+STOP実例+P3/P4/P5各1+Safety fixture 3+クリーンPASS 1件以上+¥0 fixture。新規記事は不要。
 
 ## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
 
