@@ -19154,3 +19154,110 @@ Opus#14全文: `docs/pm/opus_l2_review_open233_kpi_recovery_02_14.md`。以下�
 ### 2026-10-05 Fable評価 Opus#15(OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01)
 評価全文=`docs/pm/production_wiring_gap_open233_01.md` §7、Opus#15全文=`docs/pm/opus_l2_review_open233_production_wiring_15.md`(委任_04dで作成中)。案M修正採用・K1/K8非競合・K4吸収・Gate意味変更採用・部分配線不採用。
 K7=ユーザー判断待ち(選択肢1推奨)。K14=Phase 1(委任_04c作業5)の結果で吸収/ユーザー判断を決定。Production未変更、`PRODUCTION_WIRED`ではない。
+
+
+
+## 2026-10-05 ユーザー是正指示 OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01-CORRECTION-01(目的の是正: 比較・再選定ではなくrep30構成の忠実な配線)
+
+### ユーザー指示原文(逐語)
+
+出典: docs/pm/delegation_log/2026-10-05_OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01-CORRECTION-01_06.md L29-121
+
+Claude Code 指示
+管理ID：OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01-CORRECTION-01
+今回の作業目的を修正する。
+ユーザーが正式採用したのは、OPEN-233 rep30でVALIDATEDされた構成をProduction正式経路へ配線することである。
+したがって、現行Production Checkerと新Checker候補の優劣を改めて比較し、Checkerやモデルを再選定する作業は今回の目的ではない。
+1. 現在進行中の比較について
+委任_05で進めている
+- V0 × gpt-6-luna
+- 新Checker候補 × gpt-5.6-luna
+の追加比較は、以下の場合に限り継続してよい。
+rep30でVALIDATEDされた構成とProduction候補の挙動差の原因を特定し、同じ構成をProductionへ正しく再現するために必要な場合。
+単に、
+- どのCheckerが優秀か
+- どのモデルがよいか
+- Production Checkerを再選定する
+ための比較なら中止すること。
+不要な追加Trial・API課金を行わない。
+
+2. まず確認すること
+rep30について、Stage 1 Checkerが実際にどの構成だったかを正確に確定する。
+最低限、
+- model_id
+- Prompt / developer message
+- schema
+- deterministic pre-check
+- fresh callだったケース
+- 過去出力をreuseしたケース
+- reuseした場合、その出力を生成したChecker/model
+- Stage 2以降へ渡したデータ
+を確認する。
+特に重要なのは、rep30の29ケースすべてで新Checkerをfresh実行したわけではない可能性である。
+その場合、
+rep30でVALIDATEDされたもの
+と
+今回Production候補として作ろうとしているChecker
+
+を混同してはいけない。
+3. Production配線の原則
+今回やるべきことは、
+rep30で実際にVALIDATEDされた仕様・処理をProduction正式pathへ忠実に移すこと。
+新しいChecker設計や新しいモデル構成を勝手に追加しない。
+Production候補がrep30と違うなら、
+「新しい候補を比較して選ぶ」のではなく、「なぜrep30と違っているのか」を特定し、承認済み構成へ合わせること。
+4. 現行Productionとの比較の位置づけ
+現行Production V0はRegression基準としてのみ使う。
+確認目的は、
+- 現行で拾えていた重大問題を新Production経路で不当に落としていないか
+- 正常記事を壊していないか
+である。
+V0とrep30候補の勝敗を決めるA/B Trialにはしない。
+差が出た場合は、
+1. rep30とProduction候補の配線差
+2. model/routing差
+3. Prompt差
+4. reuse/fresh差
+5. schema/input差
+を調べ、まず実装差を解消すること。
+5. 重要な確認
+今回報告された、
+Production候補Stage 1が、現行V0で検出していた6 claimを見逃した
+
+という事実は無視しない。
+ただし、これを理由にChecker再選定へ進むのではなく、
+その6件の差が「rep30で承認した構成とProduction候補が一致していないため」なのかを最優先で確認する。
+もしrep30自体がその6件についてfresh Stage 1 Checkerを検証しておらず、reuseデータに依存していたため、Productionで使うStage 1 Checkerの正式仕様が未検証だと判明した場合は、
+Production wiringの未充足事項としてSTOPして報告すること。
+その場合のみ、ユーザー判断が必要かPM側で判断する。
+Claude/Fableが独自にChecker仕様を新設してProductionへ入れてはいけない。
+6. 今回の到達Status
+ユーザー承認済み仕様は引き続き：
+APPROVED_FOR_PRODUCTION
+である。
+以下を満たすまで：
+PRODUCTION_WIRED
+にしない。
+- rep30承認仕様とProduction実装が一致
+- Production正式初回path
+- retry / fallback / regeneration
+- runtime evidence
+- Regression / integration test
+- actual model_id / routing
+- CURRENT_SPEC
+- DECISION_LOG
+- OPEN_ITEMS
+- Git反映
+- Dangling Referenceなし
+7. 作業方針
+ここからは仕様再選定ではなくProduction wiring作業に戻ること。
+必要な比較は、
+「承認済みrep30構成をProductionで同じように動かすための原因調査」
+に限定する。
+それ以外の追加Trial・モデル比較・Checker比較は行わない。
+もし承認済みrep30構成そのものにProduction化できない未検証部分が見つかった場合のみSTOPし、事実と影響を報告すること。
+
+
+### Fable判断
+委任_05の2×2比較(V0×gpt-6-luna/候補×gpt-5.6-luna)は、rep30構成の忠実な再現に必要な原因調査ではなく、Checker/モデルの再選定に当たるため、ユーザー是正指示に従い中止する。既に発生した費用は記録し、結果はRegression参考値として保存のみとする(採否判断に使わない)。今後の作業は「rep30でVALIDATEDされた構成の忠実なProduction再現」に限定し、Checker/モデル候補の新設・比較は行わない。
+Production未変更、`PRODUCTION_WIRED`ではない(`APPROVED_FOR_PRODUCTION`のまま)。
