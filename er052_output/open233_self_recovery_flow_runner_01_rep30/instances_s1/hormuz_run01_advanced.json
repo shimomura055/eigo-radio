@@ -1,0 +1,461 @@
+{
+  "instance_id": "hormuz_run01_advanced",
+  "group": "hormuz",
+  "expected_group_label": "BLOCKING→Rewrite→PASSが期待(現行Production STOP実例)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+          "origin": "ja_source",
+          "related_fact_id": "",
+          "dev": {
+            "claim_in_article": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+            "issue": "The claim linking oil prices to gasoline prices and transportation costs is not established by the Verified Fact Ledger.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The Ledger contains no fact about the relationship between oil prices, gasoline prices, and transportation costs, so this is an additional factual claim (changed_fact and unsupported_new_claim).",
+            "related_fact_id": "",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Attacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Checkerの指摘: The claim linking oil prices to gasoline prices and transportation costs is not established by the Verified Fact Ledger. fact_id=のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 対象文の逐語引用: “Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.” ガソリン価格や輸送費との関連を示す部分を削り、HF-009が確認するBrent先物の撤回後の値動きに範囲を狭めてください（撤回後に一時的に上げ幅を縮小した後、発表前に近い高い水準へ戻り、記事掲載時点で1バレル85ドルを上回った）。参照Ledger fact_id: HF-009。",
+          "floor_reason": "s1_second_opinion_blocking",
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "hormuz_run01_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "claim:a127db2cfddbb39d",
+            "claim_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "BLOCKING",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": false,
+            "split": true,
+            "prompt_sha256": [
+              "07abd50d8459a8ea7afb2f163c382844bdf12bbaea79e1124907533595e10a13"
+            ],
+            "batch_cost_jpy": 0.0754,
+            "batch_n_claims": 1,
+            "hint_source": "checker_issue"
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs."
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "hormuz_run01_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "claim:a127db2cfddbb39d",
+          "claim_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "BLOCKING",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": false,
+          "split": true,
+          "prompt_sha256": [
+            "07abd50d8459a8ea7afb2f163c382844bdf12bbaea79e1124907533595e10a13"
+          ],
+          "batch_cost_jpy": 0.0754,
+          "batch_n_claims": 1,
+          "hint_source": "checker_issue"
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:a127db2cfddbb39d",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "4_paragraph",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs."
+              ],
+              "raw_spans": [
+                [
+                  1808,
+                  1927
+                ]
+              ],
+              "spans": [
+                [
+                  1808,
+                  1927
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "4_paragraph",
+                "targets": [
+                  "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared."
+                ],
+                "revised": [
+                  "Even if this seems like a story about a distant sea, Brent futures briefly gave back some gains after the announcement, then returned to a high level close to where they had been before it. At the time of the report, they were above $85 a barrel. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.",
+                    "after": "Even if this seems like a story about a distant sea, Brent futures briefly gave back some gains after the announcement, then returned to a high level close to where they had been before it. At the time of the report, they were above $85 a barrel. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared."
+                  }
+                ]
+              }
+            ],
+            "level_used": "4_paragraph",
+            "span_unverified": false,
+            "problem_kind": "multi_sentence",
+            "levels_planned": [
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "4_paragraph"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 15.52,
+          "difficult_word_ratio": 0.1108,
+          "word_count": 388
+        },
+        "stats_after": {
+          "avg_sentence_len": 15.88,
+          "difficult_word_ratio": 0.1114,
+          "word_count": 413
+        },
+        "sentence_len_increase": 0.36,
+        "difficulty_ratio_increase": 0.0006,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 25,
+        "hook_word_count_after": 25,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 25,
+        "sentence_count_after": 26,
+        "sentence_drop_rate": -0.04,
+        "hedge_word_count_before": 4,
+        "hedge_word_count_after": 4,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The Oil Market's Main Player: The 20% Bill That Disappeared\n\nThis news may make Mr. Trump look like the main player. But the most interesting move came from oil, which did not fall in price.\n\nOn July 13, Mr. Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent “reimbursement fee.” Simply put, the plan was to make cargo passing through the strait help pay the cost of keeping it safe, a bit like handing a large bill to all cargo passing through the strait.\n\nThe next day, however, the scene suddenly changed. Mr. Trump withdrew the 20 percent plan and announced that it would instead be replaced by trade and investment deals between the Gulf states and the United States. He explained that this followed “very productive talks” with Middle Eastern leaders.\n\nA plan to charge a fee directly had changed into a discussion of trade and investment. It seemed as if the rough waves had become a little calmer. The oil market also reacted once, right after the announcement.\n\nBrent crude oil futures narrowed their gains after the announcement. But that calm did not last long. The price soon returned to a high level close to where it had been before the announcement. At the time of reporting, it was above 85 dollars a barrel.\n\nIt was as if oil had replied, “I understand that the bill is gone. But that alone is not enough to feel safe.”\n\nOf course, oil cannot speak. But its price movement seemed to show that people were watching not only whether there was a fee plan, but also the danger of the strait itself.\n\nAttacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+      "en_text_after_rewrite": "# The Oil Market's Main Player: The 20% Bill That Disappeared\n\nThis news may make Mr. Trump look like the main player. But the most interesting move came from oil, which did not fall in price.\n\nOn July 13, Mr. Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent “reimbursement fee.” Simply put, the plan was to make cargo passing through the strait help pay the cost of keeping it safe, a bit like handing a large bill to all cargo passing through the strait.\n\nThe next day, however, the scene suddenly changed. Mr. Trump withdrew the 20 percent plan and announced that it would instead be replaced by trade and investment deals between the Gulf states and the United States. He explained that this followed “very productive talks” with Middle Eastern leaders.\n\nA plan to charge a fee directly had changed into a discussion of trade and investment. It seemed as if the rough waves had become a little calmer. The oil market also reacted once, right after the announcement.\n\nBrent crude oil futures narrowed their gains after the announcement. But that calm did not last long. The price soon returned to a high level close to where it had been before the announcement. At the time of reporting, it was above 85 dollars a barrel.\n\nIt was as if oil had replied, “I understand that the bill is gone. But that alone is not enough to feel safe.”\n\nOf course, oil cannot speak. But its price movement seemed to show that people were watching not only whether there was a fee plan, but also the danger of the strait itself.\n\nAttacks continue between the United States and Iran. Concerns about a blockade at sea remain, and worries about whether tankers can pass safely have not gone away. Even after the plan was replaced by one about trade and investment, this part has not changed.\n\nEven if this seems like a story about a distant sea, Brent futures briefly gave back some gains after the announcement, then returned to a high level close to where they had been before it. At the time of the report, they were above $85 a barrel. This price movement was a scene that oil showed on its stage: even if politics changes the name of a plan, that does not mean the danger along the route has disappeared.\n\n## In one line\nTrump withdrew the proposed Strait of Hormuz fee, but oil prices stayed high because shipping risks remained.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "english_only_ja_source_requires_full_recheck",
+        "deterministic_floor_claim"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "今回の記事では、原油価格とガソリン価格・運送費との関係を述べる主張が削除されています。"
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true
+      },
+      "recheck_prior_issues_sent_count": 1
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "hormuz_run01_advanced_stage1",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4491,
+      "usage": {
+        "input_tokens": 6719,
+        "cached_input_tokens": 0,
+        "output_tokens": 4382,
+        "reasoning_tokens": 4166
+      },
+      "elapsed_seconds": 42.293,
+      "prompt_sha256": "0f8d92894e388e825c99ee8af9da0d01325fd84da771eee44e2ab6bf108d88a2"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1538,
+      "usage": {
+        "input_tokens": 8478,
+        "cached_input_tokens": 0,
+        "output_tokens": 265,
+        "reasoning_tokens": 214
+      },
+      "elapsed_seconds": 3.067,
+      "prompt_sha256": "07abd50d8459a8ea7afb2f163c382844bdf12bbaea79e1124907533595e10a13"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0754,
+      "usage": {
+        "input_tokens": 8478,
+        "cached_input_tokens": 8475,
+        "output_tokens": 791,
+        "reasoning_tokens": 604
+      },
+      "elapsed_seconds": 7.692,
+      "prompt_sha256": "07abd50d8459a8ea7afb2f163c382844bdf12bbaea79e1124907533595e10a13"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_claim:a127db2cfddbb3_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1078,
+      "usage": {
+        "input_tokens": 3786,
+        "cached_input_tokens": 0,
+        "output_tokens": 617,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 6.276,
+      "prompt_sha256": "84d5b68fdfa08c6cc249f92aab8de5595c60b44bbcce3995eab6252198bc9424"
+    },
+    {
+      "label": "hormuz_run01_advanced_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3048,
+      "usage": {
+        "input_tokens": 6577,
+        "cached_input_tokens": 0,
+        "output_tokens": 2571,
+        "reasoning_tokens": 2496
+      },
+      "elapsed_seconds": 22.326,
+      "prompt_sha256": "922bb71563593d316dc9e6e476e4ca79ea3d07e95b257017a1dde0b7a76c4501",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 1.0909,
+  "total_calls": 5,
+  "elapsed_seconds": 81.693,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even if this seems like a story about a distant sea, oil prices are linked to gasoline prices and transportation costs.",
+        "related_fact_id": "",
+        "origin": "ja_source",
+        "issue": "The claim linking oil prices to gasoline prices and transportation costs is not established by the Verified Fact Ledger.",
+        "explanation": "The Ledger contains no fact about the relationship between oil prices, gasoline prices, and transportation costs, so this is an additional factual claim (changed_fact and unsupported_new_claim).",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {},
+    "unrewritten_blocking_pass": 0
+  }
+}

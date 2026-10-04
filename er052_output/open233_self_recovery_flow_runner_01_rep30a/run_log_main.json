@@ -1,0 +1,73 @@
+{
+  "switches": {
+    "HANDOFF_MODE": "violation_span",
+    "VS_MATCH_EXT": true,
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "JA_MODE": "english_only",
+    "FLOOR_VERIFY_MODE": "time_only",
+    "STAGE2_NORMAL_TWO_OF_TWO": false,
+    "CAUSAL_FLOOR": true,
+    "CAUSAL_FLOOR_VOCAB": "known6",
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+    "RECHECK_BEFORE_AFTER_PAIRS": false
+  },
+  "stopped": false,
+  "stop_reason": null,
+  "runs": [
+    {
+      "sample": 1,
+      "instance_id": "meta_run03_advanced",
+      "final_state": "ACCEPTABLE_STAGE1",
+      "stage4_reason": null,
+      "cost": 0.4516,
+      "stop_check": [],
+      "stage4_allowlist": {}
+    },
+    {
+      "sample": 2,
+      "instance_id": "meta_run03_advanced",
+      "final_state": "ACCEPTABLE_STAGE1",
+      "stage4_reason": null,
+      "cost": 0,
+      "stop_check": [],
+      "stage4_allowlist": {}
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A4",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cost": 2.5711,
+      "stop_check": [],
+      "stage4_allowlist": {
+        "decisions": [],
+        "n_rerouted_legacy_exits": 0,
+        "final_reason_outside_allowlist": false,
+        "t_used": false,
+        "carry_blocking_remaining": 0,
+        "pass_blocked_by_carry": 0,
+        "switch_fired": {
+          "STAGE2_SIBLING_LOCATIONS_CYCLE1": 1,
+          "STAGE2_VERDICT_REUSE_NONBLOCKING": 1
+        },
+        "unrewritten_blocking_pass": 0
+      }
+    }
+  ],
+  "exceptions": [],
+  "cumulative_jpy": 3.0227
+}
