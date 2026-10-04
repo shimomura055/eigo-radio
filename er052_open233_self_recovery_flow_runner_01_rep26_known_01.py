@@ -7,8 +7,9 @@
 # neg3_hormuz_prodrunner_b1b[不要Rewriteの監視])へ、(2)スイッチを`runner.apply_kpi_trial_switches()`(KPI確認構成:
 # HANDOFF_MODE=violation_span・VS_MATCH_EXT・VS_EXPLAIN_SPLIT[Q/U-2(1)含む]・VS_SENTENCE_RESTORE[L6]・JA_MODE=english_only・
 # FLOOR_VERIFY_MODE=time_only・STAGE2_NORMAL_TWO_OF_TWO=OFF・**STAGE2_DOWNGRADE_VERIFY=ON**)へ変更した。runner本体は変更しない。
-# 【未実行】確認役offline replay(replay_verify_01.py)の採否判定は「不採用」(NORMAL群BLOCKING化47.3%>25%、流出閉鎖15/16<100%)だったため、本スクリプトは作成のみで実行していない(委任_02)。
-# 実行は確認役offline replay(replay_verify_01.py)が採用判定のときのみ。Production codeは変更しない。出力はOUT_DIR_REP26のみ。
+# 【委任_04で更新・実行】確認役(STAGE2_DOWNGRADE_VERIFY)は不採用でOFF。KPI_TRIAL_SWITCHES=Tier 0因果floor(known6+issue_actor)+
+# Tier 1' S1第2意見+Tier 2 hint+L6+prior_issues現行本文化+NORMAL群2-of-2 OFF+Q/U-2(1)+VS_MATCH_EXT+english_only+V7b+time_only floor_verify。
+# Production codeは変更しない。出力はOUT_DIR_REP26のみ。
 # 即時STOP: 日本語変更・floor_verify解放・Safety-critical残存・STAGE4(Human Review)・例外・TrialAbort。再実行・n増しはしない。
 # 集計(--stage agg)は本ファイル内(API呼び出しなし、記録済みinstance JSONのみ)。
 from __future__ import annotations
@@ -38,7 +39,8 @@ def apply_switches(budget_jpy: float) -> dict:
     runner.BUDGET_STATE_PATH = BUDGET_STATE_REP26
     runner.TOTAL_BUDGET_JPY = budget_jpy
     applied = runner.apply_kpi_trial_switches()
-    assert runner.STAGE2_DOWNGRADE_VERIFY is True and runner.TIER0_G_L_ENABLED is False
+    assert runner.STAGE2_DOWNGRADE_VERIFY is False and runner.TIER0_G_L_ENABLED is False
+    assert runner.CAUSAL_FLOOR is True and runner.CAUSAL_FLOOR_VOCAB == "known6" and runner.STAGE2_SECOND_OPINION is True
     assert runner.STAGE2_NORMAL_TWO_OF_TWO is False and runner.VS_SENTENCE_RESTORE is True
     assert runner.MAX_CYCLES == 2 and runner.HARD_MAX_CYCLES == 3
     assert runner.BODY_RUBRIC_DEFAULT is runner.s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7B
@@ -163,6 +165,8 @@ def run_agg():
     inst_runs = [d for _s, _i, d in runs]
     S["downgrade_verify_total"] = runner.downgrade_verify_summarize(sr for d in inst_runs for _cy, sr in _stage2_rows(d))
     S["sentence_restore_summary"] = runner.sentence_restore_summarize(inst_runs)
+    S["tier0"] = runner.tier0_summarize(inst_runs)
+    S["s1_second_opinion"] = runner.s1_summarize(inst_runs)
     S["stage4_count"] = sum(1 for m in S["per_run"] if m["is_stage4"])
     S["stage4_by_reason"] = dict(collections.Counter(m["stage4_reason"] for m in S["per_run"] if m["is_stage4"]))
     S["cost_total_jpy"] = round(sum(m["cost_jpy"] or 0 for m in S["per_run"]), 4)
@@ -189,11 +193,12 @@ def run_agg():
     os.makedirs(OUT_DIR_REP26, exist_ok=True)
     with open(f"{OUT_DIR_REP26}/summary_01.json", "w", encoding="utf-8") as f:
         json.dump(S, f, ensure_ascii=False, indent=2, default=str)
-    md = ["# summary_01.md (rep26、委任_02)", "",
+    md = ["# summary_01.md (rep26、委任_04)", "",
           f"n instance-run={S['n_runs']} cost=JPY{S['cost_total_jpy']}",
           f"STAGE4={S['stage4_count']} {S['stage4_by_reason']} / pass_with_residual_unflagged={S['pass_with_residual_unflagged_total']} / "
           f"ja_changed={S['ja_changed_total']}",
-          f"Tier集計: {json.dumps(S['downgrade_verify_total'], ensure_ascii=False)}",
+          f"Tier0: {json.dumps(S['tier0'], ensure_ascii=False)}",
+          f"S1: {json.dumps(S['s1_second_opinion'], ensure_ascii=False)}",
           f"Safety-critical旧/新: {json.dumps({k: v for k, v in S['safety_critical_dual'].items() if k != 'new_definition_detail'}, ensure_ascii=False)}",
           f"L6集計: {json.dumps(S['sentence_restore_summary'], ensure_ascii=False)}",
           f"費用vs rep24/rep25: {json.dumps(S['cost_vs_baselines'], ensure_ascii=False)}", "", "## per run", ""]
@@ -207,7 +212,7 @@ def run_agg():
     with open(f"{OUT_DIR_REP26}/summary_01.md", "w", encoding="utf-8") as f:
         f.write("\n".join(md) + "\n")
     print(json.dumps({k: S[k] for k in ("n_runs", "stage4_count", "stage4_by_reason", "cost_total_jpy", "pass_with_residual_unflagged_total",
-                                         "ja_changed_total", "downgrade_verify_total", "sentence_restore_summary",
+                                         "ja_changed_total", "tier0", "s1_second_opinion", "sentence_restore_summary",
                                          "cost_diff_per_article_vs_rep24_mean_of_instances", "unnecessary_rewrite_neg3_runs")},
                      ensure_ascii=True, indent=1))
 

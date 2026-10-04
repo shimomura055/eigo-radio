@@ -1,0 +1,38 @@
+{
+  "switches": {
+    "HANDOFF_MODE": "violation_span",
+    "VS_MATCH_EXT": true,
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "JA_MODE": "english_only",
+    "FLOOR_VERIFY_MODE": "time_only",
+    "STAGE2_NORMAL_TWO_OF_TWO": false,
+    "CAUSAL_FLOOR": true,
+    "CAUSAL_FLOOR_VOCAB": "known6",
+    "STAGE2_SECOND_OPINION": true
+  },
+  "stopped": true,
+  "stop_reason": "immediate stop condition: ['STAGE4(Human Review): violation_span_unverified']",
+  "runs": [
+    {
+      "sample": 1,
+      "instance_id": "bgroup_B3",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cost": 0.4448,
+      "stop_check": []
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "violation_span_unverified",
+      "cost": 1.0646,
+      "stop_check": [
+        "STAGE4(Human Review): violation_span_unverified"
+      ]
+    }
+  ],
+  "exceptions": [],
+  "cumulative_jpy": 1.5094
+}

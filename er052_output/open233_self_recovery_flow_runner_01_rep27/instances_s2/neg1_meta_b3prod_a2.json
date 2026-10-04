@@ -1,0 +1,580 @@
+{
+  "instance_id": "neg1_meta_b3prod_a2",
+  "group": "negative",
+  "expected_group_label": "ACCEPTABLE(Normal群、§7-5)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "A call seemed to come from an AI agent.",
+              "But as the conversation went on, the voice was not AI at all.",
+              "Meta had run a test that caused exactly this surprise."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "neg1_meta_b3prod_a2",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+            ],
+            "batch_cost_jpy": 0.0786,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "A call seemed to come from an AI agent.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "A call seemed to come from an AI agent.",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "A call seemed to come from an AI agent.",
+              "But as the conversation went on, the voice was not AI at all.",
+              "Meta had run a test that caused exactly this surprise."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "neg1_meta_b3prod_a2",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "A call seemed to come from an AI agent.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+            ],
+            "batch_cost_jpy": 0.0786,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "But as the conversation went on, the voice was not AI at all.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "But as the conversation went on, the voice was not AI at all.",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "A call seemed to come from an AI agent.",
+              "But as the conversation went on, the voice was not AI at all.",
+              "Meta had run a test that caused exactly this surprise."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "neg1_meta_b3prod_a2",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "But as the conversation went on, the voice was not AI at all.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+            ],
+            "batch_cost_jpy": 0.0786,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "Meta had run a test that caused exactly this surprise.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta had run a test that caused exactly this surprise.",
+            "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“seemed to come from an AI agent”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "A call seemed to come from an AI agent.",
+              "But as the conversation went on, the voice was not AI at all.",
+              "Meta had run a test that caused exactly this surprise."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Ring, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.\n\nThe test used the phone feature of its AI agent, Muse. In some calls through Muse, trained contract workers made the calls, not AI. They carried each conversation through to the end.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "neg1_meta_b3prod_a2",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta had run a test that caused exactly this surprise.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+            ],
+            "batch_cost_jpy": 0.0786,
+            "batch_n_claims": 4
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 4,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "neg1_meta_b3prod_a2",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+          ],
+          "batch_cost_jpy": 0.0786,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "neg1_meta_b3prod_a2",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "A call seemed to come from an AI agent.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+          ],
+          "batch_cost_jpy": 0.0786,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "neg1_meta_b3prod_a2",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "But as the conversation went on, the voice was not AI at all.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+          ],
+          "batch_cost_jpy": 0.0786,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "neg1_meta_b3prod_a2",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta had run a test that caused exactly this surprise.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+          ],
+          "batch_cost_jpy": 0.0786,
+          "batch_n_claims": 4
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "neg1_meta_b3prod_a2_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0584,
+      "usage": {
+        "input_tokens": 5997,
+        "cached_input_tokens": 5994,
+        "output_tokens": 624,
+        "reasoning_tokens": 503
+      },
+      "elapsed_seconds": 6.333,
+      "prompt_sha256": "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+    },
+    {
+      "label": "neg1_meta_b3prod_a2_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0786,
+      "usage": {
+        "input_tokens": 5997,
+        "cached_input_tokens": 5994,
+        "output_tokens": 881,
+        "reasoning_tokens": 748
+      },
+      "elapsed_seconds": 9.433,
+      "prompt_sha256": "aba5dc3160768571d183f977eaa8d4cd1750d952cda5fdf4a1f418507a893597"
+    }
+  ],
+  "total_cost_jpy": 0.137,
+  "total_calls": 2,
+  "elapsed_seconds": 15.789,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+        "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "A call seemed to come from an AI agent.",
+          "But as the conversation went on, the voice was not AI at all.",
+          "Meta had run a test that caused exactly this surprise."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A call seemed to come from an AI agent.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+        "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "A call seemed to come from an AI agent.",
+          "But as the conversation went on, the voice was not AI at all.",
+          "Meta had run a test that caused exactly this surprise."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But as the conversation went on, the voice was not AI at all.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+        "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "A call seemed to come from an AI agent.",
+          "But as the conversation went on, the voice was not AI at all.",
+          "Meta had run a test that caused exactly this surprise."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta had run a test that caused exactly this surprise.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+        "explanation": "The English version turns the source’s suggestive framing into an asserted event and adds an unverified recipient reaction. This is a changed fact, strengthened certainty, and unsupported new claim.",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "A call seemed to come from an AI agent.",
+          "But as the conversation went on, the voice was not AI at all.",
+          "Meta had run a test that caused exactly this surprise."
+        ],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

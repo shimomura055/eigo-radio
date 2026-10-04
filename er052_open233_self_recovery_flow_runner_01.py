@@ -6335,8 +6335,26 @@ def carry_forward_resolution(claim_rec: dict, claim_text: str, en_now: str | Non
     covered, remaining = [], []
     for r in res0["ranges"]:
         cov = next((u for u in units if u["lang"] == lang0 and any(r in b for b in u["before_units"])), None)
+        partial = False
+        if cov is None:
+            # 委任_04(rep26 A2A3で判明した照合漏れの是正): 先行Rewriteの置換単位(`before_unit`)が、この範囲の一部(部分文字列)
+            # だけを書き換えた場合(例: 先行claimがL1語レベルで文末の節だけを置換し、後続claimの範囲は文全体)。範囲は現在の本文から
+            # 消えており(置換済み)、従来は確定不能(STAGE4)になった。先行指摘と後続指摘が「同じ指摘」(issue文字列・related_fact_id・
+            # trueのflag集合が全て一致)の場合に限り、先行Rewriteで書き換え済みとみなす。解消の判定は従来どおり全文Recheckが担う
+            # (残れば次cycleで再指摘される)。異なる指摘は従来どおり確定不能(Human Reviewへ倒す新経路ではなく、倒す経路を減らす方向のみ)。
+            info = claim_rec.get("cycle_claim_info") or {}
+            dev_now = claim_rec.get("dev") or {}
+            for u in units:
+                if u["lang"] != lang0 or not any(b and b in r for b in u["before_units"]):
+                    continue
+                prior = info.get(u["claim_identity"])
+                if (prior is not None and prior["issue"] == (dev_now.get("issue") or "")
+                        and (prior["related_fact_id"] or "") == (dev_now.get("related_fact_id") or "")
+                        and prior["true_flags"] == _dev_true_flags(dev_now)):
+                    cov, partial = u, True
+                    break
         if cov is not None:
-            covered.append({"range": r, "covered_by_claim": cov["claim_identity"]})
+            covered.append({"range": r, "covered_by_claim": cov["claim_identity"], **({"partial_overlap": True} if partial else {})})
         elif now_text.count(r) == 1:
             remaining.append(r)
         else:

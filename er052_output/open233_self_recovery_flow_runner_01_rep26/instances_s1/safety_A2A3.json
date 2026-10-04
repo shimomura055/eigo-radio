@@ -1,0 +1,1289 @@
+{
+  "instance_id": "safety_A2A3",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+            "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It adds a specific payer and presents that detail as part of the proposal, despite HF-003 stating that the payer was unspecified. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“The idea was that”",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-003",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” を、米国が安全確保費用の償還を求める案だったとし、支払義務者は特定しない表現に狭めてください。HF-003。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L1",
+            "reason": null,
+            "ranges": [
+              "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L1"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+        },
+        {
+          "claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+            "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Normally, that might have brought some relief to crude oil prices.",
+              "Crude oil also passes through it, so trouble with transport could push its price higher.",
+              "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.” は削り、Brent原油先物の値動きの範囲に限定してください。HF-006。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L1",
+            "reason": null,
+            "ranges": [
+              "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L1"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        },
+        {
+          "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+            "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It adds a specific payer and presents that detail as part of the proposal, despite HF-003 stating that the payer was unspecified. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-003",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“The idea was that”",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "HF-003",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.” を、米国が安全確保費用の償還を求める案だったとし、支払義務者は特定しない表現に狭めてください。HF-003。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+        },
+        {
+          "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Normally, that might have brought some relief to crude oil prices.",
+            "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Normally, that might have brought some relief to crude oil prices.",
+              "Crude oil also passes through it, so trouble with transport could push its price higher.",
+              "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The 20 Percent Charge Left the Stage. Oil Worries Remained.\n\nIn the oil market, the lead role changed in a single day. First came a proposed 20 percent charge on all cargo passing through the Strait of Hormuz. The next day, the proposal disappeared from the stage. Normally, that might have brought some relief to crude oil prices.\n\nBut the market reacted differently. Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level. It was as if the market were saying, “The talk about the charge is over, but the story of the strait is not.” The fee was gone, yet the worry remained. To understand the turn, we need to look at what the charge was meant to do.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A2A3",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cb73176a1d4adc1ea4ff4adb95daeebaf4ab35fc1612492173d37b3474fb8bd0",
+              "46a44eaa365e559360acdb67ea474fddda1d35b407a0f6e907e4bc86d3bf82f1"
+            ],
+            "batch_cost_jpy": 0.1925,
+            "batch_n_claims": 2
+          }
+        },
+        {
+          "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+            "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Normally, that might have brought some relief to crude oil prices.",
+              "Crude oil also passes through it, so trouble with transport could push its price higher.",
+              "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A2A3",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-006",
+            "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "cb73176a1d4adc1ea4ff4adb95daeebaf4ab35fc1612492173d37b3474fb8bd0",
+              "46a44eaa365e559360acdb67ea474fddda1d35b407a0f6e907e4bc86d3bf82f1"
+            ],
+            "batch_cost_jpy": 0.1925,
+            "batch_n_claims": 2
+          }
+        },
+        {
+          "claim_text": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-006",
+          "dev": {
+            "claim_in_article": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+            "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+            "related_fact_id": "HF-006",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Normally, that might have brought some relief to crude oil prices.",
+              "Crude oil also passes through it, so trouble with transport could push its price higher.",
+              "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.” は削り、Brent原油先物の値動きの範囲に限定してください。HF-006。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L6:sentence_restore",
+            "reason": null,
+            "ranges": [
+              "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L6:sentence_restore"
+              }
+            },
+            "detail": null,
+            "sentence_restore": {
+              "attempted": true,
+              "status": "restored",
+              "reason": null,
+              "restore_reason": [
+                "truncated_head"
+              ],
+              "fired_by": [
+                "truncated_head"
+              ],
+              "fragments": [
+                {
+                  "part": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                  "kind": "exact",
+                  "detail": {
+                    "ok_head": false,
+                    "ok_tail": true
+                  }
+                }
+              ],
+              "anchors": [],
+              "restored_sentence": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+              "span": [
+                1508,
+                2083
+              ],
+              "n_sentences": 1,
+              "n_candidates": 1,
+              "focus_spans": [
+                [
+                  1715,
+                  2082
+                ]
+              ],
+              "residual_check": [],
+              "original_claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+              "claim_core": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+              "base_reason": "mismatch"
+            }
+          },
+          "claim_span_text": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        }
+      ],
+      "blocking_count": 4,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "safety_A2A3",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cb73176a1d4adc1ea4ff4adb95daeebaf4ab35fc1612492173d37b3474fb8bd0",
+            "46a44eaa365e559360acdb67ea474fddda1d35b407a0f6e907e4bc86d3bf82f1"
+          ],
+          "batch_cost_jpy": 0.1925,
+          "batch_n_claims": 2
+        },
+        {
+          "instance_id": "safety_A2A3",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-006",
+          "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "cb73176a1d4adc1ea4ff4adb95daeebaf4ab35fc1612492173d37b3474fb8bd0",
+            "46a44eaa365e559360acdb67ea474fddda1d35b407a0f6e907e4bc86d3bf82f1"
+          ],
+          "batch_cost_jpy": 0.1925,
+          "batch_n_claims": 2
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(violation_span(EN,L1))",
+          "guard_ok": true,
+          "ladder_level_used": "4_paragraph",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L1",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+              ],
+              "raw_spans": [
+                [
+                  845,
+                  959
+                ]
+              ],
+              "spans": [
+                [
+                  845,
+                  959
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L1"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": true
+            },
+            "level_attempts": [
+              {
+                "level": "4_paragraph",
+                "targets": [
+                  "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher."
+                ],
+                "revised": [
+                  "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The proposal said the United States would seek payment for the cost of keeping the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.",
+                    "after": "### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The proposal said the United States would seek payment for the cost of keeping the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher."
+                  }
+                ]
+              }
+            ],
+            "level_used": "4_paragraph",
+            "span_unverified": false,
+            "problem_kind": "multi_sentence",
+            "levels_planned": [
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:HF-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(violation_span(EN,L1))",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L1",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+              ],
+              "raw_spans": [
+                [
+                  1968,
+                  2064
+                ]
+              ],
+              "spans": [
+                [
+                  1968,
+                  2064
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L1"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": true
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "result": "declined"
+              },
+              {
+                "level": "3_sentence",
+                "targets": [
+                  "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+                ],
+                "revised": [
+                  "Brent futures briefly lost some of their gains after the announcement. Prices soon returned to nearly their earlier high. At the time of reporting, they were above $85 a barrel, up about 2.6 percent."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                    "after": "Brent futures briefly lost some of their gains after the announcement. Prices soon returned to nearly their earlier high. At the time of reporting, they were above $85 a barrel, up about 2.6 percent."
+                  }
+                ]
+              }
+            ],
+            "level_used": "3_sentence",
+            "span_unverified": false,
+            "problem_kind": "term_scope",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+              ]
+            },
+            "carry_forward_covered": [
+              {
+                "range": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+                "covered_by_claim": "fact:HF-003"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:HF-003",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+                "following_issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+                "prior_related_fact_id": "HF-003",
+                "following_related_fact_id": "HF-003",
+                "prior_true_flags": [
+                  "changed_certainty",
+                  "changed_fact",
+                  "unsupported_new_claim"
+                ],
+                "following_true_flags": [
+                  "changed_certainty",
+                  "changed_fact",
+                  "unsupported_new_claim"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        },
+        {
+          "claim_identity": "fact:HF-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+              ],
+              "cycle_start_level": "L6:sentence_restore",
+              "sentence_restore": {
+                "attempted": true,
+                "status": "restored",
+                "reason": null,
+                "restore_reason": [
+                  "truncated_head"
+                ],
+                "fired_by": [
+                  "truncated_head"
+                ],
+                "fragments": [
+                  {
+                    "part": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                    "kind": "exact",
+                    "detail": {
+                      "ok_head": false,
+                      "ok_tail": true
+                    }
+                  }
+                ],
+                "anchors": [],
+                "restored_sentence": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                "span": [
+                  1508,
+                  2083
+                ],
+                "n_sentences": 1,
+                "n_candidates": 1,
+                "focus_spans": [
+                  [
+                    1715,
+                    2082
+                  ]
+                ],
+                "residual_check": [],
+                "original_claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                "claim_core": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                "base_reason": "mismatch"
+              }
+            },
+            "carry_forward_covered": [
+              {
+                "range": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+                "covered_by_claim": "fact:HF-006"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:HF-006",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+                "following_issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+                "prior_related_fact_id": "HF-006",
+                "following_related_fact_id": "HF-006",
+                "prior_true_flags": [
+                  "changed_causality",
+                  "changed_fact",
+                  "changed_scope",
+                  "unsupported_new_claim"
+                ],
+                "following_true_flags": [
+                  "changed_causality",
+                  "changed_fact",
+                  "changed_scope",
+                  "unsupported_new_claim"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 18.8,
+          "difficult_word_ratio": 0.1037,
+          "word_count": 376
+        },
+        "stats_after": {
+          "avg_sentence_len": 14.0,
+          "difficult_word_ratio": 0.0942,
+          "word_count": 308
+        },
+        "sentence_len_increase": -4.8,
+        "difficulty_ratio_increase": -0.0095,
+        "fragment_stats_before": {
+          "avg_sentence_len": 96.0,
+          "difficult_word_ratio": 0.1667,
+          "word_count": 96
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 10.67,
+          "difficult_word_ratio": 0.1562,
+          "word_count": 32
+        },
+        "fragment_sentence_len_increase": -85.33,
+        "fragment_difficulty_ratio_increase": -0.0105,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 47,
+        "hook_word_count_after": 47,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 20,
+        "sentence_count_after": 22,
+        "sentence_drop_rate": -0.1,
+        "hedge_word_count_before": 3,
+        "hedge_word_count_after": 2,
+        "hedge_word_increase": -1,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The 20 Percent Charge Left the Stage. Oil Worries Remained.\n\nIn the oil market, the lead role changed in a single day. First came a proposed 20 percent charge on all cargo passing through the Strait of Hormuz. The next day, the proposal disappeared from the stage. Normally, that might have brought some relief to crude oil prices.\n\nBut the market reacted differently. Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level. It was as if the market were saying, “The talk about the charge is over, but the story of the strait is not.” The fee was gone, yet the worry remained. To understand the turn, we need to look at what the charge was meant to do.\n\n### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.\n\n### The charge leaves, but the danger stays\n\nOn July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nAfter the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\n\n## In one line\n\nThe fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+      "en_text_after_rewrite": "# The 20 Percent Charge Left the Stage. Oil Worries Remained.\n\nIn the oil market, the lead role changed in a single day. First came a proposed 20 percent charge on all cargo passing through the Strait of Hormuz. The next day, the proposal disappeared from the stage. Normally, that might have brought some relief to crude oil prices.\n\nBut the market reacted differently. Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level. It was as if the market were saying, “The talk about the charge is over, but the story of the strait is not.” The fee was gone, yet the worry remained. To understand the turn, we need to look at what the charge was meant to do.\n\n### A fee meant to protect the strait\n\nOn July 13, Trump proposed a 20 percent charge on all cargo passing through the Strait of Hormuz. The proposal said the United States would seek payment for the cost of keeping the strait safe. Crude oil also passes through it, so trouble with transport could push its price higher.\n\nThe stage was ready for a quick change, but the market still had another question.\n\n### The charge leaves, but the danger stays\n\nOn July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States. He said the change came after “very productive discussions” with Middle Eastern leaders. The charge had left the stage, but that did not settle the market’s concern.\n\nBrent futures briefly lost some of their gains after the announcement. Prices soon returned to nearly their earlier high. At the time of reporting, they were above $85 a barrel, up about 2.6 percent.\n\n## In one line\n\nThe fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "english_only_ja_source_requires_full_recheck",
+        "multiple_claims_rewritten_same_cycle",
+        "safety_fixture"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text",
+        "current_text",
+        "current_text"
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A2A3_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2058,
+      "usage": {
+        "input_tokens": 9351,
+        "cached_input_tokens": 9348,
+        "output_tokens": 2436,
+        "reasoning_tokens": 2049
+      },
+      "elapsed_seconds": 26.178,
+      "prompt_sha256": "2eb8349cd90d86b62f7bd38e190cd9c7c2ab6ecd2b48f68be780e148518e50e1"
+    },
+    {
+      "label": "safety_A2A3_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0271,
+      "usage": {
+        "input_tokens": 5809,
+        "cached_input_tokens": 5806,
+        "output_tokens": 229,
+        "reasoning_tokens": 178
+      },
+      "elapsed_seconds": 3.72,
+      "prompt_sha256": "46a44eaa365e559360acdb67ea474fddda1d35b407a0f6e907e4bc86d3bf82f1"
+    },
+    {
+      "label": "safety_A2A3_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1685,
+      "usage": {
+        "input_tokens": 8478,
+        "cached_input_tokens": 0,
+        "output_tokens": 452,
+        "reasoning_tokens": 401
+      },
+      "elapsed_seconds": 6.345,
+      "prompt_sha256": "cb73176a1d4adc1ea4ff4adb95daeebaf4ab35fc1612492173d37b3474fb8bd0"
+    },
+    {
+      "label": "safety_A2A3_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.024,
+      "usage": {
+        "input_tokens": 5809,
+        "cached_input_tokens": 5806,
+        "output_tokens": 189,
+        "reasoning_tokens": 138
+      },
+      "elapsed_seconds": 3.136,
+      "prompt_sha256": "46a44eaa365e559360acdb67ea474fddda1d35b407a0f6e907e4bc86d3bf82f1"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-003_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0789,
+      "usage": {
+        "input_tokens": 3694,
+        "cached_input_tokens": 0,
+        "output_tokens": 267,
+        "reasoning_tokens": 183
+      },
+      "elapsed_seconds": 3.14,
+      "prompt_sha256": "3060a0fe990716fcbff1039e629e5660d5e9e7d13d67c8a23923fa8d2bb4b95a"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-006_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0658,
+      "usage": {
+        "input_tokens": 3872,
+        "cached_input_tokens": 0,
+        "output_tokens": 65,
+        "reasoning_tokens": 52
+      },
+      "elapsed_seconds": 2.35,
+      "prompt_sha256": "d0cb744621169ba026f6cc45d1659116e0687bee55aee4216d1793930e5db33a"
+    },
+    {
+      "label": "safety_A2A3_c1_fact:HF-006_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1295,
+      "usage": {
+        "input_tokens": 3806,
+        "cached_input_tokens": 0,
+        "output_tokens": 890,
+        "reasoning_tokens": 833
+      },
+      "elapsed_seconds": 11.281,
+      "prompt_sha256": "8311bb707a233e022df702199d1f772a22e3eb1fa4b627ae87abfc6e539eab93"
+    },
+    {
+      "label": "safety_A2A3_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2115,
+      "usage": {
+        "input_tokens": 6922,
+        "cached_input_tokens": 0,
+        "output_tokens": 1312,
+        "reasoning_tokens": 1091
+      },
+      "elapsed_seconds": 12.071,
+      "prompt_sha256": "3381d5dc52172e6bcd84d1ddef288202cd5750c426d7d1fc7f068e231f7faae3",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.9111,
+  "total_calls": 8,
+  "elapsed_seconds": 68.278,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+        "related_fact_id": "HF-003",
+        "origin": "ja_source",
+        "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+        "explanation": "It adds a specific payer and presents that detail as part of the proposal, despite HF-003 stating that the payer was unspecified. The Japanese source already contains this claim.",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+        "related_fact_id": "HF-006",
+        "origin": "ja_source",
+        "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+        "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "Normally, that might have brought some relief to crude oil prices.",
+          "Crude oil also passes through it, so trouble with transport could push its price higher.",
+          "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+        "related_fact_id": "HF-003",
+        "origin": "ja_source",
+        "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+        "explanation": "It adds a specific payer and presents that detail as part of the proposal, despite HF-003 stating that the payer was unspecified. The Japanese source already contains this claim.",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Normally, that might have brought some relief to crude oil prices.",
+        "related_fact_id": "HF-006",
+        "origin": "ja_source",
+        "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+        "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "Normally, that might have brought some relief to crude oil prices.",
+          "Crude oil also passes through it, so trouble with transport could push its price higher.",
+          "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+        "related_fact_id": "HF-006",
+        "origin": "ja_source",
+        "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+        "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "Normally, that might have brought some relief to crude oil prices.",
+          "Crude oil also passes through it, so trouble with transport could push its price higher.",
+          "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+        "related_fact_id": "HF-006",
+        "origin": "ja_source",
+        "issue": "The article asserts that the danger around the strait affects gasoline prices and the cost of moving goods through crude oil; the Ledger does not verify these downstream effects.",
+        "explanation": "This adds a causal link to gasoline and goods-transport costs beyond the Ledger’s verified Brent-price movements and shipping concerns. The Japanese source already contains this claim.",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "Normally, that might have brought some relief to crude oil prices.",
+          "Crude oil also passes through it, so trouble with transport could push its price higher.",
+          "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        ],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 1,
+    "final_state": "RESOLVED_REWRITE",
+    "final_state_is_pass_family": true,
+    "defs": [
+      {
+        "sub_id": "A2A3-0",
+        "related_fact_id": "HF-003",
+        "text_substring": "repay the money",
+        "remains_in_final_en": false,
+        "ever_blocking_flagged": true,
+        "ever_blocking_flagged_same_fact_id": true,
+        "ever_flagged_but_never_blocking": false,
+        "in_checker_raw_deviations_any_severity": [
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "HF-003"
+          },
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "HF-003"
+          }
+        ],
+        "pass_with_residual_unflagged": false
+      }
+    ]
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

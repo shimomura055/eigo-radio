@@ -5285,6 +5285,29 @@ class TestRecordsOnly49(unittest.TestCase):
         self.assertFalse(c2["true_flags_equal"])
         self.assertTrue(c2["same_related_fact_id"])
 
+    def test_carry_forward_partial_overlap_same_issue_only(self):
+        """委任_04(rep26 A2A3の照合漏れ是正): 先行Rewriteが範囲の一部(文末の節)だけを置換した場合、同じ指摘に限り書き換え済み扱い。"""
+        sent = "Prices rose, because attacks continued, with its distant danger reaching gasoline prices."
+        frag = "with its distant danger reaching gasoline prices."
+        start = "# T\n\nIntro. " + sent + " Another sentence stays.\n"
+        after = "# T\n\nIntro. Prices rose, because attacks continued, with the route still in danger. Another sentence stays.\n"
+        dev = {"issue": "downstream effect not in Ledger", "related_fact_id": "HF-006", "changed_fact": True}
+        rec = _claim(sent, kind="replace_with_ledger_value", origin="translation", dev=dev)
+        rec.update({"cycle_start_en_text": start, "cycle_start_ja_text": None,
+                    "cycle_replaced_units": [{"claim_identity": "claim:first", "lang": "EN",
+                                              "before_units": [frag], "after_units": ["with the route still in danger."]}],
+                    "cycle_claim_info": {"claim:first": {"issue": "downstream effect not in Ledger",
+                                                         "related_fact_id": "HF-006", "true_flags": ["changed_fact"]}}})
+        r = runner.run_stage3_for_claim(None, None, [0], [], "t", {"ledger_text": LEDGER, "article_text": after},
+                                        after, None, rec)
+        self.assertEqual(r["method"], "covered_by_earlier_rewrite_in_cycle")
+        self.assertTrue(r["handoff"]["carry_forward_covered"][0].get("partial_overlap"))
+        # 異なる指摘は従来どおり確定不能(unverified)。新しいHuman Review経路は作らない
+        rec["dev"] = {**dev, "issue": "another issue entirely"}
+        r2 = runner.run_stage3_for_claim(None, None, [0], [], "t", {"ledger_text": LEDGER, "article_text": after},
+                                         after, None, rec)
+        self.assertEqual(r2["method"], "violation_span_unverified")
+
     def test_en_title_rewrite_recorded(self):
         self.assertEqual(runner._en_title_line("# A Title\n\n## In one line\nx"), "# A Title")
         self.assertIsNone(runner._en_title_line("## In one line\nx"))
