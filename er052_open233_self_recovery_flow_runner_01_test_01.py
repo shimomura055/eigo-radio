@@ -6906,7 +6906,8 @@ class TestDowngradeVerifyThreeTier02(unittest.TestCase):
         self.assertFalse(self._old[1])  # G_Lは既定無効(¥0 replayの最終判断)
         import inspect
         self.assertIn("--stage2-downgrade-verify", inspect.getsource(runner.main))
-        self.assertTrue(runner.KPI_TRIAL_SWITCHES["STAGE2_DOWNGRADE_VERIFY"])
+        # 委任_03: 確認役は実測で不採用のため`KPI_TRIAL_SWITCHES`から外した(コードは残置・既定OFF)
+        self.assertNotIn("STAGE2_DOWNGRADE_VERIFY", runner.KPI_TRIAL_SWITCHES)
 
     # --- Tier 0 ---
     def test_g_l_causal_strength_and_notes(self):
@@ -7340,6 +7341,242 @@ class TestSectionTypeObserved02(unittest.TestCase):
             out = runner.run_stage2(None, {"cumulative_jpy": 0.0}, [0], [], "so", fixture, claims)[0]
         self.assertEqual(out["section_type_observed"], "in_one_line")
         self.assertEqual(out["stage2_route"], "body")  # 判定・振り分けは不変
+
+
+
+class TestCausalFloorAndS1_03(unittest.TestCase):
+    """委任_03: Tier 0 因果floor(語彙は目録由来)、Tier 1' S1(第2意見)、label override、KPI構成。¥0(APIは呼ばない)。"""
+
+    def setUp(self):
+        self._old = (runner.CAUSAL_FLOOR, runner.STAGE2_SECOND_OPINION, runner.CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE,
+                     runner.STAGE2_DOWNGRADE_VERIFY)
+
+    def tearDown(self):
+        (runner.CAUSAL_FLOOR, runner.STAGE2_SECOND_OPINION, runner.CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE,
+         runner.STAGE2_DOWNGRADE_VERIFY) = self._old
+
+    # --- 語彙・floor ---
+    def test_defaults_off_and_kpi_config(self):
+        self.assertFalse(self._old[0])
+        self.assertFalse(self._old[1])
+        self.assertFalse(self._old[3])
+        k = runner.KPI_TRIAL_SWITCHES
+        self.assertTrue(k["CAUSAL_FLOOR"])
+        self.assertTrue(k["STAGE2_SECOND_OPINION"])
+        self.assertFalse(k["STAGE2_NORMAL_TWO_OF_TWO"])
+
+    def test_vocab_is_catalogue_based_and_includes_known_gh_words(self):
+        for w in ("so", "because", "therefore", "as a result", "led to", "leading to", "due to", "owing to",
+                  "thanks to", "consequently", "triggered", "in response to"):
+            self.assertIn(w, runner.CAUSAL_CONNECTIVES_EN)
+        for w in ("may", "might", "could", "possibly", "likely", "appears", "seems", "reportedly", "expected to"):
+            self.assertIn(w, runner.HEDGE_MARKERS_EN)
+        self.assertEqual(set(runner.HEDGE_CAN_WOULD_EN), {"can", "would"})
+
+    def test_fires_without_hedge_and_not_with_hedge(self):
+        dev = {"changed_causality": True}
+        self.assertEqual(runner.causal_floor_guard(dev, _DV_B3_CLAIM), (True, "changed_causality_floor"))
+        self.assertEqual(runner.causal_floor_guard(dev, "Prices rose because supply was cut."), (True, "changed_causality_floor"))
+        self.assertEqual(runner.causal_floor_guard(dev, "The ban triggered a sell-off."), (True, "changed_causality_floor"))
+        self.assertEqual(runner.causal_floor_guard(dev, "Due to the ban, shipping stopped."), (True, "changed_causality_floor"))
+        self.assertEqual(runner.causal_floor_guard(dev, "Following the ban, shipping stopped."), (True, "changed_causality_floor"))
+        # ヘッジ(推測・可能性・帰属)があれば発火しない
+        self.assertFalse(runner.causal_floor_guard(dev, "So the plan may have left the stage.")[0])
+        self.assertFalse(runner.causal_floor_guard(dev, "Analysts say prices rose because supply was cut.")[0])
+        self.assertFalse(runner.causal_floor_guard(dev, "The ban reportedly triggered a sell-off.")[0])
+        # flagなし・接続語なし・日本語claimは発火しない
+        self.assertFalse(runner.causal_floor_guard({"changed_causality": False}, _DV_B3_CLAIM)[0])
+        self.assertFalse(runner.causal_floor_guard(dev, "Concerns continued on July 14 and the plan left the stage.")[0])
+        self.assertFalse(runner.causal_floor_guard(dev, "懸念が続いたため、案は撤回された。")[0])
+        # 語境界: so-called/sourced/remade は接続語にならない、following は文頭のみ
+        self.assertFalse(runner.causal_floor_guard(dev, "The so-called plan was sourced and remade.")[0])
+        self.assertFalse(runner.causal_floor_guard(dev, "Prices fell in the following week.")[0])
+
+    def test_can_would_ab_versions(self):
+        dev = {"changed_causality": True}
+        c = "So the payers would repay the money."
+        self.assertTrue(runner.causal_floor_guard(dev, c, can_would_as_hedge=False)[0])   # B: would=ヘッジでない
+        self.assertFalse(runner.causal_floor_guard(dev, c, can_would_as_hedge=True)[0])   # A: would=ヘッジ
+        runner.CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE = False
+        self.assertTrue(runner.causal_floor_guard(dev, c)[0])
+        runner.CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE = True
+        self.assertFalse(runner.causal_floor_guard(dev, c)[0])
+
+    def test_release_guard_uses_causal_floor_only_when_on(self):
+        dev = {"changed_causality": True, "issue": "x"}
+        claim = {"claim_text": "Prices rose due to the ban.", "dev": dev}
+        runner.CAUSAL_FLOOR = False
+        self.assertEqual(runner.stage2_release_guard(claim, None), (False, ""))
+        runner.CAUSAL_FLOOR = True
+        self.assertEqual(runner.stage2_release_guard(claim, None), (True, "changed_causality_floor"))
+        # 補助ベルトissue_actorは補完として維持
+        d2 = {"issue": "The article identifies cargo carriers as the payers."}
+        self.assertEqual(runner.stage2_release_guard({"claim_text": "Carriers would repay.", "dev": d2}, None),
+                         (True, "aux:issue_actor"))
+
+    # --- run_stage2配線 ---
+    def _run(self, llm, dev, claim_text, on):
+        article = ("# T\n\nIntro hook. It has two sentences, and a 2026 date.\n\nSecond paragraph has several sentences. "
+                   f"It is a plain body paragraph. It keeps going.\n\n{claim_text}\n\n## In one line\nSummary.\n")
+        fixture = {"article_text": article, "ledger_text": _DV_LEDGER, "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": dev["related_fact_id"],
+                   "dev": dev, "detected_by": "stage1_llm"}]
+
+        def fake(client, ledger_text, source, cl, rubric_text, model=None):
+            return {"prompt_sha256": "d1", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": llm, "basis": "none", "rewrite_kind": "none", "rewrite_hint": ""}]},
+                    "model": "m", "response_id": "r", "usage": {}, "cost_jpy": 0.01, "elapsed_seconds": 0.01}
+        runner.CAUSAL_FLOOR = on
+        call_log = []
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner, "check_budget", lambda *a, **k: None), \
+             mock.patch.object(runner.s2c, "run_stage2_batch_variant", fake):
+            out = runner.run_stage2(None, state, [0], call_log, "t03", fixture, claims)
+        return out[0], call_log
+
+    def test_run_stage2_off_unchanged_on_blocks_with_hint(self):
+        dev = _dv_dev(related_fact_id="HF-007", changed_causality=True)
+        o, _ = self._run("QUALITY", dev, _DV_B3_CLAIM, on=False)
+        self.assertEqual(o["materiality"], "QUALITY")
+        self.assertNotIn("tier0", o)
+        o, log = self._run("QUALITY", dev, _DV_B3_CLAIM, on=True)
+        self.assertEqual(o["materiality"], "BLOCKING")
+        self.assertEqual(o["floor_reason"], "changed_causality_floor")
+        self.assertTrue(o["tier0"]["blocked"])
+        self.assertIn("Checkerの指摘", o["rewrite_hint"])   # Tier 2 hint合成
+        self.assertEqual(len(log), 1)                          # Tier 0は追加callなし(¥0)
+
+    def test_run_stage2_on_hedged_or_nonmajor_or_already_blocking_not_blocked(self):
+        dev = _dv_dev(related_fact_id="HF-007", changed_causality=True)
+        o, _ = self._run("QUALITY", dev, "So the plan may have left the stage.", on=True)
+        self.assertEqual(o["materiality"], "QUALITY")
+        self.assertFalse(o["tier0"]["blocked"])
+        o, _ = self._run("QUALITY", _dv_dev(related_fact_id="HF-007", changed_causality=True, severity="MINOR"),
+                         _DV_B3_CLAIM, on=True)
+        self.assertEqual(o["materiality"], "QUALITY")
+        self.assertFalse(o["tier0"]["target"])
+        o, _ = self._run("BLOCKING", dev, _DV_B3_CLAIM, on=True)
+        self.assertFalse(o["tier0"]["target"])
+
+    def test_tier0_summarize(self):
+        res = [{"instance_id": "i", "cycles": [{"cycle": 1, "stage2_results": [
+            {"tier0": {"target": True, "blocked": True, "reason": "changed_causality_floor"}, "claim_text": "a"},
+            {"tier0": {"target": True, "blocked": False, "reason": None}},
+            {"tier0": {"target": False, "blocked": False, "reason": None}}, {}]}]}]
+        s = runner.tier0_summarize(res)
+        self.assertEqual((s["n_records"], s["n_target"], s["n_blocked"]), (3, 2, 1))
+        self.assertEqual(s["blocked_by_reason"], {"changed_causality_floor": 1})
+
+    # --- S1 ---
+    def _sr(self, mat="QUALITY", **kw):
+        r = {"claim_text": "Brent briefly eased.", "origin": "translation", "related_fact_id": "HF-020",
+             "dev": _dv_dev(), "materiality": mat, "llm_materiality": mat, "basis": "none",
+             "rewrite_kind": "none", "rewrite_hint": "", "floor_reason": None, "detected_by": "stage1_llm",
+             "stage2_route": "body"}
+        r.update(kw)
+        return r
+
+    def test_s1_eligibility(self):
+        E = runner.stage2_second_opinion_eligible
+        self.assertTrue(E(self._sr("QUALITY")))
+        self.assertTrue(E(self._sr("ACCEPTABLE")))
+        self.assertFalse(E(self._sr("BLOCKING")))
+        self.assertFalse(E(self._sr(dev=_dv_dev(severity="MINOR"))))
+        self.assertFalse(E(self._sr(floor_verify={"released": True})))
+        self.assertTrue(E(self._sr(floor_verify={"released": False})))
+        self.assertFalse(E(self._sr(detected_by="precheck", llm_materiality=None)))
+        self.assertFalse(E(self._sr(stage2_route="precheck_floor_bypass")))
+
+    def _s1(self, results, second_fn):
+        fixture = {"article_text": "x", "ledger_text": _DV_LEDGER, "source_article_text": None}
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        call_log = []
+        seen = {}
+
+        def fake_run_stage2(client, st, ce, cl, label, fx, claims):
+            seen["claims"] = claims
+            cl.append({"label": label, "cost_jpy": 0.07, "prompt_sha256": "sha_s1"})
+            return second_fn(claims)
+        with mock.patch.object(runner, "run_stage2", fake_run_stage2):
+            out, log = runner.apply_stage2_second_opinion(None, state, [0], call_log, "i_c1", fixture, results, "i", 1)
+        return out, log, seen, call_log
+
+    def _second(self, mat, floor_reason=None, hint="第2回のhint"):
+        return lambda claims: [{"materiality": mat, "basis": "none", "rewrite_kind": "replace_with_ledger_value",
+                                "rewrite_hint": hint, "floor_reason": floor_reason} for _ in claims]
+
+    def test_s1_agree_keeps_heavier_and_logs(self):
+        out, log, seen, _ = self._s1([self._sr("ACCEPTABLE")], self._second("QUALITY"))
+        self.assertEqual(out[0]["materiality"], "QUALITY")   # 重い方(安全側)
+        self.assertTrue(log[0]["confirmed_downgrade"])
+        self.assertFalse(log[0]["split"])
+        self.assertEqual(log[0]["prompt_sha256"], ["sha_s1"])
+        self.assertAlmostEqual(log[0]["batch_cost_jpy"], 0.07)
+        self.assertEqual(log[0]["second_status"], "ok")
+
+    def test_s1_split_becomes_blocking_with_hint(self):
+        out, log, _, _ = self._s1([self._sr("QUALITY")], self._second("BLOCKING"))
+        self.assertEqual(out[0]["materiality"], "BLOCKING")
+        self.assertEqual(out[0]["floor_reason"], "s1_second_opinion_blocking")
+        self.assertIn("Checkerの指摘", out[0]["rewrite_hint"])     # Tier 2 hint合成
+        self.assertIn("第2回のhint", out[0]["rewrite_hint"])
+        self.assertTrue(log[0]["split"])
+
+    def test_s1_failure_is_blocking_failclosed(self):
+        for fr, st in (("stage2_api_failure_failclosed", "api_failure"),
+                       ("schema_index_mismatch_failclosed", "schema_mismatch")):
+            out, log, _, _ = self._s1([self._sr("QUALITY")], self._second("BLOCKING", floor_reason=fr, hint=""))
+            self.assertEqual(out[0]["materiality"], "BLOCKING")
+            self.assertEqual(out[0]["floor_reason"], "s1_second_opinion_failclosed:" + st)
+            self.assertEqual(log[0]["second_status"], st)
+
+    def test_s1_second_floor_reason_is_logged_as_anomaly(self):
+        out, log, _, _ = self._s1([self._sr("QUALITY")],
+                                  self._second("BLOCKING", floor_reason="deterministic_floor:changed_number"))
+        self.assertTrue(log[0]["second_floor_anomaly"])
+        self.assertEqual(out[0]["materiality"], "BLOCKING")
+
+    def test_s1_only_targets_in_batch_and_no_call_when_none(self):
+        res = [self._sr("BLOCKING"), self._sr("QUALITY", claim_text="Brent eased."),
+               self._sr("QUALITY", floor_verify={"released": True}, claim_text="Other.")]
+        out, log, seen, _ = self._s1(res, self._second("QUALITY"))
+        self.assertEqual([c["claim_text"] for c in seen["claims"]], ["Brent eased."])
+        self.assertEqual(len(log), 1)
+        self.assertEqual(out[0]["materiality"], "BLOCKING")
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        with mock.patch.object(runner, "run_stage2", side_effect=AssertionError("must not call")):
+            o, lg = runner.apply_stage2_second_opinion(None, state, [0], [], "x", {"ledger_text": "", "article_text": ""},
+                                                       [self._sr("BLOCKING")], "i", 1)
+        self.assertEqual(lg, [])
+
+    def test_s1_summarize(self):
+        res = [{"instance_id": "i", "cycles": [{"cycle": 1, "stage2_downgrade_confirm_log": [
+            {"confirmed_downgrade": True, "split": False, "second_status": "ok", "second_floor_anomaly": False,
+             "claim_text": "a", "second_materiality": "QUALITY", "prompt_sha256": ["s"], "batch_cost_jpy": 0.1},
+            {"confirmed_downgrade": False, "split": True, "second_status": "api_failure", "second_floor_anomaly": False,
+             "claim_text": "b", "second_materiality": "BLOCKING", "prompt_sha256": ["s"], "batch_cost_jpy": 0.1}]},
+            {"cycle": 2}]}]
+        s = runner.s1_summarize(res)
+        self.assertEqual((s["n_target"], s["n_confirmed"], s["n_split"], s["n_api_failure"], s["batches"]), (2, 1, 1, 1, 1))
+        self.assertAlmostEqual(s["cost_jpy"], 0.1)   # batch費用は重複計上しない
+
+    # --- label override ---
+    def test_and_version_label_override(self):
+        and_c = "Concerns about US-Iran attacks continued on July 14, and the flashy 20% plan left the stage."
+        so_c = "Concerns continued on July 14. So the flashy 20% plan left the stage."
+        self.assertIsNotNone(runner.label_override_for("bgroup_B3", "HF-007", and_c))
+        self.assertIsNotNone(runner.label_override_for("neg5_hormuz_div_a2", "HF-007", and_c))
+        self.assertIsNone(runner.label_override_for("bgroup_B3", "HF-007", so_c))      # 「so」版は対象外
+        self.assertIsNone(runner.label_override_for("bgroup_B4", "HF-007", and_c))
+        self.assertIsNone(runner.label_override_for("bgroup_B3", "HF-001", and_c))
+        rows = [{"instance_id": "bgroup_B3", "cycles": [{"stage2_results": [
+            {"claim_text": and_c, "related_fact_id": "HF-007", "materiality": "QUALITY", "llm_materiality": "QUALITY"},
+            {"claim_text": so_c, "related_fact_id": "HF-007", "materiality": "QUALITY", "llm_materiality": "QUALITY"}]}]}]
+        d = runner.safety_critical_dual_summary(rows, derived={})
+        self.assertEqual(d["registered_rows_new"], 2)                         # 旧値(上書きなし)
+        self.assertEqual(d["after_label_override_registered_rows"], 1)        # 新値(「and」版=ACCEPTABLE扱い)
+        self.assertEqual(len(d["after_label_override_dropped"]), 1)
 
 
 if __name__ == "__main__":

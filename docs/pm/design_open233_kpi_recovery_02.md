@@ -251,3 +251,39 @@ D\*(G_H∨issue_actor+S1)は主構造にしない。S1(同一prompt2回目)は�
 - 反実仮想(Tier 0にG_Lを追加、再集計のみ・追加費用なし): (i)=16/16(G_Lが開いた1行を閉じる)、(ii)=58.2%(G_L自体がNORMAL群12件を固定BLOCKINGにするため悪化)。→ G_Lを足しても基準は満たせない。
 - 診断(¥0、既存callの再集計。再設計の手がかりであり本委任では実装しない): NORMAL群の確認役BLOCKING率は、Hook専用Stage 2経路(`stage2_route=hook`)で23/27=85%、title 7/7、承認済みの決定論降格`disclosure_gap_negative_inference_downgrade`で8/9に対し、body経路は19/52=37%、`## In one line`は0/6。確認役の単一定義rubricにHook-aware/title許容がなく、承認済みの別規則(hook-aware・disclosure-gap)の降格も覆している。bodyでも37%で10%には届かない(確認役はCheckerの仮説に同意しやすい=Opus#11が警告したprimingが実測で出た)。
 - 再設計の論点(Fableへ): (1)Tier 0補助ベルト単独は流出15/16・正当降格誤停止0.2%(¥0)で、確認役は流出の独立判別力は高い(15/16)が特異度が低い(NORMAL群47%を止める)。(2)開いた1行(「and」版)は、確認役の説明どおり因果を明示していない文であり、ラベルは`text_substring`(flashy 20% plan)の部分文字列一致で付くため「ラベル上の流出」と「実際に重大な誤解を与える文」が一致しているかの確認が要る(KPI定義は変更しない。ユーザー判断事項ではなく、Safety-critical定義の運用確認)。(3)確認役の対象から「Hook/title経路」「承認済みの決定論降格(hook-aware・disclosure-gap)」を除く、確認役のpromptにsection_type別許容を入れる、等はいずれも新しい構造・prompt変更であり条件A(Opus)の対象。
+
+
+## 10. 再設計ループ1: D*′(Fable判断、委任_03、2026-10-04)
+
+委任_02の実測(確認役=NORMAL群BLOCKING化47.3%で不採用、補助ベルト=流出15/16・誤停止0.2%・¥0、G_L=NORMAL群10.9%)を受けたFableの再設計判断(委任_03の委任文より逐語。変更しない)。
+
+1. **確認役(Tier 1 LLM、Checker指摘を提示)は不採用**: 実測でNORMAL群47.3%・body経路でも37%の正当降格を重大化し、QCD優先3に反する(Opus#11が警告したprimingが実測で確認された)。Hook/title/disclosure_gapの除外でも10%に届かない。再調整は行わない。
+2. **G_Lは不採用**: 流出閉鎖の上積みは「and」版1行のみで、NORMAL群10.9%の誤停止はQCD優先3に反する。委任_02のSonnet判断(`TIER0_G_L_ENABLED=False`)を承認。
+3. **Tier 0=因果floor(`G_H`の一般化)を主構造として採用**: 既存の機械的安全装置(数値・主体・否定・比較・時期のfloor)と同じ「Checker flag+決定論の文面確認」の構造で、因果(`changed_causality`∧因果接続語∧ヘッジなし)を6番目のfloorとして位置づける。Opus#11の「既知10行に合わせた語彙パッチ」の指摘に対しては、**接続語・ヘッジ語の語彙を流出事例から独立した標準的な言語学的目録から構築**し(例: 結果・理由・目的の接続詞/前置詞/動詞: so, because, since, as, due to, owing to, thanks to, therefore, thus, hence, consequently, as a result, that is why, which is why, led to, leads to, resulted in, caused, causing, drove, driving, prompted, triggered, sparked, forced, made, pushed, fueled, in response to, following[文頭+結果節]等)、**流出16行を見ずに語彙を確定してから**流出閉鎖率と正当降格518件・NORMAL群110件の誤停止率を測る(hold-out相当)。ヘッジ語は「推測・可能性・他者の見解の帰属」(may, might, could, possibly, likely, appears, seems, some say, analysts/officials say, reportedly, is said to, expected to)に限定し、`can`/`would`の扱いはA/B両方を¥0で測って誤停止≤2%かつ閉鎖最大の方を採る。
+4. **`issue_actor`は補助ベルトとして残す**(主体の断定。既存floor `changed_actor`の補完)。
+5. **Tier 1′=S1**(Opus#10の3修正付き: 第2意見は`run_stage2`の最終`materiality`で比較、対象claimのみのbatch、割れたらBLOCKING、API失敗はBLOCKING、floor_verify解放済みは除外、毎cycle再評価): Tier 0非該当のChecker MAJOR→Stage 2非BLOCKING全件に適用。q=0/30(委任_68)の実測により不要Rewriteを増やさず+¥0.15/記事。役割分担: Tier 0=既知クラス(因果・主体)の決定論保証、S1=偶発的な外れ(rep25型)、系統誤り(rubric起因)は既存のSafety-critical回帰(V7b再較正、0/30・10/10)で捕まえる。
+6. **Tier 2=hint合成**(委任_02実装済み)は維持。解除不可claimは必ずRewrite(Human Reviewへ倒さない)。
+7. **残り1行(rep24 cycle 2のB3「and」版「…continued on July 14, and the flashy 20% plan left the stage.」)のFable判断**: 正式基準(重大=事実関係の重大な誤解)で**問題なし**(「and」は因果を主張しない。確認役も2回ともRELEASE)。この行がSafety-critical流出に計上されるのは`text_substring`「flashy 20% plan」の部分一致によるラベル付けであり、A4-1(委任_57)と同じく`CORRECT_LABEL_OVERRIDES`で「and版=ACCEPTABLE」を登録して旧値/新値を並記する。この判断はユーザーへ報告し、否認されれば戻す。cycle 2でCheckerがこの文を再指摘したのはprior_issuesの古い本文(`so`)の引用が原因で、委任_01の是正で解消見込み(rep26で確認)。
+8. **Opus再レビューは本委任では行わない**: D*′の構造(決定論Guard+S1)はOpus#10(S1の3修正)と#11(Guard+S1を退避案として許容)で既にレビュー済みであり、実測(確認役の特異度不足)に基づく「修正して採用」。Step 6でKPI達成なら、Production採用提案前(条件C)に改めてOpusレビューを入れる。
+9. Stage 1 recall(第二段階)は本委任では着手しない(Step 6の結果で未検出があれば次ループ)。
+
+### 10-1 語彙確定(hold-out手順)の証跡(委任_03、確認)
+
+- 語彙(`CAUSAL_CONNECTIVES_EN`78項目・`HEDGE_MARKERS_EN`+帰属型ヘッジ・`HEDGE_CAN_WOULD_EN`)は、流出16行・Checker指摘文・降格534件の文面を見ずに、標準的な言語学的目録(CGEL・Quirk・Halliday & Hasan・PDTB・Levin・Hyland・Palmer、出典は定数のコメントに記載)のみから構築し、評価より前にgit commit `3808f61f`で固定した(評価スクリプト`replay_guards_04_causal_floor.py`の初回実行はその後)。既に委任_01/02で既知だったG_H補助ベルト6語以外は目録由来。
+- 評価後に変更してよいのは`can`/`would`のA/Bのみ(実際には評価結果が採用条件を満たさず、語彙は一切変更していない)。
+
+### 10-2 ¥0 hold-out評価の結果(`er052_output/open233_kpi_recovery_02_offline_01/replay_guards_04_causal_floor.json`・`replay_guards_04_stdout.txt`、確認)
+
+母集団: Checker MAJOR 1143件(降格534・流出16[旧10+neg5のB3同一文6]・正当降格518・NORMAL群110[neg5除く])。
+
+| 版 | 流出閉鎖(新16) | 閉鎖(旧10) | 閉鎖(and版除く15) | 正当降格の誤停止 | NORMAL群 |
+|---|---|---|---|---|---|
+| A(can/would=ヘッジ) | 13/16 | 7/10 | 13/15 | 13件(2.51%)[Q10・A3] | 3件(2.7%) |
+| B(can/would≠ヘッジ) | 13/16 | 7/10 | 13/15 | 13件(2.51%) | 3件(2.7%) |
+| 既知G_H 6語(参考) | 13/16 | 7/10 | 13/15 | 0件(0%) | 0件(0%) |
+| Tier 0全体A(因果floor_A∨issue_actor) | 15/16 | 9/10 | 15/15 | 14件(2.70%) | 4件(3.6%) |
+| Tier 0全体G_H6語(G_H∨issue_actor=委任_02補助ベルト) | 15/16 | 9/10 | 15/15 | 1件(0.19%) | 1件(0.9%) |
+
+- 採用条件(誤停止≤2%かつ閉鎖≥15/16「and」版除き15/15)は、因果floor単独(A/B)では**満たさない**(誤停止2.51%>2%。閉鎖13/15はA2A3の主体型2行が因果floorの対象外[`issue_actor`が閉じる]のため、単独では15/15にならない)。A/Bは完全に同値(`can`/`would`を含む該当claimが無い)。Tier 0全体(因果floor_A∨issue_actor)としても誤停止2.70%で不達。
+- 語彙拡張(G_H 6語→目録)の**上積みは閉鎖0件、新規誤停止13件**。13件の一致語は`lead to`(6件、同一文「The disappearance of the fee plan did not lead to a large, lasting fall in prices.」を含む[否定文])・`as`(4件)・`caused`(3件)・`makes/make`(1件)。13件は6文の重複で、全てQUALITY/ACCEPTABLEの正当降格。
+- Fable事前規則(「満たさない場合は語彙を削らず事実を記録しFableへ報告、Step 5以降へ進まない」)に従い、語彙は削らず、Step 5(rep26)以降の有料実行は行わなかった。

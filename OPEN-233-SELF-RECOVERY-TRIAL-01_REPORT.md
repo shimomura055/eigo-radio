@@ -4297,3 +4297,21 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - Step 5 rep26(既知case限定確認): 採用判定でないため**未実行**(`er052_open233_self_recovery_flow_runner_01_rep26_known_01.py`は作成のみ)。Human Review・重大見逃し・L6実flow復元・Rewrite解消率は未測定(Human Review 0件のKPIは本委任では検証していない)。
 - 設計書: `docs/pm/design_open233_kpi_recovery_02.md`§9(三層仕様・採否基準・測定計画・Stage 1 recall手順[6-B∧6-F]・replay結果)。
 - 次: Fableが再設計(確認役の対象/prompt/Tier 0の組み替え、新しい構造・promptは条件A=Opus)を判断→委任_03(実装+offline再評価、通過後にrep26→Step 6)。
+
+
+## 53. KPI-RECOVERY-REDESIGN-02 委任_03: 再設計D*′(因果floor語彙hold-out評価・S1・hint合成)の¥0評価と実装、有料run未実行(2026-10-04、費用¥0、Phase累計¥617.19)
+
+結論: **因果floorの語彙hold-out評価が採用条件(正当降格の誤停止≤2%)を満たさなかったため、Fable事前規則どおり語彙を削らず、Step 5(rep26)以降の有料runは実行していない。KPI判定(VALIDATED/未達)はまだ行っていない(`IN_PROGRESS`)。** 有料API呼び出し0、費用¥0。
+
+- (確認)語彙確定の証跡: 語彙(`CAUSAL_CONNECTIVES_EN`78項目、`HEDGE_MARKERS_EN`・帰属型ヘッジ・`HEDGE_CAN_WOULD_EN`)を流出16行の文面を見ずに言語学的目録(CGEL/Quirk/Halliday & Hasan/PDTB/Levin/Hyland/Palmer)から構築し、評価前にgit commit `3808f61f`で固定した。評価後の語彙変更はしていない(`can`/`would`のA/Bのみ許可されていたが、結果は完全同値)。
+- (確認)hold-out評価(`er052_output/open233_kpi_recovery_02_offline_01/replay_guards_04_causal_floor.py`・`.json`・`replay_guards_04_stdout.txt`、母集団=Checker MAJOR 1143件[降格534・流出16・正当降格518・NORMAL群110]):
+  - 因果floor A/B: 流出閉鎖13/16(旧10→7/10、and版除き13/15)、正当降格の誤停止13件=**2.51%**(QUALITY 10・ACCEPTABLE 3)、NORMAL群3件(2.7%)。A/Bは完全同値。採用条件(誤停止≤2%・閉鎖≥15/16)は**不達**。
+  - 既知G_H 6語(参考): 閉鎖13/16(同値)・誤停止0件。つまり**語彙拡張の上積みは閉鎖0件・新規誤停止13件**(`lead to` 6[否定文「did not lead to…」を含む]・`as` 4・`caused` 3・`makes/make` 1、6文の重複)。
+  - Tier 0全体(因果floor_A∨issue_actor): 閉鎖15/16(and版除き15/15)・誤停止14件(2.70%)・NORMAL群4件(3.6%)。G_H 6語∨issue_actor(委任_02補助ベルト): 閉鎖15/16・誤停止1件(0.19%)・NORMAL群1件(0.9%)。
+  - 開いている流出: 因果floor単独=A2A3の主体型2行(`would repay the money`、`issue_actor`が閉じる)+rep24 cycle 2のB3「and」版1行。Tier 0全体では「and」版のみ。
+- (実施)実装(`er052_open233_self_recovery_flow_runner_01.py`、既定OFF・Production未変更): Tier 0 `causal_floor_guard`(`stage2_release_guard`に統合、`run_stage2`の最終materiality非BLOCKINGのChecker MAJORに適用、`floor_reason="changed_causality_floor"`、hint合成、`tier0`記録)、S1 `apply_stage2_second_opinion`(Opus#10の3修正・対象claimのみbatch・割れ/API失敗/schema不一致BLOCKING・floor異常ログ・floor_verify解放済み除外・毎cycle適用・記録`stage2_downgrade_confirm_log`)、スイッチ`CAUSAL_FLOOR`/`STAGE2_SECOND_OPINION`(`KPI_TRIAL_SWITCHES`でON、`STAGE2_DOWNGRADE_VERIFY`は外した)、`tier0_summarize`/`s1_summarize`、`CORRECT_LABEL_OVERRIDES`(「and」版=ACCEPTABLE、Fable判断・ユーザー未確認、旧値/新値並記)。確認役コードは残置。
+- (確認)テスト: runner単体598件OK(新規17件)、er052回帰642件OK、全体回帰4565件中の失敗11件(er011/er015等の基準11件のみ、新規なし)。
+- (未実施)rep26(Step 5)・rep27(Step 6)・KPI判定・Safety-critical 6件の再確認・平均追加/worst費用・不要Rewrite数。いずれも採用条件不達のため実行していない。
+- (推測)語彙拡張が閉鎖に寄与しなかったのは、流出16行の因果型はほぼ`so`(既知語)で、目録由来の追加語は流出に現れない一方、一般文の`lead to`/`as`/`caused`で誤停止するため。語彙を削る調整はhold-out手順の趣旨に反するため行っていない(Fable判断事項)。
+- 設計書: `docs/pm/design_open233_kpi_recovery_02.md`§10(Fable再設計判断1〜9の逐語記録・語彙確定の証跡・hold-out評価表)、`docs/pm/opus_l2_review_open233_kpi_recovery_02_11.md`(4)(実測後のFable再判断)。
+- 次: Fableが(a)語彙拡張を採用条件の範囲で再設計する(例: 採用語を既知G_H 6語+誤停止0の語に限る等はhold-out汚染になるため要判断)、(b)G_H 6語+issue_actor(補助ベルト、誤停止0.19%)をTier 0の正とする、(c)2%基準の扱い、のいずれかを判断→委任_04(rep26→Step 6)。

@@ -423,8 +423,12 @@ KPI_TRIAL_SWITCHES = {
     "JA_MODE": "english_only",
     "FLOOR_VERIFY_MODE": "time_only",
     "STAGE2_NORMAL_TWO_OF_TWO": False,
-    # 委任_02(Opus#11→Fable評価、後段Safetyの三層構造: Tier 0決定論Guard/Tier 1確認役/Tier 2 Rewrite)。KPI確認構成ではON。
-    "STAGE2_DOWNGRADE_VERIFY": True,
+    # 委任_03(Fable再設計判断3/5): 確認役(`STAGE2_DOWNGRADE_VERIFY`)は実測(NORMAL群47.3%)で不採用のため外した
+    # (コードは残置、既定OFF)。代わりにTier 0=因果floor、Tier 1'=S1(Stage 2第2意見)をON。
+    # 注: 因果floor語彙の¥0 hold-out評価は採用条件(誤停止<=2%)を満たさなかった(replay_guards_04、REPORT§53)。語彙の最終採否は
+    # Fable判断待ち。ここでの`CAUSAL_FLOOR`ONは「Fable指定の構成」の記録であり、有料runの実行可否を意味しない。
+    "CAUSAL_FLOOR": True,
+    "STAGE2_SECOND_OPINION": True,
 }
 
 
@@ -2778,8 +2782,60 @@ HEDGE_ATTRIBUTION_VERBS_EN = ("say", "says", "said", "believe", "believes", "thi
 # `can`/`would`の扱い(Fable判断3のA/B): A=ヘッジに含める(`can`=可能性の能力用法、`would`=仮定・婉曲)、B=含めない。
 HEDGE_CAN_WOULD_EN = ("can", "would")
 # 採用版は¥0 replay(`replay_guards_04_causal_floor.py`)の結果で決める(誤停止≤2%かつ閉鎖最大の方)。
-# 語彙確定commit時点の暫定値(評価後に更新する)。
+# 評価結果(委任_03): A/Bは閉鎖13/16・正当降格誤停止13件(2.51%)で完全に同値(can/wouldを含む該当claimが無い)。
+# どちらも採用条件(誤停止<=2%)を満たさず、版の選択は未確定(Fable判断待ち)。暫定でA(True)のまま。
 CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE = True
+
+# 委任_03 作業3: Tier 0 因果floorと Tier 1' S1(第2意見)のTrial専用スイッチ(既定OFF、`KPI_TRIAL_SWITCHES`でON。
+# Production未配線・`APPROVED_FOR_PRODUCTION`ではない)。OFFのとき既存挙動と完全に同一。
+CAUSAL_FLOOR = False
+STAGE2_SECOND_OPINION = False
+
+
+def _norm_apostrophe(s: str) -> str:
+    return (s or "").replace("’", "'").replace("‘", "'")
+
+
+def _build_phrase_re(phrases) -> "re.Pattern":
+    alts = sorted(set(phrases), key=len, reverse=True)
+    body = "|".join(re.escape(p).replace(r"\ ", r"\s+") for p in alts)
+    return re.compile(r"(?<![\w'-])(?:" + body + r")(?![\w-])", re.I)
+
+
+CAUSAL_CONNECTIVES_RE = _build_phrase_re(CAUSAL_CONNECTIVES_EN)
+CAUSAL_SENTENCE_INITIAL_RE = re.compile(
+    r"(?:^|[.!?]\s+|[\"“”]\s*)(?:" + "|".join(CAUSAL_SENTENCE_INITIAL_EN) + r")\b", re.I)
+HEDGE_RE_BASE = _build_phrase_re(HEDGE_MARKERS_EN)
+HEDGE_RE_CAN_WOULD = _build_phrase_re(HEDGE_CAN_WOULD_EN)
+HEDGE_ATTRIBUTION_RE = re.compile(
+    r"\b(?:" + "|".join(HEDGE_ATTRIBUTION_SUBJECTS_EN) + r")\s+(?:" + "|".join(HEDGE_ATTRIBUTION_VERBS_EN) + r")\b", re.I)
+
+
+def causal_vocab_hits(claim_text: str, can_would_as_hedge=None) -> dict:
+    """claim文(英語)の因果接続語・ヘッジ語の一致を返す(決定論・¥0)。`can_would_as_hedge`省略時は
+    `CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE`。"""
+    c = _norm_apostrophe(claim_text)
+    cw = CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE if can_would_as_hedge is None else bool(can_would_as_hedge)
+    conn = [m.group(0).lower() for m in CAUSAL_CONNECTIVES_RE.finditer(c)]
+    if CAUSAL_SENTENCE_INITIAL_RE.search(c):
+        conn.append("following(sentence_initial)")
+    hedge = [m.group(0).lower() for m in HEDGE_RE_BASE.finditer(c)]
+    hedge += [m.group(0).lower() for m in HEDGE_ATTRIBUTION_RE.finditer(c)]
+    if cw:
+        hedge += [m.group(0).lower() for m in HEDGE_RE_CAN_WOULD.finditer(c)]
+    return {"connectives": conn, "hedges": hedge}
+
+
+def causal_floor_guard(dev: dict, claim_text: str, can_would_as_hedge=None) -> tuple:
+    """Tier 0 因果floor: 英語claim ∧ `changed_causality` ∧ 因果接続語 ∧ ヘッジ語なし。(blocked, reason)。
+    reason=`changed_causality_floor`。日本語文字を含むclaimは対象外。"""
+    c = claim_text or ""
+    if _AUX_JA_RE.search(c) or not (dev or {}).get("changed_causality"):
+        return False, ""
+    h = causal_vocab_hits(c, can_would_as_hedge)
+    if h["connectives"] and not h["hedges"]:
+        return True, "changed_causality_floor"
+    return False, ""
 
 
 def ledger_block_fields(block) -> dict:
@@ -2833,6 +2889,11 @@ def stage2_release_guard(claim: dict, ledger_fact, article_ctx=None) -> tuple:
     dev = claim.get("dev") or {}
     if TIER0_G_L_ENABLED:
         hit, reason = g_l_guard(dev, ledger_fact)
+        if hit:
+            return True, reason
+    # 委任_03: 因果floor(語彙は目録由来、`CAUSAL_FLOOR`ON時のみ)。補助ベルトG_H/issue_actorの前に評価する。
+    if CAUSAL_FLOOR:
+        hit, reason = causal_floor_guard(dev, claim.get("claim_text") or "")
         if hit:
             return True, reason
     hit, reason = g_h_guard(dev, claim.get("claim_text") or "")
@@ -2913,6 +2974,12 @@ def downgrade_verify_target(dev: dict, final_materiality, floor_verify_rec, dete
     解放済みでない ∧ precheckでない。QUALITYとACCEPTABLEで要件は同一。"""
     if not STAGE2_DOWNGRADE_VERIFY:
         return False, "switch_off"
+    return checker_major_downgraded_target(dev, final_materiality, floor_verify_rec, detected_by)
+
+
+def checker_major_downgraded_target(dev: dict, final_materiality, floor_verify_rec, detected_by) -> tuple:
+    """スイッチ非依存の対象判定(確認役・Tier 0・S1共通): Checker severity=MAJOR ∧ Stage 2最終materiality非BLOCKING ∧
+    floor_verify解放済みでない ∧ precheckでない。"""
     if (dev or {}).get("severity") != "MAJOR":
         return False, "not_checker_major"
     if final_materiality not in ("QUALITY", "ACCEPTABLE"):
@@ -3371,6 +3438,27 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                 floor_reason = "downgrade_verify_blocking:" + str(downgrade_verify_rec["blocking_reason"])
                 rewrite_hint = ((downgrade_verify_rec["hint"] + (" " + rewrite_hint if rewrite_hint else ""))
                                 if downgrade_verify_rec["hint"] else rewrite_hint)
+        # 委任_03(Fable再設計判断3): Tier 0 決定論Guard(因果floor+補助ベルト)。Checker MAJORをStage 2が非BLOCKINGにした
+        # もの(最終値、floor/hook/disclosure適用後。確認役が既に処理した分は対象外)を、文面確認でBLOCKINGへ戻す(¥0)。
+        # 解除不可claimはTier 2のhintを付けて既存Rewriteラダーへ(Human Reviewへ倒す新経路なし)。毎cycle現行本文で再評価。
+        tier0_rec = None
+        if (CAUSAL_FLOOR and i not in failclosed_indices and judgments_by_index.get(i) is not None
+                and not (downgrade_verify_rec and downgrade_verify_rec.get("target"))):
+            t0_target, t0_target_reason = checker_major_downgraded_target(
+                dev_for_floor, final_materiality, floor_verify_rec, detected_by)
+            tier0_rec = {"target": t0_target, "target_reason": t0_target_reason, "blocked": False, "reason": None,
+                         "hint": None, "hint_source": None}
+            if t0_target:
+                _blk = floor_verify_fact_block(fixture["ledger_text"], dev_for_floor.get("related_fact_id"))
+                t0_blocked, t0_reason = stage2_release_guard({**c, "dev": dev_for_floor}, _blk)
+                if t0_blocked:
+                    tier0_rec.update(blocked=True, reason=t0_reason)
+                    tier0_rec["hint"], tier0_rec["hint_source"] = downgrade_verify_rewrite_hint(dev_for_floor, _blk)
+                    final_materiality = "BLOCKING"
+                    floor_reason = ("changed_causality_floor" if t0_reason == "changed_causality_floor"
+                                    else "tier0:" + t0_reason)
+                    rewrite_hint = ((tier0_rec["hint"] + (" " + rewrite_hint if rewrite_hint else ""))
+                                    if tier0_rec["hint"] else rewrite_hint)
         out.append({**c, "dev": dev_for_floor, "materiality": final_materiality, "llm_materiality": materiality,
                     "basis": basis,
                     "rewrite_kind": rewrite_kind if rewrite_kind != "none" else "replace_with_ledger_value",
@@ -3389,7 +3477,9 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                     # 既定OFFでは付かない=従来の出力と同一)。
                     **({"floor_verify": floor_verify_rec} if floor_verify_rec is not None else {}),
                     # 委任_02: 降格確認(Tier 0/1/2)の記録(スイッチ有効のclaimのみ。既定OFFでは付かない)。
-                    **({"downgrade_verify": downgrade_verify_rec} if downgrade_verify_rec is not None else {})})
+                    **({"downgrade_verify": downgrade_verify_rec} if downgrade_verify_rec is not None else {}),
+                    # 委任_03: Tier 0(因果floor/補助ベルト)の記録(`CAUSAL_FLOOR`ONのclaimのみ。OFFでは付かない)。
+                    **({"tier0": tier0_rec} if tier0_rec is not None else {})})
     return out
 
 
@@ -3442,6 +3532,131 @@ def apply_stage2_two_of_two(client, state, consecutive_errors, call_log, label_p
                      "two_of_two_second_basis": r2.get("basis")}
         out.append(r)
     return out, log_entries
+
+
+# ------------------------------------------------------------
+# 委任_03(OPEN-233-KPI-RECOVERY-REDESIGN-02、Fable再設計判断5): Tier 1' S1(Stage 2第2意見、Trial専用・既定OFF
+# `STAGE2_SECOND_OPINION`、Production未配線・`APPROVED_FOR_PRODUCTION`ではない)。仕様は
+# `docs/pm/design_open233_stage2_safety_downgrade_01.md` §8(Opus#10の3修正)。既存`apply_stage2_two_of_two`
+# (NORMAL群限定・BLOCKING→降格の向き)とは別関数で、向きが逆(降格を確定させる条件を厳しくする)。
+#   対象: Checker MAJOR ∧ Stage 2 1回目の最終materiality非BLOCKING ∧ floor_verify解放済みでない ∧ precheckでない。
+#   第2意見: 対象claimのみのbatch(`run_stage2`、body/hookはclaimごとの経路どおり、同一rubric・本文・Ledger)。比較は
+#   第2回の最終`materiality`(hook-aware/disclosure降格後)。割れたら(第2回がBLOCKING)BLOCKING。API失敗・schema不一致・
+#   claim_index欠落は`run_stage2`のfail-closed(BLOCKING)をそのまま採用。2回とも非BLOCKINGなら重い方を採用(安全側)。
+#   Tier 2: 割れたclaimにも`downgrade_verify_rewrite_hint`のhintを付ける(Human Reviewへ倒す新経路なし)。
+# ------------------------------------------------------------
+S1_MATERIALITY_RANK = {"ACCEPTABLE": 1, "QUALITY": 2, "BLOCKING": 3}
+
+
+def stage2_second_opinion_eligible(result: dict) -> bool:
+    return bool(
+        result.get("materiality") != "BLOCKING"
+        and (result.get("dev") or {}).get("severity") == "MAJOR"
+        and not (result.get("floor_verify") or {}).get("released")
+        and result.get("detected_by", "stage1_llm") != "precheck"
+        and result.get("stage2_route") != "precheck_floor_bypass"
+        and result.get("llm_materiality") is not None)
+
+
+def _s1_second_status(r2: dict) -> str:
+    fr = r2.get("floor_reason")
+    if fr == "stage2_api_failure_failclosed":
+        return "api_failure"
+    if fr == "schema_index_mismatch_failclosed":
+        return "schema_mismatch"
+    return "ok"
+
+
+def apply_stage2_second_opinion(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                                stage2_results: list, instance_id=None, cycle=None) -> tuple:
+    """(新stage2_results, `stage2_downgrade_confirm_log`のlist)。対象が無ければcallせず(results, [])。"""
+    eligible_idx = [i for i, r in enumerate(stage2_results) if stage2_second_opinion_eligible(r)]
+    if not eligible_idx:
+        return stage2_results, []
+    n_before = len(call_log)
+    claims = [{"claim_text": stage2_results[i]["claim_text"], "origin": stage2_results[i].get("origin"),
+               "related_fact_id": stage2_results[i].get("related_fact_id"), "dev": stage2_results[i]["dev"],
+               "detected_by": stage2_results[i].get("detected_by", "stage1_llm")} for i in eligible_idx]
+    second = run_stage2(client, state, consecutive_errors, call_log, f"{label_prefix}_s1", fixture, claims)
+    new_calls = call_log[n_before:]
+    batch_cost = round(sum(c.get("cost_jpy") or 0.0 for c in new_calls), 4)
+    shas = [c.get("prompt_sha256") for c in new_calls if c.get("prompt_sha256")]
+    out = list(stage2_results)
+    log = []
+    for k, i in enumerate(eligible_idx):
+        r, r2 = stage2_results[i], second[k]
+        status = _s1_second_status(r2)
+        split = r2["materiality"] == "BLOCKING"
+        anomaly = bool(r2.get("floor_reason")) and status == "ok"
+        rec = {"instance_id": instance_id, "cycle": cycle, "route": r.get("stage2_route"),
+               "claim_identity": claim_identity(r["dev"]), "claim_text": (r.get("claim_text") or "")[:200],
+               "first_materiality": r["materiality"], "first_basis": r.get("basis"),
+               "second_materiality": r2["materiality"], "second_basis": r2.get("basis"),
+               "second_floor_reason": r2.get("floor_reason"), "second_floor_anomaly": anomaly,
+               "second_status": status, "confirmed_downgrade": not split, "split": split,
+               "prompt_sha256": shas, "batch_cost_jpy": batch_cost, "batch_n_claims": len(eligible_idx)}
+        if split:
+            block = floor_verify_fact_block(fixture["ledger_text"], (r["dev"] or {}).get("related_fact_id"))
+            hint, hint_source = downgrade_verify_rewrite_hint(r["dev"], block)
+            r2_hint = r2.get("rewrite_hint") or ""
+            rec["hint_source"] = hint_source
+            out[i] = {**r, "materiality": "BLOCKING",
+                      "floor_reason": ("s1_second_opinion_failclosed:" + status if status != "ok"
+                                       else "s1_second_opinion_blocking"),
+                      "rewrite_kind": r2.get("rewrite_kind") or r.get("rewrite_kind") or "replace_with_ledger_value",
+                      "rewrite_hint": (hint + (" " + r2_hint if r2_hint else "")),
+                      "second_opinion": rec}
+        else:
+            heavier = max(r["materiality"], r2["materiality"], key=lambda m: S1_MATERIALITY_RANK.get(m, 3))
+            out[i] = {**r, "materiality": heavier, "second_opinion": rec}
+        log.append(rec)
+    return out, log
+
+
+def s1_summarize(instance_results) -> dict:
+    """runtime evidence用の集計(対象/一致/割れ/失敗/異常/費用)。`cycles[*].stage2_downgrade_confirm_log`を数える。"""
+    s = {"n_target": 0, "n_confirmed": 0, "n_split": 0, "n_api_failure": 0, "n_schema_mismatch": 0,
+         "n_floor_anomaly": 0, "batches": 0, "cost_jpy": 0.0, "split_claims": []}
+    for res in instance_results:
+        for cyc in res.get("cycles", []):
+            lg = cyc.get("stage2_downgrade_confirm_log") or []
+            for e in lg:
+                s["n_target"] += 1
+                s["n_confirmed"] += 1 if e["confirmed_downgrade"] else 0
+                s["n_split"] += 1 if e["split"] else 0
+                s["n_api_failure"] += 1 if e["second_status"] == "api_failure" else 0
+                s["n_schema_mismatch"] += 1 if e["second_status"] == "schema_mismatch" else 0
+                s["n_floor_anomaly"] += 1 if e["second_floor_anomaly"] else 0
+                if e["split"]:
+                    s["split_claims"].append({"instance_id": res.get("instance_id"), "cycle": cyc.get("cycle"),
+                                              "claim": e["claim_text"][:120], "second": e["second_materiality"],
+                                              "status": e["second_status"]})
+            if lg:
+                # 同一cycleの全claimは同じbatch費用を共有する(重複計上しない。body/hook 2 callの合計が`batch_cost_jpy`)
+                s["batches"] += 1
+                s["cost_jpy"] = round(s["cost_jpy"] + lg[0]["batch_cost_jpy"], 4)
+    return s
+
+
+def tier0_summarize(instance_results) -> dict:
+    """Tier 0(因果floor/補助ベルト)の発火集計。`stage2_results[*].tier0`を数える(対象/発火[理由別])。"""
+    s = {"n_records": 0, "n_target": 0, "n_blocked": 0, "blocked_by_reason": {}, "blocked_claims": []}
+    for res in instance_results:
+        for cyc in res.get("cycles", []):
+            for sr in cyc.get("stage2_results", []):
+                t = sr.get("tier0")
+                if not t:
+                    continue
+                s["n_records"] += 1
+                if not t["target"]:
+                    continue
+                s["n_target"] += 1
+                if t["blocked"]:
+                    s["n_blocked"] += 1
+                    s["blocked_by_reason"][t["reason"]] = s["blocked_by_reason"].get(t["reason"], 0) + 1
+                    s["blocked_claims"].append({"instance_id": res.get("instance_id"), "cycle": cyc.get("cycle"),
+                                                "reason": t["reason"], "claim": (sr.get("claim_text") or "")[:120]})
+    return s
 
 
 # ------------------------------------------------------------
@@ -7303,7 +7518,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
                          **({"STAGE2_NORMAL_TWO_OF_TWO": True} if STAGE2_NORMAL_TWO_OF_TWO else {}),
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {}),
-                         **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {})},
+                         **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {}),
+                         **({"CAUSAL_FLOOR": True} if CAUSAL_FLOOR else {}),
+                         **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -7384,6 +7601,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # 委任_13(iteration5、Stage2 2-of-2安定化): precheck floor claim
         # (floor_reason="precheck_floor")は対象外なので混在させても安全。
         # 委任_01(KPI-RECOVERY-REDESIGN-02) 作業2-3: 既定OFF(`STAGE2_NORMAL_TWO_OF_TWO`)。
+        # 委任_03(Tier 1' S1、既定OFF`STAGE2_SECOND_OPINION`): Tier 0非該当のChecker MAJOR→Stage 2非BLOCKING全件に
+        # 第2意見を取り、割れたらBLOCKING(毎cycle・Recheck由来にも同じ経路)。
+        if STAGE2_SECOND_OPINION:
+            stage2_results, stage2_downgrade_confirm_log = apply_stage2_second_opinion(
+                client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}", working_fixture,
+                stage2_results, instance_id, cycle)
+        else:
+            stage2_downgrade_confirm_log = None
         if STAGE2_NORMAL_TWO_OF_TWO:
             stage2_results, stage2_two_of_two_log = apply_stage2_two_of_two(
                 client, state, consecutive_errors, call_log, f"{instance_id}_c{cycle}", working_fixture,
@@ -7404,6 +7629,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             "cycle": cycle, "stage2_results": stage2_results,
             "blocking_count": len(blocking_claims), "non_blocking_count": len(non_blocking_claims),
             "stage2_two_of_two_log": stage2_two_of_two_log,
+            **({"stage2_downgrade_confirm_log": stage2_downgrade_confirm_log}
+               if stage2_downgrade_confirm_log is not None else {}),
         }
         # 委任_49 2-3(記録専用): 重大度の揺れ(同じ確定範囲・同じfact_idの最終判定が周回間で変わった)
         _wob = _wobble_observe(severity_wobble_registry, severity_wobble_records, cycle, stage2_results,
@@ -8003,7 +8230,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
                          **({"STAGE2_NORMAL_TWO_OF_TWO": True} if STAGE2_NORMAL_TWO_OF_TWO else {}),
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {}),
-                         **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {})},
+                         **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {}),
+                         **({"CAUSAL_FLOOR": True} if CAUSAL_FLOOR else {}),
+                         **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
@@ -8079,6 +8308,28 @@ SAFETY_CRITICAL_CLAIM_DEFS = {
 }
 
 
+# 委任_03 作業2-3(Fable判断2026-10-04、ユーザー未確認・否認されれば戻す): rep24 cycle 2のB3「and」版
+# (「…continued on July 14, and the flashy 20% plan left the stage.」)は正式基準(重大=事実関係の重大な誤解)で
+# 問題なし(ACCEPTABLE。「and」は因果を主張しない。確認役も2回ともRELEASE)。`text_substring`「flashy 20% plan」の部分一致で
+# Safety-critical流出に計上されていたため、A4-1(委任_57)と同じ方式で再ラベルする。定義(`SAFETY_CRITICAL_CLAIM_DEFS`)は
+# 変えず、集計側で旧値(上書きなし)/新値(上書き後)を並記する。`match_all`の部分文字列を全て含み`match_none`のいずれも含まない
+# (正規化後)claimだけが対象。
+CORRECT_LABEL_OVERRIDES = [
+    {"id": "B3_and_version", "instance_ids": ("bgroup_B3", "neg5_hormuz_div_a2"), "related_fact_id": "HF-007",
+     "match_all": ("and the flashy 20% plan",), "match_none": ("so the flashy 20% plan",), "label": "ACCEPTABLE",
+     "decided_by": "Fable判断2026-10-04、OPEN-233-KPI-RECOVERY-REDESIGN-02委任_03、ユーザー未確認"},
+]
+
+
+def label_override_for(instance_id, related_fact_id, claim_text):
+    """該当する`CORRECT_LABEL_OVERRIDES`の項目(無ければNone)。"""
+    n = _norm_same_sentence(claim_text or "")
+    for o in CORRECT_LABEL_OVERRIDES:
+        if instance_id in o["instance_ids"] and (related_fact_id or "") == o["related_fact_id"]                 and all(_norm_same_sentence(m) in n for m in o["match_all"])                 and not any(_norm_same_sentence(m) in n for m in o["match_none"]):
+            return o
+    return None
+
+
 def _safety_critical_defs(instance_id) -> list:
     """`SAFETY_CRITICAL_CLAIM_DEFS`のうち、期待がBLOCKINGの定義(`expected`省略時=BLOCKING)だけ。
     `expected`がQUALITY等の定義は「過剰品質の監視用」でSafety-critical検出の対象外(委任_55)。"""
@@ -8139,6 +8390,7 @@ def detect_safety_critical_misdowngrades(instance_results: list, defs_by_instanc
                             "floor_reason": sr.get("floor_reason"),
                             "claim_text": text,
                             "registered_in": d.get("registered_in"),
+                            "related_fact_id": fact_id,
                         })
     return rows
 
@@ -8197,9 +8449,19 @@ def safety_critical_dual_summary(instance_results: list, derived: dict | None = 
     new_union = {_key(r): r for r in reg_rows}
     for r in der_rows:
         new_union.setdefault(_key(r), r)
+    # 委任_03: `CORRECT_LABEL_OVERRIDES`(Fable判断、ユーザー未確認)適用後の値を並記(上の値は上書きなしの旧値/新値)。
+    def _not_overridden(r):
+        return label_override_for(r["instance_id"], r.get("related_fact_id"), r["claim_text"]) is None
+    reg_rows_ov = [r for r in reg_rows if _not_overridden(r)]
+    new_union_ov = {k: r for k, r in new_union.items() if _not_overridden(r)}
+    override_dropped = [{"instance_id": r["instance_id"], "cycle_index": r["cycle_index"], "sub_id": r["sub_id"]}
+                        for k, r in new_union.items() if not _not_overridden(r)]
     return {"derive_error": derive_error, "old_definition_rows": len(old_rows), "old_definition_unique": len({(r["instance_id"], r["sub_id"]) for r in old_rows}),
             "registered_rows_new": len(reg_rows), "derived_rows": len(der_rows),
             "new_definition_rows": len(new_union),
+            "after_label_override_registered_rows": len(reg_rows_ov),
+            "after_label_override_new_definition_rows": len(new_union_ov),
+            "after_label_override_dropped": override_dropped,
             "new_definition_unique": len({(k[0], k[2]) for k in new_union}),
             "new_definition_detail": [{"instance_id": r["instance_id"], "sub_id": r["sub_id"],
                                        "cycle_index": r["cycle_index"], "materiality": r["materiality"]}
@@ -9003,6 +9265,10 @@ def main():
         summary["downgrade_verify"] = downgrade_verify_summarize(
             sr for res in sample_instance_results for r in res for cyc in r.get("cycles", [])
             for sr in cyc.get("stage2_results", []))
+    if CAUSAL_FLOOR:
+        summary["tier0"] = tier0_summarize(r for res in sample_instance_results for r in res)
+    if STAGE2_SECOND_OPINION:
+        summary["s1_second_opinion"] = s1_summarize(r for res in sample_instance_results for r in res)
     if VS_SENTENCE_RESTORE:
         summary["sentence_restore"] = sentence_restore_summarize(
             r for res in sample_instance_results for r in res)
