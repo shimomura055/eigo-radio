@@ -2717,6 +2717,70 @@ AUX_ACTOR_ISSUE_RE = re.compile(
     r"identif(?:y|ies|ied) [^.]{0,40} as (?:the )?(?:payer|responsible|party|actor)|支払|負担者|主体|担当者", re.I)
 _AUX_JA_RE = re.compile(r"[぀-ヿ一-鿿]")
 
+# ---- 委任_03(OPEN-233-KPI-RECOVERY-REDESIGN-02、Fable再設計判断3): Tier 0 因果floor(G_Hの一般化)の語彙。
+# 【hold-out手順】この語彙は、流出16行・Checker指摘文・降格534件の文面を一切見ずに、標準的な言語学的目録
+# (下記出典)のみから構築し、評価(`replay_guards_04_causal_floor.py`)より前にcommitした(git履歴で確認可)。
+# 既に委任_01/02で既知だったG_H補助ベルト6語(so/because/therefore/as a result/led to/leading to)は「既知」、
+# それ以外は目録由来。評価後に変更してよいのは`can`/`would`のA/B選択(`CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE`)のみ。
+# 日本語記事は対象外(英語claimのみ=`_AUX_JA_RE`で日本語文字を含むclaimは除外)。
+# 出典(因果接続語):
+#   [CGEL] Huddleston & Pullum 2002, The Cambridge Grammar of the English Language, ch.8 (Adjuncts: reason/result/purpose)
+#   [Quirk] Quirk et al. 1985, A Comprehensive Grammar of the English Language, 8.4-8.5(理由・結果・目的の節/接続副詞 11.x)
+#   [Halliday] Halliday & Hasan 1976 Cohesion in English, 5.4(causal conjunction: so/therefore/hence/consequently/because/since/for this reason)
+#   [PDTB] Penn Discourse Treebank 2.0 annotation manual (Contingency.Cause: reason/result の明示的connective一覧)
+#   [Levin] Levin 1993 English Verb Classes and Alternations(因果動詞: cause/lead/result/force/drive/trigger/spark/prompt/push/fuel/make)
+# 各項目は小文字の語/句(空白は柔軟一致)。動詞は目録の見出し語と規則的な屈折形を持つ。
+CAUSAL_CONNECTIVES_EN = (
+    # 接続詞・前置詞(理由・結果・目的)[CGEL][Quirk][Halliday][PDTB]
+    "so", "because", "since", "as", "now that", "so that", "in order to", "so as to",
+    "due to", "owing to", "thanks to", "because of", "on account of", "in response to",
+    # 接続副詞(結果)[Halliday][Quirk 10.x/11.x][PDTB]
+    "therefore", "thus", "hence", "consequently", "accordingly", "as a result", "as a consequence",
+    "for this reason", "that is why", "that's why", "which is why", "the reason", "reason why",
+    # 因果動詞(原形・三単現・過去・-ing)[Levin]
+    "lead to", "leads to", "led to", "leading to",
+    "result in", "results in", "resulted in", "resulting in",
+    "cause", "causes", "caused", "causing",
+    "drive", "drives", "drove", "driven", "driving",
+    "prompt", "prompts", "prompted", "prompting",
+    "trigger", "triggers", "triggered", "triggering",
+    "spark", "sparks", "sparked", "sparking",
+    "force", "forces", "forced", "forcing",
+    "make", "makes", "made", "making",
+    "push", "pushes", "pushed", "pushing",
+    "fuel", "fuels", "fueled", "fuelled", "fueling", "fuelling",
+    "stem from", "stems from", "stemmed from", "stemming from",
+)
+# 文頭の`following`(結果節を従える分詞構文「Following X, Y」)は文頭位置のみ因果とみなす(前置詞`following`の
+# 時系列用法[after]との混同を、文頭限定で抑える)[CGEL ch.8 §Temporal/causal adjuncts]。
+CAUSAL_SENTENCE_INITIAL_EN = ("following",)
+
+# 出典(ヘッジ・推測・帰属=因果を断定していない):
+#   [Hyland] Hyland 1998 Hedging in Scientific Research Articles(epistemic modals/lexical verbs/adverbs/attribution)
+#   [Palmer] Palmer 2001 Mood and Modality(epistemic possibility/evidentiality: reportedly/allegedly/apparently)
+#   [CGEL] Huddleston & Pullum 2002 ch.3(modal auxiliaries)・ch.8(modal adjuncts: possibly/perhaps/probably/presumably)
+# 推測・可能性・他者の見解の帰属に限定する(Fable判断3)。`can`/`would`は別枠(A/B)。
+HEDGE_MARKERS_EN = (
+    "may", "might", "could", "possibly", "perhaps", "probably", "presumably", "likely", "unlikely",
+    "appear", "appears", "appeared", "seem", "seems", "seemed", "apparently",
+    "reportedly", "allegedly", "supposedly",
+    "is said to", "are said to", "was said to", "were said to",
+    "is expected to", "are expected to", "expected to", "is believed to", "are believed to", "believed to",
+    "is thought to", "are thought to", "thought to", "according to",
+)
+# 帰属型ヘッジ(「some say」「analysts say」「officials say」等: 見解の持ち主を名指す主体+言明動詞)[Hyland][Palmer]。
+HEDGE_ATTRIBUTION_SUBJECTS_EN = ("some", "many", "analysts", "analyst", "officials", "official", "critics", "critic",
+                                 "experts", "expert", "observers", "observer", "sources", "source", "economists",
+                                 "economist", "insiders", "people")
+HEDGE_ATTRIBUTION_VERBS_EN = ("say", "says", "said", "believe", "believes", "think", "thinks", "suggest", "suggests",
+                              "argue", "argues", "argued", "expect", "expects", "warn", "warns", "warned", "claim",
+                              "claims", "claimed", "speculate", "speculated")
+# `can`/`would`の扱い(Fable判断3のA/B): A=ヘッジに含める(`can`=可能性の能力用法、`would`=仮定・婉曲)、B=含めない。
+HEDGE_CAN_WOULD_EN = ("can", "would")
+# 採用版は¥0 replay(`replay_guards_04_causal_floor.py`)の結果で決める(誤停止≤2%かつ閉鎖最大の方)。
+# 語彙確定commit時点の暫定値(評価後に更新する)。
+CAUSAL_FLOOR_CAN_WOULD_AS_HEDGE = True
+
 
 def ledger_block_fields(block) -> dict:
     """関連factブロック(Ledger逐語、複数factは連結済み)から`causal_strength`/`notes_for_writer`/`conditions`/`scope`を取る
