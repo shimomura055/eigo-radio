@@ -578,6 +578,55 @@ def extract_actor_nouns(text: str) -> set:
     return {m.group(0).lower() for m in _ACTOR_NOUN_PATTERN.finditer(text or "")}
 
 
+# 委任_08(Opus#13・Fable評価1、2026-10-04): actor_guard是正(AG1-strict)用の「細粒度」日英同義語表。評価前に確定(語彙確定の証跡、
+# 本表はこのcommit以降、差分0確認・負例テストの結果を見て変更しない)。Trial専用、Production未配線。
+# クラス分割の原則(Fable評価1):
+#   - employee / contractor / worker / staff、customer / client / user / passenger は**別クラス**(例: Meta案件の核心「Meta社員ではなく
+#     外部の契約者」の区別を消さない)。executive/manager/official/analyst/trader/investor/shareholder等も別クラス。
+#   - 複数の英語語形(単数・複数・ハイフン有無)は同じクラスに入れてよい。日本語表現は1エントリずつ辞書的対応またはLedger逐語の根拠を持つもののみ。
+#   - 表に無い主体語は許容されない(fail-closed)。日本語は語の境界(前後が漢字・カタカナ・長音でない)で照合するため、複合語は
+#     (「クレジットカード利用者」のように)複合語そのものを1エントリとして列挙する。
+#   - 英語の複合語 `contract worker(s)` / `contract staff` / `contracted worker(s)` は contractor クラスとして扱う(`ACTOR_EN_COMPOUNDS`)。
+# 注記: 本guardは「主体語の置換」だけを見る。限定・範囲(scope)の一般化・縮小を守るものではない(scopeの担保はRecheck)。
+# 根拠コメント: [L]=Ledger逐語(4種のLedger[Tip/Meta/Hormuz/Handbag]のGrep棚卸し)、[D]=辞書的対応。
+ACTOR_SYNONYM_CLASSES = {
+    # クラス名: {"en": 英語語形, "ja": 日本語表現(複合語含む)}
+    "user": {"en": ["user", "users"],
+             "ja": ["利用者", "ユーザー", "使用者",
+                    "クレジットカード利用者",  # [L] Tip F-001/F-004 scope「ニューヨーク市タクシーのクレジットカード利用者」↔ credit-card user(s)
+                    "対象ユーザー"]},          # [L] Meta scope「米国のMuse提供地域・対象ユーザー」
+    "customer": {"en": ["customer", "customers"], "ja": ["顧客", "お客", "お客様"]},  # [L] Tip「顧客」、[D] 顧客=customer
+    "client": {"en": ["client", "clients"], "ja": ["クライアント", "依頼者", "依頼人"]},  # [D] customerと別クラス(顧客を含めない)
+    "passenger": {"en": ["passenger", "passengers"], "ja": ["乗客"]},  # [L] Tip「メニューを偶然見た乗客」
+    "employee": {"en": ["employee", "employees"], "ja": ["従業員", "社員"]},  # [L] Tip/Meta「従業員」「Meta従業員」
+    "worker": {"en": ["worker", "workers"], "ja": ["労働者", "作業員"]},  # [D] 契約スタッフは含めない(contractorクラス)
+    "staff": {"en": ["staff"], "ja": ["スタッフ", "職員"]},  # [D] 「契約スタッフ」は複合語のためcontractor側の1エントリ(語境界でマッチしない)
+    "contractor": {"en": ["contractor", "contractors"],  # + ACTOR_EN_COMPOUNDS(contract worker(s)/contract staff)
+                   "ja": ["契約スタッフ",  # [L] Meta MUSE-HC-006/HC-012「訓練を受けた人間の契約スタッフ」↔ contractor / contract worker
+                          "契約労働者", "契約社員", "請負業者", "業務委託"]},  # [L] Meta「請負業者」、[D]
+    "agent": {"en": ["agent", "agents"], "ja": ["エージェント"]},  # [L] Meta「AIエージェント」「人間の訓練済みエージェント」
+    "executive": {"en": ["executive", "executives"], "ja": ["経営者", "経営陣", "幹部", "役員", "エグゼクティブ"]},  # [D] Handbag F001 retail executives
+    "manager": {"en": ["manager", "managers"], "ja": ["管理者", "マネージャー", "管理職"]},  # [D]
+    "official": {"en": ["official", "officials"], "ja": ["当局", "当局者", "政府関係者", "政府当局"]},  # [D] Hormuz系
+    "spokesperson": {"en": ["spokesperson", "spokespeople"],
+                     "ja": ["広報担当者", "広報担当", "広報", "報道官", "スポークスパーソン"]},  # [L] Meta「Metaの広報担当者Daniel Roberts」
+    "engineer": {"en": ["engineer", "engineers"], "ja": ["エンジニア", "技術者"]},  # [D]
+    "resident": {"en": ["resident", "residents"], "ja": ["住民"]},  # [D]
+    "driver": {"en": ["driver", "drivers"], "ja": ["運転手", "ドライバー", "運転者"]},  # [D](Handbag「mass-market behavioral driver」は主体でなく要因だが表は辞書的対応)
+    "patient": {"en": ["patient", "patients"], "ja": ["患者"]},  # [D]
+    "student": {"en": ["student", "students"], "ja": ["学生"]},  # [D]
+    "teacher": {"en": ["teacher", "teachers"], "ja": ["教師", "教員", "先生"]},  # [D]
+    "analyst": {"en": ["analyst", "analysts"], "ja": ["アナリスト", "分析者"]},  # [D]
+    "trader": {"en": ["trader", "traders"], "ja": ["トレーダー"]},  # [D]
+    "investor": {"en": ["investor", "investors"], "ja": ["投資家", "投資者"]},  # [D]
+    "shareholder": {"en": ["shareholder", "shareholders"], "ja": ["株主"]},  # [D]
+}
+# 英語の複合主体語 → クラス(単純な主体語[contract workのworker等]を別クラスへ誤分類しない)。語境界・ハイフン/空白のゆれを許容する。
+ACTOR_EN_COMPOUNDS = [
+    (r"\bcontract(?:ed)?[ -](?:workers?|staff)\b", "contractor"),  # [D] 契約スタッフ/契約労働者
+]
+
+
 def actor_rewrite_guard_ok(before_text: str, after_text: str, ledger_text: str) -> bool:
     new_actors = extract_actor_nouns(after_text) - extract_actor_nouns(before_text)
     if not new_actors:
