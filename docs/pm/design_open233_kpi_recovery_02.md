@@ -456,3 +456,66 @@ neg3・neg2×n=2×{A=KPI構成+N1′、B=A+N3′}=8 run。N3′採用の条件: 
 
 - A/B(neg3・neg2×n=2×{A=N1′、B=N1′+N3′}、8 run、¥4.84): 自己矛盾率A 100%(2/2)・B 100%(2/2)→事前基準(Bが下がる)を満たさずN3′はOFF。機序=Recheckが`prior_issues`1件に対し`index=0`の項目を2件返し、`len(resolved)==len(prior_issues)`規則で`all_prior=False`(`resolved`は全てtrue、4/4。`ab_selfcontradiction_mechanism_01.*`)。再確認(cite-or-release後は件数を問わない式)は`True`。N3′(前後の対)の効果は観測されず、Opus#12の「前後の対が無いことが主因」は支持されなかった(nが小さい)。件数一致規則の扱いは判定規則に近い境界事項のため実装せずFable判断。
 - rep28(Step 6、N1′ON・N3′OFF、¥20.50): Human Review 3(`safety_er009_changed_scope` s1・`meta_run03_advanced` s2=`ladder_exhausted_without_full_rewrite`[`actor_guard_rejected`]、`safety_er009_unsupported_new_claim` s1=`degenerate_rewrite_output`[title単独claimのdelete])、重大見逃し0、平均追加+¥0.10、worst追加+¥0.81 → KPI未達(Human Review)。rep27の3件(A4・A5・neg3)は解消(neg3は`unconfirmed_after_reverify` 0件)。N1′合流は5件で全て通常経路の`recheck_major`、移動先(`same_claim_fact_id_reblocked`/`cycle_limit_exhausted`)は0件。詳細はREPORT§56。
+
+## 14. 再設計ループ3(委任_07、2026-10-04): rep28 Human Review 3件のRCA・技術是正・actor_guard設計
+
+rep28(委任_06)のHuman Review 3件(`actor_guard_rejected`によるladder枯渇2件、title単独claimの決定論deleteによる`degenerate_rewrite_output` 1件)と、新発見の件数一致バグ(Recheckの`all_prior_issues_resolved`)のRCA(¥0)、技術是正、`actor_guard`是正設計。証跡: `er052_output/open233_kpi_recovery_02_offline_01/`(`agg_actor_guard_01.*`、`agg_degenerate_01_stdout.txt`、`agg_prior_count_mismatch_01.*`、`inspect_remains_01_stdout.txt`、`replay_title_delete_01.*`)。
+
+### 14-1. actor_guardのRCA(作業1-1。確認済み=コードと全ログの機械集計)
+
+**実装(runner)**:
+- 主体語の定義: `_ACTOR_NOUN_PATTERN`(L567付近、**英語**の一般役割名詞25語: user/employee/worker/staff/contractor/agent/executive/customer/client/spokesperson/engineer/manager/official/resident/driver/passenger/patient/student/teacher/analyst/trader/investor/shareholder)。`extract_actor_nouns`(L577付近)。
+- 判定`actor_rewrite_guard_ok(before, after, ledger_text)`(L581): `新主体語 = 主体語(after) − 主体語(before)`(書き換え対象範囲同士の比較)。新主体語が空なら許可。空でなければ、**全新主体語が`ledger_text.lower()`(Ledger全文)に英語のまま部分一致**する場合のみ許可、1語でも無ければ拒否。
+- 適用箇所: ladder各水準(`rewrite_ranges_ladder`、E1/③/④すべて、`attempt["result"]="actor_guard_rejected"`→次の水準へ)、旧single_text経路(2箇所)、paired経路(1箇所)。全水準が拒否されるとladder枯渇(`ladder6_disabled`)→`ladder_exhausted_without_full_rewrite`→STAGE4。
+- 比較対象は「書き換え前後の対象範囲」と「Ledger全文の英語部分一致」であり、**関連fact・Checker `issue`・元文のLedger上の対訳は見ない**。
+
+**根本原因(確認済み)**: LedgerのFact本文は**日本語**(例: F-004 `scope: ニューヨーク市タクシーのクレジットカード利用者`、`MUSE-HC-006`「人間の契約スタッフ」)。英語の主体語`users`/`contractors`/`worker`がLedger全文に英語のまま現れることは(出典タイトル等の英語部分を除き)ほぼ無く、**Ledgerに裏づけのある主体でも「新主体語=Ledgerに無い」と判定される言語不一致**。Ledgerの記載・Checker `issue`が名指しした主体への限定・言い換えがすべて拒否される。
+
+**全ログ集計(`agg_actor_guard_01.py`、全`er052_output/open233_self_recovery_flow_runner_01_*/instances*/`)**: `actor_guard_rejected`は**7試行(4 rewrite record)**。ladder枯渇→STAGE4は**2 record(いずれもrep28)**。7試行すべてが過剰拒否(仮ラベル)、**正当拒否0**(Ledgerに無い主体の導入を実際に止めた記録は全ログに0件)。
+
+| run/instance | cycle | 水準 | 新主体語 | 仮ラベル | 結果 |
+|---|---|---|---|---|---|
+| rep28 meta_run03_advanced(s1) | 1 | ③ | worker | 過剰(Ledgerは「契約スタッフ」、Checker issueも"contract staff") | 後続水準で解決(RESOLVED) |
+| rep28 safety_er009_changed_scope(s1) | 2 | E1/③/④ | users×3 | 過剰(F-004 scope「クレジットカード利用者」、Checker issueが"credit-card users"へ限定を要求) | **枯渇→STAGE4(Human Review)** |
+| rep28 meta_run03_advanced(s2) | 2 | ③/④ | contractors, contractor | 過剰(Ledger「契約スタッフ」、Checker issue "human contract workers") | **枯渇→STAGE4(Human Review)** |
+| rep22 meta_run03_standard cycle2_repro | 2 | ③ | users | 過剰(Ledger「ユーザー」、元文の"They"=ユーザー) | repro(STAGE4でなく未解決のまま) |
+
+過剰拒否率7/7(試行)・4/4(record、仮ラベル)。過剰拒否→枯渇→STAGE4=2件(rep28のHuman Review 3件中2件)。**注意(確認済み)**: 集計スクリプトの`contractor`の日本語対訳辞書は仮で、Ledgerの語は「契約スタッフ」(「請負」は別箇所の出典注記)。`contractor`≒「契約スタッフ」はパラフレーズであり、完全な字句一致ではない。AG1の決定論実装には**日英の同義語表**が必要(§14-3)。7件のラベルは決定論の近似+目視(Fableの判断前の仮ラベル)。
+
+**逐語(rep28)**:
+- `safety_er009_changed_scope` s1(cycle2、claim: F-004、Checker issue「The Ledger supports a causal finding for New York City taxi credit-card users … The article also generalizes the affected group from credit-card users to taxi customers.」):
+  - 元文: `The taxi study's results have now been directly confirmed in New York City taxis: higher suggested tip rates on taxi screens cause customers to leave more money, just as they did in the New York City taxi data.`
+  - E1案(拒否): `In the New York City taxi study, higher suggested tip rates on taxi screens cause credit-card users to leave more money.`
+  - ③/④案(拒否): `In the New York City taxi study, higher suggested tip rates led credit-card users to leave more money.`
+  - 新主体語=`users`、`before`は`customers`のため新主体扱い。Ledger英語部分一致なし→拒否。Checkerが明示的に求めた修正そのもの。
+- `meta_run03_advanced` s2(cycle2、claim: MUSE-HC-006、issue「… The Ledger establishes that human contract workers made some calls to businesses on users' behalf …」):
+  - 元文(3文): `People who asked Muse to make a call might think that AI was making it. They were enjoying the convenience of AI, only to find a human on the other end of the call without realizing it. Some calls made through Meta's AI assistant were actually handled by humans, without users being properly told.`
+  - ③案(拒否): `People could ask Muse to call businesses on their behalf.  Some calls made through Meta's AI assistant were actually handled by human contractors on users' behalf.`(新主体語=contractors)
+  - ④案(拒否): `… a human contractor made the call on their behalf …`(contractor/contractors)
+  - Ledgerの「契約スタッフ」を英語化した`contractors`(Checker issueは"contract workers")。
+
+### 14-2. title/構造要素のdelete(作業1-2。確認済み)
+
+- `degenerate_rewrite_output`は全ログで**3 instance**(rep28 `safety_er009_unsupported_new_claim` s1、rep9の同instance 2件)。3件とも同一fixture・同一機序。
+- 機序: このfixtureの`article_text`は**1文のみ**(`The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.`、見出し・本文の区別なし)。`_paragraph_title`(先頭の非空行)=その1文、Stage 2が`section_type=title`・`rewrite_kind=delete`と判定。ladderは`rewrite_kind=="delete"`で`0_delete`(決定論delete、対象範囲を空にする)を選ぶ(delete選択条件は`rewrite_kind=="delete"`のみ、構造要素の考慮なし)。削除後の本文は空文字→`measure_section_role_violation`が`title_degenerate`/`hook_degenerate`→`run_instance`のhard block(`degenerate_rewrite_output`)→STAGE4。
+- Ledger: F-004(「より高い推奨チップ率のメニューを偶然見た乗客は、実際により多くチップを残した」)が支持する範囲は「推奨率が高いほど多くチップした」まで。男女差・「2倍」は未記載(Checker issue)。claimはタイトル(先頭行)にあるため、適切な修復はdeleteではなく、Ledgerが支持する範囲での書き換え。
+- `rewrite_kind=="delete"`はStage 2が付けるため、deleteが構造要素に当たるかをladder側は確認していなかった(決定論deleteが常に劣化する経路が構造的に存在)。
+
+### 14-2b. 件数一致バグ(作業1-3。確認済み=記録のある範囲)
+
+- 旧式: `all_prior = (len(items)==len(prior_issues)) and all(resolved)`(`run_recheck`)。Checkerが1 prior issueを同indexの2項目に分けて返すと、全項目`resolved=true`でも`all_prior=False`(偽の自己矛盾、`overall=LEDGER_COMPLIANT`∧`all_prior=False`)になり、`en_ambiguous`として再確認call(`run_recheck_confirm`)が発生する。
+- 項目別(`recheck_prior_issues_resolved`)が記録された24 recheck中、件数不一致/同index重複は**6件(すべてneg3、rep28 2件+rep28a 4件)**、**6件全てが全項目resolved=true・旧式False(=偽の自己矛盾)・COMPLIANT・再確認call発生**。再確認call費用の合計=**¥1.51**(0.20/0.21/0.23/0.22/0.28/0.37)。
+- 全ログの`LEDGER_COMPLIANT`∧`all_prior=False`は37件(neg3 28/30、neg2 7/7、unsupported_new_claim 2/10)。うち項目別の記録があるのは6件(いずれも機序で説明=100%)。**残り31件(neg3 22・neg2 7・unsupported 2)は旧コード時点で項目別が未記録のため機序を直接確認できない(推測: 同じ機序。neg3/neg2の恒常的な自己矛盾23/28・7/8と整合)**。委任_06の`ab_selfcontradiction_mechanism_01`(4/4 `length_mismatch_only`)と合わせ、直接確認できた範囲は10/10。
+- 影響: 偽の自己矛盾は追加call+コスト(neg3で再確認call毎回)・非決定性の源だが、確認call(cite-or-release)が通ればPASSするため、Safety上の見逃しではない(安全側の無駄)。
+
+### 14-2c. rep28 `remains_in_final_en` 3件(作業1-4。確認済み)
+
+3件(B3 s1・B3 s2・neg5 s1)の目印は`flashy 20% plan`(HF-007)。元の因果誤り(`..., so the flashy 20% plan left the stage`)は、最終本文で各々`..., and the flashy 20% plan left the stage`(B3 s1)/`..., while the flashy 20% plan left the stage,`(B3 s2)/`Meanwhile, the flashy 20% plan left the stage.`(neg5 s1)に書き換わり、**因果接続語`so`は除去済み**。目印の部分文字列自体は(因果と無関係な)事実記述として残るだけで、**実際に未修正ではなく目印文字列の部分一致残存(委任_63のB3 s1と同型)**。3件ともBLOCKINGで指摘されRecheckで解消確認済み(`pass_with_residual_unflagged=False`)。
+
+### 14-2d. 技術是正の実装(runner、Production未変更)
+
+- 2-1 `aggregate_prior_issues_resolved(prior_issues, items)`(L1716付近): index別集約。全prior indexが揃い各グループ全resolved=trueのときだけTrue、indexが欠けたpriorは未解消(None、安全側)。`run_recheck`の旧式を置換(スイッチなし=バグ修正)。記録`prior_issues_resolved_by_index`(call戻り値、cycle_record `recheck_prior_issues_resolved_by_index`)。Checkerの判定規則・Prompt・Schemaは不変。prior 0件のときの挙動(項目が全resolved/空でTrue)は旧式と同じ。
+- 2-2 `STRUCTURAL_ELEMENT_REWRITE`(既定OFF、KPI構成でON)+`structural_element_reasons(full_text, spans, ranges)`(L5580付近、位置の重なり判定: 先頭非空行=`title`、`#`見出し行=`heading`、`In one line`見出し直下=`in_one_line`、deleteでtitle/hook/iolがdegenerateになる=`preflight_degenerate`)。`rewrite_kind=="delete"`で構造要素にかかる場合、`rewrite_kind`を`narrow_scope`に切り替え(deleteを選択肢から外す)、hintに`STRUCTURAL_REWRITE_HINT_SUFFIX`(削除・空文字禁止、非空3語以上、Ledgerが支持する範囲のみ)を追加し、既存ladder(E1→③→④。`filter_levels_by_problem_kind`の既存規則はそのまま)で書き換える。空文字の案は`declined_empty_structural`、title/hook/In one lineが`degenerate`になる案は`degenerate_structural`で却下して次の水準へ。全水準で成立しない場合は既存の枯渇経路(Human Reviewへ倒す新経路なし)。記録`handoff.structural_element_rewrite`(`reasons`/`original_rewrite_kind`)。
+- **Fable事前判断2の「Ledgerのheadline/in_one_line相当factがあればそれに沿った再生成1回」は実装していない**: 本Ledgerのfact体系(F-xxx/HF-xxx/MUSE-HC-xxx)に`headline`/`in_one_line`相当のfact種別が存在せず(確認済み)、Rewrite promptは常にLedger全文を渡す。追加callを要する別経路を作る代わりに、既存ladder(Ledger全文+Checker issue+hint)へ統合した。必要ならFableが次委任で指示。
+- テスト: `TestPriorCountMismatchFix07`(6)、`TestStructuralElementRewrite07`(7)。runner単体643件OK、`er052*`687件OK、全体4610件中11件失敗(基準11件、er003×5・er011×3・er015・er025・er040・er043の既存、新規0)。
+- ¥0 replay(`replay_title_delete_01.py`): rep28 unsupported_new_claim s1の記録(fixture本文・claim・`rewrite_kind=delete`・`section_type=title`)で、OFF=`0_delete`→本文が空(`title_degenerate`/`hook_degenerate`=旧挙動を再現)、ON=`structural_element_rewrite.reasons=["title"]`・`0_delete`は選ばれず`4_paragraph`(既存`filter_levels_by_problem_kind`が新規主張を段落水準へ)でmock応答を採用→本文非空・degenerateなし。neg3 rep28 s1/s2のRecheck応答(prior 1件・同index 2項目・両resolved)で旧式=記録`False`→新式`True`。

@@ -8040,5 +8040,143 @@ class TestRecheckMergeIntegration06(unittest.TestCase):
         self.assertEqual(res["cycles"][0]["recheck_before_after_pairs_n"], 1)
 
 
+class TestPriorCountMismatchFix07(unittest.TestCase):
+    """委任_07: Recheckの`all_prior_issues_resolved`の件数一致バグ(同indexの複数項目で偽の自己矛盾)をindex別集約へ是正。"""
+
+    def test_fix_all_true_with_count_mismatch_same_index_is_true(self):
+        # 旧式(件数一致)ではFalseだったケース: 1 prior issueに対し同index 2項目、両方resolved
+        items = [{"index": 0, "resolved": True}, {"index": 0, "resolved": True}]
+        ok, by = runner.aggregate_prior_issues_resolved(["p0"], items)
+        self.assertTrue(ok)
+        self.assertEqual(by, {"0": True})
+        old = (len(items) == 1) and all(i["resolved"] for i in items)
+        self.assertFalse(old)  # 旧式との差分(偽の自己矛盾)
+
+    def test_fix_missing_index_is_false_fail_closed(self):
+        ok, by = runner.aggregate_prior_issues_resolved(
+            ["p0", "p1"], [{"index": 0, "resolved": True}, {"index": 0, "resolved": True}])
+        self.assertFalse(ok)
+        self.assertEqual(by, {"0": True, "1": None})
+
+    def test_fix_group_with_any_false_is_false(self):
+        ok, by = runner.aggregate_prior_issues_resolved(
+            ["p0"], [{"index": 0, "resolved": True}, {"index": 0, "resolved": False}])
+        self.assertFalse(ok)
+        self.assertEqual(by, {"0": False})
+
+    def test_fix_exact_match_unchanged_and_empty_cases(self):
+        T = {"resolved": True}
+        self.assertTrue(runner.aggregate_prior_issues_resolved(["a", "b"], [{"index": 0, **T}, {"index": 1, **T}])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(
+            ["a", "b"], [{"index": 0, **T}, {"index": 1, "resolved": False}])[0])
+        self.assertTrue(runner.aggregate_prior_issues_resolved([], [])[0])   # 旧式: 0==0 and all([])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["a"], [])[0])  # 項目なし=未確認
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["a"], [T])[0])  # index欠落項目は対応づかない
+
+    def test_fix_rep28_neg3_recorded_response_replays_to_true(self):
+        import glob as _g
+        paths = _g.glob("er052_output/open233_self_recovery_flow_runner_01_rep28/instances_s*/neg3_hormuz_prodrunner_b1b.json")
+        self.assertTrue(paths)
+        for pth in paths:
+            d = json.load(open(pth, encoding="utf-8"))
+            c = d["cycles"][0]
+            items = c["recheck_prior_issues_resolved"]
+            n = c["recheck_prior_issues_sent_count"]
+            self.assertEqual((len(items), n), (2, 1))
+            self.assertFalse(c["recheck_all_prior_issues_resolved"])  # 記録(旧式)
+            self.assertTrue(runner.aggregate_prior_issues_resolved(["x"] * n, items)[0])  # 是正後
+
+    def test_fix_run_recheck_uses_aggregate_function(self):
+        import inspect
+        src = inspect.getsource(runner.run_recheck)
+        self.assertIn("aggregate_prior_issues_resolved(prior_issues, resolved)", src)
+        self.assertNotIn("len(resolved) == len(prior_issues)", src)
+
+
+class TestStructuralElementRewrite07(unittest.TestCase):
+    """委任_07: 構造要素(タイトル・In one line・見出し)へのdeleteを選ばず書き換えへ回す(KPI構成ON、既定OFFは旧挙動)。"""
+    CLAIM = "The same taxi researchers also found that male passengers tipped twice as much."
+
+    def _ladder(self, art, llm, on=True):
+        fixture = {"ledger_text": "[F-004] Passengers shown higher suggested rates tipped more.", "article_text": art}
+        claim_rec = {"claim_text": self.CLAIM, "rewrite_kind": "delete", "materiality": "BLOCKING", "basis": "ledger_claim",
+                     "rewrite_hint": "Delete this unsupported gender comparison.", "dev": {"issue": "not in Ledger"}}
+        with mock.patch.object(runner, "STRUCTURAL_ELEMENT_REWRITE", on), \
+                mock.patch.object(runner, "simple_llm_call", side_effect=llm):
+            return runner.rewrite_ranges_ladder(None, _l6_state(), [0], [], "t", fixture, "article_text", claim_rec)
+
+    def test_structural_title_delete_is_replaced_by_rewrite(self):
+        calls = []
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append((label, prompt))
+            return json.dumps({"revised_ranges": ["Passengers shown higher suggested tip rates tipped more."]})
+        res = self._ladder(self.CLAIM, llm)
+        self.assertTrue(res["guard_ok"])
+        self.assertNotEqual(res["updated_text"].strip(), "")
+        self.assertEqual(res["handoff"]["structural_element_rewrite"]["original_rewrite_kind"], "delete")
+        self.assertIn("title", res["handoff"]["structural_element_rewrite"]["reasons"])
+        self.assertEqual(res["ladder_level_used"], "1_word_connective")
+        self.assertIn("Structural element", calls[0][1])
+        self.assertNotIn("0_delete", [a["level"] for a in res["handoff"]["level_attempts"]])
+
+    def test_empty_candidates_rejected_then_paragraph_level_succeeds(self):
+        art = self.CLAIM + "\n\nSecond paragraph stays.\n"
+        seq = iter([json.dumps({"revised_ranges": [""]}), json.dumps({"revised_ranges": [""]}),
+                    json.dumps({"revised_ranges": ["Passengers tipped more at higher suggested rates."]})])
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            return next(seq)
+        res = self._ladder(art, llm)
+        lv = [(a["level"], a["result"]) for a in res["handoff"]["level_attempts"]]
+        self.assertEqual(lv[0], ("1_word_connective", "declined"))
+        self.assertEqual(lv[1], ("3_sentence", "declined_empty_structural"))
+        self.assertEqual(lv[2][0], "4_paragraph")
+
+    def test_degenerate_candidate_is_rejected(self):
+        art = self.CLAIM + "\n\nSecond paragraph stays.\n"
+        seq = iter([json.dumps({"revised_ranges": ["Tips."]}), json.dumps({"revised_ranges": ["Tips rose."]}),
+                    json.dumps({"revised_ranges": ["Passengers tipped more at higher suggested rates."]})])
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            return next(seq)
+        res = self._ladder(art, llm)
+        lv = [a["result"] for a in res["handoff"]["level_attempts"]]
+        self.assertEqual(lv[0], "degenerate_structural")  # title < 3 words
+        self.assertEqual(lv[1], "degenerate_structural")
+        self.assertEqual(lv[2], "success")
+
+    def test_body_sentence_delete_still_deterministic(self):
+        art = ("# Taxi tips\n\nFirst sentence is fine. " + self.CLAIM
+               + " Another fine sentence.\n\n## In one line\n\nTips rose.\n")
+
+        def llm(*a, **k):
+            raise AssertionError("no LLM call expected")
+        res = self._ladder(art, llm)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["ladder_level_used"], "0_delete")
+        self.assertNotIn("structural_element_rewrite", res["handoff"])
+
+    def test_switch_off_keeps_old_delete_behavior(self):
+        def llm(*a, **k):
+            raise AssertionError("no LLM call expected")
+        res = self._ladder(self.CLAIM, llm, on=False)
+        self.assertEqual(res["ladder_level_used"], "0_delete")
+        self.assertEqual(res["updated_text"].strip(), "")  # 旧挙動(後段でdegenerateのhard block)
+
+    def test_in_one_line_heading_and_body_detection(self):
+        art = "# Title here now\n\nBody text.\n\n## In one line\n\nTips rose a lot today.\n"
+        i = art.index("Tips rose a lot today.")
+        self.assertEqual(runner.structural_element_reasons(art, [(i, i + 5)], ["Tips "]), ["in_one_line"])
+        j = art.index("## In one line")
+        self.assertIn("heading", runner.structural_element_reasons(art, [(j, j + 14)], ["## In one line"]))
+        k = art.index("Body text.")
+        self.assertEqual(runner.structural_element_reasons(art, [(k, k + 10)], ["Body text."]), [])
+
+    def test_switch_in_kpi_config_and_default_off(self):
+        self.assertTrue(runner.KPI_TRIAL_SWITCHES["STRUCTURAL_ELEMENT_REWRITE"])
+        self.assertFalse(runner.STRUCTURAL_ELEMENT_REWRITE)
+
+
 if __name__ == "__main__":
     unittest.main()

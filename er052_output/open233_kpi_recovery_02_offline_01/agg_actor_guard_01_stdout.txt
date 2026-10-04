@@ -1,0 +1,10 @@
+attempts(actor_guard_rejected): 7  ledger_unavailable: 0
+distinct rewrite records with >=1 rejection: 4
+label counts(attempt): Counter({'excess_candidate': 7})
+('rep28', 'meta_run03_advanced', 1, 0) levels ['3_sentence'] exhausted False final RESOLVED_REWRITE None labels ['excess_candidate'] new ['worker']
+('rep28', 'safety_er009_changed_scope', 2, 0) levels ['1_word_connective', '3_sentence', '4_paragraph'] exhausted True final STAGE4_ESCALATION ladder_exhausted_without_full_rewrite labels ['excess_candidate', 'excess_candidate', 'excess_candidate'] new ['users']
+('rep28', 'meta_run03_advanced', 2, 0) levels ['3_sentence', '4_paragraph'] exhausted True final STAGE4_ESCALATION ladder_exhausted_without_full_rewrite labels ['excess_candidate', 'excess_candidate'] new ['contractors']
+('rep22', 'meta_run03_standard(repro)', 2, 0) levels ['3_sentence'] exhausted False final UNRESOLVED_AFTER_ONE_CYCLE(次周回=cycle3はこの再現の範囲外) None labels ['excess_candidate'] new ['users']
+records ladder_exhausted: 2
+records where all attempts excess_candidate: 4
+records all-excess AND exhausted AND final STAGE4: 2

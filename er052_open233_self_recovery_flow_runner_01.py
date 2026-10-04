@@ -434,6 +434,7 @@ KPI_TRIAL_SWITCHES = {
     # 委任_06(Fable評価2・3): N1′=再確認結果・未解消prior issueを必ず次cycleのStage 2へ合流(`unconfirmed_after_reverify`廃止)。
     # `RECHECK_BEFORE_AFTER_PAIRS`(N3′)はA/B(委任_06 作業4)で採否を決めるまで本構成へ含めない(既定OFF)。
     "RECHECK_MERGE_UNRESOLVED": True,
+    "STRUCTURAL_ELEMENT_REWRITE": True,  # 委任_07
 }
 
 
@@ -1712,6 +1713,26 @@ def build_recheck_schema(include_related_fact_id: bool, include_origin: bool) ->
     }
 
 
+def aggregate_prior_issues_resolved(prior_issues, items) -> tuple:
+    """委任_07(件数一致バグの是正): Recheck応答の`prior_issues_resolved`項目をindex別に集約し、
+    (all_resolved: bool, by_index: {index(str): bool|None})を返す。
+    - 全prior issue(0..n-1)のindexが応答に存在し、各indexの全項目がresolved=trueのときだけTrue。
+    - indexが欠けたprior issueは未解消扱い(by_index値None、安全側)。同indexの複数項目は全てtrueのときだけそのindexをtrue。
+    - prior issueが0件のときは、返却項目が全てresolved(空を含む)ならTrue(旧式の挙動と同じ)。
+    旧式: `len(items)==len(prior_issues) and all(resolved)`(Checkerが1 issueを2項目で返すだけでFalse)。"""
+    n = len(prior_issues or [])
+    groups: dict = {}
+    for it in items or []:
+        if isinstance(it, dict):
+            groups.setdefault(it.get("index"), []).append(bool(it.get("resolved")))
+        else:
+            groups.setdefault(None, []).append(False)
+    by_index = {str(i): (all(groups[i]) if i in groups else None) for i in range(n)}
+    if n == 0:
+        return all(all(v) for v in groups.values()), by_index
+    return all(v is True for v in by_index.values()), by_index
+
+
 def run_recheck(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
                  prior_issues: list, enable_fact_id_enumeration: bool = False,
                  before_after_pairs: list | None = None) -> dict:
@@ -1783,9 +1804,11 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
         parsed_trial["deviations"] = expand_same_fact_id_locations(parsed_trial["deviations"], article_text)
     resolved = raw_parsed.get("prior_issues_resolved", [])
     parsed_trial["prior_issues_resolved"] = resolved
-    parsed_trial["all_prior_issues_resolved"] = (
-        len(resolved) == len(prior_issues) and all(bool(r.get("resolved")) for r in resolved)
-    )
+    # 委任_07(技術是正、Fable事前判断1): 件数一致式(`len(resolved)==len(prior_issues)`)は、Checkerが1 prior issueを
+    # 同indexの複数項目へ分けて返すだけで偽の自己矛盾(COMPLIANT∧all_prior=False)を生み、再確認callが毎回発生していた。
+    # index別集約へ是正する(Checkerの判定規則は不変、応答の集約方法のみ)。indexが欠けたprior issueは未解消(安全側)。
+    parsed_trial["all_prior_issues_resolved"], parsed_trial["prior_issues_resolved_by_index"] = (
+        aggregate_prior_issues_resolved(prior_issues, resolved))
     usage = s2p._extract_usage(response)
     cost = round(s2p.official_cost_jpy(usage), 4)
     call_log.append({"label": label, "recovery_stage": "stage1_recheck", "cost_jpy": cost, "usage": usage,
@@ -1956,6 +1979,10 @@ def run_recheck_confirm(client, state, consecutive_errors, call_log, label, fixt
 # ------------------------------------------------------------
 RECHECK_MERGE_UNRESOLVED = False   # N1′(既定OFF=旧挙動: 再確認が解消未確認ならSTAGE4`unconfirmed_after_reverify`)
 RECHECK_BEFORE_AFTER_PAIRS = False  # N3′(既定OFF): 通常Recheckへも「書き換え前後の対」ブロックを渡す
+# 委任_07(技術是正、Fable事前判断2): ladderで対象範囲がタイトル・`## In one line`・見出し等の構造要素にかかるとき、
+# 決定論deleteを選ばず(常に`title_degenerate`等のhard blockになる)、E1(語句)→③(文)→④(段落)の書き換えへ回す。
+# 書き換え案が空になる場合は却下して次の水準へ進める(Human Reviewへ倒す新経路なし)。既定OFF(旧挙動)、KPI構成でON。
+STRUCTURAL_ELEMENT_REWRITE = False
 
 RECHECK_DECISION_PASS = "PASS"
 RECHECK_DECISION_NEXT_CYCLE = "NEXT_CYCLE"
@@ -5543,6 +5570,59 @@ def vs_apply_replacements(full_text: str, targets: list, revised: list) -> tuple
     return cur, None
 
 
+STRUCTURAL_REWRITE_HINT_SUFFIX = (
+    " [Structural element] The flagged text is (part of) the article's title, a heading, the In-one-line text, or the "
+    "opening line. Do NOT delete it and do NOT return an empty string: rewrite it as a short, natural, non-empty "
+    "statement (at least 3 words) that keeps only what the Ledger supports and drops the unsupported or wrong detail."
+)
+
+
+def structural_element_reasons(full_text: str, spans: list, ranges: list) -> list:
+    """委任_07: 範囲が構造要素にかかるか、位置(文字オフセット)の重なりで決定論判定する(¥0)。理由listを返す(空=構造要素でない)。
+    - `title`: 先頭の非空行(`_paragraph_title`と同じ行)
+    - `heading`: `#`で始まる行(`## In one line`等の見出し行そのもの)
+    - `in_one_line`: `In one line`見出し直下の本文(次の空行まで)
+    - `preflight_degenerate`: 範囲を削除した場合に`measure_section_role_violation`がtitle/hook/iolのdegenerateを返す。
+    文字列の部分一致ではなく位置の重なりで判定する(本文中の語がタイトルにも現れるだけでは構造要素扱いにしない)。"""
+    reasons: list = []
+    lines, pos = [], 0
+    for ln in full_text.split("\n"):
+        lines.append((pos, pos + len(ln), ln))
+        pos += len(ln) + 1
+    nonblank = [(a, b, ln) for a, b, ln in lines if ln.strip()]
+    title_span = (nonblank[0][0], nonblank[0][1]) if nonblank else None
+    heading_spans = [(a, b) for a, b, ln in lines if ln.strip().startswith("#")]
+    iol_spans, in_iol = [], False
+    for a, b, ln in lines:
+        core = ln.strip().lstrip("#").strip().lower()
+        if ln.strip().startswith("#"):
+            in_iol = core in VS_STRUCTURAL_LABELS
+            continue
+        if in_iol:
+            if not ln.strip():
+                if iol_spans:
+                    in_iol = False
+                continue
+            iol_spans.append((a, b))
+
+    def _hit(refs: list) -> bool:
+        return any(s0 < r1 and r0 < s1 for (s0, s1) in spans for (r0, r1) in refs)
+
+    if title_span and _hit([title_span]):
+        reasons.append("title")
+    if _hit(heading_spans):
+        reasons.append("heading")
+    if _hit(iol_spans):
+        reasons.append("in_one_line")
+    if not reasons:
+        cur, _bad = vs_apply_replacements(full_text, list(ranges), [""] * len(ranges))
+        if cur is not None and cur != full_text:
+            sr = measure_section_role_violation(full_text, cur)
+            if sr.get("title_degenerate") or sr.get("hook_degenerate") or sr.get("iol_degenerate"):
+                reasons.append("preflight_degenerate")
+    return reasons
+
+
 def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_prefix, fixture,
                            target_text_field, claim_rec: dict) -> dict:
     """委任_42 仕様(2)〜(6)(9): 確定範囲を対象にした最小修正優先ラダー。
@@ -5615,6 +5695,18 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
     after_fragment = None
     before_fragment = " ".join(ranges)
     delete_reoccurrence_detected = False
+
+    # 委任_07(Fable事前判断2): 構造要素(タイトル・In one line・見出し・先頭段落)にかかるdeleteは常に劣化する(空のタイトル等
+    # =`degenerate_rewrite_output`のhard block)。KPI構成(`STRUCTURAL_ELEMENT_REWRITE`ON)では、deleteを選ばず書き換え(E1→③→④)へ回し、
+    # 空・劣化した案は却下して次の水準へ進める(Human Reviewへ倒す新経路なし)。
+    structural_rewrite = False
+    if STRUCTURAL_ELEMENT_REWRITE and rewrite_kind == "delete":
+        st_reasons = structural_element_reasons(full_text, spans, ranges)
+        if st_reasons:
+            structural_rewrite = True
+            handoff["structural_element_rewrite"] = {"reasons": st_reasons, "original_rewrite_kind": "delete"}
+            rewrite_kind = "narrow_scope"
+            rewrite_hint = rewrite_hint + STRUCTURAL_REWRITE_HINT_SUFFIX
 
     if rewrite_kind == "delete":
         whole = {u.strip() for u in sentence_units}
@@ -5719,6 +5811,11 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                 attempt["returned_count"] = len(revised)
                 method_used = f"{lv['tag']}_count_mismatch"
                 continue
+            if structural_rewrite and any(not r.strip() for r in revised):
+                # 委任_07: 構造要素の書き換えで空文字を返す案は、deleteと同じ劣化になるため却下(次の水準へ)。
+                attempt["result"] = "declined_empty_structural"
+                method_used = f"{lv['tag']}_declined_empty_structural"
+                continue
             attempt["revised"] = list(revised)
             changed = [r != t for t, r in zip(targets, revised)]
             attempt["each_target_changed"] = changed
@@ -5743,6 +5840,12 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                 attempt["result"] = "guard_failed"
                 method_used = f"{lv['tag']}_guard_failed({locate_method})"
                 continue
+            if structural_rewrite:
+                sr_chk = measure_section_role_violation(full_text, candidate)
+                if sr_chk.get("title_degenerate") or sr_chk.get("hook_degenerate") or sr_chk.get("iol_degenerate"):
+                    attempt["result"] = "degenerate_structural"
+                    method_used = f"{lv['tag']}_degenerate_structural"
+                    continue
             if not all(actor_rewrite_guard_ok(t, r, fixture["ledger_text"]) for t, r in zip(targets, revised)):
                 attempt["result"] = "actor_guard_rejected"
                 method_used = f"{lv['tag']}_actor_guard_rejected({locate_method})"
@@ -7709,7 +7812,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"CAUSAL_FLOOR": True} if CAUSAL_FLOOR else {}),
                          **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {}),
                          **({"RECHECK_MERGE_UNRESOLVED": True} if RECHECK_MERGE_UNRESOLVED else {}),
-                         **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {})},
+                         **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {}),
+                         **({"STRUCTURAL_ELEMENT_REWRITE": True} if STRUCTURAL_ELEMENT_REWRITE else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -8290,6 +8394,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # 委任_05(記録専用、合否・分岐には使わない): neg3 `unconfirmed_after_reverify`のRCA用に、Recheckの
         # `prior_issues_resolved`(Checkerの項目別の解消判定・説明)と、渡した`prior_issues`の件数を残す(従来は未記録)。
         cycle_record["recheck_prior_issues_resolved"] = recheck_parsed.get("prior_issues_resolved")
+        cycle_record["recheck_prior_issues_resolved_by_index"] = recheck_parsed.get("prior_issues_resolved_by_index")  # 委任_07
         cycle_record["recheck_prior_issues_sent_count"] = len(prior_issues)
         if ja_recheck_parsed is not None:
             cycle_record["ja_recheck_overall_status"] = ja_recheck_parsed.get("overall_status")
@@ -8449,7 +8554,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"CAUSAL_FLOOR": True} if CAUSAL_FLOOR else {}),
                          **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {}),
                          **({"RECHECK_MERGE_UNRESOLVED": True} if RECHECK_MERGE_UNRESOLVED else {}),
-                         **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {})},
+                         **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {}),
+                         **({"STRUCTURAL_ELEMENT_REWRITE": True} if STRUCTURAL_ELEMENT_REWRITE else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
