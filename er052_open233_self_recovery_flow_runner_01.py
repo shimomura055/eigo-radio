@@ -435,6 +435,9 @@ KPI_TRIAL_SWITCHES = {
     # `RECHECK_BEFORE_AFTER_PAIRS`(N3′)はA/B(委任_06 作業4)で採否を決めるまで本構成へ含めない(既定OFF)。
     "RECHECK_MERGE_UNRESOLVED": True,
     "STRUCTURAL_ELEMENT_REWRITE": True,  # 委任_07
+    # 委任_08(Opus#13・Fable評価1/2/5): actor_guardをAG1-strict+2条件ANDへ是正、構造要素書き換えの前後対をRecheckへ渡す。
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": True,
 }
 
 
@@ -627,7 +630,95 @@ ACTOR_EN_COMPOUNDS = [
 ]
 
 
-def actor_rewrite_guard_ok(before_text: str, after_text: str, ledger_text: str) -> bool:
+ACTOR_GUARD_MODE = "legacy"  # 委任_08: `legacy`(既定、従来の英語部分一致) / `ag1_strict`(KPI構成。AG1-strict+2条件AND)
+
+_JA_EDGE_CHARS = "一-龥々ァ-ヶー"  # 日本語の語の境界判定用: 前後が漢字・カタカナ・長音のときは語の一部とみなし一致としない
+_EN_WORD_TO_CLASS = {w.lower(): cls for cls, d in ACTOR_SYNONYM_CLASSES.items() for w in d["en"]}
+
+
+def actor_classes_in_text(text: str) -> dict:
+    """英語テキスト中の主体語を同値クラス単位で返す({クラス名: 語形の集合})。複合語(contract worker等)は先に
+    contractorクラスとして取り、その範囲は単独語(worker)の抽出から除く。語境界は`\\b`。"""
+    out: dict = {}
+    t = text or ""
+    masked = t
+    for pat, cls in ACTOR_EN_COMPOUNDS:
+        for m in re.finditer(pat, t, re.IGNORECASE):
+            out.setdefault(cls, set()).add(m.group(0).lower())
+            masked = masked[:m.start()] + " " * (m.end() - m.start()) + masked[m.end():]
+    for m in _ACTOR_NOUN_PATTERN.finditer(masked):
+        w = m.group(0).lower()
+        out.setdefault(_EN_WORD_TO_CLASS.get(w, w), set()).add(w)
+    return out
+
+
+def actor_class_in_ja_text(cls: str, text: str) -> list:
+    """日本語(または日英混在)本文に、クラスの日本語表現が語の境界付きで存在するか(存在した表現のlist)。
+    英語語形は`\\b`単語境界で照合する。"""
+    d = ACTOR_SYNONYM_CLASSES.get(cls) or {"en": [], "ja": []}
+    t = re.sub(r"https?://[^\s)\]]+", " ", text or "")  # URL内の語(`personal-ai-agent`等)を主体表現として拾わない
+    hits = [j for j in d["ja"]
+            if re.search(r"(?<![" + _JA_EDGE_CHARS + r"])" + re.escape(j) + r"(?![" + _JA_EDGE_CHARS + r"])", t)]
+    hits += [e for e in d["en"] if re.search(r"\b" + re.escape(e) + r"\b", t, re.IGNORECASE)]
+    if cls == "contractor":
+        hits += [m.group(0) for pat, c in ACTOR_EN_COMPOUNDS if c == cls for m in re.finditer(pat, t, re.IGNORECASE)]
+    return hits
+
+
+def actor_class_named_in_issue(cls: str, issue_text: str) -> list:
+    """Checkerのissue/explanation(英語)が、クラスの英語語形を単語境界で名指ししているか(名指しされた語形のlist)。"""
+    return [w for w in sorted(actor_classes_in_text(issue_text).get(cls, set()))]
+
+
+def _ag1_related_blocks(ledger_text: str, related_fact_ids) -> list:
+    if isinstance(related_fact_ids, str):
+        related_fact_ids = [x for x in re.split(r"[,、/\s]+", related_fact_ids.strip()) if x]
+    blocks = []
+    for fid in related_fact_ids or []:
+        b = floor_verify_fact_block(ledger_text, fid)  # 無ければNone(Ledgerに無いid=誤り、(ii)不成立=fail-closed)
+        if b:
+            blocks.append(b)
+    return blocks
+
+
+def actor_rewrite_guard_decision(before_text: str, after_text: str, ledger_text: str,
+                                 related_fact_ids=None, issue_text: str = "") -> dict:
+    """委任_08 AG1-strict+2条件AND。新主体クラス(after−before、クラス単位)ごとに許容根拠を判定する。
+    (i) 元文に同クラスあり(=新主体ではない) / (ii) 関連fact本文に同クラス表現(語境界付き)あり /
+    (iii) Ledgerの他factに同クラス表現あり ∧ Checker issue/explanationがその英語語形を単語境界で名指し(2条件AND、片方だけでは不可)。
+    いずれも満たさない新主体クラスが1つでもあれば拒否(ok=False)。`related_fact_id`欠落・Ledgerに無いid→(ii)不成立(fail-closed)。
+    注記: 本guardは主体語の置換だけを見る。scope(限定・一般化)を守るものではない(scopeはRecheckが担保)。"""
+    after_cls = actor_classes_in_text(after_text)
+    before_cls = actor_classes_in_text(before_text)
+    new = {c: w for c, w in after_cls.items() if c not in before_cls}
+    blocks = _ag1_related_blocks(ledger_text, related_fact_ids)
+    per = []
+    for c in sorted(new):
+        rel_hits = [h for b in blocks for h in actor_class_in_ja_text(c, b)]
+        led_hits = actor_class_in_ja_text(c, ledger_text or "")
+        iss_hits = actor_class_named_in_issue(c, issue_text or "")
+        if rel_hits:
+            basis, ok = "related_fact", True
+        elif led_hits and iss_hits:
+            basis, ok = "ledger_and_issue", True
+        else:
+            basis, ok = None, False
+        per.append({"class": c, "new_words": sorted(new[c]), "ok": ok, "basis": basis,
+                    "related_fact_hits": sorted(set(rel_hits))[:6], "ledger_hits": sorted(set(led_hits))[:6],
+                    "issue_named": iss_hits, "related_blocks_found": len(blocks)})
+    return {"mode": "ag1_strict", "ok": all(p["ok"] for p in per), "new_classes": per}
+
+
+def actor_rewrite_guard_ok(before_text: str, after_text: str, ledger_text: str,
+                           related_fact_ids=None, issue_text: str = "", decision_out: list | None = None) -> bool:
+    """`ACTOR_GUARD_MODE`=`legacy`(既定): 従来どおり(英語の主体語をLedger本文に部分一致で照合)。
+    `ag1_strict`: `actor_rewrite_guard_decision`(関連fact・issueは呼び出し側が渡す。未指定=fail-closedで(ii)不成立)。
+    `decision_out`(list)を渡すと、ag1_strictの判定詳細(`actor_guard_decision`)をappendする。"""
+    if ACTOR_GUARD_MODE == "ag1_strict":
+        dec = actor_rewrite_guard_decision(before_text, after_text, ledger_text, related_fact_ids, issue_text)
+        if decision_out is not None:
+            decision_out.append(dec)
+        return dec["ok"]
     new_actors = extract_actor_nouns(after_text) - extract_actor_nouns(before_text)
     if not new_actors:
         return True
@@ -684,6 +775,14 @@ NORMAL_GROUP_INSTANCE_IDS = frozenset(
 )
 
 _HEDGE_WORD_RE = re.compile(r"\b(may|might|possibly|perhaps|could|seem(?:s|ed)?|appear(?:s|ed)?)\b", re.IGNORECASE)
+
+
+def actor_guard_context(claim_rec: dict) -> tuple:
+    """claim_recから(related_fact_id[str], Checker issue+explanation[str])を取り出す(欠落は空=fail-closed側)。"""
+    dev = (claim_rec or {}).get("dev") or {}
+    fid = (claim_rec or {}).get("related_fact_id") or dev.get("related_fact_id") or ""
+    issue = " ".join(str(x) for x in (dev.get("issue"), dev.get("explanation")) if x)
+    return fid, issue
 
 
 def measure_rewrite_quality_degradation(before_text: str, after_text: str) -> dict:
@@ -1763,23 +1862,33 @@ def build_recheck_schema(include_related_fact_id: bool, include_origin: bool) ->
 
 
 def aggregate_prior_issues_resolved(prior_issues, items) -> tuple:
-    """委任_07(件数一致バグの是正): Recheck応答の`prior_issues_resolved`項目をindex別に集約し、
-    (all_resolved: bool, by_index: {index(str): bool|None})を返す。
-    - 全prior issue(0..n-1)のindexが応答に存在し、各indexの全項目がresolved=trueのときだけTrue。
-    - indexが欠けたprior issueは未解消扱い(by_index値None、安全側)。同indexの複数項目は全てtrueのときだけそのindexをtrue。
-    - prior issueが0件のときは、返却項目が全てresolved(空を含む)ならTrue(旧式の挙動と同じ)。
+    """委任_07(件数一致バグの是正)+委任_08(Opus#13・Fable評価4の3穴修正): Recheck応答の`prior_issues_resolved`項目を
+    index別に集約し、(all_resolved: bool, by_index: {index(str): bool|None})を返す。
+    式: all_resolved = 「全項目が dict かつ `resolved is True`」 ∧ 「{0..n-1} ⊆ 返却indexの集合」(n=prior issue数)。
+    - 同index複数項目(1 issueを2項目で返す等)は、全てtrueのときだけそのindexをtrue(旧式の件数一致`len(items)==n`は使わない)。
+    - 範囲外index・int以外のindex・非dict項目・`resolved`が`True`以外(文字列"false"・1・None等)が1つでもあればFalse(安全側)。
+    - indexが欠けたprior issueは未解消扱い(by_index値None)。
+    - prior issueが0件のときは、全項目がdictかつ`resolved is True`ならTrue(空を含む。範囲外判定の対象となるindexが無いため)。
     旧式: `len(items)==len(prior_issues) and all(resolved)`(Checkerが1 issueを2項目で返すだけでFalse)。"""
     n = len(prior_issues or [])
     groups: dict = {}
+    clean = True  # 非dict・resolvedがTrue以外・範囲外index/非int indexが1つでもあれば偽
     for it in items or []:
-        if isinstance(it, dict):
-            groups.setdefault(it.get("index"), []).append(bool(it.get("resolved")))
-        else:
-            groups.setdefault(None, []).append(False)
+        if not isinstance(it, dict):
+            clean = False
+            continue
+        idx = it.get("index")
+        ok_idx = isinstance(idx, int) and not isinstance(idx, bool) and 0 <= idx < n
+        if n > 0 and not ok_idx:
+            clean = False
+        if it.get("resolved") is not True:
+            clean = False
+        if ok_idx:
+            groups.setdefault(idx, []).append(it.get("resolved") is True)
     by_index = {str(i): (all(groups[i]) if i in groups else None) for i in range(n)}
     if n == 0:
-        return all(all(v) for v in groups.values()), by_index
-    return all(v is True for v in by_index.values()), by_index
+        return clean, by_index
+    return clean and all(v is True for v in by_index.values()), by_index
 
 
 def run_recheck(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
@@ -1811,8 +1920,12 @@ def run_recheck(client, state, consecutive_errors, call_log, label, fixture, art
         prompt += vfl01.ORIGIN_INSTRUCTION_TEMPLATE.format(source_article_text=fixture["source_article_text"])
     prompt += vfl01.build_prior_issues_instruction(prior_issues)
     ba_block = ""
-    if RECHECK_BEFORE_AFTER_PAIRS and before_after_pairs:
-        ba_block = build_before_after_instruction(before_after_pairs)
+    # 委任_08(Fable評価5): `STRUCTURAL_PAIRS_TO_RECHECK`ON時は、構造要素を書き換えた対(`structural`印付き)に限定して対ブロックを渡す
+    # (`RECHECK_BEFORE_AFTER_PAIRS`とは独立。追加call 0)。`RECHECK_BEFORE_AFTER_PAIRS`ONなら全対(従来どおり)。
+    _ba_use = before_after_pairs if RECHECK_BEFORE_AFTER_PAIRS else (
+        [p_ for p_ in (before_after_pairs or []) if p_.get("structural")] if STRUCTURAL_PAIRS_TO_RECHECK else [])
+    if _ba_use:
+        ba_block = build_before_after_instruction(_ba_use)
         prompt += ba_block
     if enable_fact_id_enumeration:
         prompt += SAME_FACT_ID_ENUMERATION_INSTRUCTION
@@ -2027,6 +2140,7 @@ def run_recheck_confirm(client, state, consecutive_errors, call_log, label, fixt
 # Productionが自己回復flowを持たない間は、呼び出し側が`NEXT_CYCLE`を`STOP`へ写像する(OPEN-233-A1-PROD)。
 # ------------------------------------------------------------
 RECHECK_MERGE_UNRESOLVED = False   # N1′(既定OFF=旧挙動: 再確認が解消未確認ならSTAGE4`unconfirmed_after_reverify`)
+STRUCTURAL_PAIRS_TO_RECHECK = False  # 委任_08: 構造要素を書き換えた場合に限り、その前後の対をRecheckへ渡す(KPI構成ON)
 RECHECK_BEFORE_AFTER_PAIRS = False  # N3′(既定OFF): 通常Recheckへも「書き換え前後の対」ブロックを渡す
 # 委任_07(技術是正、Fable事前判断2): ladderで対象範囲がタイトル・`## In one line`・見出し等の構造要素にかかるとき、
 # 決定論deleteを選ばず(常に`title_degenerate`等のhard blockになる)、E1(語句)→③(文)→④(段落)の書き換えへ回す。
@@ -5895,12 +6009,20 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                     attempt["result"] = "degenerate_structural"
                     method_used = f"{lv['tag']}_degenerate_structural"
                     continue
-            if not all(actor_rewrite_guard_ok(t, r, fixture["ledger_text"]) for t, r in zip(targets, revised)):
+            _ag_fid, _ag_issue = actor_guard_context(claim_rec)
+            _ag_dec: list = []
+            _ag_ok = all(actor_rewrite_guard_ok(t, r, fixture["ledger_text"], _ag_fid, _ag_issue, _ag_dec)
+                         for t, r in zip(targets, revised))
+            if _ag_dec:
+                attempt["actor_guard_decision"] = _ag_dec
+            if not _ag_ok:
                 attempt["result"] = "actor_guard_rejected"
                 method_used = f"{lv['tag']}_actor_guard_rejected({locate_method})"
                 continue
             attempt["result"] = "success"
             attempt["before_after"] = [{"before": t, "after": r} for t, r in zip(targets, revised)]
+            if structural_rewrite:  # 委任_08(Fable評価5): 構造要素の書き換え前後の対(4_paragraphでafter_fragmentがNoneでも渡せるよう別記録)
+                handoff["structural_pair"] = {"before": " ".join(targets), "after": " ".join(revised)}
             updated_text, guard_ok = candidate, True
             method_used = f"{lv['tag']}({locate_method})"
             ladder_level_used = lv["name"]
@@ -6061,7 +6183,7 @@ def single_text_rewrite(client, state, consecutive_errors, call_log, label_prefi
                     # no-opのため(§0-5既存仕様)、常時評価してもunspecified/
                     # term_scope等の既存経路への非回帰影響はない。
                     if not actor_rewrite_guard_ok(
-                            lv["target"], revised, fixture["ledger_text"]):
+                            lv["target"], revised, fixture["ledger_text"], *actor_guard_context(claim_rec)):
                         method_used = f"{lv['tag']}_actor_guard_rejected({locate_method})"
                         continue
                     updated_text = candidate
@@ -6353,7 +6475,7 @@ def paired_rewrite(client, state, consecutive_errors, call_log, label_prefix, fi
             # 同一理由でproblem_kindに関係なく常に評価する(委任_30 Trial C
             # 期待2で発見したterm_scope>actor優先順位による盲点の是正)。
             if level_guard_ok and not actor_rewrite_guard_ok(
-                    lv["en_target"], en_revised, fixture["ledger_text"]):
+                    lv["en_target"], en_revised, fixture["ledger_text"], *actor_guard_context(claim_rec)):
                 level_guard_ok = False
                 if paired_handoff is not None:
                     paired_handoff["level_attempts"][-1]["result"] = "actor_guard_rejected"
@@ -7678,10 +7800,14 @@ def compute_residual_at_pass(instance_id: str, final_state: str | None, final_en
         out["defs"].append({
             "sub_id": d["sub_id"], "related_fact_id": d["related_fact_id"], "text_substring": d["text_substring"],
             "remains_in_final_en": sub in fin if final_en_text is not None else None,
+            # 委任_08(Fable評価6): `text_pattern`版(定義にtext_patternが無ければ旧と同値)。旧新並記
+            "remains_in_final_en_pattern": (safety_def_matches(d, final_en_text or "", True) if final_en_text is not None else None),
             "ever_blocking_flagged": flagged_any_fact, "ever_blocking_flagged_same_fact_id": flagged_same_fact,
             "ever_flagged_but_never_blocking": (flagged_nonblocking and not flagged_any_fact),
             "in_checker_raw_deviations_any_severity": in_raw,
-            "pass_with_residual_unflagged": bool(passed and sub in fin and not flagged_any_fact)})
+            "pass_with_residual_unflagged": bool(passed and sub in fin and not flagged_any_fact),
+            "pass_with_residual_unflagged_pattern": bool(passed and final_en_text is not None
+                                                          and safety_def_matches(d, final_en_text, True) and not flagged_any_fact)})
     return out
 
 
@@ -7862,7 +7988,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {}),
                          **({"RECHECK_MERGE_UNRESOLVED": True} if RECHECK_MERGE_UNRESOLVED else {}),
                          **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {}),
-                         **({"STRUCTURAL_ELEMENT_REWRITE": True} if STRUCTURAL_ELEMENT_REWRITE else {})},
+                         **({"STRUCTURAL_ELEMENT_REWRITE": True} if STRUCTURAL_ELEMENT_REWRITE else {}),
+                         **({"ACTOR_GUARD_MODE": ACTOR_GUARD_MODE} if ACTOR_GUARD_MODE != "legacy" else {}),
+                         **({"STRUCTURAL_PAIRS_TO_RECHECK": True} if STRUCTURAL_PAIRS_TO_RECHECK else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -8184,7 +8312,11 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                  # guard結果/JA暫定経路)。次回以降の集計を記録値でできるように。
                                  "span_unverified": r.get("span_unverified", False),
                                  "handoff": r.get("handoff")})
-                pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
+                _sp = (r.get("handoff") or {}).get("structural_pair")
+                if _sp:  # 委任_08: 構造要素の書き換えは、水準に関わらずbefore/after全体の対を持つ(`structural`印付き)
+                    pairs.append({"before": _sp["before"], "after": _sp["after"], "structural": True})
+                else:
+                    pairs.append({"before": r.get("before_fragment"), "after": r.get("after_fragment")})
             return en_out, ja_out, records, pairs
 
         # Stage 3: 各BLOCKING claimに対しRewrite dispatch(1回目)
@@ -8421,6 +8553,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if RECHECK_BEFORE_AFTER_PAIRS:
             cycle_record["recheck_before_after_pairs_n"] = len(
                 [p_ for p_ in before_after_pairs if p_.get("before") and p_.get("after") is not None])
+        elif STRUCTURAL_PAIRS_TO_RECHECK:
+            cycle_record["recheck_structural_pairs_n"] = len(
+                [p_ for p_ in before_after_pairs if p_.get("structural") and p_.get("before") and p_.get("after") is not None])
         # JA側も別途Recheck(paired rewriteが使われていた場合のみ、JA本文の
         # Ledger整合を独立に確認する。§5-4の「JA側1call+EN側1call」に対応)
         ja_recheck_parsed = None
@@ -8604,7 +8739,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"STAGE2_SECOND_OPINION": True} if STAGE2_SECOND_OPINION else {}),
                          **({"RECHECK_MERGE_UNRESOLVED": True} if RECHECK_MERGE_UNRESOLVED else {}),
                          **({"RECHECK_BEFORE_AFTER_PAIRS": True} if RECHECK_BEFORE_AFTER_PAIRS else {}),
-                         **({"STRUCTURAL_ELEMENT_REWRITE": True} if STRUCTURAL_ELEMENT_REWRITE else {})},
+                         **({"STRUCTURAL_ELEMENT_REWRITE": True} if STRUCTURAL_ELEMENT_REWRITE else {}),
+                         **({"ACTOR_GUARD_MODE": ACTOR_GUARD_MODE} if ACTOR_GUARD_MODE != "legacy" else {}),
+                         **({"STRUCTURAL_PAIRS_TO_RECHECK": True} if STRUCTURAL_PAIRS_TO_RECHECK else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
@@ -8633,7 +8770,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
 # 逐語引用のみ)。
 SAFETY_CRITICAL_CLAIM_DEFS = {
     "bgroup_B3": [
-        {"sub_id": "B3", "related_fact_id": "HF-007", "text_substring": "flashy 20% plan"},
+        # 委任_08(Opus#13・Fable評価6、計測の是正): `text_pattern`=「因果接続語+目印」型(正規表現、大小文字無視)。旧`text_substring`は
+        # 残し旧新並記(「and the flashy 20% plan」等の因果でない文は新パターンに一致しない)。
+        {"sub_id": "B3", "related_fact_id": "HF-007", "text_substring": "flashy 20% plan",
+         "text_pattern": r"\b(so|because|therefore|as a result|led to)\b[^.]{0,40}flashy 20% plan"},
     ],
     "safety_A2A3": [
         {"sub_id": "A2A3-0", "related_fact_id": "HF-003", "text_substring": "repay the money"},
@@ -8675,6 +8815,7 @@ SAFETY_CRITICAL_CLAIM_DEFS = {
     # 分けて数える(`safety_critical_dual_summary`、旧値/新値の並記)。
     "neg5_hormuz_div_a2": [
         {"sub_id": "B3-same@neg5", "related_fact_id": "HF-007", "text_substring": "flashy 20% plan",
+         "text_pattern": r"\b(so|because|therefore|as a result|led to)\b[^.]{0,40}flashy 20% plan",
          "registered_in": "OPEN-233-KPI-RECOVERY-REDESIGN-02/delegation_02"},
     ],
 }
@@ -8700,6 +8841,13 @@ def label_override_for(instance_id, related_fact_id, claim_text):
         if instance_id in o["instance_ids"] and (related_fact_id or "") == o["related_fact_id"]                 and all(_norm_same_sentence(m) in n for m in o["match_all"])                 and not any(_norm_same_sentence(m) in n for m in o["match_none"]):
             return o
     return None
+
+
+def safety_def_matches(d: dict, text: str, use_pattern: bool = False) -> bool:
+    """委任_08: 定義`d`が`text`に一致するか。`use_pattern`かつ`text_pattern`があれば正規表現(大小文字無視)、無ければ旧`text_substring`の部分一致。"""
+    if use_pattern and d.get("text_pattern"):
+        return re.search(d["text_pattern"], text or "", re.IGNORECASE) is not None
+    return d["text_substring"] in (text or "")
 
 
 def _safety_critical_defs(instance_id) -> list:
@@ -8734,7 +8882,8 @@ def detect_over_quality_monitor_blocks(instance_results: list) -> list:
     return rows
 
 
-def detect_safety_critical_misdowngrades(instance_results: list, defs_by_instance: dict | None = None) -> list:
+def detect_safety_critical_misdowngrades(instance_results: list, defs_by_instance: dict | None = None,
+                                         use_pattern: bool = False) -> list:
     """SAFETY_CRITICAL_CLAIM_DEFSに登録されたinstanceのみを対象に、cycleご
     とのstage2_results実測値から、最終materiality(floor/hook/disclosure-gap
     適用後)がBLOCKING以外になった箇所を機械的に検出する(¥0、新規API呼び
@@ -8752,7 +8901,7 @@ def detect_safety_critical_misdowngrades(instance_results: list, defs_by_instanc
                 fact_id = (sr.get("related_fact_id") or "").strip()
                 text = sr.get("claim_text") or ""
                 for d in defs:
-                    if d["related_fact_id"] != fact_id or d["text_substring"] not in text:
+                    if d["related_fact_id"] != fact_id or not safety_def_matches(d, text, use_pattern):
                         continue
                     if sr.get("materiality") != "BLOCKING":
                         rows.append({

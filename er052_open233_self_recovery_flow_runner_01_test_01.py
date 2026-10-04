@@ -7915,7 +7915,8 @@ class TestRecheckMergeN1Prime(unittest.TestCase):
             "f5b661068e0fb968be2b8acb9150adacc91b7753e6a0f70560df6cf406d9a241")
 
 
-def _run_instance_merge06(recheck_seq, confirm_seq, merge_on, before_after_on=False):
+def _run_instance_merge06(recheck_seq, confirm_seq, merge_on, before_after_on=False, structural_pair=None,
+                          structural_pairs_on=False):
     """委任_06: run_instanceを偽のChecker/Stage 2/Rewrite/Recheck/再確認で通す(ネットワークなし)。
     recheck_seq・confirm_seq: 各呼び出しで返すdictのリスト(cycle順)。"""
     seen = {"stage2_claims": [], "recheck_labels": [], "confirm_labels": [], "recheck_kwargs": []}
@@ -7937,7 +7938,9 @@ def _run_instance_merge06(recheck_seq, confirm_seq, merge_on, before_after_on=Fa
                 "method": "fake", "guard_ok": True, "before_fragment": META_TARGET,
                 "after_fragment": "Some calls may have needed user information.",
                 "ladder_level_used": "1_word_connective", "target_not_locatable": False, "span_unverified": False,
-                "ladder_exhausted_without_full_rewrite": False, "handoff": {"level_attempts": [], "text_lang": "EN"}}
+                "ladder_exhausted_without_full_rewrite": False,
+                "handoff": {"level_attempts": [], "text_lang": "EN",
+                            **({"structural_pair": structural_pair} if structural_pair else {})}}
 
     def fake_recheck(client, state, ce, call_log, label, fixture, article_text, prior_issues, **k):
         seen["recheck_labels"].append(label)
@@ -7960,7 +7963,8 @@ def _run_instance_merge06(recheck_seq, confirm_seq, merge_on, before_after_on=Fa
                mock.patch.object(runner, "save_json", lambda *a, **k: None),
                mock.patch.object(runner, "JA_MODE", runner.JA_MODE_ENGLISH_ONLY),
                mock.patch.object(runner, "RECHECK_MERGE_UNRESOLVED", merge_on),
-               mock.patch.object(runner, "RECHECK_BEFORE_AFTER_PAIRS", before_after_on)]
+               mock.patch.object(runner, "RECHECK_BEFORE_AFTER_PAIRS", before_after_on),
+               mock.patch.object(runner, "STRUCTURAL_PAIRS_TO_RECHECK", structural_pairs_on)]
     for p in patches:
         p.start()
     try:
@@ -8176,6 +8180,295 @@ class TestStructuralElementRewrite07(unittest.TestCase):
     def test_switch_in_kpi_config_and_default_off(self):
         self.assertTrue(runner.KPI_TRIAL_SWITCHES["STRUCTURAL_ELEMENT_REWRITE"])
         self.assertFalse(runner.STRUCTURAL_ELEMENT_REWRITE)
+
+
+class TestActorGuardAG1Strict08(unittest.TestCase):
+    """委任_08(Opus#13・Fable評価1〜3): actor_guardのAG1-strict+2条件AND。負例(a)〜(e)・正例(rep28の6試行・rep22型)・legacy不変。
+    注: 本guardは主体語の置換だけを見る。scope(限定・一般化)を守るものではない(scopeはRecheckが担保)。"""
+
+    @classmethod
+    def setUpClass(cls):
+        led = {i["instance_id"]: i["fixture"]["ledger_text"] for i in runner.build_target_instances()}
+        cls.TIP = led["safety_er009_changed_scope"]
+        cls.META = led["meta_run03_advanced"]
+
+    def setUp(self):
+        p = mock.patch.object(runner, "ACTOR_GUARD_MODE", "ag1_strict")
+        p.start()
+        self.addCleanup(p.stop)
+
+    def ok(self, before, after, led, fid, issue=""):
+        return runner.actor_rewrite_guard_decision(before, after, led, fid, issue)["ok"]
+
+    # ---- 同義語表 ----
+    def test_table_covers_all_25_actor_words_and_separate_classes(self):
+        for w in ("users employees workers staff contractors agents executives customers clients spokespeople spokesperson "
+                  "engineers managers officials residents drivers passengers patients students teachers analysts traders "
+                  "investors shareholders").split():
+            self.assertIn(w, runner._EN_WORD_TO_CLASS, w)
+        c = runner._EN_WORD_TO_CLASS
+        self.assertEqual(len({c["employees"], c["contractors"], c["staff"], c["workers"]}), 4)   # 別クラス
+        self.assertEqual(len({c["customers"], c["users"], c["passengers"], c["clients"]}), 4)    # 別クラス
+
+    def test_contract_worker_compound_is_contractor_not_worker(self):
+        self.assertEqual(set(runner.actor_classes_in_text("A contract worker made calls; contract staff too.")), {"contractor"})
+        self.assertEqual(set(runner.actor_classes_in_text("Some workers and contractors.")), {"worker", "contractor"})
+
+    # ---- 正例: rep28の6試行(実Ledger・関連fact・許容)と rep22型 ----
+    def test_positive_rep28_six_attempts_allowed(self):
+        rows = json.load(open("er052_output/open233_kpi_recovery_02_offline_01/agg_actor_guard_01.json", encoding="utf-8"))
+        rep28 = [r for r in rows if r["run"] == "rep28"]
+        self.assertEqual(len(rep28), 6)
+        led = {i["instance_id"]: i["fixture"]["ledger_text"] for i in runner.build_target_instances()}
+        for r in rep28:
+            d = runner.actor_rewrite_guard_decision(r["before"], r["after"], led[r["instance"]], r["related_fact_id"], r["issue"])
+            self.assertTrue(d["ok"], (r["instance"], r["level"], d))
+            self.assertTrue(all(p["basis"] == "related_fact" for p in d["new_classes"]))
+
+    def test_positive_rep22_type_requires_both_ledger_and_issue(self):
+        b, a = "They could not tell if it was AI or a person.", "Without a clear explanation, users might not know if it was AI or a person."
+        self.assertFalse(self.ok(b, a, self.META, "MUSE-HC-012", ""))                                   # issue名指しなし
+        self.assertFalse(self.ok(b, a, self.META, "MUSE-HC-012", "The article overstates what happened."))
+        d = runner.actor_rewrite_guard_decision(b, a, self.META, "MUSE-HC-012", "The article says users could not tell it was a person.")
+        self.assertTrue(d["ok"])
+        self.assertEqual(d["new_classes"][0]["basis"], "ledger_and_issue")                              # 2条件AND
+
+    # ---- 負例(a) 近接クラスの取り違え ----
+    def test_negative_a_adjacent_class_swaps(self):
+        M, T = self.META, self.TIP
+        cases = [
+            ("Calls were made.", "Employees made some calls.", M, "MUSE-HC-006", "The Ledger says contract workers made calls."),  # contractor→employee
+            ("Calls were made.", "Staff made some calls.", M, "MUSE-HC-006", "The Ledger says contract workers made calls."),     # contractor→staff
+            ("Calls were made.", "Workers made some calls.", M, "MUSE-HC-006", "The Ledger says contract staff made calls."),     # contractor→worker
+            ("Tips rose.", "Customers left more.", T, "F-001", "The Ledger covers credit-card users."),   # users→customers
+            ("Tips rose.", "Passengers left more.", T, "F-001", "The Ledger covers credit-card users."),  # users→passengers
+            ("Calls were made.", "Executives made some calls.", M, "MUSE-HC-006", "The Ledger says contract workers made calls."),  # staff→executives
+        ]
+        for b, a, led, fid, iss in cases:
+            self.assertFalse(self.ok(b, a, led, fid, iss), (a, fid))
+
+    # ---- 負例(b) 別factの主体の持ち込み(issue名指しなし) ----
+    def test_negative_b_actor_from_other_fact_without_issue_naming(self):
+        T = self.TIP
+        self.assertFalse(self.ok("Tips rose.", "Some customers cut tips to zero.", T, "F-001", "The claim is too strong."))   # F-005に顧客
+        self.assertFalse(self.ok("Tips rose.", "Some customers cut tips to zero.", T, "F-001", "It concerns passengers."))  # 別の主体を名指し
+        self.assertFalse(self.ok("Tips rose.", "Passengers tipped more.", T, "F-001", "The claim is too strong."))          # F-004に乗客
+        # Ledgerに無い主体をissueだけが名指し(issue単独では許容しない)
+        self.assertFalse(self.ok("Calls were made.", "Passengers made calls.", self.META, "MUSE-HC-006", "It names passengers."))
+
+    # ---- 負例(c) related_fact_idの欠落・誤り ----
+    def test_negative_c_missing_or_wrong_related_fact_id(self):
+        M = self.META
+        a = "Contract workers made some calls."
+        self.assertTrue(self.ok("Calls were made.", a, M, "MUSE-HC-006"))                     # 正しいidなら許容
+        for fid in ("", None, "MUSE-HC-999", "F-004", "   "):
+            self.assertFalse(self.ok("Calls were made.", a, M, fid, ""), repr(fid))           # 欠落・誤り・別factでfail-closed
+        self.assertFalse(self.ok("Calls were made.", a, M, ["MUSE-HC-999"], ""))              # list形式の誤り
+        self.assertTrue(self.ok("Calls were made.", a, M, "MUSE-HC-999, MUSE-HC-006", ""))     # 複数idの一部が正しければ有効
+
+    # ---- 負例(d) 日本語の部分一致の誤ヒット ----
+    def test_negative_d_japanese_partial_match_does_not_hit(self):
+        def led(body):
+            return "[F-900] " + body + "\n  scope: テスト\n"
+        cases = [
+            ("Calls.", "Users tipped more.", led("利用者数は増えた。")),          # 利用者数: 利用者+数
+            ("Calls.", "Users tipped more.", led("非ユーザーは対象外だった。")),    # 非ユーザー
+            ("Calls.", "Staff made calls.", led("契約スタッフが電話をかけた。")),    # 契約スタッフ内のスタッフ(contractorクラス)
+            ("Calls.", "Employees made calls.", led("新入社員が参加した。")),      # 新入社員
+        ]
+        for b, a, l in cases:
+            self.assertFalse(self.ok(b, a, l, "F-900", ""), a + l)
+        # 対照: 語境界が正しければ許容(助詞・Latin文字・句読点の前後は境界)
+        self.assertTrue(self.ok("Calls.", "Users tipped more.", led("Muse利用者が増えた。"), "F-900"))
+        self.assertTrue(self.ok("Calls.", "Employees tipped.", led("Meta従業員は、半数だった。"), "F-900"))
+
+    # ---- 負例(e) 複数の新主体語のうち一部のみ一致 ----
+    def test_negative_e_partial_match_of_multiple_new_actors(self):
+        M, T = self.META, self.TIP
+        self.assertFalse(self.ok("Calls.", "Contract workers and employees made calls.", M, "MUSE-HC-006", ""))
+        self.assertFalse(self.ok("Calls.", "Passengers and customers tipped more.", T, "F-004", ""))
+        self.assertFalse(self.ok("Calls.", "Users and executives tipped more.", T, "F-001", ""))
+        self.assertTrue(self.ok("Calls.", "Passengers and credit-card users tipped more.", T, "F-004", ""))  # 全て一致なら許容
+
+    def test_no_new_actor_is_always_ok_and_decision_recorded(self):
+        out: list = []
+        self.assertTrue(runner.actor_rewrite_guard_ok("Users left.", "Users stayed.", "(ledger)", "", "", out))
+        self.assertEqual(out[0]["new_classes"], [])
+        out2: list = []
+        runner.actor_rewrite_guard_ok("Calls.", "Contract workers made calls.", self.META, "MUSE-HC-006", "", out2)
+        p = out2[0]["new_classes"][0]
+        self.assertEqual((p["class"], p["basis"], p["ok"]), ("contractor", "related_fact", True))
+        self.assertTrue(p["related_fact_hits"])
+
+    # ---- legacy不変・スイッチ ----
+    def test_legacy_mode_unchanged(self):
+        with mock.patch.object(runner, "ACTOR_GUARD_MODE", "legacy"):
+            # 従来: 英語の主体語がLedger本文(英語)に部分一致する場合のみ許容。日本語Ledgerでは一律拒否だった
+            self.assertFalse(runner.actor_rewrite_guard_ok("x", "credit-card users", self.TIP))
+            self.assertTrue(runner.actor_rewrite_guard_ok("x", "the agents", "AI agents are used."))
+            self.assertTrue(runner.actor_rewrite_guard_ok("users", "users", "(none)"))
+
+    def test_switch_in_kpi_config_and_default_legacy(self):
+        self.assertEqual(runner.KPI_TRIAL_SWITCHES["ACTOR_GUARD_MODE"], "ag1_strict")
+        self.assertTrue(runner.KPI_TRIAL_SWITCHES["STRUCTURAL_PAIRS_TO_RECHECK"])
+        src = open("er052_open233_self_recovery_flow_runner_01.py", encoding="utf-8").read()
+        self.assertIn('ACTOR_GUARD_MODE = "legacy"', src)
+        self.assertIn("STRUCTURAL_PAIRS_TO_RECHECK = False", src)
+
+
+class TestPriorCountMismatchThreeHoles08(unittest.TestCase):
+    """委任_08(Opus#13・Fable評価4): 件数一致是正の3穴(文字列"false"・範囲外index・非dict項目)は全てFalse。"""
+    T = {"resolved": True}
+
+    def test_string_false_is_not_true(self):
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, "resolved": "false"}])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, "resolved": 1}])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, "resolved": None}])[0])
+
+    def test_out_of_range_index_is_false(self):
+        # Checkerが1始まりで番号付けした場合: {0:true}(別物)+{1:false}は旧式ではFalse、旧index別集約ではTrueになり得た
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, **self.T}, {"index": 1, "resolved": False}])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, **self.T}, {"index": 5, **self.T}])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": -1, **self.T}, {"index": 0, **self.T}])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": "0", **self.T}])[0])
+
+    def test_non_dict_item_is_false(self):
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, **self.T}, None])[0])
+        self.assertFalse(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, **self.T}, "x"])[0])
+
+    def test_correct_cases_still_true(self):
+        self.assertTrue(runner.aggregate_prior_issues_resolved(["p"], [{"index": 0, **self.T}, {"index": 0, **self.T}])[0])
+        self.assertTrue(runner.aggregate_prior_issues_resolved(["a", "b"], [{"index": 1, **self.T}, {"index": 0, **self.T}])[0])
+        self.assertTrue(runner.aggregate_prior_issues_resolved([], [])[0])
+
+
+class TestStructuralPairsToRecheck08(unittest.TestCase):
+    """委任_08(Fable評価5): 構造要素を書き換えた場合に限り、前後の対をRecheckへ渡す。title判定のProductionフォーマットテスト。"""
+
+    def _recheck_prompt(self, pairs, structural_on, ba_on=False):
+        captured = {}
+
+        class _R:
+            output_text = json.dumps({"overall_status": "LEDGER_COMPLIANT", "deviations": [],
+                                      "prior_issues_resolved": [{"index": 0, "resolved": True, "explanation": "ok"}]})
+
+        class _Rs:
+            def create(self, **kw):
+                captured["prompt"] = kw["input"][1]["content"]
+                return _R()
+
+        class _C:
+            responses = _Rs()
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        fixture = {"ledger_text": "[VERIFIED] HF-001: x\n", "source_article_text": None}
+        with mock.patch.object(runner, "STRUCTURAL_PAIRS_TO_RECHECK", structural_on), \
+                mock.patch.object(runner, "RECHECK_BEFORE_AFTER_PAIRS", ba_on):
+            runner.run_recheck(_C(), state, [0], [], "t", fixture, "Article.",
+                               [{"fact_id": "HF-001", "claim_in_article": "x", "issue": "i", "explanation": "e"}],
+                               before_after_pairs=pairs)
+        return captured["prompt"]
+
+    PAIRS = [{"before": "Old title", "after": "New title here", "structural": True},
+             {"before": "Body before", "after": "Body after"}]
+
+    def test_only_structural_pairs_are_passed_when_on(self):
+        p = self._recheck_prompt(self.PAIRS, True)
+        self.assertIn("Old title", p)
+        self.assertIn("New title here", p)
+        self.assertNotIn("Body before", p)
+
+    def test_non_structural_pairs_not_passed_and_off_keeps_prompt_identical(self):
+        p_none = self._recheck_prompt([{"before": "Body before", "after": "Body after"}], True)
+        self.assertNotIn("Body before", p_none)
+        p_off = self._recheck_prompt(self.PAIRS, False)
+        self.assertNotIn("Old title", p_off)
+        self.assertEqual(p_none, p_off)   # 対が渡らない場合・OFF時は従来とバイト同一
+
+    def test_independent_of_n3_switch(self):
+        p = self._recheck_prompt(self.PAIRS, False, ba_on=True)   # N3′ONなら従来どおり全対
+        self.assertIn("Body before", p)
+
+    def test_run_instance_passes_structural_pair_only_when_switch_on(self):
+        sp = {"before": META_TARGET, "after": "A short natural title for the article"}
+        res, seen = _run_instance_merge06([_rr06()], [], merge_on=True, structural_pair=sp, structural_pairs_on=True)
+        pairs = seen["recheck_kwargs"][0]["before_after_pairs"]
+        self.assertEqual(pairs, [{"before": sp["before"], "after": sp["after"], "structural": True}])
+        self.assertEqual(res["cycles"][0]["recheck_structural_pairs_n"], 1)
+        res2, seen2 = _run_instance_merge06([_rr06()], [], merge_on=True, structural_pair=None, structural_pairs_on=True)
+        self.assertNotIn("structural", seen2["recheck_kwargs"][0]["before_after_pairs"][0])
+        self.assertEqual(res2["cycles"][0]["recheck_structural_pairs_n"], 0)
+
+    def test_ladder_records_structural_pair_including_paragraph_level(self):
+        t = TestStructuralElementRewrite07()
+        seq = iter([json.dumps({"revised_ranges": [""]}), json.dumps({"revised_ranges": [""]}),
+                    json.dumps({"revised_ranges": ["Passengers tipped more at higher suggested rates."]})])
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            return next(seq)
+        art = TestStructuralElementRewrite07.CLAIM + "\n\nSecond paragraph stays.\n"
+        res = t._ladder(art, llm)
+        self.assertEqual(res["ladder_level_used"], "4_paragraph")
+        sp = res["handoff"]["structural_pair"]
+        self.assertIn("male passengers tipped twice", sp["before"])
+        self.assertEqual(sp["after"], "Passengers tipped more at higher suggested rates.")
+        self.assertIsNone(res["after_fragment"])          # 従来のafter_fragmentはNone(これを補うのがstructural_pair)
+
+    def test_title_detection_on_production_article_formats(self):
+        import glob
+        paths = sorted(glob.glob("er019_output/**/article.md", recursive=True))[:200]
+        picked = []
+        for pth in paths:
+            txt = open(pth, encoding="utf-8").read()
+            if txt.startswith("# ") and "\n## In one line" in txt and "\n### " in txt:
+                picked.append((pth, txt))
+            if len(picked) >= 5:
+                break
+        self.assertGreaterEqual(len(picked), 3)
+        for pth, txt in picked:
+            lines = txt.split("\n")
+            title = lines[0]
+            sp = (0, len(title))
+            self.assertIn("title", runner.structural_element_reasons(txt, [(0, 5)], [txt[:5]]), pth)   # `# `付きtitleはtitle+headingの両方に判定される
+            # 本文の最初の段落(titleの次の非空行)はtitleではない
+            body_line = next(ln for ln in lines[1:] if ln.strip() and not ln.startswith("#"))
+            bi = txt.index(body_line)
+            self.assertEqual(runner.structural_element_reasons(txt, [(bi, bi + 8)], [body_line[:8]]), [], pth)
+            # 見出し行(###)
+            hi = txt.index("\n### ") + 1
+            self.assertIn("heading", runner.structural_element_reasons(txt, [(hi, hi + 6)], [txt[hi:hi + 6]]), pth)
+            # In one line直下の本文
+            ii = txt.index("\n## In one line") + len("\n## In one line")
+            nxt = next(ln for ln in txt[ii:].split("\n") if ln.strip())
+            ni = txt.index(nxt, ii)
+            self.assertEqual(runner.structural_element_reasons(txt, [(ni, ni + 6)], [nxt[:6]]), ["in_one_line"], pth)
+
+
+class TestSafetyCriticalTextPattern08(unittest.TestCase):
+    """委任_08(Fable評価6): `text_pattern`(因果接続語+目印)。旧`text_substring`と旧新並記。"""
+
+    def test_pattern_distinguishes_causal_from_and(self):
+        d = runner.SAFETY_CRITICAL_CLAIM_DEFS["bgroup_B3"][0]
+        self.assertTrue(runner.safety_def_matches(d, "Concerns continued. So the flashy 20% plan left the stage.", True))
+        self.assertTrue(runner.safety_def_matches(d, "Because of this, the flashy 20% plan ended.", True))
+        self.assertFalse(runner.safety_def_matches(d, "Oil fell, and the flashy 20% plan left the stage.", True))
+        self.assertFalse(runner.safety_def_matches(d, "The flashy 20% plan was withdrawn.", True))
+        self.assertFalse(runner.safety_def_matches(d, "He said it was also a flashy 20% plan.", True))   # 'also'の'so'は語境界で除外
+        self.assertTrue(runner.safety_def_matches(d, "The flashy 20% plan was withdrawn.", False))        # 旧定義は部分一致で真
+        n = runner.SAFETY_CRITICAL_CLAIM_DEFS["neg5_hormuz_div_a2"][0]
+        self.assertIn("text_pattern", n)
+        self.assertIn("text_substring", n)
+
+    def test_defs_without_pattern_fall_back_to_substring(self):
+        d = runner.SAFETY_CRITICAL_CLAIM_DEFS["safety_A2A3"][0]
+        self.assertTrue(runner.safety_def_matches(d, "They will repay the money.", True))
+
+    def test_residual_at_pass_records_old_and_new(self):
+        out = runner.compute_residual_at_pass("bgroup_B3", "RESOLVED_REWRITE", "Oil fell, and the flashy 20% plan left.", [], [], [])
+        row = out["defs"][0]
+        self.assertTrue(row["remains_in_final_en"])              # 旧: 部分一致
+        self.assertFalse(row["remains_in_final_en_pattern"])     # 新: 因果パターン不一致
+        self.assertTrue(row["pass_with_residual_unflagged"])
+        self.assertFalse(row["pass_with_residual_unflagged_pattern"])
 
 
 if __name__ == "__main__":

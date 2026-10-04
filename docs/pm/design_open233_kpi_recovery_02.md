@@ -552,3 +552,24 @@ rep28(委任_06)のHuman Review 3件(`actor_guard_rejected`によるladder枯渇
 - 同義語表の整備(25主体語×日英)と、パラフレーズ(`contractors`≒「契約スタッフ」)の扱いが実装上の主な作業・不確実性。表は現行主体語リストの範囲に限定する(新語追加はしない)。
 
 **推奨(Opus#13の判断前の暫定)**: **AG1-strict(関連fact+日英同義語表、Checker issueは「Ledgerにも存在する場合のみ」の補助)**。決定論・¥0・追加call 0・非決定性増なし、過剰拒否の根本原因(言語不一致)を直接是正、Safety=関連factに無い主体は拒否のまま。AG2/AG3は追加callと非決定性を増やし、Checkerの要求と指示が矛盾するため劣後。AG1-ledgerは残余1件を救えるがSafety上の緩みが大きいため、AG1-strictで残る拒否が実際にladder枯渇を生むか(委任_08の影響instance再確認)を見てから段階的に判断する。**実装は行わない**(Opus#13→Fable判断後、委任_08)。
+
+
+## 15. Opus#13後の採否と実装仕様(委任_08、2026-10-04)
+
+Opus#13全文・Fable評価1〜9は`docs/pm/opus_l2_review_open233_kpi_recovery_02_13.md`。以下は実装仕様(Trial専用、Production未配線)。
+
+### 15-1. actor_guard(AG1-strict+2条件AND)
+- 位置: runnerの`ACTOR_SYNONYM_CLASSES`(細粒度の同値クラス23クラス。1回目commit `f513695c`で評価前に確定)、`actor_rewrite_guard_decision`/`actor_rewrite_guard_ok`、呼び出し3箇所(`rewrite_ranges_ladder`・`single_text_rewrite`・`paired_rewrite`、`actor_guard_context(claim_rec)`で関連fact・issueを渡す)。スイッチ`ACTOR_GUARD_MODE`(`legacy`既定/`ag1_strict`=KPI構成ON)。
+- クラス分割: employee/contractor/worker/staff、customer/client/user/passengerは別クラス。`contract worker(s)`/`contract staff`は英語複合語として contractor クラス(単独のworkerとして誤分類しない)。複合日本語(「クレジットカード利用者」「契約スタッフ」「対象ユーザー」等)は複合語そのものを1エントリとして列挙。
+- 新主体クラス = after − before(クラス単位、英語は`\b`単語境界)。許容条件(1つでも満たさない新主体クラスがあれば拒否): (i)元文に同クラスあり(=新主体でない)、(ii)関連fact(`related_fact_id`、複数可)本文に同クラスの日本語表現(前後が漢字・カタカナ・長音でない=語の境界)または英語語形(単語境界、URL除去後)、(iii)[2条件AND]Ledgerの他factに同クラス表現あり ∧ Checker `issue`/`explanation`がその英語語形を単語境界で名指し。issue単独・Ledger単独では許容しない。`related_fact_id`欠落・Ledgerに無いid→(ii)不成立(fail-closed)。記録: ladder level_attemptsの`actor_guard_decision`(新主体クラスごとの判定根拠: basis=related_fact/ledger_and_issue/None)。
+- **guardはscope(限定・一般化)を守るものではない**: 例えばF-004に「乗客」があるため`credit-card users`→`passengers`への一般化もguard上は許容される。scopeの正しさはRecheckが担保する(Opus#13論点1)。
+### 15-2. 件数一致の是正の修正
+`aggregate_prior_issues_resolved`: 全項目が「dictかつ`resolved is True`」∧「{0..n-1}⊆返却index集合」。範囲外index・int以外のindex・非dict・`resolved`が`True`以外(文字列"false"・1・None)が1つでもあればFalse。n=0のときは範囲外判定の対象indexが無いため、全項目dictかつ`resolved is True`でTrue。
+### 15-3. 構造要素書き換えの補強
+スイッチ`STRUCTURAL_PAIRS_TO_RECHECK`(KPI構成ON、`RECHECK_BEFORE_AFTER_PAIRS`とは独立)。構造要素を書き換えたRewriteは`handoff["structural_pair"]`(before=対象の逐語、after=書き換え後。④でafter_fragmentがNoneでも別記録)を持ち、`_run_stage3_cycle`が`structural`印付きの対を作り、`run_recheck`が(N3′OFFのとき)この印付きの対だけを対ブロックとして渡す。追加call 0。title判定のProductionフォーマット(`# `付きtitle・`###`見出し・`## In one line`)テストは実記事`er019_output/**/article.md`5本で位置判定がずれないことを確認(`# `付きtitleはtitle+headingの両方に判定される)。
+### 15-4. 残存指標の是正
+`SAFETY_CRITICAL_CLAIM_DEFS`へ`text_pattern`(正規表現、大小文字無視)を追加(B3・neg5: `\b(so|because|therefore|as a result|led to)\b[^.]{0,40}flashy 20% plan`)。旧`text_substring`も残し、`compute_residual_at_pass`は旧(`remains_in_final_en`)と新(`remains_in_final_en_pattern`)を並記、`detect_safety_critical_misdowngrades(use_pattern=True)`で新定義の検出。
+### 15-5. ¥0結果
+差分0確認`er052_output/open233_kpi_recovery_02_offline_01/agg_actor_guard_diff_01.py`: 全ログ538 instance JSON・112試行(success 106+actor_guard_rejected 6。rep22 reproは別形式でユニットテストで確認)。許容済み106試行のうち新主体クラスを含むのは0件のため許容→拒否は0件(新主体を含まない試行はguard対象外であり、差分0は自明に近い点を明記)。拒否済み6試行(rep28)は全6件が許容(related_fact)に変わる。37件集計: `agg_compliant_allprior_false_01.py`(結果はREPORT§58)。
+### 15-6. Production整合(`OPEN-233-A1-PROD`へ記録済み、Fable評価9)
+件数一致式はer003 vfl01 L827と共有関数化、actor_guardはguard本体・同義語表・負例テストを一体で移す、構造要素判定はProductionフォーマットのテストを前提。
