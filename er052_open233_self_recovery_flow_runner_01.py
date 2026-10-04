@@ -6374,6 +6374,53 @@ CHECKER_FLAG_NAMES = ("changed_fact", "changed_scope", "changed_causality", "cha
                       "unsupported_new_claim")
 
 
+def _resolution_used_l6(resolution: dict) -> bool:
+    """委任_05: 確定がL6(sentence_restore)の復元を含むか(配列経路はlevelが`SPANS:...`に要素のlevelを含む)。"""
+    return VS_L6_LEVEL in str(resolution.get("level") or "")
+
+
+def l6_carry_forward_precedence(claim_rec: dict, claim_text: str, resolution: dict,
+                                en_now: str | None, ja_now: str | None):
+    """委任_05(rep27 safety_A4 s1・A5 s1の是正、決定論・追加call 0): L6が復元した文が、同一cycleの先行claimの
+    Rewriteで既に書き換え済みの文だった場合、carry-forward(`covered_by_earlier_rewrite_in_cycle`)を優先する。
+    旧: 先行RewriteでCheckerの引用文字列(引用符なし版)が本文から消える→`mismatch`→L6が書き換え済みの文を復元→
+    2回目のRewrite(ladder枯渇→STAGE4)。rep24(L6 OFF)ではmismatch→carry-forwardで合格していた。
+    (1)carry-forward判定(委任_04の部分一致を含む、cycle開始時点の本文での照合)で全範囲が先行Rewrite済みなら採用。
+    (2)(1)で確定しない場合でも、L6の復元範囲がすべて同cycleの先行Rewriteの置換後の文(`after_units`)と一致する場合は、
+    その置換単位のclaimでcovered扱いにする。それ以外(未書き換えの範囲が残る・先行Rewriteと無関係)は従来どおりL6の結果を使う
+    (返値None)。`covered`の`range`は、`resolve_prior_issue_text`が置換後の文を引けるよう置換前の単位にする。"""
+    units = claim_rec.get("cycle_replaced_units") or []
+    pre = carry_forward_resolution(claim_rec, claim_text, en_now, ja_now)
+    if pre is not None and not pre["remaining"]:
+        pre["l6_precedence"] = {"skipped_reason": "carry_forward_precedence", "rule": "cycle_start_match",
+                                "l6_restored_ranges": list(resolution.get("ranges") or []),
+                                "sentence_restore": resolution.get("sentence_restore")}
+        return pre
+    lang = resolution.get("lang")
+    ranges = list(resolution.get("ranges") or [])
+    if not ranges or lang is None:
+        return None
+    covered = []
+    for r in ranges:
+        hit = None
+        for u in units:
+            if u["lang"] != lang:
+                continue
+            for i, a in enumerate(u["after_units"]):
+                if (a or "").strip() and r.strip() == a.strip() and i < len(u["before_units"]):
+                    hit = (u, i)
+                    break
+            if hit:
+                break
+        if hit is None:
+            return None
+        covered.append({"range": hit[0]["before_units"][hit[1]], "covered_by_claim": hit[0]["claim_identity"],
+                        "via": "l6_restored_equals_after_unit"})
+    return {"lang": lang, "covered": covered, "remaining": [], "res0": None,
+            "l6_precedence": {"skipped_reason": "carry_forward_precedence", "rule": "restored_equals_after_unit",
+                              "l6_restored_ranges": ranges, "sentence_restore": resolution.get("sentence_restore")}}
+
+
 def _carry_forward_comparison(claim_rec: dict, cf: dict) -> list:
     """委任_49 2-4(記録専用、carry-forwardの動作は変えない): carry-forwardが発動したとき、先行指摘
     (同一cycleで同じ文を先に書き換えたclaim)と後続指摘(今回のclaim)の`issue`が同じ内容か異なるか
@@ -6411,8 +6458,15 @@ def run_stage3_for_claim_spans(client, state, consecutive_errors, call_log, labe
     claim_text = claim_rec["claim_text"]
     resolution = resolve_violation_spans(claim_text, current_en_text, current_ja_text)
     cf = None
+    l6_precedence = None
     if resolution["status"] != "resolved":
         cf = carry_forward_resolution(claim_rec, claim_text, current_en_text, current_ja_text)
+    elif _resolution_used_l6(resolution) and claim_rec.get("cycle_replaced_units"):
+        # 委任_05(OPEN-233-KPI-RECOVERY-REDESIGN-02、rep27 A4/A5のHuman Review是正): L6が、同cycleの先行Rewriteで
+        # 書き換え済みの文を「復元」して返した場合、carry-forward判定をL6より先に適用する(二重Rewrite防止)。
+        cf = l6_carry_forward_precedence(claim_rec, claim_text, resolution, current_en_text, current_ja_text)
+        if cf is not None:
+            l6_precedence = cf.get("l6_precedence")
     cf_comparison = _carry_forward_comparison(claim_rec, cf) if cf is not None else None
     if cf is not None:
         if not cf["remaining"]:
@@ -6422,7 +6476,9 @@ def run_stage3_for_claim_spans(client, state, consecutive_errors, call_log, labe
                                       # 委任_66(記録専用): cycle開始時点の確定がL6の復元だった場合、その記録を残す
                                       **({"cycle_start_level": (cf.get("res0") or {}).get("level"),
                                           "sentence_restore": (cf.get("res0") or {}).get("sentence_restore")}
-                                         if (cf.get("res0") or {}).get("sentence_restore") is not None else {})},
+                                         if (cf.get("res0") or {}).get("sentence_restore") is not None else {}),
+                                      # 委任_05(記録専用): L6がこの文を復元したが、carry-forwardを優先して二重Rewriteしなかった
+                                      **({"l6_skipped": l6_precedence} if l6_precedence is not None else {})},
                        "carry_forward_covered": cf["covered"], "level_attempts": [], "level_used": None,
                        "span_unverified": False, "skipped_covered_by_earlier_rewrite": True,
                        "carry_forward_comparison": cf_comparison}

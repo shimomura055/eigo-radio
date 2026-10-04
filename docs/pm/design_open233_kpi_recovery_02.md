@@ -298,3 +298,29 @@ D\*(G_H∨issue_actor+S1)は主構造にしない。S1(同一prompt2回目)は�
 4. 「and」版(rep24 cycle 2 B3)=ACCEPTABLEのFable判断は登録済み(ユーザー未確認、否認されれば戻す)。
 
 実装(委任_04): `CAUSAL_FLOOR_VOCAB`(既定`"known6"`)。`causal_floor_guard`は`known6`のとき`AUX_CONN_RE`(so/because/therefore/as a result/led to/leading to)∧`changed_causality`∧`AUX_HEDGE_RE`なし(英語claimのみ)で判定し、`inventory`のとき目録語彙で判定する。`KPI_TRIAL_SWITCHES`に`CAUSAL_FLOOR: True`+`CAUSAL_FLOOR_VOCAB: "known6"`。補助ベルトG_H/issue_actorは従来どおり`stage2_release_guard`の後段で評価される(known6のG_Hは因果floorと同一集合のため、発火理由は`changed_causality_floor`として先に記録される)。Trial専用・Production未配線・`APPROVED_FOR_PRODUCTION`ではない。
+
+## 12. 再設計ループ2(委任_05、2026-10-04): rep27 Human Review 3件のRCAと是正・設計
+
+rep27(委任_04)の結果: Safety 0・Cost達成・Human Review 3件(`safety_A4` s1・`safety_A5` s1=`ladder_exhausted_without_full_rewrite`、`neg3_hormuz_prodrunner_b1b` s1=`unconfirmed_after_reverify`)。
+
+### 12-1 A4 s1・A5 s1: L6とcarry-forwardの順序不整合(確認)と是正(実装済み、¥0)
+
+**RCA(確認、rep27 instance JSON `rewrite_records`)**。cycle内の処理順(runner行番号は是正前の構造、`_run_stage3_cycle`は`er052_open233_self_recovery_flow_runner_01.py`):
+1. `_run_stage3_cycle`(7889〜7912行)が、BLOCKING claimを順に`run_stage3_for_claim`へ渡す。各claimへ、cycle開始時点の本文(`cycle_start_en_text`)と、これまでの先行Rewriteの置換単位(`cycle_replaced_units`)を持たせる。
+2. `run_stage3_for_claim_spans`は、まず現在の本文でclaim文字列を照合する(`resolve_violation_spans`→`_resolve_claim_string`、5174行)。**`_resolve_claim_string`の内部で、既存の照合(P-strict-closed含む)が`mismatch`のとき、`VS_SENTENCE_RESTORE`ONならL6(`vs_sentence_restore_resolve`、4961行)を試す(5180〜5200行)**。L6が`restored`なら`resolved`で返る。
+3. `resolved`にならなかった場合に**だけ**、`carry_forward_resolution`(6316行)が呼ばれる(旧6414〜6415行)。つまり、carry-forwardはL6が復元できなかった場合の後段だった。
+4. A4 s1(rep27): claim 0(`MUSE-HC-006`、引用符付き「“Through Muse, ... with users.”」)をL1でRewrite成功(`...exchanges with users.`→`...with the people they called.`)。claim 2(同じ文を**引用符なし**で指摘した別claim)は、先行Rewriteで本文から`...with users.`が消え`mismatch`→**L6が「`...with the people they called.`」(書き換え済みの文)を復元して`resolved`(level=`L6:sentence_restore`)**→2回目のRewrite(`e2_paragraph_rewrite_guard_failed`、`ladder_exhausted_without_full_rewrite=True`)→STAGE4。claim 1・3(`MUSE-HC-010`)も同じ型(claim 3はL6復元の文`...could mean...`をさらにRewriteし成功、不要な二重Rewrite)。A5 s1(`MUSE-HC-012`)も同型(claim 0=L0成功、claim 1=引用符なし版→L6が書き換え済みの文を復元→guard failed→STAGE4)。
+5. 対比(rep24、L6 OFF、同じclaim): `mismatch`のまま`carry_forward_resolution`へ進み、`covered_by_earlier_rewrite_in_cycle`(A4の2件・A5の1件)で合格した(rep24 A4 s1=`RESOLVED_REWRITE_THEN_DOWNGRADE`、A5 s1=`RESOLVED_REWRITE`)。**L6を足したことで、carry-forwardが取るはずだった経路をL6が先取りした**(L6の設計書§4は「cycle内の先行Rewrite」を考慮していなかった)。
+
+**是正(決定論、追加call 0)**: `l6_carry_forward_precedence`(新設、`run_stage3_for_claim_spans`から呼ぶ)。確定がL6を含み(`level`に`L6:sentence_restore`)、かつ同cycleに先行Rewriteの置換単位がある場合のみ、L6の結果を採用する前に次を試す。
+ - (1)carry-forward判定(`carry_forward_resolution`。cycle開始時点の本文で照合、委任_04の部分一致[同じ指摘の場合]を含む)。全範囲が先行Rewrite済みなら`covered_by_earlier_rewrite_in_cycle`で解決(Rewriteしない)。
+ - (2)(1)で確定しない場合でも、L6の復元範囲がすべて同cycleの先行Rewriteの置換後の文(`after_units`)と完全一致するなら、その置換単位のclaimでcovered扱い(`rule=restored_equals_after_unit`、`covered.range`は置換前の単位とし`resolve_prior_issue_text`が置換後の文を引ける)。
+ - 未書き換えの範囲が残る(1の`remaining`非空)・先行Rewriteと無関係な文を復元した場合は、従来どおりL6の結果を使う(変えない)。
+ - 記録: `handoff.resolution.l6_skipped={"skipped_reason":"carry_forward_precedence","rule":...,"l6_restored_ranges":[...],"sentence_restore":<L6記録>}`。解消の判定は従来どおり全文Recheckが担う(残れば次cycleで再指摘)。L6 OFFなら新コードは通らない(挙動不変)。Checker Prompt・Schema・判定方法・Productionは不変。
+
+**¥0 replay(確認、`er052_output/open233_kpi_recovery_02_offline_01/replay_cf_l6_order_01.py`、出力`replay_cf_l6_order_01.json`・`..._stdout.txt`)**: rep26・rep27のL6が関与する全cycle(cycle開始時点=fixture本文、記録済みclaim・先行Rewriteの成功置換を再現、Rewrite=スタブ)。
+ - `safety_A4` s1: claim 2・3とも是正後は`covered_by_earlier_rewrite_in_cycle`(Rewriteなし)。是正前は両方Rewriteが走る。`safety_A5` s1: claim 1が同様に`covered`。**二重Rewriteは解消**(ladder枯渇の入口が消える)。
+ - **他のL6復元への影響(正直な記録)**: 委任文の「他の復元が変わらないこと」は満たされない。rep26・rep27で`L6:sentence_restore`が関与した復元(rep26 6記録・rep27 9記録)を再現すると、変わる記録はすべて「同cycleの先行Rewriteが書き換え済みの文を、後続claimのL6が復元して再Rewriteしていた」同型だった: `neg5_hormuz_div_a2`(HF-007。rep26 s1・s2、rep27 s1の3件、旧は`issue_focus_absent_recheck_only`=Rewriteなしだったので挙動差なし)、`safety_er009_changed_number`(F-002。旧は`13 million`の文を再度e2_paragraph_rewriteし成功した**不要な二重Rewrite**、是正後はRewriteしない)、A4(2件)、A5(1件)。先行Rewriteのないcycleで、L6が単独でmismatchを文へ復元した例は、rep26・rep27の証跡内に**存在しなかった**(確認)。`safety_A2A3`の復元は元々carry-forward(`covered`)経由で、変化なし。つまりrep26・27ではL6の復元はすべて「書き換え済みの文」への復元であり、是正後はL6が単独で働く例は実データ上ゼロになる(L6本来の用途=Checkerが文を言い換えた/切り詰めた引用の救済は、このデータでは別経路でカバーされていた、またはcycle 2以降で生じなかった。**推定**: L6の価値は未観測)。
+ - 残るリスク(推定): 同じ文を指す2つのclaimが**別の問題**を指す場合、先行Rewriteが一方しか直さないことがある。carry-forwardの完全包含はissueの同一性を問わない(rep22 T3以来の既存仕様、全文Recheckとcycle 2が最終担保)ため、後続の指摘は次cycleで再検出される。cycle 3到達率は§12-3で扱う。
+
+テスト(`TestL6CarryForwardPrecedence`、`er052_open233_self_recovery_flow_runner_01_test_01.py`): A4/A5のrep27実データによる再現(是正後=covered・Rewriteなし/是正前=二重Rewrite/L6 OFF=rep24と同じ/先行Rewriteなしならself L6の結果を使う/規則(2)の一致・不一致)。runner単体608・er052回帰652 pass、全体回帰は基準11件(6 failure+5 error、他の既存失敗)以外の新規なし。

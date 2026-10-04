@@ -7642,5 +7642,107 @@ class TestCausalFloorAndS1_03(unittest.TestCase):
         self.assertEqual(len(d["after_label_override_dropped"]), 1)
 
 
+class TestL6CarryForwardPrecedence(unittest.TestCase):
+    """委任_05(OPEN-233-KPI-RECOVERY-REDESIGN-02): rep27 A4/A5 s1のL6とcarry-forwardの順序不整合の是正。"""
+
+    _KEYS = None
+
+    def setUp(self):
+        self._saved = {k: getattr(runner, k) for k in list(runner.KPI_TRIAL_SWITCHES) + ["FLOOR_VERIFY_MODE"]}
+        runner.apply_kpi_trial_switches()
+        self._orig_core = runner._run_stage3_spans_core
+        self.called = []
+
+        def stub(*a, **k):
+            self.called.append(1)
+            return {"handoff": {}, "en_text": a[6], "ja_text": a[7], "guard_ok": False, "method": "STUB_REWRITE",
+                    "mechanism": "stub", "ladder_level_used": None, "target_not_locatable": False}
+        runner._run_stage3_spans_core = stub
+
+    def tearDown(self):
+        runner._run_stage3_spans_core = self._orig_core
+        for k, v in self._saved.items():
+            setattr(runner, k, v)
+
+    def _rep27(self, iid):
+        import json
+        import os
+        path = f"er052_output/open233_self_recovery_flow_runner_01_rep27/instances_s1/{iid}.json"
+        if not os.path.exists(path):
+            self.skipTest("rep27 evidence missing")
+        return json.load(open(path, encoding="utf-8"))
+
+    def _replay(self, iid, order_fix=True):
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "replay_cf_l6", "er052_output/open233_kpi_recovery_02_offline_01/replay_cf_l6_order_01.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        d = self._rep27(iid)
+        fx = {i["instance_id"]: i for i in runner.build_target_instances()}[iid]["fixture"]
+        return mod.replay_cycle(fx, d["cycles"][0], order_fix)
+
+    def test_a4_s1_second_claims_are_carried_forward(self):
+        rows = self._replay("safety_A4")
+        self.assertEqual([r["replay_method"] for r in rows],
+                         ["STUB_REWRITE_ATTEMPTED", "STUB_REWRITE_ATTEMPTED",
+                          "covered_by_earlier_rewrite_in_cycle", "covered_by_earlier_rewrite_in_cycle"])
+        self.assertEqual(rows[2]["replay_l6_skipped"], "carry_forward_precedence")
+        self.assertFalse(rows[2]["replay_rewrite_attempted"])
+
+    def test_a5_s1_second_claim_is_carried_forward(self):
+        rows = self._replay("safety_A5")
+        self.assertEqual(rows[1]["replay_method"], "covered_by_earlier_rewrite_in_cycle")
+        self.assertFalse(rows[1]["replay_rewrite_attempted"])
+
+    def test_old_order_double_rewrites(self):
+        rows = self._replay("safety_A4", order_fix=False)
+        self.assertTrue(rows[2]["replay_rewrite_attempted"])  # 是正前: L6が書き換え済みの文を復元し再Rewrite
+
+    def test_l6_off_unchanged(self):
+        runner.VS_SENTENCE_RESTORE = False
+        rows = self._replay("safety_A4")
+        self.assertEqual(rows[2]["replay_method"], "covered_by_earlier_rewrite_in_cycle")  # rep24と同じ(L6 OFF)
+        self.assertIsNone(rows[2]["replay_l6_skipped"])
+
+    def test_no_earlier_rewrite_l6_unchanged(self):
+        """先行Rewriteが無いcycle(cycle_replaced_unitsが空)では、L6の復元はそのまま使われる(Rewriteが走る)。"""
+        d = self._rep27("safety_A4")
+        fx = {i["instance_id"]: i for i in runner.build_target_instances()}["safety_A4"]["fixture"]
+        c = d["cycles"][0]
+        rec3 = c["rewrite_records"][3]
+        claim = rec3["handoff"]["checker_claim_text"]
+        # 先行Rewrite済みの本文だけ与え、units空 → L6復元がそのまま採用される
+        en_now = fx["article_text"].replace(
+            "One helper meant one more person handling private data.", "One helper could mean one more person handling private data.")
+        cl = next(x for x in c["stage2_results"] if x["claim_text"] == claim)
+        claim_rec = {"claim_text": claim, "dev": cl["dev"], "cycle_start_en_text": fx["article_text"],
+                     "cycle_start_ja_text": None, "cycle_replaced_units": [], "cycle_claim_info": {},
+                     "claim_identity": rec3["claim_identity"]}
+        r = runner.run_stage3_for_claim_spans(None, None, None, [], "x", {"article_text": fx["article_text"]},
+                                              en_now, None, claim_rec, False)
+        self.assertEqual(r["method"], "STUB_REWRITE")
+        self.assertEqual(len(self.called), 1)
+
+    def test_rule2_restored_equals_after_unit(self):
+        units = [{"claim_identity": "fact:X", "lang": "EN", "before_units": ["Old sentence here."],
+                  "after_units": ["New sentence here."]}]
+        res = {"status": "resolved", "lang": "EN", "level": runner.VS_L6_LEVEL, "ranges": ["New sentence here."]}
+        cf = runner.l6_carry_forward_precedence({"cycle_replaced_units": units, "cycle_start_en_text": "zzz"},
+                                                "claim not in cycle start text", res, "New sentence here.", None)
+        self.assertIsNotNone(cf)
+        self.assertEqual(cf["remaining"], [])
+        self.assertEqual(cf["covered"][0]["range"], "Old sentence here.")
+        self.assertEqual(cf["l6_precedence"]["rule"], "restored_equals_after_unit")
+
+    def test_rule2_unrelated_restored_sentence_is_not_intercepted(self):
+        units = [{"claim_identity": "fact:X", "lang": "EN", "before_units": ["Old sentence here."],
+                  "after_units": ["New sentence here."]}]
+        res = {"status": "resolved", "lang": "EN", "level": runner.VS_L6_LEVEL, "ranges": ["A different sentence."]}
+        cf = runner.l6_carry_forward_precedence({"cycle_replaced_units": units, "cycle_start_en_text": "zzz"},
+                                                "claim not in cycle start text", res, "A different sentence.", None)
+        self.assertIsNone(cf)
+
+
 if __name__ == "__main__":
     unittest.main()
