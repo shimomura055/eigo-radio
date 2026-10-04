@@ -1,0 +1,61 @@
+{
+ "instance": "safety_er009_changed_comparison",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+    "issue": "F-004は、より高い推奨チップ率を見た乗客のほうが実際により多くチップを残したと報告しており、記事は比較の方向を逆転させている。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "Ledgerの結果と反対の比較方向を主張しているため、changed_comparisonに該当し、具体的事実にも矛盾する。",
+    "related_fact_id": "F-004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_comparison_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1615,
+   "usage": {
+    "input_tokens": 6437,
+    "cached_input_tokens": 0,
+    "output_tokens": 772,
+    "reasoning_tokens": 516
+   },
+   "elapsed_seconds": 8.687,
+   "prompt_sha256": "08efa5234555c73b767bb8582e263cb8d7a1b1ddbb6fc85321f97cd03784c367"
+  }
+ ],
+ "prompt_sha256": [
+  "08efa5234555c73b767bb8582e263cb8d7a1b1ddbb6fc85321f97cd03784c367"
+ ],
+ "cost_jpy": 0.347300944,
+ "elapsed": 8.69
+}

@@ -1,0 +1,79 @@
+{
+ "instance": "bgroup_B4",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "見出しの「I Thought It Was an AI Call」と、本文の「Meta had run a test that produced exactly this kind of surprise.」",
+    "issue": "原文はそのような展開を思わせるテストと表現しているが、記事では筆者自身がAIだと思った経験、または実際に受け手が驚いた出来事があったかのように読める。Ledgerは人間の契約スタッフが一部の電話を担当したことを確認しているが、受け手の誤認や驚きは確認していない。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": true,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "原文の示唆的な描写を、筆者・受け手の具体的な経験や驚きとして強めている。新たな経験主体の追加と未確認の主張に当たる。",
+    "related_fact_id": "MUSE-HC-006",
+    "origin": "translation",
+    "auto_downgraded": false
+   },
+   {
+    "claim_in_article": "“Names, plans, and private matters are easier to share when you know who is hearing them.”",
+    "issue": "相手が誰かを知っていると、名前や予定などをより話しやすくなるという因果的な心理・行動の主張はLedgerにない。Ledgerが確認しているのは、契約スタッフへの機微情報の共有可能性について従業員が懸念を示したこと。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "情報開示のしやすさに関する因果を追加している。原文の「安心感が違う」「相手が誰かは大事」という表現にもない内容。",
+    "related_fact_id": "MUSE-HC-010",
+    "origin": "translation",
+    "auto_downgraded": false
+   },
+   {
+    "claim_in_article": "“As AI makes calls and reservations, useful features make people want to know whether AI or a person is on the other end.”",
+    "issue": "MuseについてのLedger上の機能説明や従業員の懸念から、AI全般の機能と人々一般の知りたい気持ちへ範囲を広げている。また、便利な機能がその気持ちを生むという説明もLedgerでは確認されていない。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "Museに関する確認事項をAI全般・人々一般へ一般化し、便利さが知りたい気持ちにつながるという因果を加えている。",
+    "related_fact_id": "MUSE-HC-004",
+    "origin": "ja_source",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5399,
+  "cached_input_tokens": 0,
+  "output_tokens": 5766,
+  "reasoning_tokens": 5024
+ },
+ "prompt_sha256": "43fbe394a203e091659a4e6a4e709c7a91f9e4046219a6d19bf1f2bfc58ad553",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.5369845520000001,
+ "elapsed": 45.15
+}

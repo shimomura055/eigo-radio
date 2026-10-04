@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_scope",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+    "issue": "タクシー研究で報告された因果効果が、全国のレストランでも直接確認されたと主張している。Ledgerはニューヨーク市タクシーでの因果効果を記載しているが、レストランで提示率が高いと顧客がより多く支払うことを示す確認結果は記載していない。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "レストラン全国への対象拡張（changed_scope）と、Ledgerにない因果効果およびその直接確認の断定（changed_causality、changed_certainty、unsupported_new_claim）がある。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5030,
+  "cached_input_tokens": 5027,
+  "output_tokens": 640,
+  "reasoning_tokens": 373
+ },
+ "prompt_sha256": "3da8e47bb42b1ff7559ecf880d91cc88c1e297d50cbc746bf505ee25e241351f",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.0581350216,
+ "elapsed": 6.65
+}

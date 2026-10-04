@@ -1,0 +1,61 @@
+{
+ "instance": "safety_er009_changed_actor",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+    "issue": "ニューヨーク市タクシーの1,300万件超のクレジットカード取引を分析し、高い推奨チップ率がより多いチップにつながったという中核内容はLedgerと一致する。一方、Ledgerにない「Harvard Business Schoolのチーム」という調査主体・所属を追加している。",
+    "severity": "MINOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": true,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "HBSという具体的な所属はLedgerに記載されておらず、Ledgerが示す研究者・出典の主体を別の組織として示している。ただし、サンプル、場所、因果方向に関する中核的な意味は保たれているためMINOR。",
+    "related_fact_id": "F-001",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "deterministic_flag:changed_actor",
+    "rule_id": "promote_deterministic_flag_v1"
+   }
+  ],
+  "overall_status": "LEDGER_COMPLIANT",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_actor_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.2065,
+   "usage": {
+    "input_tokens": 6445,
+    "cached_input_tokens": 0,
+    "output_tokens": 1344,
+    "reasoning_tokens": 1023
+   },
+   "elapsed_seconds": 14.549,
+   "prompt_sha256": "2161ef93a90eec808d9a57694496f963aa566ef95072ece09be8a1e1be96c80c"
+  }
+ ],
+ "prompt_sha256": [
+  "2161ef93a90eec808d9a57694496f963aa566ef95072ece09be8a1e1be96c80c"
+ ],
+ "cost_jpy": 0.45523438400000005,
+ "elapsed": 14.55
+}

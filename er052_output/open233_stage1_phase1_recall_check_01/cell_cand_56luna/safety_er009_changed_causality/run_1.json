@@ -1,0 +1,61 @@
+{
+ "instance": "safety_er009_changed_causality",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+    "issue": "The historical increase in tipping matches F-006, but the Ledger describes it only as a descriptive trend and does not establish that digital tip screens caused it. The article adds a direct causal explanation that is unsupported and materially changes the article's meaning.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F-006 supports the approximate percentages and time period, but explicitly does not provide causal evidence; the article asserts a definite direct cause and introduces digital tip screens as that cause.",
+    "related_fact_id": "F-006",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_causality_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1517,
+   "usage": {
+    "input_tokens": 6453,
+    "cached_input_tokens": 0,
+    "output_tokens": 643,
+    "reasoning_tokens": 378
+   },
+   "elapsed_seconds": 7.423,
+   "prompt_sha256": "1fba9e17ff3dec710fd7e58bbad9e163dbe1205e37d4893a7c216d9b0091a88e"
+  }
+ ],
+ "prompt_sha256": [
+  "1fba9e17ff3dec710fd7e58bbad9e163dbe1205e37d4893a7c216d9b0091a88e"
+ ],
+ "cost_jpy": 0.323517936,
+ "elapsed": 7.42
+}

@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_time",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+    "issue": "記事は研究の発表年を2019年としているが、Ledgerでは2014年とされている。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": true,
+    "unsupported_new_claim": false,
+    "explanation": "Ledgerと異なる発表年を主張しているため、changed_time（および具体的事実の矛盾としてchanged_fact）がtrue。チップ増加の因果的な主張はLedgerの範囲内。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5024,
+  "cached_input_tokens": 5021,
+  "output_tokens": 555,
+  "reasoning_tokens": 350
+ },
+ "prompt_sha256": "d346f225f9ae1adf0b07c84692e2e32f653168b04770d378742ef43122a6934c",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.051458208799999995,
+ "elapsed": 5.19
+}

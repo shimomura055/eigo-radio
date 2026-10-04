@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_unsupported_new_claim",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+    "issue": "Ledgerには、乗客の性別によるチップ額の比較や「男性は女性の2倍」という結果は記載されていません。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": true,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "Ledgerにない性別間の差と「2倍」という数値を追加しているため、changed_fact・changed_number・unsupported_new_claimに該当します。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5016,
+  "cached_input_tokens": 5013,
+  "output_tokens": 633,
+  "reasoning_tokens": 445
+ },
+ "prompt_sha256": "b441509406a7b9570c9646c2d561fe8a58d14a8ee6c38f2a262e103ba56b27be",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.0575639784,
+ "elapsed": 6.09
+}

@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_comparison",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+    "issue": "研究結果の比較方向がLedgerと逆です。Ledgerでは、より高い推奨チップ率を見た乗客のほうが、実際により多くチップを残したとされています。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "Ledgerにある研究結果と逆の具体的事実を述べているため changed_fact と changed_comparison がtrueです。因果関係を明示的に別方向へ主張しているわけではないため changed_causality はfalseです。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5017,
+  "cached_input_tokens": 5014,
+  "output_tokens": 660,
+  "reasoning_tokens": 436
+ },
+ "prompt_sha256": "f69181371b43ff002e64947d40207be39c61ca06a4ed9bf6ac9f06a5d407173e",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.0596834272,
+ "elapsed": 6.3
+}

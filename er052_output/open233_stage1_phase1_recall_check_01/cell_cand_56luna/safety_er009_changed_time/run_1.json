@@ -1,0 +1,61 @@
+{
+ "instance": "safety_er009_changed_time",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+    "issue": "研究の掲載年を2019年としているが、Ledgerの出典情報では研究の発表日は2014年7月1日である。なお、ニューヨーク市のタクシー乗客が、より高い推奨チップ率を見た場合により多くチップを残したという因果的内容はF-004と整合する。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": true,
+    "unsupported_new_claim": false,
+    "explanation": "研究の対象・比較方向・因果関係は概ねLedger内だが、掲載年を2014年から2019年へ変更しているため、changed_factとchanged_timeがtrue。",
+    "related_fact_id": "F-004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_time_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1653,
+   "usage": {
+    "input_tokens": 6444,
+    "cached_input_tokens": 0,
+    "output_tokens": 818,
+    "reasoning_tokens": 516
+   },
+   "elapsed_seconds": 8.803,
+   "prompt_sha256": "5ee49c9db7817eaa6ce7a657fad7ced16a0e809c7463391267f9f94b41c60801"
+  }
+ ],
+ "prompt_sha256": [
+  "5ee49c9db7817eaa6ce7a657fad7ced16a0e809c7463391267f9f94b41c60801"
+ ],
+ "cost_jpy": 0.35618035200000003,
+ "elapsed": 8.8
+}

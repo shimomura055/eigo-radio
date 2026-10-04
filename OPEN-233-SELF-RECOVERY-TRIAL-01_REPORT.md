@@ -4509,3 +4509,18 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - Production基準(raw_usage_log、gpt-5.6-luna、¥160/USD、n=8記事run): JA Checker+must_fix+loop 平均¥2.77/中央値¥2.50、text生成全体 平均¥6.55。EN側vfl01 Checkerはstage名未記録で分離不能(未確認)。
 - P6: B-family/Voices A2/er009 n1 diagnosticは`run_deviation_check`をmonitoring専用で呼ぶのみ(MAJOR時の本文変更・STOP分岐は確認範囲で無し)→配線対象外を推奨(Gap文書§2-8)。
 - ガードレール¥8を¥1.94超過(1call平均¥0.28、rep30 Stage 1実測¥0.14〜0.45と同水準、暴走ではない)。Production未変更、`PRODUCTION_WIRED`ではない。
+
+### 64-2. 委任_05: K14 Phase 1の2x2補完(V0/候補 x gpt-6-luna/gpt-5.6-luna、2026-10-05、実費¥20.10、Phase累計約¥750.24)
+
+DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_check_01.py`に`--stage1-variant {candidate,v0}`/`--model`/`--out-subdir`/`--stage matrix`を追加(既定は従来挙動)。V0 promptはProduction `er003 run_deviation_check`をimportしてそのまま呼出し(prompt sha256を各run jsonに記録)。(A)V0@gpt-6-luna n=2(実費¥6.99)、(B)候補@gpt-5.6-luna は費用のため**n=1に縮小**(18 call、実費¥13.11、n=2想定は約¥26で合計がGuardrail¥22超のため)。証跡: `er052_output/open233_stage1_phase1_recall_check_01/{cell_v0_6luna,cell_cand_56luna,matrix_2x2.json}`。照合・劣後定義は委任_04cと同一(V0記録=gpt-5.6-luna記録値)。
+
+| セル | n | SC 5件(B3/B4-a/A2A3/A4/A5) | 劣後(自セル集計) | 04cの劣後6件のうち未検出 | 負例MAJOR neg1/2/3 | 検出MAJOR総数 | 費用/call |
+|---|---|---|---|---|---|---|---|
+| V0@5.6-luna(記録) | 1 | 5/5(定義上) | 0 | 0 | 0/1,0/1,0/1 | 19 | - |
+| V0@gpt-6-luna | 2 | 2/2,1/2,2/2,1/2,2/2 | 2 | 2(A2A3 0/2、B4 claim2 0/2) | 2/2,1/2,1/2 | 41 | ¥0.194 |
+| 候補@gpt-6-luna(04c) | 2 | 2/2,0/2,2/2,2/2,2/2 | 6 | 6 | 0/2,2/2,1/2 | 47 | ¥0.276 |
+| 候補@gpt-5.6-luna | 1 | 1/1,0/1,1/1,0/1,1/1 | 5(6件基準では4) | 4(B4 4件全て0/1。A2A3・B2_hormuzは1/1検出) | 0/1,0/1,1/1 | 20 | ¥0.728 |
+
+劣後6件の逐語表(hits): B4-1 V0@6 1/2、候補@6 0/2、候補@5.6 0/1。B4-2 0/2、0/2、0/1。B4-3 2/2、0/2、0/1。B4-4 1/2、0/2、0/1。A2A3 0/2、0/2、1/1。B2_hormuz 1/2、0/2、1/1。
+
+解釈(n小のため推測を含む): [確認] B4の4件は候補promptだとモデルを替えても検出されない(6-luna 0/2、5.6-luna 0/1)、V0 promptなら6-lunaで部分的に検出(1/2,0/2,2/2,1/2)。B4-aは候補prompt側で両モデル未検出。[確認] 検出件数(量)はmodel依存が大(V0 19→41、候補 20→47、gpt-6-lunaが約2倍検出)。[確認] V0@gpt-6-lunaもA2A3を0/2で取り逃し、B3・A4・B4-aが1/2で不安定(V0 prompt自体はgpt-6-lunaで万能ではない)。[確認] 負例neg1(MAJOR出さない想定)はV0@6が2/2誤検出、候補は0/2・0/1(誤検出面では候補promptが良い)。[推測] SCのB4取りこぼしは主にprompt差(候補の昇格ルール除外・列挙構成)、検出量の増加は主にモデル差。n=1/2のため確定ではない。Production未変更、`PRODUCTION_WIRED`ではない。

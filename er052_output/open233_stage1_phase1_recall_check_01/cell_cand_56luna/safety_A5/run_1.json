@@ -1,0 +1,62 @@
+{
+ "instance": "safety_A5",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+    "issue": "「put back」は人間が電話を担当する機能を再導入したという意味に読めるが、Ledgerが保証するのは、その機能を当面ロールバックしたという事実である。対応の方向が逆になっている。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "人間コンシェルジュ機能を一時的に停止・撤回した事実が、機能を戻して再導入した事実に変わっている。",
+    "related_fact_id": "MUSE-HC-012",
+    "origin": "translation",
+    "qualifier_present": true,
+    "qualifier_text": "temporarily",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_A5_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.5731,
+   "usage": {
+    "input_tokens": 6744,
+    "cached_input_tokens": 0,
+    "output_tokens": 5957,
+    "reasoning_tokens": 5696
+   },
+   "elapsed_seconds": 58.104,
+   "prompt_sha256": "93e4f4ad2666d99078654d786e7ee8e3086862d0790975ad27dc00be834ac681"
+  }
+ ],
+ "prompt_sha256": [
+  "93e4f4ad2666d99078654d786e7ee8e3086862d0790975ad27dc00be834ac681"
+ ],
+ "cost_jpy": 1.3330407359999998,
+ "elapsed": 58.1
+}

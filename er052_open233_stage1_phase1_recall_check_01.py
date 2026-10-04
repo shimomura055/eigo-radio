@@ -19,8 +19,20 @@ import er050_gpt6_checker_comparison_trial_01 as g6  # noqa: E402
 import er051_open233_checker_trial_variant_01 as trial  # noqa: E402
 import er052_open233_self_recovery_flow_runner_01 as runner  # noqa: E402
 import er052_open233_self_recovery_phase1_step3_stage1_compare_01 as step3cmp  # noqa: E402
+import er003_v1_en_direct_vfl_01_generate as vfl01  # noqa: E402  (委任_05: V0 variantはProduction run_deviation_checkをそのまま呼ぶ)
+import hashlib  # noqa: E402
 
-OUT = "er052_output/open233_stage1_phase1_recall_check_01"
+OUT_BASE = "er052_output/open233_stage1_phase1_recall_check_01"
+OUT = OUT_BASE
+# 委任_05: model別単価($/1M tok in/cached/out、gpt-6-luna=s2p PRICE、gpt-5.6-luna=er050 REF)
+RATES = {"gpt-6-luna": (0.10, 0.01, 0.50), "gpt-5.6-luna": (0.20, 0.02, 1.20)}
+USD_JPY = 156.88
+
+
+def cost_for(model, usage):
+    ri, rc, ro = RATES[model]
+    it, ct, ot = usage.get("input_tokens") or 0, usage.get("cached_input_tokens") or 0, usage.get("output_tokens") or 0
+    return (max(it - ct, 0) / 1e6 * ri + ct / 1e6 * rc + ot / 1e6 * ro) * USD_JPY
 runner.check_budget = lambda state: None
 runner.record_call = lambda *a, **k: None
 NEG_IDS = ["neg1_meta_b3prod_a2", "neg2_meta_refresh_a2", "neg3_hormuz_prodrunner_b1b"]
@@ -52,7 +64,7 @@ def v0_record(fx, path):
     return fx.get("baseline_parsed"), "fixture.baseline_parsed"
 
 
-def run(n, budget, hard_mult):
+def run(n, budget, hard_mult, variant="candidate", model="gpt-6-luna"):
     client = OpenAI()
     os.makedirs(OUT, exist_ok=True)
     total = 0.0
@@ -68,13 +80,39 @@ def run(n, budget, hard_mult):
                 return
             call_log, state = [], {}
             t0 = time.time()
-            parsed = runner.stage1_fresh_with_enumeration(
-                client, state, [0], call_log, "%s_p1_%d" % (k, i), fx,
-                developer_message=trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE)
-            cost = sum(c.get("cost_jpy", 0.0) for c in call_log)
+            extra = {}
+            if variant == "v0":
+                kw = {"model": model, "hook_aware": fx.get("hook_aware", False)}
+                if fx.get("include_related_fact_id"):
+                    kw["include_related_fact_id"] = True
+                if fx.get("source_article_text") is not None:
+                    kw["source_article_text"] = fx["source_article_text"]
+                res = None
+                for _try in range(3):
+                    try:
+                        res = vfl01.run_deviation_check(client, fx["ledger_text"], fx["article_text"], **kw)
+                        break
+                    except Exception as e:  # noqa: BLE001
+                        print("retry", k, i, type(e).__name__, e)
+                        time.sleep(1.0)
+                if res is None:
+                    parsed = {"overall_status": "LEDGER_DEVIATION", "deviations": [], "_stage1_api_failure": True}
+                    cost = 0.0
+                else:
+                    parsed = res["parsed"]
+                    cost = cost_for(model, res["usage"])
+                    extra = {"usage": res["usage"], "prompt_sha256": hashlib.sha256(res["prompt"].encode("utf8")).hexdigest(),
+                             "model_returned": res["model"]}
+            else:
+                runner.MODEL = model  # stage1_fresh_with_enumerationはmodule globalのMODELを使う
+                parsed = runner.stage1_fresh_with_enumeration(
+                    client, state, [0], call_log, "%s_p1_%d" % (k, i), fx,
+                    developer_message=trial.V4A_DEVELOPER_MSG_WITH_MISCONCEPTION_PRINCIPLE)
+                cost = sum(cost_for(model, c["usage"]) for c in call_log if c.get("usage"))
+                extra = {"prompt_sha256": [c.get("prompt_sha256") for c in call_log]}
             total += cost
             os.makedirs(os.path.dirname(f), exist_ok=True)
-            json.dump({"instance": k, "run": i, "model": runner.MODEL, "parsed": parsed, "call_log": call_log,
+            json.dump({"instance": k, "run": i, "model": model, "variant": variant, "parsed": parsed, "call_log": call_log, **extra,
                        "cost_jpy": cost, "elapsed": round(time.time() - t0, 2)},
                       open(f, "w", encoding="utf8"), ensure_ascii=False, indent=1, default=str)
             print(k, i, round(cost, 4), "cum", round(total, 3), "api_failure" if parsed.get("_stage1_api_failure") else "")
@@ -116,13 +154,14 @@ def sc_match(inst, dev):
     return None
 
 
-def agg(n):
+def agg(n, out=None, quiet=False):
+    out = out or OUT
     S = {"inferior": [], "cand_only": [], "both": [], "neither_instances": [], "sc": {}, "neg": {}, "cost_jpy": 0.0, "n_runs": 0,
          "api_failures": 0}
     for k, (fx, vp) in instances().items():
         runs = []
         for i in range(1, n + 1):
-            f = "%s/%s/run_%d.json" % (OUT, k, i)
+            f = "%s/%s/run_%d.json" % (out, k, i)
             if os.path.exists(f):
                 x = json.load(open(f, encoding="utf8"))
                 runs.append(x)
@@ -160,21 +199,68 @@ def agg(n):
                            "claims": [d.get("claim_in_article") for r in runs for d in majors(r["parsed"])]}
     S["cost_jpy"] = round(S["cost_jpy"], 4)
     S["verdict"] = "K14_ABSORBABLE (inferior 0)" if not S["inferior"] else "K14_USER_DECISION (inferior %d)" % len(S["inferior"])
-    json.dump(S, open(OUT + "/agg_phase1.json", "w", encoding="utf8"), ensure_ascii=False, indent=1)
+    json.dump(S, open(out + "/agg_phase1.json", "w", encoding="utf8"), ensure_ascii=False, indent=1)
+    if quiet:
+        return S
     print(json.dumps({k: (v if k not in ("inferior", "cand_only", "both") else len(v)) for k, v in S.items()},
                      ensure_ascii=False, indent=1))
     for r in S["inferior"]:
         print("INFERIOR:", r)
+    return S
+
+
+def matrix():
+    # 委任_05: 2x2集計(セル別: SC検出/劣後件数/負例MAJOR誤検出/検出claim総数/費用per call/劣後6件の逐語表)
+    cells = [("V0@6luna", OUT_BASE + "/cell_v0_6luna"), ("cand@6luna(04c)", OUT_BASE), ("cand@5.6luna", OUT_BASE + "/cell_cand_56luna")]
+    base_inf = json.load(open(OUT_BASE + "/agg_phase1.json", encoding="utf8"))["inferior"]  # 委任_04cの劣後6件
+    ins = instances()
+    res = {}
+    for name, d in cells:
+        nn = max([int(re.search(r"run_(\d+)", fn).group(1)) for fn in __import__("glob").glob(d + "/*/run_*.json")] or [0])
+        S = agg(nn, d, quiet=True)
+        tot = 0
+        for k in ins:
+            for i in range(1, nn + 1):
+                f = "%s/%s/run_%d.json" % (d, k, i)
+                if os.path.exists(f):
+                    tot += len(majors(json.load(open(f, encoding="utf8"))["parsed"]))
+        tbl = []
+        for r in base_inf:
+            runs = [json.load(open("%s/%s/run_%d.json" % (d, r["instance"], i), encoding="utf8")) for i in range(1, nn + 1)
+                    if os.path.exists("%s/%s/run_%d.json" % (d, r["instance"], i))]
+            h = sum(any(same_claim({"claim_in_article": r["claim"]}, x) for x in majors(rr["parsed"])) for rr in runs)
+            tbl.append({"instance": r["instance"], "claim": (r["claim"] or "")[:70], "hits": "%d/%d" % (h, len(runs))})
+        res[name] = {"n": nn, "sc": {k: v["cand"] for k, v in S["sc"].items()}, "inferior": len(S["inferior"]),
+                     "neg_major_runs": {k: "%d/%d" % (v["cand_major_runs"], v["runs"]) for k, v in S["neg"].items()},
+                     "total_majors": tot, "cost_total_jpy": S["cost_jpy"], "n_runs": S["n_runs"],
+                     "cost_per_call": round(S["cost_jpy"] / max(S["n_runs"], 1), 4), "api_failures": S["api_failures"], "inferior6": tbl}
+    # V0@5.6記録(er050 step1/2 run_1 or fixture baseline_parsed)
+    sc, tot, neg = {}, 0, {}
+    for k, (fx, vp) in ins.items():
+        v0, _ = v0_record(fx, vp)
+        tot += len(majors(v0))
+        if k in NEG_IDS:
+            neg[k] = "%d/1" % bool(majors(v0))
+    res["V0@5.6luna(record,n=1)"] = {"n": 1, "total_majors": tot, "neg_major_runs": neg, "inferior": 0}
+    json.dump(res, open(OUT_BASE + "/matrix_2x2.json", "w", encoding="utf8"), ensure_ascii=False, indent=1)
+    print(json.dumps(res, ensure_ascii=False, indent=1))
 
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
-    ap.add_argument("--stage", default="run", choices=["run", "agg"])
+    ap.add_argument("--stage", default="run", choices=["run", "agg", "matrix"])
+    ap.add_argument("--stage1-variant", default="candidate", choices=["candidate", "v0"])
+    ap.add_argument("--model", default="gpt-6-luna")
+    ap.add_argument("--out-subdir", default="")
     ap.add_argument("--n", type=int, default=2)
     ap.add_argument("--budget-jpy", type=float, default=8.0)
     ap.add_argument("--hard-mult", type=float, default=1.6)
     a = ap.parse_args()
+    if a.out_subdir:
+        OUT = OUT_BASE + "/" + a.out_subdir
     if a.stage == "run":
-        run(a.n, a.budget_jpy, a.hard_mult)
+        run(a.n, a.budget_jpy, a.hard_mult, a.stage1_variant, a.model)
+    elif a.stage == "agg":
+        agg(a.n, OUT)
     else:
-        agg(a.n)
+        matrix()

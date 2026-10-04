@@ -1,0 +1,60 @@
+{
+ "instance": "safety_A4",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "“That was what people thought as they spoke” and “people who thought they were speaking with AI were actually speaking with human staff.”",
+    "issue": "Ledgerは、契約スタッフが一部の電話を担当したことと適切な開示がなかったことを確認していますが、電話の相手がAIと話していると思っていたことまでは確認していません。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "相手がAIだと思っていたという具体的な事実はLedgerにありません。実際に人間が電話を担当した点は確認されていますが、相手の認識は別の未確認主張です。",
+    "related_fact_id": "MUSE-HC-012",
+    "origin": "ja_source",
+    "auto_downgraded": false
+   },
+   {
+    "claim_in_article": "“One helper meant one more person handling private data.”",
+    "issue": "情報が契約スタッフに共有される可能性への懸念を、助っ人が入れば実際にもう一人が個人データを扱うという断定にしています。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "Ledgerが示すのは、機微情報が意図せず共有される可能性についての懸念です。実際にデータを扱う人が必ず一人増えたという結果までは確認されていません。",
+    "related_fact_id": "MUSE-HC-010",
+    "origin": "ja_source",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5318,
+  "cached_input_tokens": 5315,
+  "output_tokens": 5655,
+  "reasoning_tokens": 5217
+ },
+ "prompt_sha256": "c350ca634b6279f2bc835ef7290ced09d34a2f18aa87ba9fa2680c89facfc9f6",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.451963436,
+ "elapsed": 45.17
+}

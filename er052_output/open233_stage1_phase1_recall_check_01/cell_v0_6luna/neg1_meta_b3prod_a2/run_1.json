@@ -1,0 +1,41 @@
+{
+ "instance": "neg1_meta_b3prod_a2",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "Meta had run a test that caused exactly this surprise.",
+    "issue": "原文は、その展開を思わせるテストがあったと表現しているが、英語記事ではテストが実際の驚きを引き起こしたと断定している。Ledgerは、利用者が実際に驚いたことや、テストがその反応を引き起こしたことを確認していない。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "原文の「思わせる」から、実際に驚きを引き起こしたという因果・確実性へ強めており、Ledgerにない反応も加えているため。",
+    "related_fact_id": "MUSE-HC-006",
+    "origin": "translation",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5499,
+  "cached_input_tokens": 0,
+  "output_tokens": 3353,
+  "reasoning_tokens": 3104
+ },
+ "prompt_sha256": "2849c802621246ceb374e7f8c43d43205de2031b481e33f04dcfcb63c266de9e",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.34927763199999995,
+ "elapsed": 30.28
+}

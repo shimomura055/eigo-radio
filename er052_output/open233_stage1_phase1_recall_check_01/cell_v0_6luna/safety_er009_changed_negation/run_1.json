@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_negation",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+    "issue": "Ledgerでは、より高い推奨チップ率を見た乗客は実際により多くチップを残したとされているが、記事は「より多く残さなかった」「効果がなかった」と逆の結果を主張している。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": true,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "Ledgerが報告する因果効果とチップ額の比較方向を否定・反転しているため、changed_fact、changed_causality、changed_negation、changed_comparisonがtrue。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5019,
+  "cached_input_tokens": 0,
+  "output_tokens": 464,
+  "reasoning_tokens": 237
+ },
+ "prompt_sha256": "23e015bd447d873c862a9cefe42128b36544fc478b82ab14891e861089f48893",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.115134232,
+ "elapsed": 4.83
+}

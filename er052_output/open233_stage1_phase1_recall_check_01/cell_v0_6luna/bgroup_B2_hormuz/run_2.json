@@ -1,0 +1,41 @@
+{
+ "instance": "bgroup_B2_hormuz",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "“The disappearance of the fee plan did not lead to a large, lasting fall in prices” and “other factors remained on that same stage. So the price reacted once, then returned to a high level.”",
+    "issue": "記事は、料金案の撤回後に上げ幅が一時縮小して回復したという観測に加え、撤回が大きく持続的な下落をもたらさなかったことや、継続していた他の要因が回復をもたらしたことまで因果関係として述べています。Ledgerは値動きと懸念の継続を確認していますが、撤回が価格に与えた因果効果については断定できないとしています。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "HF-009の値動きの記述を超えて因果関係を加えています。HF-011も、撤回と日次価格の変化から因果を推論しないよう明記しています。原文にも同じ因果表現があります。",
+    "related_fact_id": "HF-011",
+    "origin": "ja_source",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5383,
+  "cached_input_tokens": 5380,
+  "output_tokens": 3317,
+  "reasoning_tokens": 2986
+ },
+ "prompt_sha256": "388dc20fb5666dd1d5405284fd46daac6c4a1625bcf25cb5daa12767e43eeb49",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.268672688,
+ "elapsed": 28.09
+}

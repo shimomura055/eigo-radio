@@ -1,0 +1,41 @@
+{
+ "instance": "neg3_hormuz_prodrunner_b1b",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+    "issue": "The article says the events driving oil prices quickly returned, while the source says the relevant events continued during this period. The Ledger also does not establish that those events caused Brent’s post-announcement price movement.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": true,
+    "unsupported_new_claim": true,
+    "explanation": "The wording changes events that continued into events that returned (changed_fact, changed_time), and adds an unsupported causal link between those events and oil prices (changed_causality, unsupported_new_claim). This causal wording is not present in the Japanese source.",
+    "related_fact_id": "HF-009",
+    "origin": "translation",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5593,
+  "cached_input_tokens": 0,
+  "output_tokens": 2236,
+  "reasoning_tokens": 2016
+ },
+ "prompt_sha256": "c18e9491090d7102d85fce28b72d885e705770cad981a363ac7289930572572e",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.263134824,
+ "elapsed": 21.43
+}

@@ -1,0 +1,62 @@
+{
+ "instance": "bgroup_B2_hormuz",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+    "issue": "撤回後に大幅で持続的な下落が起きなかったことを、料金案の消失がその下落を引き起こさなかったという因果関係として述べている。Ledgerは撤回後の一時的な上げ幅縮小と回復を確認しているが、撤回が価格を上昇させた、または下落させなかったとの因果推論は認めていない。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "観測された価格推移を、撤回が大幅な下落を生じさせなかったという因果的主張に変えており、HF-011のfactual constraintに反する。",
+    "related_fact_id": "HF-011",
+    "origin": "ja_source",
+    "qualifier_present": true,
+    "qualifier_text": "a large, lasting fall",
+    "ledger_field_basis": "notes_factual_constraint",
+    "observation_consistent": false,
+    "matched_notes_id": "HF-011",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "bgroup_B2_hormuz_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.4282,
+   "usage": {
+    "input_tokens": 6712,
+    "cached_input_tokens": 0,
+    "output_tokens": 4116,
+    "reasoning_tokens": 3790
+   },
+   "elapsed_seconds": 38.177,
+   "prompt_sha256": "ee57d333d377fe911b1daa18187745775f31bdb944da099fd4d32df11a8a0b4e"
+  }
+ ],
+ "prompt_sha256": [
+  "ee57d333d377fe911b1daa18187745775f31bdb944da099fd4d32df11a8a0b4e"
+ ],
+ "cost_jpy": 0.9854574079999999,
+ "elapsed": 38.18
+}

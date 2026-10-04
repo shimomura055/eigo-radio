@@ -419,6 +419,10 @@ CURRENT_SPEC OPEN-233節へ: ladder/位置引継ぎ/許可リスト/判定専用
 | K13 | 非競合 | 非競合(S1側で既に実現)。読替のみ |
 | 新規K14 | - | **Production初回CheckerはTrial V4A版ではない**(6-1)。rep30は35/38でStage 1を再利用し、Production新規Stage 1は未検証。要設計+最小追加検証 |
 
+### 6-8. K14 Phase 1の2x2結果(委任_05、2026-10-05、実費¥20.10)
+
+V0@6luna(n=2)劣後2(A2A3 0/2、B4-2 0/2)、候補@5.6luna(n=1)劣後5(04c6件基準で4: B4全4件0/1)。B4-a(SC)は候補prompt側で両モデル未検出(0/2、0/1)、V0@6luna 1/2。負例neg1はV0@6が2/2誤検出、候補は0。検出量は主にモデル依存、B4取りこぼしは主にprompt依存(推測、n小)。詳細表は`OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md` §64-2、証跡`er052_output/open233_stage1_phase1_recall_check_01/matrix_2x2.json`。
+
 ## 7. Opus#15後のFable評価(2026-10-05、全文: `docs/pm/opus_l2_review_open233_production_wiring_15.md`)
 
 1. 案M修正採用: 新Production module(入口1つ、戻り値status/reason∈4種/sub_reason/audit、4種以外はAssertionError)+P1〜P5薄いアダプタ、Feature flag既定OFF、`er010`併存、Trial runner切替は別タスク、`er05x`非import機械検査、V7b正本=`s2c` L612。

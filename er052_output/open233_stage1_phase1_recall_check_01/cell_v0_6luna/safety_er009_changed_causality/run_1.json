@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_causality",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+    "issue": "Ledgerが示すのは米国レストランのチップ慣行の歴史的上昇であり、デジタル画面がその上昇を引き起こしたとは示していません。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F-006の記述的な時系列を、デジタル画面が直接引き起こしたという因果関係に変えています。Ledgerにない因果主張を確定的に追加しているため、changed_fact、changed_causality、changed_certainty、unsupported_new_claimがtrueです。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5033,
+  "cached_input_tokens": 0,
+  "output_tokens": 621,
+  "reasoning_tokens": 364
+ },
+ "prompt_sha256": "3a246cf1018b5a60762992236d639093b63e057fc558cc83ac90d25b2f0a0aca",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.127668944,
+ "elapsed": 6.34
+}

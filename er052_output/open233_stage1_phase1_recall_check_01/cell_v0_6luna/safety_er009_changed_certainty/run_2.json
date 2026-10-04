@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_certainty",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+    "issue": "Ledgerはデジタル画面による社会的圧力を著者の議論として記述し、調査でも画面がチップを促すと感じる回答者は59％と報告しているにとどまる。全員に生じることや、疑いなく因果関係が証明されたことは確認していない。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "「every customer」は調査対象・結果の範囲を超えるためchanged_scope、「cause」は議論や自己申告を確立した因果関係に変えるためchanged_causality、「proven beyond doubt」は確実性を強めるためchanged_certaintyをtrueとした。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5010,
+  "cached_input_tokens": 5007,
+  "output_tokens": 620,
+  "reasoning_tokens": 358
+ },
+ "prompt_sha256": "72f14a912298d7a0bde24db63b538192a0f073290116aa81775cb53de95c7766",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.056534845599999994,
+ "elapsed": 5.59
+}

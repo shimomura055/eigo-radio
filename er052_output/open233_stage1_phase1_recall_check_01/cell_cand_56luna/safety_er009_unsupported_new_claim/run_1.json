@@ -1,0 +1,61 @@
+{
+ "instance": "safety_er009_unsupported_new_claim",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+    "issue": "The article adds an unsupported gender comparison and the specific numerical claim that male passengers tipped twice as much. The Ledger supports that passengers shown higher suggested rates tipped more, but it does not report a male-versus-female comparison or a twofold effect.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": true,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "The gender-based comparison and the 'twice as much' figure are not present in the Ledger; the claim changes the comparison from suggested-rate exposure to passenger gender and adds an unsupported number.",
+    "related_fact_id": "F-004",
+    "qualifier_present": true,
+    "qualifier_text": "when shown a higher suggested rate",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_unsupported_new_claim_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1618,
+   "usage": {
+    "input_tokens": 6436,
+    "cached_input_tokens": 0,
+    "output_tokens": 775,
+    "reasoning_tokens": 516
+   },
+   "elapsed_seconds": 8.209,
+   "prompt_sha256": "8a7a3892fd0cab6a3a645061dc12aa022a29fe7f549219a41d4e6f3d5fa7a145"
+  }
+ ],
+ "prompt_sha256": [
+  "8a7a3892fd0cab6a3a645061dc12aa022a29fe7f549219a41d4e6f3d5fa7a145"
+ ],
+ "cost_jpy": 0.34783433599999997,
+ "elapsed": 8.21
+}

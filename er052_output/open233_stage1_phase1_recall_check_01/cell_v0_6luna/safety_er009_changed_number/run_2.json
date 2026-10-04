@@ -1,0 +1,39 @@
+{
+ "instance": "safety_er009_changed_number",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+    "issue": "取引件数がLedgerの「1,300万件超」ではなく「3,000万件超」と記載されている。チップ増加の因果関係についてはLedgerの記述と整合する。",
+    "severity": "MAJOR",
+    "changed_fact": false,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": true,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "changed_number=true。Ledgerにある研究の取引件数を異なる数値に変えている。因果の方向と対象範囲はLedgerの内容に沿っている。",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5020,
+  "cached_input_tokens": 5017,
+  "output_tokens": 428,
+  "reasoning_tokens": 213
+ },
+ "prompt_sha256": "787007873a6a5e4938c406f4781069be5f459da06e126da9994f86a7bb2e5290",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.0414900536,
+ "elapsed": 5.7
+}

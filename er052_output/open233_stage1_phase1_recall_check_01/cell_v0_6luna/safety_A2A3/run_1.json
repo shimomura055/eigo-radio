@@ -1,0 +1,60 @@
+{
+ "instance": "safety_A2A3",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+    "issue": "記事は貨物を運ぶ側を支払義務者として特定しているが、Ledgerでは支払義務者は示されていないとされている。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "HF-003は支払義務者などの制度設計が未提示としているため、支払う主体を特定するのは未確認の事実・対象範囲の追加。原文にも同じ記述がある。",
+    "related_fact_id": "HF-003",
+    "origin": "ja_source",
+    "auto_downgraded": false
+   },
+   {
+    "claim_in_article": "“the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+    "issue": "海峡の危険が原油を通じてガソリン価格や物流費に波及すると主張しているが、その影響はLedgerで確認されていない。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "Ledgerが扱うのは原油価格や海峡をめぐる懸念であり、ガソリン価格・物流費への波及関係までは裏付けていない。原文にも同じ主張がある。",
+    "related_fact_id": "HF-006",
+    "origin": "ja_source",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5438,
+  "cached_input_tokens": 0,
+  "output_tokens": 2848,
+  "reasoning_tokens": 2414
+ },
+ "prompt_sha256": "4e708ecbdeb74f96d998f2a8788b17cd841765005c48456c0d6800b3979c5804",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.308708464,
+ "elapsed": 22.67
+}

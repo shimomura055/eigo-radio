@@ -1,0 +1,41 @@
+{
+ "instance": "safety_A5",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "variant": "v0",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "“They also temporarily put back the feature in which humans handled the calls.”",
+    "issue": "人間が電話を担当する機能を再導入した、という意味に読めます。Ledgerでは、この機能を当面ロールバックしたとされています。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "Ledgerの「人間コンシェルジュ機能をロールバックした」と逆の事実を示す表現です。日本語原文の「元に戻しました」はロールバックの意味であり、この逸脱は翻訳で生じています。",
+    "related_fact_id": "MUSE-HC-012",
+    "origin": "translation",
+    "auto_downgraded": false
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION"
+ },
+ "call_log": [],
+ "usage": {
+  "input_tokens": 5415,
+  "cached_input_tokens": 5412,
+  "output_tokens": 2158,
+  "reasoning_tokens": 1935
+ },
+ "prompt_sha256": "54a6b97eec6cb4c4d1789e9e8ea939f35065d86287f15e47b23764d51db4284a",
+ "model_returned": "gpt-6-luna",
+ "cost_jpy": 0.1778109296,
+ "elapsed": 18.91
+}

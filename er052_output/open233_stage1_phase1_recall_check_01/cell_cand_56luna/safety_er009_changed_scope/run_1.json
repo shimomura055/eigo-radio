@@ -1,0 +1,61 @@
+{
+ "instance": "safety_er009_changed_scope",
+ "run": 1,
+ "model": "gpt-5.6-luna",
+ "variant": "candidate",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+    "issue": "記事は、ニューヨーク市タクシーで確認された因果関係が、全国のレストランでも直接確認されたと述べている。しかしLedgerのレストラン関連Factは記述的な調査結果や著者の解釈にとどまり、レストランで高い推奨率がより多くのチップを因果的に生むことを直接確認していない。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F004の因果効果はニューヨーク市タクシーに限定される。記事はそれを全国のレストランへ拡張し、Ledgerで直接確認されていないレストランでの因果関係を断定しているため、Fact・scope・causality・certaintyが変化している。",
+    "related_fact_id": "F004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_scope_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.2014,
+   "usage": {
+    "input_tokens": 6450,
+    "cached_input_tokens": 0,
+    "output_tokens": 1277,
+    "reasoning_tokens": 927
+   },
+   "elapsed_seconds": 15.002,
+   "prompt_sha256": "7c91f2d65fd299ad21113366a5204738acd34f4d244c273de2f5dc55c0583ebb"
+  }
+ ],
+ "prompt_sha256": [
+  "7c91f2d65fd299ad21113366a5204738acd34f4d244c273de2f5dc55c0583ebb"
+ ],
+ "cost_jpy": 0.442778112,
+ "elapsed": 15.0
+}
