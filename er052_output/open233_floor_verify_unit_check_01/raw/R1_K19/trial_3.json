@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "comparison_time",
+    "target": true,
+    "target_reason": "comparison_time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_comparison"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_claim",
+        "ledger_citation": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "explanation": "Ledgerが確認しているのはBrent先物の一時的な上げ幅縮小であり、価格が全面的・継続的に下落したという意味ではありません。ただし、claimは一時的な値動きを述べ、直後の文も高水準への回復を記しているため、方向のニュアンスの差にとどまり、核心を変える重大な矛盾ではありません。",
+        "prompt_sha256": "03b0486b068feaa3cc0948dd1136928dd28bdad818f47d1fe088750e3ef4fd4b",
+        "cost_jpy": 0.0626,
+        "response_id": "resp_0226b75e8e9ff2db006ac1a417906c87d0b202b4baa36eb761",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_claim",
+        "ledger_citation": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "explanation": "Checkerの指摘どおり、Ledgerが確認しているのは価格そのものの下落ではなく、Brent先物の上げ幅の一時的な縮小です。ただし、その後に高い水準へ戻るという流れはclaimと一致しており、価格変動の核心を逆転させる重大な誤解には当たらないため、精度上の問題としてQUALITYです。",
+        "prompt_sha256": "03b0486b068feaa3cc0948dd1136928dd28bdad818f47d1fe088750e3ef4fd4b",
+        "cost_jpy": 0.0511,
+        "response_id": "resp_08e5d65b49ae00fb006ac1a41f74a487d08eab67fbf6e699cb",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": true,
+    "blocking_fixed_reason": null,
+    "release_note": "2回の追加確認とも非BLOCKING(逐語引用あり)。最終値はStage2+確認2回のうち最も重い非BLOCKING値",
+    "final_materiality": "QUALITY",
+    "cost_jpy": 0.1137
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "basis": "ledger_claim",
+        "explanation": "Ledgerが確認しているのはBrent先物の一時的な上げ幅縮小であり、価格が全面的・継続的に下落したという意味ではありません。ただし、claimは一時的な値動きを述べ、直後の文も高水準への回復を記しているため、方向のニュアンスの差にとどまり、核心を変える重大な矛盾ではありません。"
+      },
+      "prompt_sha256": "03b0486b068feaa3cc0948dd1136928dd28bdad818f47d1fe088750e3ef4fd4b",
+      "cost_jpy": 0.0626,
+      "usage": {
+        "input_tokens": 5279,
+        "cached_input_tokens": 5276,
+        "output_tokens": 692,
+        "reasoning_tokens": 501
+      },
+      "response_id": "resp_0226b75e8e9ff2db006ac1a417906c87d0b202b4baa36eb761",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "basis": "ledger_claim",
+        "explanation": "Checkerの指摘どおり、Ledgerが確認しているのは価格そのものの下落ではなく、Brent先物の上げ幅の一時的な縮小です。ただし、その後に高い水準へ戻るという流れはclaimと一致しており、価格変動の核心を逆転させる重大な誤解には当たらないため、精度上の問題としてQUALITYです。"
+      },
+      "prompt_sha256": "03b0486b068feaa3cc0948dd1136928dd28bdad818f47d1fe088750e3ef4fd4b",
+      "cost_jpy": 0.0511,
+      "usage": {
+        "input_tokens": 5279,
+        "cached_input_tokens": 5276,
+        "output_tokens": 545,
+        "reasoning_tokens": 356
+      },
+      "response_id": "resp_08e5d65b49ae00fb006ac1a41f74a487d08eab67fbf6e699cb",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

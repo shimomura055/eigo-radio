@@ -4153,3 +4153,12 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - 判断事項(判断D): LLM確認による解放の導入可否と範囲 (1)比較・時期に限定=Fable推奨 / (2)主体も含む / (3)導入せず現状維持。
 - 現Status: `USER_DECISION_REQUIRED`。限定flow確認・29件横断1回=承認済み・未実施(判断後に1回で実施)。次Trial(5記事×2レベル)=開始禁止。`PRODUCTION_WIRED`ではない。
 - 保存先: `docs/pm/opus_l2_review_open233_self_recovery_08.md`、`docs/pm/delegation_log/2026-10-04_OPEN-233-SELF-RECOVERY-TRIAL-01_58_result.md`、`..._57_result.md`。
+
+## 42. 委任_60: 判断D=案1(比較・方向・時期の機械判定の追加確認)の記録・実装・単体安全確認(2026-10-04)
+
+- 記録: ユーザー決定[4回目]を`DECISION_LOG.md`末尾へ逐語記録(委任文の原文ブロックと一致)。
+- 実装: runner(`er052_open233_self_recovery_flow_runner_01.py`)に`FLOOR_VERIFY_MODE`(既定off)、`floor_verify_target`/`floor_verify_confirmed`/`run_floor_verify_call`/`floor_verify_evaluate`/`floor_verify_summarize`、`run_stage2`への配線(`floor_verify`フィールド、既定OFFでは付かない)、2-of-2の除外、CLI`--floor-verify-mode`。テスト: runner単体470件OK(新規=TestFloorVerify60・TestRubricV7b60・TestMotiveDocAlignment60)、er052回帰513件OK、全体回帰4436件で失敗11件=基準11件と同一(新規なし)。
+- V7b: `MISCONCEPTION_PRINCIPLE_TEXT_V7B`(V7(3)を「Ledgerと矛盾する重大な変更…」へ)。V7は定数として残す。`BODY_RUBRIC_DEFAULT`=V7b。`s2p._V7_NEW_TIEBREAK`相当は`_V7B_NEW_TIEBREAK`/`MATERIALITY_RUBRIC_V7B`として追加(runnerのflowでは使われない=Grepで確認、使用はPhase1 unitcost計測スクリプトのみ)。
+- 動機: 設計書§0-2更新、criteria doc §6追加。V7(1)(イ)は不変。
+- 単体確認(`er052_output/open233_floor_verify_unit_check_01/`、¥2.336、23 call、probe単価¥0.1219/call): **STOP**(S1=合成方向反転が確認2回とも非BLOCKINGで解放)。ケース別: R1 K19 3/3解放、R2 B2 0/3(引用非逐語でBLOCKING固定)、R3 B4 2/3解放(1回BLOCKINGで食い違い)、S1 2試行目で解放→STOP。S2〜S8は未実行(S3・S5はCONFIRMED、S4・S8は対象外であることを¥0の事前確認で確認したのみ)。
+- 未実施: V7b再較正、限定flow、29件横断。次Trial禁止。`PRODUCTION_WIRED`ではない。詳細は設計書`docs/pm/design_open233_floor_alignment_01.md` §8。

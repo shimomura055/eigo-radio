@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "comparison_time",
+    "target": true,
+    "target_reason": "comparison_time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_time"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT | date_or_period: 2026-07-14 11:04 EDT | notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "Checkerの指摘どおり、提案から置換までは約24時間48分です。ただし提案の翌日に置き換えられたという時系列の核心は保たれており、「overnight」はこの経過を表す軽微な時間表現の差で、重大な時期の取り違えとは判断しません。",
+        "prompt_sha256": "7e8f459f8151b6291688585e9a693185e5e97f07d38090a9168e57e666188966",
+        "cost_jpy": 0.1313,
+        "response_id": "resp_094476735ea38b79006ac1a44b48b487d0bb24257051a08ee8",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_date_or_period",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\nnotes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\ndate_or_period: 2026-07-14 11:04 EDT\nnotes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "explanation": "指摘のとおり、提案の置換は約24時間48分後であり、厳密には「overnight」より長い時間幅です。ただし、提案が翌日に置き換えられたという核心は保たれており、重大な時期の取り違えではなく、時間表現の軽微な圧縮です。",
+        "prompt_sha256": "7e8f459f8151b6291688585e9a693185e5e97f07d38090a9168e57e666188966",
+        "cost_jpy": 0.0911,
+        "response_id": "resp_0cdcd4125848f213006ac1a45892c487d08d454f5ae57da7eb",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.2224
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT | date_or_period: 2026-07-14 11:04 EDT | notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "Checkerの指摘どおり、提案から置換までは約24時間48分です。ただし提案の翌日に置き換えられたという時系列の核心は保たれており、「overnight」はこの経過を表す軽微な時間表現の差で、重大な時期の取り違えとは判断しません。"
+      },
+      "prompt_sha256": "7e8f459f8151b6291688585e9a693185e5e97f07d38090a9168e57e666188966",
+      "cost_jpy": 0.1313,
+      "usage": {
+        "input_tokens": 5397,
+        "cached_input_tokens": 5394,
+        "output_tokens": 1565,
+        "reasoning_tokens": 1376
+      },
+      "response_id": "resp_094476735ea38b79006ac1a44b48b487d0bb24257051a08ee8",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "date_or_period: 2026-07-13 10:16 EDT\nnotes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\ndate_or_period: 2026-07-14 11:04 EDT\nnotes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "basis": "ledger_date_or_period",
+        "explanation": "指摘のとおり、提案の置換は約24時間48分後であり、厳密には「overnight」より長い時間幅です。ただし、提案が翌日に置き換えられたという核心は保たれており、重大な時期の取り違えではなく、時間表現の軽微な圧縮です。"
+      },
+      "prompt_sha256": "7e8f459f8151b6291688585e9a693185e5e97f07d38090a9168e57e666188966",
+      "cost_jpy": 0.0911,
+      "usage": {
+        "input_tokens": 5397,
+        "cached_input_tokens": 5394,
+        "output_tokens": 1053,
+        "reasoning_tokens": 810
+      },
+      "response_id": "resp_0cdcd4125848f213006ac1a45892c487d08d454f5ae57da7eb",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

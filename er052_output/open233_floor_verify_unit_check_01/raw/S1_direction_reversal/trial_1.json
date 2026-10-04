@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "comparison_time",
+    "target": true,
+    "target_reason": "comparison_time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_comparison"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "QUALITY",
+        "basis": "nuance_only",
+        "ledger_citation": "「7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った」",
+        "explanation": "Checkerの指摘は一部正しいものの、値動きの方向が全面的に逆というわけではありません。Ledgerは撤回発表後に上げ幅が一時縮小したと確認しており、これは一時的な下落を示します。一方、claimは「一時的に」とその後の回復を含めず、文脈では回復も述べているため、核心の方向反転ではなく精度上の差です。",
+        "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+        "cost_jpy": 0.1427,
+        "response_id": "resp_0495fae00d381165006ac1a4ba861887d09f8ca17defb61f1f",
+        "valid": false,
+        "invalid_reason": "ledger_citation_not_verbatim",
+        "citation_verbatim": false
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "nuance_only",
+        "ledger_citation": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "explanation": "指摘は一部当たっていますが、Ledgerは発表後に上げ幅が一時縮小したとも記録しており、「prices fell」はその短時間の動きを指すなら方向の反転ではありません。ただし、その後に高い水準へ戻った点を省いているため、精度は落ちます。",
+        "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+        "cost_jpy": 0.0587,
+        "response_id": "resp_041741d84a7d2fa2006ac1a4c0dd4087d0bc9c137140982d15",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "ledger_citation_not_verbatim",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.2014
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "「7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った」",
+        "basis": "nuance_only",
+        "explanation": "Checkerの指摘は一部正しいものの、値動きの方向が全面的に逆というわけではありません。Ledgerは撤回発表後に上げ幅が一時縮小したと確認しており、これは一時的な下落を示します。一方、claimは「一時的に」とその後の回復を含めず、文脈では回復も述べているため、核心の方向反転ではなく精度上の差です。"
+      },
+      "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+      "cost_jpy": 0.1427,
+      "usage": {
+        "input_tokens": 5557,
+        "cached_input_tokens": 0,
+        "output_tokens": 708,
+        "reasoning_tokens": 511
+      },
+      "response_id": "resp_0495fae00d381165006ac1a4ba861887d09f8ca17defb61f1f",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "basis": "nuance_only",
+        "explanation": "指摘は一部当たっていますが、Ledgerは発表後に上げ幅が一時縮小したとも記録しており、「prices fell」はその短時間の動きを指すなら方向の反転ではありません。ただし、その後に高い水準へ戻った点を省いているため、精度は落ちます。"
+      },
+      "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+      "cost_jpy": 0.0587,
+      "usage": {
+        "input_tokens": 5557,
+        "cached_input_tokens": 5554,
+        "output_tokens": 637,
+        "reasoning_tokens": 466
+      },
+      "response_id": "resp_041741d84a7d2fa2006ac1a4c0dd4087d0bc9c137140982d15",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

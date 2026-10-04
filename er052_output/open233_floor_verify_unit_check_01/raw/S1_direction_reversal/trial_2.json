@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "comparison_time",
+    "target": true,
+    "target_reason": "comparison_time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_comparison"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "QUALITY",
+        "basis": "nuance_only",
+        "ledger_citation": "7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った",
+        "explanation": "Checkerの指摘は、価格が一時的に下向いた後に高い水準へ戻った点を示すものです。「fell」はその短時間の下落を表す限りでLedgerと矛盾せず、下落が続いたとも述べていません。したがって、価格の方向を重大に反転させた主張とはいえません。",
+        "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+        "cost_jpy": 0.0628,
+        "response_id": "resp_07440ed1c192bba5006ac1a4c7ffd487d087fbf89fffb5aa11",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "ledger_claim",
+        "ledger_citation": "7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った",
+        "explanation": "上げ幅の一時的な縮小は短い下向きの動きを裏づけますが、その後すぐ回復した点がclaimには抜けています。したがって表現の精度は落ちますが、下向きの動き自体を逆方向に述べたものではなく、QUALITYと判定します。",
+        "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+        "cost_jpy": 0.1092,
+        "response_id": "resp_0bbae44bc7b8dc87006ac1a4cea1e087d0bcce3519a46cb01e",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": true,
+    "blocking_fixed_reason": null,
+    "release_note": "2回の追加確認とも非BLOCKING(逐語引用あり)。最終値はStage2+確認2回のうち最も重い非BLOCKING値",
+    "final_materiality": "QUALITY",
+    "cost_jpy": 0.172
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った",
+        "basis": "nuance_only",
+        "explanation": "Checkerの指摘は、価格が一時的に下向いた後に高い水準へ戻った点を示すものです。「fell」はその短時間の下落を表す限りでLedgerと矛盾せず、下落が続いたとも述べていません。したがって、価格の方向を重大に反転させた主張とはいえません。"
+      },
+      "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+      "cost_jpy": 0.0628,
+      "usage": {
+        "input_tokens": 5557,
+        "cached_input_tokens": 5554,
+        "output_tokens": 689,
+        "reasoning_tokens": 516
+      },
+      "response_id": "resp_07440ed1c192bba5006ac1a4c7ffd487d087fbf89fffb5aa11",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った",
+        "basis": "ledger_claim",
+        "explanation": "上げ幅の一時的な縮小は短い下向きの動きを裏づけますが、その後すぐ回復した点がclaimには抜けています。したがって表現の精度は落ちますが、下向きの動き自体を逆方向に述べたものではなく、QUALITYと判定します。"
+      },
+      "prompt_sha256": "edff0d21d4ae5d4dd02f71b294996e7e3525f71f4d15c65dc77c645b5d9c07cd",
+      "cost_jpy": 0.1092,
+      "usage": {
+        "input_tokens": 5557,
+        "cached_input_tokens": 5554,
+        "output_tokens": 1280,
+        "reasoning_tokens": 1117
+      },
+      "response_id": "resp_0bbae44bc7b8dc87006ac1a4cea1e087d0bcce3519a46cb01e",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

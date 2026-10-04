@@ -1,0 +1,165 @@
+{
+  "stage_info": {
+    "stage": "main",
+    "n_serious": 5,
+    "n_release": 3,
+    "stopped": true,
+    "stop_reason": "STOP: 重大期待ケースS1_direction_reversalがtrial2で解放された(2回とも非BLOCKING)。受入条件違反、測定を止めて報告する",
+    "cumulative_jpy": 2.336,
+    "cumulative_calls": 23,
+    "cumulative_errors": 0
+  },
+  "cost_jpy_total": 2.336,
+  "calls": 23,
+  "errors": 0,
+  "serious_or_exclusion_released_total": 1,
+  "acceptance": "FAIL",
+  "results": [
+    {
+      "case_id": "R1_K19",
+      "category": "release_expected",
+      "expected": "QUALITY(ユーザー決定2026-10-03、解放期待)",
+      "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+      "flags": [
+        "changed_comparison"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "recorded(iter6 safety_A2A3)",
+      "n_trials": 3,
+      "target": true,
+      "target_reason": "comparison_time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 6,
+      "call_label_distribution": {
+        "QUALITY": 6
+      },
+      "n_citation_verbatim": 6,
+      "n_released": 3,
+      "blocking_fixed_by_reason": {},
+      "cost_jpy": 0.306,
+      "sample_citations": [
+        "7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘どおり、台帳が確認しているのは価格そのものの下落ではなく、Brent先物の上げ幅の一時的な縮小です。ただし直後に高水準へ戻ったという流れは段落にも保たれており、方向・時期の精度がやや落ちる表現にとどまるため、重大な誤解ではなくQUALITYです。",
+        "Checkerの指摘どおり、Ledgerが確認しているのは価格そのものの下落ではなく、上げ幅の一時的な縮小とその後の回復です。ただし、これは値動きの精度に関する差で、文の核心を重大に誤認させるものではありません。指定された判定例に従いQUALITYとします。"
+      ],
+      "matches_expectation": null,
+      "release_rate_reference": "3/3"
+    },
+    {
+      "case_id": "R2_B2_vanished_overnight",
+      "category": "release_expected",
+      "expected": "QUALITY以下(過剰判定、解放期待。B2の実run記録はLLM=ACCEPTABLE、changed_timeのみ)",
+      "claim_text": "Trump’s proposed Hormuz fee vanished overnight.",
+      "flags": [
+        "changed_time"
+      ],
+      "related_fact_id": "HF-002, HF-007",
+      "issue_source": "synthetic(実run記録のdevにissue無し)",
+      "n_trials": 3,
+      "target": true,
+      "target_reason": "comparison_time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 6,
+      "call_label_distribution": {
+        "QUALITY": 6
+      },
+      "n_citation_verbatim": 0,
+      "n_released": 0,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 3
+      },
+      "cost_jpy": 0.6468,
+      "sample_citations": [
+        "[VERIFIED] HF-002: date_or_period: 2026-07-13 10:16 EDT\n[VERIFIED] HF-007: date_or_period: 2026-07-14 11:04 EDT\nnotes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "date_or_period: 2026-07-13 10:16 EDT\n\n date_or_period: 2026-07-14 11:04 EDT\nnotes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+        "date_or_period: 2026-07-13 10:16 EDT\n  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。\ndate_or_period: 2026-07-14 11:04 EDT\n  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘どおり、置き換えは提案から約24時間48分後で、厳密には一晩のうちに消えたわけではありません。ただし、翌日に置き換えられたという大筋と短期間での撤回という意味は保たれており、時期の表現上のずれにとどまるためQUALITYです。",
+        "Checkerの指摘どおり、置き換えは提案から約24時間48分後で、厳密には「overnight」より長い。ただし翌日に置き換えられたという順序と、およそ1日で消えたという核心は保たれており、時期の表現の軽微な粗さにとどまる。"
+      ],
+      "matches_expectation": null,
+      "release_rate_reference": "0/3"
+    },
+    {
+      "case_id": "R3_B4_Names_plans",
+      "category": "release_expected",
+      "expected": "ACCEPTABLE〜QUALITY(設計書B4-b、解放期待)",
+      "claim_text": "Names, plans, and private matters are easier to share when you know who is hearing them.",
+      "flags": [
+        "changed_comparison"
+      ],
+      "related_fact_id": "MUSE-HC-010",
+      "issue_source": "recorded(iter6 bgroup_B4)",
+      "n_trials": 3,
+      "target": true,
+      "target_reason": "comparison_time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 6,
+      "call_label_distribution": {
+        "BLOCKING": 1,
+        "QUALITY": 5
+      },
+      "n_citation_verbatim": 6,
+      "n_released": 2,
+      "blocking_fixed_by_reason": {
+        "verify_blocking_disagree": 1
+      },
+      "cost_jpy": 0.8879,
+      "sample_citations": [
+        "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。\n  scope: 人間の契約スタッフがMuse経由の電話を担当するテスト\n  conditions: 電話の遂行にユーザー情報が必要となる場合",
+        "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。"
+      ],
+      "sample_explanations": [
+        "Ledgerが確認しているのは、契約スタッフが電話を担当する場合に機微情報が共有される可能性についての従業員の懸念です。誰が聞いているかを知っていると個人的な情報をより話しやすい、という利用者の行動の比較・方向性は記録されていません。これは懸念の自然な言い換えではなく、記事が新たに加えた行動上の主張です。",
+        "Ledgerが確認しているのは、条件付きの情報共有リスクに対するMeta従業員の懸念です。「聞き手が誰か分かると個人的な情報を話しやすい」という比較的な傾向までは記録されていません。ただし、Ledgerとの矛盾や核心的な事実関係の重大な変更ではないため、QUALITYと判定します。"
+      ],
+      "matches_expectation": null,
+      "release_rate_reference": "2/3"
+    },
+    {
+      "case_id": "S1_direction_reversal",
+      "category": "serious_expected",
+      "expected": "BLOCKING(方向反転、解放したらSTOP)",
+      "claim_text": "After the plan was withdrawn, oil prices fell.",
+      "flags": [
+        "changed_comparison"
+      ],
+      "related_fact_id": "HF-009",
+      "issue_source": "synthetic",
+      "n_trials": 2,
+      "target": true,
+      "target_reason": "comparison_time_floor_only_llm_non_blocking",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "n_calls": 4,
+      "call_label_distribution": {
+        "QUALITY": 4
+      },
+      "n_citation_verbatim": 3,
+      "n_released": 1,
+      "blocking_fixed_by_reason": {
+        "ledger_citation_not_verbatim": 1
+      },
+      "cost_jpy": 0.3734,
+      "sample_citations": [
+        "「7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った」",
+        "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。",
+        "7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った"
+      ],
+      "sample_explanations": [
+        "Checkerの指摘は一部正しいものの、値動きの方向が全面的に逆というわけではありません。Ledgerは撤回発表後に上げ幅が一時縮小したと確認しており、これは一時的な下落を示します。一方、claimは「一時的に」とその後の回復を含めず、文脈では回復も述べているため、核心の方向反転ではなく精度上の差です。",
+        "指摘は一部当たっていますが、Ledgerは発表後に上げ幅が一時縮小したとも記録しており、「prices fell」はその短時間の動きを指すなら方向の反転ではありません。ただし、その後に高い水準へ戻った点を省いているため、精度は落ちます。"
+      ],
+      "matches_expectation": false
+    }
+  ]
+}

@@ -2362,9 +2362,12 @@ def floor_verify_target(llm_materiality, floor_applied, dev: dict) -> tuple:
 def floor_verify_fact_block(ledger_text: str, fact_id) -> str | None:
     """関連factブロック(Ledger本文の逐語、`related_fact_id`のブロック)。無ければNone
     (全文へはフォールバックしない=確認不能)。"""
-    fid = (fact_id or "").strip()
-    if not fid:
+    # `related_fact_id`が「HF-002, HF-007」のように複数の場合は、全てのブロックを逐語のまま
+    # 連結して返す(1つでも見つからなければNone=確認不能)。
+    fids = [x for x in re.split(r"[,、/\s]+", (fact_id or "").strip()) if x]
+    if not fids:
         return None
+    by_id: dict = {}
     for block in (ledger_text or "").split("\n\n"):
         lines = [ln for ln in block.split("\n") if ln.strip() != ""]
         if not lines:
@@ -2373,9 +2376,11 @@ def floor_verify_fact_block(ledger_text: str, fact_id) -> str | None:
         m1 = precheck.FACT_HEADER_V1.match(header)
         m2 = precheck.FACT_HEADER_V2.match(header)
         found = m1.group(2) if m1 else (m2.group(1) if m2 else None)
-        if found == fid:
-            return block.strip("\n")
-    return None
+        if found and found not in by_id:
+            by_id[found] = block.strip("\n")
+    if any(f not in by_id for f in fids):
+        return None
+    return "\n\n".join(by_id[f] for f in fids)
 
 
 def _fv_float(s: str) -> float:

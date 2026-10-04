@@ -2370,6 +2370,16 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 **Production配線時の確認**: 本線引き・rubric V7・句読点差対策(`OPEN-233-A1-PROD`)は、Self-Recovery FlowのProduction配線時に`docs/pm/PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で併せて確認する。再較正の不合格(上記A4-1)が解消されるまで`PRODUCTION_WIRED`としない。古い日本語から英語を再生成するProduction経路(`er012_e_family_entertainment_two_level_runner_01.py`L361・365・403〜404、er019 entertainment runner L358〜397)は、再生成後のChecker(`run_deviation_check`)で必ず再検査されることを接続仕様に明記する(ユーザー決定2026-10-03、英語だけ修正する方針の維持)。
 
+### OPEN-233 比較・方向・時期の機械判定の追加確認による解放(案1、2026-10-04ユーザー正式判断[4回目]、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`ではない、委任_60)
+
+**Status**: 案1=`APPROVED_FOR_PRODUCTION`(人間ユーザー決定、2026-10-04、`DECISION_LOG.md`末尾エントリ)。自己修復機構本体がProduction未接続のため`PRODUCTION_WIRED`ではない。検証用runner(`er052_open233_self_recovery_flow_runner_01.py`)へ実装済み(スイッチ`FLOOR_VERIFY_MODE`既定`off`、CLI`--floor-verify-mode comparison_time`)。**単体安全確認はSTOP中**(下記)のため有効化・限定flow・29件横断は未実施。
+
+- **仕組みの要点**: (1)対象=Stage 2のLLM判定が非BLOCKINGで、`apply_floor`(deterministic floor)だけがBLOCKINGへ昇格させた指摘のうち、trueのfloorフラグが`changed_comparison`/`changed_time`のみのもの。`changed_actor`/`changed_number`/`changed_negation`が1つでもtrueなら対象外(従来どおり決定論でBLOCKING確定)、precheck floorも対象外。(2)決定論の不一致確認(CONFIRMED、維持方向のみ): claimの日付・時刻・期間(time)/数値つき比較(comparison)が関連factブロックに無ければ確認を呼ばずBLOCKING維持。CONFIRMED以外も自動解放はせず確認へ進む(自動解放[文字一致・上昇/下落語の有無]は実装しない)。(3)追加確認: 対象claim 1件ごとに独立のcall 2回(`run_floor_verify_call`、Stage 2と同じモデル・設定、Checkerの指摘を「検証すべき仮説」として提示、`ledger_citation`逐語引用を要求)。(4)解放条件: 2回とも非BLOCKINGで、引用が関連factブロックの逐語であるときだけ、最終値=Stage 2と確認2回のうち最も重い非BLOCKING値。1回でもBLOCKING・API失敗・schema不一致・引用が空/非逐語・関連factブロックなし(確認不能)はBLOCKING固定。`dev`のフラグは書き換えない(`floor_verify`フィールドに記録)。(5)相互作用: 解放済みclaimは2-of-2の降格対象から外す、cycleごと・Recheck由来も同じ経路で再評価(解放状態を引き継がない)、既存のhook降格・disclosure_gap降格のガード条件は不変。
+- **判定原則文の整合(V7b)**: V7(3)「数値・主体・否定・比較・時期の差は…明確にBLOCKING」を、基底R3(e)に揃え「数値・主体・否定・比較・時期について、Ledgerと矛盾する重大な変更(数値の改変、主体の取り違え、否定の反転、方向の反転、時期の取り違え)は…BLOCKING。方向・時期のニュアンスの差で事実関係の核心が保たれているものはこの限りではない」へ(`MISCONCEPTION_PRINCIPLE_TEXT_V7B`、V7は定数として残す。`BODY_RUBRIC_DEFAULT`=V7b。Production配線時用の`s2p._V7B_NEW_TIEBREAK`/`MATERIALITY_RUBRIC_V7B`は追加済みだが、runnerからは使われない)。再較正(`er052_open233_element_trial_safety_control_05.py`系)は**単体確認STOPのため未実施**。
+- **動機の整理**(ユーザー指示§5、追加のユーザー判断なし): 動機の帰属(確認済みの事象に理由づけを添える)=軽微/動機の創作(台帳にない意図・仕組みを新事実として作る)=重大。設計書§0-2を更新、criteria docへ節を追加。V7(1)(イ)へ「仕組み・意図」は追加していない(既存より厳しくしない)。Stage 2 production rubricのQUALITY行「動機の帰属」は現行flowで未使用のため未変更(`OPEN-233-A1-PROD`の配線時整合項目)。
+- **単体安全確認の結果(2026-10-04、`er052_open233_floor_verify_unit_check_01.py`、`er052_output/open233_floor_verify_unit_check_01/`、費用¥2.336、23 call)**: **STOP**。重大期待の合成ケースS1「After the plan was withdrawn, oil prices fell.」(HF-009、`changed_comparison`)が、trial2で確認2回とも非BLOCKING(QUALITY)となり解放された(受入条件「重大ラベルを1件でも解放したらSTOP」に該当。測定は打ち切り、修正は重ねていない)。解放期待ケース: K19=3/3解放、B4「Names…」=2/3解放、B2「vanished overnight」=0/3(引用が逐語でないためBLOCKING固定)。S2(K16型)以降は未実行。
+- **Production配線時の確認**: 案1の追加確認・V7b・動機の整理は、自己修復機構本体のProduction配線時に、新しい線引き・句読点差対策・説明文混入の後段分離・英語だけ修正する方針と一体で追跡する(`OPEN-233-A1-PROD`)。単体確認がPASSするまで案1は有効化しない。
+
 ## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
 
 **表示仕様**: Key Phraseハイライトは`user_test/unified.html`の

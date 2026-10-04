@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "comparison_time",
+    "target": true,
+    "target_reason": "comparison_time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_comparison"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "QUALITY",
+        "basis": "unsupported_relationship",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "explanation": "Checkerの指摘どおり、Ledgerは利用者が相手を知っている場合に個人的な情報をより話しやすいという比較を確認していません。ただし、claimはテスト中に利用者が実際にそう行動したとは述べておらず、Ledgerの懸念や条件とも矛盾しないため、事実関係の核心を変える重大な誤解とはせずQUALITYとします。",
+        "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+        "cost_jpy": 0.2006,
+        "response_id": "resp_0b1bc412f1fdc954006ac1a476abc487d095b4ad36a560f2ee",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "unsupported_relationship",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "explanation": "Ledgerは契約スタッフへの情報共有の可能性と、それに対するプライバシー上の懸念を記録していますが、相手を知っていると個人的な情報をより話しやすいという比較は確認していません。Checkerの指摘する裏付け不足は妥当ですが、Ledgerと逆の方向を明示するものではなく、核心的な事実関係を重大に変えるとまではいえないためQUALITYです。",
+        "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+        "cost_jpy": 0.1204,
+        "response_id": "resp_08094c43c31dc564006ac1a48b458c87d0b8d2ecd0fa59139c",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": true,
+    "blocking_fixed_reason": null,
+    "release_note": "2回の追加確認とも非BLOCKING(逐語引用あり)。最終値はStage2+確認2回のうち最も重い非BLOCKING値",
+    "final_materiality": "QUALITY",
+    "cost_jpy": 0.321
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "basis": "unsupported_relationship",
+        "explanation": "Checkerの指摘どおり、Ledgerは利用者が相手を知っている場合に個人的な情報をより話しやすいという比較を確認していません。ただし、claimはテスト中に利用者が実際にそう行動したとは述べておらず、Ledgerの懸念や条件とも矛盾しないため、事実関係の核心を変える重大な誤解とはせずQUALITYとします。"
+      },
+      "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+      "cost_jpy": 0.2006,
+      "usage": {
+        "input_tokens": 5167,
+        "cached_input_tokens": 5164,
+        "output_tokens": 2453,
+        "reasoning_tokens": 2250
+      },
+      "response_id": "resp_0b1bc412f1fdc954006ac1a476abc487d095b4ad36a560f2ee",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "basis": "unsupported_relationship",
+        "explanation": "Ledgerは契約スタッフへの情報共有の可能性と、それに対するプライバシー上の懸念を記録していますが、相手を知っていると個人的な情報をより話しやすいという比較は確認していません。Checkerの指摘する裏付け不足は妥当ですが、Ledgerと逆の方向を明示するものではなく、核心的な事実関係を重大に変えるとまではいえないためQUALITYです。"
+      },
+      "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+      "cost_jpy": 0.1204,
+      "usage": {
+        "input_tokens": 5167,
+        "cached_input_tokens": 5164,
+        "output_tokens": 1431,
+        "reasoning_tokens": 1222
+      },
+      "response_id": "resp_08094c43c31dc564006ac1a48b458c87d0b8d2ecd0fa59139c",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

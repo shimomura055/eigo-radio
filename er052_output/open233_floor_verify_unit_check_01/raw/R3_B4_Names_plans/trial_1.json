@@ -1,0 +1,84 @@
+{
+  "floor_verify": {
+    "mode": "comparison_time",
+    "target": true,
+    "target_reason": "comparison_time_floor_only_llm_non_blocking",
+    "triggered_flags": [
+      "changed_comparison"
+    ],
+    "llm_materiality": "QUALITY",
+    "confirmed": false,
+    "confirmed_basis": [],
+    "fact_block_found": true,
+    "calls": [
+      {
+        "materiality": "BLOCKING",
+        "basis": "unsupported_relationship",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "explanation": "Ledgerが確認しているのは、契約スタッフが電話を担当する場合に機微情報が共有される可能性についての従業員の懸念です。誰が聞いているかを知っていると個人的な情報をより話しやすい、という利用者の行動の比較・方向性は記録されていません。これは懸念の自然な言い換えではなく、記事が新たに加えた行動上の主張です。",
+        "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+        "cost_jpy": 0.1664,
+        "response_id": "resp_09a2eade8081bd16006ac1a4624ab887d0812baa703bcbe2bf",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      },
+      {
+        "materiality": "QUALITY",
+        "basis": "unsupported_relationship",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。\n  scope: 人間の契約スタッフがMuse経由の電話を担当するテスト\n  conditions: 電話の遂行にユーザー情報が必要となる場合",
+        "explanation": "Ledgerが確認しているのは、条件付きの情報共有リスクに対するMeta従業員の懸念です。「聞き手が誰か分かると個人的な情報を話しやすい」という比較的な傾向までは記録されていません。ただし、Ledgerとの矛盾や核心的な事実関係の重大な変更ではないため、QUALITYと判定します。",
+        "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+        "cost_jpy": 0.1036,
+        "response_id": "resp_00c5f128a7856468006ac1a46c39dc87d0ba707cae362041ac",
+        "valid": true,
+        "invalid_reason": null,
+        "citation_verbatim": true
+      }
+    ],
+    "n_calls": 2,
+    "released": false,
+    "blocking_fixed_reason": "verify_blocking_disagree",
+    "release_note": null,
+    "final_materiality": "BLOCKING",
+    "cost_jpy": 0.27
+  },
+  "raw_calls": [
+    {
+      "parsed": {
+        "materiality": "BLOCKING",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+        "basis": "unsupported_relationship",
+        "explanation": "Ledgerが確認しているのは、契約スタッフが電話を担当する場合に機微情報が共有される可能性についての従業員の懸念です。誰が聞いているかを知っていると個人的な情報をより話しやすい、という利用者の行動の比較・方向性は記録されていません。これは懸念の自然な言い換えではなく、記事が新たに加えた行動上の主張です。"
+      },
+      "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+      "cost_jpy": 0.1664,
+      "usage": {
+        "input_tokens": 5167,
+        "cached_input_tokens": 0,
+        "output_tokens": 1088,
+        "reasoning_tokens": 875
+      },
+      "response_id": "resp_09a2eade8081bd16006ac1a4624ab887d0812baa703bcbe2bf",
+      "model": "gpt-6-luna"
+    },
+    {
+      "parsed": {
+        "materiality": "QUALITY",
+        "ledger_citation": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。\n  scope: 人間の契約スタッフがMuse経由の電話を担当するテスト\n  conditions: 電話の遂行にユーザー情報が必要となる場合",
+        "basis": "unsupported_relationship",
+        "explanation": "Ledgerが確認しているのは、条件付きの情報共有リスクに対するMeta従業員の懸念です。「聞き手が誰か分かると個人的な情報を話しやすい」という比較的な傾向までは記録されていません。ただし、Ledgerとの矛盾や核心的な事実関係の重大な変更ではないため、QUALITYと判定します。"
+      },
+      "prompt_sha256": "edac016469c291dc872d4b8961079caa7d8b7545e80b3e949c4419c222c161fa",
+      "cost_jpy": 0.1036,
+      "usage": {
+        "input_tokens": 5167,
+        "cached_input_tokens": 5164,
+        "output_tokens": 1217,
+        "reasoning_tokens": 983
+      },
+      "response_id": "resp_00c5f128a7856468006ac1a46c39dc87d0ba707cae362041ac",
+      "model": "gpt-6-luna"
+    }
+  ]
+}

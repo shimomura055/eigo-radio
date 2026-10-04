@@ -252,3 +252,11 @@
 (本節の項番6は、本文末尾の「7. 確認できたことと推測の区別」の後に追記したため順序が前後する。)
 
 進行判断(Fable): 上記3はSTOP条件に該当するため、`USER_DECISION_REQUIRED`としてSTOPする。限定flow確認と29件横断(承認済み)は、機械判定の扱いが決まってから1回で行う(2回に分けて費用を重ねない)。Production採用の可否は判断していない。
+
+## 8. 実装・単体確認・再較正(委任_60、2026-10-04、ユーザー決定[4回目]=判断D案1)
+
+- 実装(検証用runner、`FLOOR_VERIFY_MODE`既定`off`): 本書§2-4のF5を比較・時期に限定し、確認2回・逐語引用必須・失敗時BLOCKING固定で実装した。対象=LLM判定が非BLOCKINGでdeterministic floorだけがBLOCKINGにした指摘のうち、trueのfloorフラグが`changed_comparison`/`changed_time`のみ。主体・数値・否定は対象外(決定論のまま)。CONFIRMED(決定論の不一致確認)は維持方向のみ。詳細は`CURRENT_SPEC.md`のOPEN-233節「案1」。
+- 判定原則文: V7(3)→V7b(基底R3(e)へ整合)。動機: §0-2を更新、criteria docへ節を追加(動機の帰属=軽微/創作=重大)。
+- 単体安全確認(`er052_open233_floor_verify_unit_check_01.py`、¥2.336/23 call): **STOP**。重大期待の合成ケースS1(方向反転「After the plan was withdrawn, oil prices fell.」)が、trial2で確認2回とも非BLOCKING(QUALITY)=解放された。確認の説明は「Ledgerは上げ幅の一時縮小を確認しており、`fell`はその短時間の下落を指すなら矛盾しない」というもの(HF-009の「上げ幅を縮小」を根拠にした)。他: K19=3/3解放、B4「Names…」=2/3解放、B2「vanished overnight」=0/3(引用が逐語でないためBLOCKING固定)。
+- 再較正(V7b): 単体確認STOPのため未実施。限定flow・29件横断は未実施。
+- Fableへの論点(判断・修正は行っていない): (1)S1型(台帳に下向きの語[縮小]がある方向反転)は、確認promptが禁じた「上昇/下落語が台帳にあるだけ」に近い根拠で解放された。(2)判定原則文の「prices began to fall=軽微」の例が確認Promptに含まれており、方向反転の一部を軽微と読ませている可能性(例示によるpriming)。(3)対策案の例(未実装): 方向を決定論で扱う(台帳の符号と一致しない方向語はCONFIRMED扱い)、確認Promptから例を外す、確認を3回以上にする等。いずれも既存より厳しくなる/ユーザー判断事項のため実装していない。

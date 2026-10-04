@@ -5709,6 +5709,12 @@ class TestFloorVerify60(unittest.TestCase):
         c = runner.floor_verify_confirmed("The plan was withdrawn on July 13.", fb, ["changed_time"])
         self.assertFalse(c["confirmed"])
 
+    def test_fact_block_multiple_ids_joined_and_all_required(self):
+        fb = runner.floor_verify_fact_block(_FV_LEDGER, "HF-009, HF-003")
+        self.assertIn("HF-009", fb)
+        self.assertIn("HF-003", fb)
+        self.assertIsNone(runner.floor_verify_fact_block(_FV_LEDGER, "HF-009, NOPE-1"))
+
     def test_time_tokens_normalise_ja_en_and_iso(self):
         t = runner.floor_verify_time_tokens
         self.assertEqual(t("7月13日"), t("July 13"))
