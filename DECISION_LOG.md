@@ -18780,3 +18780,373 @@ KPIを満たすまで、Guardrail内で自分たちで改善ループを回す�
 ### Fableの受け止めと分担(委任文から逐語。ユーザー決定の追加ではない)
 
 前回報告の「KPI分割」「Human Review少数残存」「LLMだから0保証困難」の方向は撤回。委任_01=記録・Step 1・技術是正3件・必須作業5分析・Step 2設計案・Stage 1 recall案・強モデル比較前提・Opus packet。Opus批判レビュー#11→Fable評価→委任_02=設計改善+実装+Step 5限定確認→委任_03=Step 6[Safety-critical群+29件]→未達なら再ループ。本エントリはユーザー指示の逐語記録であり、`APPROVED_FOR_PRODUCTION`ではない。Production未変更。
+
+
+## 2026-10-05 ユーザー決定 OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01(Trial Closeout・Production正式採用・Cost KPI更新・改善ループ運用ルール)
+
+### ユーザー指示原文(逐語)
+(転写元: 委任_01ログのユーザー指示節。スクリプトで機械転写。要約・改変なし)
+
+出典: docs/pm/delegation_log/2026-10-05_OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01_01.md L28-218
+
+````
+Claude Codeへの指示
+管理ID：OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01
+目的
+OPEN-233品質改善Trialをクローズし、最終rep30で採用された構成を量産Production正式経路へ配線する。
+ユーザーは正式に、
+今回Trialで織り込まれ、最終rep30構成で有効となっている仕様のうち、量産Productionに未実装のものはすべて正式採用する
+
+と決定した。
+したがって対象仕様のStatusは、
+APPROVED_FOR_PRODUCTION
+とする。
+ただし、Gate 3をすべて満たすまではPRODUCTION_WIREDとしてはならない。
+Trial Closeout
+最終Trial結果：
+- 29検証ケース
+- 38 run
+- Human Review：0
+- 重大Fact見逃し：0
+- Self-Recovery平均費用：¥0.573/run
+- rep24比平均追加：+¥0.13/run
+- 不要Rewrite：悪化なし
+Trial結果は VALIDATED。
+そのうえで今回、ユーザーが正式Production採用を決定したため、対象仕様を APPROVED_FOR_PRODUCTION へ進める。
+追加N増しTrialは不要。
+今後はProduction量産中に新しい問題が発生した場合に別途改善する。
+Cost KPI更新
+従来の単発 +¥3/記事Capは撤回する。
+今後のCost管理は、
+- 平均追加費用を主要KPIとして継続監視
+- 1記事/runで¥3を超えた場合は必ず報告・記録
+- ¥3超だけを理由に自動STOP・KPI FAILとはしない
+とする。
+既存の平均費用KPIは変更しない。
+F1「品質regen条件を緩めて費用削減」は、最終rep30では不採用なのでProductionへ入れないこと。
+Production採用対象
+最終rep30の実際の有効構成を正本として、ProductionとのGapを先に棚卸しすること。
+少なくとも以下を含む。
+- 重大度判定Materiality V7b
+- 英語本文だけを修正する方針
+- violation spanの引継ぎ
+- terminal punctuation差を許容した位置特定
+- Checker説明文混入からの決定論的範囲復元
+- 不完全spanから完結文への復元
+- time系のみAI再確認を許すSafety floor
+- 因果等の決定論Safety floor
+- Checker重大判定を後段AI1回だけで安易に解除させないSafety構造
+- Recheck未解決claimを次cycleへ戻す処理
+- 構造要素を空にせず上位Rewriteへ進める処理
+- 主体変更Safety guard
+- 構造要素のbefore/afterをRecheckへ渡す処理
+- Human Review出口の許可リスト化
+- 同一箇所のRewrite level引継ぎ
+- 元の悪い文章へ戻るRewriteの防止
+- span特定失敗時の段階的fallback
+- Rewrite上限後の判定専用cycle
+- 非構造要素の最終手段処理
+- 本文不変の重大判定を後段の揺らぎで解除しない固定
+- 同一箇所で修正後も重大なら、同じ箇所のRewrite範囲を一段広げる
+- 本文不変・同一箇所で2回非重大が一致済みなら、その判定を再利用
+- 同じFactの別箇所を初回判定時に把握する仕組み
+- rep30でONだったその他Self-Recovery構成
+逆に、Trial中に試したが最終rep30でOFF/REJECTされた候補をProductionへ混ぜないこと。
+特に、
+- F1品質regen条件変更
+- 不採用となった確認役案
+- N3′
+- G_L
+- NORMAL群2-of-2 Trial補助
+等を誤って入れないこと。
+最終rep30構成とProduction実装の1対1対応表を先に作ること。
+Production Wiring必須範囲
+Trial runnerだけを移植して完了としてはならない。
+確認対象：
+- Production正式初回Checker経路
+- Rewrite経路
+- Recheck
+- retry
+- fallback
+- regeneration
+- cycle上限到達時
+- span取得失敗時
+- API failure時
+- Standard / Advanced等、Productionで対象となる全経路
+Trial専用er052_*をProductionから暗黙参照する構造は禁止。
+Production正式実装として整理すること。
+Dangling Reference Check
+今回の仕様名・原則・Safety ruleをProduction Prompt/codeへ追加する際、
+- CURRENT_SPECに正式仕様があるか
+- ユーザー承認済みか
+- 初回Production経路にも存在するか
+- retry/fallbackだけに孤立していないか
+- Trial専用定義へ依存していないか
+を全件確認すること。
+不足があれば配線前にSSOTを整える。
+Runtime evidence
+静的コード変更やunit testだけではPRODUCTION_WIREDとしない。
+最低限、Production正式pathで実際に発火させ、
+- actual model_id
+- routing
+- Checker
+- Stage 2/materiality
+- Rewrite
+- Recheck
+- 必要なSafety guard
+- 最終PASS/STOP
+- 実費
+を確認する。
+すべての稀な分岐を実LLMで再現する必要はないが、主要Production flowはruntime evidence必須。稀なSafety分岐はunit/integration fixtureで補完してよい。
+受入条件
+Production正式pathで以下を確認する。
+- Trial最終rep30の採用仕様とProduction挙動が一致
+- Human Reviewを安易な出口にしていない
+- 重大違反を後段1回の揺らぎで解除しない
+- retry/fallback/regenerationでも仕様不整合なし
+- 日本語本文を不要に変更しない
+- 不要Rewriteが大幅増加しない
+- Regression PASS
+- integration test PASS
+- runtime evidenceあり
+- ProductionコードがTrial専用runnerへ依存していない
+- ¥3超runがあれば報告
+- 平均費用を記録
+Opus / Fable改善ループの正式運用ルール
+今回有効だった以下を今後の通常ルールとして記録する。
+Opusレビュー
+→ Fable評価
+→ 実装
+→ Fable再確認
+→ Trial
+ループ上限
+最大3回までは自律的に実施してよい。
+4回目以降が必要な場合は、その都度STOPし、
+- 3回までの結果
+- 現在残っている問題
+- 次回Trialで何を変えるのか
+- なぜ改善が期待できるのか
+- 費用
+をユーザーへ報告する。
+ユーザーから明示的に4回目実施の指示を受けた場合でも、5回目以降も同じルールを継続する。
+つまり、4回目以降は毎回ユーザーGateを通す。
+ユーザーが別途ルール変更を明示した場合のみ例外とする。
+このルールをPM_GOVERNANCE等の適切な正式運用SSOTへ反映すること。
+SSOT / Closeout
+以下を必ず更新する。
+- CURRENT_SPEC
+- DECISION_LOG
+- OPEN_ITEMS
+- OPEN-233 Trial Report
+- 必要なPM_GOVERNANCE
+- Production wiring report
+記録すること：
+- Trial=VALIDATED
+- ユーザー正式採用=APPROVED_FOR_PRODUCTION
+- Gate 3完了後のみ=PRODUCTION_WIRED
+- +¥3単発Cap撤回
+- ¥3超はmonitor/report
+- B′同一箇所昇段承認
+- 非BLOCKING判定再利用承認
+- Trial改善ループ3回Cap
+- 追加N増しなし
+- Productionで問題発生時は個別改善
+- F1不採用
+STOP条件
+以下の場合はSTOPして報告。
+- Trial最終構成とProduction正式経路に構造的な競合がある
+- APPROVED仕様をProduction初回pathへ安全に入れられない
+- retry/fallbackとの仕様矛盾
+- 新しいProduct判断が必要
+- Production runtimeで重大見逃し/Human Reviewが発生
+- 平均費用が大きく悪化
+- 既存Production品質を明確に悪化させる
+- Opus/Fable改善ループが4回目へ入る必要がある
+通常の実装バグ・テスト修正・SSOT整合はユーザー判断にせず自律的に解決すること。
+完了条件
+コードに入れただけでは完了ではない。
+以下すべて完了時のみ PRODUCTION_WIRED：
+1. Production正式初回path配線
+2. retry/fallback/regeneration整合
+3. Trial専用依存なし
+4. Production runtime evidence
+5. Regression / integration PASS
+6. actual routing/model確認
+7. CURRENT_SPEC更新
+8. DECISION_LOG更新
+9. OPEN_ITEMS更新/close
+10. Git commit/push
+11. ユーザー承認内容とProduction挙動一致
+12. Dangling Referenceなし
+1つでも欠ければ APPROVED_FOR_PRODUCTION のままとする。
+````
+
+### Fable補足
+rep30の実測値はユーザー記載のとおり(29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run・rep24比+¥0.13/run・不要Rewrite 3/14で悪化なし)。worst追加は+¥3.135(safety_A4 s1、1/38 run)であり、ユーザー決定により単発Capは撤回、¥3超は報告・記録対象として本決定記録に残す。Status: Trial=VALIDATED、対象仕様=APPROVED_FOR_PRODUCTION、PRODUCTION_WIREDは完了条件1〜12達成後のみ。B′同一箇所昇段・非BLOCKING判定再利用はユーザー承認。F1不採用。追加N増しなし。Productionで問題発生時は個別改善。Opus/Fable改善ループは自律3回Cap、4回目以降は毎回ユーザーGate(PM_GOVERNANCE 11節へ反映、委任_01c)。
+
+### 前管理ID OPEN-233-KPI-RECOVERY-REDESIGN-02 のFable評価・判断(転記)
+以下は既存ファイルからスクリプト(`docs/pm/tools/append_decision_log_from_sources_01.py`)で機械転写した逐語ブロック。各ブロック直前の「出典」行が転写元パスと行範囲。委任_05は委任文にFable判断ブロックが存在しないため転写対象なし。
+
+出典: docs/pm/design_open233_kpi_recovery_02.md L577-592
+
+## 16. related_fact_id欠落時のLedger全体fallback(Fable判断、委任_09、2026-10-04)
+
+背景: 委任_08のrep29aで、Checkerが`related_fact_id`を空で返すclaim(Safety系fixtureのBLOCKING claimの19.6%)に対し、AG1-strictのfail-closedがfaithfulなRewrite案(例: `safety_er009_changed_scope` s2の`passengers`、F-004に乗客)を全拒否し、ladder枯渇→Human Reviewに至った(STAGE4 1件)。
+
+現行guardの設計意図(`er052_open233_self_recovery_flow_runner_01.py` L565〜570のコメントからの引用): 「Rewrite後に新しく現れた一般的な役割名詞(主体語)が、Ledger本文(fact本文全体を含むledger_text、¥0・決定論の部分文字列一致)に一語も含まれない場合はRewriteを却下する(未確認の具体主体への置換防止)」。すなわち元の照合先は`ledger_text`全体であり、AG1-strictの「関連factに限定」はそれより厳しい追加条件である。
+
+Fable判断(逐語、委任_09委任文より):
+
+1. **`related_fact_id`が空のときはLedger全体を照合先にするfallback(AG1-ledger相当)を採用**。根拠: (ア)現行guardの設計意図(runner L562〜567、`ledger_text`全体との照合)は元々Ledger全体が照合先であり、AG1-strictの「関連factに限定」はそれより厳しい追加条件。fallbackは元の意図に戻すもので「緩める」ではない。(イ)`related_fact_id`空はCheckerの出力仕様上の欠落(Safety系で19.6%)であり、Checker出力変更は禁止のため後段で吸収する。(ウ)後ろ盾はStage 2 floor `changed_actor`とRecheck全文(構造要素の対渡し含む)。(エ)関連factが**ある**場合は従来どおりAG1-strict(関連fact優先、他factは2条件ANDのみ)で、別factの主体持ち込みの抑止は維持。
+2. 照合順: 新主体語ごとに (i)元文に同クラス → 許容 / (ii)関連factあり: 関連factに同クラス → 許容、無ければ(iii)2条件AND → 許容、どちらも不成立 → 拒否 / (ii′)関連fact空: Ledger全体(全fact本文、`notes_for_writer`含む)に同クラス表現が語境界付きで存在 → 許容(`basis=ledger_wide_fallback`を記録)、無ければ拒否。Ledgerにまったく無い主体は常に拒否(fail-closed)。
+3. 負例を追加: (f)`related_fact_id`空かつLedger全体にも無い主体 → 拒否、(g)`related_fact_id`空かつ近接クラス(Ledgerにcontractorはあるがemployeeは無い状況でemployeeを導入) → 拒否、(h)`related_fact_id`ありで他factにしか無い主体をissue名指しなしで導入 → 拒否(fallbackが発動しないこと)。既存(a)〜(e)も全て再実行。差分0確認(許容→拒否 0件)も再実施。
+4. Opus再レビューは本委任では行わない: Opus#13が評価したAG1-strict/AG1-ledgerの範囲内での条件分岐(関連factの有無で切替)であり、実測(19.6%欠落)に基づく「修正して採用」。Closeout時の条件Cレビューで一括確認。
+5. 委任_08の委任ログがOpus#13全文を要旨化していた点、T-0 FAIL(見出し語不足)は運用メモに記録(本委任では全文保存)。
+
+実装メモ(worker): `related_fact_id`の「空」= None/空文字/空白のみ/空list。idが指定されているがLedgerに無い(誤id)場合は従来どおりfail-closedでfallbackしない(Fable判断の「空のとき」の文言どおり)。判定記録に`related_fact_empty`を追加。`legacy`モード不変。同義語表は不変。
+
+
+出典: docs/pm/design_open233_kpi_recovery_02.md L663-684
+
+## 18. Opus#14後のFable評価と採用設計(委任_11、2026-10-04)
+
+Opus#14全文: `docs/pm/opus_l2_review_open233_kpi_recovery_02_14.md`。以下はFable評価の逐語記録(変更しない)。
+
+**Fable評価(2026-10-04、Opus#14)**
+1. **条件B判定「根本設計の問題」を採用。** 9件の原因型は「LLM自由文字列`claim_in_article`を各cycleの決定論処理が再解釈し、失敗するとSTAGE4へ直行する出口が6種類並ぶ」ことである。不変条件 **I-1(箇所=本文中の位置オブジェクトとして入口で確定し、以降は文字列でなく座標を引き継ぐ)** と **I-2(STAGE4は許可リスト方式: 「現行本文の具体的箇所についてStage 2(+S1)がBLOCKINGを確定し、その箇所の打ち手[ladder→T]が尽きた」場合のみ。形式・件数・位置特定不能はHuman Review理由にせず、funnel[Stage 2+S1]か次cycleへ)** を採用設計の中心に置く。
+2. **I-1は最小実装で採用**: Rewrite後の範囲座標を`rewrite_records`等から置換ごとに写像し直して保持し、B′の「同一箇所」判定・A2の振動検出・D(ii)の写像に使う。claim文字列の再照合は新規claimにのみ行う。全面的なデータ構造再設計(全claimをオブジェクト化)は本Trialでは行わない(Production複雑化回避、QCD 6)。L2221の複数範囲skipは「`“A” and “B”`引用形式へ変換」で是正。
+3. **I-2採用**: 許可reasonは `blocking_confirmed_unlocatable_after_cap` / `blocking_structural_after_ladder` / `post_T_new_blocking` / `api_failure`(parse失敗含む)の4種のみ。許可リスト外の理由でSTAGE4条件に達した場合は、記録(`stage4_allowlist_violation`)したうえでfunnel(判定だけのcycle)または次cycleへ戻す。既存の`same_claim_fact_id_reblocked`/`violation_span_unverified`/`ladder_exhausted`系/`cycle_limit_exhausted(_after_recheck)`は許可リスト外とし、出口としては廃止(記録名は保持してよい)。
+4. **B′: 修正採用。** キーは位置のみ(fact_idは問わない。兄弟fact_idでも前Rewriteの出力箇所なら昇段)。同一箇所判定は「前cycleで置換した範囲(現行本文座標)と今回確定spanが1文字以上重なる」(逐語一致は使わない、H-4)。`escalated_to_paragraph`は「実際に`4_paragraph`を試行したか」(試行level一覧)へ是正。§0-4(「同じFactが別箇所に再登場したら段落Rewrite」の廃止)との関係: B′は「同じ箇所への前levelのRewrite結果が再びBLOCKING確定」という効果実証に基づく昇段で、§5-11「初期水準より上位への昇段を妨げない」のcycle横断適用と解釈し、衝突しないとFableが判断する。ユーザー原則の解釈であるため、Closeout報告の確認事項に記載する(実装は止めない)。
+5. **A2(振動検出): 採用。** 箇所ごとの過去状態列(原文, c1後, c2後…)と候補を正規化(空白・引用符字形)後に完全一致で比較、範囲ごとに判定。一致したら候補を却下し同cycle内で上位levelへ(既存ladder内の判定)。
+6. **A1(主体語残存チェック): 不採用**(誤検出2/3、不要Rewrite防止優先。B′で1cycle遅れで回収)。Rewrite promptへの「過去候補・元に戻す禁止」提示は後回し(本委任では実装しない)。
+7. **D: 修正採用(H-1是正必須)。** (i)引用分割は決定論で採用。`VS_EXPLAIN_MAX_EN_WORDS`の緩和は「残りが閉じた語彙の位置語(headline/one_line等U-2要素)を含み、かつ逐語一致・隣接一致の棄却に当たらない場合」に限定。`explain_split`の棄却理由を`annotate_claim_span_identity`の記録に追加(実装前に、¥0)。(ii)写像はI-1最小実装+引用形式変換で対応。(iii)「Rewriteせず全文Recheck」は**位置の再取得に限定**し、**「書き換えられなかったBLOCKING」をcarry listに保持、listが空でない間は`normalize_recheck_outcome`がPASSを返さない**(決定論、H-1)。次cycleでも位置を取り直せなければ上限→G→`blocking_confirmed_unlocatable_after_cap`(正当な残余)。
+8. **G: 修正採用。** 別機構にせず、`HARD_MAX_CYCLES`到達時のbreakを「判定だけのcycle」への遷移に変える(cycle==HARD_MAX_CYCLES+1ではループ冒頭のStage 2+S1のみ実行。Rewriteしない。same_claim/extra cycle判定を通らない)。Tier 0(因果floor)とS1を必ず適用(Stage 2単独で閉じない、H-2)。**本文が変わっていない箇所で過去にStage 2がBLOCKING確定したものはGで降格させない(BLOCKING固定)。** 非BLOCKINGなら既存`RESOLVED_REWRITE_THEN_DOWNGRADE`経路へ、BLOCKINGが残ればT。「上限はRewrite回数の上限であって判定回数の上限ではない」と定義。
+9. **T(最終手段): 修正採用。** 構造要素以外の該当文を既存`0_delete`+全文Recheck 1回。1記事1回まで。T後のRecheckで新規BLOCKINGが出たら追わず`post_T_new_blocking`(許可リスト)。構造要素(タイトル等)でladder枯渇なら`blocking_structural_after_ladder`。
+10. **S-4(同一本文の再判定)対策**: 「materialityを本文に紐づける」。キー=(箇所の正規化span集合, fact_id)。**BLOCKING固定は採用**(本文不変なら再判定でBLOCKINGを覆さない)。**一致した2-of-2非BLOCKINGの再利用はスイッチ`STAGE2_VERDICT_REUSE_NONBLOCKING`として実装し既定OFF**。rep30でONにする条件(事前固定): rep27〜29記録の¥0 replayで「再利用により抑制される判定のうち、正解ラベル上の重大が0件」。満たさなければOFFのまま。文単位への分解による再利用は禁止(span集合の完全一致のみ)。
+11. **第二段階案(同fact_id兄弟箇所をcycle 1のStage 2 batchへ前倒し、Rewriteへは渡さない)**: ¥0集計①(後cycleの新規MAJORのうちcycle 1のfact_id列挙で覆えた割合)②(NORMAL群で列挙により増えるStage 2判定件数)を先に行う。採用条件(事前固定): ①>0。採用時はスイッチ`STAGE2_SIBLING_LOCATIONS_CYCLE1`としてrep30でON、不要Rewrite(NORMAL群)がrep29の5/14から増えた場合は不採用候補として記録。
+12. **F1(品質regen条件)**: 本Trialでは**不採用(現状維持)**。記事品質規則の変更でProduction品質判定との整合が必要なため、Closeout報告の確認事項へ。
+13. **H-3**: 「残るHuman Reviewは構造要素だけ」は撤回。残る正当な経路は ①上限後に位置特定できないBLOCKING ②T後の新規BLOCKING ③構造要素/削除すると記事の核が壊れる文(ladder枯渇) ④API失敗、の4つ(実例0件、経路としては存在)と設計書に明記。
+14. **Trial設計**: Opus推奨の¥0準備(1)許可リスト関数(2)rep27〜29全instanceの反実仮想replay(3)強制経路fixture(4)H-1負例(5)explain_split棄却理由記録、を本委任で実施。事前基準に「許可リスト外STAGE4 0件」「G経路の降格は全件S1通過」「書き換えられていないBLOCKINGによるPASS 0件」を追加。その後、委任_12で限定確認(≈¥5)→rep30 1回(≈¥26〜30)。
+15. **STOP条件照合**: KPI緩和・Human Review温存・Production/Checker変更の提案なし→非該当。Fable判断でTrial工程へ進む(Opusレビューをユーザー承認Gateにしない、CLAUDE.md/PM_GOVERNANCE 11-3)。ユーザー確認事項(Closeoutで提示): B′の§0-4解釈、F1、非BLOCKING再利用スイッチの扱い。
+
+
+
+出典: docs/pm/design_open233_kpi_recovery_02.md L693-705
+
+### 18-C. Fable照合(委任_12、2026-10-05、委任_11に対する是正・判断)
+
+1. **是正(必須、¥0)**: `degenerate`(Rewrite結果が空・同一等の退化)を`blocking_structural_after_ladder`へ写像しているのは、許可リスト外の理由を許可名で包む「名前の洗い替え」であり、I-2の趣旨に反する。是正: degenerateは「そのlevelの試行失敗」として扱い、同cycle内で上位levelへ昇段→ladder枯渇ならT(構造要素以外)→T不可(構造要素)の場合のみ`blocking_structural_after_ladder`。すなわち`blocking_structural_after_ladder`は「構造要素であること(`structural_element_reasons`で判定)∧ladder④まで実試行済み」を関数内で検証したときだけ返す。fixture追加(非構造degenerate→昇段→T、構造degenerate→STAGE4)。
+2. **rep28の構造要素3件が反実仮想replayでHuman Reviewのまま残る件**: replayはrep28記録時のLLM出力(構造要素書き換えfallback実装前)に基づくためで、同3 instanceはrep29実行時には構造要素書き換えで解消済み(委任_09報告: 「rep28の3件(ladder_exhausted系)は消えた」)。設計上の未解決ではなく、`blocking_structural_after_ladder`は正当な残余経路(H-3③)。rep30で実測する。
+3. **`issue_focus_absent_recheck_only`(L6既存承認経路)**: Stage 2 BLOCKINGの引用語句が現行本文全体に存在しない(Checkerの引用が記事に無い)場合にRecheckのみで解消する経路。H-1(位置特定済みBLOCKINGを書き換えずにPASS)とは「書き換える対象文が本文に存在しない」点で異なり、materiality降格ではなく引用の非存在の決定論確認+全文Recheck。**本委任では変更しない**(Opus#9/#12で承認済み)。ただし(a)非存在判定が「該当文」ではなく「現行本文全体」に対して行われていることをコードで確認し(違えば本文全体へ是正)、(b)rep30で発火件数・結果を記録、(c)Closeoutのユーザー確認事項へ追加。
+4. **スイッチ**: `STAGE2_VERDICT_REUSE_NONBLOCKING`=ON、`STAGE2_SIBLING_LOCATIONS_CYCLE1`=ON(事前基準どおり: 再利用replay抑制8・ラベル重大0・flip0、第二段階①=20%>0)。rep30で兄弟列挙によりNORMAL群不要Rewriteがrep29(5/14)より増えた場合は「不採用候補」として記録(rep30の採否判定自体は変えない)。
+5. 委任_11の実装判断(T後のBLOCKINGは追わず`post_T_new_blocking`、carry未再取得は次cycleで`..._unlocatable_after_cap`)は採用。
+
+#### 18-C-実装記録(委任_12、Sonnet)
+- 照合1: `rewrite_ranges_ladder`のdegenerate検査(title/hook/In one line)を、構造要素書き換えだけでなく`STAGE4_ALLOWLIST`ON時の全候補・level6全文案へ拡張(`degenerate_structural`=levelの試行失敗、同cycle内で上位levelへ昇段)。`run_instance`のcycle後のdegenerate hard block(`degenerate_rewrite_output`)は、新関数`structural_ladder_exhausted_verified`(構造要素印∧計画levelを全て実試行済み、またはT構造ブロック)で検証できたときだけ`blocking_structural_after_ladder`、できなければ許可リスト外のまま記録(許可名へ写像しない)。ladder内でdegenerateが昇段されるため、この経路は防御用で通常到達しない(連鎖claimの累積でもdegenerateは各ステップで検出される)。構造要素のT不可経路は従来どおり`blocking_structural_after_ladder`(`structural_blocking`)。
+- 照合3(a): 旧実装は`vs_l6_focus_absent`へ復元範囲(`ranges`)を渡していた(=該当文に対する判定、Fable想定と相違)。現行本文全体(`full_text`)へ是正(引用語句が本文のどこかにあればabsentでない=通常のRewrite側へ倒れる=より安全側)。`issue_focus_check.haystack="current_full_text"`を記録。
+- 範囲外の観察(実装せず報告): `blocking_structural_after_ladder`は、T無効/T使用済み(`_already_T or t_used or not LAST_RESORT_DELETE`)・cap後のT不可(`not LAST_RESORT_DELETE or t_used`)・T削除失敗(`_t_fail`)の各経路でも、構造要素の検証なしで返される(委任_11実装)。degenerate以外の同型の写像であり、是正するか否かはFable判断(新仕様候補)。
+- テスト: `TestDegenerateNotLaundered12`(4件)+`test_degenerate_structural_promotes_levels_then_blocking_structural_only_when_verified`。反実仮想replayはdegenerate 1件(rep28 safety_er009_unsupported_new_claim)が「決定論終端(STAGE4)」から「call必要(上位level昇段)」へ変更(決定論終端3→2、call必要6→7、許可リスト外STAGE4 0件維持)。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_02.md L10-21
+
+- Fableの評価(Opus#11の採否。SSOTへ逐語記録する。変更しない):
+  1. **修正採用**: 三層構造(Tier 0決定論Guard / Tier 1確認役 / Tier 2失敗時BLOCKING→Rewrite)を主構造とする。D*(G_H∨issue_actor+S1)は主構造にしない。G_H/issue_actorは「既知の型への補助ベルト」としてTier 0に残す(¥0、誤停止は少数)。S1(同一prompt2回目)は採用しない(判別力が低い。確認役が別prompt・別入力の第2意見を兼ねる)。
+  2. **採用**: Tier 1確認役は既存`floor_verify`(委任_60/61実装)の一般化。対象=「Checker MAJORをStage 2が非BLOCKING(QUALITY/ACCEPTABLE)にしたもの全て」(QUALITYとACCEPTABLEで要件は同一)。call 1回。入力=関連factブロック(Ledger逐語)+claim文(確定範囲)+局所文脈+Checkerのissue/flags(「検証すべき仮説」として提示)。出力schema=`verdict`(UPHOLD_BLOCKING/RELEASE)+`ledger_citation`(日本語Ledger逐語、決定論照合必須)+`basis`+`explanation`。prompt原則は単一定義の短いrubric(「英語学習者に記事の本質について重大な誤解を与えるものだけを止める」+正式基準3定義+「迷えばBLOCKING」)。RELEASEかつ引用逐語のときだけ解除。それ以外(UPHOLD/引用非逐語/API失敗/schema不一致)はBLOCKING維持。Stage 2本体(1回目)は現行のまま(指摘を見せない。本体の較正を崩さない)。
+  3. **採用**: Tier 2=解除不可にしたclaimのrewrite_hintを、Checkerのissue/explanation+Ledgerの`notes_for_writer`/`conditions`から生成(Stage 2のhintは降格時に空のため)。確認役のAPI失敗・schema不一致はBLOCKING(Rewrite)へ倒し、Human Reviewへ倒さない。Guard・確認役は毎cycleの現行本文で再評価。
+  4. **採用(¥0評価)**: Tier 0 G_L(Ledgerの構造化欄`causal_strength`[OBSERVED_REPORTED/CORRELATIONAL/CAUSAL_STATED_BY_SOURCE/NOT_APPLICABLE]×`notes_for_writer`の禁止文×Checkerのflag)を¥0 replayで判別力を評価。判別力が出れば主Guard、G_B並みに広ければ不採用。
+  5. **採用**: 確認役のoffline replay(有料)で採否判定。指標: (i)流出10行+neg5(6行)の閉鎖率=100%必須、(ii)NORMAL群のラベル付き正当降格のうち確認役がBLOCKINGにした率(不要Rewriteの上限)、(iii)全降格534件のBLOCKING化率。**判定基準(Fable事前設定)**: (ii)≤10%かつ(i)=100% → 採用して限定確認へ。(ii)10〜25% → Tier 0/promptの調整を1回だけ試し再replay(追加費用内)。(ii)>25%または(i)<100% → 採用せずFableへ報告(ユーザーへKPI緩和を提案しない)。
+  6. **採用**: neg5(B3と同一文)のSafety-critical登録(計測の是正)と、Safety-critical集合を「正BLOCKINGラベル付きclaim(正規化同一文を含む)」から自動導出する補助集計の追加。旧値(流出10行)と新値を並記。
+  7. **採用**: Q(引用符字形の同一視、一意のみ)とU-2(1)(閉じた語彙の位置語→構造要素)を実装。R(長い説明文残余を捨てる)は保留(現行Checkerで発生0、Opus#11の位置手がかり語彙の指摘あり)。
+  8. **不採用(現時点)**: Sol等の強モデル(B3は同一入力で10/10正解=能力不足ではない。割れたらBLOCKING→Rewriteの方が安く決定論的)。Rewrite失敗がHuman Reviewを生むと測定で示された場合のみ再検討。
+  9. **採用**: ACCEPTABLE定義の重複(R3基底とV7)はSafety対策としてrubricを直さず、確認役promptは単一定義で書く。本体rubricの統合は次回の計画的再較正に回す(記録)。
+  10. **採用**: Stage 1 recallは第二段階。6-B∧6-F(決定論候補生成+Ledgerの因果禁止・相関のみ記録)をprecheck経路の候補として¥0評価する(本委任では設計書に手順を書くのみ。実装は委任_03以降)。
+  11. **採用**: 計測是正: In one lineのclaimが`section_type=body`で渡っている点を記録(判定変更はしない)。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_03.md L10-19
+
+- Fableの再設計判断(SSOTへ逐語記録。変更しない):
+  1. **確認役(Tier 1 LLM、Checker指摘を提示)は不採用**: 実測でNORMAL群47.3%・body経路でも37%の正当降格を重大化し、QCD優先3に反する(Opus#11が警告したprimingが実測で確認された)。Hook/title/disclosure_gapの除外でも10%に届かない。再調整は行わない。
+  2. **G_Lは不採用**: 流出閉鎖の上積みは「and」版1行のみで、NORMAL群10.9%の誤停止はQCD優先3に反する。委任_02のSonnet判断(`TIER0_G_L_ENABLED=False`)を承認。
+  3. **Tier 0=因果floor(`G_H`の一般化)を主構造として採用**: 既存の機械的安全装置(数値・主体・否定・比較・時期のfloor)と同じ「Checker flag+決定論の文面確認」の構造で、因果(`changed_causality`∧因果接続語∧ヘッジなし)を6番目のfloorとして位置づける。Opus#11の「既知10行に合わせた語彙パッチ」の指摘に対しては、**接続語・ヘッジ語の語彙を流出事例から独立した標準的な言語学的目録から構築**し(例: 結果・理由・目的の接続詞/前置詞/動詞: so, because, since, as, due to, owing to, thanks to, therefore, thus, hence, consequently, as a result, that is why, which is why, led to, leads to, resulted in, caused, causing, drove, driving, prompted, triggered, sparked, forced, made, pushed, fueled, in response to, following[文頭+結果節]等)、**流出16行を見ずに語彙を確定してから**流出閉鎖率と正当降格518件・NORMAL群110件の誤停止率を測る(hold-out相当)。ヘッジ語は「推測・可能性・他者の見解の帰属」(may, might, could, possibly, likely, appears, seems, some say, analysts/officials say, reportedly, is said to, expected to)に限定し、`can`/`would`の扱いはA/B両方を¥0で測って誤停止≤2%かつ閉鎖最大の方を採る。
+  4. **`issue_actor`は補助ベルトとして残す**(主体の断定。既存floor `changed_actor`の補完)。
+  5. **Tier 1′=S1**(Opus#10の3修正付き: 第2意見は`run_stage2`の最終`materiality`で比較、対象claimのみのbatch、割れたらBLOCKING、API失敗はBLOCKING、floor_verify解放済みは除外、毎cycle再評価): Tier 0非該当のChecker MAJOR→Stage 2非BLOCKING全件に適用。q=0/30(委任_68)の実測により不要Rewriteを増やさず+¥0.15/記事。役割分担: Tier 0=既知クラス(因果・主体)の決定論保証、S1=偶発的な外れ(rep25型)、系統誤り(rubric起因)は既存のSafety-critical回帰(V7b再較正、0/30・10/10)で捕まえる。
+  6. **Tier 2=hint合成**(委任_02実装済み)は維持。解除不可claimは必ずRewrite(Human Reviewへ倒さない)。
+  7. **残り1行(rep24 cycle 2のB3「and」版「…continued on July 14, and the flashy 20% plan left the stage.」)のFable判断**: 正式基準(重大=事実関係の重大な誤解)で**問題なし**(「and」は因果を主張しない。確認役も2回ともRELEASE)。この行がSafety-critical流出に計上されるのは`text_substring`「flashy 20% plan」の部分一致によるラベル付けであり、A4-1(委任_57)と同じく`CORRECT_LABEL_OVERRIDES`で「and版=ACCEPTABLE」を登録して旧値/新値を並記する。この判断はユーザーへ報告し、否認されれば戻す。cycle 2でCheckerがこの文を再指摘したのはprior_issuesの古い本文(`so`)の引用が原因で、委任_01の是正で解消見込み(rep26で確認)。
+  8. **Opus再レビューは本委任では行わない**: D*′の構造(決定論Guard+S1)はOpus#10(S1の3修正)と#11(Guard+S1を退避案として許容)で既にレビュー済みであり、実測(確認役の特異度不足)に基づく「修正して採用」。Step 6でKPI達成なら、Production採用提案前(条件C)に改めてOpusレビューを入れる。
+  9. Stage 1 recall(第二段階)は本委任では着手しない(Step 6の結果で未検出があれば次ループ)。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_04.md L10-14
+
+- Fable判断(SSOTへ逐語記録。変更しない):
+  1. **Tier 0の有効語彙=既知G_H 6語+`issue_actor`**とする。根拠: 事前基準(誤停止≤2%かつ閉鎖15/15)を満たす唯一の構成(誤停止0.19%)。目録由来の拡張語彙は、同じ母集団で閉鎖の上積み0・誤停止+13件(`lead to`6[同一の否定文]、`as`4、`caused`3、`make`1)であり不採用。**語彙を結果を見て削る調整は行わない**(hold-outの趣旨)。拡張語彙の定数はコードに残し、`CAUSAL_FLOOR_VOCAB="known6"`(有効)/`"inventory"`(評価用、無効)で切替。
+  2. **残存リスクの明示**: 6語は観測された流出クラス(`so`型)を閉じるが、未観測の接続語型の系統誤りには効かない。これはS1(偶発的な外れ)でも閉じないため、**Step 6の結果とともにユーザーへ正直に報告する**(KPI緩和の提案ではなく、Trial規模での達成状況と残存リスクの区別)。目録拡張が誤停止を生んだ事実は、「接続語の有無だけでは因果主張を判別できない(否定scope・多義語)」という知見として記録。
+  3. Tier 1′ S1・Tier 2 hint・L6・prior_issues現行本文化・NORMAL群2-of-2 OFF・Q/U-2(1)は委任_03の実装のままKPI構成に含める。確認役・G_Lは無効。
+  4. 「and」版(rep24 cycle 2 B3)=ACCEPTABLEのFable判断は登録済み(ユーザー未確認、否認されれば戻す)。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_06.md L10-18
+
+- Fableの評価(Opus#12の採否。SSOTへ逐語記録。変更しない):
+  1. **是正(a)(carry-forward優先)は維持**(Opus: 妥当)。規則(2)も維持。
+  2. **N1′を採用**(N1-aは不採用): 再確認が「COMPLIANT∧all_prior=True」以外を返したら、(i)再確認deviationsのMAJOR ∪ (ii)再確認`prior_issues_resolved`でresolved=falseの元blocking claim(dev)を、fact_idで重複除去して次cycleのstage1_deviationsとし、既存Stage 2(Tier 0/S1含む)→Rewriteへ流す。(ii)は既存`find_matching_prior_record`でladderに乗る。(i)(ii)とも空なら既存`not blocking_claims`経路でRESOLVED_REWRITE_THEN_DOWNGRADE(監査用`reverify_deviation_without_major=True`を記録)。`unconfirmed_after_reverify`のSTAGE4経路は廃止。追加call 0、既存cycle上限の内側。
+  3. **通常経路の潜在ギャップも同時に是正**: 通常のRecheckが`DEVIATION∧all_prior=False`で、未解消のprior issueがdeviationsに無い場合も、(ii)と同じく元claimを次cycleへ合流させる(Opus論点1・2の指摘。構造を1規則に統一: 「未解消のprior issueは必ず次cycleのStage 2を通る」)。
+  4. **N3′を技術是正として採用(スイッチ付き、A/Bで効果測定)**: 通常のRecheckにも、再確認が既に使っている「書き換え前後の対」ブロック(cite-or-release指示は除く)を同じ形式で渡す。根拠: ユーザー指示(KPI-RECOVERY-02)は「Promptや入力設計の改善余地がある」をUSER_DECISION_REQUIREDではないと明記し、「Rewrite前の古い文章をCheckerへ渡していた問題」を技術是正としている。N3′はその完結(`issue`が指す元の文を入力に揃える)。Checker本体のPrompt文・Schema・判定規則・`issue`文言は変えない(Trial側で渡す情報ブロックの追加のみ)。境界事例である点はユーザーへ報告する。採用判定はA/B(下記)で、Safety側の悪化(prior issue未解消の取りこぼし)がなく自己矛盾率が下がる場合のみ29件構成に含める。
+  5. **L6はONのまま維持・観測継続**(Opus論点4)。
+  6. **停止経路の定義**: 例外終了(API失敗・連続エラー・予算上限)で`stage4_reason`を持たないrunも「Human Review相当」としてKPIに数える(rep27は0件)。N1′導入後の移動先(`same_claim_fact_id_reblocked`/`cycle_limit_exhausted`)を監視対象に加える。
+  7. **旧構成の`ladder_exhausted` 10件の¥0分類**(同cycle同一文の重複claim型か否か)を実施し、L6以外の原因が残るかを確認。
+  8. **N2・再確認callの廃止は不採用**。Production配線は「再検査結果を正規化する純関数(PASS/NEXT_CYCLE/STOP)をTrial/Productionで共有、Productionが自己回復flowを持たない間はNEXT_CYCLE→STOP」の方向を`OPEN-233-A1-PROD`に記録(実装は配線時)。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_07.md L10-13
+
+- Fableの事前判断(SSOTへ記録。変更しない):
+  1. **件数一致バグは実装バグ(技術是正)**: `all_prior = (len(resolved)==len(prior_issues)) and all(resolved)`は、Checkerが1 prior issueを複数項目(同`index`)に分けて返した場合に誤って`False`になる。是正: `index`でグループ化し、全prior issueのindexが揃い、各グループが全てresolved=trueなら`True`。indexが欠けたprior issueは`False`(安全側)。Checkerの判定規則は変えない(応答の集約方法の是正)。er003 vfl01 826行に同じ式があることは`OPEN-233-A1-PROD`に配線時の整合項目として記録(Production変更はしない)。
+  2. **title単独claimの決定論deleteは技術是正**: タイトル・In one line等の構造要素を空にするdeleteは常に劣化。ladderで構造要素が対象のときはdeleteを選ばず、E1(語句)→③(文)の書き換えを使う(hintはChecker issue+Ledger notesから)。構造要素の書き換えでも`degenerate`になる場合の扱いは設計で明示(Human Reviewへ倒さない: 構造要素はLedgerの`headline`/`in_one_line`相当のfactがあればそれに沿って再生成、なければ段落水準①→③→④の既存ladderで文として書き換え)。
+  3. **`actor_guard`はSafety guard**(Rewriteが主体を変える・増やすことを防ぐ)。過剰拒否の是正は「緩める」方向になりうるため、¥0集計で過剰拒否率と拒否された案の妥当性を確認し、設計案を比較してOpus批判レビュー(条件A)を経てから実装する。方向性: Ledgerの関連factに存在する主体(actor)への言い換え・追加は許容、Ledgerに無い主体は拒否(=Ledger照合に基づく決定論)。Checkerの`issue`が主体の修正を求めている場合(例: 「credit-card users」への限定)はその主体を許容。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_08.md L10-19
+
+- Fableの評価(Opus#13の採否。SSOTへ逐語記録。変更しない):
+  1. **AG1-strictを採用(修正付き)**: 「緩める」ではなく「本来のguard意図(関連factにある主体なら許容)に戻す」是正。同義語表は**細粒度の同値クラス**(employee/contractor/staff、customer/user/passenger/clientは別クラスを原則。「契約スタッフ」↔{contractor, contract worker}、「クレジットカード利用者」↔{credit-card user(s)}のように1エントリずつ根拠[Ledger逐語・辞書的対応]をコメントに書く)。英語側の照合は単語境界、日本語側は語の境界に相当する前後文字の検査(部分文字列誤ヒット[「利用者」が別語に含まれる等]を排除)。`related_fact_id`欠落・誤りはfail-closed(拒否)。guardがscope(限定・一般化)を守るものではないことを設計書と報告に明記(scopeはRecheck担保)。
+  2. **2条件AND補助を採用**: 関連factに無い新主体でも、「Ledgerのどこか(他fact)に同義語表で一致」∧「Checker `issue`/`explanation`がその主体を単語境界で名指し」の両方を満たすときのみ許容(rep22型の残余)。issue単独・Ledger単独では許容しない。
+  3. **負例テスト(a)〜(e)と差分0確認を必須化**: (a)近接クラスの取り違え(contractor→employee、users→customers/passengers、staff→executives)、(b)別factの主体の持ち込み(issue名指しなし)、(c)`related_fact_id`欠落・誤り、(d)日本語部分一致の誤ヒット、(e)複数新主体語の一部のみ一致→拒否。加えて全ログの**許容された**Rewrite全件に新guardを当て、許容→拒否に変わる件が0であること(差分0)。
+  4. **件数一致是正の修正**: Opus指摘の3点を反映。式=「全項目の`resolved is True` ∧ {0..n-1} ⊆ 返却indexの集合」。範囲外index・非dict項目・`resolved`が`True`以外(文字列"false"等)が1つでもあればFalse。
+  5. **構造要素書き換えの補強**: 構造要素を書き換えた場合、before/afterの対をRecheckへ渡す(N3′の対ブロックを**構造要素の場合に限定して**流用、追加call 0、`RECHECK_BEFORE_AFTER_PAIRS`とは独立のスイッチ`STRUCTURAL_PAIRS_TO_RECHECK`、KPI構成ON)。title判定の位置ずれをProduction記事フォーマット(`#`付きtitle・メタ行・`## In one line`の位置。`er019_output`/`er012_output`配下の実記事`article.md`/`parts.json`を3本以上サンプル)で¥0テスト。
+  6. **残存指標の是正**(計測): `SAFETY_CRITICAL_CLAIM_DEFS`の`text_substring`に、因果型は「因果接続語+目印」のパターン(例: `so the flashy 20% plan`/`because`…)を使えるよう`text_pattern`(regex)を追加し、B3/neg5は`\b(so|because|therefore|as a result|led to)\b[^.]{0,40}flashy 20% plan`相当へ。旧`text_substring`も残し旧新並記。
+  7. **¥0集計**: 全ログの`LEDGER_COMPLIANT∧all_prior=False` 37件の再確認最終結果(PASS以外の件数)。0件なら「取りこぼし経路なし」と記録、>0なら各件の中身を列挙。
+  8. **不採用/保留**: guard廃止(不採用)、guard違反の「Recheck注記化」(保留)、AG2/AG3(不採用)、Rewrite promptでの主体指定(劣後)。
+  9. **Production整合**: 件数一致式はer003 vfl01 L827と共有関数化が必要(配線時)、actor_guardはguard本体・同義語表・負例テストを一体で移す、構造要素判定はProductionフォーマットのテストを前提 — `OPEN-233-A1-PROD`へ記録。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_09.md L10-15
+
+- Fable判断(SSOTへ逐語記録。変更しない):
+  1. **`related_fact_id`が空のときはLedger全体を照合先にするfallback(AG1-ledger相当)を採用**。根拠: (ア)現行guardの設計意図(runner L562〜567、`ledger_text`全体との照合)は元々Ledger全体が照合先であり、AG1-strictの「関連factに限定」はそれより厳しい追加条件。fallbackは元の意図に戻すもので「緩める」ではない。(イ)`related_fact_id`空はCheckerの出力仕様上の欠落(Safety系で19.6%)であり、Checker出力変更は禁止のため後段で吸収する。(ウ)後ろ盾はStage 2 floor `changed_actor`とRecheck全文(構造要素の対渡し含む)。(エ)関連factが**ある**場合は従来どおりAG1-strict(関連fact優先、他factは2条件ANDのみ)で、別factの主体持ち込みの抑止は維持。
+  2. 照合順: 新主体語ごとに (i)元文に同クラス → 許容 / (ii)関連factあり: 関連factに同クラス → 許容、無ければ(iii)2条件AND → 許容、どちらも不成立 → 拒否 / (ii′)関連fact空: Ledger全体(全fact本文、`notes_for_writer`含む)に同クラス表現が語境界付きで存在 → 許容(`basis=ledger_wide_fallback`を記録)、無ければ拒否。Ledgerにまったく無い主体は常に拒否(fail-closed)。
+  3. 負例を追加: (f)`related_fact_id`空かつLedger全体にも無い主体 → 拒否、(g)`related_fact_id`空かつ近接クラス(Ledgerにcontractorはあるがemployeeは無い状況でemployeeを導入) → 拒否、(h)`related_fact_id`ありで他factにしか無い主体をissue名指しなしで導入 → 拒否(fallbackが発動しないこと)。既存(a)〜(e)も全て再実行。差分0確認(許容→拒否 0件)も再実施。
+  4. Opus再レビューは本委任では行わない: Opus#13が評価したAG1-strict/AG1-ledgerの範囲内での条件分岐(関連factの有無で切替)であり、実測(19.6%欠落)に基づく「修正して採用」。Closeout時の条件Cレビューで一括確認。
+  5. 委任_08の委任ログがOpus#13全文を要旨化していた点、T-0 FAIL(見出し語不足)は運用メモに記録(本委任では全文保存)。
+
+出典: docs/pm/delegation_log/2026-10-04_OPEN-233-KPI-RECOVERY-REDESIGN-02_10.md L10-10
+
+- Fableの前提(変更しない): (ア)Human Review件数はrep27→28→29で3→3→3のまま、原因は毎回別の実装不整合(span不完全→L6順序→Recheck自己矛盾→actor_guard/title delete→related_fact_id空→今回はladder成功判定・span未特定・複数fact収束)。**個別の穴埋めの繰り返しになっていないか**を本RCAで正面から問う。「同じclaimが未解消で再BLOCKINGされたらHuman Review(`same_claim_fact_id_reblocked`)」「違反範囲が特定できなければHuman Review(`violation_span_unverified`)」「cycle上限でHuman Review(`cycle_limit_exhausted_after_recheck`)」は、いずれも「Human Reviewへ倒す経路」であり、KPI上は後段で決定論的に解消する設計が求められる。(イ)Opus批判レビューは必須(ユーザー指示: 後段Safety設計変更は実装前にOpus。かつ条件B: 同じKPI未達へ2回以上修正して再発)。(ウ)費用はPhase累計¥695.39/¥900、残¥204.61。再Trial(rep30、≈¥26)は1回分を見込む。設計は「限定確認(数instance、≈¥5)→rep30 1回」で済む形にする。
+
+出典: docs/pm/delegation_log/2026-10-05_OPEN-233-KPI-RECOVERY-REDESIGN-02_12.md L10-15
+
+- **Fable照合結果(委任_11に対する是正・判断、SSOTへ逐語記録)**:
+  1. **是正(必須、¥0)**: `degenerate`(Rewrite結果が空・同一等の退化)を`blocking_structural_after_ladder`へ写像しているのは、許可リスト外の理由を許可名で包む「名前の洗い替え」であり、I-2の趣旨に反する。是正: degenerateは「そのlevelの試行失敗」として扱い、同cycle内で上位levelへ昇段→ladder枯渇ならT(構造要素以外)→T不可(構造要素)の場合のみ`blocking_structural_after_ladder`。すなわち`blocking_structural_after_ladder`は「構造要素であること(`structural_element_reasons`で判定)∧ladder④まで実試行済み」を関数内で検証したときだけ返す。fixture追加(非構造degenerate→昇段→T、構造degenerate→STAGE4)。
+  2. **rep28の構造要素3件が反実仮想replayでHuman Reviewのまま残る件**: replayはrep28記録時のLLM出力(構造要素書き換えfallback実装前)に基づくためで、同3 instanceはrep29実行時には構造要素書き換えで解消済み(委任_09報告: 「rep28の3件(ladder_exhausted系)は消えた」)。設計上の未解決ではなく、`blocking_structural_after_ladder`は正当な残余経路(H-3③)。rep30で実測する。
+  3. **`issue_focus_absent_recheck_only`(L6既存承認経路)**: Stage 2 BLOCKINGの引用語句が現行本文全体に存在しない(Checkerの引用が記事に無い)場合にRecheckのみで解消する経路。H-1(位置特定済みBLOCKINGを書き換えずにPASS)とは「書き換える対象文が本文に存在しない」点で異なり、materiality降格ではなく引用の非存在の決定論確認+全文Recheck。**本委任では変更しない**(Opus#9/#12で承認済み)。ただし(a)非存在判定が「該当文」ではなく「現行本文全体」に対して行われていることをコードで確認し(違えば本文全体へ是正)、(b)rep30で発火件数・結果を記録、(c)Closeoutのユーザー確認事項へ追加。
+  4. **スイッチ**: `STAGE2_VERDICT_REUSE_NONBLOCKING`=ON、`STAGE2_SIBLING_LOCATIONS_CYCLE1`=ON(事前基準どおり: 再利用replay抑制8・ラベル重大0・flip0、第二段階①=20%>0)。rep30で兄弟列挙によりNORMAL群不要Rewriteがrep29(5/14)より増えた場合は「不採用候補」として記録(rep30の採否判定自体は変えない)。
+  5. 委任_11の実装判断(T後のBLOCKINGは追わず`post_T_new_blocking`、carry未再取得は次cycleで`..._unlocatable_after_cap`)は採用。
+
+出典: docs/pm/delegation_log/2026-10-05_OPEN-233-KPI-RECOVERY-REDESIGN-02_13.md L7-7
+
+- Fable判断: 「rep30でPrimary・Safety・Cost平均は達成。Cap(worst)は38 runのうちsafety_A4 s1の1 runが+¥3.135で¥0.135超過。rep30aでは同instance¥2.57(Cap内)で、超過は収束特性の変動幅による。残手段は(a)F1 品質regen条件の調整(ユーザー判断)、(b)同fact兄弟箇所のRewrite側拡張(QCD3と衝突)。n固定のため再実行しない。KPI緩和は提案しない。」
+
+### Trial Closeout分類
+| 分類 | 内容 |
+|---|---|
+| REJECTED | 確認役(`STAGE2_DOWNGRADE_VERIFY`)/G_L/N3′(`RECHECK_BEFORE_AFTER_PAIRS`)/因果floor目録拡張(`CAUSAL_FLOOR_VOCAB=inventory`)/A1/C/E1/E2/F1/F2/NORMAL群2-of-2(Trial補助、配線しない) |
+| VALIDATED | rep30有効構成(列挙はCURRENT_SPEC側、委任_01cで記載) |
+| USER_DECISION(本決定で解消) | Cap未達の扱い=撤回(+¥3単発Cap撤回、¥3超はmonitor/report) / B′§0-4解釈=承認 / 非BLOCKING再利用=承認 / 次Trial GO=追加N増し不要で解消 |
+| 未解決(配線時に扱う) | `blocking_structural_after_ladder`の未検証経路(T無効・T使用済み・cap後T不可・T削除失敗)/ `issue_focus_absent_recheck_only`(本文全体判定へ是正済み)/「and」版ACCEPTABLE判断(ユーザー未確認) |
+
+本エントリはユーザー決定の記録。`PRODUCTION_WIRED`ではない(完了条件1〜12達成後のみ)。Production未変更。
