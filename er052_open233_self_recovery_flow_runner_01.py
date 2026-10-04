@@ -379,15 +379,26 @@ VS_EXPLAIN_MIN_VERBATIM_WORDS = 3  # 残りが記事本文の逐語で、かつ�
 CHECKER_SPANS_MODE_LEGACY = "legacy"
 CHECKER_SPANS_MODE_VIOLATION_SPANS = "violation_spans"
 CHECKER_SPANS_MODE = CHECKER_SPANS_MODE_LEGACY
-# 委任_60(2026-10-04ユーザー決定[4回目]、判断D=案1、`APPROVED_FOR_PRODUCTION`、自己修復機構
-# 本体がProduction未接続のため`PRODUCTION_WIRED`ではない): 比較・方向・時期の機械判定
-# (`changed_comparison`/`changed_time`のfloorだけ)を、追加確認2回で2回とも重大でない場合に
-# 限り軽微以下へ戻す(Trial専用スイッチ、既定"off"=従来どおりfloorがBLOCKING確定)。
-# 主体・数値・否定のfloor、precheck floorは対象外で決定論のまま(下の
-# `floor_verify_target`参照)。CLI `--floor-verify-mode`。
+# 委任_60(2026-10-04ユーザー決定[4回目]、判断D=案1)で導入し、委任_61(2026-10-04ユーザー決定
+# [5回目]、選択肢3、`APPROVED_FOR_PRODUCTION`、自己修復機構本体がProduction未接続のため
+# `PRODUCTION_WIRED`ではない)で対象を**時期(`changed_time`)だけ**へ縮小: 時期の機械判定
+# floorだけを、追加確認2回で2回とも重大でない場合に限り軽微以下へ戻す(Trial専用スイッチ、
+# 既定"off"=従来どおりfloorがBLOCKING確定)。比較・方向・主体・数値・否定のfloor、precheck
+# floorは対象外で決定論のまま(下の`floor_verify_target`参照)。旧"comparison_time"は廃止
+# (指定すると`ValueError`)。CLI `--floor-verify-mode`。
 FLOOR_VERIFY_MODE_OFF = "off"
-FLOOR_VERIFY_MODE_COMPARISON_TIME = "comparison_time"
+FLOOR_VERIFY_MODE_TIME_ONLY = "time_only"
+FLOOR_VERIFY_MODES = (FLOOR_VERIFY_MODE_OFF, FLOOR_VERIFY_MODE_TIME_ONLY)
 FLOOR_VERIFY_MODE = FLOOR_VERIFY_MODE_OFF
+
+
+def validate_floor_verify_mode(mode: str) -> str:
+    """`off`/`time_only`以外(廃止した`comparison_time`を含む)は`ValueError`。"""
+    if mode not in FLOOR_VERIFY_MODES:
+        raise ValueError(f"floor-verify-mode must be one of {FLOOR_VERIFY_MODES}, got {mode!r}")
+    return mode
+
+
 # 配列から組み立てたclaim文字列→要素listの対応(`resolve_violation_spans`が配列経路へ入るための索引)。
 # `claim_text`は多数の関数を文字列のまま渡るため、文字列そのものを鍵にする(組み立ては決定論)。
 _VS_SPANS_REGISTRY: dict = {}
@@ -2217,24 +2228,25 @@ def apply_disclosure_gap_downgrade(materiality: str, dev: dict, floor_reason, cl
 
 # ------------------------------------------------------------
 # 委任_60(OPEN-233-SELF-RECOVERY-TRIAL-01、2026-10-04ユーザー決定[4回目]、判断D=案1、
-# Opus独立レビュー#8の代替案F5を比較・方向・時期に限定): 比較・方向・時期の機械判定
-# (floor)の追加確認による解放。`FLOOR_VERIFY_MODE="comparison_time"`のときだけ有効
+# Opus独立レビュー#8の代替案F5)を、委任_61(ユーザー決定[5回目]、選択肢3)で時期のみへ縮小:
+# 時期の機械判定(floor)の追加確認による解放。`FLOOR_VERIFY_MODE="time_only"`のときだけ有効
 # (既定"off"、Trial専用、`PRODUCTION_WIRED`ではない)。
 #
 # 対象(`floor_verify_target`): Stage 2のLLM判定が非BLOCKINGで、`apply_floor`だけが
-# BLOCKINGへ昇格させた指摘のうち、trueのfloorフラグが`changed_comparison`/`changed_time`
-# のみのもの。`changed_actor`/`changed_number`/`changed_negation`が1つでもtrueなら対象外
-# (従来どおりBLOCKING確定)。precheck floorも対象外。
-# 決定論の不一致確認(CONFIRMED): claimの日付・時刻・期間(time)/数値つき比較(comparison)
-# が関連factブロックに無ければ、確認を呼ばずBLOCKING維持(維持方向にのみ働く)。
+# BLOCKINGへ昇格させた指摘のうち、trueのfloorフラグが`changed_time`のみのもの。
+# `changed_comparison`/`changed_actor`/`changed_number`/`changed_negation`が1つでもtrueなら
+# 対象外(従来どおりBLOCKING確定、理由コード`out_of_scope_flag:<flag名>`)。precheck floorも対象外。
+# 決定論の不一致確認(CONFIRMED): claimの日付・時刻・期間(time)が関連factブロックに無ければ、
+# 確認を呼ばずBLOCKING維持(維持方向にのみ働く)。
 # CONFIRMED以外は自動解放せず確認経路へ進む(自動解放[文字一致・上昇/下落語の有無]なし)。
 # 確認: 対象claim 1件ごとに独立した呼び出しを2回(`run_floor_verify_call`)。2回とも非
 # BLOCKINGで、かつ`ledger_citation`が関連factブロックの逐語引用である場合だけ解放。
 # 1回でもBLOCKING・API失敗・schema不一致・引用が空/非逐語は、BLOCKING固定。
 # `dev`のフラグは書き換えない(解放情報は`floor_verify`フィールド)。
 # ------------------------------------------------------------
-FLOOR_VERIFY_FLAGS = ("changed_comparison", "changed_time")
-FLOOR_VERIFY_DETERMINISTIC_ONLY_FLAGS = ("changed_actor", "changed_number", "changed_negation")
+FLOOR_VERIFY_FLAGS = ("changed_time",)
+# 委任_61: 比較・方向も決定論のみ(委任_60では追加確認の対象だったが、方向反転が解放されたため除外)。
+FLOOR_VERIFY_DETERMINISTIC_ONLY_FLAGS = ("changed_comparison", "changed_actor", "changed_number", "changed_negation")
 
 _FV_MONTH = (r"(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|"
              r"Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)")
@@ -2278,11 +2290,11 @@ _FV_ANY_NUM_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
 
 FLOOR_VERIFY_RUBRIC_ADDENDUM = """
 
-【追加確認(floor verify)での追加指示(委任_60、2026-10-04ユーザー決定)】
-この確認は、自動判定(deterministic floor)が比較・方向・時期の理由だけでBLOCKINGへ引き
-上げた指摘を、独立に検証するものです。上記の判定原則に従い、次のとおり判定してください。
-- 台帳と矛盾する重大な変更(方向の反転、時期の取り違え)は重大(BLOCKING)です。
-- 方向・時期のニュアンスの差で、事実関係の核心が保たれていれば軽微(QUALITY)または
+【追加確認(floor verify)での追加指示(委任_60、委任_61で時期のみへ縮小、2026-10-04ユーザー決定)】
+この確認は、自動判定(deterministic floor)が時期の理由だけでBLOCKINGへ引き上げた指摘を、
+独立に検証するものです。上記の判定原則に従い、次のとおり判定してください。
+- 台帳と矛盾する重大な変更(時期の取り違え)は重大(BLOCKING)です。
+- 時期のニュアンスの差で、事実関係の核心が保たれていれば軽微(QUALITY)または
   問題なし(ACCEPTABLE)です。
 - Checkerの指摘は検証すべき仮説です。仮説が正しいか、関連factブロックの該当箇所を
   逐語で引用して(ledger_citation)検証してください。引用できない場合、または判断できない
@@ -2290,7 +2302,7 @@ FLOOR_VERIFY_RUBRIC_ADDENDUM = """
   だけでは問題なしの根拠になりません。"""
 
 FLOOR_VERIFY_DEVELOPER_MESSAGE = (
-    "あなたはVerified Fact LedgerとFact Safetyの独立監査担当です。自動判定が比較・方向・時期の理由で"
+    "あなたはVerified Fact LedgerとFact Safetyの独立監査担当です。自動判定が時期の理由で"
     "BLOCKINGにした特定のclaimについて、Checkerの指摘を検証すべき仮説として、Ledgerの該当箇所を"
     "引用して独立に再評価してください。"
 )
@@ -2344,19 +2356,21 @@ _FV_SEVERITY_ORDER = {"ACCEPTABLE": 0, "QUALITY": 1, "BLOCKING": 2}
 def floor_verify_target(llm_materiality, floor_applied, dev: dict) -> tuple:
     """(is_target, reason, triggered_flags)。FLOOR_VERIFY_MODEが有効で、LLM判定が非
     BLOCKINGかつdeterministic floor(precheck floorでない)だけがBLOCKINGにした指摘のうち、
-    trueのfloorフラグが比較・時期のみのものだけを対象にする。"""
+    trueのfloorフラグが`changed_time`のみのものだけを対象にする(委任_61)。比較・方向・主体・
+    数値・否定のいずれかがtrueなら対象外(`out_of_scope_flag:<flag名>`)。"""
     triggered = [k for k in FLOOR_FLAGS if bool(dev.get(k))]
-    if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_COMPARISON_TIME:
+    if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_TIME_ONLY:
         return False, "mode_off", triggered
     if not (floor_applied or "").startswith("deterministic_floor:"):
         return False, "not_deterministic_floor", triggered
     if llm_materiality == "BLOCKING" or llm_materiality is None:
         return False, "llm_materiality_blocking", triggered
-    if any(f in FLOOR_VERIFY_DETERMINISTIC_ONLY_FLAGS for f in triggered):
-        return False, "deterministic_only_flag_present", triggered
+    for f in triggered:
+        if f in FLOOR_VERIFY_DETERMINISTIC_ONLY_FLAGS:
+            return False, f"out_of_scope_flag:{f}", triggered
     if not triggered or any(f not in FLOOR_VERIFY_FLAGS for f in triggered):
-        return False, "flag_outside_comparison_time", triggered
-    return True, "comparison_time_floor_only_llm_non_blocking", triggered
+        return False, "flag_outside_time_only", triggered
+    return True, "time_floor_only_llm_non_blocking", triggered
 
 
 def floor_verify_fact_block(ledger_text: str, fact_id) -> str | None:
@@ -2425,7 +2439,8 @@ def floor_verify_time_tokens(text: str) -> set:
 
 
 def floor_verify_comparison_numbers(text: str) -> set:
-    """数値つき比較(%、倍、以上/以下等)に現れる数値の集合。"""
+    """数値つき比較(%、倍、以上/以下等)に現れる数値の集合。委任_61で比較が追加確認の対象外に
+    なったため、`floor_verify_confirmed`からは呼ばれない(未使用、将来用に残置)。"""
     out: set = set()
     t = text or ""
     P = FLOOR_VERIFY_COMPARISON_PATTERNS
@@ -2463,7 +2478,7 @@ def floor_verify_confirmed(claim_text: str, fact_block: str, triggered: list) ->
             info["confirmed"] = True
             info["basis_tokens"].append({"flag": "changed_time", "missing_in_fact_block": sorted(
                 [list(x) for x in missing], key=str)})
-    if "changed_comparison" in triggered:
+    if "changed_comparison" in triggered:  # 委任_61: 対象外のため通常は到達しない(防御的に残置)
         missing_n = floor_verify_comparison_numbers(claim_text) - floor_verify_fact_numbers(fact_block)
         if missing_n:
             info["confirmed"] = True
@@ -2595,7 +2610,8 @@ def floor_verify_summarize(stage2_results_iter) -> dict:
     """runtime evidence用の集計(対象件数/CONFIRMED件数/確認呼び出し件数/解放件数/BLOCKING固定の
     理由別件数/費用)。`floor_verify`フィールドを持つclaimのみ対象。"""
     s = {"n_floor_verify_records": 0, "n_target": 0, "n_confirmed": 0, "n_verify_calls": 0, "n_released": 0,
-         "blocking_fixed_by_reason": {}, "target_reason_counts": {}, "cost_jpy": 0.0}
+         "blocking_fixed_by_reason": {}, "target_reason_counts": {}, "out_of_scope_flag": {},
+         "cost_jpy": 0.0}
     for r in stage2_results_iter:
         fv = r.get("floor_verify")
         if not fv:
@@ -2603,6 +2619,9 @@ def floor_verify_summarize(stage2_results_iter) -> dict:
         s["n_floor_verify_records"] += 1
         s["target_reason_counts"][fv["target_reason"]] = s["target_reason_counts"].get(fv["target_reason"], 0) + 1
         if not fv["target"]:
+            if fv["target_reason"].startswith("out_of_scope_flag:"):
+                k2 = fv["target_reason"].split(":", 1)[1]
+                s["out_of_scope_flag"][k2] = s["out_of_scope_flag"].get(k2, 0) + 1
             continue
         s["n_target"] += 1
         s["n_confirmed"] += 1 if fv["confirmed"] else 0
@@ -7585,10 +7604,10 @@ def main():
                          choices=[CHECKER_SPANS_MODE_LEGACY, CHECKER_SPANS_MODE_VIOLATION_SPANS],
                          help="委任_53: violation_spansでCheckerの違反箇所を配列で受ける(既定legacy=現行)")
     parser.add_argument("--floor-verify-mode", default=FLOOR_VERIFY_MODE_OFF,
-                         choices=[FLOOR_VERIFY_MODE_OFF, FLOOR_VERIFY_MODE_COMPARISON_TIME],
-                         help="委任_60: comparison_timeで比較・時期のfloorの追加確認(2回とも非重大のときだけ解放)を有効化(既定off=従来)")
+                         choices=list(FLOOR_VERIFY_MODES),
+                         help="委任_61: time_onlyで時期のfloorだけ追加確認(2回とも非重大のときだけ解放)を有効化(既定off=従来、比較・方向等は決定論維持)")
     args = parser.parse_args()
-    globals()["FLOOR_VERIFY_MODE"] = args.floor_verify_mode
+    globals()["FLOOR_VERIFY_MODE"] = validate_floor_verify_mode(args.floor_verify_mode)
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
     globals()["VS_EXPLAIN_SPLIT"] = bool(args.vs_explain_split)
     globals()["JA_MODE"] = args.ja_mode

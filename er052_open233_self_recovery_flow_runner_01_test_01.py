@@ -5658,7 +5658,7 @@ def _fv_call_ok(materiality="QUALITY", citation="oil prices kept rising afterwar
 class TestFloorVerify60(unittest.TestCase):
     def setUp(self):
         self._old_mode = runner.FLOOR_VERIFY_MODE
-        runner.FLOOR_VERIFY_MODE = runner.FLOOR_VERIFY_MODE_COMPARISON_TIME
+        runner.FLOOR_VERIFY_MODE = runner.FLOOR_VERIFY_MODE_TIME_ONLY
 
     def tearDown(self):
         runner.FLOOR_VERIFY_MODE = self._old_mode
@@ -5673,31 +5673,55 @@ class TestFloorVerify60(unittest.TestCase):
         self.assertEqual(self._old_mode, "off")
         self.assertEqual(runner.FLOOR_VERIFY_MODE_OFF, "off")
 
-    def test_target_only_comparison_time_when_llm_non_blocking(self):
+    def test_target_only_time_flag_when_llm_non_blocking(self):
         T = runner.floor_verify_target
-        fa = "deterministic_floor:changed_comparison"
-        self.assertTrue(T("QUALITY", fa, self._dev(changed_comparison=True))[0])
-        self.assertTrue(T("ACCEPTABLE", "deterministic_floor:changed_time",
-                          self._dev(changed_time=True))[0])
-        self.assertTrue(T("QUALITY", "deterministic_floor:changed_comparison,changed_time",
-                          self._dev(changed_comparison=True, changed_time=True))[0])
+        self.assertTrue(T("ACCEPTABLE", "deterministic_floor:changed_time", self._dev(changed_time=True))[0])
+        self.assertTrue(T("QUALITY", "deterministic_floor:changed_time", self._dev(changed_time=True))[0])
 
-    def test_not_target_when_actor_number_negation_flag_true(self):
+    def test_comparison_flag_is_out_of_scope(self):
         T = runner.floor_verify_target
-        for extra in ("changed_actor", "changed_number", "changed_negation"):
-            ok, reason, _ = T("QUALITY", "deterministic_floor:changed_comparison," + extra,
-                              self._dev(changed_comparison=True, **{extra: True}))
+        ok, reason, _ = T("QUALITY", "deterministic_floor:changed_comparison",
+                          self._dev(changed_comparison=True))
+        self.assertFalse(ok)
+        self.assertEqual(reason, "out_of_scope_flag:changed_comparison")
+        ok, reason, _ = T("QUALITY", "deterministic_floor:changed_comparison,changed_time",
+                          self._dev(changed_comparison=True, changed_time=True))
+        self.assertFalse(ok)
+        self.assertEqual(reason, "out_of_scope_flag:changed_comparison")
+
+    def test_comparison_time_mode_is_not_selectable(self):
+        self.assertFalse(hasattr(runner, "FLOOR_VERIFY_MODE_COMPARISON_TIME"))
+        self.assertEqual(runner.FLOOR_VERIFY_MODES, ("off", "time_only"))
+        with self.assertRaises(ValueError):
+            runner.validate_floor_verify_mode("comparison_time")
+        self.assertEqual(runner.validate_floor_verify_mode("time_only"), "time_only")
+        import inspect
+        src = inspect.getsource(runner.main)
+        self.assertNotIn("comparison_time", src)
+
+    def test_verify_prompt_has_no_comparison_or_direction_examples(self):
+        for txt in (runner.FLOOR_VERIFY_RUBRIC_ADDENDUM, runner.FLOOR_VERIFY_DEVELOPER_MESSAGE,
+                    runner.FLOOR_VERIFY_PROMPT_TEMPLATE):
+            for w in ("比較", "方向", "反転", "prices began to fall"):
+                self.assertNotIn(w, txt)
+        self.assertIn("時期", runner.FLOOR_VERIFY_RUBRIC_ADDENDUM)
+
+    def test_not_target_when_comparison_actor_number_negation_flag_true(self):
+        T = runner.floor_verify_target
+        for extra in ("changed_comparison", "changed_actor", "changed_number", "changed_negation"):
+            ok, reason, _ = T("QUALITY", "deterministic_floor:changed_time," + extra,
+                              self._dev(changed_time=True, **{extra: True}))
             self.assertFalse(ok, extra)
-            self.assertEqual(reason, "deterministic_only_flag_present")
+            self.assertEqual(reason, "out_of_scope_flag:" + extra)
 
     def test_not_target_for_precheck_blocking_llm_or_mode_off(self):
         T = runner.floor_verify_target
-        d = self._dev(changed_comparison=True)
+        d = self._dev(changed_time=True)
         self.assertFalse(T("QUALITY", "precheck_floor", d)[0])
-        self.assertFalse(T("BLOCKING", "deterministic_floor:changed_comparison", d)[0])
+        self.assertFalse(T("BLOCKING", "deterministic_floor:changed_time", d)[0])
         self.assertFalse(T("QUALITY", None, d)[0])
         runner.FLOOR_VERIFY_MODE = "off"
-        self.assertFalse(T("QUALITY", "deterministic_floor:changed_comparison", d)[0])
+        self.assertFalse(T("QUALITY", "deterministic_floor:changed_time", d)[0])
 
     # --- CONFIRMED(2-2) ---
     def test_confirmed_time_when_date_missing_in_fact_block(self):
@@ -5732,15 +5756,15 @@ class TestFloorVerify60(unittest.TestCase):
     def test_not_confirmed_without_deterministic_token_goes_to_verify_not_release(self):
         fb = runner.floor_verify_fact_block(_FV_LEDGER, "HF-009")
         claim = "Just after the charge plan disappeared, prices began to fall."
-        c = runner.floor_verify_confirmed(claim, fb, ["changed_comparison"])
+        c = runner.floor_verify_confirmed(claim, fb, ["changed_time"])
         self.assertFalse(c["confirmed"])
         calls = []
 
         def fn(*a):
             calls.append(a)
             return _fv_call_ok("BLOCKING")(*a)
-        fv = runner.floor_verify_evaluate(fn, _FV_LEDGER, claim, "ctx", self._dev(changed_comparison=True),
-                                          "QUALITY", "deterministic_floor:changed_comparison")
+        fv = runner.floor_verify_evaluate(fn, _FV_LEDGER, claim, "ctx", self._dev(changed_time=True),
+                                          "QUALITY", "deterministic_floor:changed_time")
         self.assertEqual(len(calls), 1)  # 確認へ進む(自動解放されない)。1回目BLOCKINGで固定
         self.assertFalse(fv["released"])
         self.assertEqual(fv["blocking_fixed_reason"], "verify_blocking_both")
@@ -5758,8 +5782,8 @@ class TestFloorVerify60(unittest.TestCase):
     # --- 解放条件(2-4) ---
     def _eval(self, fn, llm="QUALITY", dev=None, claim="Prices began to fall."):
         return runner.floor_verify_evaluate(
-            fn, _FV_LEDGER, claim, "ctx", dev or self._dev(changed_comparison=True), llm,
-            "deterministic_floor:changed_comparison")
+            fn, _FV_LEDGER, claim, "ctx", dev or self._dev(changed_time=True), llm,
+            "deterministic_floor:changed_time")
 
     def test_release_only_when_both_non_blocking_with_verbatim_citation(self):
         fv = self._eval(_fv_call_ok("ACCEPTABLE"), llm="QUALITY")
@@ -5803,16 +5827,16 @@ class TestFloorVerify60(unittest.TestCase):
 
     def test_missing_fact_block_is_blocking_without_calls(self):
         calls = []
-        fv = self._eval(lambda *a: calls.append(a), dev=self._dev(changed_comparison=True,
+        fv = self._eval(lambda *a: calls.append(a), dev=self._dev(changed_time=True,
                                                                   related_fact_id="NOPE-1"))
         self.assertEqual(calls, [])
         self.assertEqual(fv["blocking_fixed_reason"], "fact_block_unavailable")
         self.assertFalse(fv["released"])
-        fv = self._eval(lambda *a: calls.append(a), dev={"changed_comparison": True})
+        fv = self._eval(lambda *a: calls.append(a), dev={"changed_time": True})
         self.assertFalse(fv["released"])
 
     def test_dev_flags_not_rewritten(self):
-        dev = self._dev(changed_comparison=True)
+        dev = self._dev(changed_time=True)
         before = dict(dev)
         self._eval(_fv_call_ok("QUALITY"), dev=dev)
         self.assertEqual(dev, before)
@@ -5845,7 +5869,7 @@ class TestFloorVerify60(unittest.TestCase):
                         "claim_index": 0, "materiality": llm, "basis": "none", "rewrite_kind": "none",
                         "rewrite_hint": ""}]}))
 
-        runner.FLOOR_VERIFY_MODE = (runner.FLOOR_VERIFY_MODE_COMPARISON_TIME if mode_on
+        runner.FLOOR_VERIFY_MODE = (runner.FLOOR_VERIFY_MODE_TIME_ONLY if mode_on
                                     else runner.FLOOR_VERIFY_MODE_OFF)
         state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
         fixture = {"ledger_text": _FV_LEDGER, "article_text": "Prices began to fall.",
@@ -5861,23 +5885,23 @@ class TestFloorVerify60(unittest.TestCase):
         return out[0], calls, call_log
 
     def test_run_stage2_releases_after_two_non_blocking_checks(self):
-        r, calls, log = self._run_stage2(self._dev(changed_comparison=True))
+        r, calls, log = self._run_stage2(self._dev(changed_time=True))
         self.assertEqual(calls, {"stage2": 1, "verify": 2})
         self.assertEqual(r["materiality"], "QUALITY")
         self.assertTrue(r["floor_reason"].startswith("floor_verify_released:deterministic_floor"))
         self.assertTrue(r["floor_verify"]["released"])
         self.assertEqual(r["llm_materiality"], "QUALITY")
-        self.assertTrue(r["dev"]["changed_comparison"])  # devは書き換えない
+        self.assertTrue(r["dev"]["changed_time"])  # devは書き換えない
         self.assertEqual(sum(1 for c in log if c.get("recovery_stage") == "floor_verify"), 2)
 
     def test_run_stage2_keeps_blocking_when_verify_says_blocking(self):
-        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True), verify_materiality="BLOCKING")
+        r, calls, _ = self._run_stage2(self._dev(changed_time=True), verify_materiality="BLOCKING")
         self.assertEqual(r["materiality"], "BLOCKING")
         self.assertTrue(r["floor_reason"].startswith("deterministic_floor:"))
         self.assertFalse(r["floor_verify"]["released"])
 
     def test_run_stage2_actor_flag_never_verified(self):
-        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True, changed_actor=True))
+        r, calls, _ = self._run_stage2(self._dev(changed_time=True, changed_actor=True))
         self.assertEqual(calls["verify"], 0)
         self.assertEqual(r["materiality"], "BLOCKING")
         self.assertFalse(r["floor_verify"]["target"])
@@ -5887,14 +5911,14 @@ class TestFloorVerify60(unittest.TestCase):
         self.assertEqual((calls["verify"], r["materiality"]), (0, "BLOCKING"))
 
     def test_run_stage2_mode_off_is_unchanged(self):
-        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True), mode_on=False)
+        r, calls, _ = self._run_stage2(self._dev(changed_time=True), mode_on=False)
         self.assertEqual(calls["verify"], 0)
         self.assertEqual(r["materiality"], "BLOCKING")
         self.assertNotIn("floor_verify", r)
         self.assertTrue(r["floor_reason"].startswith("deterministic_floor:"))
 
     def test_run_stage2_llm_blocking_not_verified(self):
-        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True), llm="BLOCKING")
+        r, calls, _ = self._run_stage2(self._dev(changed_time=True), llm="BLOCKING")
         self.assertEqual(calls["verify"], 0)
         self.assertEqual(r["materiality"], "BLOCKING")
 
@@ -5908,19 +5932,20 @@ class TestFloorVerify60(unittest.TestCase):
             inst, {**base, "floor_verify": {"released": False}}))
 
     def test_state_not_carried_across_cycles(self):
-        r1, c1, _ = self._run_stage2(self._dev(changed_comparison=True))
+        r1, c1, _ = self._run_stage2(self._dev(changed_time=True))
         self.assertTrue(r1["floor_verify"]["released"])
-        r2, c2, _ = self._run_stage2(self._dev(changed_comparison=True), verify_materiality="BLOCKING")
+        r2, c2, _ = self._run_stage2(self._dev(changed_time=True), verify_materiality="BLOCKING")
         self.assertEqual(r2["materiality"], "BLOCKING")  # 前周回の解放は引き継がれない
         self.assertEqual(c2["verify"], 1)  # 毎周回、再評価(1回目BLOCKINGで固定)
 
     def test_summary_counts(self):
-        r1, _, _ = self._run_stage2(self._dev(changed_comparison=True))
-        r2, _, _ = self._run_stage2(self._dev(changed_comparison=True), verify_materiality="BLOCKING")
+        r1, _, _ = self._run_stage2(self._dev(changed_time=True))
+        r2, _, _ = self._run_stage2(self._dev(changed_time=True), verify_materiality="BLOCKING")
         r3, _, _ = self._run_stage2(self._dev(changed_time=True, changed_number=True))
         s = runner.floor_verify_summarize([r1, r2, r3])
         self.assertEqual((s["n_target"], s["n_released"], s["n_verify_calls"]), (2, 1, 3))
         self.assertEqual(s["blocking_fixed_by_reason"], {"verify_blocking_both": 1})
+        self.assertEqual(s["out_of_scope_flag"], {"changed_number": 1})
 
     def test_cli_has_floor_verify_option_and_legacy_unaffected(self):
         import inspect
@@ -5966,7 +5991,7 @@ class TestRubricV7b60(unittest.TestCase):
     def test_floor_verify_prompt_has_hypothesis_and_v7b(self):
         self.assertIn("検証すべき仮説", runner.FLOOR_VERIFY_PROMPT_TEMPLATE)
         self.assertIn("Ledgerの該当箇所を引用して検証せよ", runner.FLOOR_VERIFY_PROMPT_TEMPLATE)
-        self.assertIn("方向の反転、時期の取り違え", runner.FLOOR_VERIFY_RUBRIC_ADDENDUM)
+        self.assertIn("時期の取り違え", runner.FLOOR_VERIFY_RUBRIC_ADDENDUM)
         self.assertEqual(set(runner.FLOOR_VERIFY_JSON_SCHEMA["schema"]["required"]),
                          {"materiality", "ledger_citation", "basis", "explanation"})
 
