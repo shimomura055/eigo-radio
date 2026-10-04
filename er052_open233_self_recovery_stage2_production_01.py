@@ -57,6 +57,23 @@ _V7_NEW_TIEBREAK = """- 上記のどれに該当するか迷う場合は、読�
 MATERIALITY_RUBRIC_V7 = MATERIALITY_RUBRIC.replace(_V7_OLD_TIEBREAK, _V7_NEW_TIEBREAK)
 assert MATERIALITY_RUBRIC_V7 != MATERIALITY_RUBRIC
 
+# 委任_60(2026-10-04ユーザー決定[4回目]、判定原則文の整合、`APPROVED_FOR_PRODUCTION`、
+# `PRODUCTION_WIRED`未達): V7の「比較・時期の差は機械的にBLOCKING」を、基底R3(e)に
+# 揃えて「Ledgerと矛盾する重大な変更(数値の改変・主体の取り違え・否定の反転・方向の
+# 反転・時期の取り違え)」へ整理したV7b(Production配線時用)。旧V7は定数として残す。
+# 現行flow(runner)のbody判定はs2c側のV7b(`BODY_RUBRIC_DEFAULT`)を使い、本ファイルの
+# `MATERIALITY_RUBRIC_V7*`/`run_stage2_batch`/`run_stage2_per_claim`はrunnerから使われない
+# (Phase1 unitcost計測スクリプトのみ使用)。QUALITY行の「動機の帰属」は変更しない
+# (Production配線時の整合項目としてOPEN-233-A1-PRODへ記録)。
+_V7B_NEW_TIEBREAK = """- 上記のどれに該当するか迷う場合は、読者(英語学習者)がこの文を信じたときに事実関係の
+  重大な誤解につながるかで決めてください。つながるならBLOCKING、つながらないならQUALITY
+  としてください。数値・主体・否定・比較・時期について、Ledgerと矛盾する重大な変更
+  (数値の改変、主体の取り違え、否定の反転、方向の反転、時期の取り違え)は、この原則の
+  対象外で、従来どおり機械的にBLOCKINGとします。方向・時期のニュアンスの差で事実関係の
+  核心が保たれているものは、この限りではありません。"""
+MATERIALITY_RUBRIC_V7B = MATERIALITY_RUBRIC.replace(_V7_OLD_TIEBREAK, _V7B_NEW_TIEBREAK)
+assert MATERIALITY_RUBRIC_V7B != MATERIALITY_RUBRIC_V7
+
 REWRITE_HINT_INSTRUCTION = """
 【rewrite_hint(委任_10で追加)】
 materialityがBLOCKINGの場合のみ、rewrite_hintに以下を全て含めてください:

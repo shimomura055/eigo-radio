@@ -379,6 +379,15 @@ VS_EXPLAIN_MIN_VERBATIM_WORDS = 3  # 残りが記事本文の逐語で、かつ�
 CHECKER_SPANS_MODE_LEGACY = "legacy"
 CHECKER_SPANS_MODE_VIOLATION_SPANS = "violation_spans"
 CHECKER_SPANS_MODE = CHECKER_SPANS_MODE_LEGACY
+# 委任_60(2026-10-04ユーザー決定[4回目]、判断D=案1、`APPROVED_FOR_PRODUCTION`、自己修復機構
+# 本体がProduction未接続のため`PRODUCTION_WIRED`ではない): 比較・方向・時期の機械判定
+# (`changed_comparison`/`changed_time`のfloorだけ)を、追加確認2回で2回とも重大でない場合に
+# 限り軽微以下へ戻す(Trial専用スイッチ、既定"off"=従来どおりfloorがBLOCKING確定)。
+# 主体・数値・否定のfloor、precheck floorは対象外で決定論のまま(下の
+# `floor_verify_target`参照)。CLI `--floor-verify-mode`。
+FLOOR_VERIFY_MODE_OFF = "off"
+FLOOR_VERIFY_MODE_COMPARISON_TIME = "comparison_time"
+FLOOR_VERIFY_MODE = FLOOR_VERIFY_MODE_OFF
 # 配列から組み立てたclaim文字列→要素listの対応(`resolve_violation_spans`が配列経路へ入るための索引)。
 # `claim_text`は多数の関数を文字列のまま渡るため、文字列そのものを鍵にする(組み立ては決定論)。
 _VS_SPANS_REGISTRY: dict = {}
@@ -415,9 +424,13 @@ ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT = True
 # 定数として残す)。V7は条件付き→断定の一律BLOCKINGと「迷えばBLOCKING」を
 # 置き換え、肯定形の自然な推論を許容する。機械floor等は不変。
 BODY_RUBRIC_DEFAULT = (
-    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7
+    s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7B
     if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2c.RUBRIC_R3_TRIPLE_PRIME
 )
+# 委任_60: V7→V7b(判定原則文の整合。V7(3)の「比較・時期の差は一律BLOCKING」を基底R3(e)
+# に揃え「Ledgerと矛盾する重大な変更(数値改変・主体取り違え・否定反転・方向反転・時期
+# 取り違え)は重大」へ。V7は定数として残す。要再較正=
+# `er052_open233_element_trial_safety_control_06.py`)。
 HOOK_RUBRIC_DEFAULT = (
     s2h.HOOK_RUBRIC_WITH_MISCONCEPTION_PRINCIPLE_V4
     if ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT else s2h.HOOK_RUBRIC
@@ -2202,6 +2215,402 @@ def apply_disclosure_gap_downgrade(materiality: str, dev: dict, floor_reason, cl
     return "QUALITY", "disclosure_gap_negative_inference_downgrade(委任_18 2-2)"
 
 
+# ------------------------------------------------------------
+# 委任_60(OPEN-233-SELF-RECOVERY-TRIAL-01、2026-10-04ユーザー決定[4回目]、判断D=案1、
+# Opus独立レビュー#8の代替案F5を比較・方向・時期に限定): 比較・方向・時期の機械判定
+# (floor)の追加確認による解放。`FLOOR_VERIFY_MODE="comparison_time"`のときだけ有効
+# (既定"off"、Trial専用、`PRODUCTION_WIRED`ではない)。
+#
+# 対象(`floor_verify_target`): Stage 2のLLM判定が非BLOCKINGで、`apply_floor`だけが
+# BLOCKINGへ昇格させた指摘のうち、trueのfloorフラグが`changed_comparison`/`changed_time`
+# のみのもの。`changed_actor`/`changed_number`/`changed_negation`が1つでもtrueなら対象外
+# (従来どおりBLOCKING確定)。precheck floorも対象外。
+# 決定論の不一致確認(CONFIRMED): claimの日付・時刻・期間(time)/数値つき比較(comparison)
+# が関連factブロックに無ければ、確認を呼ばずBLOCKING維持(維持方向にのみ働く)。
+# CONFIRMED以外は自動解放せず確認経路へ進む(自動解放[文字一致・上昇/下落語の有無]なし)。
+# 確認: 対象claim 1件ごとに独立した呼び出しを2回(`run_floor_verify_call`)。2回とも非
+# BLOCKINGで、かつ`ledger_citation`が関連factブロックの逐語引用である場合だけ解放。
+# 1回でもBLOCKING・API失敗・schema不一致・引用が空/非逐語は、BLOCKING固定。
+# `dev`のフラグは書き換えない(解放情報は`floor_verify`フィールド)。
+# ------------------------------------------------------------
+FLOOR_VERIFY_FLAGS = ("changed_comparison", "changed_time")
+FLOOR_VERIFY_DETERMINISTIC_ONLY_FLAGS = ("changed_actor", "changed_number", "changed_negation")
+
+_FV_MONTH = (r"(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|"
+             r"Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)")
+_FV_MONTH_INDEX = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "may": 5, "jun": 6, "jul": 7, "aug": 8,
+                   "sep": 9, "oct": 10, "nov": 11, "dec": 12}
+# CONFIRMED規則(time)の抽出パターン(コード定数。日英の表記を同じトークンへ正規化する)。
+FLOOR_VERIFY_TIME_PATTERNS = {
+    "month_day_en": re.compile(r"\b" + _FV_MONTH + r"\.?\s+(\d{1,2})(?:st|nd|rd|th)?\b", re.IGNORECASE),
+    "day_month_en": re.compile(r"\b(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?" + _FV_MONTH + r"\b", re.IGNORECASE),
+    "month_day_ja": re.compile(r"(\d{1,2})\s*月\s*(\d{1,2})\s*日"),
+    "month_day_slash": re.compile(r"(?<![\d/])(\d{1,2})/(\d{1,2})(?![\d/])"),
+    "iso_date": re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b"),
+    "year": re.compile(r"(?<!\d)((?:19|20)\d{2})(?!\d)"),
+    "clock_hhmm": re.compile(r"(?<![\d:])(\d{1,2}):(\d{2})(?![\d:])"),
+    "clock_ampm": re.compile(r"\b(\d{1,2})\s?([ap])\.?m\.?(?![a-z])", re.IGNORECASE),
+    "clock_ja": re.compile(r"(\d{1,2})\s*時(?!間)"),
+    "period_en": re.compile(r"(\d+(?:\.\d+)?)[\s-]*(day|week|month|year|hour|minute)s?\b", re.IGNORECASE),
+    "period_ja": re.compile(r"(\d+(?:\.\d+)?)\s*(日間|週間|か月|ヶ月|カ月|年間|時間|分間)"),
+    "relative": re.compile(r"\b(next day|the following day|the day after|the day before|the previous day)\b|"
+                           r"(翌日|前日)", re.IGNORECASE),
+}
+_FV_PERIOD_JA_UNIT = {"日間": "day", "週間": "week", "か月": "month", "ヶ月": "month", "カ月": "month",
+                      "年間": "year", "時間": "hour", "分間": "minute"}
+_FV_RELATIVE_NORM = {"next day": "next_day", "the following day": "next_day", "the day after": "next_day",
+                     "翌日": "next_day", "the day before": "prev_day", "the previous day": "prev_day",
+                     "前日": "prev_day"}
+# CONFIRMED規則(comparison)の抽出パターン(コード定数。数値つきの比較のみ。数値を伴わない
+# 方向語[rise/fall等]は決定論では扱わず確認経路へ回す)。
+_FV_NUM = r"(\d[\d,]*(?:\.\d+)?)"
+FLOOR_VERIFY_COMPARISON_PATTERNS = {
+    "percent": re.compile(_FV_NUM + r"\s*(?:%|percent|％)", re.IGNORECASE),
+    "times": re.compile(_FV_NUM + r"\s*(?:x|times|-fold|倍)(?![a-z])", re.IGNORECASE),
+    "bound_en": re.compile(r"\b(?:at least|at most|more than|less than|fewer than|over|under|up to|nearly|"
+                           r"almost|above|below|exceed(?:s|ed|ing)?)\s+\$?" + _FV_NUM
+                           + r"(?:\s*(million|billion|thousand))?", re.IGNORECASE),
+    "bound_ja": re.compile(_FV_NUM + r"\s*(?:万|億)?\s*(?:以上|以下|超|未満|を超え|を上回|を下回)"),
+}
+FLOOR_VERIFY_COMPARISON_WORDS = {"twice": 2.0, "double": 2.0, "doubled": 2.0, "triple": 3.0, "tripled": 3.0}
+_FV_COUNT_MULT = {"million": 1e6, "billion": 1e9, "thousand": 1e3}
+_FV_ANY_NUM_RE = re.compile(r"\d[\d,]*(?:\.\d+)?")
+
+FLOOR_VERIFY_RUBRIC_ADDENDUM = """
+
+【追加確認(floor verify)での追加指示(委任_60、2026-10-04ユーザー決定)】
+この確認は、自動判定(deterministic floor)が比較・方向・時期の理由だけでBLOCKINGへ引き
+上げた指摘を、独立に検証するものです。上記の判定原則に従い、次のとおり判定してください。
+- 台帳と矛盾する重大な変更(方向の反転、時期の取り違え)は重大(BLOCKING)です。
+- 方向・時期のニュアンスの差で、事実関係の核心が保たれていれば軽微(QUALITY)または
+  問題なし(ACCEPTABLE)です。
+- Checkerの指摘は検証すべき仮説です。仮説が正しいか、関連factブロックの該当箇所を
+  逐語で引用して(ledger_citation)検証してください。引用できない場合、または判断できない
+  場合はBLOCKINGとしてください。単に文字が一致する・上昇/下落の語が台帳にある、という
+  だけでは問題なしの根拠になりません。"""
+
+FLOOR_VERIFY_DEVELOPER_MESSAGE = (
+    "あなたはVerified Fact LedgerとFact Safetyの独立監査担当です。自動判定が比較・方向・時期の理由で"
+    "BLOCKINGにした特定のclaimについて、Checkerの指摘を検証すべき仮説として、Ledgerの該当箇所を"
+    "引用して独立に再評価してください。"
+)
+
+FLOOR_VERIFY_PROMPT_TEMPLATE = """これは、自動判定(deterministic floor)が機械的にBLOCKINGへ引き上げた指摘の、独立した追加確認です。
+以下の関連factブロック(Ledger逐語)・対象claim・ローカル文脈・Checkerの指摘(仮説)だけを見て、
+あなた自身の判断でmaterialityを判定してください。
+
+【関連factブロック(Verified Fact Ledgerより逐語、fact_id={related_fact_id})】
+{fact_block}
+
+【対象claim(確定範囲)】
+{claim_text}
+
+【対象claimを含む段落±1段落(ローカル文脈)】
+{local_context}
+
+【機械判定のフラグ】
+{flag_names}
+
+【Checkerの指摘(検証すべき仮説)】
+Checkerは次の問題を指摘した: {issue}
+この指摘が正しいか、Ledgerの該当箇所を引用して検証せよ。
+
+{rubric}
+
+materiality(BLOCKING/QUALITY/ACCEPTABLE)、ledger_citation(関連factブロックからの逐語引用。
+一字一句そのまま。要約・言い換え禁止)、basis(判定根拠の分類)、explanation(短い説明)を返してください。"""
+
+FLOOR_VERIFY_JSON_SCHEMA = {
+    "name": "open233_floor_verify_v1",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "materiality": {"type": "string", "enum": ["BLOCKING", "QUALITY", "ACCEPTABLE"]},
+            "ledger_citation": {"type": "string"},
+            "basis": {"type": "string", "enum": [
+                "ledger_claim", "ledger_scope", "ledger_numeric_value", "ledger_date_or_period",
+                "ledger_conditions", "notes_for_writer", "unsupported_relationship", "nuance_only", "none"]},
+            "explanation": {"type": "string"},
+        },
+        "required": ["materiality", "ledger_citation", "basis", "explanation"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+
+_FV_SEVERITY_ORDER = {"ACCEPTABLE": 0, "QUALITY": 1, "BLOCKING": 2}
+
+
+def floor_verify_target(llm_materiality, floor_applied, dev: dict) -> tuple:
+    """(is_target, reason, triggered_flags)。FLOOR_VERIFY_MODEが有効で、LLM判定が非
+    BLOCKINGかつdeterministic floor(precheck floorでない)だけがBLOCKINGにした指摘のうち、
+    trueのfloorフラグが比較・時期のみのものだけを対象にする。"""
+    triggered = [k for k in FLOOR_FLAGS if bool(dev.get(k))]
+    if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_COMPARISON_TIME:
+        return False, "mode_off", triggered
+    if not (floor_applied or "").startswith("deterministic_floor:"):
+        return False, "not_deterministic_floor", triggered
+    if llm_materiality == "BLOCKING" or llm_materiality is None:
+        return False, "llm_materiality_blocking", triggered
+    if any(f in FLOOR_VERIFY_DETERMINISTIC_ONLY_FLAGS for f in triggered):
+        return False, "deterministic_only_flag_present", triggered
+    if not triggered or any(f not in FLOOR_VERIFY_FLAGS for f in triggered):
+        return False, "flag_outside_comparison_time", triggered
+    return True, "comparison_time_floor_only_llm_non_blocking", triggered
+
+
+def floor_verify_fact_block(ledger_text: str, fact_id) -> str | None:
+    """関連factブロック(Ledger本文の逐語、`related_fact_id`のブロック)。無ければNone
+    (全文へはフォールバックしない=確認不能)。"""
+    fid = (fact_id or "").strip()
+    if not fid:
+        return None
+    for block in (ledger_text or "").split("\n\n"):
+        lines = [ln for ln in block.split("\n") if ln.strip() != ""]
+        if not lines:
+            continue
+        header = lines[0]
+        m1 = precheck.FACT_HEADER_V1.match(header)
+        m2 = precheck.FACT_HEADER_V2.match(header)
+        found = m1.group(2) if m1 else (m2.group(1) if m2 else None)
+        if found == fid:
+            return block.strip("\n")
+    return None
+
+
+def _fv_float(s: str) -> float:
+    return round(float(s.replace(",", "")), 4)
+
+
+def floor_verify_time_tokens(text: str) -> set:
+    """日付・時刻・期間・相対日の正規化トークン集合(日英の表記差を吸収)。"""
+    out: set = set()
+    t = text or ""
+    P = FLOOR_VERIFY_TIME_PATTERNS
+    for m in P["month_day_en"].finditer(t):
+        out.add(("md", _FV_MONTH_INDEX[m.group(1)[:3].lower()], int(m.group(2))))
+    for m in P["day_month_en"].finditer(t):
+        out.add(("md", _FV_MONTH_INDEX[m.group(2)[:3].lower()], int(m.group(1))))
+    for m in P["month_day_ja"].finditer(t):
+        out.add(("md", int(m.group(1)), int(m.group(2))))
+    for m in P["month_day_slash"].finditer(t):
+        a, b = int(m.group(1)), int(m.group(2))
+        if 1 <= a <= 12 and 1 <= b <= 31:
+            out.add(("md", a, b))
+    for m in P["iso_date"].finditer(t):
+        out.add(("y", int(m.group(1))))
+        out.add(("md", int(m.group(2)), int(m.group(3))))
+    for m in P["year"].finditer(t):
+        out.add(("y", int(m.group(1))))
+    for m in P["clock_hhmm"].finditer(t):
+        out.add(("clock", int(m.group(1)), int(m.group(2))))
+    for m in P["clock_ampm"].finditer(t):
+        h = int(m.group(1)) % 12 + (12 if m.group(2).lower() == "p" else 0)
+        out.add(("clock", h, 0))
+    for m in P["clock_ja"].finditer(t):
+        out.add(("clock", int(m.group(1)), 0))
+    for m in P["period_en"].finditer(t):
+        out.add(("period", _fv_float(m.group(1)), m.group(2).lower()))
+    for m in P["period_ja"].finditer(t):
+        out.add(("period", _fv_float(m.group(1)), _FV_PERIOD_JA_UNIT[m.group(2)]))
+    for m in P["relative"].finditer(t):
+        key = (m.group(1) or m.group(2)).lower()
+        out.add(("rel", _FV_RELATIVE_NORM[key]))
+    return out
+
+
+def floor_verify_comparison_numbers(text: str) -> set:
+    """数値つき比較(%、倍、以上/以下等)に現れる数値の集合。"""
+    out: set = set()
+    t = text or ""
+    P = FLOOR_VERIFY_COMPARISON_PATTERNS
+    for key in ("percent", "times", "bound_ja"):
+        for m in P[key].finditer(t):
+            out.add(_fv_float(m.group(1)))
+    for m in P["bound_en"].finditer(t):
+        v = _fv_float(m.group(1))
+        if m.group(2):
+            v = v * _FV_COUNT_MULT[m.group(2).lower()]
+        out.add(v)
+    for w, v in FLOOR_VERIFY_COMPARISON_WORDS.items():
+        if re.search(r"\b" + w + r"\b", t, re.IGNORECASE):
+            out.add(v)
+    return out
+
+
+def floor_verify_fact_numbers(fact_block: str) -> set:
+    nums = {_fv_float(m.group(0)) for m in _FV_ANY_NUM_RE.finditer(fact_block or "")}
+    nums |= {round(float(v), 4) for v in precheck.extract_percentages(fact_block or "")}
+    nums |= {round(float(v), 4) for v in precheck.extract_counts(fact_block or "")}
+    # 倍数語(twice/double等)がfactブロックにある場合は対応する数値も存在とみなす。
+    for w, v in FLOOR_VERIFY_COMPARISON_WORDS.items():
+        if re.search(r"\b" + w + r"\b", fact_block or "", re.IGNORECASE):
+            nums.add(v)
+    return nums
+
+
+def floor_verify_confirmed(claim_text: str, fact_block: str, triggered: list) -> dict:
+    """決定論の不一致確認(CONFIRMED)。維持方向(BLOCKINGのまま)にだけ働く。"""
+    info = {"confirmed": False, "basis_tokens": []}
+    if "changed_time" in triggered:
+        missing = floor_verify_time_tokens(claim_text) - floor_verify_time_tokens(fact_block)
+        if missing:
+            info["confirmed"] = True
+            info["basis_tokens"].append({"flag": "changed_time", "missing_in_fact_block": sorted(
+                [list(x) for x in missing], key=str)})
+    if "changed_comparison" in triggered:
+        missing_n = floor_verify_comparison_numbers(claim_text) - floor_verify_fact_numbers(fact_block)
+        if missing_n:
+            info["confirmed"] = True
+            info["basis_tokens"].append({"flag": "changed_comparison",
+                                         "missing_in_fact_block": sorted(missing_n)})
+    return info
+
+
+def _fv_norm(s: str) -> str:
+    s = (s or "").replace("’", "'").replace("‘", "'").replace("“", '"').replace("”", '"')
+    return " ".join(s.split())
+
+
+def run_floor_verify_call(client, claim_text: str, local_context: str, fact_block: str, issue: str,
+                           flag_names: list, related_fact_id: str = "", rubric_text: str | None = None,
+                           model: str = MODEL) -> dict:
+    """追加確認1回分(claim 1件、batchに混ぜない)。Stage 2と同じモデル・reasoning設定。"""
+    rubric = rubric_text if rubric_text is not None else (BODY_RUBRIC_DEFAULT + FLOOR_VERIFY_RUBRIC_ADDENDUM)
+    prompt = FLOOR_VERIFY_PROMPT_TEMPLATE.format(
+        related_fact_id=related_fact_id or "(不明)", fact_block=fact_block, claim_text=claim_text,
+        local_context=local_context or "(なし)", flag_names=", ".join(flag_names),
+        issue=issue or "(指摘文なし)", rubric=rubric)
+    t0 = time.time()
+    response = client.responses.create(
+        model=model,
+        reasoning={"effort": vfl01.REASONING_EFFORT},
+        text={"format": {"type": "json_schema", **FLOOR_VERIFY_JSON_SCHEMA}},
+        input=[{"role": "developer", "content": FLOOR_VERIFY_DEVELOPER_MESSAGE},
+               {"role": "user", "content": prompt}],
+    )
+    elapsed = round(time.time() - t0, 3)
+    parsed = json.loads(response.output_text)
+    usage = s2p._extract_usage(response)
+    return {"prompt_sha256": s2p.sha256_text(prompt), "parsed": parsed, "model": response.model,
+            "response_id": response.id, "usage": usage,
+            "cost_jpy": round(s2p.official_cost_jpy(usage), 4), "elapsed_seconds": elapsed}
+
+
+class FloorVerifyCallError(RuntimeError):
+    pass
+
+
+def _fv_validate_call(res: dict, fact_block: str) -> dict:
+    p = res.get("parsed") or {}
+    rec = {"materiality": p.get("materiality"), "basis": p.get("basis"),
+           "ledger_citation": p.get("ledger_citation"), "explanation": p.get("explanation"),
+           "prompt_sha256": res.get("prompt_sha256"), "cost_jpy": res.get("cost_jpy", 0.0),
+           "response_id": res.get("response_id"), "valid": False, "invalid_reason": None,
+           "citation_verbatim": False}
+    if p.get("materiality") not in _FV_SEVERITY_ORDER or not isinstance(p.get("ledger_citation"), str):
+        rec["invalid_reason"] = "schema_mismatch"
+        return rec
+    cit = _fv_norm(p["ledger_citation"])
+    if not cit:
+        rec["invalid_reason"] = "ledger_citation_empty"
+        return rec
+    rec["citation_verbatim"] = cit in _fv_norm(fact_block)
+    if not rec["citation_verbatim"]:
+        rec["invalid_reason"] = "ledger_citation_not_verbatim"
+        return rec
+    rec["valid"] = True
+    return rec
+
+
+def floor_verify_evaluate(call_fn, ledger_text: str, claim_text: str, local_context: str,
+                           dev: dict, llm_materiality: str, floor_applied: str,
+                           short_circuit: bool = True) -> dict:
+    """1 claimの追加確認の全体判定。`call_fn(claim_text, local_context, fact_block, issue,
+    flag_names, related_fact_id)`は結果dict(`run_floor_verify_call`互換)を返すか、
+    `FloorVerifyCallError`を送出する。戻り値の`released`がTrueのときだけ
+    `final_materiality`(2回の確認とStage 2の3つのうち最も重い非BLOCKING値)を使う。"""
+    is_target, reason, triggered = floor_verify_target(llm_materiality, floor_applied, dev)
+    fv = {"mode": FLOOR_VERIFY_MODE, "target": is_target, "target_reason": reason,
+          "triggered_flags": triggered, "llm_materiality": llm_materiality,
+          "confirmed": False, "confirmed_basis": [], "fact_block_found": None, "calls": [],
+          "n_calls": 0, "released": False, "blocking_fixed_reason": None, "release_note": None,
+          "final_materiality": "BLOCKING", "cost_jpy": 0.0}
+    if not is_target:
+        return fv
+    fact_id = dev.get("related_fact_id")
+    fact_block = floor_verify_fact_block(ledger_text, fact_id)
+    fv["fact_block_found"] = fact_block is not None
+    if fact_block is None:
+        # 確認不能。確認経路へ進んでも、引用できる関連factブロックが無く解放条件(逐語引用)を満たせない
+        # ため呼び出しを省略しBLOCKING固定(費用なし、結果は同じ)。
+        fv["blocking_fixed_reason"] = "fact_block_unavailable"
+        return fv
+    conf = floor_verify_confirmed(claim_text, fact_block, triggered)
+    fv["confirmed"], fv["confirmed_basis"] = conf["confirmed"], conf["basis_tokens"]
+    if conf["confirmed"]:
+        fv["blocking_fixed_reason"] = "confirmed_by_deterministic_mismatch"
+        return fv
+    issue = dev.get("issue") or dev.get("explanation") or ""
+    flag_names = [f.replace("changed_", "") for f in triggered]
+    results = []
+    for _i in range(2):
+        try:
+            res = call_fn(claim_text, local_context, fact_block, issue, flag_names, fact_id or "")
+        except FloorVerifyCallError as e:
+            fv["calls"].append({"valid": False, "invalid_reason": f"api_failure: {e}"})
+            fv["n_calls"] += 1
+            fv["blocking_fixed_reason"] = "verify_api_failure"
+            return fv
+        rec = _fv_validate_call(res, fact_block)
+        fv["calls"].append(rec)
+        fv["n_calls"] += 1
+        fv["cost_jpy"] = round(fv["cost_jpy"] + (rec.get("cost_jpy") or 0.0), 4)
+        results.append(rec)
+        if short_circuit and (not rec["valid"] or rec["materiality"] == "BLOCKING"):
+            break
+    invalid = [r for r in results if not r["valid"]]
+    if invalid:
+        fv["blocking_fixed_reason"] = invalid[0]["invalid_reason"]
+        return fv
+    if any(r["materiality"] == "BLOCKING" for r in results):
+        fv["blocking_fixed_reason"] = ("verify_blocking_disagree" if any(
+            r["materiality"] != "BLOCKING" for r in results) else "verify_blocking_both")
+        return fv
+    if len(results) < 2:
+        fv["blocking_fixed_reason"] = "verify_incomplete"
+        return fv
+    heaviest = max([llm_materiality] + [r["materiality"] for r in results], key=lambda m: _FV_SEVERITY_ORDER[m])
+    fv.update({"released": True, "final_materiality": heaviest,
+               "release_note": "2回の追加確認とも非BLOCKING(逐語引用あり)。最終値はStage2+確認2回のうち最も重い非BLOCKING値"})
+    return fv
+
+
+def floor_verify_summarize(stage2_results_iter) -> dict:
+    """runtime evidence用の集計(対象件数/CONFIRMED件数/確認呼び出し件数/解放件数/BLOCKING固定の
+    理由別件数/費用)。`floor_verify`フィールドを持つclaimのみ対象。"""
+    s = {"n_floor_verify_records": 0, "n_target": 0, "n_confirmed": 0, "n_verify_calls": 0, "n_released": 0,
+         "blocking_fixed_by_reason": {}, "target_reason_counts": {}, "cost_jpy": 0.0}
+    for r in stage2_results_iter:
+        fv = r.get("floor_verify")
+        if not fv:
+            continue
+        s["n_floor_verify_records"] += 1
+        s["target_reason_counts"][fv["target_reason"]] = s["target_reason_counts"].get(fv["target_reason"], 0) + 1
+        if not fv["target"]:
+            continue
+        s["n_target"] += 1
+        s["n_confirmed"] += 1 if fv["confirmed"] else 0
+        s["n_verify_calls"] += fv["n_calls"]
+        s["cost_jpy"] = round(s["cost_jpy"] + fv.get("cost_jpy", 0.0), 4)
+        if fv["released"]:
+            s["n_released"] += 1
+        else:
+            k = fv["blocking_fixed_reason"] or "unknown"
+            s["blocking_fixed_by_reason"][k] = s["blocking_fixed_by_reason"].get(k, 0) + 1
+    return s
+
+
 def run_stage2(client, state, consecutive_errors, call_log, label, fixture, claims: list) -> list:
     """claims: list of dict(claim_text, origin, related_fact_id, dev[元deviation])。
     戻り値: 各claimにmateriality/basis/rewrite_kind/floor_appliedを付与したlist。"""
@@ -2346,6 +2755,38 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         final_materiality, floor_applied = apply_floor(materiality, dev_for_floor, detected_by)
         if floor_applied:
             floor_reason = floor_applied
+        # 委任_60(案1、既定OFF): 比較・時期のfloorだけがBLOCKINGにした指摘の追加確認。
+        # 基準は`llm_materiality`(上の`materiality`)で、`apply_floor`の結果を上書きする形では
+        # なく、確認が解放を確定した場合だけ最終値を別途セットする(`dev`は書き換えない)。
+        # cycleごと・Recheck由来も同じ経路(run_stage2は毎周回呼ばれ、状態は引き継がない)。
+        floor_verify_rec = None
+        if (FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF and floor_applied
+                and i not in failclosed_indices and judgments_by_index.get(i) is not None):
+            def _fv_call(claim_text, local_context, fact_block, issue, flag_names, related_fact_id,
+                         _i=i):
+                check_budget(state)
+                vlabel = f"{label}_floorverify_c{_i}_{len(call_log)}"
+                try:
+                    res = run_floor_verify_call(client, claim_text, local_context, fact_block, issue,
+                                                flag_names, related_fact_id, model=MODEL)
+                except Exception as e:  # noqa: BLE001
+                    call_log.append({"label": vlabel, "recovery_stage": "floor_verify",
+                                      "error": f"{type(e).__name__}: {e}"})
+                    record_call(state, consecutive_errors, vlabel, 0.0, False, "floor_verify")
+                    raise FloorVerifyCallError(f"{type(e).__name__}: {e}") from e
+                call_log.append({"label": vlabel, "recovery_stage": "floor_verify",
+                                  "cost_jpy": res["cost_jpy"], "usage": res["usage"],
+                                  "elapsed_seconds": res["elapsed_seconds"],
+                                  "prompt_sha256": res["prompt_sha256"]})
+                record_call(state, consecutive_errors, vlabel, res["cost_jpy"], True, "floor_verify",
+                            res["usage"])
+                return res
+            floor_verify_rec = floor_verify_evaluate(
+                _fv_call, fixture["ledger_text"], c["claim_text"], c.get("local_context", ""),
+                dev_for_floor, materiality, floor_applied)
+            if floor_verify_rec["released"]:
+                final_materiality = floor_verify_rec["final_materiality"]
+                floor_reason = "floor_verify_released:" + floor_applied
         # 委任_14 B-2: floor-cited variantを反実仮想として同時計算し記録する
         # (実際のフロー制御には使わない、floor-strict[既存]のまま)。
         cited_materiality, cited_floor_applied = apply_floor_cited(
@@ -2382,7 +2823,10 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                     # 通ったかのEvidence(¥0、call_logのlabel/stage2_variant
                     # と同じ情報をclaim単位でも直接確認できるようにする)。
                     "stage2_route": stage2_route_by_index.get(i, "unknown"),
-                    "floor_cited_materiality": cited_materiality, "floor_cited_reason": cited_floor_applied})
+                    "floor_cited_materiality": cited_materiality, "floor_cited_reason": cited_floor_applied,
+                    # 委任_60: 追加確認の記録(スイッチ有効かつdeterministic floor発火のclaimのみ。
+                    # 既定OFFでは付かない=従来の出力と同一)。
+                    **({"floor_verify": floor_verify_rec} if floor_verify_rec is not None else {})})
     return out
 
 
@@ -2400,6 +2844,8 @@ def stage2_two_of_two_eligible(inst: dict, result: dict) -> bool:
     return (
         result["materiality"] == "BLOCKING"
         and result.get("floor_reason") is None
+        # 委任_60: 追加確認で解放済みのclaimはそれ以上動かさない(降格対象から外す)。
+        and not (result.get("floor_verify") or {}).get("released")
         and inst["instance_id"] in NORMAL_GROUP_INSTANCE_IDS
     )
 
@@ -5642,7 +6088,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             # 委任_49 作業2(記録専用)
             "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
                          **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
-                         **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {})},
+                         **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
+                         **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -6321,7 +6768,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         # 委任_49 作業2(記録専用。合否・重大度・書き換え対象の決定には使わない)
         "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
                          **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
-                         **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {})},
+                         **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
+                         **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
@@ -7131,7 +7579,11 @@ def main():
     parser.add_argument("--checker-spans-mode", default=CHECKER_SPANS_MODE_LEGACY,
                          choices=[CHECKER_SPANS_MODE_LEGACY, CHECKER_SPANS_MODE_VIOLATION_SPANS],
                          help="委任_53: violation_spansでCheckerの違反箇所を配列で受ける(既定legacy=現行)")
+    parser.add_argument("--floor-verify-mode", default=FLOOR_VERIFY_MODE_OFF,
+                         choices=[FLOOR_VERIFY_MODE_OFF, FLOOR_VERIFY_MODE_COMPARISON_TIME],
+                         help="委任_60: comparison_timeで比較・時期のfloorの追加確認(2回とも非重大のときだけ解放)を有効化(既定off=従来)")
     args = parser.parse_args()
+    globals()["FLOOR_VERIFY_MODE"] = args.floor_verify_mode
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
     globals()["VS_EXPLAIN_SPLIT"] = bool(args.vs_explain_split)
     globals()["JA_MODE"] = args.ja_mode
@@ -7214,6 +7666,11 @@ def main():
         "s1u_counterfactual": s1u_counterfactual,
         "n2_combined": n2_combined,
     }
+    if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF:
+        # 委任_60: 案1の追加確認のruntime evidence(全sampleの全cycle・全stage2_results)。
+        summary["floor_verify"] = floor_verify_summarize(
+            sr for res in sample_instance_results for r in res for cyc in r.get("cycles", [])
+            for sr in cyc.get("stage2_results", []))
     save_json(f"{OUT_DIR}/summary_flow_runner.json", {
         "summary": summary,
         "instance_results_sample1": [

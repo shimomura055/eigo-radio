@@ -3781,7 +3781,7 @@ class TestMisconceptionPrincipleDefaultWiring(unittest.TestCase):
         # 委任_33(design書§4-25)でV5からV6へ昇格。委任_55(design書§4-26、
         # 2026-10-03、線引きの正式採用)でV6からV7へ昇格(V6は定数として残る)。
         self.assertEqual(runner.BODY_RUBRIC_DEFAULT,
-                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7)
+                          s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7B)
         self.assertNotEqual(runner.BODY_RUBRIC_DEFAULT,
                              s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V6)
 
@@ -5630,6 +5630,358 @@ class TestExplainSplitStrictClosed57(unittest.TestCase):
         self.assertEqual(self.c2.CONTRAST_REF_EN_RE.pattern, runner.VS_EXPLAIN_CONTRAST_REF_EN_RE.pattern)
         self.assertEqual(self.c2.CONTRAST_REF_JA_RE.pattern, runner.VS_EXPLAIN_CONTRAST_REF_JA_RE.pattern)
         self.assertEqual(self.c2.POSITION_REJECT_RE.pattern, runner.VS_EXPLAIN_POSITION_REJECT_RE.pattern)
+
+
+# ---------------------------------------------------------------------
+# 委任_60(OPEN-233-SELF-RECOVERY-TRIAL-01、2026-10-04ユーザー決定[4回目]、判断D=案1)
+# 比較・方向・時期の機械判定の追加確認(FLOOR_VERIFY_MODE、既定OFF)。¥0(APIはfake)。
+# ---------------------------------------------------------------------
+_FV_LEDGER = (
+    "[HF-009] The fee plan was withdrawn on July 13, but oil prices kept rising afterwards.\n"
+    "  date_or_period: 2026-07-13\n"
+    "  numeric_value: 20% increase\n"
+    "  scope: oil prices kept rising after the withdrawal\n"
+    "\n"
+    "[HF-003] Talks resumed.\n"
+    "  date_or_period: July 14\n"
+)
+
+
+def _fv_call_ok(materiality="QUALITY", citation="oil prices kept rising afterwards", cost=0.1):
+    def _fn(claim_text, local_context, fact_block, issue, flag_names, related_fact_id):
+        return {"parsed": {"materiality": materiality, "ledger_citation": citation, "basis": "nuance_only",
+                           "explanation": "x"}, "prompt_sha256": "h", "cost_jpy": cost, "response_id": "r",
+                "usage": {}}
+    return _fn
+
+
+class TestFloorVerify60(unittest.TestCase):
+    def setUp(self):
+        self._old_mode = runner.FLOOR_VERIFY_MODE
+        runner.FLOOR_VERIFY_MODE = runner.FLOOR_VERIFY_MODE_COMPARISON_TIME
+
+    def tearDown(self):
+        runner.FLOOR_VERIFY_MODE = self._old_mode
+
+    def _dev(self, **flags):
+        d = {"related_fact_id": "HF-009", "issue": "prices rose, but the claim says fell"}
+        d.update(flags)
+        return d
+
+    # --- 対象の絞り込み(2-1) ---
+    def test_default_mode_is_off(self):
+        self.assertEqual(self._old_mode, "off")
+        self.assertEqual(runner.FLOOR_VERIFY_MODE_OFF, "off")
+
+    def test_target_only_comparison_time_when_llm_non_blocking(self):
+        T = runner.floor_verify_target
+        fa = "deterministic_floor:changed_comparison"
+        self.assertTrue(T("QUALITY", fa, self._dev(changed_comparison=True))[0])
+        self.assertTrue(T("ACCEPTABLE", "deterministic_floor:changed_time",
+                          self._dev(changed_time=True))[0])
+        self.assertTrue(T("QUALITY", "deterministic_floor:changed_comparison,changed_time",
+                          self._dev(changed_comparison=True, changed_time=True))[0])
+
+    def test_not_target_when_actor_number_negation_flag_true(self):
+        T = runner.floor_verify_target
+        for extra in ("changed_actor", "changed_number", "changed_negation"):
+            ok, reason, _ = T("QUALITY", "deterministic_floor:changed_comparison," + extra,
+                              self._dev(changed_comparison=True, **{extra: True}))
+            self.assertFalse(ok, extra)
+            self.assertEqual(reason, "deterministic_only_flag_present")
+
+    def test_not_target_for_precheck_blocking_llm_or_mode_off(self):
+        T = runner.floor_verify_target
+        d = self._dev(changed_comparison=True)
+        self.assertFalse(T("QUALITY", "precheck_floor", d)[0])
+        self.assertFalse(T("BLOCKING", "deterministic_floor:changed_comparison", d)[0])
+        self.assertFalse(T("QUALITY", None, d)[0])
+        runner.FLOOR_VERIFY_MODE = "off"
+        self.assertFalse(T("QUALITY", "deterministic_floor:changed_comparison", d)[0])
+
+    # --- CONFIRMED(2-2) ---
+    def test_confirmed_time_when_date_missing_in_fact_block(self):
+        fb = runner.floor_verify_fact_block(_FV_LEDGER, "HF-009")
+        self.assertIn("July 13", fb)
+        self.assertNotIn("HF-003", fb)
+        c = runner.floor_verify_confirmed("The plan was withdrawn on July 14.", fb, ["changed_time"])
+        self.assertTrue(c["confirmed"])
+        c = runner.floor_verify_confirmed("The plan was withdrawn on July 13.", fb, ["changed_time"])
+        self.assertFalse(c["confirmed"])
+
+    def test_time_tokens_normalise_ja_en_and_iso(self):
+        t = runner.floor_verify_time_tokens
+        self.assertEqual(t("7月13日"), t("July 13"))
+        self.assertTrue(t("2026-07-13") >= t("Jul 13"))
+        self.assertEqual(t("翌日"), t("the following day"))
+        self.assertEqual(t("3 days"), t("3日間"))
+
+    def test_confirmed_comparison_number_missing(self):
+        fb = runner.floor_verify_fact_block(_FV_LEDGER, "HF-009")
+        c = runner.floor_verify_confirmed("Prices rose 30% afterwards.", fb, ["changed_comparison"])
+        self.assertTrue(c["confirmed"])
+        c = runner.floor_verify_confirmed("Prices rose 20% afterwards.", fb, ["changed_comparison"])
+        self.assertFalse(c["confirmed"])
+
+    def test_not_confirmed_without_deterministic_token_goes_to_verify_not_release(self):
+        fb = runner.floor_verify_fact_block(_FV_LEDGER, "HF-009")
+        claim = "Just after the charge plan disappeared, prices began to fall."
+        c = runner.floor_verify_confirmed(claim, fb, ["changed_comparison"])
+        self.assertFalse(c["confirmed"])
+        calls = []
+
+        def fn(*a):
+            calls.append(a)
+            return _fv_call_ok("BLOCKING")(*a)
+        fv = runner.floor_verify_evaluate(fn, _FV_LEDGER, claim, "ctx", self._dev(changed_comparison=True),
+                                          "QUALITY", "deterministic_floor:changed_comparison")
+        self.assertEqual(len(calls), 1)  # 確認へ進む(自動解放されない)。1回目BLOCKINGで固定
+        self.assertFalse(fv["released"])
+        self.assertEqual(fv["blocking_fixed_reason"], "verify_blocking_both")
+
+    def test_confirmed_skips_calls_and_keeps_blocking(self):
+        calls = []
+        fv = runner.floor_verify_evaluate(lambda *a: calls.append(a), _FV_LEDGER, "It happened on July 14.",
+                                          "ctx", self._dev(changed_time=True), "QUALITY",
+                                          "deterministic_floor:changed_time")
+        self.assertEqual(calls, [])
+        self.assertTrue(fv["confirmed"])
+        self.assertFalse(fv["released"])
+        self.assertEqual(fv["final_materiality"], "BLOCKING")
+
+    # --- 解放条件(2-4) ---
+    def _eval(self, fn, llm="QUALITY", dev=None, claim="Prices began to fall."):
+        return runner.floor_verify_evaluate(
+            fn, _FV_LEDGER, claim, "ctx", dev or self._dev(changed_comparison=True), llm,
+            "deterministic_floor:changed_comparison")
+
+    def test_release_only_when_both_non_blocking_with_verbatim_citation(self):
+        fv = self._eval(_fv_call_ok("ACCEPTABLE"), llm="QUALITY")
+        self.assertTrue(fv["released"])
+        self.assertEqual(fv["n_calls"], 2)
+        self.assertEqual(fv["final_materiality"], "QUALITY")  # 最も重い非BLOCKING(Stage2のQUALITY)
+        fv = self._eval(_fv_call_ok("QUALITY"), llm="ACCEPTABLE")
+        self.assertEqual(fv["final_materiality"], "QUALITY")
+        fv = self._eval(_fv_call_ok("ACCEPTABLE"), llm="ACCEPTABLE")
+        self.assertEqual(fv["final_materiality"], "ACCEPTABLE")
+
+    def test_disagreement_one_blocking_fixes_blocking(self):
+        seq = iter(["QUALITY", "BLOCKING"])
+
+        def fn(*a):
+            return _fv_call_ok(next(seq))(*a)
+        fv = self._eval(fn)
+        self.assertFalse(fv["released"])
+        self.assertEqual(fv["blocking_fixed_reason"], "verify_blocking_disagree")
+        seq2 = iter(["BLOCKING", "QUALITY"])
+
+        def fn2(*a):
+            return _fv_call_ok(next(seq2))(*a)
+        self.assertFalse(self._eval(fn2)["released"])
+
+    def test_failures_fix_blocking(self):
+        def api_fail(*a):
+            raise runner.FloorVerifyCallError("boom")
+        fv = self._eval(api_fail)
+        self.assertEqual((fv["released"], fv["blocking_fixed_reason"]), (False, "verify_api_failure"))
+        fv = self._eval(_fv_call_ok("QUALITY", citation=""))
+        self.assertEqual((fv["released"], fv["blocking_fixed_reason"]), (False, "ledger_citation_empty"))
+        fv = self._eval(_fv_call_ok("QUALITY", citation="prices fell sharply"))
+        self.assertEqual((fv["released"], fv["blocking_fixed_reason"]), (False, "ledger_citation_not_verbatim"))
+
+        def bad_schema(*a):
+            return {"parsed": {"materiality": "MAYBE", "ledger_citation": "x"}, "prompt_sha256": "h",
+                    "cost_jpy": 0.0}
+        fv = self._eval(bad_schema)
+        self.assertEqual((fv["released"], fv["blocking_fixed_reason"]), (False, "schema_mismatch"))
+
+    def test_missing_fact_block_is_blocking_without_calls(self):
+        calls = []
+        fv = self._eval(lambda *a: calls.append(a), dev=self._dev(changed_comparison=True,
+                                                                  related_fact_id="NOPE-1"))
+        self.assertEqual(calls, [])
+        self.assertEqual(fv["blocking_fixed_reason"], "fact_block_unavailable")
+        self.assertFalse(fv["released"])
+        fv = self._eval(lambda *a: calls.append(a), dev={"changed_comparison": True})
+        self.assertFalse(fv["released"])
+
+    def test_dev_flags_not_rewritten(self):
+        dev = self._dev(changed_comparison=True)
+        before = dict(dev)
+        self._eval(_fv_call_ok("QUALITY"), dev=dev)
+        self.assertEqual(dev, before)
+
+    # --- run_stage2への配線(2-5) ---
+    def _run_stage2(self, dev, verify_materiality="QUALITY", llm="QUALITY", mode_on=True):
+        calls = {"stage2": 0, "verify": 0}
+        import json as _json
+
+        class FakeResp:
+            id = "r1"
+            model = "gpt-6-luna"
+
+            def __init__(self, text):
+                self.output_text = text
+
+        class FakeClient:
+            class responses:
+                @staticmethod
+                def create(**kwargs):
+                    prompt = kwargs["input"][1]["content"]
+                    if "独立した追加確認" in prompt:
+                        calls["verify"] += 1
+                        return FakeResp(_json.dumps({
+                            "materiality": verify_materiality,
+                            "ledger_citation": "oil prices kept rising afterwards", "basis": "nuance_only",
+                            "explanation": "x"}))
+                    calls["stage2"] += 1
+                    return FakeResp(_json.dumps({"judgments": [{
+                        "claim_index": 0, "materiality": llm, "basis": "none", "rewrite_kind": "none",
+                        "rewrite_hint": ""}]}))
+
+        runner.FLOOR_VERIFY_MODE = (runner.FLOOR_VERIFY_MODE_COMPARISON_TIME if mode_on
+                                    else runner.FLOOR_VERIFY_MODE_OFF)
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        fixture = {"ledger_text": _FV_LEDGER, "article_text": "Prices began to fall.",
+                   "source_article_text": None}
+        claims = [{"claim_text": "Prices began to fall.", "origin": "translation",
+                   "related_fact_id": "HF-009", "dev": dev, "detected_by": "stage1_llm"}]
+        call_log = []
+        with mock.patch.object(runner, "check_budget", lambda s: None), \
+             mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner.s2p, "_extract_usage", lambda r: {}), \
+             mock.patch.object(runner.s2p, "official_cost_jpy", lambda u: 0.0):
+            out = runner.run_stage2(FakeClient(), state, [0], call_log, "label", fixture, claims)
+        return out[0], calls, call_log
+
+    def test_run_stage2_releases_after_two_non_blocking_checks(self):
+        r, calls, log = self._run_stage2(self._dev(changed_comparison=True))
+        self.assertEqual(calls, {"stage2": 1, "verify": 2})
+        self.assertEqual(r["materiality"], "QUALITY")
+        self.assertTrue(r["floor_reason"].startswith("floor_verify_released:deterministic_floor"))
+        self.assertTrue(r["floor_verify"]["released"])
+        self.assertEqual(r["llm_materiality"], "QUALITY")
+        self.assertTrue(r["dev"]["changed_comparison"])  # devは書き換えない
+        self.assertEqual(sum(1 for c in log if c.get("recovery_stage") == "floor_verify"), 2)
+
+    def test_run_stage2_keeps_blocking_when_verify_says_blocking(self):
+        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True), verify_materiality="BLOCKING")
+        self.assertEqual(r["materiality"], "BLOCKING")
+        self.assertTrue(r["floor_reason"].startswith("deterministic_floor:"))
+        self.assertFalse(r["floor_verify"]["released"])
+
+    def test_run_stage2_actor_flag_never_verified(self):
+        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True, changed_actor=True))
+        self.assertEqual(calls["verify"], 0)
+        self.assertEqual(r["materiality"], "BLOCKING")
+        self.assertFalse(r["floor_verify"]["target"])
+
+    def test_run_stage2_number_flag_never_verified(self):
+        r, calls, _ = self._run_stage2(self._dev(changed_time=True, changed_number=True))
+        self.assertEqual((calls["verify"], r["materiality"]), (0, "BLOCKING"))
+
+    def test_run_stage2_mode_off_is_unchanged(self):
+        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True), mode_on=False)
+        self.assertEqual(calls["verify"], 0)
+        self.assertEqual(r["materiality"], "BLOCKING")
+        self.assertNotIn("floor_verify", r)
+        self.assertTrue(r["floor_reason"].startswith("deterministic_floor:"))
+
+    def test_run_stage2_llm_blocking_not_verified(self):
+        r, calls, _ = self._run_stage2(self._dev(changed_comparison=True), llm="BLOCKING")
+        self.assertEqual(calls["verify"], 0)
+        self.assertEqual(r["materiality"], "BLOCKING")
+
+    def test_released_claim_excluded_from_two_of_two(self):
+        inst = {"instance_id": next(iter(runner.NORMAL_GROUP_INSTANCE_IDS))}
+        base = {"materiality": "BLOCKING", "floor_reason": None}
+        self.assertTrue(runner.stage2_two_of_two_eligible(inst, base))
+        self.assertFalse(runner.stage2_two_of_two_eligible(
+            inst, {**base, "floor_verify": {"released": True}}))
+        self.assertTrue(runner.stage2_two_of_two_eligible(
+            inst, {**base, "floor_verify": {"released": False}}))
+
+    def test_state_not_carried_across_cycles(self):
+        r1, c1, _ = self._run_stage2(self._dev(changed_comparison=True))
+        self.assertTrue(r1["floor_verify"]["released"])
+        r2, c2, _ = self._run_stage2(self._dev(changed_comparison=True), verify_materiality="BLOCKING")
+        self.assertEqual(r2["materiality"], "BLOCKING")  # 前周回の解放は引き継がれない
+        self.assertEqual(c2["verify"], 1)  # 毎周回、再評価(1回目BLOCKINGで固定)
+
+    def test_summary_counts(self):
+        r1, _, _ = self._run_stage2(self._dev(changed_comparison=True))
+        r2, _, _ = self._run_stage2(self._dev(changed_comparison=True), verify_materiality="BLOCKING")
+        r3, _, _ = self._run_stage2(self._dev(changed_time=True, changed_number=True))
+        s = runner.floor_verify_summarize([r1, r2, r3])
+        self.assertEqual((s["n_target"], s["n_released"], s["n_verify_calls"]), (2, 1, 3))
+        self.assertEqual(s["blocking_fixed_by_reason"], {"verify_blocking_both": 1})
+
+    def test_cli_has_floor_verify_option_and_legacy_unaffected(self):
+        import inspect
+        src = inspect.getsource(runner.main)
+        self.assertIn("--floor-verify-mode", src)
+        self.assertEqual(runner.HANDOFF_MODE_LEGACY, "legacy")
+        # 既定OFFではswitches記録にFLOOR_VERIFY_MODEは付かない(従来と同一出力)
+        self.assertEqual(self._old_mode, runner.FLOOR_VERIFY_MODE_OFF)
+
+
+class TestRubricV7b60(unittest.TestCase):
+    """委任_60: V7(3)の「比較・時期の差は一律BLOCKING」を基底R3(e)に揃えたV7b。"""
+
+    def test_v7_kept_and_v7b_adds_contradiction_wording(self):
+        import er052_open233_self_recovery_stage2_production_01 as s2p
+        v7 = "".join(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7.split())
+        v7b = "".join(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7B.split())
+        self.assertIn("数値・主体・否定・比較・時期の差は、この原則の対象外", v7)  # 旧版は定数として残る
+        self.assertNotIn("数値・主体・否定・比較・時期の差は、この原則の対象外", v7b)
+        for w in ("Ledgerと矛盾する重大な変更", "数値の改変", "主体の取り違え", "否定の反転", "方向の反転",
+                  "時期の取り違え", "方向・時期のニュアンスの差で事実関係の核心が保たれている"):
+            self.assertIn(w, v7b)
+        # 3例の期待値は不変
+        t = s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7B
+        lines = [x for x in t[t.index("判定済みの例"):].splitlines() if x.startswith("- ")]
+        self.assertEqual([x.split("→")[-1].strip() for x in lines], ["QUALITY", "ACCEPTABLE", "QUALITY"])
+        # 動機(V7(1)(イ))へ「仕組み・意図」を足していない(Opus#8: 既存より厳しくなりうる)
+        self.assertEqual(s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7.split("(2) 自然な推論")[0],
+                         s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7B.split("(2) 自然な推論")[0])
+        self.assertNotIn("仕組み・意図", s2c.MISCONCEPTION_PRINCIPLE_TEXT_V7B)
+        # production側(配線時用)
+        self.assertIn("方向の反転", s2p._V7B_NEW_TIEBREAK)
+        self.assertNotIn("(fail-closed)", s2p.MATERIALITY_RUBRIC_V7B)
+        self.assertIn("動機の帰属", "".join(s2p.MATERIALITY_RUBRIC_V7B.split()))  # 動機行は変更しない
+        self.assertIn("比較・時期の差は", "".join(s2p.MATERIALITY_RUBRIC_V7.split()).replace("数値・主体・否定・", ""))
+
+    def test_body_default_is_v7b_and_mechanical_floor_unchanged(self):
+        self.assertEqual(runner.BODY_RUBRIC_DEFAULT,
+                         s2c.RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7B)
+        self.assertEqual(set(runner.FLOOR_FLAGS), {"changed_actor", "changed_number", "changed_negation",
+                                                   "changed_comparison", "changed_time"})
+
+    def test_floor_verify_prompt_has_hypothesis_and_v7b(self):
+        self.assertIn("検証すべき仮説", runner.FLOOR_VERIFY_PROMPT_TEMPLATE)
+        self.assertIn("Ledgerの該当箇所を引用して検証せよ", runner.FLOOR_VERIFY_PROMPT_TEMPLATE)
+        self.assertIn("方向の反転、時期の取り違え", runner.FLOOR_VERIFY_RUBRIC_ADDENDUM)
+        self.assertEqual(set(runner.FLOOR_VERIFY_JSON_SCHEMA["schema"]["required"]),
+                         {"materiality", "ledger_citation", "basis", "explanation"})
+
+
+class TestMotiveDocAlignment60(unittest.TestCase):
+    """委任_60: 動機(帰属=軽微/創作=重大)の文書整合。"""
+
+    def _read(self, p):
+        with open(p, encoding="utf-8") as f:
+            return f.read()
+
+    def test_design_section_0_2_updated(self):
+        t = "".join(self._read("docs/pm/design_open233_self_recovery_flow_01.md").split())
+        self.assertIn("未確認の人物・行動・仕組み・数字の追加(Ledgerに根拠のない人物・組織の意図・動機の断定を含む", t)
+        self.assertIn("確認済みの事象に理由づけを添えるだけで新しい具体的事実を加えないものは含まない", t)
+
+    def test_criteria_doc_has_motive_section(self):
+        t = "".join(self._read("docs/pm/open233_materiality_criteria_2026-10-03.md").split())
+        self.assertIn("動機の帰属=確認済みの事象に理由づけを添える", t)
+        self.assertIn("動機の創作=台帳にない意図・仕組み", t)
+        self.assertIn("V7(1)(イ)への「仕組み・意図」の追加はしない", t)
 
 
 if __name__ == "__main__":

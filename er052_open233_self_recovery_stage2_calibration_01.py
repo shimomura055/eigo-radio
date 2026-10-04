@@ -588,6 +588,31 @@ RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7 = (
     RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V7
 )
 
+# ------------------------------------------------------------
+# 委任_60(OPEN-233-SELF-RECOVERY-TRIAL-01、2026-10-04ユーザー決定[4回目]、
+# 判断D=案1・判定原則文の整合、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達):
+# V7(3)の「数値・主体・否定・比較・時期の差は、この原則の対象外で、従来どおり
+# 明確にBLOCKING」は、「`prices began to fall`は軽微(K19=QUALITY)」と矛盾する
+# (比較・時期の『差』を一律重大と読める)。基底R3(e)(Ledgerと矛盾する重大な
+# 変更のみBLOCKING)に揃え、「台帳と矛盾する重大な変更(数値改変・主体取り違え・
+# 否定反転・方向反転・時期取り違え)は重大」へ整理したV7bを新版名で追加する。
+# V7は定数として残す(旧版の再現性維持)。「動機」(V7(1)(イ))は変更しない
+# (「仕組み・意図」を足すと既存より厳しくなりうる、Opus#8)。
+# ------------------------------------------------------------
+_V7_TIEBREAK_OLD = ("数値・主体・否定・比較・時期の差は、この原則の対象外\n"
+                    "で、従来どおり明確にBLOCKINGとします。")
+_V7B_TIEBREAK_NEW = ("数値・主体・否定・比較・時期について、Ledgerと矛盾する重大な変更\n"
+                     "(数値の改変、主体の取り違え、否定の反転、方向の反転、時期の取り違え)は、\n"
+                     "この原則の対象外で、従来どおり明確にBLOCKINGとします。方向・時期のニュアンス\n"
+                     "の差で事実関係の核心が保たれているものは、この限りではありません。")
+MISCONCEPTION_PRINCIPLE_TEXT_V7B = MISCONCEPTION_PRINCIPLE_TEXT_V7.replace(
+    _V7_TIEBREAK_OLD, _V7B_TIEBREAK_NEW)
+assert MISCONCEPTION_PRINCIPLE_TEXT_V7B != MISCONCEPTION_PRINCIPLE_TEXT_V7
+
+RUBRIC_R3_TRIPLE_PRIME_WITH_MISCONCEPTION_PRINCIPLE_V7B = (
+    RUBRIC_R3_TRIPLE_PRIME + "\n" + MISCONCEPTION_PRINCIPLE_TEXT_V7B
+)
+
 
 class TrialAbort(RuntimeError):
     pass
