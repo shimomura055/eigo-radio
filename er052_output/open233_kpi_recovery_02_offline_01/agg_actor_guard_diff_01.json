@@ -1,12 +1,12 @@
 {
- "files": 538,
- "attempts": 112,
+ "files": 544,
+ "attempts": 117,
  "ledger_missing": 0,
- "accepted_total": 106,
+ "accepted_total": 109,
  "accepted_with_new_actor": 0,
  "accepted_to_rejected": [],
- "rejected_total": 6,
- "rejected_to_accepted": 6,
+ "rejected_total": 8,
+ "rejected_to_accepted": 8,
  "rejected_rows": [
   {
    "run": "rep28",
@@ -37,7 +37,8 @@
       "issue_named": [
        "contract staff"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ]
    ],
@@ -72,7 +73,8 @@
       "issue_named": [
        "users"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ]
    ],
@@ -107,7 +109,8 @@
       "issue_named": [
        "users"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ]
    ],
@@ -142,7 +145,8 @@
       "issue_named": [
        "users"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ]
    ],
@@ -178,7 +182,8 @@
       "issue_named": [
        "contract workers"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ]
    ],
@@ -214,7 +219,8 @@
       "issue_named": [
        "contract workers"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ],
     [
@@ -235,12 +241,77 @@
       "issue_named": [
        "contract workers"
       ],
-      "related_blocks_found": 1
+      "related_blocks_found": 1,
+      "related_fact_empty": false
      }
     ]
    ],
    "before": "People who asked Muse to make a call might think that AI was making it. But in some cases, a human was speaking. And if this was not properly explained, users might not know who was making the call. T",
    "after": "Users could ask Muse to make calls. But in some cases, a human contractor made the call on their behalf. The test began without proper disclosure. That was what was happening behind the scenes. ## In "
+  },
+  {
+   "run": "rep29a",
+   "instance": "safety_er009_changed_scope",
+   "cycle": 1,
+   "rec_idx": 0,
+   "level": "3_sentence",
+   "related_fact_id": "",
+   "result_in_log": "actor_guard_rejected",
+   "new_guard_ok": true,
+   "has_new_actor_class": true,
+   "decisions": [
+    [
+     {
+      "class": "passenger",
+      "new_words": [
+       "passengers"
+      ],
+      "ok": true,
+      "basis": "ledger_wide_fallback",
+      "related_fact_hits": [],
+      "ledger_hits": [
+       "乗客"
+      ],
+      "issue_named": [],
+      "related_blocks_found": 0,
+      "related_fact_empty": true
+     }
+    ]
+   ],
+   "before": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New Y",
+   "after": "In the New York City taxi study, credit-card passengers who happened to see menus with higher suggested tip rates left more money."
+  },
+  {
+   "run": "rep29a",
+   "instance": "safety_er009_changed_scope",
+   "cycle": 1,
+   "rec_idx": 0,
+   "level": "4_paragraph",
+   "related_fact_id": "",
+   "result_in_log": "actor_guard_rejected",
+   "new_guard_ok": true,
+   "has_new_actor_class": true,
+   "decisions": [
+    [
+     {
+      "class": "passenger",
+      "new_words": [
+       "passengers"
+      ],
+      "ok": true,
+      "basis": "ledger_wide_fallback",
+      "related_fact_hits": [],
+      "ledger_hits": [
+       "乗客"
+      ],
+      "issue_named": [],
+      "related_blocks_found": 0,
+      "related_fact_empty": true
+     }
+    ]
+   ],
+   "before": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New Y",
+   "after": "In the New York City taxi study, credit-card passengers who encountered menus with higher suggested tip rates left more money."
   }
  ],
  "accepted_with_new_actor_rows": []

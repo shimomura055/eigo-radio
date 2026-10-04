@@ -692,6 +692,13 @@ def actor_rewrite_guard_decision(before_text: str, after_text: str, ledger_text:
     before_cls = actor_classes_in_text(before_text)
     new = {c: w for c, w in after_cls.items() if c not in before_cls}
     blocks = _ag1_related_blocks(ledger_text, related_fact_ids)
+    # 委任_09(Fable判断1・2): `related_fact_id`が空(None/空文字/空list=Checker出力仕様上の欠落)のときだけ、Ledger全体を照合先にする
+    # fallback(`ledger_wide_fallback`、現行guardの元の設計意図=ledger_text全体との照合への復帰)。idが指定されているのにLedgerに
+    # 無い(誤id)場合は従来どおりfail-closed。関連factがある場合は従来のAG1-strict(関連fact優先、他factは2条件ANDのみ)で、fallbackは発動しない。
+    _ids = related_fact_ids
+    if isinstance(_ids, str):
+        _ids = [x for x in re.split(r"[,、/\s]+", _ids.strip()) if x]
+    related_empty = not _ids
     per = []
     for c in sorted(new):
         rel_hits = [h for b in blocks for h in actor_class_in_ja_text(c, b)]
@@ -699,13 +706,15 @@ def actor_rewrite_guard_decision(before_text: str, after_text: str, ledger_text:
         iss_hits = actor_class_named_in_issue(c, issue_text or "")
         if rel_hits:
             basis, ok = "related_fact", True
+        elif related_empty and led_hits:
+            basis, ok = "ledger_wide_fallback", True
         elif led_hits and iss_hits:
             basis, ok = "ledger_and_issue", True
         else:
             basis, ok = None, False
         per.append({"class": c, "new_words": sorted(new[c]), "ok": ok, "basis": basis,
                     "related_fact_hits": sorted(set(rel_hits))[:6], "ledger_hits": sorted(set(led_hits))[:6],
-                    "issue_named": iss_hits, "related_blocks_found": len(blocks)})
+                    "issue_named": iss_hits, "related_blocks_found": len(blocks), "related_fact_empty": related_empty})
     return {"mode": "ag1_strict", "ok": all(p["ok"] for p in per), "new_classes": per}
 
 

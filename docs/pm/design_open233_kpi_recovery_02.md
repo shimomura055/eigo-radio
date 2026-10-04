@@ -573,3 +573,19 @@ Opus#13全文・Fable評価1〜9は`docs/pm/opus_l2_review_open233_kpi_recovery_
 差分0確認`er052_output/open233_kpi_recovery_02_offline_01/agg_actor_guard_diff_01.py`: 全ログ538 instance JSON・112試行(success 106+actor_guard_rejected 6。rep22 reproは別形式でユニットテストで確認)。許容済み106試行のうち新主体クラスを含むのは0件のため許容→拒否は0件(新主体を含まない試行はguard対象外であり、差分0は自明に近い点を明記)。拒否済み6試行(rep28)は全6件が許容(related_fact)に変わる。37件集計: `agg_compliant_allprior_false_01.py`(結果はREPORT§58)。
 ### 15-6. Production整合(`OPEN-233-A1-PROD`へ記録済み、Fable評価9)
 件数一致式はer003 vfl01 L827と共有関数化、actor_guardはguard本体・同義語表・負例テストを一体で移す、構造要素判定はProductionフォーマットのテストを前提。
+
+## 16. related_fact_id欠落時のLedger全体fallback(Fable判断、委任_09、2026-10-04)
+
+背景: 委任_08のrep29aで、Checkerが`related_fact_id`を空で返すclaim(Safety系fixtureのBLOCKING claimの19.6%)に対し、AG1-strictのfail-closedがfaithfulなRewrite案(例: `safety_er009_changed_scope` s2の`passengers`、F-004に乗客)を全拒否し、ladder枯渇→Human Reviewに至った(STAGE4 1件)。
+
+現行guardの設計意図(`er052_open233_self_recovery_flow_runner_01.py` L565〜570のコメントからの引用): 「Rewrite後に新しく現れた一般的な役割名詞(主体語)が、Ledger本文(fact本文全体を含むledger_text、¥0・決定論の部分文字列一致)に一語も含まれない場合はRewriteを却下する(未確認の具体主体への置換防止)」。すなわち元の照合先は`ledger_text`全体であり、AG1-strictの「関連factに限定」はそれより厳しい追加条件である。
+
+Fable判断(逐語、委任_09委任文より):
+
+1. **`related_fact_id`が空のときはLedger全体を照合先にするfallback(AG1-ledger相当)を採用**。根拠: (ア)現行guardの設計意図(runner L562〜567、`ledger_text`全体との照合)は元々Ledger全体が照合先であり、AG1-strictの「関連factに限定」はそれより厳しい追加条件。fallbackは元の意図に戻すもので「緩める」ではない。(イ)`related_fact_id`空はCheckerの出力仕様上の欠落(Safety系で19.6%)であり、Checker出力変更は禁止のため後段で吸収する。(ウ)後ろ盾はStage 2 floor `changed_actor`とRecheck全文(構造要素の対渡し含む)。(エ)関連factが**ある**場合は従来どおりAG1-strict(関連fact優先、他factは2条件ANDのみ)で、別factの主体持ち込みの抑止は維持。
+2. 照合順: 新主体語ごとに (i)元文に同クラス → 許容 / (ii)関連factあり: 関連factに同クラス → 許容、無ければ(iii)2条件AND → 許容、どちらも不成立 → 拒否 / (ii′)関連fact空: Ledger全体(全fact本文、`notes_for_writer`含む)に同クラス表現が語境界付きで存在 → 許容(`basis=ledger_wide_fallback`を記録)、無ければ拒否。Ledgerにまったく無い主体は常に拒否(fail-closed)。
+3. 負例を追加: (f)`related_fact_id`空かつLedger全体にも無い主体 → 拒否、(g)`related_fact_id`空かつ近接クラス(Ledgerにcontractorはあるがemployeeは無い状況でemployeeを導入) → 拒否、(h)`related_fact_id`ありで他factにしか無い主体をissue名指しなしで導入 → 拒否(fallbackが発動しないこと)。既存(a)〜(e)も全て再実行。差分0確認(許容→拒否 0件)も再実施。
+4. Opus再レビューは本委任では行わない: Opus#13が評価したAG1-strict/AG1-ledgerの範囲内での条件分岐(関連factの有無で切替)であり、実測(19.6%欠落)に基づく「修正して採用」。Closeout時の条件Cレビューで一括確認。
+5. 委任_08の委任ログがOpus#13全文を要旨化していた点、T-0 FAIL(見出し語不足)は運用メモに記録(本委任では全文保存)。
+
+実装メモ(worker): `related_fact_id`の「空」= None/空文字/空白のみ/空list。idが指定されているがLedgerに無い(誤id)場合は従来どおりfail-closedでfallbackしない(Fable判断の「空のとき」の文言どおり)。判定記録に`related_fact_empty`を追加。`legacy`モード不変。同義語表は不変。

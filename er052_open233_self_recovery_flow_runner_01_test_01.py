@@ -8261,8 +8261,13 @@ class TestActorGuardAG1Strict08(unittest.TestCase):
         M = self.META
         a = "Contract workers made some calls."
         self.assertTrue(self.ok("Calls were made.", a, M, "MUSE-HC-006"))                     # 正しいidなら許容
-        for fid in ("", None, "MUSE-HC-999", "F-004", "   "):
-            self.assertFalse(self.ok("Calls were made.", a, M, fid, ""), repr(fid))           # 欠落・誤り・別factでfail-closed
+        # 委任_09: 欠落(空/None/空白)は Ledger全体fallback(Meta Ledgerに契約スタッフあり→許容)。誤id・別factは従来どおりfail-closed
+        for fid in ("MUSE-HC-999", "F-004"):
+            self.assertFalse(self.ok("Calls were made.", a, M, fid, ""), repr(fid))           # 誤り・別factでfail-closed
+        for fid in ("", None, "   ", []):
+            d = runner.actor_rewrite_guard_decision("Calls were made.", a, M, fid, "")
+            self.assertTrue(d["ok"], repr(fid))
+            self.assertEqual(d["new_classes"][0]["basis"], "ledger_wide_fallback")
         self.assertFalse(self.ok("Calls were made.", a, M, ["MUSE-HC-999"], ""))              # list形式の誤り
         self.assertTrue(self.ok("Calls were made.", a, M, "MUSE-HC-999, MUSE-HC-006", ""))     # 複数idの一部が正しければ有効
 
@@ -8314,6 +8319,75 @@ class TestActorGuardAG1Strict08(unittest.TestCase):
         src = open("er052_open233_self_recovery_flow_runner_01.py", encoding="utf-8").read()
         self.assertIn('ACTOR_GUARD_MODE = "legacy"', src)
         self.assertIn("STRUCTURAL_PAIRS_TO_RECHECK = False", src)
+
+
+class TestActorGuardLedgerWideFallback09(unittest.TestCase):
+    """委任_09(Fable判断1〜3): related_fact_id空のときだけLedger全体fallback(basis=ledger_wide_fallback)。負例(f)(g)(h)・正例・legacy不変。"""
+
+    @classmethod
+    def setUpClass(cls):
+        led = {i["instance_id"]: i["fixture"]["ledger_text"] for i in runner.build_target_instances()}
+        cls.TIP = led["safety_er009_changed_scope"]
+        cls.META = led["meta_run03_advanced"]
+
+    def setUp(self):
+        p = mock.patch.object(runner, "ACTOR_GUARD_MODE", "ag1_strict")
+        p.start()
+        self.addCleanup(p.stop)
+
+    def dec(self, b, a, led, fid="", issue=""):
+        return runner.actor_rewrite_guard_decision(b, a, led, fid, issue)
+
+    def test_positive_rep29a_s2_passengers_empty_related_fact(self):
+        d = json.load(open("er052_output/open233_self_recovery_flow_runner_01_rep29a/instances_s2/safety_er009_changed_scope.json", encoding="utf-8"))
+        att = d["cycles"][0]["rewrite_records"][0]["handoff"]["level_attempts"]
+        n = 0
+        for a in att:
+            if a.get("result") != "actor_guard_rejected":
+                continue
+            for t, rv in zip(a["targets"], a["revised"]):
+                r = self.dec(t, rv, self.TIP, "", "")
+                self.assertTrue(r["ok"], r)
+                self.assertTrue(all(p["basis"] == "ledger_wide_fallback" for p in r["new_classes"]))
+                n += 1
+        self.assertGreaterEqual(n, 1)
+        r = self.dec("Tips rose.", "Passengers who saw the menu tipped more.", self.TIP, "", "")
+        self.assertEqual((r["ok"], r["new_classes"][0]["basis"]), (True, "ledger_wide_fallback"))
+
+    def test_negative_f_empty_related_and_not_in_ledger(self):
+        for a in ("Executives tipped more.", "Teachers tipped more.", "Drivers and analysts tipped more.", "Investors tipped more."):
+            for fid in ("", None, []):
+                self.assertFalse(self.dec("Tips rose.", a, self.TIP, fid, "It names executives, teachers, drivers, analysts and investors.")["ok"], (a, fid))
+        self.assertFalse(self.dec("Calls.", "Passengers made calls.", self.META, "", "")["ok"])
+
+    def test_negative_g_empty_related_adjacent_class(self):
+        led = "[F-900] 契約スタッフが電話をかけた。\n  scope: テスト\n"      # contractorはあるがemployeeは無い
+        for a in ("Employees made calls.", "Staff made calls.", "Workers made calls.", "Customers made calls."):
+            for fid in ("", None):
+                self.assertFalse(self.dec("Calls.", a, led, fid, "")["ok"], (a, fid))
+        self.assertTrue(self.dec("Calls.", "Contract workers made calls.", led, "", "")["ok"])   # 対照(同クラス)
+        # 部分一致: 複数新主体のうち1つでもLedger全体に無ければ拒否
+        self.assertFalse(self.dec("Calls.", "Contract workers and employees made calls.", led, "", "")["ok"])
+
+    def test_negative_h_related_present_other_fact_actor_no_fallback(self):
+        T = self.TIP
+        for a, fid in (("Some customers cut tips to zero.", "F-001"), ("Passengers tipped more.", "F-001"), ("Customers tipped less.", "F-004")):
+            for iss in ("", "The claim is too strong.", "It concerns executives."):
+                d = self.dec("Tips rose.", a, T, fid, iss)
+                self.assertFalse(d["ok"], (a, fid, iss))
+                self.assertFalse(d["new_classes"][0]["related_fact_empty"])
+        # 2条件AND(issue名指しあり)なら従来どおり許容。basisはledger_and_issue(fallbackではない)
+        d = self.dec("Tips rose.", "Passengers tipped more.", T, "F-001", "It concerns passengers.")
+        self.assertEqual((d["ok"], d["new_classes"][0]["basis"]), (True, "ledger_and_issue"))
+        # 誤id(Ledgerに無い)はfallbackしない
+        self.assertFalse(self.dec("Calls.", "Contract workers made calls.", self.META, "MUSE-HC-999", "")["ok"])
+
+    def test_related_fact_basis_preferred_and_legacy_unchanged(self):
+        d = self.dec("Calls.", "Contract workers made calls.", self.META, "MUSE-HC-006", "")
+        self.assertEqual(d["new_classes"][0]["basis"], "related_fact")
+        with mock.patch.object(runner, "ACTOR_GUARD_MODE", "legacy"):
+            self.assertFalse(runner.actor_rewrite_guard_ok("x", "credit-card users", self.TIP))
+            self.assertTrue(runner.actor_rewrite_guard_ok("x", "the agents", "AI agents are used."))
 
 
 class TestPriorCountMismatchThreeHoles08(unittest.TestCase):

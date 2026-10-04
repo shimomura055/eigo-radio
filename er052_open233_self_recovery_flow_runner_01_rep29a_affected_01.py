@@ -155,7 +155,15 @@ def main():
     ap.add_argument("--stage", required=True, choices=["main", "agg"])
     ap.add_argument("--n", type=int, default=2)
     ap.add_argument("--budget-jpy", type=float, default=8.0)
+    ap.add_argument("--instances", default=None, help="委任_09: カンマ区切りで対象instanceを限定(既定=3 instance)")
+    ap.add_argument("--out-subdir", default=None, help="委任_09: 出力先をrep29a配下のサブdirへ(例: rerun_01)。予算stateもサブdir内")
     args = ap.parse_args()
+    global OUT_DIR, BUDGET_STATE, IDS
+    if args.out_subdir:
+        OUT_DIR = f"{OUT_DIR}/{args.out_subdir}"
+        BUDGET_STATE = f"{OUT_DIR}/budget_state_c233aw_09_rep29a_{args.out_subdir}.json"
+    if args.instances:
+        IDS = [x for x in args.instances.split(",") if x]
     if args.stage == "agg":
         run_agg()
         return
