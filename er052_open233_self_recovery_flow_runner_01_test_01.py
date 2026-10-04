@@ -6663,5 +6663,29 @@ class TestL6Rep24RealFailures66(unittest.TestCase):
         self.assertGreaterEqual(n, 1)
 
 
+class TestL6CarryForwardRecord66(unittest.TestCase):
+    """cycle開始時点でL6が復元したclaimが、同一cycleの先行Rewriteで書き換え済み(carry-forward)になった場合も、L6の記録を残す
+    (rep25 safety_A2A3 s1の`6 percent`型。記録専用で、動作は変えない)。"""
+
+    def test_covered_handoff_keeps_the_l6_record(self):
+        claim = "rump announced that the 20 percent plan would be replaced by trade and investment deals"
+        rewritten = L6_ART.replace(L6_S_JULY, "A short new sentence now stands here instead.")
+        claim_rec = {"claim_text": claim, "rewrite_kind": "narrow_scope", "materiality": "BLOCKING", "basis": "x",
+                     "rewrite_hint": "", "dev": {"issue": "x"}, "origin": "stage1_llm",
+                     "cycle_start_en_text": L6_ART, "cycle_start_ja_text": None,
+                     "cycle_replaced_units": [{"lang": "EN", "claim_identity": "fact:HF-1", "before_units": [L6_S_JULY]}],
+                     "cycle_claim_info": {}}
+        fixture = {"ledger_text": "[VERIFIED] HF-1: ...", "article_text": rewritten}
+        with _l6_on():
+            res = runner.run_stage3_for_claim_spans(None, _l6_state(), [0], [], "t", fixture, rewritten, None, claim_rec, False)
+        self.assertEqual(res["method"], "covered_by_earlier_rewrite_in_cycle")
+        r = res["handoff"]["resolution"]
+        self.assertEqual(r["cycle_start_level"], runner.VS_L6_LEVEL)
+        self.assertEqual(r["sentence_restore"]["status"], "restored")
+        self.assertEqual(r["ranges"], [L6_S_JULY])
+        s = runner.sentence_restore_summarize([{"instance_id": "x", "cycles": [{"cycle": 1, "rewrite_records": [{"handoff": res["handoff"]}]}]}])
+        self.assertEqual((s["restored"], s["l6_fired"]), (1, 1))
+
+
 if __name__ == "__main__":
     unittest.main()

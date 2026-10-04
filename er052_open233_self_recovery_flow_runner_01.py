@@ -5597,7 +5597,11 @@ def run_stage3_for_claim_spans(client, state, consecutive_errors, call_log, labe
         if not cf["remaining"]:
             handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text,
                        "resolution": {"status": "covered_by_earlier_rewrite_in_cycle", "lang": cf["lang"],
-                                      "ranges": [c["range"] for c in cf["covered"]]},
+                                      "ranges": [c["range"] for c in cf["covered"]],
+                                      # 委任_66(記録専用): cycle開始時点の確定がL6の復元だった場合、その記録を残す
+                                      **({"cycle_start_level": (cf.get("res0") or {}).get("level"),
+                                          "sentence_restore": (cf.get("res0") or {}).get("sentence_restore")}
+                                         if (cf.get("res0") or {}).get("sentence_restore") is not None else {})},
                        "carry_forward_covered": cf["covered"], "level_attempts": [], "level_used": None,
                        "span_unverified": False, "skipped_covered_by_earlier_rewrite": True,
                        "carry_forward_comparison": cf_comparison}

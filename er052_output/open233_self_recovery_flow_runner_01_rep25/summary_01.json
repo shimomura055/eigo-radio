@@ -1,0 +1,259 @@
+{
+  "n_runs": 2,
+  "instances": [
+    "safety_A2A3",
+    "bgroup_B3"
+  ],
+  "per_run": [
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "is_stage4": false,
+      "cost_jpy": 0.9602,
+      "n_cycles": 1,
+      "n_blocking_claims": 4,
+      "blocking_claims": [
+        "c1:“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+        "c1:“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+        "c1:The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+        "c1:6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers coul"
+      ],
+      "residual_at_pass": {
+        "final_state_is_pass_family": true,
+        "defs": [
+          {
+            "sub_id": "A2A3-0",
+            "related_fact_id": "HF-003",
+            "text_substring": "repay the money",
+            "remains_in_final_en": false,
+            "ever_blocking_flagged": true,
+            "ever_blocking_flagged_same_fact_id": true,
+            "ever_flagged_but_never_blocking": false,
+            "in_checker_raw_deviations_any_severity": [
+              {
+                "source": "stage1",
+                "severity": "MAJOR",
+                "related_fact_id": "HF-003"
+              },
+              {
+                "source": "stage1",
+                "severity": "MAJOR",
+                "related_fact_id": "HF-003"
+              }
+            ],
+            "pass_with_residual_unflagged": false
+          }
+        ]
+      },
+      "pass_with_residual_unflagged": [],
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired": [],
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "VS_SENTENCE_RESTORE": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "full_recheck_reasons": [
+        [
+          "paragraph_or_full_or_delete_rewrite",
+          "english_only_ja_source_requires_full_recheck",
+          "multiple_claims_rewritten_same_cycle",
+          "safety_fixture"
+        ]
+      ],
+      "l6": [],
+      "unresolved_reasons": []
+    },
+    {
+      "sample": 1,
+      "instance_id": "bgroup_B3",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "is_stage4": false,
+      "cost_jpy": 0.1582,
+      "n_cycles": 1,
+      "n_blocking_claims": 0,
+      "blocking_claims": [],
+      "residual_at_pass": {
+        "final_state_is_pass_family": true,
+        "defs": [
+          {
+            "sub_id": "B3",
+            "related_fact_id": "HF-007",
+            "text_substring": "flashy 20% plan",
+            "remains_in_final_en": true,
+            "ever_blocking_flagged": false,
+            "ever_blocking_flagged_same_fact_id": false,
+            "ever_flagged_but_never_blocking": true,
+            "in_checker_raw_deviations_any_severity": [],
+            "pass_with_residual_unflagged": true
+          }
+        ]
+      },
+      "pass_with_residual_unflagged": [
+        "B3"
+      ],
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired": [],
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "VS_SENTENCE_RESTORE": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "full_recheck_reasons": [
+        null
+      ],
+      "l6": [],
+      "unresolved_reasons": []
+    }
+  ],
+  "rep24_same_instances": [
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "cost_jpy": 0.9227
+    },
+    {
+      "sample": 1,
+      "instance_id": "bgroup_B3",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cost_jpy": 0.7671
+    }
+  ],
+  "offline_l6_replay_of_recorded_claims": [
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "cycle": 1,
+      "claim": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+      "at_cycle_start": {
+        "status": "resolved",
+        "level": "L1",
+        "restored": null
+      },
+      "after_rewrite_text": {
+        "status": "unverified",
+        "level": null
+      }
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "cycle": 1,
+      "claim": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+      "at_cycle_start": {
+        "status": "resolved",
+        "level": "L1",
+        "restored": null
+      },
+      "after_rewrite_text": {
+        "status": "unverified",
+        "level": null
+      }
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "cycle": 1,
+      "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+      "at_cycle_start": {
+        "status": "resolved",
+        "level": "L0",
+        "restored": null
+      },
+      "after_rewrite_text": {
+        "status": "unverified",
+        "level": null
+      }
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "cycle": 1,
+      "claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+      "at_cycle_start": {
+        "status": "resolved",
+        "level": "L6:sentence_restore",
+        "restored": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+      },
+      "after_rewrite_text": {
+        "status": "unverified",
+        "level": null
+      }
+    }
+  ],
+  "sentence_restore_summary": {
+    "n_records_with_l6_attempt": 0,
+    "l6_fired": 0,
+    "restored": 0,
+    "restored_two_sentences": 0,
+    "cand0": 0,
+    "cand_multi": 0,
+    "guard_rejected": 0,
+    "guard_rejected_by_reason": {},
+    "not_fired_or_na": 0,
+    "exception": 0,
+    "issue_focus_absent": 0,
+    "focus_guard_fired": 0,
+    "restored_claims": []
+  },
+  "stage4_count": 0,
+  "stage4_by_reason": {},
+  "cost_total_jpy": 1.1184,
+  "cost_rep24_same_runs_jpy": 1.6898,
+  "cost_diff_per_article_jpy": -0.2857,
+  "pass_with_residual_unflagged_total": 1,
+  "ja_changed_total": 0,
+  "safety_critical": [
+    {
+      "instance_id": "bgroup_B3",
+      "sub_id": "B3",
+      "cycle_index": 0,
+      "materiality": "ACCEPTABLE",
+      "llm_materiality": "ACCEPTABLE",
+      "floor_reason": null,
+      "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering."
+    }
+  ],
+  "safety_critical_defs_by_run": [
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "final_state": "RESOLVED_REWRITE",
+      "defs": [
+        {
+          "sub_id": "A2A3-0",
+          "remains_in_final_en": false,
+          "ever_blocking_flagged": true,
+          "pass_with_residual_unflagged": false
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "bgroup_B3",
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "defs": [
+        {
+          "sub_id": "B3",
+          "remains_in_final_en": true,
+          "ever_blocking_flagged": false,
+          "pass_with_residual_unflagged": true
+        }
+      ]
+    }
+  ]
+}
