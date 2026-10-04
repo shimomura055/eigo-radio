@@ -18435,3 +18435,22 @@ prices began to fall 型の過剰Majorは、現時点では受容します。
 - 委任_62=少数flow確認→29件横断(1回)。ユーザーの手順4・5は、Fableが単体確認・再較正のPASSを照合してから着手する。
 - 委任_63=Closeout確認・STOP報告。
 - 次Trial(5記事×Standard/Advanced=10本)は開始しない(ユーザーGO待ち)。
+
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01(2026-10-04、Fable判断: rep23少数flow・rep24 29件横断の照合結果とSTOP、委任_62〜64。**ユーザー決定ではない**)
+
+ユーザーの新しい決定ではなく、ユーザー決定[5回目](選択肢3)手順4・5の結果(REPORT §44・§45)に対するFableの照合判断の記録。Production採用判断・`PRODUCTION_WIRED`は含まない。
+
+1. 安全項目=**PASS**: 真の重大見逃し0・重大ケースの誤解放0・日本語変更0・例外0。rep24 B3 s1の`residual_at_pass`残存は、Safety-critical定義の`text_substring`「flashy 20% plan」が位置特定用の目印であり、登録された問題(継続中の懸念を撤回の原因に結びつける因果「So」)はcycle1でBLOCKING検出→Rewriteで「so」→「and」へ修正→cycle2 ACCEPTABLEと解消済み。よって「検出済み・修正済み」=問題なし(目印の残存は検出器の仕様上の見え方)。項目1はPASS(注意書き付き)。
+2. 不要Rewrite=**注意(悪化なし)**: rep23の形式FAIL(2/2)・rep24 21.43%(iteration 7と同率)は、正常記事群neg3のBLOCKING claimがK16型(継続中の出来事の復活)でLLM・floor双方が重大判定のため、「不要」とは断定できない。neg3を除くと8.3%でiteration 7と同率。
+3. Human Review=**注意(全体では減少、許容)**: rep24はSTAGE4 7件→2件(いずれもSafety-criticalのfail-closed)。B3 0/2→1/2の増加はChecker claim末尾の「...」省略による照合不能(安全側)。
+4. 過剰Major=**注意(受容範囲)**: Stage 2 BLOCKING 39→35、floor単独4→4(changed_actor 3件が軽微以下の疑い。ユーザー決定[4回目]で「役職の一般化のような過剰判定が一部残ることは受容」)。
+5. 時期のみの追加確認・説明文混入対策のP採用は、rep23/rep24の実flowで発火機会がなく(対象claimはLLMも重大判定、またはfail-closed棄却)、解放側・採用側の実flow検証は未達。単体確認(委任_61: 重大解放0/25試行、委任_57: 合成24件OK)のみ。**記録(次Trialで観測する項目)**。
+6. rep24の実行中断(ツール10分制限で8 instance完了後に中断、`skip existing`で1回再開、中断中のneg3 s1は保存なしで最初から再実行、未記録費用推定≤¥0.8)は「29件横断1回」として扱う(完了済みrunの再実行・n増しなし)。中断の事実と未記録費用は明記。Phase累計¥572.8515(未記録分を含めれば≤¥573.66)。
+7. ユーザー判断が必要な事項(新しい対策=仕様追加のため未実装): (A)Checker範囲の切断型(`2.6 percent`途中開始型[A2A3]、末尾`...`省略型[B3 s2])を照合で許容するか(現状は安全側でHuman Review行き)。(B)changed_actorのfloor単独BLOCKING(軽微以下の疑い3件)は受容継続でよいか。(C)次Trial(5記事×Standard/Advanced=10本)のGO。
+8. (補足、Closeout確認項目8、委任_64)worker判断で追加された`carry_forward_resolution`(委任_42)、確認の「引用の逐語必須」・複数factブロック連結・「API失敗時retryなし」(委任_60)は、維持・BLOCKING固定の方向にしか働かない追加としてFable確認済み。ユーザー承認扱いにしない。Production接続時のOpus条件Cで併せて確認する。
+
+### Closeout必須確認8項目(ユーザー決定[3回目]§8、委任_64、read-only、詳細`docs/pm/open233_closeout_check_2026-10-04.md`)
+
+- USER_DECISION_REQUIRED残=(A)(B)(C)+既存別系統(er010 Local Rewriteへの句読点差処理)/APPROVED_FOR_PRODUCTION未配線=7構成要素すべて`PRODUCTION_WIRED`未達/Production wiring漏れ=Production側対応箇所なし7要素・必須確認9項目未実施(`git grep "er052_open233"`はer003〜er019で0件)/Trialだけの対策=スイッチ7/SSOT不一致=欠落2・古い記述3を修正、番号ズレ1[上記ユーザー決定[5回目]「Fableの受け止めと分担」の「委任_63=Closeout確認」は実際は委任_64]は指摘のみ/Dangling Reference=0/未報告Trial=0/ユーザー承認なしの仕様追加=根拠なしの機能追加0(上記8)。
+- 状態: `USER_DECISION_REQUIRED`(次TrialのGO待ち+許容判断2件)。Production未接続、`PRODUCTION_WIRED`なし。次Trial(5記事×Standard/Advanced=10本)は開始しない。GO後のテーマ選定は`docs/pm/PM_GOVERNANCE.md`13節(ユーザー選択)。

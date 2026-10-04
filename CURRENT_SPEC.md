@@ -2337,7 +2337,7 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 ## OPEN-233 Self-Recovery Flow — 重大/軽微/問題なしの線引き(2026-10-03ユーザー正式採用、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`未達)
 
-**Status**: `APPROVED_FOR_PRODUCTION`(人間ユーザー決定、2026-10-03、2回目。`DECISION_LOG.md`末尾エントリ、`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_55)。**`PRODUCTION_WIRED`ではない**(Self-Recovery Flow自体がProduction未接続。再較正は(a)で不合格があり、Fable判断待ち。下記)。以下の基準は、Self-Recovery FlowをProductionへ接続する際に、Stage 2判定・正解ラベル・Safety-critical登録へ適用する。
+**Status**: `APPROVED_FOR_PRODUCTION`(人間ユーザー決定、2026-10-03、2回目。`DECISION_LOG.md`末尾エントリ、`OPEN-233-SELF-RECOVERY-TRIAL-01`委任_55)。**`PRODUCTION_WIRED`ではない**(Self-Recovery Flow自体がProduction未接続。再較正は(a)で不合格があり、Fable判断待ち。下記)[2026-10-04注記、委任_64: A4-1は委任_57で再ラベル済み(Safety-critical登録8→5)・再較正合格で解決済み]。以下の基準は、Self-Recovery FlowをProductionへ接続する際に、Stage 2判定・正解ラベル・Safety-critical登録へ適用する。
 
 **ユーザー原文(逐語)**:
 
@@ -2361,14 +2361,14 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 **適用先(Trial/検証用モジュール、Production正式path[`er003*`・`er009*`・`er010*`・`er012*`・`er019*`]は無変更、`git grep`で`er052_open233`のimportが0件であることを確認済み)**:
 
-- Stage 2 body判定: `MISCONCEPTION_PRINCIPLE_TEXT_V7`(`er052_open233_self_recovery_stage2_calibration_01.py`、V6へ追記、V4〜V6は定数として残す)。runnerの`BODY_RUBRIC_DEFAULT`はV7。Stage 2 production既定の`MATERIALITY_RUBRIC_V7`は「迷えばBLOCKING」を「重大な誤解になるかで決める」へ置換(旧版は残す)。
+- Stage 2 body判定: `MISCONCEPTION_PRINCIPLE_TEXT_V7`(`er052_open233_self_recovery_stage2_calibration_01.py`、V6へ追記、V4〜V6は定数として残す)。runnerの`BODY_RUBRIC_DEFAULT`はV7(2026-10-04注記: 現在はV7b、委任_60、下記)。Stage 2 production既定の`MATERIALITY_RUBRIC_V7`は「迷えばBLOCKING」を「重大な誤解になるかで決める」へ置換(旧版は残す)。
 - 正解ラベル(設計書§7-0-iter33): Meta-1/Meta-2=QUALITY、MUSE-HC-012「They enjoyed…」=ACCEPTABLE、HF-009「prices began to fall」=QUALITY(旧ラベルは「旧」として残す)。
 - Safety-critical登録: `SAFETY_CRITICAL_SUB_IDS`(r3d)から Meta-1/Meta-2 を除外(8件→6件)。runnerの`SAFETY_CRITICAL_CLAIM_DEFS`では`expected: "QUALITY"`の過剰品質監視用として残し、`detect_safety_critical_misdowngrades`・`residual_at_pass`の対象外とした。
 - **不変の機械的な安全装置**: `FLOOR_FLAGS`(changed_actor/number/negation/comparison/time)によるfloor、precheck、主体置換ガード、`MAX_CYCLES`、Hook専用rubric(V3/V4)、`DISCLOSURE_GAP_NEGATION_RE`(否定形限定)。注意: K19(`prices began to fall`)はユーザー決定でQUALITYだが、`changed_comparison`のfloorが不変のため、Checkerがcomparisonフラグを立てた実行ではLLM判定がQUALITYでもfloorでBLOCKINGに引き上げられる(floorをK19から外すかはユーザー判断事項、未決)。
 
 **再較正の結果(委任_55、Stage 2単体、n=2、26 call、¥4.3666、`er052_output/open233_safety_control_03/results_01.json`)**: (a)Safety-critical 6claim: **A4-1が2/2 ACCEPTABLE(誤降格2件、不合格)**、他5claim(B3・B4-a・A2A3-0・A4-0・A5-0)は全て2/2 BLOCKING。(b)Safety12(er009 9フラグ)=誤降格0/18。(c)Hormuz許容5/NG5: 従来(V6)と合否が同じ(許容5=false BLOCK 0、NG5=false PASS 0)。(d)新しい例3件=期待どおり2/2(例1 QUALITY、例2 ACCEPTABLE、K19 QUALITY)。(e)K16・K20(B4-a型)=2/2 BLOCKING(A2A3-0・B4-aは(a)で2/2 BLOCKING)。(f)負例K11・K12・K13=false BLOCK 0(2/2 ACCEPTABLE)。A4-1の原因切り分け(診断、n=1×7変種、¥2.1157、rubricの修正ではない): V7の(2)「自然な推論」の段落、または判定済みの例2行の、どちらか単独でA4-1をACCEPTABLEへ寄せる(`ablation_a41/`)。A4-1の対象文(`people who thought they were speaking with AI were actually speaking with human staff`と`That was what people thought as they spoke.`)は、ユーザー決定の例2・K23と同じ型であり、A4-1のSafety-critical(BLOCKING)ラベル自体が新しい線引きと食い違っている可能性がある(ラベルの扱いまたはV7の(2)の範囲はFable/ユーザー判断事項で、本委任は修正していない)。
 
-**Production配線時の確認**: 本線引き・rubric V7・句読点差対策(`OPEN-233-A1-PROD`)は、Self-Recovery FlowのProduction配線時に`docs/pm/PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で併せて確認する。再較正の不合格(上記A4-1)が解消されるまで`PRODUCTION_WIRED`としない。古い日本語から英語を再生成するProduction経路(`er012_e_family_entertainment_two_level_runner_01.py`L361・365・403〜404、er019 entertainment runner L358〜397)は、再生成後のChecker(`run_deviation_check`)で必ず再検査されることを接続仕様に明記する(ユーザー決定2026-10-03、英語だけ修正する方針の維持)。
+**Production配線時の確認**: 本線引き・rubric V7・句読点差対策(`OPEN-233-A1-PROD`)は、Self-Recovery FlowのProduction配線時に`docs/pm/PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で併せて確認する。再較正の不合格(上記A4-1、委任_57で解消済み)が解消されるまで`PRODUCTION_WIRED`としない。古い日本語から英語を再生成するProduction経路(`er012_e_family_entertainment_two_level_runner_01.py`L361・365・403〜404、er019 entertainment runner L358〜397)は、再生成後のChecker(`run_deviation_check`)で必ず再検査されることを接続仕様に明記する(ユーザー決定2026-10-03、英語だけ修正する方針の維持)。
 
 ### OPEN-233 時期の機械判定の追加確認による解放(案1を時期のみへ縮小、2026-10-04ユーザー正式判断[5回目=選択肢3]、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`ではない、委任_60・委任_61)
 
@@ -2385,6 +2385,8 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 - **動機の整理**(ユーザー指示§5、追加のユーザー判断なし): 動機の帰属(確認済みの事象に理由づけを添える)=軽微/動機の創作(台帳にない意図・仕組みを新事実として作る)=重大。設計書§0-2を更新、criteria docへ節を追加。V7(1)(イ)へ「仕組み・意図」は追加していない(既存より厳しくしない)。Stage 2 production rubricのQUALITY行「動機の帰属」は現行flowで未使用のため未変更(`OPEN-233-A1-PROD`の配線時整合項目)。
 - **単体安全確認の結果(2026-10-04、`er052_open233_floor_verify_unit_check_01.py`、`er052_output/open233_floor_verify_unit_check_01/`、費用¥2.336、23 call)**: **STOP**。重大期待の合成ケースS1「After the plan was withdrawn, oil prices fell.」(HF-009、`changed_comparison`)が、trial2で確認2回とも非BLOCKING(QUALITY)となり解放された(受入条件「重大ラベルを1件でも解放したらSTOP」に該当。測定は打ち切り、修正は重ねていない)。解放期待ケース: K19=3/3解放、B4「Names…」=2/3解放、B2「vanished overnight」=0/3(引用が逐語でないためBLOCKING固定)。S2(K16型)以降は未実行。
 - **Production配線時の確認**: 案1の追加確認・V7b・動機の整理は、自己修復機構本体のProduction配線時に、新しい線引き・句読点差対策・説明文混入の後段分離・英語だけ修正する方針と一体で追跡する(`OPEN-233-A1-PROD`)。単体確認がPASSするまで案1は有効化しない。
+
+**Trial確認結果(2026-10-04、rep23/rep24、委任_62〜64、Fable照合判断。ユーザー決定ではなく、仕様本文は変更しない)**: rep23(少数実flow、6 instance×n=2、¥7.9137)・rep24(29件横断1回、38 instance-run、¥16.7238、Phase累計¥572.8515)を、承認済み対策(P-strict-closed=`APPROVED_FOR_PRODUCTION`[ユーザー決定[3回目]2026-10-04]・句読点差対策・英語だけ修正・時期のみの追加確認・V7b)をすべて有効にしたTrial専用構成で実施した。安全項目=PASS(真の重大見逃し0・重大ケースの誤解放0・日本語変更0・例外0。rep24 B3 s1の`residual_at_pass`残存はsentinelの位置目印のみで、因果「So」はcycle1でBLOCKING検出→「and」へ修正→cycle2 ACCEPTABLEと解消済み)。注意項目=不要Rewrite(rep24 21.43%でiteration 7と同率、neg3のBLOCKING claimはK16型でLLM・floor双方が重大判定のため不要と断定できない、neg3除外8.3%同率)・Human Review(STAGE4 7→2、いずれもSafety-criticalのfail-closed、B3 0/2→1/2は末尾`...`省略の照合不能で安全側)・過剰Major(Stage 2 BLOCKING 39→35、floor単独4→4、軽微以下の疑い3件はchanged_actorでユーザー決定[4回目]の受容範囲)。未発火項目=時期のみの追加確認・P-strict-closedの採用側は、rep23/rep24の実flowで発火機会がなく(対象claimはLLMも重大判定、またはfail-closed棄却)、解放側・採用側の実flow検証は未達(単体確認のみ)で、次Trialで観測する。自己修復機構本体はProduction未接続で、新しい線引き(V7b)・句読点差対策・説明文混入の後段分離(P-strict-closed、`APPROVED_FOR_PRODUCTION`)・英語だけ修正・時期のみの追加確認はいずれも`PRODUCTION_WIRED`ではない(`OPEN-233-A1-PROD`で一体追跡)。**次Trial(5記事×Standard/Advanced=10本)は開始しない(ユーザーGO待ち)**。ユーザー判断待ち: (A)Checker範囲の切断型の照合許容、(B)changed_actor floor単独の受容継続、(C)次TrialのGO。Closeout必須確認8項目の結果: `docs/pm/open233_closeout_check_2026-10-04.md`。
 
 ## ユーザーテストWeb表示仕様・配信経路(2026-09-18新設、USER-TEST-SCRIPT-READABILITY-PROD-01/USER-TEST-HOSTING-GITHUB-PAGES-01)
 

@@ -4218,3 +4218,12 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - BLOCKING claim仮ラベル(35件、`blocking_claims_01.md`): Safety fixture(er009 9種+unsupported新主張、A2A3・A4・A5・B3・B4)の真陽性、neg3 cycle1のK16型2件(LLM・floor双方重大、継続中の出来事の復活)、軽微以下の疑い3件(項目3)。
 - 確認できたこと/推測: 数値は`summary_01.json`・instance JSONの実測。仮ラベルは人手でFableが最終判定。B3 s2のSTAGE4は`...`省略claimの照合不能が原因。推測: floor_verifyが未発火なのはchanged_time claimでLLMも重大判定になるため(未検証)。
 - 費用: ¥16.7238(38 instance-run)、Phase累計¥572.8515。次: Fable照合→委任_64=Closeout確認(8項目)→ユーザーへSTOP報告(次TrialのGO判断待ち)。
+
+
+## 46. 委任_64: Closeout必須確認8項目とSTOP(2026-10-04、費用¥0、コード変更なし)
+
+- 性質: ユーザー決定[5回目]手順6の前段。ユーザー決定[3回目]§8の8項目をread-onlyで確認し、rep23(§44)・rep24(§45)のFable照合判断を`DECISION_LOG.md`へ記録、Statusを`USER_DECISION_REQUIRED`(次TrialのGO待ち+許容判断2件)へ更新。詳細は`docs/pm/open233_closeout_check_2026-10-04.md`。
+- 8項目の結果要約: (1)USER_DECISION_REQUIRED=本委任後に3件残る[(A)Checker範囲切断型の照合許容、(B)changed_actor floor単独の受容継続、(C)次TrialのGO]+既存の別系統未決1件[er010 Local Rewriteへの句読点差処理] / (2)APPROVED_FOR_PRODUCTION未配線=7構成要素すべて`PRODUCTION_WIRED`未達 / (3)Production wiring漏れ=Production側の対応箇所なしが7要素(`git grep "er052_open233"`はer003〜er019で0件)、wiring必須確認9項目は全て未実施 / (4)Trialだけの対策=スイッチ7(不採用は`CHECKER_SPANS_MODE=violation_spans`ほか) / (5)SSOT不一致=欠落2(CURRENT_SPECのP-strict-closed承認・次Trial GO待ち)・古い記述3・番号ズレ1を検出、欠落と古い記述は修正、番号ズレは指摘のみ / (6)Dangling Reference=0(延べ111パス検査) / (7)未報告Trial=0(17ディレクトリ、名前の記載漏れ4は軽微な参照漏れとして指摘) / (8)ユーザー承認なしの仕様追加=根拠のない機能追加0、worker判断2系統(`carry_forward_resolution`、確認の逐語必須・複数factブロック連結・API失敗時retryなし)は安全側のみに働く追加(Fable確認済み)でユーザー承認扱いにしない。
+- Fable照合判断(ユーザー決定ではない): 1安全項目=PASS(B3 s1の残存は位置目印のみ、因果soは修正済み)/2不要Rewrite=注意(neg3はK16型で不要と断定不可、neg3除外8.3%同率)/3Human Review=注意(7→2、B3増は`...`省略の照合不能・安全側)/4過剰Major=注意(受容範囲)/5時期の追加確認・P採用は実flow未発火(次Trialで観測)/6rep24の実行中断は「29件横断1回」として扱う(未記録費用≤¥0.8、Phase累計¥572.8515・未記録分を含めれば≤¥573.66)/7ユーザー判断(A)(B)(C)。
+- 運用メモ: 委任_63のT-0は全文逐語保存でなかった(主要部保存・定型文要約)。委任_64から全文逐語保存。
+- 状態: `USER_DECISION_REQUIRED`。Production未接続、`PRODUCTION_WIRED`なし、次Trialは開始しない。費用: ¥0、Phase累計¥572.8515(上限¥900)。
