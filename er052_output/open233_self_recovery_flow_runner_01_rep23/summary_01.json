@@ -1,0 +1,2172 @@
+{
+  "n_runs": 12,
+  "baseline_sources": {
+    "hormuz_run03_standard": {
+      "tag": "rep16",
+      "paths": [
+        "er052_output/open233_self_recovery_flow_runner_01_rep16/instances_s1/hormuz_run03_standard.json",
+        "er052_output/open233_self_recovery_flow_runner_01_rep16/instances_s2/hormuz_run03_standard.json"
+      ]
+    },
+    "meta_run03_standard": {
+      "tag": "rep22",
+      "paths": [
+        "er052_output/open233_self_recovery_flow_runner_01_rep22/instances_s1/meta_run03_standard.json",
+        "er052_output/open233_self_recovery_flow_runner_01_rep22/instances_s2/meta_run03_standard.json",
+        "er052_output/open233_self_recovery_flow_runner_01_rep22/instances_s3/meta_run03_standard.json",
+        "er052_output/open233_self_recovery_flow_runner_01_rep22/instances_s4/meta_run03_standard.json"
+      ]
+    },
+    "neg3_hormuz_prodrunner_b1b": {
+      "tag": "rep17",
+      "paths": [
+        "er052_output/open233_self_recovery_flow_runner_01_rep17/instances_s1/neg3_hormuz_prodrunner_b1b.json",
+        "er052_output/open233_self_recovery_flow_runner_01_rep17/instances_s2/neg3_hormuz_prodrunner_b1b.json"
+      ]
+    },
+    "safety_A4": {
+      "tag": "rep14",
+      "paths": [
+        "er052_output/open233_self_recovery_flow_runner_01_rep14/instances/safety_A4.json"
+      ]
+    },
+    "safety_A2A3": {
+      "tag": "rep18",
+      "paths": [
+        "er052_output/open233_self_recovery_flow_runner_01_rep18/instances_s1/safety_A2A3.json",
+        "er052_output/open233_self_recovery_flow_runner_01_rep18/instances_s2/safety_A2A3.json"
+      ]
+    },
+    "safety_er009_changed_number": {
+      "tag": "rep22",
+      "paths": [
+        "er052_output/open233_self_recovery_flow_runner_01_rep22/instances_safety_a/safety_er009_changed_number.json"
+      ]
+    }
+  },
+  "per_run": [
+    {
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.1754,
+      "n_stage2_claims": 3,
+      "n_stage2_blocking": 0,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 0,
+      "has_rewrite": false,
+      "n_rewrite_records_total": 0,
+      "is_stage4": false,
+      "sample": 1,
+      "instance_id": "hormuz_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.174,
+      "n_stage2_claims": 3,
+      "n_stage2_blocking": 0,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 0,
+      "has_rewrite": false,
+      "n_rewrite_records_total": 0,
+      "is_stage4": false,
+      "sample": 1,
+      "instance_id": "meta_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 1.1678,
+      "n_stage2_claims": 4,
+      "n_stage2_blocking": 1,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 1,
+      "is_stage4": false,
+      "sample": 1,
+      "instance_id": "neg3_hormuz_prodrunner_b1b"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "violation_span_unverified",
+      "n_cycles": 3,
+      "cost_jpy": 2.6814,
+      "n_stage2_claims": 12,
+      "n_stage2_blocking": 6,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 3,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 6,
+      "is_stage4": true,
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "violation_span_unverified",
+      "n_cycles": 1,
+      "cost_jpy": 0.5951,
+      "n_stage2_claims": 6,
+      "n_stage2_blocking": 4,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 2,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 4,
+      "is_stage4": true,
+      "sample": 1,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.335,
+      "n_stage2_claims": 2,
+      "n_stage2_blocking": 2,
+      "n_floor_only_blocking": 1,
+      "floor_only_by_flag": {
+        "precheck_floor": 1
+      },
+      "n_floor_applied_claims": 2,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 2,
+      "is_stage4": false,
+      "sample": 1,
+      "instance_id": "safety_er009_changed_number"
+    },
+    {
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.0473,
+      "n_stage2_claims": 3,
+      "n_stage2_blocking": 0,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 0,
+      "has_rewrite": false,
+      "n_rewrite_records_total": 0,
+      "is_stage4": false,
+      "sample": 2,
+      "instance_id": "hormuz_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.0485,
+      "n_stage2_claims": 3,
+      "n_stage2_blocking": 0,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 0,
+      "has_rewrite": false,
+      "n_rewrite_records_total": 0,
+      "is_stage4": false,
+      "sample": 2,
+      "instance_id": "meta_run03_standard"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "unconfirmed_after_reverify",
+      "n_cycles": 1,
+      "cost_jpy": 0.9592,
+      "n_stage2_claims": 4,
+      "n_stage2_blocking": 1,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 1,
+      "is_stage4": true,
+      "sample": 2,
+      "instance_id": "neg3_hormuz_prodrunner_b1b"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 2,
+      "cost_jpy": 1.1327,
+      "n_stage2_claims": 9,
+      "n_stage2_blocking": 4,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 2,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 4,
+      "is_stage4": false,
+      "sample": 2,
+      "instance_id": "safety_A4"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "violation_span_unverified",
+      "n_cycles": 1,
+      "cost_jpy": 0.4505,
+      "n_stage2_claims": 6,
+      "n_stage2_blocking": 4,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 2,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 4,
+      "is_stage4": true,
+      "sample": 2,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.1468,
+      "n_stage2_claims": 2,
+      "n_stage2_blocking": 2,
+      "n_floor_only_blocking": 1,
+      "floor_only_by_flag": {
+        "precheck_floor": 1
+      },
+      "n_floor_applied_claims": 2,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 2,
+      "is_stage4": false,
+      "sample": 2,
+      "instance_id": "safety_er009_changed_number"
+    }
+  ],
+  "per_run_baseline": [
+    {
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.8001,
+      "n_stage2_claims": 4,
+      "n_stage2_blocking": 0,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 0,
+      "has_rewrite": false,
+      "n_rewrite_records_total": 0,
+      "is_stage4": false,
+      "baseline": "rep16",
+      "instance_id": "hormuz_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.1253,
+      "n_stage2_claims": 4,
+      "n_stage2_blocking": 0,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 0,
+      "has_rewrite": false,
+      "n_rewrite_records_total": 0,
+      "is_stage4": false,
+      "baseline": "rep16",
+      "instance_id": "hormuz_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 2,
+      "cost_jpy": 1.121,
+      "n_stage2_claims": 7,
+      "n_stage2_blocking": 1,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 1,
+      "is_stage4": false,
+      "baseline": "rep22",
+      "instance_id": "meta_run03_standard"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "cycle_limit_exhausted",
+      "n_cycles": 3,
+      "cost_jpy": 2.1773,
+      "n_stage2_claims": 9,
+      "n_stage2_blocking": 3,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 2,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 2,
+      "is_stage4": true,
+      "baseline": "rep22",
+      "instance_id": "meta_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 2,
+      "cost_jpy": 1.314,
+      "n_stage2_claims": 7,
+      "n_stage2_blocking": 1,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 1,
+      "is_stage4": false,
+      "baseline": "rep22",
+      "instance_id": "meta_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 2,
+      "cost_jpy": 1.0118,
+      "n_stage2_claims": 7,
+      "n_stage2_blocking": 1,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 1,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 1,
+      "is_stage4": false,
+      "baseline": "rep22",
+      "instance_id": "meta_run03_standard"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 1.2024,
+      "n_stage2_claims": 3,
+      "n_stage2_blocking": 3,
+      "n_floor_only_blocking": 2,
+      "floor_only_by_flag": {
+        "deterministic_floor:changed_time": 2
+      },
+      "n_floor_applied_claims": 3,
+      "n_rewrite_executed": 3,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 3,
+      "is_stage4": false,
+      "baseline": "rep17",
+      "instance_id": "neg3_hormuz_prodrunner_b1b"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "n_cycles": 2,
+      "cost_jpy": 1.2077,
+      "n_stage2_claims": 4,
+      "n_stage2_blocking": 3,
+      "n_floor_only_blocking": 2,
+      "floor_only_by_flag": {
+        "deterministic_floor:changed_time": 2
+      },
+      "n_floor_applied_claims": 3,
+      "n_rewrite_executed": 3,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 3,
+      "is_stage4": false,
+      "baseline": "rep17",
+      "instance_id": "neg3_hormuz_prodrunner_b1b"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "n_cycles": 1,
+      "cost_jpy": 1.5084,
+      "n_stage2_claims": 8,
+      "n_stage2_blocking": 5,
+      "n_floor_only_blocking": 1,
+      "floor_only_by_flag": {
+        "deterministic_floor:changed_actor": 1
+      },
+      "n_floor_applied_claims": 3,
+      "n_rewrite_executed": 3,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 5,
+      "is_stage4": true,
+      "baseline": "rep14",
+      "instance_id": "safety_A4"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "n_cycles": 1,
+      "cost_jpy": 1.4881,
+      "n_stage2_claims": 6,
+      "n_stage2_blocking": 4,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 4,
+      "is_stage4": true,
+      "baseline": "rep18",
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "final_state": "STAGE4_ESCALATION",
+      "stage4_reason": "ladder_exhausted_without_full_rewrite",
+      "n_cycles": 1,
+      "cost_jpy": 1.0861,
+      "n_stage2_claims": 6,
+      "n_stage2_blocking": 4,
+      "n_floor_only_blocking": 0,
+      "floor_only_by_flag": {},
+      "n_floor_applied_claims": 0,
+      "n_rewrite_executed": 2,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 4,
+      "is_stage4": true,
+      "baseline": "rep18",
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "final_state": "RESOLVED_REWRITE",
+      "stage4_reason": null,
+      "n_cycles": 1,
+      "cost_jpy": 0.2311,
+      "n_stage2_claims": 2,
+      "n_stage2_blocking": 2,
+      "n_floor_only_blocking": 1,
+      "floor_only_by_flag": {
+        "precheck_floor": 1
+      },
+      "n_floor_applied_claims": 2,
+      "n_rewrite_executed": 1,
+      "has_rewrite": true,
+      "n_rewrite_records_total": 2,
+      "is_stage4": false,
+      "baseline": "rep22",
+      "instance_id": "safety_er009_changed_number"
+    }
+  ],
+  "totals_rep23": {
+    "n_runs": 12,
+    "stage2_blocking": 24,
+    "floor_only_blocking": 2,
+    "floor_only_by_flag": {
+      "precheck_floor": 2
+    },
+    "rewrite_executed": 13,
+    "runs_with_rewrite": 8,
+    "unnecessary_rewrite_def_normal_group": {
+      "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+      "n_normal_runs": 2,
+      "n_with_rewrite": 2,
+      "rate": 1.0
+    },
+    "runs_with_rewrite_nonsafety": {
+      "n": 6,
+      "with_rewrite": 2
+    },
+    "stage4_count": 4,
+    "stage4_reasons": {
+      "violation_span_unverified": 3,
+      "unconfirmed_after_reverify": 1
+    },
+    "cycles_ge2_runs": 2,
+    "cycles_ge3_runs": 1,
+    "cost_jpy_total": 7.9137,
+    "cost_jpy_worst": 2.6814
+  },
+  "totals_baseline": {
+    "n_runs": 12,
+    "stage2_blocking": 27,
+    "floor_only_blocking": 6,
+    "floor_only_by_flag": {
+      "deterministic_floor:changed_time": 4,
+      "deterministic_floor:changed_actor": 1,
+      "precheck_floor": 1
+    },
+    "rewrite_executed": 18,
+    "runs_with_rewrite": 10,
+    "unnecessary_rewrite_def_normal_group": {
+      "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+      "n_normal_runs": 2,
+      "n_with_rewrite": 2,
+      "rate": 1.0
+    },
+    "runs_with_rewrite_nonsafety": {
+      "n": 8,
+      "with_rewrite": 6
+    },
+    "stage4_count": 4,
+    "stage4_reasons": {
+      "cycle_limit_exhausted": 1,
+      "ladder_exhausted_without_full_rewrite": 3
+    },
+    "cycles_ge2_runs": 5,
+    "cycles_ge3_runs": 1,
+    "cost_jpy_total": 13.2733,
+    "cost_jpy_worst": 2.1773
+  },
+  "totals_by_instance": {
+    "hormuz_run03_standard": {
+      "rep23": {
+        "n_runs": 2,
+        "stage2_blocking": 0,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 0,
+        "runs_with_rewrite": 0,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 2,
+          "with_rewrite": 0
+        },
+        "stage4_count": 0,
+        "stage4_reasons": {},
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 0.2227,
+        "cost_jpy_worst": 0.1754
+      },
+      "baseline": {
+        "n_runs": 2,
+        "stage2_blocking": 0,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 0,
+        "runs_with_rewrite": 0,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 2,
+          "with_rewrite": 0
+        },
+        "stage4_count": 0,
+        "stage4_reasons": {},
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 0.9254,
+        "cost_jpy_worst": 0.8001
+      },
+      "baseline_tag": "rep16"
+    },
+    "meta_run03_standard": {
+      "rep23": {
+        "n_runs": 2,
+        "stage2_blocking": 0,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 0,
+        "runs_with_rewrite": 0,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 2,
+          "with_rewrite": 0
+        },
+        "stage4_count": 0,
+        "stage4_reasons": {},
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 0.2225,
+        "cost_jpy_worst": 0.174
+      },
+      "baseline": {
+        "n_runs": 4,
+        "stage2_blocking": 6,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 5,
+        "runs_with_rewrite": 4,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 4,
+          "with_rewrite": 4
+        },
+        "stage4_count": 1,
+        "stage4_reasons": {
+          "cycle_limit_exhausted": 1
+        },
+        "cycles_ge2_runs": 4,
+        "cycles_ge3_runs": 1,
+        "cost_jpy_total": 5.6241,
+        "cost_jpy_worst": 2.1773
+      },
+      "baseline_tag": "rep22"
+    },
+    "neg3_hormuz_prodrunner_b1b": {
+      "rep23": {
+        "n_runs": 2,
+        "stage2_blocking": 2,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 2,
+        "runs_with_rewrite": 2,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 2,
+          "n_with_rewrite": 2,
+          "rate": 1.0
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 2,
+          "with_rewrite": 2
+        },
+        "stage4_count": 1,
+        "stage4_reasons": {
+          "unconfirmed_after_reverify": 1
+        },
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 2.127,
+        "cost_jpy_worst": 1.1678
+      },
+      "baseline": {
+        "n_runs": 2,
+        "stage2_blocking": 6,
+        "floor_only_blocking": 4,
+        "floor_only_by_flag": {
+          "deterministic_floor:changed_time": 4
+        },
+        "rewrite_executed": 6,
+        "runs_with_rewrite": 2,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 2,
+          "n_with_rewrite": 2,
+          "rate": 1.0
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 2,
+          "with_rewrite": 2
+        },
+        "stage4_count": 0,
+        "stage4_reasons": {},
+        "cycles_ge2_runs": 1,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 2.4101,
+        "cost_jpy_worst": 1.2077
+      },
+      "baseline_tag": "rep17"
+    },
+    "safety_A4": {
+      "rep23": {
+        "n_runs": 2,
+        "stage2_blocking": 10,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 5,
+        "runs_with_rewrite": 2,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 0,
+          "with_rewrite": 0
+        },
+        "stage4_count": 1,
+        "stage4_reasons": {
+          "violation_span_unverified": 1
+        },
+        "cycles_ge2_runs": 2,
+        "cycles_ge3_runs": 1,
+        "cost_jpy_total": 3.8141,
+        "cost_jpy_worst": 2.6814
+      },
+      "baseline": {
+        "n_runs": 1,
+        "stage2_blocking": 5,
+        "floor_only_blocking": 1,
+        "floor_only_by_flag": {
+          "deterministic_floor:changed_actor": 1
+        },
+        "rewrite_executed": 3,
+        "runs_with_rewrite": 1,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 0,
+          "with_rewrite": 0
+        },
+        "stage4_count": 1,
+        "stage4_reasons": {
+          "ladder_exhausted_without_full_rewrite": 1
+        },
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 1.5084,
+        "cost_jpy_worst": 1.5084
+      },
+      "baseline_tag": "rep14"
+    },
+    "safety_A2A3": {
+      "rep23": {
+        "n_runs": 2,
+        "stage2_blocking": 8,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 4,
+        "runs_with_rewrite": 2,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 0,
+          "with_rewrite": 0
+        },
+        "stage4_count": 2,
+        "stage4_reasons": {
+          "violation_span_unverified": 2
+        },
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 1.0456,
+        "cost_jpy_worst": 0.5951
+      },
+      "baseline": {
+        "n_runs": 2,
+        "stage2_blocking": 8,
+        "floor_only_blocking": 0,
+        "floor_only_by_flag": {},
+        "rewrite_executed": 3,
+        "runs_with_rewrite": 2,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 0,
+          "with_rewrite": 0
+        },
+        "stage4_count": 2,
+        "stage4_reasons": {
+          "ladder_exhausted_without_full_rewrite": 2
+        },
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 2.5742,
+        "cost_jpy_worst": 1.4881
+      },
+      "baseline_tag": "rep18"
+    },
+    "safety_er009_changed_number": {
+      "rep23": {
+        "n_runs": 2,
+        "stage2_blocking": 4,
+        "floor_only_blocking": 2,
+        "floor_only_by_flag": {
+          "precheck_floor": 2
+        },
+        "rewrite_executed": 2,
+        "runs_with_rewrite": 2,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 0,
+          "with_rewrite": 0
+        },
+        "stage4_count": 0,
+        "stage4_reasons": {},
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 0.4818,
+        "cost_jpy_worst": 0.335
+      },
+      "baseline": {
+        "n_runs": 1,
+        "stage2_blocking": 2,
+        "floor_only_blocking": 1,
+        "floor_only_by_flag": {
+          "precheck_floor": 1
+        },
+        "rewrite_executed": 1,
+        "runs_with_rewrite": 1,
+        "unnecessary_rewrite_def_normal_group": {
+          "definition": "NORMAL_GROUP_INSTANCE_IDS(正常記事)のinstance-runのうちRewriteが1件以上実行されたrunの割合(既存runner定義)",
+          "n_normal_runs": 0,
+          "n_with_rewrite": 0,
+          "rate": null
+        },
+        "runs_with_rewrite_nonsafety": {
+          "n": 0,
+          "with_rewrite": 0
+        },
+        "stage4_count": 0,
+        "stage4_reasons": {},
+        "cycles_ge2_runs": 0,
+        "cycles_ge3_runs": 0,
+        "cost_jpy_total": 0.2311,
+        "cost_jpy_worst": 0.2311
+      },
+      "baseline_tag": "rep22"
+    }
+  },
+  "item1_safety_critical_defs": [
+    {
+      "sample": 1,
+      "instance_id": "safety_A4",
+      "final_state": "STAGE4_ESCALATION",
+      "sub_id": "A4-0",
+      "remains_in_final_en": false,
+      "ever_blocking_flagged": true,
+      "ever_blocking_flagged_same_fact_id": true,
+      "pass_with_residual_unflagged": false,
+      "final_state_is_pass_family": false
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "final_state": "STAGE4_ESCALATION",
+      "sub_id": "A2A3-0",
+      "remains_in_final_en": false,
+      "ever_blocking_flagged": true,
+      "ever_blocking_flagged_same_fact_id": true,
+      "pass_with_residual_unflagged": false,
+      "final_state_is_pass_family": false
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A4",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "sub_id": "A4-0",
+      "remains_in_final_en": false,
+      "ever_blocking_flagged": true,
+      "ever_blocking_flagged_same_fact_id": true,
+      "pass_with_residual_unflagged": false,
+      "final_state_is_pass_family": true
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A2A3",
+      "final_state": "STAGE4_ESCALATION",
+      "sub_id": "A2A3-0",
+      "remains_in_final_en": false,
+      "ever_blocking_flagged": true,
+      "ever_blocking_flagged_same_fact_id": true,
+      "pass_with_residual_unflagged": false,
+      "final_state_is_pass_family": false
+    }
+  ],
+  "item1_pass_with_residual_unflagged_count": 0,
+  "item1_safety_critical_misdowngrades": [],
+  "item2_floor_verify_summary": {
+    "n_floor_verify_records": 6,
+    "n_target": 0,
+    "n_confirmed": 0,
+    "n_verify_calls": 0,
+    "n_released": 0,
+    "blocking_fixed_by_reason": {},
+    "target_reason_counts": {
+      "llm_materiality_blocking": 6
+    },
+    "out_of_scope_flag": {},
+    "cost_jpy": 0.0
+  },
+  "item2_floor_verify_records": [
+    {
+      "sample": 1,
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "cycle": 1,
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "floor_reason": "deterministic_floor:changed_time",
+      "materiality_final": "BLOCKING",
+      "mode": "time_only",
+      "target": false,
+      "target_reason": "llm_materiality_blocking",
+      "triggered_flags": [
+        "changed_time"
+      ],
+      "llm_materiality": "BLOCKING",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "fact_block_found": null,
+      "calls": [],
+      "n_calls": 0,
+      "released": false,
+      "blocking_fixed_reason": null,
+      "release_note": null,
+      "final_materiality": "BLOCKING",
+      "cost_jpy": 0.0
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A4",
+      "cycle": 1,
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "floor_reason": "deterministic_floor:changed_actor",
+      "materiality_final": "BLOCKING",
+      "mode": "time_only",
+      "target": false,
+      "target_reason": "llm_materiality_blocking",
+      "triggered_flags": [
+        "changed_actor"
+      ],
+      "llm_materiality": "BLOCKING",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "fact_block_found": null,
+      "calls": [],
+      "n_calls": 0,
+      "released": false,
+      "blocking_fixed_reason": null,
+      "release_note": null,
+      "final_materiality": "BLOCKING",
+      "cost_jpy": 0.0
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_er009_changed_number",
+      "cycle": 1,
+      "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "floor_reason": "deterministic_floor:changed_number",
+      "materiality_final": "BLOCKING",
+      "mode": "time_only",
+      "target": false,
+      "target_reason": "llm_materiality_blocking",
+      "triggered_flags": [
+        "changed_number"
+      ],
+      "llm_materiality": "BLOCKING",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "fact_block_found": null,
+      "calls": [],
+      "n_calls": 0,
+      "released": false,
+      "blocking_fixed_reason": null,
+      "release_note": null,
+      "final_materiality": "BLOCKING",
+      "cost_jpy": 0.0
+    },
+    {
+      "sample": 2,
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "cycle": 1,
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "floor_reason": "deterministic_floor:changed_time",
+      "materiality_final": "BLOCKING",
+      "mode": "time_only",
+      "target": false,
+      "target_reason": "llm_materiality_blocking",
+      "triggered_flags": [
+        "changed_time"
+      ],
+      "llm_materiality": "BLOCKING",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "fact_block_found": null,
+      "calls": [],
+      "n_calls": 0,
+      "released": false,
+      "blocking_fixed_reason": null,
+      "release_note": null,
+      "final_materiality": "BLOCKING",
+      "cost_jpy": 0.0
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A4",
+      "cycle": 1,
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "floor_reason": "deterministic_floor:changed_actor",
+      "materiality_final": "BLOCKING",
+      "mode": "time_only",
+      "target": false,
+      "target_reason": "llm_materiality_blocking",
+      "triggered_flags": [
+        "changed_actor"
+      ],
+      "llm_materiality": "BLOCKING",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "fact_block_found": null,
+      "calls": [],
+      "n_calls": 0,
+      "released": false,
+      "blocking_fixed_reason": null,
+      "release_note": null,
+      "final_materiality": "BLOCKING",
+      "cost_jpy": 0.0
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_er009_changed_number",
+      "cycle": 1,
+      "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "floor_reason": "deterministic_floor:changed_number",
+      "materiality_final": "BLOCKING",
+      "mode": "time_only",
+      "target": false,
+      "target_reason": "llm_materiality_blocking",
+      "triggered_flags": [
+        "changed_number"
+      ],
+      "llm_materiality": "BLOCKING",
+      "confirmed": false,
+      "confirmed_basis": [],
+      "fact_block_found": null,
+      "calls": [],
+      "n_calls": 0,
+      "released": false,
+      "blocking_fixed_reason": null,
+      "release_note": null,
+      "final_materiality": "BLOCKING",
+      "cost_jpy": 0.0
+    }
+  ],
+  "item2_released": [],
+  "item67_recorded_resolution_levels": {
+    "L0": 4,
+    "L1": 8,
+    "None": 11,
+    "L4": 1
+  },
+  "item67_recorded_unresolved_reasons": {
+    "covered_by_earlier_rewrite_in_cycle:None": 8,
+    "unverified:explanatory_mixed": 1,
+    "unverified:mismatch": 2
+  },
+  "item6_replay_rows": [
+    {
+      "cycle": 1,
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+      ],
+      "sample": 1,
+      "instance_id": "neg3_hormuz_prodrunner_b1b"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“One helper meant one more person handling private data.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "One helper meant one more person handling private data."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "One helper meant one more person handling private data.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "One helper meant one more person handling private data."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 2,
+      "claim_text": "“when AI struggled, a person could help” and “Keeping a human in reserve seemed safer than leaving everything to AI.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L4",
+      "final_status": "resolved",
+      "final_level": "L4",
+      "final_reason": null,
+      "ranges": [
+        "when AI struggled, a person could help",
+        "Keeping a human in reserve seemed safer than leaving everything to AI."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 3,
+      "claim_text": "“The human backup plan” and “that backup plan” characterize the human-staff calls as a backup arrangement.",
+      "base_status": "unverified",
+      "base_reason": "explanatory_mixed",
+      "base_level": null,
+      "final_status": "unverified",
+      "final_level": null,
+      "final_reason": "explanatory_mixed",
+      "ranges": [],
+      "explain_split": {
+        "attempted": true,
+        "status": "unverified",
+        "reason": "explain_split_rejected:remainder_too_long",
+        "fragments": [
+          "The human backup plan",
+          "that backup plan"
+        ],
+        "dropped_remainders": [
+          {
+            "seg": "and",
+            "verdict": "connective"
+          },
+          {
+            "seg": "characterize the human-staff calls as a backup arrangement",
+            "verdict": "remainder_too_long"
+          }
+        ]
+      },
+      "sample": 1,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+      ],
+      "sample": 1,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+      ],
+      "sample": 1,
+      "instance_id": "safety_er009_changed_number"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+      ],
+      "sample": 1,
+      "instance_id": "safety_er009_changed_number"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+      ],
+      "sample": 2,
+      "instance_id": "neg3_hormuz_prodrunner_b1b"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“One helper meant one more person handling private data.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "One helper meant one more person handling private data."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "One helper meant one more person handling private data.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "One helper meant one more person handling private data."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A4"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "“with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.”",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L1",
+      "final_status": "resolved",
+      "final_level": "L1",
+      "final_reason": null,
+      "ranges": [
+        "with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+      ],
+      "sample": 2,
+      "instance_id": "safety_A2A3"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+      ],
+      "sample": 2,
+      "instance_id": "safety_er009_changed_number"
+    },
+    {
+      "cycle": 1,
+      "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "base_status": "resolved",
+      "base_reason": null,
+      "base_level": "L0",
+      "final_status": "resolved",
+      "final_level": "L0",
+      "final_reason": null,
+      "ranges": [
+        "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+      ],
+      "sample": 2,
+      "instance_id": "safety_er009_changed_number"
+    }
+  ],
+  "item6_p_fired_in_replay": [],
+  "item6_explain_split_attempted_in_replay": [
+    {
+      "cycle": 3,
+      "claim_text": "“The human backup plan” and “that backup plan” characterize the human-staff calls as a backup arrangement.",
+      "base_status": "unverified",
+      "base_reason": "explanatory_mixed",
+      "base_level": null,
+      "final_status": "unverified",
+      "final_level": null,
+      "final_reason": "explanatory_mixed",
+      "ranges": [],
+      "explain_split": {
+        "attempted": true,
+        "status": "unverified",
+        "reason": "explain_split_rejected:remainder_too_long",
+        "fragments": [
+          "The human backup plan",
+          "that backup plan"
+        ],
+        "dropped_remainders": [
+          {
+            "seg": "and",
+            "verdict": "connective"
+          },
+          {
+            "seg": "characterize the human-staff calls as a backup arrangement",
+            "verdict": "remainder_too_long"
+          }
+        ]
+      },
+      "sample": 1,
+      "instance_id": "safety_A4"
+    }
+  ],
+  "item7_l5_resolved_in_replay": [],
+  "item7_label_only_in_replay": [],
+  "item7_recorded_l5_in_handoffs": 0,
+  "item8": [
+    {
+      "sample": 1,
+      "instance_id": "hormuz_run03_standard",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": false
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "meta_run03_standard",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": false
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A4",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": true,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": true,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        },
+        {
+          "cycle": 2,
+          "fired": true,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": true,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        },
+        {
+          "cycle": 3,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": true,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": false
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": true,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": true
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_er009_changed_number",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "hormuz_run03_standard",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": false
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "meta_run03_standard",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": false
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A4",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": true,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": true,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        },
+        {
+          "cycle": 2,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": false
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A2A3",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": false,
+          "ja_source_blocking_in_cycle": true,
+          "reached_recheck_decision": false,
+          "has_rewrite_executed": true
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_er009_changed_number",
+      "switches": {
+        "JA_MODE": "english_only",
+        "VS_MATCH_EXT": true,
+        "HANDOFF_MODE": "violation_span",
+        "VS_EXPLAIN_SPLIT": true,
+        "FLOOR_VERIFY_MODE": "time_only"
+      },
+      "ja_changed": false,
+      "ja_labelled_calls": [],
+      "paired_mechanisms": [],
+      "en_title_rewritten": false,
+      "en_title_changes": [],
+      "per_cycle": [
+        {
+          "cycle": 1,
+          "fired": false,
+          "recheck_performed": true,
+          "ja_source_blocking_in_cycle": false,
+          "reached_recheck_decision": true,
+          "has_rewrite_executed": true
+        }
+      ]
+    }
+  ],
+  "item9": [
+    {
+      "sample": 1,
+      "instance_id": "hormuz_run03_standard",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 0,
+      "carry_forward_covered_n": 0,
+      "handoff_modes": {},
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 3,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "meta_run03_standard",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 0,
+      "carry_forward_covered_n": 0,
+      "handoff_modes": {},
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 3,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 0,
+      "carry_forward_covered_n": 0,
+      "handoff_modes": {
+        "violation_span": 1
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 4,
+          "n_floor_claims": 1,
+          "n_floor_claims_with_floor_verify_record": 1,
+          "recheck_status": "LEDGER_COMPLIANT",
+          "recheck_all_resolved": false,
+          "full_recheck_required_reasons": [
+            "deterministic_floor_claim",
+            "short_section_no_window(title_hook_in_one_line)"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A4",
+      "n_cycles": 3,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 2,
+      "carry_forward_covered_n": 2,
+      "handoff_modes": {
+        "violation_span": 6
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 8,
+          "n_floor_claims": 1,
+          "n_floor_claims_with_floor_verify_record": 1,
+          "recheck_status": "LEDGER_DEVIATION",
+          "recheck_all_resolved": true,
+          "full_recheck_required_reasons": [
+            "paragraph_or_full_or_delete_rewrite",
+            "english_only_ja_source_requires_full_recheck",
+            "multiple_claims_rewritten_same_cycle",
+            "deterministic_floor_claim",
+            "safety_fixture"
+          ]
+        },
+        {
+          "cycle": 2,
+          "n_stage2": 2,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": "LEDGER_DEVIATION",
+          "recheck_all_resolved": false,
+          "full_recheck_required_reasons": [
+            "english_only_ja_source_requires_full_recheck",
+            "safety_fixture",
+            "same_fact_id_reappeared_across_cycles"
+          ]
+        },
+        {
+          "cycle": 3,
+          "n_stage2": 2,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 1,
+      "carry_forward_covered_n": 1,
+      "handoff_modes": {
+        "violation_span": 4
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 6,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "instance_id": "safety_er009_changed_number",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 1,
+      "carry_forward_covered_n": 1,
+      "handoff_modes": {
+        "violation_span": 2
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 2,
+          "n_floor_claims": 1,
+          "n_floor_claims_with_floor_verify_record": 1,
+          "recheck_status": "LEDGER_COMPLIANT",
+          "recheck_all_resolved": true,
+          "full_recheck_required_reasons": [
+            "paragraph_or_full_or_delete_rewrite",
+            "multiple_claims_rewritten_same_cycle",
+            "deterministic_floor_claim",
+            "safety_fixture",
+            "short_section_no_window(title_hook_in_one_line)"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "hormuz_run03_standard",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 0,
+      "carry_forward_covered_n": 0,
+      "handoff_modes": {},
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 3,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "meta_run03_standard",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 0,
+      "carry_forward_covered_n": 0,
+      "handoff_modes": {},
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 3,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "neg3_hormuz_prodrunner_b1b",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 0,
+      "carry_forward_covered_n": 0,
+      "handoff_modes": {
+        "violation_span": 1
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 4,
+          "n_floor_claims": 1,
+          "n_floor_claims_with_floor_verify_record": 1,
+          "recheck_status": "LEDGER_COMPLIANT",
+          "recheck_all_resolved": false,
+          "full_recheck_required_reasons": [
+            "deterministic_floor_claim",
+            "short_section_no_window(title_hook_in_one_line)"
+          ]
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A4",
+      "n_cycles": 2,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 2,
+      "carry_forward_covered_n": 2,
+      "handoff_modes": {
+        "violation_span": 4
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 8,
+          "n_floor_claims": 1,
+          "n_floor_claims_with_floor_verify_record": 1,
+          "recheck_status": "LEDGER_DEVIATION",
+          "recheck_all_resolved": true,
+          "full_recheck_required_reasons": [
+            "paragraph_or_full_or_delete_rewrite",
+            "english_only_ja_source_requires_full_recheck",
+            "multiple_claims_rewritten_same_cycle",
+            "deterministic_floor_claim",
+            "safety_fixture"
+          ]
+        },
+        {
+          "cycle": 2,
+          "n_stage2": 1,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_A2A3",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 1,
+      "carry_forward_covered_n": 1,
+      "handoff_modes": {
+        "violation_span": 4
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 6,
+          "n_floor_claims": 0,
+          "n_floor_claims_with_floor_verify_record": 0,
+          "recheck_status": null,
+          "recheck_all_resolved": null,
+          "full_recheck_required_reasons": null
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "instance_id": "safety_er009_changed_number",
+      "n_cycles": 1,
+      "severity_wobble_n": 0,
+      "severity_wobble": [],
+      "carry_forward_comparison_n": 1,
+      "carry_forward_covered_n": 1,
+      "handoff_modes": {
+        "violation_span": 2
+      },
+      "cycles": [
+        {
+          "cycle": 1,
+          "n_stage2": 2,
+          "n_floor_claims": 1,
+          "n_floor_claims_with_floor_verify_record": 1,
+          "recheck_status": "LEDGER_COMPLIANT",
+          "recheck_all_resolved": true,
+          "full_recheck_required_reasons": [
+            "paragraph_or_full_or_delete_rewrite",
+            "multiple_claims_rewritten_same_cycle",
+            "deterministic_floor_claim",
+            "safety_fixture",
+            "short_section_no_window(title_hook_in_one_line)"
+          ]
+        }
+      ]
+    }
+  ],
+  "cost_total_jpy": 7.9137
+}

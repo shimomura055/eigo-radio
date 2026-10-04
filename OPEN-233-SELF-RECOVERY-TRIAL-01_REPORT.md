@@ -4173,3 +4173,24 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - 整合: 再較正はStage 2 rubric単体で追加確認を含まない。時期以外のfloorはLLM判定に関係なく決定論でBLOCKING維持・時期は追加確認2回で解放可能だが重大期待ケースは解放されない、が両立している(`results_01.json`の`consistency_note_61`)。
 - 費用: 合計¥9.3852、Phase累計約¥548.214(上限¥900)。未実施: 少数flow・29件横断(委任_62)。次Trial禁止。
 - 確認できたこと/推測: 上記の数値は`results_01.json`・`cases_01.csv`の実測。N版の解放0がn=5×5ケースの範囲であり、より多くのパターンでの保証ではない(推測の余地)。引用が逐語でないことによるBLOCKING固定が多く、解放期待ケースの解放率が低い(B2は0/3)のは保守側の挙動(過剰Majorの残存)。
+
+## 44. 委任_62: 少数実flow確認 rep23(2026-10-04、6 instance×n=2=12 instance-run、費用¥7.9137)
+
+- 性質: ユーザー決定[5回目]手順4。承認済み対策を全部有効にした構成。Trial専用、Production未接続。29件横断(手順5)は未実施(Fable照合後の委任_63)。次Trial未開始。
+- 構成: `er052_open233_self_recovery_flow_runner_01_rep23_limited_01.py`(実行)・`..._rep23_agg_01.py`(集計)、出力`er052_output/open233_self_recovery_flow_runner_01_rep23/`(instance JSON 12件・`summary_01.json`・`release_log_01.md`)。スイッチは12/12のinstance JSON `switches`で実測確認: `JA_MODE=english_only`・`VS_MATCH_EXT`・`VS_EXPLAIN_SPLIT`・`FLOOR_VERIFY_MODE=time_only`・`HANDOFF_MODE=violation_span`、rubric=V7b、`MAX_CYCLES=2`/`HARD_MAX_CYCLES=3`、⑥OFF。instanceは設計書§5-1の指定(meta_run03_standard・hormuz_run03_standard・neg3_hormuz_prodrunner_b1b・safety_A4・safety_A2A3・safety_er009_changed_number)。**B3・B4-a・A5-0(Safety-critical登録)は§5-1に含まれず未包含**。比較基準は同instanceの直近記録(meta=rep22、hormuz=rep16、neg3=rep17、A4=rep14、A2A3=rep18、changed_number=rep22)で、旧rubric・旧スイッチ構成のため同一条件の比較ではない(metaのrep22は固定Stage 1[iter8 frozen]、rep23は既定Stage 1 fixtureで入力が異なる)。
+- 即時STOP条件(a)日本語変更・(b)重大解放・(c)Safety-critical残存・(d)例外: **いずれも非該当**(JA変更0/12、解放0、`pass_with_residual_unflagged`=0、例外なし)。
+- 項目別の仮判定(rep23 / 基準): 
+  1. 真の重大見逃し **PASS**(A4-0・A2A3-0を4/4 runでBLOCKING検出、合格系の残存0、誤降格0。B3/B4-a/A5-0は未包含)。
+  2. 解放した重大ケース **PASS(未発火)**: floor_verify記録6件が全て`llm_materiality_blocking`で対象外、追加確認call 0・CONFIRMED 0・解放0・費用¥0。**時期のみの追加確認は実flowで一度も発火しておらず、解放側は実flowで未検証**(`release_log_01.md`)。
+  3. 過剰Major **PASS(減少)**: Stage 2 BLOCKING 24件/基準27件、floor単独BLOCKING 2件(`precheck_floor`、changed_numberの真陽性)/基準6件(changed_time 4・changed_actor 1・precheck 1)。軽微以下の仮ラベル2件(A4 s1 cycle2・3の「backup」動機の帰属)。
+  4. 不要Rewrite **FAIL(形式)**: 既存定義(正常記事群のうちRewriteが1件以上実行されたrun率、本構成ではneg3のみ)で2/2=100%、基準(rep17)も2/2=100%で「減っていない」。補足=正常群以外の非Safety 6 runでは2/6(基準6/8)へ減少。neg3のBLOCKING claim(HF-009「events ... quickly returned」)はLLM・floorとも重大判定で仮ラベルは重大寄りのため、「不要」と断定できない。Rewrite実行13件/基準18件。
+  5. Human Review **注意**: STAGE4 4件(`violation_span_unverified`×3[A2A3×2・A4 s1]・`unconfirmed_after_reverify`×1[neg3 s2])/基準4件(`ladder_exhausted_without_full_rewrite`×3・`cycle_limit_exhausted`×1)。件数は同数で増加なし、理由は変化。neg3は0/2→1/2。
+  6. 説明文混入対策 **PASS(誤範囲0、採用側は未発火)**: `vs_explain_split_resolve`は実flowで1件(A4 s1 cycle3、断片2・残り`remainder_too_long`)を試行し`explain_split_rejected:remainder_too_long`でfail-closed。採用された`P:<n>`は0件。
+  7. 句読点差対策 **注意(対象なし)**: L5・`label_only`の発火0、対象0、誤解決0。未確定は`mismatch`×2(A2A3、Checker範囲が`2.6 percent`の途中から始まる`6 percent, because ...`でfail-closed)・`explanatory_mixed`×1(A4 s1)。
+  8. 英語だけ修正 **PASS**: JA変更0/12、JA rewrite・`paired`機構0、`ja_`系call 0、`en_title_rewritten`0件、`english_only_ja_source_requires_full_recheck`は3 cycleで発火し3 cycleとも全文Recheck実施(1:1)。
+  9. retry/recheck整合 **PASS(未確認事項あり)**: cycle2以降2 run(cycle3は1)、`severity_wobble`0、Recheck由来claimも`mode=violation_span`のhandoffを通る(cycle2・3の6 record)、cycleごとにStage 2を再評価。cycle2以降にfloor指摘がなく、floor_verifyの解放状態が周回間で引き継がれないことは実flowで未確認。
+  10. 費用 **PASS**: ¥7.9137(基準12 runの記録合計¥13.2733)、worst instance-run ¥2.6814(A4 s1、上限¥7未満)。Phase累計¥556.1277(上限¥900)。
+- 解放ログ: 0件(`release_log_01.md`)。対象判定6件全て対象外。
+- 説明文混入の全件: 上記6のA4 s1 cycle3の1件のみ(`claim_in_article`=`“The human backup plan” and “that backup plan” characterize the human-staff calls as a backup arrangement.`、`dropped_remainders`=`and`[connective]・`characterize ... backup arrangement`[remainder_too_long])。`handoff.resolution`は`explain_split`情報を保存しないため、記録済みの本文での決定論replay(¥0、24 claim全てで記録と一致)で確認した。
+- 確認できたこと/推測: 数値は`summary_01.json`・instance JSONの実測。仮ラベルは人手でFableが最終判定。単体確認(委任_61)に比べ、実flowでは時期の追加確認・P範囲採用・L5が発火しない構成だった(推測: 対象となる入力がこの6 instanceに少ない)。A2A3の`mismatch`はChecker出力の範囲切断が原因で、新しい対策や仕様は追加していない(報告のみ)。
+- 費用: ¥7.9137(12 instance-run)、Phase累計¥556.1277。次: Fable照合→問題なければ委任_63=29件横断1回。
