@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_number",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+    "issue": "研究対象の取引件数を「1,300万件超」から「3,000万件超」へ変更しており、Ledgerではその具体的な件数は確認できません。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": true,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F-002は1,300万件超と記載しているのに対し、記事は3,000万件超という別の件数を主張しています。changed_number、changed_fact、unsupported_new_claimに該当します。チップ率が高いほど乗客がより多く残したという因果関係はF-004の範囲内です。",
+    "related_fact_id": "F-002",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": true,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_number_p1_2",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1353,
+   "usage": {
+    "input_tokens": 6440,
+    "cached_input_tokens": 6437,
+    "output_tokens": 1596,
+    "reasoning_tokens": 1298
+   },
+   "elapsed_seconds": 14.413,
+   "prompt_sha256": "2e468b6ab81ee32e653ef5568d4bffdf86773db9843caad7a2f6c8b049795820"
+  }
+ ],
+ "cost_jpy": 0.1353,
+ "elapsed": 14.41
+}

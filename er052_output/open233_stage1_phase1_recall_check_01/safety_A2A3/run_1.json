@@ -1,0 +1,87 @@
+{
+ "instance": "safety_A2A3",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+    "issue": "The article identifies cargo carriers as the parties who would repay the United States, but the Ledger says the proposal did not specify who would be liable to pay. This adds an unconfirmed payer and presents an unspecified part of the plan as settled.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": true,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "The payer is not specified in the Ledger; identifying cargo carriers as payers changes the fact and actor, and asserts an unconfirmed detail despite the framing “The idea was.”",
+    "related_fact_id": "HF-003",
+    "origin": "ja_source",
+    "qualifier_present": true,
+    "qualifier_text": "The idea was that",
+    "ledger_field_basis": "notes_factual_constraint",
+    "observation_consistent": false,
+    "matched_notes_id": "HF-003",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   },
+   {
+    "claim_in_article": "...with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+    "issue": "The article extends the reported Brent-market concerns into specific effects on gasoline prices and the cost of moving goods. The Ledger does not verify those downstream effects.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "This adds an unverified causal link from Strait-related danger and crude oil to gasoline prices and goods-moving costs, extending beyond the Ledger’s Brent-futures observations.",
+    "related_fact_id": "HF-009",
+    "origin": "ja_source",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_A2A3_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.4922,
+   "usage": {
+    "input_tokens": 6767,
+    "cached_input_tokens": 0,
+    "output_tokens": 4922,
+    "reasoning_tokens": 4464
+   },
+   "elapsed_seconds": 41.439,
+   "prompt_sha256": "cf9b24a8a3dcd35e069be5fb150a3b91bf6fb2bfbc3965f39202deb7d481b564"
+  }
+ ],
+ "cost_jpy": 0.4922,
+ "elapsed": 41.44
+}

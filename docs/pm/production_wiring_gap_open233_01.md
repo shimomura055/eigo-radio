@@ -172,6 +172,11 @@ DEVテスト/Trial系の`er012_editorial_*_trial_*.py`・`er003_v1_*_generate.py
 ### 2-7. runnerが依存するTrial module(Production配線で除去すべき依存、確認)
 `er050_gpt6_checker_comparison_trial_01`(fixture/`g6.*`7参照)、`er051_open233_checker_trial_variant_01`(Trial Checker prompt/schema/classify、16参照)、`er052_..._precheck_01`(684行、23参照)、`..._s1d_trial_01`(237行)、`..._stage2_calibration_01`(970行、V7b/Stage 2 batch)、`..._stage2_hook_01`(274行)、`..._stage2_production_01`(333行、`_extract_usage`/`official_cost_jpy`等32参照)、`..._stage3_rewrite_trial_01`(603行、J1 Rewrite prompt/`simple_llm_call`)、`..._phase1_step3_stage1_compare_01`(fixture)。計約4,000行超。Productionから参照してはならない(ユーザー決定)ため**複製・再配置(コピー+Production側テスト)が必要**。
 
+
+### 2-8. P6(B-family/Voices A2/er009 n1 diagnostic)の棚卸し(委任_04c、¥0、Grep→範囲Read)
+- `er012_b_family_production_runner_01.py`・`er012_b_family_voices_a2_production_01.py`: `vfl01.run_deviation_check`は**monitoring専用**(コメント明記、audit jsonへ保存のみ)。MAJOR検出時のrewrite/出荷停止/STOPの分岐は確認範囲で見つからず(STOPはcost上限・Voice衝突・Human Review Lock・content integrity)。
+- `er009_n1_diagnostic_full_retry_production_12.py`: Deviation Checkを実行しresult返却のみ(MAJOR分岐なし)。
+- **推奨: P6は配線対象外**(置換すべきMAJOR時ループが無い。Self-Recoveryを入れると挙動が「監視」から「本文変更」へ変わる=新Product判断)。P1〜P5配線後に別タスクで要否を再判断。確認=Grep範囲のみ、全関数の網羅Readは未実施(推測を含む)。
 ---
 
 ## 3. 1対1対応表
@@ -413,3 +418,19 @@ CURRENT_SPEC OPEN-233節へ: ladder/位置引継ぎ/許可リスト/判定専用
 | K8 | 競合の可能性高 | 競合ではない/設計で吸収可能(決定論のみの場合)。`violation_spans`不採用と`same_fact_id_locations`は別機構 |
 | K13 | 非競合 | 非競合(S1側で既に実現)。読替のみ |
 | 新規K14 | - | **Production初回CheckerはTrial V4A版ではない**(6-1)。rep30は35/38でStage 1を再利用し、Production新規Stage 1は未検証。要設計+最小追加検証 |
+
+## 7. Opus#15後のFable評価(2026-10-05、全文: `docs/pm/opus_l2_review_open233_production_wiring_15.md`)
+
+1. 案M修正採用: 新Production module(入口1つ、戻り値status/reason∈4種/sub_reason/audit、4種以外はAssertionError)+P1〜P5薄いアダプタ、Feature flag既定OFF、`er010`併存、Trial runner切替は別タスク、`er05x`非import機械検査、V7b正本=`s2c` L612。
+2. K1非競合: MAX_CYCLES=2+条件付き3+判定専用cycle+T(1記事1回)。開示: 本文変更が計4回になりうる。
+3. K8非競合: 兄弟箇所把握は決定論。
+4. K4吸収: Family X全文再生成はSelf-Recovery経路で廃止、ladder④/T後に段落数ガード、`JARecheckRequiredError`→english_only+全文Recheck。開示: 日本語側の誤りは残る。
+5. K7ユーザー判断: 選択肢1(Self-Recovery経路のみgpt-6-luna、Routing Contract新process、fail-closed)を推奨。
+6. K14条件付き: 候補Stage 1=V4A+原則+列挙+schema追加、昇格ルール除く、vfl01 opt-in。Phase 1で劣後(V0 2/2検出∧候補0/2)が1件以上ならユーザー判断、0件なら吸収。
+7. F1/F4(rep30 Stage 1は35件凍結、3件V0差替え)を開示。rep30は「Stage 1出力を所与とした後段の検証」。
+8. Gate意味変更採用: 決定論floor・時期のみ2回確認・S1 2回一致・BLOCKING固定を同時配線。MINORは後段へ渡さない。6出口→新出口対応表採用。
+9. 部分配線不採用、family単位で有効化(P3/P4→P5→P1/P2)。中間Status=APPROVED_FOR_PRODUCTION。
+10. 未検証経路: funnel戻し案を撤回、sub_reason必須+4経路fixture(Opus推奨)を採用。
+11. runtime evidence: Phase 0(¥0)→Phase 1(委任_04c)→Phase 2(配線後8〜10 run)。新規記事不要。P6は棚卸し後。
+12. Cost KPI値不変。Productionの「追加」基準=現行Production 1記事費用。CURRENT_SPEC「正確に半額」は訂正(後続)。
+13. STOP条件: K7が「構造的競合」「新しいProduct判断」に該当→ユーザー報告。実装未着手。

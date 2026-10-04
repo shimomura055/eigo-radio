@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_unsupported_new_claim",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+    "issue": "Ledgerは高い推奨率を見た乗客がより多くチップを残したという結果を記載していますが、男女間の差や「2倍」という結果は保証していません。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": true,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F-004にない男女間の比較と具体的な「2倍」を追加しているため、changed_comparison・changed_number・unsupported_new_claimに該当します。",
+    "related_fact_id": "F-004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": true,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_unsupported_new_claim_p1_2",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1334,
+   "usage": {
+    "input_tokens": 6436,
+    "cached_input_tokens": 6433,
+    "output_tokens": 1571,
+    "reasoning_tokens": 1321
+   },
+   "elapsed_seconds": 14.866,
+   "prompt_sha256": "8a7a3892fd0cab6a3a645061dc12aa022a29fe7f549219a41d4e6f3d5fa7a145"
+  }
+ ],
+ "cost_jpy": 0.1334,
+ "elapsed": 14.87
+}

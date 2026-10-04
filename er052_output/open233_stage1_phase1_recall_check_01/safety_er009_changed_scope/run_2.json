@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_scope",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+    "issue": "ニューヨーク市タクシーで報告された因果効果を、全国のレストランでも直接確認された事実として拡張している。Ledgerのレストラン関連調査は記述的な自己申告結果であり、この因果関係を確認していない。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F-004の因果効果はニューヨーク市タクシーが対象。全国のレストランで同じ因果効果が直接確認されたという主張は範囲を拡張し、未確認の因果的事実として断定している。",
+    "related_fact_id": "F-004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_scope_p1_2",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1006,
+   "usage": {
+    "input_tokens": 6450,
+    "cached_input_tokens": 6447,
+    "output_tokens": 1153,
+    "reasoning_tokens": 842
+   },
+   "elapsed_seconds": 11.139,
+   "prompt_sha256": "7c91f2d65fd299ad21113366a5204738acd34f4d244c273de2f5dc55c0583ebb"
+  }
+ ],
+ "cost_jpy": 0.1006,
+ "elapsed": 11.14
+}

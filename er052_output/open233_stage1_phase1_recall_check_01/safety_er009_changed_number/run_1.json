@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_number",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis",
+    "issue": "取引件数がLedgerの「1,300万件超」と異なり、「3,000万件超」とされています。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": true,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "F-002はニューヨーク市タクシーのクレジットカード取引が1,300万件超とする一方、記事は3,000万件超と記しており、件数を変更しています。",
+    "related_fact_id": "F-002",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_number_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1535,
+   "usage": {
+    "input_tokens": 6440,
+    "cached_input_tokens": 0,
+    "output_tokens": 669,
+    "reasoning_tokens": 432
+   },
+   "elapsed_seconds": 6.991,
+   "prompt_sha256": "2e468b6ab81ee32e653ef5568d4bffdf86773db9843caad7a2f6c8b049795820"
+  }
+ ],
+ "cost_jpy": 0.1535,
+ "elapsed": 6.99
+}

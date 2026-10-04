@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_negation",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+    "issue": "研究結果の方向を反転させ、推奨率が高いほど乗客はより多くチップを残したという結果を否定している。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": true,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "F-004は高い推奨率を見た乗客が実際により多くチップを残したとする。記事はその増加を否定し、推奨率に効果がなかったと述べているため、事実・因果効果・否定・比較方向が変わっている。",
+    "related_fact_id": "F-004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_negation_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1567,
+   "usage": {
+    "input_tokens": 6439,
+    "cached_input_tokens": 0,
+    "output_tokens": 710,
+    "reasoning_tokens": 428
+   },
+   "elapsed_seconds": 6.663,
+   "prompt_sha256": "95d8f105598e398bc95aa0209ecffe0c9484207abf12ae443f7f5a79b07fac8d"
+  }
+ ],
+ "cost_jpy": 0.1567,
+ "elapsed": 6.66
+}

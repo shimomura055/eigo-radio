@@ -19150,3 +19150,7 @@ Opus#14全文: `docs/pm/opus_l2_review_open233_kpi_recovery_02_14.md`。以下�
 | 未解決(配線時に扱う) | `blocking_structural_after_ladder`の未検証経路(T無効・T使用済み・cap後T不可・T削除失敗)/ `issue_focus_absent_recheck_only`(本文全体判定へ是正済み)/「and」版ACCEPTABLE判断(ユーザー未確認) |
 
 本エントリはユーザー決定の記録。`PRODUCTION_WIRED`ではない(完了条件1〜12達成後のみ)。Production未変更。
+
+### 2026-10-05 Fable評価 Opus#15(OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01)
+評価全文=`docs/pm/production_wiring_gap_open233_01.md` §7、Opus#15全文=`docs/pm/opus_l2_review_open233_production_wiring_15.md`(委任_04dで作成中)。案M修正採用・K1/K8非競合・K4吸収・Gate意味変更採用・部分配線不採用。
+K7=ユーザー判断待ち(選択肢1推奨)。K14=Phase 1(委任_04c作業5)の結果で吸収/ユーザー判断を決定。Production未変更、`PRODUCTION_WIRED`ではない。

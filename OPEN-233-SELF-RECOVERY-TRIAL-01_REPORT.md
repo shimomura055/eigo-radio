@@ -4498,3 +4498,14 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - **未報告Trial**: なし。
 - **Dangling Reference**: 配線時に全件確認する。
 - **T-0**: 委任文全文を`docs/pm/delegation_log/2026-10-05_OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01_01c.md`へ保存(check PASS)。
+
+## 64. PRODUCTION-WIRING-01 委任_04c: K14 Phase 1実測(候補Stage 1 vs Production V0)・両モデル費用再計算・P6棚卸し(2026-10-05、実費¥9.94、Phase累計約¥730.14)
+
+- 候補Stage 1(V4A+重大誤解原則+列挙+schema追加、昇格除く、severityのみ)をgpt-6-lunaでn=2、18 instance・36 call(Safety12+B2_hormuz/B3/B4+負例3)。V0=fixture baseline_parsed(実Production記録)またはer050 gpt-5.6-luna run_1。出力`er052_output/open233_stage1_phase1_recall_check_01/`(`agg_phase1.json`)。
+- claim単位: 劣後6件(V0検出∧候補0/2: B4の4件・A2A3 HF-009「prices began to fall」・B2_hormuz HF-011)/両方13/候補のみ14。事前固定判定により**K14=ユーザー判断**。Safety-critical 4/5(B3・A2A3-0・A4-0・A5-0は2/2、B4-aは0/2、V0は5/5)。
+- 負例MAJOR誤検出: neg2は2/2 run、neg3は1/2 run、neg1は0(V0は3件ともCOMPLIANT)。API失敗0。
+- 照合規則の注意: 初回集計はrelated_fact_id一致を要求し劣後15件と出たが、V0のer009合成fixtureにfact idが無く候補は別fact idを付けるため、claim本文のtoken重なり(50%)に是正し6件へ(両版とも判定はK14ユーザー判断)。V0はn=1記録。
+- 費用再計算(rep30 38 run、為替156.88固定): gpt-6-luna 合計¥21.79/平均¥0.573/worst¥4.14、gpt-5.6-luna 合計¥48.18/平均¥1.268/worst¥9.37(比2.21倍。S1 ¥3.09は別掲)。`er052_output/open233_kpi_recovery_02_offline_01/agg_cost_recalc_models_01.*`。
+- Production基準(raw_usage_log、gpt-5.6-luna、¥160/USD、n=8記事run): JA Checker+must_fix+loop 平均¥2.77/中央値¥2.50、text生成全体 平均¥6.55。EN側vfl01 Checkerはstage名未記録で分離不能(未確認)。
+- P6: B-family/Voices A2/er009 n1 diagnosticは`run_deviation_check`をmonitoring専用で呼ぶのみ(MAJOR時の本文変更・STOP分岐は確認範囲で無し)→配線対象外を推奨(Gap文書§2-8)。
+- ガードレール¥8を¥1.94超過(1call平均¥0.28、rep30 Stage 1実測¥0.14〜0.45と同水準、暴走ではない)。Production未変更、`PRODUCTION_WIRED`ではない。

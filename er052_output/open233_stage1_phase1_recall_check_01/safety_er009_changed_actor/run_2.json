@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_actor",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+    "issue": "「Harvard Business Schoolのチーム」という所属情報はLedgerに記載されていません。サンプル規模と研究結果はLedgerと一致しています。",
+    "severity": "MINOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": false,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "Ledgerにない所属情報を追加しています（changed_fact、unsupported_new_claim）。ただし研究対象・サンプル規模・結果を別のものに置き換えてはいないため、肩書きの補足としてMINORとします。",
+    "related_fact_id": "F-001",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": true,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "ACCEPTABLE",
+    "action": "PASS",
+    "basis": "ledger_fact_consistent",
+    "rule_id": "acceptable_consistent_v1"
+   }
+  ],
+  "overall_status": "LEDGER_COMPLIANT",
+  "overall_action_trial": "PASS",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_actor_p1_2",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.2726,
+   "usage": {
+    "input_tokens": 6445,
+    "cached_input_tokens": 6442,
+    "output_tokens": 3346,
+    "reasoning_tokens": 3083
+   },
+   "elapsed_seconds": 31.472,
+   "prompt_sha256": "2161ef93a90eec808d9a57694496f963aa566ef95072ece09be8a1e1be96c80c"
+  }
+ ],
+ "cost_jpy": 0.2726,
+ "elapsed": 31.47
+}

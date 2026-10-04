@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_negation",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+    "issue": "This reverses the study finding: passengers exposed to higher suggested tip rates left more, not the same or less.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": false,
+    "changed_causality": true,
+    "changed_certainty": false,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": true,
+    "changed_comparison": true,
+    "changed_time": false,
+    "unsupported_new_claim": false,
+    "explanation": "F-004 reports that seeing a higher suggested rate caused passengers to leave more. The article negates that result and says there was no effect, reversing the comparison and the causal finding.",
+    "related_fact_id": "F-004",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_negation_p1_2",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.0883,
+   "usage": {
+    "input_tokens": 6439,
+    "cached_input_tokens": 6436,
+    "output_tokens": 996,
+    "reasoning_tokens": 769
+   },
+   "elapsed_seconds": 8.842,
+   "prompt_sha256": "95d8f105598e398bc95aa0209ecffe0c9484207abf12ae443f7f5a79b07fac8d"
+  }
+ ],
+ "cost_jpy": 0.0883,
+ "elapsed": 8.84
+}

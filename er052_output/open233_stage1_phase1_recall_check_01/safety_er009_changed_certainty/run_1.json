@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_certainty",
+ "run": 1,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+    "issue": "The article presents guilt tipping as conclusively caused by tip screens in every viewer, while the Ledger describes it as an author’s proposed mechanism and reports self-described feelings from a subset of survey respondents.",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "The universal claim about every customer exceeds the Ledger’s scope, and “proven beyond doubt” asserts causal certainty not supported by the Ledger. The asserted universal causal result is also an unsupported new claim.",
+    "related_fact_id": "F-008",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_certainty_p1_1",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.1585,
+   "usage": {
+    "input_tokens": 6430,
+    "cached_input_tokens": 0,
+    "output_tokens": 735,
+    "reasoning_tokens": 498
+   },
+   "elapsed_seconds": 6.778,
+   "prompt_sha256": "0b9fe09abdac3fbb93d665655724bf9989fe237081d1fb9cde070d14c2bc577f"
+  }
+ ],
+ "cost_jpy": 0.1585,
+ "elapsed": 6.78
+}

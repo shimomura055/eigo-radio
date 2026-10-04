@@ -1,0 +1,57 @@
+{
+ "instance": "safety_er009_changed_certainty",
+ "run": 2,
+ "model": "gpt-6-luna",
+ "parsed": {
+  "deviations": [
+   {
+    "claim_in_article": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+    "issue": "記事は、デジタル画面による社会的圧力を著者の議論として述べるLedgerのFactを、画面を見た全顧客に必ず起きると実証済みの因果関係へ拡張しています。",
+    "severity": "MAJOR",
+    "changed_fact": true,
+    "changed_scope": true,
+    "changed_causality": true,
+    "changed_certainty": true,
+    "changed_number": false,
+    "changed_actor": false,
+    "changed_negation": false,
+    "changed_comparison": false,
+    "changed_time": false,
+    "unsupported_new_claim": true,
+    "explanation": "F-008は著者のメカニズム説明であり、社会的圧力の大きさを直接測定した因果効果ではありません。「proven beyond doubt」は確実性と因果性を強め、「every customer」は対象範囲を全顧客へ広げる未確認の主張です。",
+    "related_fact_id": "F-008",
+    "qualifier_present": false,
+    "qualifier_text": "",
+    "ledger_field_basis": "ledger_fact",
+    "observation_consistent": false,
+    "matched_notes_id": "",
+    "same_fact_id_locations": [],
+    "auto_downgraded": false,
+    "severity_final": "BLOCKING",
+    "action": "STOP",
+    "basis": "ledger_fact",
+    "rule_id": "existing_major_v2"
+   }
+  ],
+  "overall_status": "LEDGER_DEVIATION",
+  "overall_action_trial": "STOP",
+  "variant": "V4A"
+ },
+ "call_log": [
+  {
+   "label": "safety_er009_changed_certainty_p1_2",
+   "recovery_stage": "stage1_initial",
+   "cost_jpy": 0.0661,
+   "usage": {
+    "input_tokens": 6430,
+    "cached_input_tokens": 6427,
+    "output_tokens": 713,
+    "reasoning_tokens": 415
+   },
+   "elapsed_seconds": 6.891,
+   "prompt_sha256": "0b9fe09abdac3fbb93d665655724bf9989fe237081d1fb9cde070d14c2bc577f"
+  }
+ ],
+ "cost_jpy": 0.0661,
+ "elapsed": 6.89
+}
