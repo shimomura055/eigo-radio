@@ -135,3 +135,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
   では完了している、という事実は「ユーザーへ報告済み」を意味しない
   (前提ルール3参照)。詳細は`docs/pm/PM_GOVERNANCE.md` 12-12節、
   `DECISION_LOG.md` `PM-REPORTING-LEDGER-INITIAL-VS-RESTATE-01`エントリ。
+
+- 2026-10-05 | OPEN-233-KPI-RECOVERY-REDESIGN-02 委任_13 | rep30 KPI 3/4達成(Human Review 0・見逃し0・平均+¥0.13、worst+¥3.135でCap超過0.135)によりUSER_DECISION_REQUIREDでSTOP(Status記録のみ、¥0)。
