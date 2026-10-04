@@ -2782,16 +2782,19 @@ def stage2_release_guard(claim: dict, ledger_fact, article_ctx=None) -> tuple:
 
 # ---- Tier 1: 確認役(floor_verifyの一般化)。rubricは最初から単一定義(Opus#11論点4: ACCEPTABLE重複定義を持ち込まない)。
 DV_RUBRIC = """【判定の唯一の基準】
-英語学習者に、記事の本質について重大な誤解を与えるものだけを止めます(UPHOLD_BLOCKING)。
-重大な誤解とは、次のいずれかに明確に該当する場合です。
- (a) 関連factブロック(Ledger)のclaim/scope/numeric_value/date_or_period/conditionsのいずれかと矛盾する。
- (b) Ledgerに無い人物・数字・出来事・行動・仕組みを新たに追加している。
- (c) 根拠のない人物・組織の意図や動機、または未確認の主体・原因・断定を事実として述べている。
- (d) Ledgerが記録した原因と異なる、または逆方向の因果を断定している。
- (e) 主体・数値・否定・比較・時期のいずれかについて、Ledgerと矛盾する重大な変更を加えている。
-上記に該当せず、Ledgerが確認した事実を自然に言い換えた・つないだだけなら、解除してよい(RELEASE)。
-Checkerの指摘は検証すべき仮説です。仮説が正しいかを、関連factブロックの該当箇所を逐語で引用して
-(ledger_citation)検証してください。迷う場合、引用できない場合、判断できない場合は、UPHOLD_BLOCKINGとしてください。"""
+英語学習者に、記事の本質について重大な誤解を与えるものだけを止めます(UPHOLD_BLOCKING)。それ以外は解除します(RELEASE)。
+正式な基準(3定義、Stage 2の基底rubricと同一の文言)は次のとおりです。
+- BLOCKING(以下のいずれかに明確に該当する場合のみ):
+  (a) Ledgerのclaim/scope/numeric_value/date_or_period/conditionsのいずれかと矛盾する。
+  (b) Ledgerに無い人物・数字・出来事・具体的な行動・仕組み(メカニズム)を新たに追加している(例: 確認されていない具体的な売買行動を事実として追加する、確認されていない仕組み・運用フローを新規主張する)。
+  (c) 根拠のない人物・組織の意図や動機を断定している。
+  (d) Ledgerが記録した事実と逆方向の因果を述べている(Ledgerが原因Xを明記しているのに、正反対または別の特定の原因を断定する)。
+  (e) 主体・数値・否定・比較・時期のいずれかについて、Ledgerと矛盾する重大な変更を加えている。
+- QUALITY(解除してよい): 確認済みのFact同士を、人間が普通に読めば自然に導く範囲でつないだ解釈。断定がやや強い場合や、一つの解釈として自然に成り立つ推測を含む。上記BLOCKING(a)〜(e)に明確に該当しない限りQUALITYです。
+- ACCEPTABLE(解除してよい): Ledgerに無い新規の固有名詞・数値・時期・主体・因果・仕組みを一切加えず、Ledgerが確認した事象の一般常識レベルの背景説明・条件付きの一般論にとどまる。
+BLOCKINGに該当するかどうか、またはどの定義に当たるか判断に迷う場合は、UPHOLD_BLOCKINGとしてください(fail-closed)。
+Checkerの指摘は検証すべき仮説です。仮説が正しいかを、関連factブロックの該当箇所を逐語で引用して(ledger_citation)検証してください。
+引用できない場合、判断できない場合も、UPHOLD_BLOCKINGとしてください。"""
 
 DV_DEVELOPER_MESSAGE = (
     "あなたはVerified Fact LedgerとFact Safetyの独立監査担当です。別の判定者が重大(BLOCKING)ではないと判定した"
@@ -2817,7 +2820,9 @@ Checkerは次の問題を指摘した: {issue}
 {rubric}
 
 verdict(UPHOLD_BLOCKING/RELEASE)、ledger_citation(関連factブロックからの逐語引用。一字一句そのまま。
-要約・言い換え禁止)、basis(判定根拠の分類)、explanation(短い説明)を返してください。"""
+要約・言い換え禁止。関連factブロックの連続した1か所[1行の一部、または1行全体]だけを引用すること。
+離れた行・欄[例: 見出し行とconditions行]をつなげて1つの引用にしてはいけない[つなげると無効になる])、
+basis(判定根拠の分類)、explanation(短い説明)を返してください。"""
 
 DV_JSON_SCHEMA = {
     "name": "open233_downgrade_verify_v1",

@@ -1,0 +1,378 @@
+{
+ "n_downgrades": 534,
+ "groups": {
+  "other": 408,
+  "normal_legit": 110,
+  "neg5_same": 6,
+  "leak_old": 10
+ },
+ "plan": {
+  "shrink": true,
+  "n_planned": 449,
+  "n_full": 658,
+  "unit_cost_estimate": 0.0999,
+  "shrink_reason": "全件の概算が上限の95%超のため、NORMAL群正当降格全件+流出・neg5全件+その他は層化サンプル約200件へ縮小"
+ },
+ "n_calls_recorded": 450,
+ "main(Tier0=補助ベルトのみ)": {
+  "i_leak_closure_old10": {
+   "n": 10,
+   "blocking": 9,
+   "rate": 0.9,
+   "reasons": {
+    "tier0_aux": 9
+   }
+  },
+  "i_neg5_same6": {
+   "n": 6,
+   "blocking": 6,
+   "rate": 1.0,
+   "reasons": {
+    "tier0_aux": 6
+   }
+  },
+  "i_leaks16": {
+   "n": 16,
+   "blocking": 15,
+   "rate": 0.9375,
+   "reasons": {
+    "tier0_aux": 15
+   }
+  },
+  "i_leaks16_closed_in_both_calls": "15/16",
+  "ii_normal_legit": {
+   "n": 110,
+   "blocking": 52,
+   "rate": 0.4727,
+   "reasons": {
+    "upheld": 49,
+    "fact_block_unavailable": 2,
+    "tier0_aux": 1
+   }
+  },
+  "ii_normal_legit_call2": {
+   "n": 110,
+   "blocking": 54,
+   "rate": 0.4909,
+   "reasons": {
+    "upheld": 51,
+    "fact_block_unavailable": 2,
+    "tier0_aux": 1
+   }
+  },
+  "iii_all_downgrades": {
+   "n": 326,
+   "blocking": 178,
+   "rate": 0.546,
+   "reasons": {
+    "fact_block_unavailable": 9,
+    "upheld": 153,
+    "tier0_aux": 16
+   }
+  },
+  "iii_legit_only": {
+   "n": 310,
+   "blocking": 163,
+   "rate": 0.5258,
+   "reasons": {
+    "fact_block_unavailable": 9,
+    "upheld": 153,
+    "tier0_aux": 1
+   }
+  },
+  "iv_by_materiality": {
+   "QUALITY": {
+    "n": 180,
+    "blocking": 113,
+    "rate": 0.6278,
+    "reasons": {
+     "upheld": 110,
+     "fact_block_unavailable": 3
+    }
+   },
+   "ACCEPTABLE": {
+    "n": 130,
+    "blocking": 50,
+    "rate": 0.3846,
+    "reasons": {
+     "fact_block_unavailable": 6,
+     "upheld": 43,
+     "tier0_aux": 1
+    }
+   }
+  },
+  "iv_by_rubric": {
+   "R3'''": {
+    "n": 165,
+    "blocking": 82,
+    "rate": 0.497,
+    "reasons": {
+     "fact_block_unavailable": 9,
+     "upheld": 73
+    }
+   },
+   "V4": {
+    "n": 23,
+    "blocking": 14,
+    "rate": 0.6087,
+    "reasons": {
+     "upheld": 14
+    }
+   },
+   "V5": {
+    "n": 31,
+    "blocking": 19,
+    "rate": 0.6129,
+    "reasons": {
+     "upheld": 18,
+     "tier0_aux": 1
+    }
+   },
+   "V6": {
+    "n": 30,
+    "blocking": 16,
+    "rate": 0.5333,
+    "reasons": {
+     "upheld": 16
+    }
+   },
+   "V7b": {
+    "n": 61,
+    "blocking": 32,
+    "rate": 0.5246,
+    "reasons": {
+     "upheld": 32
+    }
+   }
+  },
+  "iv_normal_by_materiality": {
+   "QUALITY": {
+    "n": 70,
+    "blocking": 39,
+    "rate": 0.5571,
+    "reasons": {
+     "upheld": 37,
+     "fact_block_unavailable": 2
+    }
+   },
+   "ACCEPTABLE": {
+    "n": 40,
+    "blocking": 13,
+    "rate": 0.325,
+    "reasons": {
+     "upheld": 12,
+     "tier0_aux": 1
+    }
+   }
+  }
+ },
+ "counterfactual(Tier0にG_Lを追加)": {
+  "i_leak_closure_old10": {
+   "n": 10,
+   "blocking": 10,
+   "rate": 1.0,
+   "reasons": {
+    "tier0_aux": 9,
+    "tier0_gl": 1
+   }
+  },
+  "i_neg5_same6": {
+   "n": 6,
+   "blocking": 6,
+   "rate": 1.0,
+   "reasons": {
+    "tier0_aux": 6
+   }
+  },
+  "i_leaks16": {
+   "n": 16,
+   "blocking": 16,
+   "rate": 1.0,
+   "reasons": {
+    "tier0_aux": 15,
+    "tier0_gl": 1
+   }
+  },
+  "i_leaks16_closed_in_both_calls": "16/16",
+  "ii_normal_legit": {
+   "n": 110,
+   "blocking": 64,
+   "rate": 0.5818,
+   "reasons": {
+    "upheld": 49,
+    "fact_block_unavailable": 2,
+    "tier0_aux": 1,
+    "tier0_gl": 12
+   }
+  },
+  "ii_normal_legit_call2": {
+   "n": 110,
+   "blocking": 66,
+   "rate": 0.6,
+   "reasons": {
+    "upheld": 51,
+    "fact_block_unavailable": 2,
+    "tier0_aux": 1,
+    "tier0_gl": 12
+   }
+  },
+  "iii_all_downgrades": {
+   "n": 375,
+   "blocking": 262,
+   "rate": 0.6987,
+   "reasons": {
+    "fact_block_unavailable": 9,
+    "upheld": 127,
+    "tier0_gl": 110,
+    "tier0_aux": 16
+   }
+  },
+  "iii_legit_only": {
+   "n": 359,
+   "blocking": 246,
+   "rate": 0.6852,
+   "reasons": {
+    "fact_block_unavailable": 9,
+    "upheld": 127,
+    "tier0_gl": 109,
+    "tier0_aux": 1
+   }
+  },
+  "iv_by_materiality": {
+   "QUALITY": {
+    "n": 214,
+    "blocking": 163,
+    "rate": 0.7617,
+    "reasons": {
+     "tier0_gl": 69,
+     "upheld": 91,
+     "fact_block_unavailable": 3
+    }
+   },
+   "ACCEPTABLE": {
+    "n": 145,
+    "blocking": 83,
+    "rate": 0.5724,
+    "reasons": {
+     "fact_block_unavailable": 6,
+     "upheld": 36,
+     "tier0_gl": 40,
+     "tier0_aux": 1
+    }
+   }
+  },
+  "iv_by_rubric": {
+   "R3'''": {
+    "n": 193,
+    "blocking": 123,
+    "rate": 0.6373,
+    "reasons": {
+     "fact_block_unavailable": 9,
+     "upheld": 60,
+     "tier0_gl": 54
+    }
+   },
+   "V4": {
+    "n": 23,
+    "blocking": 14,
+    "rate": 0.6087,
+    "reasons": {
+     "upheld": 14
+    }
+   },
+   "V5": {
+    "n": 37,
+    "blocking": 25,
+    "rate": 0.6757,
+    "reasons": {
+     "upheld": 14,
+     "tier0_gl": 10,
+     "tier0_aux": 1
+    }
+   },
+   "V6": {
+    "n": 35,
+    "blocking": 21,
+    "rate": 0.6,
+    "reasons": {
+     "tier0_gl": 6,
+     "upheld": 15
+    }
+   },
+   "V7b": {
+    "n": 71,
+    "blocking": 63,
+    "rate": 0.8873,
+    "reasons": {
+     "tier0_gl": 39,
+     "upheld": 24
+    }
+   }
+  },
+  "iv_normal_by_materiality": {
+   "QUALITY": {
+    "n": 70,
+    "blocking": 41,
+    "rate": 0.5857,
+    "reasons": {
+     "upheld": 37,
+     "fact_block_unavailable": 2,
+     "tier0_gl": 2
+    }
+   },
+   "ACCEPTABLE": {
+    "n": 40,
+    "blocking": 23,
+    "rate": 0.575,
+    "reasons": {
+     "upheld": 12,
+     "tier0_aux": 1,
+     "tier0_gl": 10
+    }
+   }
+  }
+ },
+ "open_leaks_main": [
+  {
+   "instance": "bgroup_B3",
+   "dir": "01_rep24",
+   "cycle": 2,
+   "group": "leak_old",
+   "verdict_call1": "RELEASE",
+   "explanation": "対象文は懸念と政策変更を「and」で並べ、同日に起きたと述べているだけで、懸念が撤回の原因だったとは明示していません。Ledgerは決定についてトランプ氏が中東指導者との協議に基づくと説明したと記録していますが、対象文はその原因と矛盾する因果を主張していません。",
+   "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the fl"
+  }
+ ],
+ "v_citation_not_verbatim": {
+  "n_called_ok": 439,
+  "non_verbatim": 0,
+  "rate": 0.0
+ },
+ "api_failures": {
+  "n": 0,
+  "sample": []
+ },
+ "fact_block_unavailable_rows": {
+  "n": 18,
+  "in_normal_legit": 2
+ },
+ "vi_cost": {
+  "total_replay_jpy": 32.6771,
+  "unit_call_jpy": 0.0744,
+  "rep24_downgrade_targets_per_instance_run": 1.789,
+  "added_verify_cost_per_article_jpy(推定=targets×単価)": 0.1332,
+  "added_rewrite_cost_per_article_jpy(推定=targets×legit_BLOCKING率×Rewrite1回¥0.8[Opus#11推定上限])": 0.7527,
+  "note": "Rewriteの追加費用は推定(実測はrep26)。KPI: 平均+¥2/記事以内・Cap+¥3以内"
+ },
+ "vii_n2_agreement": {
+  "pairs": 125,
+  "agree": 111,
+  "rate": 0.888
+ },
+ "decision": {
+  "rule": "(ii)<=10%かつ(i)=100%→採用 / (ii)10〜25%(かつ(i)=100%)→調整1回 / (ii)>25%または(i)<100%→不採用",
+  "i_leaks16_closed": "15/16",
+  "ii_normal_legit_blocking_rate": 0.4727,
+  "decision": "採用せずFableへ報告(KPI緩和は提案しない)"
+ }
+}

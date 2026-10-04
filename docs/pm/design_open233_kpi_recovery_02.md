@@ -229,3 +229,25 @@ D\*(G_H∨issue_actor+S1)は主構造にしない。S1(同一prompt2回目)は�
 1. 6-B(決定論候補生成): 記事の文のうち、因果接続語(`AUX_CONN_RE`+広義語彙: since/due to/thanks to/driving/prompted/that is why等)を含み、ヘッジ語を含まない文を候補にする。fixture 29本で0.45文/記事(上限)を偽陽性量の基準にする。
 2. 6-F(Ledgerの因果禁止・相関のみの記録): 候補文が参照するfact(固有名詞・数値・日付トークンの一致、日英の表記差は`floor_verify_time_tokens`相当の正規化)のうち、`causal_strength`∈{CORRELATIONAL, CAUSAL_STATED_BY_SOURCE}または`notes_for_writer`に因果の禁止文があるものを残す。
 3. 6-B∧6-Fを既存のprecheck経路(`detected_by=="precheck"`は無条件floor)へ候補として入れる案を¥0 replayで評価する。指標: 既知のStage 1 recall miss 3件(bgroup_B2_hormuz・bgroup_B3・hormuz_run02_advanced)の捕捉、fixture 29本の偽陽性(≤0.45文/記事を上限)、precheck floorが無条件BLOCKINGになることによる不要Rewrite見積り。新しいpromptも判定基準も作らない。精度が足りない場合のみ6-C(候補文だけの安価な補助call)へ進む(要Opus確認)。
+
+### 9-7 確認役offline replayの結果と採否判定(委任_02 作業4。判定基準は事前設定どおり、事後変更なし)
+
+出典: `er052_output/open233_kpi_recovery_02_offline_01/replay_verify_01.py`(`--stage probe/main/agg`)、`replay_verify_01_summary.json`・`_calls.jsonl`・`_plan.json`・`_estimate.json`・`_probe_v1_*`。
+
+- 実行条件: 降格534件(NORMAL群110・流出旧10・neg5同一文6・その他408)。Tier 0は補助ベルトのみ(既定、G_L無効)。概算: probe 6件の単価¥0.0999×全件658呼び出し=約¥65.8>¥45のため、委任文どおり「NORMAL群正当降格全件+流出・neg5全件+その他は層化サンプル約200件」へ縮小(449呼び出し、概算約¥44.9)。実測: main ¥32.68(probe v2を含む)+probe v1 ¥0.44=**¥33.12**、呼び出し450件(1件平均¥0.0744)、API失敗0。
+- probe v1→v2の修正(mainの前、結果を見て採否基準を変えたものではなく、実装の是正): v1のprobe 6件で(1)引用が離れた行をつなげて非逐語になる(2件)、(2)`DV_RUBRIC`の(b)〜(e)を私が言い換えて(c)を「未確認の主体・原因・断定」まで広げ、基底rubricより厳しくなっていたことが分かったため、(1)引用は連続1か所だけとする要件の明確化、(2)正式基準3定義(BLOCKING(a)〜(e)・QUALITY・ACCEPTABLE)を基底rubricの文言どおりに修正した。v1のprobeは`replay_verify_01_probe_v1_*`へ退避。「調整1回」の枠は消費していない(mainの(ii)は10〜25%帯に入らなかったため調整の対象外)。
+
+| 指標 | 結果 |
+|---|---|
+| (i) 流出旧10行+neg5 6行の閉鎖(Tier 0 or UPHOLD、1回目) | **15/16**(旧10: 9/10、neg5: 6/6)。開いた1行=rep24 cycle 2のB3「and」版(Rewriteで接続語が消えた文)。確認役は2回ともRELEASE(「andで並べただけで因果を明示していない」)。補助ベルトで閉じた15行は確認役もUPHOLD(補助ベルト非該当でも確認役は流出を閉じる: 独立判別力は高い) |
+| (ii) NORMAL群正当降格(110件)のBLOCKING化率 | **47.3%**(52/110: UPHOLD 49・fact block無し2・補助ベルト1)。2回目49.1%。基準の上限10%・調整帯25%のいずれも超過 |
+| (iii) 全降格のBLOCKING化率 | 54.6%(178/326、replayの実施分)。正当降格のみ52.6%(163/310) |
+| (iv) QUALITY/ACCEPTABLE別 | QUALITY 62.8%(113/180)・ACCEPTABLE 38.5%(50/130)。NORMAL群: QUALITY 55.7%・ACCEPTABLE 32.5%。rubric版別(正当降格): R3''' 49.7%・V4 60.9%・V5 61.3%・V6 53.3%・V7b 52.5% |
+| (v) 引用の非逐語率 | 0/439(連続1か所の要件で非逐語は0) |
+| (vi) 費用 | 1件平均¥0.0744。rep24の降格対象は1.789件/instance-run→確認役の追加約¥0.13/記事(推定)。解除不可にした分のRewrite追加は約¥0.75/記事(推定、Rewrite1回¥0.8×BLOCKING化率、実測なし)。費用だけならKPI(+¥2/記事)に収まるが、不要Rewrite率が基準を大きく超える |
+| (vii) n=2の一致率 | 88.8%(111/125組) |
+
+- **採否判定: 採用しない**(Fable評価5: (ii)>25%または(i)<100%)。(ii)=47.3%>25%、かつ(i)=15/16<100%の両方に該当。ユーザーへKPI緩和は提案しない。限定確認rep26(作業5)は「採用判定のときのみ」のため実行しない(`er052_open233_self_recovery_flow_runner_01_rep26_known_01.py`は作成済み・未実行)。
+- 反実仮想(Tier 0にG_Lを追加、再集計のみ・追加費用なし): (i)=16/16(G_Lが開いた1行を閉じる)、(ii)=58.2%(G_L自体がNORMAL群12件を固定BLOCKINGにするため悪化)。→ G_Lを足しても基準は満たせない。
+- 診断(¥0、既存callの再集計。再設計の手がかりであり本委任では実装しない): NORMAL群の確認役BLOCKING率は、Hook専用Stage 2経路(`stage2_route=hook`)で23/27=85%、title 7/7、承認済みの決定論降格`disclosure_gap_negative_inference_downgrade`で8/9に対し、body経路は19/52=37%、`## In one line`は0/6。確認役の単一定義rubricにHook-aware/title許容がなく、承認済みの別規則(hook-aware・disclosure-gap)の降格も覆している。bodyでも37%で10%には届かない(確認役はCheckerの仮説に同意しやすい=Opus#11が警告したprimingが実測で出た)。
+- 再設計の論点(Fableへ): (1)Tier 0補助ベルト単独は流出15/16・正当降格誤停止0.2%(¥0)で、確認役は流出の独立判別力は高い(15/16)が特異度が低い(NORMAL群47%を止める)。(2)開いた1行(「and」版)は、確認役の説明どおり因果を明示していない文であり、ラベルは`text_substring`(flashy 20% plan)の部分文字列一致で付くため「ラベル上の流出」と「実際に重大な誤解を与える文」が一致しているかの確認が要る(KPI定義は変更しない。ユーザー判断事項ではなく、Safety-critical定義の運用確認)。(3)確認役の対象から「Hook/title経路」「承認済みの決定論降格(hook-aware・disclosure-gap)」を除く、確認役のpromptにsection_type別許容を入れる、等はいずれも新しい構造・prompt変更であり条件A(Opus)の対象。
