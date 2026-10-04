@@ -4277,3 +4277,14 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - S1追加費用の試算(推定): Stage 2の2回目 約¥0.11/instance-run・約¥0.15/記事(rep24の対象を(file,cycle,route)でbatchした30 call×単価¥0.144を38 run/29記事で割る)。追加Rewriteはq=0なら0。+¥2/記事枠はfloor_verify・L6・Recheck等の合計に対する上限。
 - STOP: `USER_DECISION_REQUIRED`(Safety原則に関わる判断[KPI 0件の扱い]・既存より厳しくする変更[S1])。ユーザー判断待ち(7項目): (1)S1採用 (2)Safety KPI 0件の扱い(確率的極小化+Stage 1 recall別管理) (3)NORMAL群2-of-2の既定OFF化 (4)アンカー型L6の確認 (5)prior_issuesにRewrite後の文を渡す是正(Checker入力の変更) (6)U-2(1)位置語→構造要素 (7)Stage 1 recall対策の方向。
 - 運用メモ: T-0は委任文を全文逐語保存し`check_delegation_prompt.py`はPASS。詳細証跡は上記のpath(`results_01.{json,md}`、`raw/`各claimの生応答、`selection_15.json`)。
+
+## 51. KPI-RECOVERY-REDESIGN-02 委任_01: RCA・技術是正3件・後段Safety設計案・Opus packet(2026-10-04、費用¥0、Phase累計¥584.07)
+
+- 性質: ユーザー指示(2026-10-04、`OPEN-233-KPI-RECOVERY-REDESIGN-02`、`DECISION_LOG.md`末尾に逐語記録)に基づく、B3「重大→問題なし」誤降格の構造的根本原因分析(Step 1)、Trial側の技術是正3件の実装、後段Safety設計案の比較(Step 2)、説明文混入(d)型5件の決定論的解決可能性の分析、Stage 1 recall・強モデル限定利用の比較前提、Opus批判レビュー用packet。API課金なし(¥0)。Production未変更。Trial Statusは`IN_PROGRESS`(`VALIDATED`/`USER_DECISION_REQUIRED`に到達していない)。KPIの変更・緩和なし。
+- RCA(`docs/pm/rca_open233_b3_stage2_misdowngrade_01.md`): rep25 B3 s1のStage 2 prompt(14,514字)をAPI無しで復元しsha256がrep25記録値と一致(`85f6b985...`)。構造的欠陥(確認): (a)Stage 2はCheckerのissue・flagを渡されず再発見が必要、(b)解除にEvidence要件なし(ACCEPTABLE降格227件中184件=81%がbasis=none、V7bのllm_directは94%)、(c)promptにACCEPTABLEの定義が2つ(R3基底は因果の新規付加を排除、V7は排除しない)、(d)降格方向は1回判定、(e)因果は決定論floor(5フラグ)外、(f)rubricは8層のパッチでB3対処例が入っていても1回外れた、(g)QUALITYも「Rewriteなし通過」で流出10行中8行がQUALITY。reasoning tokens: Safety-critical単独batchで<400は2/3が降格、700以上は1/21(相関のみ、因果は不明)。
+- 技術是正3件(runner `er052_open233_self_recovery_flow_runner_01.py`、テスト`..._test_01.py`): (1)`prior_issues`のclaim_in_articleをRewrite後の現行本文の置換後の文へ(`resolve_prior_issue_text`、特定不能なら元text、`prior_issue_text_source`をcycle記録へ。Checker Promptはsha256でバイト不変を固定)、(2)KPI確認構成`KPI_TRIAL_SWITCHES`+`apply_kpi_trial_switches()`(rep23〜25構成+L6 ON+NORMAL群2-of-2 OFF、既定のglobalは不変、CLI `--kpi-trial-config`)、(3)NORMAL群2-of-2を`STAGE2_NORMAL_TWO_OF_TWO`(既定OFF)へ。テスト: runner単体542件OK、er052回帰586件OK、全体回帰4509件で新規失敗なし(基準11件のみ)。
+- 設計(`docs/pm/design_open233_kpi_recovery_02.md`、実装なし): 推奨D*=決定論クラスGuard(`G_H`∨`issue_actor`)で解除禁止+それ以外はS1。¥0 replay(`er052_output/open233_kpi_recovery_02_offline_01/`): 流出10行中9行閉鎖、解除不可の正当降格7/524(1.3%)、rep24の68件中2件(neg5のB3同一文)。S1のq=0/30は既存測定の再利用で新Trial未実施。(d)型5件は試作規則(Q:引用符字形の同一視/R:長い説明文の残りを捨てる/U-2(1))で5/5決定論確定、既存確定164件への影響0(実flow検証は未実施)。Stage 1 recallは6-B(決定論候補生成)+6-C(候補文のみの補助check)を比較(推定、未測定)。Solは`gpt-6-luna`の20倍で、Stage 2換算平均約¥2.8/call・p95約¥5、1callで+¥3 Capを超えうる(価格は2026-09-29のリポジトリ内値、公式ページの再取得は未確認)。
+- 副次発見: neg5(B3と同一文、プロジェクトのv2訂正で正BLOCKING扱い)がStage 2で過去6回降格されているが`SAFETY_CRITICAL_CLAIM_DEFS`に未登録で、流出に計上されていない(計測是正の提案、未実装)。
+- Opus packet: `docs/pm/opus_packet_open233_kpi_recovery_02_01.md`(約13,500字、条件A、既存Opus#8/#10との関係を明記)。Opus批判レビュー#11待ち。
+- 次: Opus#11→Fable評価→委任_02(設計改善+実装+Step 5限定確認)→委任_03(Step 6、Safety-critical群+29件)→未達なら再ループ。
+

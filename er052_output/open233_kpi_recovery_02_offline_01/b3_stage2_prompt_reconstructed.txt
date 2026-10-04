@@ -1,0 +1,325 @@
+[developer]
+あなたはVerified Fact LedgerとFact Safetyの独立監査担当(Second Judge)です。一次チェッカー(Stage 1)が既にBLOCKING-candidateとして検出した特定のclaimについて、本当にProductionを止めるべきmaterial errorかを、あなた自身の判断で再評価してください。
+
+[user]
+これはStage 1が既にBLOCKING-candidateとして検出した複数claimの一括
+再評価です。Stage 1の判定理由(explanation/severity/10種類のフラグ)はここでは
+一切提示しません。以下のLedger全文・対象claim配列・各claimのローカル文脈のみを
+見て、あなた自身の判断でclaimごとにmaterialityを判定してください(claim間で
+互いに影響を与えず、各claimを独立に評価してください)。
+
+【Verified Fact Ledger(全文)】
+[VERIFIED] HF-001: 国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。
+  scope: 国際航行に使用されるホルムズ海峡を通航する全船舶
+  conditions: 沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。
+  numeric_value: 第137回理事会 (numeric_scope: IMO理事会の会合番号)
+  date_or_period: 2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表
+  notes_for_writer: この決議と7月14日の発言撤回との因果関係は一次資料で確認できない。撤回の原因として記述しない。
+
+[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。
+  scope: ホルムズ海峡を通じて輸送される「すべての貨物」
+  conditions: 米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。
+  numeric_value: 20% (numeric_scope: 投稿上の償還率。課税標準または算定基礎は明記されていない。)
+  date_or_period: 2026-07-13 10:16 EDT
+  notes_for_writer: 7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。
+
+[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。
+  scope: ホルムズ海峡の貨物通航に対する米国の償還料案
+  numeric_value: 20% (numeric_scope: 提案された率のみが示され、算定・徴収方法は未提示)
+  date_or_period: 2026-07-13
+  notes_for_writer: 「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。
+
+[VERIFIED] HF-004: 20％を貨物価値に適用すると仮定した試算では、約200万バレルを積むVLCCの貨物価値はBrent約85ドル時点で約1億7000万ドルとなり、20％相当額は約3400万ドルとなる。別の専門家試算は約3200万ドルだった。
+  scope: 約200万バレルを満載した超大型原油タンカー（VLCC）1隻・1航海
+  conditions: 20％を積載原油の市場価値に掛けるとの仮定。Brent価格を1バレル約85ドルとして計算。
+  numeric_value: 貨物量約2,000,000バレル、Brent約85ドル/バレル、貨物価値約170,000,000ドル、20％相当約34,000,000ドル、別試算約32,000,000ドル (numeric_scope: 仮定に基づくVLCC1隻当たりのシナリオ試算であり、実際に徴収された金額ではない)
+  date_or_period: 2026-07-14時点の試算
+  notes_for_writer: 実額または確定通航料として扱わない。「貨物価値に適用した場合の試算」と明示する。
+
+[VERIFIED] HF-005: Financial TimesのBrent先物ヒストリカル表は、7月13日の取引について始値78.00ドル、日中高値83.86ドル、日中安値77.28ドル、終値83.30ドルを記録している。
+  scope: Financial Times掲載の期近Brent原油先物ヒストリカルデータ
+  conditions: 日次OHLCデータ。価格単位は1バレル当たり米ドル。
+  numeric_value: 始値 $78.00、高値 $83.86、安値 $77.28、終値 $83.30 (numeric_scope: 7月13日の取引日全体。$83.86は日中高値、$83.30は終値・Reuters報道の清算値に対応)
+  date_or_period: 2026-07-13取引日
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 日中高値83.86ドルと終値83.30ドルを混同しない。
+
+[VERIFIED] HF-006: Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。
+  scope: Brent原油先物の当日清算値と前日比
+  conditions: 米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境
+  numeric_value: $83.30/バレル、前日比 +$7.29、+9.59% (numeric_scope: 7月13日のBrent原油先物清算値。日中高値ではない)
+  date_or_period: 2026-07-13清算時点
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。
+
+[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。
+  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料
+  conditions: トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。
+  numeric_value: 20% (numeric_scope: 撤回・置換対象となった償還率)
+  date_or_period: 2026-07-14 11:04 EDT
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。
+
+[VERIFIED] HF-008: トランプ大統領は7月14日、記者団に対し、ホルムズ海峡を通航する船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないと述べた。
+  scope: ホルムズ海峡を通航する船舶への料金一般
+  conditions: 米国が世界のために海峡を防護する負担は公平でないとの主張も併記された。
+  date_or_period: 2026-07-14（Truth Socialでの置換発表後）
+  notes_for_writer: 7月14日の撤回を確認する補強Fact。7月13日の提案と同日の発言として混同しない。
+
+[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。
+  scope: 国際指標Brent原油先物の短時間の値動き
+  conditions: 撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。
+  numeric_value: 約 +2.6%、$85/バレル超 (numeric_scope: 記事掲載時点のリアルタイムに近い価格スナップショット。日中高値でも終値でもない)
+  date_or_period: 2026-07-14、撤回発表後の取引時間中
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: 撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。
+
+[VERIFIED] HF-010: Financial TimesのBrent先物ヒストリカル表は、7月14日の取引について始値84.00ドル、日中高値87.55ドル、日中安値83.37ドル、終値84.73ドルを記録している。
+  scope: Financial Times掲載の期近Brent原油先物ヒストリカルデータ
+  conditions: 日次OHLCデータ。価格単位は1バレル当たり米ドル。
+  numeric_value: 始値 $84.00、高値 $87.55、安値 $83.37、終値 $84.73 (numeric_scope: 7月14日の取引日全体。$87.55は日中高値、$84.73は終値・Reuters報道の清算値に対応)
+  date_or_period: 2026-07-14取引日
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 速報時点値と日次高値を区別する。87.55ドルを使用する場合は「FTのヒストリカル表による」と帰属を付ける。
+
+[VERIFIED] HF-011: Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。
+  scope: Brent原油先物の当日清算値と前日比
+  conditions: 20％償還料案は同日の取引時間中に撤回されたが、海上封鎖、米・イラン間の攻撃、タンカー被害などの供給懸念は継続していた。
+  numeric_value: $84.73/バレル、前日比 +$1.43、+1.7% (numeric_scope: 7月14日のBrent原油先物清算値。日中高値ではない)
+  date_or_period: 2026-07-14清算時点
+  causal_strength: OBSERVED_REPORTED
+  notes_for_writer: 7月14日は撤回があったにもかかわらず日次清算値は上昇した。これだけから撤回が価格を上昇させた、または下落させなかったと因果推論しない。
+
+[VERIFIED] HF-012: Reutersは7月14日、トランプ氏が海峡をイラン以外の船舶に開放すると述べた後、米WTI先物が一時マイナス圏へ転じ、その後、イランの巡航ミサイルがUAEの石油タンカー2隻を攻撃したとの報道を受けて価格が回復したと報じた。
+  scope: Reutersが明示した米WTI原油先物の短時間の値動き。Brentに同一の反応があったとは明記されていない
+  conditions: 同日に複数の政策発言と軍事・海運ニュースが連続して発生した。
+  date_or_period: 2026-07-14取引時間中
+  causal_strength: CAUSAL_STATED_BY_SOURCE
+  notes_for_writer: Brentの反応として転用しない。市場反応が同日中に複数回反転したことを示す補助Factとしてのみ使用する。
+
+
+【記事の日本語原文(参考、逸脱の発生源特定用。無ければ「(なし)」)】
+# 20% Withdrawn—but the Oil Chart Was Not Finished Yet
+
+This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.
+
+The curtain rose on July 13. At 10:16 a.m., Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.
+
+But “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.
+
+The number stayed at center stage for about a day. Then the story took a sharp turn.
+
+### The 20% plan changes overnight
+
+About 24 hours and 48 minutes later, at 11:04 a.m. on July 14, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the Strait, and that he disliked fees.
+
+The change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose 9.59% and settled at $83.30. Reuters linked that rise to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.
+
+### The chart refuses to stay down
+
+On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 2.6%, above $85 a barrel. Its final settlement price was $84.73, up 1.7% from the day before.
+
+## In one line
+
+Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.
+
+【対象claim配列(各claimのローカル文脈・関連情報を付す)】
+[claim_index=0]
+claim: Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.
+ローカル文脈(段落±1): ## In one line
+
+Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.
+origin: ja_source
+related_fact_id: HF-007
+section_type(title/hook/in_one_line/body): body
+
+【材料性(materiality)の判定基準・自然な解釈版(R3、委任_12、2026-09-30)】
+最重要原則: 確認済みのFact同士を、人間が普通に読めば自然に導く範囲で
+つなぐ「解釈」は許容してください。Eigo Radioは英語学習用コンテンツであり、
+「因果関係を100%立証できない限りNG」にはしません。判断は「完全に証明
+されているか」ではなく「確認済みFactから人間が普通に読めば自然に導ける
+範囲か」で行ってください。自然な解釈はOK、新しい事実を発明したらNGです。
+
+- BLOCKING(以下のいずれかに明確に該当する場合のみ):
+  (a) Ledgerのclaim/scope/numeric_value/date_or_period/conditionsのいずれ
+      かと矛盾する。
+  (b) Ledgerに無い人物・数字・出来事・具体的な行動・仕組み(メカニズム)を
+      新たに追加している(例: 確認されていない具体的な売買行動を事実として
+      追加する、確認されていない仕組み・運用フローを新規主張する)。
+  (c) 根拠のない人物・組織の意図や動機を断定している。
+  (d) Ledgerが記録した事実と逆方向の因果を述べている(Ledgerが原因Xを
+      明記しているのに、正反対または別の特定の原因を断定する)。
+  (e) 主体・数値・否定・比較・時期のいずれかについて、Ledgerと矛盾する
+      重大な変更を加えている。
+- QUALITY(Rewriteはしない、通過させる): 確認済みのFact同士を、人間が
+  普通に読めば自然に導く範囲でつないだ解釈。断定がやや強い場合や、
+  一つの解釈として自然に成り立つ推測("〜が影響した可能性がある"
+  "〜が背景かもしれない"程度の解釈、条件付きの一般的な結び付け、市場や
+  読者が特定の要因を重視したとみられるという程度の記述)を含む。上記
+  BLOCKING列挙に明確に該当しない限りQUALITYとしてください。
+- ACCEPTABLE: Ledgerに無い新規の固有名詞・数値・時期・主体・因果・仕組み
+  を一切加えず(Ledgerに既出の固有名詞を繰り返すことはこの制約に抵触
+  しない)、Ledgerが確認した事象の一般常識レベルの背景説明・条件付きの
+  一般論にとどまる。
+- tie-break(重要、R2からの変更点): 上記のどれに該当するか迷う場合、
+  BLOCKING列挙(a)〜(e)のいずれかに明確に該当しなければQUALITYとして
+  ください(NG列挙への該当が明確な場合のみBLOCKING)。「解釈としてやや
+  強い」というだけの理由でBLOCKINGへ倒さないでください。ただし、
+  Ledgerに無い具体的な人物・数字・出来事・行動・仕組みを新規に追加して
+  いる場合は、断定の強さに関わらずBLOCKINGとしてください。
+
+【R3'''追加明確化(委任_13、R3''単体較正でB4-d[驚きの一般的傾向の言い換え]が
+2/2ともBLOCKINGだったため、原則文のみをさらに1回限定する。新しい例示は
+追加しない)】
+以下の2種類は、上記tie-breakでQUALITYへ倒す対象にせず、明確にBLOCKING
+に該当するものとして扱ってください:
+1. 他者の内心を断定する記述のうち、それが「知らされていたか/同意して
+   いたか/誤認していたか」という開示・認識の有無そのものを、特定の
+   個別の事実(誰が・いつ・どの状況で実際にそう思った/感じたか)として
+   断定している場合はBLOCKINGとしてください。一方、Ledgerが既に一般的な
+   傾向・現象として記録している内容を、個別の新しい事実を追加せずに
+   抽象的な言い換え・要約として参照しているだけの場合(例えば、ある
+   一般的な反応のカテゴリ自体が起きたと述べるにとどまり、特定の個人が
+   実際にそう認識していたという新しい個別の事実を追加しない場合)は、
+   このBLOCKINGに該当しません。驚き・関心・安心などの一般的な感情や
+   反応の描写にとどまり、誰が何をしたかという事実関係を変えないものは
+   QUALITYとしてください。
+2. Ledgerが特定の指標・銘柄・期間について観測した数値や値動きを、より
+   広い対象(市場全体・価格全般など)の観測事実として述べ替える場合は
+   BLOCKINGとしてください。市場参加者や読者が何を重視していたとみられる
+   かという見方・関心の記述は、これに当たりません。
+上記2種類に該当するかどうかを、tie-breakでQUALITYへ倒す前に必ず先に
+確認してください。
+
+【重大誤解原則(2026-10-01ユーザー指示、最初の問い)】
+まず「この違いは英語学習者に記事の本質について重大な誤解を与えるか」を
+判断してください。主要な意味・主体・方向・規模・時間軸を誤認させる場合
+のみBLOCKINGとしてください。用語の近似・一般化(例: Brent futures→
+oil prices、Brent crude futures→crude prices)・数値丸め(例: 2.6%→
+about 3%、above 85 dollars→about 85 dollars)・確認済みFactから自然に
+導ける解釈や演出は、厳密には違うというだけの理由でBLOCKINGにしないで
+ください。一方、以下のような違いは記事の本質的な誤解を招くため明確に
+BLOCKINGとしてください: 特定の指標(例: Brent futures)を無関係な
+商品(例: gasoline prices)や世界全体の価格(world energy prices)へ
+一般化する、1企業の株価を株式市場全体の動きとして述べる、方向を反転
+させる(上昇→下落)、主体を別の主体へ入れ替える、継続していた出来事を
+一度消えて戻った出来事として述べる、未確認の人物・行動・動機・具体的な
+数字を追加する、因果関係を逆転させる。
+
+【追加明確化(委任_27 Part2、Trial A実測でのfalse BLOCK是正、最小修正
+1回)】
+Brent先物の値動きを「market全体」「oil prices全般」のように、同じ
+原油(oil)という対象のままより一般的な言い方に置き換えているだけの
+場合は、これも許容される一般化に含めてください(例: "Oil prices did
+not fall across the whole market" は、石油という同じ対象内での一般化
+であり許容されます)。一方、別の商品(gasoline等)や石油を超えた対象
+(world energy全体)へ範囲を広げる場合、または複数の指標をまとめて
+「どれも同じだった」のように一般化する場合は、引き続きBLOCKINGと
+してください。
+
+【追加明確化(委任_28 Part1、Safety対照群実測でのfalse downgrade是正、
+最小修正1回)】
+「誰が誰に対して行ったか」という当事者関係(カウンターパート)の取り違えは、
+用語の近似・一般化とは別のものとして扱ってください。Ledgerが「ある人物・
+担当者が実際にやり取りした相手」を特定の対象(例: 企業・店舗)として記録
+しているのに、記事がそのやり取りの相手を別の対象(例: サービスの利用者
+本人)に取り違えている場合は、記事の主体・対象を誤認させるため引き続き
+BLOCKINGとしてください。一方、Ledgerが特定の役職・肩書きを持つ人物
+(例: ある副社長)の発言として記録している内容を、記事が同じ組織に属する
+より一般的な役職の言い方(例: 同社の幹部)で言い換えるだけで、発言内容や
+責任主体の範囲(どの組織か)自体は変えていない場合は、これも許容される
+一般化に含めてください。
+
+【追加明確化(委任_29 Part1、Safety対照群実測でのfalse downgrade是正、
+最小修正1回)】
+Ledgerが「〜する可能性がある」「〜の場合には起こり得る」のように、ある
+出来事・行動を未確定・条件付きの可能性としてのみ記録しているのに、記事が
+その条件を外し、その出来事・行動が実際に起きたこととして断定している
+場合は、用語の近似・一般化や役職の言い換えとは別のものとして扱い、
+未確認の出来事・行動を既成事実として追加していることを理由にBLOCKINGと
+してください。これは確認済みFactからの自然な解釈ではなく、Ledgerが
+明示的に条件付きとした内容の確実性を強めている(certaintyの強化)ため、
+許容される一般化の対象にはなりません。一方、Ledgerが既に確定した事実
+として記録している内容を、同じ主体・同じ出来事の範囲内でより一般的な
+役職・用語に言い換えるだけの場合は、引き続き許容される一般化として
+ACCEPTABLE/QUALITYとしてください。
+
+【追加明確化(委任_31 Part1(b)、neg1の不要Rewrite是正、最小修正1回)】
+確認済みの中心的な出来事(例: 相手はAIだと思っていたら、開示なしに実は
+人間がやり取りしていた)から当然に導ける、受け手(読者・利用者)側の
+驚き・反応についての言及は、新しい具体的Factの追加ではありません。
+一方、Ledgerが「〜する可能性がある」のように条件付き・未確定としている
+内容を、その条件を外して実際に起きたこととして断定する場合(上記の
+区別どおり)は、これとは別物として引き続き確実性の強化を理由に
+BLOCKINGとしてください。
+
+【追加明確化(委任_33、広いTrial iteration8で検出したB3[HF-007]/A2A3-0
+[HF-003]誤降格の是正、最小修正1回、新しい原則区分は追加せず既存(d)/(b)の
+対比例示のみを追加)】
+許容される「確認済みFact同士の自然な接続」の例: 市場が海上輸送のリスクを
+重視していたために価格が戻った、という程度の記述は、二つの確認済みFact
+(リスクの継続/価格の回復)を人間が自然に読める範囲でつないだ解釈であり
+許容してください。
+一方、以下の2種類は、この「自然な接続」には当たらず、明確にBLOCKINGと
+してください:
+1. Ledgerがある決定・出来事の理由を特定の内容として明示しているのに、
+   記事がそれとは異なる理由を断定している場合(例: Ledgerが「中東の
+   指導者との協議に基づく決定」と記録しているのに、記事が「継続していた
+   安全保障上の懸念が原因で撤回された」のように、別の特定の理由を事実
+   として述べる場合)。これはLedgerに無い因果関係の新規追加(上記(d))に
+   該当し、「確認済みFactを自然につないだだけ」の解釈ではありません。
+2. Ledgerが特定していない主体(誰が支払うか・誰が行ったか等)を、記事が
+   具体的な主体として特定している場合(例: Ledgerが「支払義務者は未提示」
+   としているのに、記事が「貨物を運ぶ側が支払う」のように具体的な主体を
+   追加する場合)。これはLedgerに無い具体的な主体の新規追加(上記(b))に
+   該当します。
+上記2種類に該当するかどうかを、tie-breakでQUALITYへ倒す前に必ず先に
+確認してください。
+
+【線引きの正式採用(2026-10-03ユーザー決定、委任_55。以下は、上記V4の
+「条件付き→断定は一律BLOCKING」および、上記の判定全体のうち「迷う場合」の
+扱いより優先します)】
+判定は次の3区分です。
+- BLOCKING(重大): 英語学習者に事実関係の重大な誤解を与えるもの。
+- QUALITY(軽微): 事実関係の核心は保たれているが、表現の精度が少し落ちるもの。
+- ACCEPTABLE(問題なし): 確認済みFactから自然に導ける描写・推論で、新しい
+  具体的事実を追加しないもの。
+
+(1) 条件つき→断定: Ledgerが条件つき・可能性・懸念として書く内容を、記事が
+発生したこととして書く場合、次のいずれかに該当するときはBLOCKINGとして
+ください: (ア)被害・結果にあたる核心の主張まで断定している、(イ)Ledgerに
+無い新しい具体的事実(人物・出来事・発言・数値)を加えている、(ウ)Ledgerの
+notes_for_writerが明示的に禁じる断定をしている。核心の主張に留保が残り、
+帰属(誰の懸念・誰の主張か)が保たれている場合はQUALITYとしてください
+(例: 『some calls needed user information to continue』は、共有が
+『might』で留保され、懸念の主体がMeta従業員のままなのでQUALITY)。
+
+(2) 自然な推論: 開示がなかった等の確認済み事実から自然に導かれる利用者の
+状態・認識・反応の描写は、否定形(『気づかなかった』)も肯定形(『AIだと
+思っていた』『楽しんでいた』)も、新しい具体的事実を加えなければ
+ACCEPTABLEとしてください。この場合、上記の「他者の内心を断定する記述」の
+BLOCKING条件は、新しい具体的事実を加えていない描写には適用しません。
+
+(3) 判断に迷う場合: 読者(英語学習者)がこの文を信じたときに事実関係の重大な
+誤解につながるかで決めてください。つながるならBLOCKING、つながらないなら
+QUALITYとしてください。数値・主体・否定・比較・時期について、Ledgerと矛盾する重大な変更
+(数値の改変、主体の取り違え、否定の反転、方向の反転、時期の取り違え)は、
+この原則の対象外で、従来どおり明確にBLOCKINGとします。方向・時期のニュアンス
+の差で事実関係の核心が保たれているものは、この限りではありません。
+
+判定済みの例(ユーザー決定):
+- "Also, some calls needed user information to continue." → QUALITY
+- "They enjoyed AI’s convenience, but a human was on the other end. They did not realize it." → ACCEPTABLE
+- "Just after the charge plan disappeared, prices began to fall." → QUALITY
+
+【rewrite_hint(委任_10で追加)】
+materialityがBLOCKINGの場合のみ、rewrite_hintに以下を全て含めてください:
+1. 対象文を一意に特定できる、記事本文からの逐語引用(10〜30語程度、対象claimの
+   核心部分をそのまま抜き出す。要約・言い換えは禁止)。
+2. どう直すべきかの具体的な修正指示(削除するのか、Ledgerのどの値へ置換すべきか、
+   範囲をどう狭めるべきか)。
+3. 参照したLedgerのfact_id(related_fact_idと一致させる)。
+BLOCKING以外(QUALITY/ACCEPTABLE)の場合、rewrite_hintは空文字列にしてください。
+
+claim配列と同じ順序・同じ件数で、claim_indexを付けてmateriality/basis/
+rewrite_kind/rewrite_hintを判定してください。
