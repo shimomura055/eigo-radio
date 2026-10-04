@@ -519,3 +519,36 @@ rep28(委任_06)のHuman Review 3件(`actor_guard_rejected`によるladder枯渇
 - **Fable事前判断2の「Ledgerのheadline/in_one_line相当factがあればそれに沿った再生成1回」は実装していない**: 本Ledgerのfact体系(F-xxx/HF-xxx/MUSE-HC-xxx)に`headline`/`in_one_line`相当のfact種別が存在せず(確認済み)、Rewrite promptは常にLedger全文を渡す。追加callを要する別経路を作る代わりに、既存ladder(Ledger全文+Checker issue+hint)へ統合した。必要ならFableが次委任で指示。
 - テスト: `TestPriorCountMismatchFix07`(6)、`TestStructuralElementRewrite07`(7)。runner単体643件OK、`er052*`687件OK、全体4610件中11件失敗(基準11件、er003×5・er011×3・er015・er025・er040・er043の既存、新規0)。
 - ¥0 replay(`replay_title_delete_01.py`): rep28 unsupported_new_claim s1の記録(fixture本文・claim・`rewrite_kind=delete`・`section_type=title`)で、OFF=`0_delete`→本文が空(`title_degenerate`/`hook_degenerate`=旧挙動を再現)、ON=`structural_element_rewrite.reasons=["title"]`・`0_delete`は選ばれず`4_paragraph`(既存`filter_levels_by_problem_kind`が新規主張を段落水準へ)でmock応答を採用→本文非空・degenerateなし。neg3 rep28 s1/s2のRecheck応答(prior 1件・同index 2項目・両resolved)で旧式=記録`False`→新式`True`。
+
+### 14-3. actor_guard是正の設計(作業3。**実装しない**、Safety guardの変更のためOpus#13=条件A前提)
+
+証跡: `agg_actor_guard_ag_compare_01.py`(+`.json`/`_stdout.txt`、¥0 replay)。**前提(確認済み)**: 全ログに正当拒否が0件(§14-1)のため「正当拒否を維持」は実データで測れない。維持側は**合成対照(synthetic、推測ベース)**: 実拒否案の新主体語を、Ledger全文にもCheckerのissueにも同義語が無い主体(executives/analysts/investors/drivers/shareholders/engineers)へ差し替えた42ケース。
+
+**案**:
+- **AG1(Ledger照合型、決定論、追加call 0)**: 新主体語が(i)元文の主体(既存の`before`差分と同じ)、(ii)関連fact(`related_fact_id`)に記載の主体、(iii)Checker issue/explanationが名指しした主体、のいずれかに**日英同義語表で正規化して**一致すれば許容。AG1-strict=(ii)は関連factのみ、AG1-ledger=(ii)を同Ledger内の全factへ拡張。
+- **AG2(現行guard維持+拒否時のhint強化、追加call 1)**: 拒否時にhintへ「主体を変えない」を足して同段で再試行。
+- **AG3(拒否時にladder段を進めず同段で別案を1回、追加call 1)**。
+
+**比較(¥0 replay可能な決定論部分は7試行=§14-1の全件)**:
+
+| 観点 | 現行guard | AG1-strict | AG1-ledger | AG2 | AG3 |
+|---|---|---|---|---|---|
+| 過剰拒否の解消(7試行/4 record) | 0/7(0/4) | **6/7(3/4)**、rep28の6試行(Human Review 2件分を含む)すべて関連factの同義語で許容(issueに頼らず) | 7/7(4/4) | 非決定(LLM依存)。Checkerが「credit-card usersへ限定」を要求しているのに「主体を変えない」を指示すると**指示が矛盾**し再拒否の懸念(推測) | 非決定。同じhint・同じ制約下の再試行であり同種拒否が再発しうる(推測) |
+| 正当拒否の維持(合成42ケース、推測ベース) | 42/42(全拒否) | 42/42 | 42/42 | 同guardのまま(拒否は維持) | 同左 |
+| Ledgerに無い主体の導入を防ぐ | 防ぐ(ただし言語不一致で過剰) | 防ぐ(関連factに無い主体は拒否) | やや緩い(他factの主体を別claimへ持ち込めうる→floor `changed_actor`/Recheckが後ろ盾) | 防ぐ | 防ぐ |
+| 追加call・費用 | 0 | **0**(¥0) | 0 | +1 call/拒否(1 call≒¥0.12〜0.2、実測rep28のcall単価帯) | +1 call/拒否 |
+| 非決定性 | なし | **なし**(同義語表の決定論照合) | なし | 増える | 増える |
+| 不要Rewrite | — | 増やさない(拒否されなかった案の採用はRecheckが検証) | 同左 | 増える可能性(再試行) | 同左 |
+| Production配線 | Trial(er052)のみ。er003 vfl01/er010に同種guardなし(確認済み、`git grep`で`actor_rewrite_guard`はer052のみ) | 同左(Rewrite ladderと一体) | 同左 | 同左 | 同左 |
+
+**後ろ盾の確認**:
+- Stage 2 floor `changed_actor`(`FLOOR_FLAGS`、決定論): Rewrite後の全文に対するRecheckがCheckerの`changed_actor`フラグを付ければBLOCKINGに確定する(次cycle/STAGE4)。**ただしCheckerが主体変更を検出することに依存する**(決定論なのはflag→floorの部分のみ。Checker自体の検出は非決定。AG1が許容した主体が実は誤りの場合の最終防波堤はこの検出であり、Safety上の穴にならないことの保証ではない)。
+- Recheck(全文): Rewrite後の文は必ず再確認される(件数一致バグの是正でindex別に厳密判定)。AG1はRewriteの採用可否だけを変え、採用後の検証は不変。
+- 同義語表がカバーしない主体は**拒否に倒れる**(過剰拒否の再発はありうるが、Safety holeにはならない=fail-closed)。
+
+**リスク(確認済み/推測の区別)**:
+- (iii)Checker issue名指しを単独の許容根拠にすると、issueが「誤って付与された主体」を名指しする場合(例: issue「記事は経営陣に責任を帰しているがLedgerに無い」)に、その誤主体を書き換え案が再導入しても許容される**穴**になりうる(推測、設計上の懸念)。replayでは関連factだけで6/7が許容されるため、**(iii)は単独根拠にせず「Ledger(関連fact)にも存在する場合のみ」**とするのが安全(確認済み: 関連fact照合のみで6/7)。
+- rep22 reproの1件(`users`、claim=MUSE-HC-012の関連factに主体記載なし、Ledger他factには「ユーザー」)はAG1-strictで拒否が残る(AG1-ledgerなら許容)。strictの残余は`Ledger他factの主体をこのclaimへ持ち込む`ケース=本来慎重に扱うべき種類。
+- 同義語表の整備(25主体語×日英)と、パラフレーズ(`contractors`≒「契約スタッフ」)の扱いが実装上の主な作業・不確実性。表は現行主体語リストの範囲に限定する(新語追加はしない)。
+
+**推奨(Opus#13の判断前の暫定)**: **AG1-strict(関連fact+日英同義語表、Checker issueは「Ledgerにも存在する場合のみ」の補助)**。決定論・¥0・追加call 0・非決定性増なし、過剰拒否の根本原因(言語不一致)を直接是正、Safety=関連factに無い主体は拒否のまま。AG2/AG3は追加callと非決定性を増やし、Checkerの要求と指示が矛盾するため劣後。AG1-ledgerは残余1件を救えるがSafety上の緩みが大きいため、AG1-strictで残る拒否が実際にladder枯渇を生むか(委任_08の影響instance再確認)を見てから段階的に判断する。**実装は行わない**(Opus#13→Fable判断後、委任_08)。

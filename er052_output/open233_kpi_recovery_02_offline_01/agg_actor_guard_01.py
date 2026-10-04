@@ -25,7 +25,7 @@ def lemma(a):
 fx = {i["instance_id"]: i["fixture"]["ledger_text"] for i in runner.build_target_instances()}
 def fact_block(led, fid):
     if not fid: return ""
-    m = re.search(r"\[" + re.escape(fid) + r"\].*?(?=\n\[F-|\n===|\Z)", led, re.S)
+    m = re.search(r"(?:\[" + re.escape(fid) + r"\]|\] " + re.escape(fid) + r":).*?(?=\n\n|\n===|\Z)", led, re.S)
     return m.group(0) if m else ""
 def ja_hit(a, text):
     return any(w in text for w in JA.get(lemma(a), []))

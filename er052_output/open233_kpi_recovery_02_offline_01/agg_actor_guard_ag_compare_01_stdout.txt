@@ -1,0 +1,17 @@
+=== A: 実拒否7試行に対する判定(現行guard=全件拒否)
+rep28 meta_run03_advanced c 1 3_sentence ['worker'] | AG1-strict allow: True {'worker': ['issue', 'related_fact']} | AG1-ledger allow: True {'worker': ['issue', 'related_fact', 'ledger']}
+rep28 safety_er009_changed_scope c 2 1_word_connective ['users'] | AG1-strict allow: True {'users': ['issue', 'related_fact']} | AG1-ledger allow: True {'users': ['issue', 'related_fact', 'ledger']}
+rep28 safety_er009_changed_scope c 2 3_sentence ['users'] | AG1-strict allow: True {'users': ['issue', 'related_fact']} | AG1-ledger allow: True {'users': ['issue', 'related_fact', 'ledger']}
+rep28 safety_er009_changed_scope c 2 4_paragraph ['users'] | AG1-strict allow: True {'users': ['issue', 'related_fact']} | AG1-ledger allow: True {'users': ['issue', 'related_fact', 'ledger']}
+rep28 meta_run03_advanced c 2 3_sentence ['contractors'] | AG1-strict allow: True {'contractors': ['issue', 'related_fact']} | AG1-ledger allow: True {'contractors': ['issue', 'related_fact', 'ledger']}
+rep28 meta_run03_advanced c 2 4_paragraph ['contractor', 'contractors'] | AG1-strict allow: True {'contractor': ['issue', 'related_fact'], 'contractors': ['issue', 'related_fact']} | AG1-ledger allow: True {'contractor': ['issue', 'related_fact', 'ledger'], 'contractors': ['issue', 'related_fact', 'ledger']}
+rep22 meta_run03_standard(repro) c 2 3_sentence ['users'] | AG1-strict allow: False {'users': []} | AG1-ledger allow: True {'users': ['ledger']}
+AG1-strict 許容(=過剰拒否解消): 6 / 7  AG1-ledger: 7 / 7
+record単位(同record内で1試行でも許容されれば解消): 
+  ('rep28', 'meta_run03_advanced', 1, 0) strict解消: True ledger解消: True
+  ('rep28', 'safety_er009_changed_scope', 2, 0) strict解消: True ledger解消: True
+  ('rep28', 'meta_run03_advanced', 2, 0) strict解消: True ledger解消: True
+  ('rep22', 'meta_run03_standard(repro)', 2, 0) strict解消: False ledger解消: True
+
+=== B: 合成対照(正当拒否の維持): 実案の新主体語を、Ledger・issueに無い主体語へ差し替え(synthetic)
+合成対照ケース数: 42  拒否維持 strict: 42  ledger: 42

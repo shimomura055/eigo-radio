@@ -4383,3 +4383,16 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 
 ### 再ループ案(Fable判断待ち、未実装)
 (1)`actor_guard`の拒否理由と、拒否された書き換え案が妥当だったかを¥0で全rewrite_recordsから集計(過剰拒否率)→妥当なら技術是正(guard側の精度)。(2)title単独claimのdeleteが劣化になる型(C)に、deleteでなく水準1〜へ進める等の既存ladder内の是正。(3)件数一致規則と自己矛盾の関係(項目数の不一致)の扱い(判定規則に近い=Fable/ユーザー判断)。いずれもKPI緩和ではない。Step 6の母数・nは固定のため、再実行は再ループ後の新構成で別途判断。
+
+## 57. KPI-RECOVERY-REDESIGN-02 委任_07: rep28 Human Review 3件のRCA・件数一致バグ/構造要素deleteの是正実装・actor_guard設計AG1〜AG3・Opus#13 packet(2026-10-04、費用¥0、Phase累計¥667.19)
+
+結論: **有料run・API課金なし。`IN_PROGRESS`のまま(`VALIDATED`ではない)、`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない、Production未変更。** 詳細(RCA逐語・集計・実装・AG比較)は`docs/pm/design_open233_kpi_recovery_02.md`§14、証跡は`er052_output/open233_kpi_recovery_02_offline_01/`。
+
+- **actor_guard(確認)**: `actor_rewrite_guard_ok`は英語の新主体語(25語)がLedger全文に英語のまま部分一致するかだけを見る。Ledgerは日本語(F-004「クレジットカード利用者」、MUSE-HC-006「契約スタッフ」)のため、Ledger記載の主体・Checker issueが求めた主体でも拒否。全ログ`actor_guard_rejected`は7試行(4 record)で全て過剰拒否(仮ラベル)、正当拒否0、ladder枯渇→STAGE4は2件(rep28の`changed_scope` s1・`meta_run03_advanced` s2)。
+- **title delete(確認)**: `degenerate_rewrite_output`は3 instance(rep9×2・rep28×1)、全て`safety_er009_unsupported_new_claim`(1文のみの記事=その文がtitle)。`rewrite_kind=delete`→決定論deleteで本文が空→hard block。
+- **件数一致バグ(確認+推測)**: 同index 2項目で旧式False(偽の自己矛盾)。項目別が記録された24 recheckのうち不一致6件(全てneg3)が全て該当、再確認call計¥1.51。全ログのCOMPLIANT∧all_prior=False 37件中、直接確認できたのは6件(+委任_06のA/B 4/4)。残り31件は旧コードで項目別が未記録のため機序は推測(neg3/neg2の23/28・7/8と整合)。
+- **remains_in_final_en 3件(確認)**: `flashy 20% plan`の部分一致残存、因果`so`は除去済み(未修正ではない)。
+- **実装(Trial)**: `aggregate_prior_issues_resolved`(index別集約、indexが欠けたpriorは未解消、スイッチなし)と`STRUCTURAL_ELEMENT_REWRITE`(構造要素[title・見出し・In one line直下・delete後にdegenerateになる範囲]のdeleteを選ばず既存ladder E1→③→④で書き換え、空・degenerate案は却下して次の水準へ、KPI構成ON/既定OFF)。Fable事前判断2の「Ledgerのheadline/in_one_line相当factによる再生成1回」はLedgerにその種別が無く実装していない(既存ladderへ統合)。テスト: 新規13(runner単体643、`er052*`687件OK、全体4610件中失敗11=基準11件、新規0)。¥0 replay: rep28 unsupported_new_claim s1でdelete不選択・本文非空、neg3 rep28のRecheck応答で`all_prior`False→True。実LLMの書き換え品質は未検証。
+- **actor_guard是正設計(設計のみ、実装せず)**: AG1(Ledger照合型、決定論・追加call 0)/AG2(hint強化再試行)/AG3(同段で別案)。¥0 replay: AG1-strictは7試行中6(rep28の6試行全て関連factの日英同義語表のみで許容)、AG1-ledgerは7/7。正当拒否維持は実績が0のため合成対照42ケース(推測ベース)で全拒否維持。暫定推奨AG1-strict(Checker issueは「Ledgerにも存在する場合のみ」の補助)。残余リスク: 同義語表の整備・パラフレーズ、後ろ盾(Stage 2 floor `changed_actor`・Recheck)がCheckerの検出に依存。
+- **Opus#13 packet**: `docs/pm/opus_packet_open233_kpi_recovery_02_03.md`(条件A、独立レビューブロック逐語)。次: Opus#13→Fable→委任_08=実装+影響instance再確認+29件再確認。
+- Production整合: `er003_v1_en_direct_vfl_01_generate.py` 827行に同一の件数一致式、`actor_guard`相当はer003/er010に無い(`OPEN-233-A1-PROD`へ記録)。
