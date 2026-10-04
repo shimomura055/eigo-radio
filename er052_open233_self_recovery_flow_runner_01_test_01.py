@@ -5546,10 +5546,22 @@ class TestExplainSplitStrictClosed57(unittest.TestCase):
             for u, r in rows:
                 res = runner._resolve_claim_string(r["claim"], r["en"], r["ja"])
                 ref = self.c2.closed_resolve(r["claim"], r["en"], r["ja"], True)
-                if u in ("U06", "U11", "U12"):
+                if u == "U12":
+                    # 委任_02 規則U-2(1): U12(D5型「also reflected in the headline」)は見出し行を範囲へ加えて確定する(旧: 棄却)
+                    self.assertEqual(res["status"], "resolved", u)
+                    self.assertTrue(res["level"].endswith("+U2"), u)
+                    self.assertIn("The Fee Plan Leaves, But High Oil Prices Stay", res["ranges"], u)
+                    for rng in res["ranges"]:
+                        self.assertEqual(r["en"].count(rng), 1)
+                elif u in ("U06", "U11"):
                     self.assertEqual(res["status"], "unverified", u)
                     self.assertTrue(res["explain_split"]["reason"].startswith("explain_split_rejected:"), u)
-                    self.assertEqual(res["explain_split"]["reason"], ref["reason"], u)
+                    if u == "U11":
+                        # 委任_02 規則U-2(1): 位置語headline/one-lineは棄却せず要素を加えるため、U11の棄却理由は
+                        # dangling_positionからremainder_too_long(規則Rは保留=現状維持)へ変わる(棄却は維持)
+                        self.assertEqual(res["explain_split"]["reason"], "explain_split_rejected:remainder_too_long", u)
+                    else:
+                        self.assertEqual(res["explain_split"]["reason"], ref["reason"], u)
                     self.assertEqual(res["reason"], "explanatory_mixed", u)  # 下流の分岐を変えない
                 else:
                     self.assertEqual(res["status"], "resolved", u)
@@ -5565,6 +5577,13 @@ class TestExplainSplitStrictClosed57(unittest.TestCase):
         with self._on():
             for name, claim, en, ja, expect in self.c2.synthetic_closed_cases():
                 res = runner._resolve_claim_string(claim, en, ja)
+                if name.startswith("S8"):
+                    # 委任_02 規則U-2(1): 宙に浮いた見出し名指しは棄却せず、見出し行を範囲へ加えて確定する(拡張のみ)
+                    self.assertEqual(res["status"], "resolved", name)
+                    self.assertTrue(res["level"].endswith("+U2"), name)
+                    self.assertIn("Headline Here About Oil", res["ranges"], name)
+                    self.assertIn("Another paragraph has a unique line.", res["ranges"], name)
+                    continue
                 self.assertEqual(res["status"], expect, name)
                 if expect == "unverified":
                     ref = self.c2.closed_resolve(claim, en, ja, True)
@@ -5598,7 +5617,8 @@ class TestExplainSplitStrictClosed57(unittest.TestCase):
             elif on["status"] == "resolved":
                 n_new += 1
         self.assertGreater(n_chk, 300)
-        self.assertEqual(n_new, 10)
+        # 委任_02: 規則U-2(1)でD5型(「also reflected in the headline」)の1件が新たに確定(10→11)
+        self.assertEqual(n_new, 11)
 
     def test_multi_match_and_empty_not_attempted(self):
         en = "# T\n\nThe second sentence repeats. The second sentence repeats.\n"
@@ -6830,6 +6850,496 @@ class TestKpiRecovery02Switches(unittest.TestCase):
                         "fixture": {"ledger_text": "(ledger)", "article_text": EN49, "source_article_text": JA49}}
                 runner.run_instance(object(), _state0(), [0], inst, stage1_cache={})
             self.assertEqual(len(calls), 1 if sw else 0, "switch=%s" % sw)
+
+
+_DV_LEDGER = (
+    "[VERIFIED] HF-007: トランプ大統領は7月14日、20％の米国償還料を湾岸諸国との貿易・投資案件に置き換えると投稿した。\n"
+    "  scope: 7月13日に提案した20％償還料\n"
+    "  conditions: 「非常に生産的な協議」に基づく決定だと説明した。\n"
+    "  date_or_period: 2026-07-14\n"
+    "  causal_strength: CAUSAL_STATED_BY_SOURCE\n"
+    "  notes_for_writer: 7月14日の撤回の原因として記述しない。\n"
+    "\n"
+    "[VERIFIED] HF-003: 徴収主体、支払義務者などの制度設計は示されなかった。\n"
+    "  scope: 償還料案\n"
+    "  notes_for_writer: 「米国が20％通航料を導入した」と確定形で書かず、「提案した」とする。\n"
+    "\n"
+    "[VERIFIED] HF-020: Brent先物は一時的に上げ幅を縮小した。\n"
+    "  scope: Brent先物の短時間の値動き\n"
+)
+_DV_B3_CLAIM = "Concerns continued on July 14. So the flashy 20% plan left the stage."
+_DV_CIT = "7月13日に提案した20％償還料"
+
+
+def _dv_dev(**kw):
+    d = {"severity": "MAJOR", "related_fact_id": "HF-020", "issue": "The claim overstates the Ledger.",
+         "changed_fact": True}
+    d.update(kw)
+    return d
+
+
+def _dv_call_fn(verdict="RELEASE", citation="Brent先物の短時間の値動き", cost=0.05, calls=None, raises=False, parsed=None):
+    def _fn(claim_text, local_context, fact_block, issue, related_fact_id):
+        if calls is not None:
+            calls.append({"claim_text": claim_text, "issue": issue, "fact_block": fact_block})
+        if raises:
+            raise runner.FloorVerifyCallError("boom")
+        return {"parsed": parsed if parsed is not None else
+                {"verdict": verdict, "ledger_citation": citation, "basis": "nuance_only", "explanation": "x"},
+                "prompt_sha256": "h", "cost_jpy": cost, "response_id": "r", "usage": {}, "elapsed_seconds": 0.01}
+    return _fn
+
+
+class TestDowngradeVerifyThreeTier02(unittest.TestCase):
+    """委任_02(Opus#11→Fable評価): Tier 0決定論Guard/Tier 1確認役/Tier 2 hint合成。¥0(APIは呼ばない)。"""
+
+    def setUp(self):
+        self._old = (runner.STAGE2_DOWNGRADE_VERIFY, runner.TIER0_G_L_ENABLED)
+        runner.STAGE2_DOWNGRADE_VERIFY = True
+
+    def tearDown(self):
+        runner.STAGE2_DOWNGRADE_VERIFY, runner.TIER0_G_L_ENABLED = self._old
+
+    # --- スイッチ・既定 ---
+    def test_default_off_cli_flag_and_kpi_config(self):
+        self.assertFalse(self._old[0])
+        self.assertFalse(self._old[1])  # G_Lは既定無効(¥0 replayの最終判断)
+        import inspect
+        self.assertIn("--stage2-downgrade-verify", inspect.getsource(runner.main))
+        self.assertTrue(runner.KPI_TRIAL_SWITCHES["STAGE2_DOWNGRADE_VERIFY"])
+
+    # --- Tier 0 ---
+    def test_g_l_causal_strength_and_notes(self):
+        blk = runner.floor_verify_fact_block(_DV_LEDGER, "HF-007")
+        self.assertEqual(runner.g_l_guard({"changed_causality": True}, blk), (True, "gl_causal_strength:CAUSAL_STATED_BY_SOURCE"))
+        self.assertEqual(runner.g_l_guard({"changed_fact": True}, blk), (False, ""))  # flag無し
+        blk3 = runner.floor_verify_fact_block(_DV_LEDGER, "HF-003")
+        self.assertEqual(runner.g_l_guard({"changed_certainty": True}, blk3), (True, "gl_notes_certainty"))
+        self.assertEqual(runner.g_l_guard({"changed_causality": True}, blk3), (False, ""))
+        self.assertEqual(runner.g_l_guard({"changed_causality": True}, None), (False, ""))
+        notes_only = "[VERIFIED] HF-100: x\n  notes_for_writer: この決議と撤回の因果関係は確認できない。\n"
+        self.assertEqual(runner.g_l_guard({"changed_causality": True}, notes_only), (True, "gl_notes_causal"))
+
+    def test_aux_belts_g_h_and_issue_actor(self):
+        self.assertEqual(runner.g_h_guard({"changed_causality": True}, _DV_B3_CLAIM), (True, "aux:g_h"))
+        self.assertFalse(runner.g_h_guard({"changed_causality": True}, "So the plan would leave the stage.")[0])  # ヘッジ語
+        self.assertFalse(runner.g_h_guard({"changed_causality": False}, _DV_B3_CLAIM)[0])
+        self.assertFalse(runner.g_h_guard({"changed_causality": True}, "懸念が続いたため、案は撤回された。")[0])  # 日本語claim対象外
+        d = {"issue": "The article identifies cargo carriers as the payers; the Ledger does not say who pays."}
+        self.assertEqual(runner.issue_actor_guard(d, "Carriers would repay the money."), (True, "aux:issue_actor"))
+        self.assertFalse(runner.issue_actor_guard({"issue": "Numbers differ."}, "x")[0])
+
+    def test_stage2_release_guard_g_l_switch(self):
+        blk = runner.floor_verify_fact_block(_DV_LEDGER, "HF-007")
+        claim = {"claim_text": "Concerns grew, and the plan ended.", "dev": {"changed_causality": True, "issue": "x"}}
+        runner.TIER0_G_L_ENABLED = False
+        self.assertEqual(runner.stage2_release_guard(claim, blk), (False, ""))
+        runner.TIER0_G_L_ENABLED = True
+        self.assertEqual(runner.stage2_release_guard(claim, blk), (True, "gl_causal_strength:CAUSAL_STATED_BY_SOURCE"))
+        runner.TIER0_G_L_ENABLED = False
+        b3 = {"claim_text": _DV_B3_CLAIM, "dev": {"changed_causality": True, "issue": "x"}}
+        self.assertEqual(runner.stage2_release_guard(b3, blk), (True, "aux:g_h"))  # 補助ベルトは`aux:`接頭辞
+
+    # --- 対象判定 ---
+    def test_target_rules(self):
+        T = runner.downgrade_verify_target
+        d = _dv_dev()
+        self.assertTrue(T(d, "QUALITY", None, "stage1_llm")[0])
+        self.assertTrue(T(d, "ACCEPTABLE", None, "stage1_llm")[0])  # QUALITYとACCEPTABLEで要件は同一
+        self.assertEqual(T(d, "BLOCKING", None, "stage1_llm"), (False, "final_blocking"))
+        self.assertEqual(T(_dv_dev(severity="MINOR"), "QUALITY", None, "stage1_llm"), (False, "not_checker_major"))
+        self.assertEqual(T(d, "QUALITY", {"released": True}, "stage1_llm"), (False, "floor_verify_released"))
+        self.assertEqual(T(d, "QUALITY", {"released": False}, "stage1_llm")[0], True)
+        self.assertEqual(T(d, "QUALITY", None, "precheck"), (False, "precheck"))
+        runner.STAGE2_DOWNGRADE_VERIFY = False
+        self.assertEqual(T(d, "QUALITY", None, "stage1_llm"), (False, "switch_off"))
+
+    # --- 解除条件・失敗時BLOCKING ---
+    def _ev(self, fn, dev=None, claim=None, final="QUALITY", fv=None):
+        c = claim or {"claim_text": "Brent briefly eased.", "dev": dev or _dv_dev()}
+        return runner.downgrade_verify_evaluate(fn, _DV_LEDGER, c, "ctx", c["dev"], final, fv, "stage1_llm")
+
+    def test_release_only_with_release_and_verbatim_citation(self):
+        calls = []
+        dv = self._ev(_dv_call_fn("RELEASE", calls=calls))
+        self.assertTrue(dv["released"])
+        self.assertFalse(dv["blocking"])
+        self.assertEqual(dv["n_calls"], 1)  # call 1回
+        self.assertEqual(len(calls), 1)
+        self.assertTrue(dv["call"]["citation_verbatim"])
+        self.assertAlmostEqual(dv["cost_jpy"], 0.05)
+        self.assertIn("Brent先物の短時間の値動き", calls[0]["fact_block"])
+        self.assertNotIn("HF-007", calls[0]["fact_block"])  # 関連factブロックのみ
+        self.assertEqual(calls[0]["issue"], "The claim overstates the Ledger.")  # Checkerの指摘を仮説として渡す
+
+    def test_citation_quote_glyph_normalisation_only(self):
+        dv = self._ev(_dv_call_fn("RELEASE", citation="  Brent先物の短時間の値動き "))
+        self.assertTrue(dv["released"])  # 空白差のみは逐語扱い(`_fv_norm`)
+
+    def test_upheld_blocking(self):
+        dv = self._ev(_dv_call_fn("UPHOLD_BLOCKING"))
+        self.assertFalse(dv["released"])
+        self.assertTrue(dv["blocking"])
+        self.assertEqual(dv["blocking_reason"], "verify_upheld_blocking")
+
+    def test_non_verbatim_empty_schema_and_api_failure_all_blocking(self):
+        for kw, reason in ((dict(citation="Ledgerにない文"), "ledger_citation_not_verbatim"),
+                           (dict(citation="  "), "ledger_citation_empty"),
+                           (dict(parsed={"verdict": "MAYBE", "ledger_citation": "x"}), "schema_mismatch"),
+                           (dict(raises=True), "verify_api_failure")):
+            dv = self._ev(_dv_call_fn("RELEASE", **kw))
+            self.assertFalse(dv["released"], reason)
+            self.assertTrue(dv["blocking"], reason)
+            self.assertEqual(dv["blocking_reason"], reason)
+            self.assertTrue(dv["hint"])  # Tier 2: hint合成(Rewriteへ)
+
+    def test_tier0_hit_skips_call_and_blocks(self):
+        calls = []
+        claim = {"claim_text": _DV_B3_CLAIM, "dev": _dv_dev(related_fact_id="HF-007", changed_causality=True)}
+        dv = self._ev(_dv_call_fn("RELEASE", calls=calls), claim=claim)
+        self.assertEqual(calls, [])
+        self.assertTrue(dv["tier0_blocked"])
+        self.assertEqual(dv["tier0_reason"], "aux:g_h")
+        self.assertEqual(dv["blocking_reason"], "tier0:aux:g_h")
+        self.assertEqual(dv["n_calls"], 0)
+
+    def test_fact_block_unavailable_blocks_without_call(self):
+        calls = []
+        dv = self._ev(_dv_call_fn("RELEASE", calls=calls), dev=_dv_dev(related_fact_id="NOPE-9"))
+        self.assertEqual(calls, [])
+        self.assertEqual(dv["blocking_reason"], "fact_block_unavailable")
+
+    def test_not_target_makes_no_call_and_no_blocking(self):
+        calls = []
+        dv = self._ev(_dv_call_fn("RELEASE", calls=calls), final="BLOCKING")
+        self.assertEqual(calls, [])
+        self.assertFalse(dv["target"])
+        self.assertFalse(dv["blocking"])
+
+    # --- prompt ---
+    def test_prompt_single_definition_hypothesis_and_sha(self):
+        r = runner.DV_RUBRIC
+        self.assertIn("英語学習者に、記事の本質について重大な誤解を与えるものだけを止めます", r)
+        self.assertIn("迷う場合", r)
+        self.assertIn("UPHOLD_BLOCKING", r)
+        self.assertNotIn("V7", r)
+        self.assertNotIn("tie-break", r)
+        self.assertEqual(runner.DV_JSON_SCHEMA["schema"]["properties"]["verdict"]["enum"], ["UPHOLD_BLOCKING", "RELEASE"])
+        self.assertEqual(set(runner.DV_JSON_SCHEMA["schema"]["required"]),
+                         {"verdict", "ledger_citation", "basis", "explanation"})
+        p = runner.DV_PROMPT_TEMPLATE.format(related_fact_id="HF-020", fact_block="FB", claim_text="CL",
+                                              local_context="CTX", issue="ISSUE", rubric=r)
+        self.assertIn("検証すべき仮説", p)
+        self.assertIn("ISSUE", p)
+        import hashlib
+        self.assertEqual(len(hashlib.sha256(p.encode()).hexdigest()), 64)
+
+    def test_run_downgrade_verify_call_records_sha_cost_with_fake_client(self):
+        class _Resp:
+            output_text = json.dumps({"verdict": "RELEASE", "ledger_citation": "c", "basis": "none", "explanation": "e"})
+            model = "gpt-6-luna"
+            id = "resp1"
+            usage = None
+
+        class _C:
+            class responses:
+                @staticmethod
+                def create(**kw):
+                    _C.kw = kw
+                    return _Resp()
+        with mock.patch.object(runner.s2p, "_extract_usage", lambda r: {}), \
+             mock.patch.object(runner.s2p, "official_cost_jpy", lambda u: 0.04):
+            res = runner.run_downgrade_verify_call(_C, "CL", "CTX", "FB", "ISSUE", "HF-020")
+        self.assertEqual(len(res["prompt_sha256"]), 64)
+        self.assertEqual(res["cost_jpy"], 0.04)
+        self.assertEqual(_C.kw["text"]["format"]["name"], "open233_downgrade_verify_v1")
+        self.assertIn("ISSUE", _C.kw["input"][1]["content"])
+
+    # --- Tier 2 hint ---
+    def test_tier2_hint_from_checker_issue_and_ledger_notes_without_quotes(self):
+        dev = {"issue": "「懸念」が原因だと読める。", "related_fact_id": "HF-007"}
+        blk = runner.floor_verify_fact_block(_DV_LEDGER, "HF-007")
+        hint, src = runner.downgrade_verify_rewrite_hint(dev, blk)
+        self.assertIn("懸念が原因だと読める", hint)
+        self.assertIn("撤回の原因として記述しない", hint)
+        self.assertIn("非常に生産的な協議", hint)
+        self.assertIn("fact_id=HF-007", hint)
+        for q in "「」『』“”\"":
+            self.assertNotIn(q, hint)
+        self.assertEqual(src, "checker_issue+ledger_notes_for_writer+ledger_conditions")
+        hint2, src2 = runner.downgrade_verify_rewrite_hint({}, None)
+        self.assertEqual(src2, "generic")
+
+    # --- run_stage2配線(OFF不変/ON) ---
+    def _run_stage2(self, verdict_fn, dev, claim_text="Brent briefly eased.", llm="QUALITY", on=True):
+        article = (f"# T\n\nIntro hook. It has two sentences, and a 2026 date.\n\nSecond paragraph has several sentences. "
+                   f"It is a plain body paragraph. It keeps going.\n\n{claim_text}\n\n## In one line\nSummary.\n")
+        fixture = {"article_text": article, "ledger_text": _DV_LEDGER, "source_article_text": None}
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": dev["related_fact_id"],
+                   "dev": dev, "detected_by": "stage1_llm"}]
+
+        def fake_body_batch(client, ledger_text, source, cl, rubric_text, model=None):
+            return {"prompt_sha256": "d1", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": llm, "basis": "none", "rewrite_kind": "none", "rewrite_hint": ""}]},
+                    "model": "gpt-6-luna", "response_id": "rd1", "usage": {}, "cost_jpy": 0.01, "elapsed_seconds": 0.01}
+        runner.STAGE2_DOWNGRADE_VERIFY = on
+        call_log = []
+        state = {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner, "check_budget", lambda *a, **k: None), \
+             mock.patch.object(runner, "run_downgrade_verify_call",
+                               lambda client, ct, lc, fb, issue, fid, **k: verdict_fn(ct, lc, fb, issue, fid)), \
+             mock.patch.object(runner.s2c, "run_stage2_batch_variant", fake_body_batch):
+            out = runner.run_stage2(None, state, [0], call_log, "dv_test", fixture, claims)
+        return out[0], call_log
+
+    def test_off_is_unchanged_no_record_no_call(self):
+        calls = []
+        o, log = self._run_stage2(_dv_call_fn("UPHOLD_BLOCKING", calls=calls), _dv_dev(), on=False)
+        self.assertEqual(o["materiality"], "QUALITY")
+        self.assertNotIn("downgrade_verify", o)
+        self.assertEqual(calls, [])
+        self.assertFalse(any(c.get("recovery_stage") == "downgrade_verify" for c in log))
+
+    def test_on_upheld_returns_blocking_with_hint_and_floor_reason(self):
+        o, log = self._run_stage2(_dv_call_fn("UPHOLD_BLOCKING"), _dv_dev())
+        self.assertEqual(o["llm_materiality"], "QUALITY")
+        self.assertEqual(o["materiality"], "BLOCKING")
+        self.assertTrue(o["floor_reason"].startswith("downgrade_verify_blocking:verify_upheld_blocking"))
+        self.assertIn("Checkerの指摘", o["rewrite_hint"])
+        self.assertEqual(o["downgrade_verify"]["hint_source"].split("+")[0], "checker_issue")
+        self.assertEqual(sum(1 for c in log if c.get("recovery_stage") == "downgrade_verify"), 1)
+
+    def test_on_release_keeps_stage2_value(self):
+        for llm in ("QUALITY", "ACCEPTABLE"):
+            o, _ = self._run_stage2(_dv_call_fn("RELEASE"), _dv_dev(), llm=llm)
+            self.assertEqual(o["materiality"], llm)
+            self.assertTrue(o["downgrade_verify"]["released"])
+
+    def test_on_api_failure_goes_to_blocking_not_exception(self):
+        def boom(*a, **k):
+            raise RuntimeError("network")
+        o, log = self._run_stage2(boom, _dv_dev())
+        self.assertEqual(o["materiality"], "BLOCKING")
+        self.assertEqual(o["downgrade_verify"]["blocking_reason"], "verify_api_failure")
+
+    def test_on_tier0_blocks_without_call(self):
+        calls = []
+        dev = _dv_dev(related_fact_id="HF-007", changed_causality=True)
+        o, log = self._run_stage2(_dv_call_fn("RELEASE", calls=calls), dev, claim_text=_DV_B3_CLAIM)
+        self.assertEqual(calls, [])
+        self.assertEqual(o["materiality"], "BLOCKING")
+        self.assertEqual(o["downgrade_verify"]["tier0_reason"], "aux:g_h")
+
+    def test_on_llm_blocking_is_not_target(self):
+        calls = []
+        o, _ = self._run_stage2(_dv_call_fn("RELEASE", calls=calls), _dv_dev(), llm="BLOCKING")
+        self.assertEqual(calls, [])
+        self.assertEqual(o["materiality"], "BLOCKING")
+        self.assertFalse(o["downgrade_verify"]["target"])
+
+    def test_re_evaluated_each_call_with_current_text(self):
+        calls = []
+        dev = _dv_dev(related_fact_id="HF-007", changed_causality=True)
+        o1, _ = self._run_stage2(_dv_call_fn("RELEASE", calls=calls), dev, claim_text=_DV_B3_CLAIM)
+        self.assertEqual(o1["downgrade_verify"]["tier0_reason"], "aux:g_h")  # 接続語あり→Tier 0
+        o2, _ = self._run_stage2(_dv_call_fn("UPHOLD_BLOCKING", calls=calls), dev,
+                                 claim_text="Concerns continued on July 14 and the flashy 20% plan left the stage.")
+        self.assertFalse(o2["downgrade_verify"]["tier0_blocked"])  # 接続語が消えてもGuardを回避するだけ=確認役が受ける
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(o2["materiality"], "BLOCKING")
+
+    def test_floor_verify_behaviour_unchanged_by_downgrade_verify_switch(self):
+        old = runner.FLOOR_VERIFY_MODE
+        runner.FLOOR_VERIFY_MODE = runner.FLOOR_VERIFY_MODE_TIME_ONLY
+        try:
+            res = []
+            for sw in (False, True):
+                runner.STAGE2_DOWNGRADE_VERIFY = sw
+                fv = runner.floor_verify_evaluate(_fv_call_ok("QUALITY"), _FV_LEDGER, "Prices began to fall.", "ctx",
+                                                  {"related_fact_id": "HF-009", "issue": "i", "changed_time": True},
+                                                  "QUALITY", "deterministic_floor:changed_time")
+                res.append((fv["released"], fv["n_calls"], fv["final_materiality"], fv["blocking_fixed_reason"]))
+            self.assertEqual(res[0], res[1])
+            self.assertEqual(res[0], (True, 2, "QUALITY", None))  # 2回確認の既存挙動
+        finally:
+            runner.FLOOR_VERIFY_MODE = old
+
+    def test_summarize(self):
+        recs = [
+            {"downgrade_verify": {"target": False}},
+            {"downgrade_verify": {"target": True, "n_calls": 0, "cost_jpy": 0.0, "tier0_blocked": True,
+                                  "tier0_reason": "aux:g_h", "released": False, "blocking_reason": "tier0:aux:g_h"}},
+            {"downgrade_verify": {"target": True, "n_calls": 1, "cost_jpy": 0.05, "tier0_blocked": False,
+                                  "tier0_reason": None, "released": True, "blocking_reason": None}},
+            {"downgrade_verify": {"target": True, "n_calls": 1, "cost_jpy": 0.04, "tier0_blocked": False,
+                                  "tier0_reason": None, "released": False, "blocking_reason": "verify_upheld_blocking"}},
+            {"downgrade_verify": {"target": True, "n_calls": 1, "cost_jpy": 0.04, "tier0_blocked": False,
+                                  "tier0_reason": None, "released": False, "blocking_reason": "ledger_citation_not_verbatim"}},
+            {"downgrade_verify": {"target": True, "n_calls": 1, "cost_jpy": 0.0, "tier0_blocked": False,
+                                  "tier0_reason": None, "released": False, "blocking_reason": "verify_api_failure"}},
+            {},
+        ]
+        s = runner.downgrade_verify_summarize(recs)
+        self.assertEqual((s["n_records"], s["n_target"], s["n_tier0_blocked"], s["n_verify_calls"], s["n_released"],
+                          s["n_upheld"], s["n_citation_not_verbatim"], s["n_failure"]), (6, 5, 1, 4, 1, 1, 1, 1))
+        self.assertEqual(s["tier0_by_reason"], {"aux:g_h": 1})
+        self.assertAlmostEqual(s["cost_jpy"], 0.13)
+
+
+class TestSafetyCriticalDerivation02(unittest.TestCase):
+    """委任_02 作業2-5: neg5登録・正BLOCKINGラベルからの自動導出・旧値/新値の並記。"""
+
+    def test_neg5_registered_with_registered_in(self):
+        defs = runner._safety_critical_defs("neg5_hormuz_div_a2")
+        self.assertEqual([d["sub_id"] for d in defs], ["B3-same@neg5"])
+        self.assertEqual(defs[0]["related_fact_id"], "HF-007")
+        self.assertTrue(defs[0]["registered_in"])
+        self.assertEqual([d["sub_id"] for d in runner._safety_critical_defs("bgroup_B3")], ["B3"])  # 既存不変
+
+    def test_derive_from_labels_finds_neg5_from_b3_and_excludes_label_source(self):
+        der = runner.derive_safety_critical_from_labels()
+        self.assertIn("neg5_hormuz_div_a2", der)
+        self.assertEqual(der["neg5_hormuz_div_a2"][0]["derived_from"], "bgroup_B3")
+        self.assertNotIn("bgroup_B3", der)
+        self.assertTrue(runner.normalized_same_as_labeled(
+            "“Concerns continued. So the Flashy  20% plan left the stage.”", "bgroup_B3"))
+        self.assertFalse(runner.normalized_same_as_labeled("Unrelated sentence.", "bgroup_B3"))
+
+    def _res(self, iid, text, fid="HF-007", mat="QUALITY"):
+        return {"instance_id": iid, "cycles": [{"stage2_results": [
+            {"claim_text": text, "related_fact_id": fid, "materiality": mat, "llm_materiality": mat,
+             "floor_reason": None}]}]}
+
+    def test_dual_summary_old_vs_new(self):
+        results = [self._res("bgroup_B3", "So the flashy 20% plan left the stage."),
+                   self._res("neg5_hormuz_div_a2", "“Concerns. So the flashy 20% plan left the stage.”"),
+                   self._res("neg5_hormuz_div_a2", "Unrelated.", mat="QUALITY")]
+        s = runner.safety_critical_dual_summary(results)
+        self.assertEqual(s["old_definition_rows"], 1)    # 旧値: neg5の登録なし
+        self.assertEqual(s["registered_rows_new"], 2)    # 登録(neg5含む)
+        self.assertEqual(s["derived_rows"], 1)           # 自動導出でもneg5を検出
+        self.assertEqual(s["new_definition_rows"], 2)    # 和集合(neg5の重複は1行)
+        rows = runner.detect_safety_critical_misdowngrades(results)
+        self.assertEqual([r["registered_in"] is None for r in rows], [True, False])
+
+    def test_aggregate_measurements_keeps_old_silent_pass_and_adds_dual(self):
+        results = [self._res("neg5_hormuz_div_a2", "So the flashy 20% plan left the stage.")]
+        rows = runner.detect_safety_critical_misdowngrades(results)
+        self.assertEqual(len(rows), 1)  # 登録済みなので検出される
+        self.assertEqual(len([r for r in rows if not r.get("registered_in")]), 0)  # 旧定義の集計には入らない
+
+
+class TestQuoteGlyphAndU2Elements02(unittest.TestCase):
+    """委任_02 作業2-6: 規則Q(引用符字形の同一視)と規則U-2(1)(閉じた語彙の位置語→構造要素)、`VS_EXPLAIN_SPLIT`配下。"""
+
+    EN = ("# The Fee Plan Leaves, But High Oil Prices Stay\n\n## In one line\nOil prices stayed high after the plan left.\n\n"
+          "Opening paragraph is here.\n\n"
+          "They say, “This is today’s mood.” Then the day moved on.\n\n"
+          "Oil prices moved briefly, then returned to a high level.\n")
+
+    def _on(self):
+        return mock.patch.multiple(runner, VS_EXPLAIN_SPLIT=True, VS_MATCH_EXT=True)
+
+    def test_glyph_norm_is_length_preserving(self):
+        s = "‘a’ “b” \"c\" 'd' 「e」 『f』"
+        self.assertEqual(len(runner.vs_quote_glyph_norm(s)), len(s))
+        self.assertEqual(set(runner.vs_quote_glyph_norm("‘“”’「」『』\"")), {"'"})
+
+    def test_q_resolves_nested_quote_glyph_difference_uniquely(self):
+        claim = "“They say, ‘This is today’s mood.’” Also the point stands"
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, self.EN)
+        self.assertEqual(r["status"], "resolved")
+        self.assertTrue(r["level"].endswith("+Q"))
+        self.assertEqual(r["ranges"], ["They say, “This is today’s mood.”"])  # 範囲は記事側の原文のまま
+        self.assertEqual(self.EN.count(r["ranges"][0]), 1)
+
+    def test_q_not_adopted_when_not_unique(self):
+        en = self.EN + "\nThey say, \"This is today's mood.\" Again.\n"
+        claim = "“They say, ‘This is today’s mood.’” Also the point stands"
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, en)
+        self.assertEqual(r["status"], "unverified")
+
+    def test_q_does_not_change_words(self):
+        claim = "“They say, ‘This is yesterday’s mood.’” Also x"
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, self.EN)
+        self.assertEqual(r["status"], "unverified")
+        self.assertEqual(r["reason"], "explain_split_rejected:fragment_not_in_article")
+
+    def test_u2_headline_and_one_line_added(self):
+        claim = "“Oil prices moved briefly, then returned to a high level.” (headline and one-line summary)"
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, self.EN)
+        self.assertEqual(r["status"], "resolved")
+        self.assertEqual(sorted(r["added_elements"]), ["headline", "one_line"])
+        self.assertTrue(r["level"].endswith("+U2"))
+        self.assertEqual(len(r["ranges"]), 3)
+        for rg in r["ranges"]:
+            self.assertEqual(self.EN.count(rg), 1)
+        self.assertIn("The Fee Plan Leaves, But High Oil Prices Stay", r["ranges"])
+        self.assertIn("Oil prices stayed high after the plan left.", r["ranges"])
+
+    def test_u2_each_closed_vocab_word(self):
+        for word in ("headline", "title", "heading", "one-line summary", "In one line", "one line", "summary"):
+            claim = f"“Oil prices moved briefly, then returned to a high level.” (in the {word})"
+            with self._on():
+                r = runner.vs_explain_split_resolve(claim, self.EN)
+            self.assertEqual(r["status"], "resolved", word)
+            self.assertTrue(r.get("added_elements"), word)
+
+    def test_u2_opening_is_not_extended(self):
+        claim = "“Oil prices moved briefly, then returned to a high level.” The opening also states this."
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, self.EN)
+        self.assertEqual(r["status"], "unverified")
+        self.assertEqual(r["reason"], "explain_split_rejected:dangling_position:opening")
+
+    def test_u2_no_element_added_when_fragment_already_inside(self):
+        claim = "“Oil prices stayed high after the plan left.” (one-line summary)"
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, self.EN)
+        self.assertEqual(r["status"], "resolved")
+        self.assertNotIn("added_elements", r)
+
+    def test_four_guards_unchanged_remainder_long_and_position_words(self):
+        claim = "“Oil prices moved briefly, then returned to a high level.” and this is a very long explanatory remainder text that goes on"
+        with self._on():
+            r = runner.vs_explain_split_resolve(claim, self.EN)
+        self.assertEqual(r["reason"], "explain_split_rejected:remainder_too_long")  # 規則Rは保留(実装しない)
+
+
+class TestSectionTypeObserved02(unittest.TestCase):
+    ART = ("# T Headline\n\nIntro hook paragraph here.\n\nSecond paragraph has several sentences. It keeps going. "
+           "It is plain.\n\nBody sentence is unique and long enough to count.\n\n## In one line\n"
+           "Concerns continued on July 14, so the flashy plan left the stage.\n")
+
+    def test_in_one_line_claim_observed(self):
+        self.assertEqual(runner.observe_section_type("“Concerns continued on July 14, so the flashy plan left the stage.”", self.ART), "in_one_line")
+
+    def test_body_claim_observed_body_and_short_probe_ignored(self):
+        self.assertEqual(runner.observe_section_type("Body sentence is unique and long enough to count.", self.ART), "body")
+        self.assertEqual(runner.observe_section_type("So", self.ART), "body")  # 短い断片は包含照合しない
+        self.assertEqual(runner.observe_section_type("anything", ""), "body")
+
+    def test_run_stage2_records_observed_without_changing_section_type_route(self):
+        fixture = {"article_text": self.ART, "ledger_text": _DV_LEDGER, "source_article_text": None}
+        claim_text = "Concerns continued on July 14, so the flashy plan left the stage."
+        claims = [{"claim_text": claim_text, "origin": "translation", "related_fact_id": "HF-020",
+                   "dev": {"severity": "MAJOR", "related_fact_id": "HF-020"}, "detected_by": "stage1_llm"}]
+
+        def fake(client, ledger_text, source, cl, rubric_text, model=None):
+            return {"prompt_sha256": "d", "parsed": {"judgments": [
+                {"claim_index": 0, "materiality": "BLOCKING", "basis": "none", "rewrite_kind": "none", "rewrite_hint": ""}]},
+                    "model": "m", "response_id": "r", "usage": {}, "cost_jpy": 0.0, "elapsed_seconds": 0.0}
+        with mock.patch.object(runner, "record_call", lambda *a, **k: None), \
+             mock.patch.object(runner, "check_budget", lambda *a, **k: None), \
+             mock.patch.object(runner.s2c, "run_stage2_batch_variant", fake):
+            out = runner.run_stage2(None, {"cumulative_jpy": 0.0}, [0], [], "so", fixture, claims)[0]
+        self.assertEqual(out["section_type_observed"], "in_one_line")
+        self.assertEqual(out["stage2_route"], "body")  # 判定・振り分けは不変
 
 
 if __name__ == "__main__":

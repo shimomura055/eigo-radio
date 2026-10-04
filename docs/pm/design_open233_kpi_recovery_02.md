@@ -168,3 +168,64 @@ Stage 1(Checker)がB3を見逃した例(rep25 B3 s1: V4A単発が非検出→Pro
 - 未確認: (1)S1の見逃し率pと2回目のBLOCKING率qの新しい測定(既存q=0/30のみ)、(2)D\*のGuardで固定BLOCKINGにしたclaimのRewrite成功率(実flow)、(3)`issue_actor`語彙の網羅(今回は旧Checkerの1例による語彙。日本語issueへの対応は語彙のみ)、(4)(d)型の規則Q・Rの実flow検証、(5)Solのreasoning量と実単価、(6)公式価格の最新値。
 - 次工程(Opus批判レビュー#11→Fable評価→委任_02): D\*の実装(Guard関数+S1)+規則Q/R+(d)型の実flow確認+Step 5限定確認(B3・A2A3・neg5・neg3)。費用概算: 限定確認n=5×(B3・A2A3・neg5・neg3の4 instance)で約¥15〜25(1 instance-run平均¥0.44、S1・Rewrite増を含む)。Phase残¥315.93の範囲内。
 - Opusへ(packet参照): (a)`G_H`のヘッジ語除外が「could」付きの危険な因果を通さないか、(b)`issue_actor`のようなissue文の語彙に頼る決定論は妥当か(Checkerのflag不整合の補完として)、(c)S1の全MAJOR解除への適用が、claimごとの難易度による相関でp²より悪化しないか、(d)規則R(長い説明文の残りを捨てる)がunder-scopeでHuman Reviewを増やさないか、(e)neg5をSafety-critical定義へ追加する測定修正、(f)Solを裁定に限定する前提(価格・発火率)の妥当性。
+
+## 9. Opus#11後の設計改善(三層構造)(委任_02。委任文の指示は「§8」だが既存§8[未確認事項]と番号が衝突するため§9とする)
+
+出典: `docs/pm/opus_l2_review_open233_kpi_recovery_02_11.md`(Opus#11全文・Fable評価1〜11・PM_GOVERNANCE 11-3の8項目照合・STOP条件非該当)。性質: Trial専用(`er052_open233_*`のみ編集)、`STAGE2_DOWNGRADE_VERIFY`既定OFF、KPI確認構成(`KPI_TRIAL_SWITCHES`)ではON。Production未変更、`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない。
+
+### 9-1 主構造(Fable評価1: 修正採用)
+
+D\*(G_H∨issue_actor+S1)は主構造にしない。S1(同一prompt2回目)は採用しない(q=0/30は「再現性が高い=判別力が低い」ことでもあり、V5型・neg5型の系統誤りに効かない)。三層とする。
+
+| 層 | 役割 | 費用 | 失敗時 |
+|---|---|---|---|
+| Tier 0(決定論Guard、`stage2_release_guard`) | G_L(Ledger構造化欄×Checker flag)+補助ベルト(G_H/issue_actor。既知の型向け、`reason`に`aux:`接頭辞)。該当したら確認役を呼ばずBLOCKING固定 | ¥0 | - |
+| Tier 1(確認役、`run_downgrade_verify_call`/`downgrade_verify_evaluate`) | `floor_verify`の一般化。別prompt・別入力で第2の意見を出す。call 1回 | 約¥0.04〜0.05/件(推定、replayで実測) | UPHOLD/引用非逐語/API失敗/schema不一致=BLOCKING |
+| Tier 2(失敗時) | 解除不可claimを既存Rewriteラダーへ(`rewrite_hint`はCheckerのissue/explanation+Ledgerのnotes_for_writer/conditionsから決定論で合成、`hint_source`記録)。Human Review・Solへの新経路なし | Rewrite 1回 約¥0.5〜0.8(Opus#11推定) | 既存のcycle上限・ラダー内 |
+
+### 9-2 Tier 0の仕様と¥0 replay結果(Fable評価4・補助ベルト、作業3)
+
+- G_L: (1)changed_causality ∧ Ledger関連factの`causal_strength`∈{CAUSAL_STATED_BY_SOURCE, CORRELATIONAL}、(2)changed_causality ∧ `notes_for_writer`に因果の禁止文、(3)changed_certainty ∧ `notes_for_writer`に断定の禁止文。語彙・閾値は`GL_*`定数。
+- 補助ベルト: G_H(英語claim ∧ changed_causality ∧ 因果接続語 ∧ ヘッジ語なし)、issue_actor(英語claim ∧ issue文が支払者・責任主体等を名指し)。委任_01の定義のまま。
+- 評価(`er052_output/open233_kpi_recovery_02_offline_01/replay_guards_03_gl.py`・`replay_guards_03_gl.json`・`_stdout.txt`。母集団=Checker MAJOR 1143件、降格534件、流出=Safety-critical旧10行+neg5のB3同一文6行=16行、正当降格=534−16=518件、NORMAL群=110件):
+
+| Guard | 流出閉鎖(旧10/新16) | 正当降格のBLOCKING化(件/率) | NORMAL群(件/率) |
+|---|---|---|---|
+| G_L | 10/10・16/16 | 108件・20.8%(QUALITY 68・ACCEPTABLE 40) | 12/110・10.9% |
+| G_L(causal_strength項のみ) | 8/10・14/16 | 89件・17.2% | 12/110・10.9% |
+| G_L(notes禁止文項のみ) | 2/10・2/16 | 19件・3.7% | 0 |
+| G_H | 7/10・13/16 | 0 | 0 |
+| issue_actor | 2/10・2/16 | 1件・0.2% | 1・0.9% |
+| 補助ベルト(G_H∨issue_actor) | 9/10・15/16 | 1件・0.2% | 1・0.9% |
+| G_B(参考: causality flagのみ) | 8/10・14/16 | 132件・25.5% | 27/110・24.6% |
+| Tier 0全体(G_L∨補助) | 10/10・16/16 | 109件・21.0% | 13/110・11.8% |
+
+- 判定: 事前基準の文面(「正当降格BLOCKING化>5%かつ閉鎖の上積みなし」で不採用)では、G_Lは補助ベルトに対し1行(rep24 cycle 2のB3「and」版)の上積みがあるため「採用」となる。しかし(1)G_Lの正当降格BLOCKING化(20.8%)はG_B(25.5%)に近く、「G_B並みに広ければ不採用」(Fable評価4)に近い、(2)確認役replayの採否基準(ii)[NORMAL群のBLOCKING化率≤10%]はTier 0該当分も含むため、G_Lを有効にするとNORMAL群が確認役の前に10.9%となり基準を満たせない、(3)上積み1行は確認役が閉じる見込み(確認役replayで検証)。このため**Tier 0の既定は補助ベルトのみ**とし、runner定数`TIER0_G_L_ENABLED=False`とした。コード・語彙は残し、確認役replayでG_L有効時の反実仮想も併記する。**事前基準の文面と最終判断に差があることをFableへ報告する**(判断はClaude/Sonnet、補助ベルトのみで閉鎖15/16・誤停止0.2%と同じデータでの評価である点も併記)。
+
+### 9-3 Tier 1確認役の仕様(Fable評価2)
+
+- 対象(`downgrade_verify_target`): Checker severity=MAJOR ∧ Stage 2最終materiality∈{QUALITY, ACCEPTABLE}(floor/hook-aware/disclosure-gap適用後の最終値。QUALITYとACCEPTABLEで要件は同一) ∧ `floor_verify`で解放済みでない ∧ precheckでない ∧ Tier 0非該当。
+- 入力: 関連factブロック(Ledger逐語、`floor_verify_fact_block`)・claim文(確定範囲)・局所文脈(`build_local_context`)・Checkerのissue(「検証すべき仮説」として提示)。Stage 2本体(1回目)は不変(指摘を見せない=本体の較正を崩さない)。
+- 出力schema(`DV_JSON_SCHEMA`): `verdict`(UPHOLD_BLOCKING/RELEASE)+`ledger_citation`(日本語Ledger逐語)+`basis`+`explanation`。
+- prompt(`DV_RUBRIC`): 単一定義の短いrubric。「英語学習者に、記事の本質について重大な誤解を与えるものだけを止めます」+正式基準3定義(BLOCKING(a)〜(e)・自然な言い換え/つなぎ=解除)+「迷う場合、引用できない場合、判断できない場合は、UPHOLD_BLOCKING」。V7・R3基底のACCEPTABLE重複定義は持ち込まない(Fable評価9: 本体rubricの統合は次回の計画的再較正に回す=記録)。
+- 解除条件: verdict=RELEASE **かつ** 引用が関連factブロックの逐語(`_fv_norm`: 空白・引用符字形の正規化後の包含)のときだけ。逐語引用は「Ledgerと向き合った根拠が監査できる形で残る」ことと捏造引用の排除までの保証で、反証の証明ではない(Opus#11論点3(i)。単独の防波堤にせずTier 0・補助ベルトと併用)。
+- 再評価: `run_stage2`は毎cycle呼ばれるため、Guard・確認役は毎cycleの現行本文で再評価する(Rewriteで接続語が消えてGuardを回避されても、確認役が受ける)。
+
+### 9-4 採否基準(Fable事前設定。事後変更しない)と測定計画(作業4・5)
+
+- offline replay(`replay_verify_01.py`、母数固定): Checker MAJOR→Stage 2非BLOCKING 534件+流出10行+neg5のB3同一文6行(Tier 0該当分は確認役を呼ばずBLOCKINGとして集計)。NORMAL群のラベル付き正当降格と流出・neg5行はn=2。指標: (i)流出10行+neg5 6行の閉鎖率=100%必須、(ii)NORMAL群正当降格のBLOCKING化率(UPHOLD+非逐語+失敗)、(iii)全降格のBLOCKING化率、(iv)QUALITY/ACCEPTABLE別・rubric版別、(v)引用非逐語率、(vi)費用、(vii)n=2一致率。
+- 判定: (ii)≤10%かつ(i)=100% → 採用して限定確認(rep26)へ。(ii)10〜25% → Tier 0語彙/prompt表現(「迷えばBLOCKING」・引用要件の明確化)の調整を1回だけ試し、対象限定(NORMAL群+流出+neg5)で再replay(≤¥10)。(ii)>25%または(i)<100% → 採用せずFableへ報告(ユーザーへKPI緩和を提案しない)。
+- 限定確認(`rep26`): B3・A2A3・neg5・neg3、n=2、`--kpi-trial-config`(STAGE2_DOWNGRADE_VERIFY=ON)。Human Review(STAGE4)0件・重大見逃し0件(旧新両定義)・L6実flow復元・Tier 0/確認役の発火・解除不可claimのRewrite解消率とcycle数・不要Rewrite・費用・JA変更0を確認。
+- Rewrite失敗がHuman Reviewを生むと測定で示された場合のみ、Solの限定利用を再検討する(Fable評価8。条件: 1記事1 call、出力上限固定、費用見積りで+¥3超ならRewrite側へ倒す)。
+
+### 9-5 計測の是正(Fable評価6・11)と説明文混入(Fable評価7)
+
+- neg5のB3同一文を`SAFETY_CRITICAL_CLAIM_DEFS`へ登録(`neg5_hormuz_div_a2`、`registered_in`付き=旧定義の集計から分離)。`derive_safety_critical_from_labels()`は正BLOCKINGラベルの`text_substring`を(空白・引用符字形・大小文字の正規化後に)本文に含む他instanceへ定義を複製する(neg5を`B3@derived`として導出することを単体確認)。`safety_critical_dual_summary`が旧値(委任_01まで)と新値(登録+導出の和集合)を並記し、`aggregate_measurements`の`silent_pass_candidate`は旧定義のまま、新定義は`safety_critical_dual`へ。
+- 記録: `run_stage2`の各claimへ`section_type_observed`を追加(本文断片が`## In one line`直下・hook・titleに含まれるかの単純包含、記録専用。判定・Hook専用Stage 2への振り分けは不変)。Opus#11補1「In one lineのclaimが`section_type=body`で渡る」点の計測是正。
+- 規則Q(引用符字形の同一視、文字数不変、一意のみ採用)・規則U-2(1)(位置語headline/title/heading→見出し行、one-line summary/In one line/one line/summary→`## In one line`直下1行を範囲へ加える。`opening`は対象外)を`vs_explain_split_resolve`(`VS_EXPLAIN_SPLIT`配下、新スイッチなし)に実装。P-strict-closedの4ガードは不変、範囲は拡張のみ。規則R(長い説明文の残りを捨てる)は保留(現行Checkerで発生0、Opus#11の位置手がかり語彙の指摘あり)。既存346行テストの更新は意図した変化のみ: U12(D5型)が棄却→確定、U11の棄却理由がdangling_position→remainder_too_long(棄却は維持)、S8(宙に浮いた見出し名指し)が棄却→確定、新規確定10→11件。
+
+### 9-6 Stage 1 recall(第二段階、Fable評価10。本委任では実装しない。委任_03以降の¥0評価手順)
+
+1. 6-B(決定論候補生成): 記事の文のうち、因果接続語(`AUX_CONN_RE`+広義語彙: since/due to/thanks to/driving/prompted/that is why等)を含み、ヘッジ語を含まない文を候補にする。fixture 29本で0.45文/記事(上限)を偽陽性量の基準にする。
+2. 6-F(Ledgerの因果禁止・相関のみの記録): 候補文が参照するfact(固有名詞・数値・日付トークンの一致、日英の表記差は`floor_verify_time_tokens`相当の正規化)のうち、`causal_strength`∈{CORRELATIONAL, CAUSAL_STATED_BY_SOURCE}または`notes_for_writer`に因果の禁止文があるものを残す。
+3. 6-B∧6-Fを既存のprecheck経路(`detected_by=="precheck"`は無条件floor)へ候補として入れる案を¥0 replayで評価する。指標: 既知のStage 1 recall miss 3件(bgroup_B2_hormuz・bgroup_B3・hormuz_run02_advanced)の捕捉、fixture 29本の偽陽性(≤0.45文/記事を上限)、precheck floorが無条件BLOCKINGになることによる不要Rewrite見積り。新しいpromptも判定基準も作らない。精度が足りない場合のみ6-C(候補文だけの安価な補助call)へ進む(要Opus確認)。

@@ -423,6 +423,8 @@ KPI_TRIAL_SWITCHES = {
     "JA_MODE": "english_only",
     "FLOOR_VERIFY_MODE": "time_only",
     "STAGE2_NORMAL_TWO_OF_TWO": False,
+    # 委任_02(Opus#11→Fable評価、後段Safetyの三層構造: Tier 0決定論Guard/Tier 1確認役/Tier 2 Rewrite)。KPI確認構成ではON。
+    "STAGE2_DOWNGRADE_VERIFY": True,
 }
 
 
@@ -2678,6 +2680,353 @@ def floor_verify_summarize(stage2_results_iter) -> dict:
     return s
 
 
+# ------------------------------------------------------------
+# 委任_02(OPEN-233-KPI-RECOVERY-REDESIGN-02、Opus独立レビュー#11[条件A]→Fable評価1〜11、2026-10-04):
+# 後段Safetyの三層構造(Trial専用、`STAGE2_DOWNGRADE_VERIFY`既定OFF、Production未配線・`APPROVED_FOR_PRODUCTION`ではない)。
+#   Tier 0(決定論、¥0): `stage2_release_guard`=G_L(Ledger構造化欄×Checker flag)+補助ベルト(G_H/issue_actor、既知の型向け)。
+#       該当したら確認役を呼ばずBLOCKING固定。
+#   Tier 1(確認役、call 1回): Checker MAJORをStage 2が非BLOCKING(QUALITY/ACCEPTABLE)にしたもの全てを対象に、
+#       別promptの確認役(`floor_verify`の一般化)が「RELEASE」かつLedger逐語引用が照合できたときだけ解除する。
+#       Stage 2本体(1回目)は不変(指摘を見せない=本体の較正を崩さない)。
+#   Tier 2(失敗時): UPHOLD/引用非逐語/API失敗/schema不一致/Tier 0該当は全てBLOCKING→既存Rewriteラダー。Human Reviewへ新経路なし。
+#       Rewriteの`rewrite_hint`はCheckerのissue/explanation+Ledgerのnotes_for_writer/conditionsから決定論で合成する。
+# Guard・確認役は毎cycleの現行本文(`run_stage2`が毎周回呼ばれる)で再評価する。Sol等の強モデルは使わない。
+# ------------------------------------------------------------
+STAGE2_DOWNGRADE_VERIFY = False
+
+# ---- Tier 0: G_L(Ledger構造化欄×Checker flag)。語彙・閾値は定数(¥0 replay `replay_guards_03_gl.py`で評価)。
+# ¥0 replay(委任_02 作業3、降格534件・流出16行)の結果: G_Lは流出16/16を閉じるが、正当降格518件のうち108件(20.8%、NORMAL群110件中
+# 12件=10.9%)も固定BLOCKINGにする(G_B[causality flagのみ]は132件25.5%・NORMAL 24.6%)。補助ベルトに対する上積みは1行
+# (rep24 cycle 2のB3「and」版)だけで、確認役(Tier 1)が閉じられる見込み。確認役のreplay採否基準(ii)[NORMAL群のBLOCKING化率≤10%]は
+# Tier 0の該当分も含むため、G_Lを有効にするとTier 1の前にNORMAL群が10.9%となり基準を超える。よって既定は無効
+# (`TIER0_G_L_ENABLED=False`、補助ベルトのみ)。確認役replayでG_L有効時の反実仮想も併記する。コードと語彙は残す。
+TIER0_G_L_ENABLED = False
+GL_CAUSAL_STRENGTH_BLOCK_VALUES = ("CAUSAL_STATED_BY_SOURCE", "CORRELATIONAL")
+GL_CAUSAL_PROHIBIT_RE = re.compile(
+    r"(原因|理由|因果|きっかけ|せい)[^。]{0,16}(書かない|記述しない|扱わない|断定しない|確認できない|混同しない)"
+    r"|(だけが|のみが|単独の)(原因|理由)|因果関係は[^。]{0,10}(確認|示)")
+GL_CERTAINTY_PROHIBIT_RE = re.compile(
+    r"(確定形|断定形|確定として|断定)[^。]{0,14}(書かず|書かない|しない|扱わない|避け)|確定として扱わない|と書かず|と書かない")
+_GL_FIELD_RE = re.compile(r"^\s+(causal_strength|notes_for_writer|conditions|scope):\s*(.*)$")
+
+# ---- Tier 0補助ベルト(委任_01のD*の定義のまま。「既知の型への補助」であり主構造ではない)
+AUX_CONN_RE = re.compile(r"\b(so|because|therefore|as a result|led to|leading to)\b", re.I)
+AUX_HEDGE_RE = re.compile(r"\b(could|may|might|can|would|possibly|perhaps|probably|likely|seems?|appears?)\b", re.I)
+AUX_ACTOR_ISSUE_RE = re.compile(
+    r"payer|liable|who would (?:pay|be)|who pays|responsib|"
+    r"identif(?:y|ies|ied) [^.]{0,40} as (?:the )?(?:payer|responsible|party|actor)|支払|負担者|主体|担当者", re.I)
+_AUX_JA_RE = re.compile(r"[぀-ヿ一-鿿]")
+
+
+def ledger_block_fields(block) -> dict:
+    """関連factブロック(Ledger逐語、複数factは連結済み)から`causal_strength`/`notes_for_writer`/`conditions`/`scope`を取る
+    (各キー: 出現順のlist)。構造化欄が無ければ空list。"""
+    out = {"causal_strength": [], "notes_for_writer": [], "conditions": [], "scope": []}
+    for ln in (block or "").split("\n"):
+        m = _GL_FIELD_RE.match(ln)
+        if m:
+            out[m.group(1)].append(m.group(2).strip())
+    return out
+
+
+def g_l_guard(dev: dict, block) -> tuple:
+    """Tier 0 G_L: (blocked, reason)。判別力は`replay_guards_03_gl.py`で評価。
+    (1) changed_causality ∧ Ledger関連factの`causal_strength`∈{CAUSAL_STATED_BY_SOURCE, CORRELATIONAL}
+    (2) changed_causality ∧ `notes_for_writer`に因果の禁止文  (3) changed_certainty ∧ `notes_for_writer`に断定の禁止文"""
+    f = ledger_block_fields(block)
+    if dev.get("changed_causality"):
+        for v in f["causal_strength"]:
+            if v in GL_CAUSAL_STRENGTH_BLOCK_VALUES:
+                return True, "gl_causal_strength:" + v
+        for n in f["notes_for_writer"]:
+            if GL_CAUSAL_PROHIBIT_RE.search(n):
+                return True, "gl_notes_causal"
+    if dev.get("changed_certainty"):
+        for n in f["notes_for_writer"]:
+            if GL_CERTAINTY_PROHIBIT_RE.search(n):
+                return True, "gl_notes_certainty"
+    return False, ""
+
+
+def g_h_guard(dev: dict, claim_text: str) -> tuple:
+    """補助ベルトG_H: 英語claim ∧ changed_causality ∧ 因果接続語 ∧ ヘッジ語なし。"""
+    c = claim_text or ""
+    if (not _AUX_JA_RE.search(c)) and dev.get("changed_causality") and AUX_CONN_RE.search(c) and not AUX_HEDGE_RE.search(c):
+        return True, "aux:g_h"
+    return False, ""
+
+
+def issue_actor_guard(dev: dict, claim_text: str) -> tuple:
+    """補助ベルトissue_actor: 英語claim ∧ Checker issue文が支払者・責任主体等の主体付与を名指し。"""
+    if (not _AUX_JA_RE.search(claim_text or "")) and AUX_ACTOR_ISSUE_RE.search(dev.get("issue") or ""):
+        return True, "aux:issue_actor"
+    return False, ""
+
+
+def stage2_release_guard(claim: dict, ledger_fact, article_ctx=None) -> tuple:
+    """Tier 0: (blocked: bool, reason: str)。claim=`claim_text`と`dev`を持つdict、ledger_fact=関連factブロック(Ledger逐語、
+    無ければNone)。G_Lを先に、次に補助ベルト(`reason`は`aux:`接頭辞)。決定論・¥0。`article_ctx`は将来用(現状未使用)。"""
+    dev = claim.get("dev") or {}
+    if TIER0_G_L_ENABLED:
+        hit, reason = g_l_guard(dev, ledger_fact)
+        if hit:
+            return True, reason
+    hit, reason = g_h_guard(dev, claim.get("claim_text") or "")
+    if hit:
+        return True, reason
+    hit, reason = issue_actor_guard(dev, claim.get("claim_text") or "")
+    if hit:
+        return True, reason
+    return False, ""
+
+
+# ---- Tier 1: 確認役(floor_verifyの一般化)。rubricは最初から単一定義(Opus#11論点4: ACCEPTABLE重複定義を持ち込まない)。
+DV_RUBRIC = """【判定の唯一の基準】
+英語学習者に、記事の本質について重大な誤解を与えるものだけを止めます(UPHOLD_BLOCKING)。
+重大な誤解とは、次のいずれかに明確に該当する場合です。
+ (a) 関連factブロック(Ledger)のclaim/scope/numeric_value/date_or_period/conditionsのいずれかと矛盾する。
+ (b) Ledgerに無い人物・数字・出来事・行動・仕組みを新たに追加している。
+ (c) 根拠のない人物・組織の意図や動機、または未確認の主体・原因・断定を事実として述べている。
+ (d) Ledgerが記録した原因と異なる、または逆方向の因果を断定している。
+ (e) 主体・数値・否定・比較・時期のいずれかについて、Ledgerと矛盾する重大な変更を加えている。
+上記に該当せず、Ledgerが確認した事実を自然に言い換えた・つないだだけなら、解除してよい(RELEASE)。
+Checkerの指摘は検証すべき仮説です。仮説が正しいかを、関連factブロックの該当箇所を逐語で引用して
+(ledger_citation)検証してください。迷う場合、引用できない場合、判断できない場合は、UPHOLD_BLOCKINGとしてください。"""
+
+DV_DEVELOPER_MESSAGE = (
+    "あなたはVerified Fact LedgerとFact Safetyの独立監査担当です。別の判定者が重大(BLOCKING)ではないと判定した"
+    "claimについて、Checkerの指摘を検証すべき仮説として、Ledgerの該当箇所を逐語で引用して独立に再評価してください。")
+
+DV_PROMPT_TEMPLATE = """これは、重大(BLOCKING)ではないと一度判定された指摘の、独立した確認です。
+以下の関連factブロック(Ledger逐語)・対象claim・ローカル文脈・Checkerの指摘(仮説)だけを見て、
+あなた自身の判断でverdictを決めてください。
+
+【関連factブロック(Verified Fact Ledgerより逐語、fact_id={related_fact_id})】
+{fact_block}
+
+【対象claim(確定範囲)】
+{claim_text}
+
+【対象claimを含む段落±1段落(ローカル文脈)】
+{local_context}
+
+【Checkerの指摘(検証すべき仮説)】
+Checkerは次の問題を指摘した: {issue}
+この指摘が正しいか、Ledgerの該当箇所を引用して検証せよ。
+
+{rubric}
+
+verdict(UPHOLD_BLOCKING/RELEASE)、ledger_citation(関連factブロックからの逐語引用。一字一句そのまま。
+要約・言い換え禁止)、basis(判定根拠の分類)、explanation(短い説明)を返してください。"""
+
+DV_JSON_SCHEMA = {
+    "name": "open233_downgrade_verify_v1",
+    "schema": {
+        "type": "object",
+        "properties": {
+            "verdict": {"type": "string", "enum": ["UPHOLD_BLOCKING", "RELEASE"]},
+            "ledger_citation": {"type": "string"},
+            "basis": {"type": "string", "enum": [
+                "ledger_claim", "ledger_scope", "ledger_numeric_value", "ledger_date_or_period",
+                "ledger_conditions", "notes_for_writer", "unsupported_relationship", "nuance_only", "none"]},
+            "explanation": {"type": "string"},
+        },
+        "required": ["verdict", "ledger_citation", "basis", "explanation"],
+        "additionalProperties": False,
+    },
+    "strict": True,
+}
+DV_VERDICTS = ("UPHOLD_BLOCKING", "RELEASE")
+
+
+def downgrade_verify_target(dev: dict, final_materiality, floor_verify_rec, detected_by) -> tuple:
+    """(is_target, reason)。Checker severity=MAJOR ∧ Stage 2最終materiality∈{QUALITY, ACCEPTABLE} ∧ floor_verifyで
+    解放済みでない ∧ precheckでない。QUALITYとACCEPTABLEで要件は同一。"""
+    if not STAGE2_DOWNGRADE_VERIFY:
+        return False, "switch_off"
+    if (dev or {}).get("severity") != "MAJOR":
+        return False, "not_checker_major"
+    if final_materiality not in ("QUALITY", "ACCEPTABLE"):
+        return False, "final_blocking"
+    if (floor_verify_rec or {}).get("released"):
+        return False, "floor_verify_released"
+    if detected_by == "precheck":
+        return False, "precheck"
+    return True, "checker_major_downgraded"
+
+
+def run_downgrade_verify_call(client, claim_text: str, local_context: str, fact_block: str, issue: str,
+                               related_fact_id: str = "", rubric_text: str | None = None,
+                               model: str = MODEL) -> dict:
+    """確認役1回分(claim 1件、batchに混ぜない)。Stage 2と同じモデル・reasoning設定(floor_verifyと同じ)。"""
+    rubric = rubric_text if rubric_text is not None else DV_RUBRIC
+    prompt = DV_PROMPT_TEMPLATE.format(
+        related_fact_id=related_fact_id or "(不明)", fact_block=fact_block, claim_text=claim_text,
+        local_context=local_context or "(なし)", issue=issue or "(指摘文なし)", rubric=rubric)
+    t0 = time.time()
+    response = client.responses.create(
+        model=model,
+        reasoning={"effort": vfl01.REASONING_EFFORT},
+        text={"format": {"type": "json_schema", **DV_JSON_SCHEMA}},
+        input=[{"role": "developer", "content": DV_DEVELOPER_MESSAGE},
+               {"role": "user", "content": prompt}],
+    )
+    elapsed = round(time.time() - t0, 3)
+    parsed = json.loads(response.output_text)
+    usage = s2p._extract_usage(response)
+    return {"prompt_sha256": s2p.sha256_text(prompt), "parsed": parsed, "model": response.model,
+            "response_id": response.id, "usage": usage,
+            "cost_jpy": round(s2p.official_cost_jpy(usage), 4), "elapsed_seconds": elapsed}
+
+
+def _dv_validate_call(res: dict, fact_block: str) -> dict:
+    """verdictがenum内・引用が空でなく関連factブロックの逐語(`_fv_norm`による空白・引用符字形の正規化後)であることだけを
+    決定論で検査する(逐語引用は「Ledgerと向き合った根拠が監査できる形で残る」ことと捏造引用の排除までの保証)。"""
+    p = res.get("parsed") or {}
+    rec = {"verdict": p.get("verdict"), "basis": p.get("basis"), "ledger_citation": p.get("ledger_citation"),
+           "explanation": p.get("explanation"), "prompt_sha256": res.get("prompt_sha256"),
+           "cost_jpy": res.get("cost_jpy", 0.0), "response_id": res.get("response_id"), "valid": False,
+           "invalid_reason": None, "citation_verbatim": False}
+    if p.get("verdict") not in DV_VERDICTS or not isinstance(p.get("ledger_citation"), str):
+        rec["invalid_reason"] = "schema_mismatch"
+        return rec
+    cit = _fv_norm(p["ledger_citation"])
+    if not cit:
+        rec["invalid_reason"] = "ledger_citation_empty"
+        return rec
+    rec["citation_verbatim"] = cit in _fv_norm(fact_block)
+    if not rec["citation_verbatim"]:
+        rec["invalid_reason"] = "ledger_citation_not_verbatim"
+        return rec
+    rec["valid"] = True
+    return rec
+
+
+def _dv_strip_quotes(s: str) -> str:
+    return re.sub(r"[「」『』“”\"]", "", s or "").strip()
+
+
+def downgrade_verify_rewrite_hint(dev: dict, block) -> tuple:
+    """Tier 2: 解除不可にしたclaimの`rewrite_hint`(決定論)。Checkerのissue/explanation+Ledgerの`notes_for_writer`/
+    `conditions`から合成する(Stage 2のhintは降格時には空のため)。引用符は除く(対象文の特定に使われる
+    `extract_quoted_fragment`へ、Ledger文の引用断片が混入しないようにする)。戻り値(hint, hint_source)。"""
+    f = ledger_block_fields(block)
+    issue = _dv_strip_quotes((dev or {}).get("issue") or (dev or {}).get("explanation") or "")
+    parts = []
+    if issue:
+        parts.append("Checkerの指摘: " + issue[:400])
+    fid = (dev or {}).get("related_fact_id") or ""
+    notes = [_dv_strip_quotes(n) for n in f["notes_for_writer"] if n]
+    conds = [_dv_strip_quotes(c) for c in f["conditions"] if c]
+    if notes:
+        parts.append("Ledgerのnotes_for_writer: " + " / ".join(notes)[:400])
+    if conds:
+        parts.append("Ledgerのconditions: " + " / ".join(conds)[:300])
+    parts.append(f"fact_id={fid}のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。")
+    src = ["checker_issue" if issue else None, "ledger_notes_for_writer" if notes else None,
+           "ledger_conditions" if conds else None]
+    return " ".join(parts), "+".join(x for x in src if x) or "generic"
+
+
+def downgrade_verify_evaluate(call_fn, ledger_text: str, claim: dict, local_context: str, dev: dict,
+                               final_materiality: str, floor_verify_rec, detected_by: str) -> dict:
+    """1 claimの降格確認の全体判定。`call_fn(claim_text, local_context, fact_block, issue, related_fact_id)`は
+    `run_downgrade_verify_call`互換のdictを返すか`FloorVerifyCallError`を送出する。戻り値の`released`がTrueのときだけ
+    Stage 2の最終materialityを維持する。それ以外(`target`がTrue)は`blocking`=True(BLOCKINGへ戻す)で、Rewrite経路へ進む
+    (Human Reviewへ倒す新経路なし)。"""
+    is_target, reason = downgrade_verify_target(dev, final_materiality, floor_verify_rec, detected_by)
+    dv = {"switch": STAGE2_DOWNGRADE_VERIFY, "target": is_target, "target_reason": reason,
+          "stage2_final_materiality": final_materiality, "tier0_blocked": False, "tier0_reason": None,
+          "fact_block_found": None, "call": None, "n_calls": 0, "released": False, "blocking": False,
+          "blocking_reason": None, "hint": None, "hint_source": None, "cost_jpy": 0.0}
+    if not is_target:
+        return dv
+    fact_id = dev.get("related_fact_id")
+    fact_block = floor_verify_fact_block(ledger_text, fact_id)
+    dv["fact_block_found"] = fact_block is not None
+    blocked, g_reason = stage2_release_guard(claim, fact_block)
+    if blocked:
+        dv.update(tier0_blocked=True, tier0_reason=g_reason, blocking=True, blocking_reason="tier0:" + g_reason)
+    elif fact_block is None:
+        # 引用できる関連factブロックが無く解除条件(逐語引用)を満たせない=BLOCKING維持(Tier 2。呼び出し省略、費用なし)
+        dv.update(blocking=True, blocking_reason="fact_block_unavailable")
+    else:
+        issue = dev.get("issue") or dev.get("explanation") or ""
+        try:
+            res = call_fn(claim.get("claim_text") or "", local_context, fact_block, issue, fact_id or "")
+        except FloorVerifyCallError as e:
+            dv["call"] = {"valid": False, "invalid_reason": f"api_failure: {e}"}
+            dv["n_calls"] = 1
+            dv.update(blocking=True, blocking_reason="verify_api_failure")
+        else:
+            rec = _dv_validate_call(res, fact_block)
+            dv["call"], dv["n_calls"] = rec, 1
+            dv["cost_jpy"] = round(rec.get("cost_jpy") or 0.0, 4)
+            if not rec["valid"]:
+                dv.update(blocking=True, blocking_reason=rec["invalid_reason"])
+            elif rec["verdict"] != "RELEASE":
+                dv.update(blocking=True, blocking_reason="verify_upheld_blocking")
+            else:
+                dv["released"] = True
+    if dv["blocking"]:
+        dv["hint"], dv["hint_source"] = downgrade_verify_rewrite_hint(dev, fact_block)
+    return dv
+
+
+def downgrade_verify_summarize(stage2_results_iter) -> dict:
+    """runtime evidence用の集計(対象/Tier 0該当[理由別]/確認call数/RELEASE/UPHOLD/非逐語/失敗/費用)。`downgrade_verify`
+    フィールドを持つclaimのみ対象。"""
+    s = {"n_records": 0, "n_target": 0, "n_tier0_blocked": 0, "tier0_by_reason": {}, "n_verify_calls": 0,
+         "n_released": 0, "n_upheld": 0, "n_citation_not_verbatim": 0, "n_failure": 0, "n_fact_block_unavailable": 0,
+         "blocking_by_reason": {}, "cost_jpy": 0.0}
+    for r in stage2_results_iter:
+        dv = r.get("downgrade_verify")
+        if not dv:
+            continue
+        s["n_records"] += 1
+        if not dv["target"]:
+            continue
+        s["n_target"] += 1
+        s["n_verify_calls"] += dv["n_calls"]
+        s["cost_jpy"] = round(s["cost_jpy"] + dv.get("cost_jpy", 0.0), 4)
+        if dv["tier0_blocked"]:
+            s["n_tier0_blocked"] += 1
+            k = dv["tier0_reason"] or "?"
+            s["tier0_by_reason"][k] = s["tier0_by_reason"].get(k, 0) + 1
+        elif dv["released"]:
+            s["n_released"] += 1
+        else:
+            br = dv["blocking_reason"] or "unknown"
+            s["blocking_by_reason"][br] = s["blocking_by_reason"].get(br, 0) + 1
+            if br == "verify_upheld_blocking":
+                s["n_upheld"] += 1
+            elif br in ("ledger_citation_not_verbatim", "ledger_citation_empty"):
+                s["n_citation_not_verbatim"] += 1
+            elif br in ("verify_api_failure", "schema_mismatch"):
+                s["n_failure"] += 1
+            elif br == "fact_block_unavailable":
+                s["n_fact_block_unavailable"] += 1
+    return s
+
+
+def observe_section_type(claim_text: str, full_text: str) -> str:
+    """委任_02 作業2-7(記録専用、判定・振り分けには使わない): claimの本文断片(引用符内、無ければclaim全体)が、title/
+    `## In one line`直下/hook段落の各テキストに(正規化後)含まれるかの単純包含で区分を観測する。`detect_claim_section_type`
+    (確定範囲による包含判定)が`body`を返すclaimを、In one lineとして記録上だけ区別する(Opus#11補1の計測是正)。"""
+    if not full_text:
+        return "body"
+    claim = (claim_text or "").strip()
+    frags = [f[2] for f in _vs_explain_extract_fragments(claim)[0]] or [claim]
+    probes = [vs_norm_str(x, True) for x in frags if x and x.strip()]
+    blocks = (("title", _paragraph_title(full_text)), ("in_one_line", _extract_in_one_line_text(full_text)),
+              ("hook", _hook_paragraph_block(full_text)))
+    for name, block in blocks:
+        nb = vs_norm_str(block or "", True)
+        if nb and any(len(p) >= 12 and (p in nb or (len(nb) > 12 and nb in p)) for p in probes):
+            return name
+    return "body"
+
+
 def sentence_restore_summarize(instance_results) -> dict:
     """委任_66 runtime evidence用の集計(L6発火/復元成功/候補0/候補複数/ガード不通過(理由別)/issue_focus_absent/
     2文復元の焦点文ガード発火)。Rewrite記録(`rewrite_records[*].handoff`)の`sentence_restore`を数える。
@@ -2921,11 +3270,46 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         if disclosure_reason:
             final_materiality = disclosure_materiality
             floor_reason = disclosure_reason
+        # 委任_02(Opus#11→Fable評価1〜3、既定OFF`STAGE2_DOWNGRADE_VERIFY`): Checker MAJORをStage 2が非BLOCKINGにした
+        # もの(最終値、floor/hook/disclosure適用後)を、Tier 0(決定論Guard)→Tier 1(確認役、call 1回)で再確認する。
+        # 解除できないもの(Tier 0該当/UPHOLD/非逐語/失敗)はBLOCKINGへ戻し、Tier 2のhintを付けて既存Rewriteラダーへ
+        # (Human Reviewへ倒す新経路なし)。`run_stage2`は毎cycle呼ばれるため現行本文で毎回再評価される。
+        downgrade_verify_rec = None
+        if STAGE2_DOWNGRADE_VERIFY and i not in failclosed_indices and judgments_by_index.get(i) is not None:
+            def _dv_call(claim_text, local_context, fact_block, issue, related_fact_id, _i=i):
+                check_budget(state)
+                vlabel = f"{label}_dgverify_c{_i}_{len(call_log)}"
+                try:
+                    res = run_downgrade_verify_call(client, claim_text, local_context, fact_block, issue,
+                                                    related_fact_id, model=MODEL)
+                except Exception as e:  # noqa: BLE001
+                    call_log.append({"label": vlabel, "recovery_stage": "downgrade_verify",
+                                      "error": f"{type(e).__name__}: {e}"})
+                    record_call(state, consecutive_errors, vlabel, 0.0, False, "downgrade_verify")
+                    raise FloorVerifyCallError(f"{type(e).__name__}: {e}") from e
+                call_log.append({"label": vlabel, "recovery_stage": "downgrade_verify",
+                                  "cost_jpy": res["cost_jpy"], "usage": res["usage"],
+                                  "elapsed_seconds": res["elapsed_seconds"],
+                                  "prompt_sha256": res["prompt_sha256"]})
+                record_call(state, consecutive_errors, vlabel, res["cost_jpy"], True, "downgrade_verify",
+                            res["usage"])
+                return res
+            downgrade_verify_rec = downgrade_verify_evaluate(
+                _dv_call, fixture["ledger_text"], {**c, "dev": dev_for_floor}, c.get("local_context", ""),
+                dev_for_floor, final_materiality, floor_verify_rec, detected_by)
+            if downgrade_verify_rec["target"] and downgrade_verify_rec["blocking"]:
+                final_materiality = "BLOCKING"
+                floor_reason = "downgrade_verify_blocking:" + str(downgrade_verify_rec["blocking_reason"])
+                rewrite_hint = ((downgrade_verify_rec["hint"] + (" " + rewrite_hint if rewrite_hint else ""))
+                                if downgrade_verify_rec["hint"] else rewrite_hint)
         out.append({**c, "dev": dev_for_floor, "materiality": final_materiality, "llm_materiality": materiality,
                     "basis": basis,
                     "rewrite_kind": rewrite_kind if rewrite_kind != "none" else "replace_with_ledger_value",
                     "rewrite_hint": rewrite_hint, "floor_reason": floor_reason,
                     "section_type": section_type,
+                    # 委任_02 作業2-7(記録専用、判定は変えない): `detect_claim_section_type`が`body`でも、本文断片が
+                    # `## In one line`直下等に含まれる場合の観測値(Opus#11補1の計測是正)。
+                    "section_type_observed": observe_section_type(c["claim_text"], fixture["article_text"]),
                     # 委任_17: このclaimがStage2のどちらの経路(body=s2c.
                     # RUBRIC_R3_TRIPLE_PRIME/hook=s2h Hook専用Stage2)を
                     # 通ったかのEvidence(¥0、call_logのlabel/stage2_variant
@@ -2934,7 +3318,9 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                     "floor_cited_materiality": cited_materiality, "floor_cited_reason": cited_floor_applied,
                     # 委任_60: 追加確認の記録(スイッチ有効かつdeterministic floor発火のclaimのみ。
                     # 既定OFFでは付かない=従来の出力と同一)。
-                    **({"floor_verify": floor_verify_rec} if floor_verify_rec is not None else {})})
+                    **({"floor_verify": floor_verify_rec} if floor_verify_rec is not None else {}),
+                    # 委任_02: 降格確認(Tier 0/1/2)の記録(スイッチ有効のclaimのみ。既定OFFでは付かない)。
+                    **({"downgrade_verify": downgrade_verify_rec} if downgrade_verify_rec is not None else {})})
     return out
 
 
@@ -3881,6 +4267,22 @@ def _vs_explain_structure_elements(text: str) -> dict:
     return out
 
 
+# 委任_02 作業2-6(Opus#11論点8・Fable評価7、`VS_EXPLAIN_SPLIT`配下・新スイッチなし): 規則Q=断片が記事に逐語で
+# 照合できないとき、断片と記事の引用符の字形(" ' “ ” ‘ ’ 「 」 『 』 等)を同一クラスへ写像(文字数不変)して再照合する。
+# 一意(ちょうど1箇所)のときだけ採用し、範囲は記事側の原文のまま(語は変えない)。
+_VS_Q_GLYPH_MAP = {c: "'" for c in "’‘‚‛`´'“”„\"「」『』"}
+
+
+def vs_quote_glyph_norm(s: str) -> str:
+    """引用符の字形を1クラスへ写像する(文字数不変=スパンの座標を保つ)。"""
+    return "".join(_VS_Q_GLYPH_MAP.get(ch, ch) for ch in s)
+
+
+# 規則U-2(1): 説明文の位置語が名指す構造要素のうち、閉じた語彙で決定論に取れるもの(見出し行・`## In one line`直下の1行)。
+# `opening`は対象外(従来どおり、断片が既に含まれなければ棄却)。
+VS_EXPLAIN_U2_ELEMENTS = ("headline", "one_line")
+
+
 def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
     """委任_57 P-strict-closed(Trial専用、`VS_EXPLAIN_SPLIT`ON時のみ`_resolve_claim_string`から呼ばれる)。
     英語本文のみ。返値: {"status": "resolved"/"unverified", "reason": None / "explain_split_rejected:<理由>",
@@ -3917,12 +4319,19 @@ def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
                 continue
             if e is not None and e["status"] == "multi":
                 return rej("fragment_multi_match", detail=inner)
+            # 規則Q(委任_02): 引用符の字形だけの差を同一視して再照合(一意のときだけ採用)
+            st2, _l2, _s2, sp2 = vs_match_levels(vs_quote_glyph_norm(inner), vs_quote_glyph_norm(en), "EN")
+            if st2 == "ok":
+                spans.append(sp2[0])
+                out.setdefault("q_used", []).append(inner)
+                continue
         return rej("fragment_multi_match" if st == "multi" else "fragment_not_in_article", detail=inner)
     merged = vs_merge_spans(spans, en)
     if VS_MATCH_EXT and any(vs_is_structural_label_range(en, m) for m in merged):
         return rej("label_only")
     nt, _ = vs_norm_with_map(en, True)
     el = _vs_explain_structure_elements(en)
+    added_elements: list = []
     seginfo = []
     for sg in segs:
         s = sg.strip(_VS_EXPLAIN_SEG_EDGE).strip()
@@ -3944,8 +4353,13 @@ def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
             want.append("opening")
         dang = [w for w in want if w in el and not any(sa < el[w][1] and el[w][0] < sb for sa, sb in spans)]
         if dang:
-            rec["verdict"] = "dangling_position:" + ",".join(dang)
-            return rej(rec["verdict"])
+            if any(w not in VS_EXPLAIN_U2_ELEMENTS for w in dang):
+                rec["verdict"] = "dangling_position:" + ",".join(dang)
+                return rej(rec["verdict"])
+            # 規則U-2(1)(委任_02): 位置語が閉じた語彙(headline/one-line)の構造要素を名指ししているときは、棄却せず
+            # その要素(見出し行・`## In one line`直下の1行)そのものを範囲へ加える(拡張のみ)。
+            added_elements.extend(w for w in dang if w not in added_elements)
+            rec["u2_added"] = list(dang)
         m = VS_EXPLAIN_CONTRAST_REF_EN_RE.search(s) or VS_EXPLAIN_CONTRAST_REF_JA_RE.search(s)
         if m:
             rec["verdict"] = "contrast_or_reference_word:" + m.group(0)
@@ -3975,8 +4389,12 @@ def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
             rec["verdict"] = "remainder_adjacent_in_article"
             return rej("remainder_adjacent_in_article")
         rec["verdict"] = "dropped"
+    if added_elements:
+        merged = vs_merge_spans(list(spans) + [el[w] for w in added_elements], en)
+        out["added_elements"] = list(added_elements)
     out.update({"status": "resolved", "reason": None, "spans": merged, "raw_spans": list(spans),
-                "ranges": [en[a:b] for a, b in merged], "level": "P:%d" % len(frags)})
+                "ranges": [en[a:b] for a, b in merged],
+                "level": "P:%d" % len(frags) + ("+Q" if out.get("q_used") else "") + ("+U2" if added_elements else "")})
     return out
 
 
@@ -6815,7 +7233,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
                          **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
                          **({"STAGE2_NORMAL_TWO_OF_TWO": True} if STAGE2_NORMAL_TWO_OF_TWO else {}),
-                         **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
+                         **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {}),
+                         **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
                                                          [], raw_stage1_all, []),
@@ -7514,7 +7933,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                          **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
                          **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
                          **({"STAGE2_NORMAL_TWO_OF_TWO": True} if STAGE2_NORMAL_TWO_OF_TWO else {}),
-                         **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
+                         **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {}),
+                         **({"STAGE2_DOWNGRADE_VERIFY": True} if STAGE2_DOWNGRADE_VERIFY else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
                                                      raw_stage1_all, raw_rechecks),
@@ -7578,6 +7998,15 @@ SAFETY_CRITICAL_CLAIM_DEFS = {
         {"sub_id": "B4-a", "related_fact_id": "MUSE-HC-002",
          "text_substring": "take over when AI alone has trouble"},
     ],
+    # 委任_02(KPI-RECOVERY-REDESIGN-02、Opus#11論点12・Fable評価6、計測の是正、新しい仕様ではない): neg5はB3と同一文
+    # ("Concerns about US-Iran attacks, ... continued on July 14. So the flashy 20% plan left the stage.")を含み、
+    # プロジェクト自身のv2訂正で正BLOCKING扱い(`UNNECESSARY_REWRITE_V2_EXCLUDE_INSTANCE_IDS`)だが、手作業の本定義に
+    # 未登録だったため流出が数えられていなかった。`registered_in`付きの定義は旧定義(委任_01まで、流出10行)の集計から
+    # 分けて数える(`safety_critical_dual_summary`、旧値/新値の並記)。
+    "neg5_hormuz_div_a2": [
+        {"sub_id": "B3-same@neg5", "related_fact_id": "HF-007", "text_substring": "flashy 20% plan",
+         "registered_in": "OPEN-233-KPI-RECOVERY-REDESIGN-02/delegation_02"},
+    ],
 }
 
 
@@ -7613,14 +8042,17 @@ def detect_over_quality_monitor_blocks(instance_results: list) -> list:
     return rows
 
 
-def detect_safety_critical_misdowngrades(instance_results: list) -> list:
+def detect_safety_critical_misdowngrades(instance_results: list, defs_by_instance: dict | None = None) -> list:
     """SAFETY_CRITICAL_CLAIM_DEFSに登録されたinstanceのみを対象に、cycleご
     とのstage2_results実測値から、最終materiality(floor/hook/disclosure-gap
     適用後)がBLOCKING以外になった箇所を機械的に検出する(¥0、新規API呼び
-    出しなし、既存run_instance結果jsonへの後処理のみ)。"""
+    出しなし、既存run_instance結果jsonへの後処理のみ)。
+    委任_02: `defs_by_instance`(instance_id→定義list)を渡すと、その定義で検出する(自動導出
+    `derive_safety_critical_from_labels`の集計用)。省略時は登録済み定義(neg5を含む)。"""
     rows = []
     for r in instance_results:
-        defs = _safety_critical_defs(r.get("instance_id"))
+        defs = (_safety_critical_defs(r.get("instance_id")) if defs_by_instance is None
+                else (defs_by_instance.get(r.get("instance_id")) or []))
         if not defs:
             continue
         for cycle_idx, c in enumerate(r.get("cycles", [])):
@@ -7637,8 +8069,72 @@ def detect_safety_critical_misdowngrades(instance_results: list) -> list:
                             "llm_materiality": sr.get("llm_materiality"),
                             "floor_reason": sr.get("floor_reason"),
                             "claim_text": text,
+                            "registered_in": d.get("registered_in"),
                         })
     return rows
+
+
+# 委任_02 作業2-5(Opus#11論点12・Fable評価6): Safety-critical集合を手作業のリストだけに頼らず、「正BLOCKINGのラベルが付いた
+# claim(正規化した同一文を含む)」から自動で導く補助集計。ラベル(`SAFETY_CRITICAL_CLAIM_DEFS`の期待BLOCKING定義)の
+# `text_substring`を(空白・引用符字形・大小文字を正規化して)本文に含む他instanceへ、同じ(related_fact_id, text_substring)の
+# 定義を複製する。記事本文は`build_target_instances()`のfixture(決定論)。
+def _norm_same_sentence(s: str) -> str:
+    return _norm_for_residual(s).casefold()
+
+
+def normalized_same_as_labeled(claim_text: str, labeled_instance_id: str) -> bool:
+    """claim文が、`labeled_instance_id`の正BLOCKINGラベル(`text_substring`)を正規化後に含むか。"""
+    n = _norm_same_sentence(claim_text or "")
+    return any(_norm_same_sentence(d["text_substring"]) in n for d in _safety_critical_defs(labeled_instance_id))
+
+
+def derive_safety_critical_from_labels(instances: list | None = None) -> dict:
+    """instance_id→導出した定義list(ラベル元のinstance自身は除く。手作業登録済みのinstanceも導出に含める=
+    登録漏れの検出に使うため)。`instances`省略時は`build_target_instances()`。"""
+    insts = instances if instances is not None else build_target_instances()
+    derived: dict = {}
+    for src_id, defs in SAFETY_CRITICAL_CLAIM_DEFS.items():
+        for d in defs:
+            if d.get("expected", "BLOCKING") != "BLOCKING" or d.get("registered_in"):
+                continue  # 元ラベルは旧定義(手作業・期待BLOCKING)だけ。neg5等の登録は導出元にしない
+            needle = _norm_same_sentence(d["text_substring"])
+            for inst in insts:
+                iid = inst["instance_id"]
+                if iid == src_id:
+                    continue
+                if needle in _norm_same_sentence(inst["fixture"].get("article_text") or ""):
+                    derived.setdefault(iid, []).append(
+                        {"sub_id": f"{d['sub_id']}@derived", "related_fact_id": d["related_fact_id"],
+                         "text_substring": d["text_substring"], "derived_from": src_id})
+    return derived
+
+
+def safety_critical_dual_summary(instance_results: list, derived: dict | None = None) -> dict:
+    """旧値(委任_01まで: 手作業登録の流出行)と新値(登録済み[neg5含む]+自動導出の和集合)を並記する。"""
+    reg_rows = detect_safety_critical_misdowngrades(instance_results)
+    old_rows = [r for r in reg_rows if not r.get("registered_in")]
+    derive_error = None
+    if derived is not None:
+        der = derived
+    else:
+        try:
+            der = derive_safety_critical_from_labels()
+        except Exception as e:  # noqa: BLE001  # fixture未構築などの環境差。集計だけ空にして記録する
+            der, derive_error = {}, f"{type(e).__name__}: {e}"
+    der_rows = detect_safety_critical_misdowngrades(instance_results, defs_by_instance=der)
+
+    def _key(r):
+        return (r["instance_id"], r["cycle_index"], _norm_same_sentence(r["claim_text"]))
+    new_union = {_key(r): r for r in reg_rows}
+    for r in der_rows:
+        new_union.setdefault(_key(r), r)
+    return {"derive_error": derive_error, "old_definition_rows": len(old_rows), "old_definition_unique": len({(r["instance_id"], r["sub_id"]) for r in old_rows}),
+            "registered_rows_new": len(reg_rows), "derived_rows": len(der_rows),
+            "new_definition_rows": len(new_union),
+            "new_definition_unique": len({(k[0], k[2]) for k in new_union}),
+            "new_definition_detail": [{"instance_id": r["instance_id"], "sub_id": r["sub_id"],
+                                       "cycle_index": r["cycle_index"], "materiality": r["materiality"]}
+                                      for r in new_union.values()]}
 
 
 # ------------------------------------------------------------
@@ -7778,11 +8274,15 @@ def aggregate_measurements(instance_results: list) -> dict:
             # 委任_33(design書§8-x): 旧実装は常に0固定の非稼働プレース
             # ホルダだった(委任_32 REPORT§30-3Cで開示)。
             # SAFETY_CRITICAL_CLAIM_DEFSとの自動照合に置換する。
+            # 委任_02: `silent_pass_candidate`/`_rows`は旧定義(委任_01まで、手作業登録=neg5登録前)の値のまま。
+            # 新定義(neg5登録+正BLOCKINGラベルからの自動導出)は`safety_critical_dual`へ並記する。
             "silent_pass_candidate": len({
                 (row["instance_id"], row["sub_id"])
-                for row in safety_critical_misdowngrade_rows
+                for row in safety_critical_misdowngrade_rows if not row.get("registered_in")
             }),
-            "silent_pass_candidate_rows": safety_critical_misdowngrade_rows,
+            "silent_pass_candidate_rows": [row for row in safety_critical_misdowngrade_rows
+                                           if not row.get("registered_in")],
+            "safety_critical_dual": safety_critical_dual_summary(instance_results),
             # 委任_55: 過剰品質の監視用(Meta-1/Meta-2、期待QUALITY)。記録専用。
             "over_quality_monitor_rows": detect_over_quality_monitor_blocks(instance_results),
         },
@@ -8331,10 +8831,13 @@ def main():
                          help="委任_61: time_onlyで時期のfloorだけ追加確認(2回とも非重大のときだけ解放)を有効化(既定off=従来、比較・方向等は決定論維持)")
     parser.add_argument("--stage2-normal-two-of-two", action="store_true",
                          help="委任_01(KPI-RECOVERY-REDESIGN-02): NORMAL群Stage 2 2-of-2をON(旧挙動の再現用、既定OFF=Production非存在のTrial補助を使わない)")
+    parser.add_argument("--stage2-downgrade-verify", action="store_true",
+                         help="委任_02(Opus#11→Fable評価): Checker MAJORをStage 2が非BLOCKINGにしたものをTier 0決定論Guard+Tier 1確認役で再確認し、解除不可はBLOCKING→Rewriteへ戻す(既定OFF=従来)")
     parser.add_argument("--kpi-trial-config", action="store_true",
                          help="委任_01: KPI確認構成(KPI_TRIAL_SWITCHES: rep23〜25構成+L6完結文復元+NORMAL群2-of-2 OFF)を適用。個別の--vs-*等より優先")
     args = parser.parse_args()
     globals()["STAGE2_NORMAL_TWO_OF_TWO"] = bool(args.stage2_normal_two_of_two)
+    globals()["STAGE2_DOWNGRADE_VERIFY"] = bool(args.stage2_downgrade_verify)
     globals()["FLOOR_VERIFY_MODE"] = validate_floor_verify_mode(args.floor_verify_mode)
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
     globals()["VS_EXPLAIN_SPLIT"] = bool(args.vs_explain_split)
@@ -8424,6 +8927,11 @@ def main():
     if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF:
         # 委任_60: 案1の追加確認のruntime evidence(全sampleの全cycle・全stage2_results)。
         summary["floor_verify"] = floor_verify_summarize(
+            sr for res in sample_instance_results for r in res for cyc in r.get("cycles", [])
+            for sr in cyc.get("stage2_results", []))
+    if STAGE2_DOWNGRADE_VERIFY:
+        # 委任_02: 降格確認(Tier 0/1/2)のruntime evidence(全sampleの全cycle・全stage2_results)。
+        summary["downgrade_verify"] = downgrade_verify_summarize(
             sr for res in sample_instance_results for r in res for cyc in r.get("cycles", [])
             for sr in cyc.get("stage2_results", []))
     if VS_SENTENCE_RESTORE:
