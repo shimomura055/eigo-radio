@@ -4227,3 +4227,16 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - Fable照合判断(ユーザー決定ではない): 1安全項目=PASS(B3 s1の残存は位置目印のみ、因果soは修正済み)/2不要Rewrite=注意(neg3はK16型で不要と断定不可、neg3除外8.3%同率)/3Human Review=注意(7→2、B3増は`...`省略の照合不能・安全側)/4過剰Major=注意(受容範囲)/5時期の追加確認・P採用は実flow未発火(次Trialで観測)/6rep24の実行中断は「29件横断1回」として扱う(未記録費用≤¥0.8、Phase累計¥572.8515・未記録分を含めれば≤¥573.66)/7ユーザー判断(A)(B)(C)。
 - 運用メモ: 委任_63のT-0は全文逐語保存でなかった(主要部保存・定型文要約)。委任_64から全文逐語保存。
 - 状態: `USER_DECISION_REQUIRED`。Production未接続、`PRODUCTION_WIRED`なし、次Trialは開始しない。費用: ¥0、Phase累計¥572.8515(上限¥900)。
+
+## 47. 委任_65: span切断の自動復元(L6「完結文復元」)設計と¥0検証(2026-10-04、費用¥0、コード変更なし)
+
+- 性質: ユーザー指示[6回目](Primary KPI=Human Review 0件、Safety=重大見逃し0件、Cost=平均+¥2/記事以内、`DECISION_LOG.md`末尾に原文逐語記録)に基づく設計+既存ログの決定論replay。runner・Prompt・Production pathは未変更。L6はreplayスクリプト内の試作(`er052_output/open233_span_restore_offline_01/replay_01.py`)で、Production未接続、`PRODUCTION_WIRED`なし。次Trial(10本)は開始しない。
+- 失敗2件の正体: A2A3 s2 cycle2=Checkerが記事にない語`the`を先頭に足した、B3 s2 cycle2=末尾`...`省略+記事の`while`を`so`へ言い換え。どちらも単純な切断・省略ではなく「逐語でない語の混入+省略」(設計書§2)。
+- 設計: L6=L0〜L5・P-strict-closedで未確定のclaimのうち、(i)切断(数値内`.`/`,`を語構成とみなす境界補正を含む)/(ii)`...`/`…`/`・・・`/(iii)中間省略/(iv)アンカー(記事に逐語で1箇所ある4語・20文字以上の連続語列、アンカー外6語以内、カバー率50%以上)に限り、断片を含む完結文(2文以内・700字以内・引用符が閉じる・記事に1箇所)へ決定論で拡張。候補0・複数・ガード不通過は従来のunresolvable(唯一のHuman Review経路)。P→L6の順(Pの4ガードを迂回しない)。最小Rewriteは既存E1 Prompt(範囲内の最小編集のみ、不能なら空配列)+`issue`+`prior_issues`(復元文)で担保、ラダーの段は進めない。
+- ¥0 replay: instance JSON 475本・BLOCKING 591件(一意182)。未確定17一意のうち日本語5・precheck由来2を除く英語Checker出力10件中**5件復元**、残り5件は全て(d)説明文混入型(L6対象外)。rep24の失敗2件は**一意に復元**(A2A3 s2・B3 s2)、A2A3の`6 percent, because …`型2件(現行は確定扱いだが`2.6`の`6`から始まる穴)も数値境界補正で完結文へ復元。確定済みの結果をL6が変えた件数0(例外=上記数値境界1一意・7 runs)。rep24 handoffとreplay baseは35/35一致。
+- 誤復元0: 実例の復元全6件はclaim/issueと対応(仮判定)。確定済み127件を決定論で壊した889通り(L6呼び出し721)で復元712件は全て正解の文群と完全一致、無関係0、安全側9。合成13ケース全件期待どおり。
+- KPI見通し(replay根拠、実flow未実証): 今回の29件セットはHuman Review 2→0(replay)。Production全体の0件は未達の可能性: (d)説明文混入型が過去ログ5 runs/591(rep24は0、rep23は1)。費用は追加API call 0、1件の復元で最大約¥0.5、平均約+¥0.03/記事(全記事で発生しても約¥0.5)。
+- USER_DECISION候補(Fableが整理、Sonnetは決めない): U-1=アンカー型を「決定論の逐語照合」と扱ってよいか(基本線の字義の拡張、Opus論点2)。U-2=(d)説明文混入型の追加対策(位置語→構造要素の範囲追加/残り長文のガード再検討、未設計)。U-3=候補0・複数を減らすChecker span再取得1回(LLM call追加、未設計)。
+- Opus条件A向けpacket: `docs/pm/opus_packet_open233_span_restore_01.md`(20253字、重複レビューは再レビュー=基本線の前提変更)。依頼はFable。
+- 次: Opus独立レビュー→Fable照合→委任_66(実装[Trial専用スイッチ・既定OFF]+単体テスト+影響instance再実行)→29件再確認(Human Review 0件の実証)。詳細: `docs/pm/design_open233_span_sentence_restore_01.md`、`er052_output/open233_span_restore_offline_01/results_01.md`。
+- 運用メモ: T-0は委任文を全文逐語保存し`check_delegation_prompt.py`はPASS(警告のみ: TTS/--budget言及なし)。

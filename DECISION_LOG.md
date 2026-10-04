@@ -18454,3 +18454,35 @@ prices began to fall 型の過剰Majorは、現時点では受容します。
 
 - USER_DECISION_REQUIRED残=(A)(B)(C)+既存別系統(er010 Local Rewriteへの句読点差処理)/APPROVED_FOR_PRODUCTION未配線=7構成要素すべて`PRODUCTION_WIRED`未達/Production wiring漏れ=Production側対応箇所なし7要素・必須確認9項目未実施(`git grep "er052_open233"`はer003〜er019で0件)/Trialだけの対策=スイッチ7/SSOT不一致=欠落2・古い記述3を修正、番号ズレ1[上記ユーザー決定[5回目]「Fableの受け止めと分担」の「委任_63=Closeout確認」は実際は委任_64]は指摘のみ/Dangling Reference=0/未報告Trial=0/ユーザー承認なしの仕様追加=根拠なしの機能追加0(上記8)。
 - 状態: `USER_DECISION_REQUIRED`(次TrialのGO待ち+許容判断2件)。Production未接続、`PRODUCTION_WIRED`なし。次Trial(5記事×Standard/Advanced=10本)は開始しない。GO後のテーマ選定は`docs/pm/PM_GOVERNANCE.md`13節(ユーザー選択)。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01(2026-10-04、ユーザー指示[6回目]: Primary KPI=Checker起因のUSER_DECISION_REQUIRED/Human Review 0件、Safety=重大Fact見逃し0件、Cost=平均+¥2/記事以内。span途中切断・`...`省略はHuman Reviewなしで自動解決[断片を含む完結文が記事内で一意なら復元、一意でない場合のみ例外、最小Rewrite原則維持]。KPI未達前提の安全側提案を推奨にしない)
+
+2026-10-04のユーザー指示(6回目)の原文を、以下に一字一句そのまま引用する(委任_65作業0)。
+
+````
+OPEN-233のPrimary KPIは、Production運用におけるChecker起因のUSER_DECISION_REQUIRED / Human Review 0件です。
+今回の2件について「件数が少ないのでHuman Review維持を推奨」という提案は、KPIと明確に矛盾しています。
+今後、KPI未達を前提にした“ぬるい安全側提案”を推奨案として出さないでください。
+今回の2件は、重大判断そのものではなく、Checker返却spanの途中切断・省略という技術問題です。まずHuman Reviewなしで解決する方法を詰めてください。
+現在の方向性は以下です。
+- Checkerは検出に専念する。
+- 後段で記事原文に照合する。
+- spanが途中切断・...省略でも、断片を含む意味の通る完結文が記事内で一意に特定できるなら、その文を対象範囲として復元する。
+- 複数候補、本当に一意に決められない場合のみ例外扱い。
+- 範囲拡張で不要Rewriteが入らないよう、最小Rewrite原則は維持する。
+必ず以下のKPIを同時に満たす前提で設計・検証してください。
+- Primary：USER_DECISION_REQUIRED / Human Review 0件
+- Safety：重大Fact見逃し 0件
+- Cost：平均 +¥2/記事以内
+今回の29件横断で残ったHuman Review 2件は、このspan不完全の2件だけです。
+したがって、ここを自動解決できれば今回セットではHuman Review 0件になります。
+次の報告では「Human Reviewを残す理由」ではなく、0件にするためにどう自動解決したか／できなかったなら何が技術的に不可能だったかを示してください。
+KPIを満たせない状態を安易に推奨案として持ってこないこと。
+Production量産性を成立させるためのTrialであることを忘れないでください。
+````
+
+### Fableの受け止めと分担(委任_65)
+
+- Fableの前回推奨(A)「現状維持(Checker範囲切断型の照合許容=Human Review維持)」は、Primary KPI(Human Review 0件)と矛盾していたため**撤回**する。判断(A)は「span切断の自動復元を設計・検証」へ変更。
+- 分担: 委任_65=設計(L6「完結文復元」)+¥0検証(決定論replay)+Opus向けcontext packet作成(コード変更なし、API課金なし)。次にOpus独立技術レビュー(条件A: 後段照合に新しい処理レベルを追加、Opusへの依頼はFable)。Fable照合後、委任_66=実装(Trial専用スイッチ、既定OFF)+単体テスト+影響instance再実行。その後29件横断の再確認で、Human Review 0件を実証する。
+- 本エントリはユーザー指示の記録であり、Production採用(`APPROVED_FOR_PRODUCTION`)の決定ではない。Production未接続、`PRODUCTION_WIRED`なし。
