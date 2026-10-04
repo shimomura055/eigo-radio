@@ -1,0 +1,557 @@
+{
+  "instance_id": "safety_er009_changed_number",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": true,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "F-002",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "「Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.」の「more than 30 million」を、Ledgerの値「more than 13 million」に置き換えてください。参照: F-002",
+          "floor_reason": "deterministic_floor:changed_number",
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "floor_verify": {
+            "mode": "time_only",
+            "target": false,
+            "target_reason": "llm_materiality_blocking",
+            "triggered_flags": [
+              "changed_number"
+            ],
+            "llm_materiality": "BLOCKING",
+            "confirmed": false,
+            "confirmed_basis": [],
+            "fact_block_found": null,
+            "calls": [],
+            "n_calls": 0,
+            "released": false,
+            "blocking_fixed_reason": null,
+            "release_note": null,
+            "final_materiality": "BLOCKING",
+            "cost_jpy": 0.0
+          },
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+        },
+        {
+          "claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+          "origin": null,
+          "related_fact_id": "F-002",
+          "dev": {
+            "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "issue": "precheck detected number_mismatch vs ledger_value=1,300万件超",
+            "explanation": "deterministic precheck finding (kind=number_mismatch)",
+            "related_fact_id": "F-002",
+            "origin": null,
+            "changed_actor": false,
+            "changed_number": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false
+          },
+          "detected_by": "precheck",
+          "precheck_target_locatable": true,
+          "precheck_locate_method": "precheck_number_locate",
+          "materiality": "BLOCKING",
+          "llm_materiality": null,
+          "basis": "precheck_floor",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "'Researchers studied more than 30 million credit card payment' を、fact_id=F-002のLedger値へ置換する。issue: precheck detected number_mismatch vs ledger_value=1,300万件超",
+          "floor_reason": "precheck_floor",
+          "section_type": "title",
+          "stage2_route": "precheck_floor_bypass",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": "precheck_floor",
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:6ed4d4a0f906cccd",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+              ],
+              "raw_spans": [
+                [
+                  0,
+                  163
+                ]
+              ],
+              "spans": [
+                [
+                  0,
+                  163
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "3_sentence",
+                "targets": [
+                  "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                ],
+                "revised": [
+                  "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                    "after": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                  }
+                ]
+              }
+            ],
+            "level_used": "3_sentence",
+            "span_unverified": false,
+            "problem_kind": "sentence_logic",
+            "levels_planned": [
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:F-002",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+              ],
+              "l6_skipped": {
+                "skipped_reason": "carry_forward_precedence",
+                "rule": "cycle_start_match",
+                "l6_restored_ranges": [
+                  "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money."
+                ],
+                "sentence_restore": {
+                  "attempted": true,
+                  "status": "restored",
+                  "reason": null,
+                  "restore_reason": [
+                    "anchor_with_substituted_words"
+                  ],
+                  "fired_by": [
+                    "anchor_with_substituted_words(unmatched=1)"
+                  ],
+                  "fragments": [
+                    {
+                      "part": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                      "kind": "anchor",
+                      "detail": null
+                    }
+                  ],
+                  "anchors": [
+                    {
+                      "part": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                      "head": {
+                        "k": 4,
+                        "text": "researchers studied more than",
+                        "span": [
+                          0,
+                          29
+                        ]
+                      },
+                      "tail": {
+                        "j": 5,
+                        "text": "million credit card payments in new york city taxis, and found that higher suggested tip rates led passengers to leave more money",
+                        "span": [
+                          33,
+                          162
+                        ]
+                      },
+                      "ambiguous": [],
+                      "unmatched": 1,
+                      "gap": {
+                        "article_gap_words": 1,
+                        "claim_gap_words": 1
+                      }
+                    }
+                  ],
+                  "restored_sentence": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                  "span": [
+                    0,
+                    163
+                  ],
+                  "n_sentences": 1,
+                  "n_candidates": 1,
+                  "focus_spans": [
+                    [
+                      0,
+                      162
+                    ]
+                  ],
+                  "residual_check": [],
+                  "original_claim": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                  "claim_core": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                  "base_reason": "mismatch"
+                }
+              }
+            },
+            "carry_forward_covered": [
+              {
+                "range": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+                "covered_by_claim": "claim:6ed4d4a0f906cccd"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "claim:6ed4d4a0f906cccd",
+                "issue_string_equal": false,
+                "same_related_fact_id": false,
+                "true_flags_equal": false,
+                "prior_issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+                "following_issue": "precheck detected number_mismatch vs ledger_value=1,300万件超",
+                "prior_related_fact_id": "",
+                "following_related_fact_id": "F-002",
+                "prior_true_flags": [
+                  "changed_fact",
+                  "changed_number"
+                ],
+                "following_true_flags": []
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 26.0,
+          "difficult_word_ratio": 0.1154,
+          "word_count": 26
+        },
+        "stats_after": {
+          "avg_sentence_len": 26.0,
+          "difficult_word_ratio": 0.1154,
+          "word_count": 26
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 26.0,
+          "difficult_word_ratio": 0.1154,
+          "word_count": 26
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 26.0,
+          "difficult_word_ratio": 0.1154,
+          "word_count": 26
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 26,
+        "hook_word_count_after": 26,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 26,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "en_text_after_rewrite": "Researchers studied more than 13 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "multiple_claims_rewritten_same_cycle",
+        "deterministic_floor_claim",
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text"
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "今回の記事は取引数を「more than 13 million」としており、Ledgerの「1,300万件超」と一致しています。チップ額への効果の記述もLedgerの範囲内です。"
+        },
+        {
+          "index": 1,
+          "resolved": true,
+          "explanation": "記事の取引数は「more than 13 million」で、Ledgerの「1,300万件超」と一致しており、数値の不一致は解消されています。"
+        }
+      ],
+      "recheck_prior_issues_sent_count": 2
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_number_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1287,
+      "usage": {
+        "input_tokens": 6081,
+        "cached_input_tokens": 0,
+        "output_tokens": 424,
+        "reasoning_tokens": 306
+      },
+      "elapsed_seconds": 5.272,
+      "prompt_sha256": "b25e6302be05ad8e534a5f23f5e5b2b58f84a9cb4565b9934d127bb51e040d68"
+    },
+    {
+      "label": "safety_er009_changed_number_c1_claim:6ed4d4a0f906cc_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0758,
+      "usage": {
+        "input_tokens": 4503,
+        "cached_input_tokens": 0,
+        "output_tokens": 66,
+        "reasoning_tokens": 23
+      },
+      "elapsed_seconds": 1.851,
+      "prompt_sha256": "d0954c50dd70b13b52013112e07099b275b36cead46c514a4bf5b9b01f9cd0f0"
+    },
+    {
+      "label": "safety_er009_changed_number_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.132,
+      "usage": {
+        "input_tokens": 6387,
+        "cached_input_tokens": 0,
+        "output_tokens": 405,
+        "reasoning_tokens": 230
+      },
+      "elapsed_seconds": 6.629,
+      "prompt_sha256": "4bfb52c0ee7214e6b024eb740dd8cc3cf4c68c5bf85dec8d5ae34972b51f438e",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3365,
+  "total_calls": 3,
+  "elapsed_seconds": 13.775,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher suggested tip rates led passengers to leave more money.",
+        "related_fact_id": null,
+        "origin": null,
+        "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+        "explanation": "取引数について、Ledgerの「1,300万件超」から記事が「3,000万件超」へ数値を変更しており、changed_numberおよびchanged_factに該当します。より高い推奨率を見た乗客がより多くチップを残したという記述はLedgerの範囲内です。",
+        "true_flags": [
+          "changed_fact",
+          "changed_number"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

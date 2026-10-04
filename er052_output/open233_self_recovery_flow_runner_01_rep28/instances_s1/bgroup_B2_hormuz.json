@@ -1,0 +1,170 @@
+{
+  "instance_id": "bgroup_B2_hormuz",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+          "origin": "ja_source",
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "issue": "撤回後に一時的な上げ幅縮小と回復が観測されたことを、料金案の消失が大幅かつ持続的な下落を引き起こさなかったという因果的な結論として表現している。Ledgerは、この値動きだけから撤回が価格を上昇させた、または下落させなかったと因果推論しないよう求めている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "HF-009が保証するのは撤回後の一時的な上げ幅縮小とその後の高水準への回復という観測であり、記事はそれを撤回の非因果的な結果として断定している。",
+            "related_fact_id": "HF-011",
+            "origin": "ja_source",
+            "auto_downgraded": false
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains. But that move did not last long. Before long, they returned to a high level close to where they had been before the announcement. When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.\n\nThe disappearance of the fee plan did not lead to a large, lasting fall in prices. Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.\n\nOf course, this price movement alone cannot tell us that there was just one reason for the price. But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level. What made this news interesting was that even when the sign on the news changed, the whole stage did not change in an instant.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "bgroup_B2_hormuz",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-011",
+            "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "ce315c43498ead554515ffa31a66fd52615c5ca6cb66edd1b3fc180d1e2e0a2a"
+            ],
+            "batch_cost_jpy": 0.0446,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "bgroup_B2_hormuz",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-011",
+          "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "ce315c43498ead554515ffa31a66fd52615c5ca6cb66edd1b3fc180d1e2e0a2a"
+          ],
+          "batch_cost_jpy": 0.0446,
+          "batch_n_claims": 1
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": true,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "bgroup_B2_hormuz_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1664,
+      "usage": {
+        "input_tokens": 8525,
+        "cached_input_tokens": 0,
+        "output_tokens": 416,
+        "reasoning_tokens": 365
+      },
+      "elapsed_seconds": 6.854,
+      "prompt_sha256": "ce315c43498ead554515ffa31a66fd52615c5ca6cb66edd1b3fc180d1e2e0a2a"
+    },
+    {
+      "label": "bgroup_B2_hormuz_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0446,
+      "usage": {
+        "input_tokens": 8525,
+        "cached_input_tokens": 8522,
+        "output_tokens": 397,
+        "reasoning_tokens": 346
+      },
+      "elapsed_seconds": 5.806,
+      "prompt_sha256": "ce315c43498ead554515ffa31a66fd52615c5ca6cb66edd1b3fc180d1e2e0a2a"
+    }
+  ],
+  "total_cost_jpy": 0.211,
+  "total_calls": 2,
+  "elapsed_seconds": 12.684,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true
+  },
+  "all_deviations_raw": {
+    "stage1": [],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

@@ -4348,3 +4348,38 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - (確認)neg3: **Recheck・再確認のraw応答は全ログに未保存**(従来は`prior_issues_resolved`・再確認の`deviations`を記録していなかった)。promptは決定論に再構築しsha256一致(`rca_neg3_prompt_reconstruct_01.*`)。`prior_issues`は現行本文(`current_text`)が渡っており、`issue`/`explanation`は書き換え前の文の欠陥を述べたまま。Recheckの自己矛盾(COMPLIANT∧all_prior=False)は418 Recheck中33(neg3 23/28・neg2 7/8・他3/382)=neg3/neg2にほぼ恒常的。再確認がDEVIATIONになったのはneg3 21回中5回・neg2 6回中1回、全て最終STAGE4。再確認のdeviation claimの特定・仮ラベルは**不能(未確認)**。記録専用の追加(`recheck_prior_issues_resolved`・`recheck_confirm_deviations`等、挙動不変)で次runから逐語が残る。
 - (推測)設計: 現行は再確認のdeviationsを捨て、Stage 2を通さずSTAGE4へ直行する(通常のRecheck→DEVIATIONはStage 2を通る不整合)。N1=再確認DEVIATIONのMAJORを通常のstage1_deviationsとして既存cycleへ流す(追加call 0・cycle上限不変、推奨)。N2=再確認2回(+約¥0.27、不採用)。N3=prior_issues文言の明確化(効果不明、併用候補)。Production配線は再確認callがTrial専用のため別設計。設計書§12-3(比較表・残STAGE4経路の棚卸し表)。
 - 出力: 設計書`docs/pm/design_open233_kpi_recovery_02.md`§12、`er052_output/open233_kpi_recovery_02_offline_01/`(`replay_cf_l6_order_01.*`・`rca_neg3_prompt_reconstruct_01.*`・`agg_stage4_reasons_01.*`)、`docs/pm/opus_packet_open233_kpi_recovery_02_02.md`(約12,600字)。
+
+## 56. KPI-RECOVERY-REDESIGN-02 委任_06: Opus#12→Fable評価・N1′/潜在ギャップ是正/N3′の実装・A/B・Step 6再確認rep28【Human Review 3 → KPI未達】(2026-10-04、費用¥25.34、Phase累計¥667.19)
+
+結論: **KPI 4つのうち3つ達成、Primary(Human Review 0件)のみ未達。`IN_PROGRESS`のまま(`VALIDATED`ではない)、`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない、Production未変更。** Human Review 3件=rep27の3件(A4・A5・neg3)は全て解消、代わりに別の3件(いずれもStage 3 Rewrite側の失敗、N1′の合流とは無関係)。重大見逃し0(旧/新定義)、平均追加+¥0.10/記事(rep24比、iter7比-¥0.50)、worst追加+¥0.81(Cap+¥3超なし)。KPIは変更・緩和していない。
+
+### 実装(確認、設計書§13)
+- N1′: 純関数`normalize_recheck_outcome`(PASS/NEXT_CYCLE/STOP)+スイッチ`RECHECK_MERGE_UNRESOLVED`(既定OFF、`KPI_TRIAL_SWITCHES`でON)。再確認が`COMPLIANT∧all_prior=True`以外なら、判定元のMAJOR ∪ 未解消prior(元claimのdev、現行本文の文が単一特定できれば差し替え)をfact_id重複除去して次cycleのStage 2へ。空なら既存`not blocking_claims`経路+監査flag`reverify_deviation_without_major`。`unconfirmed_after_reverify`のSTAGE4経路はON時に廃止。追加call 0、`MAX_CYCLES=2`/`HARD_MAX_CYCLES=3`不変。
+- 通常Recheckの潜在ギャップ(`DEVIATION∧all_prior=False`で未解消priorがdeviationsに無い)も同じ純関数で合流(`normal_gap`)。
+- N3′: `RECHECK_BEFORE_AFTER_PAIRS`(既定OFF、run_recheckへ前後の対ブロックを追加、cite-or-release指示なし)。Checker本体template/`build_prior_issues_instruction`はsha256固定テストでバイト不変。
+- テスト: runner単体608→630(新規22: 純関数15・run_instance統合7)全PASS、er052回帰674 pass、全体回帰4597件は基準11件(6 failure+5 error、既存)以外の新規なし。
+
+### 旧`ladder_exhausted` 10件の¥0分類(確認、設計書§13-4)
+(A)同cycleで先行Rewrite済みの文を再Rewrite 3件(iter8 A5・rep27 A4・A5、是正(a)で解消)、(B)旧`paired_ja_en(J-1)`のguard失敗 6件(`english_only`のKPI構成では機構が無効)、(C)その他1件(iter8 unsupported_new_claim、title削除のguard失敗)。**rep28で(C)型が`degenerate_rewrite_output`として再出現した**(下記)。
+
+### A/B(neg3・neg2 × n=2 × {A: N1′、B: N1′+N3′}、8 run、実測¥4.84[A ¥2.71・B ¥2.13]、`er052_output/open233_self_recovery_flow_runner_01_rep28a/`)
+- Recheck自己矛盾率: A 2/2(100%)・B 2/2(100%)。neg2は4 run全て`RESOLVED_STAGE2_DOWNGRADE`でRecheck自体が無く(Rewriteなし)、データはneg3の4 runのみ。再確認call A 2・B 2、全て`COMPLIANT∧all_prior=True`で通過、再確認deviationは4/4で空(旧ログの24%のDEVIATIONは今回は観測されず、nが小さい)。N1′の合流は0件(発火機会なし)。
+- **自己矛盾の機序(確認、`er052_output/open233_kpi_recovery_02_offline_01/ab_selfcontradiction_mechanism_01.*`)**: Recheckは`prior_issues`1件に対し**`index=0`の項目を2件返し(HF-003・HF-009、どちらも`resolved=true`)**、runnerの`all_prior_issues_resolved = (len(resolved)==len(prior_issues)) and all(resolved)`が**件数不一致で`False`**になっていた(4/4)。再確認側はcite-or-release後の`len>0 and all(resolved)`で件数を問わないため`True`。つまり、これまで「Checkerが解消未確認と判断」と見なしていた自己矛盾は、少なくともこのA/Bの4件では**判定の揺れではなく件数一致規則(er003 vfl01 826行と同一式)とChecker応答の項目数のずれ**(過去ログは項目未保存のため、全件がこの機序とは言えない=推定)。Opus#12の「前後の対が無いことが主因」(強い推定)は、このA/Bでは支持されなかった(Bでも100%)。
+- N3′採否(事前基準): Bの自己矛盾率がAより下がらない→**N3′は採用せずOFF**(N1′のみで29件)。(ア)形だけの解消はBで0件、(イ)STAGE4・見逃しの増加なし、ただし第1条件を満たさない。
+- 新発見(実装せず報告): 上記の件数一致規則は、Checker応答が余計な項目を返すだけでRecheckを自己矛盾にし、再確認call(約+¥0.2〜0.4)を毎回起こしている。これを緩めるか否かは「Checker判定規則」に近い境界事項のためFable判断(KPI構成の安全性を下げる可能性がある)。
+
+### rep28(Step 6、29 instance・38 run、N1′ON・N3′OFF、実測¥20.50、`er052_output/open233_self_recovery_flow_runner_01_rep28/`)
+- Human Review(統一定義=`stage4_reason`全種+例外終了): **3件**(例外0、missing 0)。
+  1. `safety_er009_changed_scope` s1: `ladder_exhausted_without_full_rewrite`。cycle 1で水準①の語編集が「…restaurants…」を「…now directly confirmed in New York City taxis…」へ変え、これをRecheckが新規MAJOR(`changed_certainty/time`、unsupported)と指摘(通常のRecheck→DEVIATION経路、N1′の合流は`recheck_major`1件で通常と同じ)→cycle 2の水準①〜④の書き換え案「In the New York City taxi study, higher suggested tip rates ... credit-card users to leave more money.」が**3水準とも`actor_guard_rejected`**で枯渇。
+  2. `safety_er009_unsupported_new_claim` s1: `degenerate_rewrite_output`。唯一のclaimが記事冒頭のタイトル行で、水準0の決定論deleteでタイトルが空になり(`title_word_count_after=0`)劣化検出で停止(旧分類の(C)型。rep24・rep27の同instanceはSTAGE4なし=非決定性)。
+  3. `meta_run03_advanced` s2: `ladder_exhausted_without_full_rewrite`。Recheckが元claimを3箇所の引用に拡張して再指摘(MUSE-HC-006、In one lineを含む)→cycle 2の水準③の書き換え案(People could ask Muse to call businesses on their behalf. / (削除) / Some calls ... handled by human contractors on users' behalf.)と水準④が`actor_guard_rejected`。
+- 3件の共通点(確認): N1′の合流(`unresolved_prior`/`reverify_deviation_without_major`)ではなく、**Rewriteの`actor_guard`が、記事の修正として妥当に見える書き換え案を拒否**している(2件)・title単独claimの決定論deleteの劣化(1件)。仮ラベル(Fable照合用、私の目視): 書き換え案はLedger(F-004は「credit-card users」、MUSE-HC-006は契約者が事業者へ代行発信)に沿うため、guardの過剰拒否の疑い(推定)。guardの判定ロジックは未読(再ループで確認が必要)。
+- N1′の効果(確認): neg3 s1・s2は再確認を経てPASS(`unconfirmed_after_reverify` 0件、rep27の1件を解消)。A4・A5は是正(a)でPASS。合流イベントは5件で全て通常経路の`recheck_major`(`unresolved_prior`/`normal_gap`/`reverify_major`は0、`reverify_deviation_without_major` 0)。Recheck 20回中自己矛盾2回(neg3のみ)。
+- 重大見逃し: 旧定義0・新定義0、`pass_with_residual_unflagged` 0。Safety-critical 6件(A2A3×2・B3×2・B4・A4・A5・neg5)は全て検出・Rewrite経路を通過(B3・neg5はsubstring残存だが`ever_blocking_flagged=True`、rep24・rep27にも同パターンあり=新規ではない)。`residual_at_pass`全件(8def): 全件`pass_with_residual_unflagged=False`、`remains_in_final_en`=B3 s1・s2・neg5 s1の3件のみ(仮ラベル: 既存定義では見逃しでない、書き換え後の部分一致残存の可能性・要Fable確認)。
+- Tier 0発火0件(n_target 68)、S1 n_target 68・割れ1件(A2A3)、L6発火1件(A2A3、復元成功)、N3′は不使用(OFF)。stage4移動監視: `same_claim_fact_id_reblocked` 0・`cycle_limit_exhausted(_after_recheck)` 0(cycle≥3到達0、cycle≥2は5 run)。JA変更0。
+- 不要Rewrite: 実行24件/21 run(rep24 24件/19 run、iter7 39件/23 run)。NORMAL群は5/14 run(rep24・iter7は3/14)=meta_run03_advanced s1とneg5 s1の増(neg5 s1はrep27にもあり、非決定性の範囲)。過剰Major: Stage 2 BLOCKING 35(floor単独5、rep24は35/4)。
+- 費用: 合計¥20.50(rep24 ¥16.72、iter7 ¥39.55)、平均/run¥0.54、worst run¥2.16、平均追加+¥0.10(rep24比)・-¥0.50(iter7比)、worst追加+¥0.81(`safety_A4` s1、rep24 instance平均比)、Cap+¥3超0。Guardrail¥35内(A/B ¥4.84+rep28 ¥20.50=¥25.34)。
+- モデル・構成: `runner.MODEL=gpt-6-luna`、V7b、KPI構成(HANDOFF=violation_span・L6・english_only・time_only・Tier 0 known6・S1)+N1′。
+
+### 再ループ案(Fable判断待ち、未実装)
+(1)`actor_guard`の拒否理由と、拒否された書き換え案が妥当だったかを¥0で全rewrite_recordsから集計(過剰拒否率)→妥当なら技術是正(guard側の精度)。(2)title単独claimのdeleteが劣化になる型(C)に、deleteでなく水準1〜へ進める等の既存ladder内の是正。(3)件数一致規則と自己矛盾の関係(項目数の不一致)の扱い(判定規則に近い=Fable/ユーザー判断)。いずれもKPI緩和ではない。Step 6の母数・nは固定のため、再実行は再ループ後の新構成で別途判断。

@@ -1,0 +1,891 @@
+{
+  "instance_id": "safety_A5",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+              "They also temporarily put back the feature in which humans handled the calls.",
+              "They did not stop Muse itself."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "Quote: “They also temporarily put back the feature in which humans handled the calls.” Replace “put back” with “rolled back” or equivalent: Meta rolled back the human-concierge feature, rather than reinstating it. Ledger fact_id: MUSE-HC-012.",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+        },
+        {
+          "claim_text": "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+              "They also temporarily put back the feature in which humans handled the calls.",
+              "They did not stop Muse itself."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Muse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.\n\nThis system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.\n\nMeta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A5",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dcd4848284997b1188a5d9985c27befcfa17a1d022dfb3d2deb67b591d644c8f"
+            ],
+            "batch_cost_jpy": 0.1763,
+            "batch_n_claims": 2
+          }
+        },
+        {
+          "claim_text": "They also temporarily put back the feature in which humans handled the calls.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+              "They also temporarily put back the feature in which humans handled the calls.",
+              "They did not stop Muse itself."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "Quote: “They also temporarily put back the feature in which humans handled the calls.” Replace “put back” with “rolled back” or equivalent: Meta rolled back the human-concierge feature, rather than reinstating it. Ledger fact_id: MUSE-HC-012.",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "They also temporarily put back the feature in which humans handled the calls."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "They also temporarily put back the feature in which humans handled the calls."
+        },
+        {
+          "claim_text": "They did not stop Muse itself.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "They did not stop Muse itself.",
+            "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "temporarily",
+            "ledger_field_basis": "notes_factual_constraint",
+            "observation_consistent": false,
+            "matched_notes_id": "MUSE-HC-012",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+              "They also temporarily put back the feature in which humans handled the calls.",
+              "They did not stop Muse itself."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A5",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "They did not stop Muse itself.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "dcd4848284997b1188a5d9985c27befcfa17a1d022dfb3d2deb67b591d644c8f"
+            ],
+            "batch_cost_jpy": 0.1763,
+            "batch_n_claims": 2
+          }
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "safety_A5",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dcd4848284997b1188a5d9985c27befcfa17a1d022dfb3d2deb67b591d644c8f"
+          ],
+          "batch_cost_jpy": 0.1763,
+          "batch_n_claims": 2
+        },
+        {
+          "instance_id": "safety_A5",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "They did not stop Muse itself.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "dcd4848284997b1188a5d9985c27befcfa17a1d022dfb3d2deb67b591d644c8f"
+          ],
+          "batch_cost_jpy": 0.1763,
+          "batch_n_claims": 2
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+              ],
+              "raw_spans": [
+                [
+                  1530,
+                  1638
+                ]
+              ],
+              "spans": [
+                [
+                  1530,
+                  1638
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "3_sentence",
+                "targets": [
+                  "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself."
+                ],
+                "revised": [
+                  "They also temporarily rolled back the feature in which humans handled the calls. They did not stop Muse itself."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+                    "after": "They also temporarily rolled back the feature in which humans handled the calls. They did not stop Muse itself."
+                  }
+                ]
+              }
+            ],
+            "level_used": "3_sentence",
+            "span_unverified": false,
+            "problem_kind": "sentence_logic",
+            "levels_planned": [
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "They also temporarily put back the feature in which humans handled the calls.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "They also temporarily put back the feature in which humans handled the calls."
+              ],
+              "l6_skipped": {
+                "skipped_reason": "carry_forward_precedence",
+                "rule": "cycle_start_match",
+                "l6_restored_ranges": [
+                  "They also temporarily rolled back the feature in which humans handled the calls."
+                ],
+                "sentence_restore": {
+                  "attempted": true,
+                  "status": "restored",
+                  "reason": null,
+                  "restore_reason": [
+                    "anchor_with_substituted_words"
+                  ],
+                  "fired_by": [
+                    "anchor_with_substituted_words(unmatched=4)"
+                  ],
+                  "fragments": [
+                    {
+                      "part": "They also temporarily put back the feature in which humans handled the calls.",
+                      "kind": "anchor",
+                      "detail": null
+                    }
+                  ],
+                  "anchors": [
+                    {
+                      "part": "They also temporarily put back the feature in which humans handled the calls.",
+                      "head": null,
+                      "tail": {
+                        "j": 4,
+                        "text": "back the feature in which humans handled the calls",
+                        "span": [
+                          1559,
+                          1609
+                        ]
+                      },
+                      "ambiguous": [],
+                      "unmatched": 4,
+                      "gap": null
+                    }
+                  ],
+                  "restored_sentence": "They also temporarily rolled back the feature in which humans handled the calls.",
+                  "span": [
+                    1530,
+                    1610
+                  ],
+                  "n_sentences": 1,
+                  "n_candidates": 1,
+                  "focus_spans": [
+                    [
+                      1559,
+                      1609
+                    ]
+                  ],
+                  "residual_check": [
+                    {
+                      "run": "they also temporarily",
+                      "occurrences": 1,
+                      "inside_restored_range": 1
+                    }
+                  ],
+                  "original_claim": "They also temporarily put back the feature in which humans handled the calls.",
+                  "claim_core": "They also temporarily put back the feature in which humans handled the calls.",
+                  "base_reason": "mismatch"
+                }
+              }
+            },
+            "carry_forward_covered": [
+              {
+                "range": "They also temporarily put back the feature in which humans handled the calls.",
+                "covered_by_claim": "fact:MUSE-HC-012"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:MUSE-HC-012",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+                "following_issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+                "prior_related_fact_id": "MUSE-HC-012",
+                "following_related_fact_id": "MUSE-HC-012",
+                "prior_true_flags": [
+                  "changed_fact"
+                ],
+                "following_true_flags": [
+                  "changed_fact"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.75,
+          "difficult_word_ratio": 0.1289,
+          "word_count": 357
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.75,
+          "difficult_word_ratio": 0.1289,
+          "word_count": 357
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 9.5,
+          "difficult_word_ratio": 0.1053,
+          "word_count": 19
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 9.5,
+          "difficult_word_ratio": 0.1053,
+          "word_count": 19
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 40,
+        "hook_word_count_after": 40,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 15,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 28,
+        "sentence_count_after": 28,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 6,
+        "hedge_word_count_after": 6,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes\n\nAsk AI to make a haircut appointment. Have it call a store, ask about an item’s stock, and get an estimate from a supplier. The AI on your screen does all of it. It is a very convenient future.\n\nMeta’s AI agent, Muse, actually has phone features like these.\n\nBut something unexpected happened behind the scenes. In some calls made through Muse, the caller was not AI but trained contract workers.\n\nMuse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.\n\nThis system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.\n\nMeta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.\n\nThis is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.\n\nEven in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.",
+      "en_text_after_rewrite": "# It Was Supposed to Be an AI Call, but a Human Appeared Behind the Scenes\n\nAsk AI to make a haircut appointment. Have it call a store, ask about an item’s stock, and get an estimate from a supplier. The AI on your screen does all of it. It is a very convenient future.\n\nMeta’s AI agent, Muse, actually has phone features like these.\n\nBut something unexpected happened behind the scenes. In some calls made through Muse, the caller was not AI but trained contract workers.\n\nMuse receives the request. Up to that point, it is AI. But then it hands the task over to human staff. The staff make the call and finish the conversation. It was as if a supporting actor, hard to spot in the script, had appeared in a play starring AI.\n\nThis system was called “human concierges.” The fact that humans handled the calls was not, by itself, an immediate problem. The bigger problem was that testing began without giving people enough information about this fact.\n\nMeta employees raised concerns that sensitive user information needed for the calls might be shared by mistake with contracted call-center workers.\n\nThis is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily rolled back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.\n\nEven in an age when AI does our work, humans may step in to help. But when they do, they should not appear secretly. If they step onto the stage, they should say who they are first. This incident showed that simple rule in a very memorable way.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "multiple_claims_rewritten_same_cycle",
+        "safety_fixture"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text"
+      ],
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "The article now says Meta temporarily rolled back the human-call feature, matching the reported action; it does not say the feature was reinstated."
+        },
+        {
+          "index": 1,
+          "resolved": true,
+          "explanation": "The article now says Meta temporarily rolled back the human-call feature, matching the reported action; it does not say the feature was reinstated."
+        }
+      ],
+      "recheck_prior_issues_sent_count": 2
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A5_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2603,
+      "usage": {
+        "input_tokens": 9105,
+        "cached_input_tokens": 0,
+        "output_tokens": 1497,
+        "reasoning_tokens": 1248
+      },
+      "elapsed_seconds": 19.981,
+      "prompt_sha256": "376ab8adcd5cc2e3d4716bdab5d2a236107e9a177a2d5cdc66c1da3d5e36d134"
+    },
+    {
+      "label": "safety_A5_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1763,
+      "usage": {
+        "input_tokens": 8724,
+        "cached_input_tokens": 0,
+        "output_tokens": 503,
+        "reasoning_tokens": 425
+      },
+      "elapsed_seconds": 7.671,
+      "prompt_sha256": "dcd4848284997b1188a5d9985c27befcfa17a1d022dfb3d2deb67b591d644c8f"
+    },
+    {
+      "label": "safety_A5_c1_fact:MUSE-HC-012_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0648,
+      "usage": {
+        "input_tokens": 3595,
+        "cached_input_tokens": 0,
+        "output_tokens": 107,
+        "reasoning_tokens": 73
+      },
+      "elapsed_seconds": 3.543,
+      "prompt_sha256": "1535695fb81eabb1f516cce0696e6c45996d1642e41131cace249569dfdcfeb2"
+    },
+    {
+      "label": "safety_A5_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.4138,
+      "usage": {
+        "input_tokens": 6651,
+        "cached_input_tokens": 0,
+        "output_tokens": 3945,
+        "reasoning_tokens": 3804
+      },
+      "elapsed_seconds": 46.432,
+      "prompt_sha256": "4b1d0b8a6c6178ebda2eea799a4bfe3fdafd67aae010eeb4366b40fa0fb89bf5",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.9152,
+  "total_calls": 4,
+  "elapsed_seconds": 77.662,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+        "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+        "true_flags": [
+          "changed_fact"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+          "They also temporarily put back the feature in which humans handled the calls.",
+          "They did not stop Muse itself."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MINOR",
+        "claim_in_article": "Meta executives admitted that starting the test without a proper explanation was a mistake.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "issue": "The Ledger attributes this admission to a specific Meta vice president, while the article attributes it to “Meta executives,” broadening the speaker attribution.",
+        "explanation": "The admission itself matches the Ledger, but the article generalizes the identified speaker to Meta executives. This is a minor changed_actor attribution; the Japanese source’s broader wording was carried into the translation.",
+        "true_flags": [
+          "changed_actor"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [],
+        "passed_downstream": false
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+        "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+        "true_flags": [
+          "changed_fact"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+          "They also temporarily put back the feature in which humans handled the calls.",
+          "They did not stop Muse itself."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They also temporarily put back the feature in which humans handled the calls.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+        "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+        "true_flags": [
+          "changed_fact"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+          "They also temporarily put back the feature in which humans handled the calls.",
+          "They did not stop Muse itself."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They did not stop Muse itself.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "translation",
+        "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+        "explanation": "The action is reversed: the Ledger says the human-concierge feature was rolled back, not reinstated. This is a changed_fact; “temporarily” does not resolve the contradiction.",
+        "true_flags": [
+          "changed_fact"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "” The fact that humans handled the calls was not, by itself, an immediate problem.",
+          "They also temporarily put back the feature in which humans handled the calls.",
+          "They did not stop Muse itself."
+        ],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 1,
+    "final_state": "RESOLVED_REWRITE",
+    "final_state_is_pass_family": true,
+    "defs": [
+      {
+        "sub_id": "A5-0",
+        "related_fact_id": "MUSE-HC-012",
+        "text_substring": "temporarily put back the feature",
+        "remains_in_final_en": false,
+        "ever_blocking_flagged": true,
+        "ever_blocking_flagged_same_fact_id": true,
+        "ever_flagged_but_never_blocking": false,
+        "in_checker_raw_deviations_any_severity": [
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "MUSE-HC-012"
+          },
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "MUSE-HC-012"
+          }
+        ],
+        "pass_with_residual_unflagged": false
+      }
+    ]
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

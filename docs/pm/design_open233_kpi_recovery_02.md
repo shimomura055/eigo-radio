@@ -451,3 +451,8 @@ neg3・neg2×n=2×{A=KPI構成+N1′、B=A+N3′}=8 run。N3′採用の条件: 
 ### 13-7 Production配線時の方針(記録のみ、実装は配線時)
 
 再検査結果を正規化する純関数(`normalize_recheck_outcome`、PASS/NEXT_CYCLE/STOP)をTrial/Productionで共有する。Production(`er012`再検査、410〜430行)は現在Stage 2・cycle・ladderを持たない(再生成→再検査→不成立ならSTOP)ため、自己回復flowを持たない間は`NEXT_CYCLE`を`STOP`へ写像(現行STOP相当、安全側)。N3′を入れる場合、Production共通の`build_prior_issues_instruction`(`er003` 678行)の扱いを同時に決める。Production採用可否は人間ユーザーのみが決める(本節は`APPROVED_FOR_PRODUCTION`ではない)。
+
+### 13-8 実測結果(委任_06、2026-10-04、確認)
+
+- A/B(neg3・neg2×n=2×{A=N1′、B=N1′+N3′}、8 run、¥4.84): 自己矛盾率A 100%(2/2)・B 100%(2/2)→事前基準(Bが下がる)を満たさずN3′はOFF。機序=Recheckが`prior_issues`1件に対し`index=0`の項目を2件返し、`len(resolved)==len(prior_issues)`規則で`all_prior=False`(`resolved`は全てtrue、4/4。`ab_selfcontradiction_mechanism_01.*`)。再確認(cite-or-release後は件数を問わない式)は`True`。N3′(前後の対)の効果は観測されず、Opus#12の「前後の対が無いことが主因」は支持されなかった(nが小さい)。件数一致規則の扱いは判定規則に近い境界事項のため実装せずFable判断。
+- rep28(Step 6、N1′ON・N3′OFF、¥20.50): Human Review 3(`safety_er009_changed_scope` s1・`meta_run03_advanced` s2=`ladder_exhausted_without_full_rewrite`[`actor_guard_rejected`]、`safety_er009_unsupported_new_claim` s1=`degenerate_rewrite_output`[title単独claimのdelete])、重大見逃し0、平均追加+¥0.10、worst追加+¥0.81 → KPI未達(Human Review)。rep27の3件(A4・A5・neg3)は解消(neg3は`unconfirmed_after_reverify` 0件)。N1′合流は5件で全て通常経路の`recheck_major`、移動先(`same_claim_fact_id_reblocked`/`cycle_limit_exhausted`)は0件。詳細はREPORT§56。
