@@ -8183,6 +8183,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                       "full_recheck")
         cycle_record["recheck_overall_status"] = recheck_parsed.get("overall_status")
         cycle_record["recheck_all_prior_issues_resolved"] = recheck_parsed.get("all_prior_issues_resolved")
+        # 委任_05(記録専用、合否・分岐には使わない): neg3 `unconfirmed_after_reverify`のRCA用に、Recheckの
+        # `prior_issues_resolved`(Checkerの項目別の解消判定・説明)と、渡した`prior_issues`の件数を残す(従来は未記録)。
+        cycle_record["recheck_prior_issues_resolved"] = recheck_parsed.get("prior_issues_resolved")
+        cycle_record["recheck_prior_issues_sent_count"] = len(prior_issues)
         if ja_recheck_parsed is not None:
             cycle_record["ja_recheck_overall_status"] = ja_recheck_parsed.get("overall_status")
 
@@ -8248,6 +8252,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 "all_prior_issues_resolved")
             cycle_record["recheck_confirm_cite_or_release_released_count"] = confirm_parsed.get(
                 "cite_or_release_released_count", 0)
+            # 委任_05(記録専用): 再確認が返した指摘(MINORを含む全件)と項目別の解消判定(従来は未記録)
+            cycle_record["recheck_confirm_deviations"] = [
+                raw_deviation_record(d_) for d_ in (confirm_parsed.get("deviations") or [])]
+            cycle_record["recheck_confirm_prior_issues_resolved"] = confirm_parsed.get("prior_issues_resolved")
             if (confirm_parsed.get("overall_status") == "LEDGER_COMPLIANT"
                     and confirm_parsed.get("all_prior_issues_resolved")):
                 en_ok = True

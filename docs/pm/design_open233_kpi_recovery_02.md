@@ -324,3 +324,83 @@ rep27(委任_04)の結果: Safety 0・Cost達成・Human Review 3件(`safety_A4`
  - 残るリスク(推定): 同じ文を指す2つのclaimが**別の問題**を指す場合、先行Rewriteが一方しか直さないことがある。carry-forwardの完全包含はissueの同一性を問わない(rep22 T3以来の既存仕様、全文Recheckとcycle 2が最終担保)ため、後続の指摘は次cycleで再検出される。cycle 3到達率は§12-3で扱う。
 
 テスト(`TestL6CarryForwardPrecedence`、`er052_open233_self_recovery_flow_runner_01_test_01.py`): A4/A5のrep27実データによる再現(是正後=covered・Rewriteなし/是正前=二重Rewrite/L6 OFF=rep24と同じ/先行Rewriteなしならself L6の結果を使う/規則(2)の一致・不一致)。runner単体608・er052回帰652 pass、全体回帰は基準11件(6 failure+5 error、他の既存失敗)以外の新規なし。
+
+### 12-2 neg3 s1 `unconfirmed_after_reverify`のRCA(¥0。確認と未確認を区別する)
+
+**最重要の確認事項: rep27を含む全ログに、Recheck・再確認(`recheck_confirm`)の「raw応答全文」は保存されていない(確認)**。runnerは`run_recheck`(1712行)・`run_recheck_confirm`(1878行)の応答を、`call_log`へ`overall_status`・`all_prior_issues_resolved`・費用・`prompt_sha256`だけ残し、`prior_issues_resolved`(項目別の解消判定・説明)と再確認の`deviations`は**どこにも記録していなかった**(Recheck本体の`deviations`は`all_deviations_raw.rechecks`に残るが、再確認のものは無い)。API再実行は¥0制約に反するため行わない。したがって「再確認が返したdeviation claim・severity・issueの逐語」は**入手不能**(未確認)であり、claimの仮ラベルは付けられない。代わりに、(a)promptを決定論に再構築して`prompt_sha256`の一致で正しさを検証し、(b)記録済みの値から確定できる事実を全て列挙し、(c)次回runで逐語が残るよう**記録専用の追加**(挙動不変)を入れた。
+
+**(3) 両callのprompt(確認、再構築+SHA一致、`er052_output/open233_kpi_recovery_02_offline_01/rca_neg3_prompt_reconstruct_01.py`・`.json`)**: Recheck・再確認とも、再構築したpromptの`sha256`がcall_logの`prompt_sha256`と**完全一致**(Recheck `2b397a3b...be524`、再確認 `b20a99a6...5b222`)。`prior_issues`は委任_01の是正が効いており(`prior_issue_text_sources=["current_text"]`)、現行本文の置換後の文が渡っている。逐語:
+
+```
+- index=0: fact_id=HF-009 | claim_in_article=The fee plan left the stage, but the prices themselves quickly returned. | issue=The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger. | explanation=The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices.
+```
+
+再確認callの末尾に追加された指示(逐語、cite-or-release+Rewrite前後の対):
+
+```
+【追加指示: 今回のRewriteで変更された対象文】
+以下の文は、前回指摘の解消を試みるために変更されました(未解消判定の参考にしてください):
+- before: The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.
+  after: The fee plan left the stage, but the prices themselves quickly returned.
+```
+
+**prior_issuesの文言がCheckerに「未解消」と誤読させる余地(推定)**: `issue`/`explanation`は**書き換え前の文**(「events ... quickly returned」)の欠陥を述べたまま、`claim_in_article`だけが書き換え後の文になっている(「claim_in_article=書き換え後」+「issue=書き換え前の欠陥」の組)。書き換え後の文にも「quickly returned」が残るため、Checkerが`issue`の語に引きずられ`resolved=false`と答える余地はある(推定、逐語未確認)。ただし、委任_01の是正(現行本文化)後のrep26・rep27でも、neg3は全4 run(rep26 s1・s2、rep27 s1・s2)でRecheckが自己矛盾した(後述)ため、**自己矛盾の主因が`claim_in_article`の本文取り違えでないことは確認**できる(現行本文化では消えていない)。
+
+**(1)Recheck(確認できる値のみ、rep27 neg3 s1 cycle 1)**: `overall_status=LEDGER_COMPLIANT`、記録された`deviations=[]`(`all_deviations_raw.rechecks[0]`)、コードが計算した`all_prior_issues_resolved=False`。`all_prior_issues_resolved`は`len(resolved)==len(prior_issues) and all(resolved)`(runner 1774行、`er003_v1_en_direct_vfl_01_generate.py` 826行と同一式)。`prior_issues`は1件なので、**`prior_issues_resolved[0].resolved=false`、または返却件数が1でない**のどちらか(どちらか不明)。raw応答全文は未保存(未確認)。
+**(2)再確認(確認できる値のみ)**: `overall_status=LEDGER_DEVIATION`、`all_prior_issues_resolved=True`(cite-or-release後、`released_count=0`=未解消と答えた項目はなく、Rewrite対象文は解消と判断)。`overall_status`はCheckerのモデル出力(`classify_parsed_result_trial`は`parsed.get("overall_status")`をそのまま返す、`er051_open233_checker_trial_variant_01.py` 175行)で、`deviations`の件数・severity・claim・issueは**未保存**。**したがって「再確認が返したdeviation claimの特定・仮ラベル(重大/軽微/問題なし)」は、本委任では確定できない(未確認)**。「Rewrite後の文への新規指摘/別の文への新規指摘/空(deviationsなしでstatusだけDEVIATION)」のどれかも決められない。
+**確認できる傍証**: (i)書き換え後の文`The fee plan left the stage, but the prices themselves quickly returned.`は、Ledger HF-009(「Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻った」)と照合して**問題なし**(私の目視の仮ラベル、正式基準の機械適用ではない)。neg3は`expected_group_label=ACCEPTABLE(Normal群)`の記事であり、本文の他の文(例: `Normally, removing the fee plan would seem likely to calm oil prices.`)に対する新規指摘の余地はあるが、実際の指摘は不明。(ii)同じ書き換え後の文が、rep26 s2(再確認=COMPLIANT・解消)・rep23 s2(再確認=DEVIATION)・rep27 s1(再確認=DEVIATION)で出ており、同一文で再確認の結論が割れた=**Checkerの確認callの非決定性**(確認)。
+
+**(4)対比(確認、各instance JSON)**:
+
+| run | 書き換え後の文(In one line) | regen | Recheck | 再確認 | 結果 |
+|---|---|---|---|---|---|
+| rep23 s2 | `...but the prices themselves quickly returned.` | あり | COMPLIANT∧all=False | DEVIATION∧True | STAGE4 |
+| rep27 s1 | 同上 | あり | 同上 | DEVIATION∧True | STAGE4 |
+| rep26 s2 | 同上 | あり | 同上 | COMPLIANT∧True | RESOLVED_REWRITE |
+| rep27 s2 | `...but the concerns around oil prices continued—and the prices themselves quickly returned.` | なし | 同上 | COMPLIANT∧True | RESOLVED_REWRITE |
+| rep23 s1 | `...events surrounding oil prices continued. The prices themselves quickly returned.` | あり | 同上 | COMPLIANT∧True | RESOLVED_REWRITE |
+| rep26 s1 | `...events around oil prices continued, and the prices themselves quickly returned.` | あり | 同上 | COMPLIANT∧True | RESOLVED_REWRITE |
+
+DEVIATIONになった2件はどちらも「継続していた出来事」の言及を**削る**書き換え(`...prices themselves quickly returned.`)で、passした4件のうち3件は出来事の継続を残す書き換え。ただし同じ「削る」書き換えのrep26 s2は再確認=COMPLIANTで通っており、**文面だけでは決まらない**(同一文3件中2件がDEVIATION、n小)。rep27 s1とs2の差は、書き換え後の文が「削る型/残す型」であること(s1はregenを経ても同じ`vocab_difficulty_increased_fragment`で同一文に収束)。
+
+**既存ログ全体の集計(確認、`agg_stage4_reasons_01.py`・`.json`・`_stdout.txt`、instance JSON 521件)**:
+- `unconfirmed_after_reverify` 10件(iter3 neg2・neg3、iter4 neg2・neg3、iter5 neg2・neg3、iter6 neg3、rep9 neg3、rep23 neg3、rep27 neg3)。**instanceはneg3(7件)とneg2_meta_refresh_a2(3件)のみ**。
+- 再確認結果の型(記録されている範囲): iter3・iter4の4件=再確認も`LEDGER_COMPLIANT∧all_prior=False`(cite-or-release導入前)。iter5以降の6件(neg2 iter5、neg3 iter5・iter6・rep9・rep23・rep27)=`LEDGER_DEVIATION∧all_prior=True`(released 0)。**再確認の`deviations`の中身(claimあり/なし)を記録したログは0件**(記録欠落、今回是正)。
+- 自己矛盾(Recheckが`COMPLIANT∧all_prior=False`)の頻度: 全418 Recheck中33回(7.9%)。**neg3は28回中23回、neg2は8回中7回、それ以外は382回中3回(safety_er009_unsupported_new_claim)**。つまり自己矛盾は、委任文の想定する「特異な事象」ではなく、neg3/neg2に**ほぼ恒常的**な応答パターン。再確認を呼んだのはneg3 21回(DEVIATION 5回=24%)・neg2 6回(DEVIATION 1回)。再確認がDEVIATIONになった6件は全て最終的にSTAGE4。
+- 仮説(推定、raw未保存のため未確認): neg3/neg2(ACCEPTABLE記事)では、Checkerが`prior_issues_resolved`で「元指摘の趣旨がなお完全には解消していない」と答えつつ、全文の独立した逸脱としては挙げない(`deviations=[]`)状態が常態化しており、再確認は全文を再検査するため、本文の別箇所を新規に指摘する/しない揺れ(約24%)が出ている。
+- 記録欠落の是正(今回、記録専用、挙動不変): `cycle_record`へ`recheck_prior_issues_resolved`・`recheck_prior_issues_sent_count`・`recheck_confirm_deviations`(`raw_deviation_record`、MINORを含む全件)・`recheck_confirm_prior_issues_resolved`を追加した(`er052_open233_self_recovery_flow_runner_01.py`、Recheck直後と再確認直後)。次のrunから逐語が残る。
+
+### 12-3 再確認DEVIATIONの処理設計(比較。実装しない。Opus#12後)
+
+**現行(委任_11以来)**: Recheckが自己矛盾(`LEDGER_COMPLIANT∧all_prior=False`、runner 8238行`en_ambiguous`)→再確認1回(`recheck_confirm`)→再確認が`COMPLIANT∧all_prior=True`ならRESOLVED_REWRITE、そうでなければSTAGE4(8276行`unconfirmed_after_reverify`、fail-closed。次cycleの空deviationsによる静かな降格を防ぐ目的)。再確認が返した`deviations`は**捨てている**(8280行の`stage1_deviations`はRecheck本体のdeviationsから作り、再確認のものは使わない)。これがHuman Review 0のKPIに対する構造的な穴: 通常のRecheck→DEVIATIONは、MAJORがStage 2を通ってcycle 2へ進む(Human Reviewへ直行しない)のに、**同じ「全文再検査でDEVIATION」が再確認経由だとStage 2を通らずSTAGE4へ直行する**不整合がある。
+
+**案N1(再確認DEVIATIONを通常のRecheck結果として既存cycle内で処理)**: 再確認が`DEVIATION`なら、`stage1_deviations=[confirm_parsed.deviationsのMAJOR]`として通常のRecheck不成立の経路(8280行以降、`cycle += 1`→Stage 2[Tier 0/S1含む]→Rewrite→Recheck)へ流す。`MAX_CYCLES=2`・`HARD_MAX_CYCLES=3`・same_claim_fact_id_reblocked・extra_cycle等の既存上限は不変。MAJORが空(statusだけDEVIATION)の場合は、(N1-a)従来どおりSTAGE4(fail-closed維持)、または(N1-b)「prior_issuesのrangeに対するladder次段のRewrite」として扱う(新しい処理=複雑化、評価済みの文を問題なしでも書き換える=不要Rewrite増のリスク)。**推奨はN1-a**(空のDEVIATIONの事例は記録欠落のため件数不明)。
+**案N2(再確認2回、一致時のみ採用、割れたらDEVIATION側をN1で処理)**: 追加call 1回(再確認の実績は約¥0.20〜0.42/回、本委任の見積り¥0.27)。neg3/neg2は自己矛盾がほぼ恒常的なので、2回目の再確認が事実上毎回走る(neg3 28 Recheck中23回=82%で+¥0.27なら約+¥0.22/neg3 run)。割れた場合の処理は結局N1。N2単独はCheckerの非決定性を平均化するだけで、Stage 2の判定に代わらず根本対策でない。
+**案N3(prior_issues文言の明確化)**: `issue`/`explanation`が書き換え前の文の欠陥を述べたまま`claim_in_article`だけ現行本文、という不整合(12-2)を、「この文は修正済みの現行本文です。元の指摘(下記issue)が解消されているかを判定してください」と明示する。Checker本体Prompt・Schemaは不変(`build_prior_issues_instruction`[`er003_v1_en_direct_vfl_01_generate.py` 678行]はProduction共通。変更するならTrial側で追記文だけ足す)。ただし**rep26・rep27で現行本文を渡した後も自己矛盾が続いた**(neg3 4/4 run)ため、効果は未知(主因かどうか未確認)。追加call 0・非決定性を増やさない・不要Rewriteを増やさないが、効かない可能性が高い(推定)。
+
+| 観点 | N1 | N2 | N3 |
+|---|---|---|---|
+| Human Reviewへの効果(既存の再確認DEVIATION 6件) | 6件とも通常のStage 2へ進む。Stage 2が降格すればRESOLVED_*(neg3はACCEPTABLE記事)、BLOCKING維持ならcycle 2のRewrite。**STAGE4になる経路はcycle 2以降の既存経路に限る**。実測は未(再確認のdeviationsが未保存でreplay不能、次回run後) | 割れた分はN1と同じ。自己矛盾そのもの(neg3 82%)は減らない | 効果不明(本文取り違えは主因でない)。効けば再確認の発生自体が減る |
+| Safety | DEVIATION側へ倒す(安全側)。Stage 2は既存どおり判定(Tier 0・S1・Tier 1'含む、降格ガードは不変)。**Human Reviewへ倒す代わりにStage 2へ渡す**=KPIに沿う | 同左 | 変化なし(Checker判定は不変) |
+| 不要Rewrite | 再確認の新規指摘が軽微以下ならStage 2で降格しRewriteされない。BLOCKING判定時のみRewrite(降格精度は既存のD\*′構成に依存) | 同左 | 増えない |
+| 費用 | 追加call 0(再確認のdeviationsを捨てずに使うだけ)。cycle 2に進む場合のみ既存cycle分(実績: rep24・rep27 計76 run中cycle 2到達9件) | +約¥0.27/再確認(neg3/neg2は事実上毎回) | 0 |
+| 非決定性 | 増えない(既存のStage 2を通す) | 増える方向(Checker呼び出しが増える) | 増えない |
+| cycle上限との関係 | `MAX_CYCLES=2`・`HARD_MAX_CYCLES=3`の内側。cycle 3到達は実績0件(rep24・rep27)=増加見込みは小(推定) | 同左 | 影響なし |
+| Production配線時の整合 | Productionの再検査(`er012_e_family_entertainment_two_level_runner_01.py` 410〜430行)は、再生成後に`COMPLIANT∧all_resolved`でなければSTOP(RuntimeError)で、**再確認callという仕組み自体がTrial専用**(`er003`の`run_deviation_check`にも無い)。N1の配線はProduction再検査経路の設計(再確認callを入れるか、自己矛盾を直接STOPにするか)と一体で決める必要がある。Trial側の変更は`er052_open233_*`の局所(`stage1_deviations`の代入)。**Production配線は本委任の範囲外** | 同左(さらにcallが増える) | `build_prior_issues_instruction`はProduction共通。Trial側のみ追記文を足す場合、Productionへは別判断 |
+
+**推奨: N1(N1-a)を主とし、N3を併用候補とする(N2は不採用)**。根拠: (1)現行の最大の欠陥は「同じ全文再検査のDEVIATIONが、再確認経由だとStage 2を通らずSTAGE4になる」不整合で、N1はそれを既存の通常経路へ合流させる最小の変更(追加call 0・新しいretry loopなし・cycle上限は既存のまま)。(2)Human Review 0のKPIに直接効く唯一の案(再確認DEVIATION 6件をStage 2へ渡す)。(3)Safetyを緩めない(Stage 2は既存の降格ガードのまま、降格しなければRewrite)。(4)N3は追加call 0・リスクなしだが効果が未確認のため、N1実装後にRecheckの自己矛盾率(neg3 82%)が下がるか副次的に観察する位置づけ。(5)N2は費用・非決定性を増やすだけで、割れた場合の処理が結局N1。**未確認のリスク**: N1は再確認のdeviationsの中身(新規指摘がStage 2で降格されるか、BLOCKINGになるか)が未測定。BLOCKINGと判定された場合はcycle 2のRewrite(不要Rewrite増の可能性)になる。実装の前に、委任_06で記録専用の逐語(上記追加)を取るrunが必要(¥0では判定不能)。
+
+**残るSTAGE4経路の棚卸し(確認、`agg_stage4_reasons_01.json`。全521 instance件数。KPI構成=rep24〜27の件数を併記)**:
+
+| 経路(`stage4_reason`) | 発生箇所(runner行) | 全ログ件数 | rep24〜27 | 発生条件 | KPI 0へ向けた扱い |
+|---|---|---|---|---|---|
+| `violation_span_unverified` | 7951 | 6 | 2(rep24) | claim文字列が本文で確定不能(mismatch/multi/explanatory) | L6で縮小済み(rep27で0件)。ただし12-1のとおり、rep26・27で観測されたL6の復元は全て「同cycleで書き換え済みの文」への復元で、是正後はL6単独で働く実例が無い=L6の価値は未観測。技術是正(継続観察) |
+| `ladder_exhausted_without_full_rewrite` | 7970 | 10 | 2(rep27 A4・A5) | 全水準でRewriteのguardが失敗 | **12-1で縮小**。他の発生(rep16 neg3・rep18 A2A3×2・rep20 meta・iter8 3件)は旧構成で原因未分析。KPI構成でL6以外の原因があるかは未測定 |
+| `unconfirmed_after_reverify` | 8276 | 10 | 1(rep27 neg3) | 自己矛盾→再確認がCOMPLIANT∧解消でない | **設計(12-3 N1)**。Production配線時は再検査経路と一体で判断 |
+| `cycle_limit_exhausted` / `cycle_limit_exhausted_after_recheck` | 7834 / 8309 | 9 / 6 | 0 / 0 | cycle上限超過 | KPI構成で0件。上限は既存の安全装置で変更しない。発生は旧構成(iter3〜6、rep19〜22)の、同じfact_idの別箇所検出の分散 |
+| `same_claim_fact_id_reblocked` | 7791 | 23 | 0 | 同一claimがladder昇段後も再発 | KPI構成で0件(旧構成iter・rep14で発生)。未観測 |
+| `ja_deviation_unresolved` | 7738 | 12 | 0 | JA側の未解消 | `JA_MODE=english_only`で無効化(KPI構成で0件) |
+| `target_not_locatable` | 7951 | 2 | 0 | 対象文が一度も特定できない | iter8の2件のみ。span方式では`violation_span_unverified`へ統合 |
+| `degenerate_rewrite_output` | 8055 | 2 | 0 | title/hook/In one lineの消失・極端短縮 | rep9の2件のみ。KPI構成で0件 |
+
+**棚卸しの限界**: 件数はinstance JSONが残る範囲(521件、旧構成を含む)。KPI構成(rep24・26・27、計84 instance-run)のSTAGE4は、`violation_span_unverified` 2・`unconfirmed_after_reverify` 1・`ladder_exhausted_without_full_rewrite` 2の計5件。是正後に残る経路は`unconfirmed_after_reverify`(設計N1)と、未観測の`ladder_exhausted`(L6以外の原因)・`violation_span_unverified`(L6が働かないcase)。Stage 1/API失敗等の例外終了は`run_log`の`exceptions`で別集計(rep27は例外0)。

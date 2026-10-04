@@ -1,0 +1,32 @@
+{
+ "prior_issues": [
+  {
+   "fact_id": "HF-009",
+   "claim_in_article": "The fee plan left the stage, but the prices themselves quickly returned.",
+   "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger.",
+   "explanation": "The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices."
+  }
+ ],
+ "prior_issues_instruction": "\n\n【追加指示: 前回指摘の解消確認】\n以下は前回のFact Checkで指摘された項目です。今回の記事で、各項目が個別に解消されたかを判定し、prior_issues_resolvedとして記録してください(indexは以下のリストの番号[0始まり]と対応させること。全項目について回答すること)。\n- index=0: fact_id=HF-009 | claim_in_article=The fee plan left the stage, but the prices themselves quickly returned. | issue=The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price movement. It changes continued events into returning events and asserts a causal role not established by the Ledger. | explanation=The timing changes from concerns that continued to events that returned, and the sentence adds an unsupported causal link between those events and oil prices.",
+ "pairs": [
+  {
+   "before": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "after": "The fee plan left the stage, but the prices themselves quickly returned."
+  }
+ ],
+ "confirm_tail": "\n\n【追加指示(委任_13、cite-or-release)】各項目についてresolved=falseと判定する場合、その根拠として、現在の記事本文(article_text)に実在する文をそのまま逐語引用してremaining_sentenceへ記載してください(要約や言い換えは不可、記事本文に無い文を書いてはいけません)。resolved=trueの場合、remaining_sentenceは空文字列(\"\")にしてください。\n\n【追加指示: 今回のRewriteで変更された対象文】\n以下の文は、前回指摘の解消を試みるために変更されました(未解消判定の参考にしてください):\n- before: The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.\n  after: The fee plan left the stage, but the prices themselves quickly returned.",
+ "recheck": {
+  "sha_reconstructed": "2b397a3bd4714c85c4abe771efee64fdbd92c6c7bbf71e85afb8d0819b5be524",
+  "sha_logged": "2b397a3bd4714c85c4abe771efee64fdbd92c6c7bbf71e85afb8d0819b5be524",
+  "match": true,
+  "logged_status": "LEDGER_COMPLIANT",
+  "logged_all_prior": false
+ },
+ "confirm": {
+  "sha_reconstructed": "b20a99a68b5019d3c42c9404e50c3008f1fd22806121d7c8fd62c0c0dfd5b222",
+  "sha_logged": "b20a99a68b5019d3c42c9404e50c3008f1fd22806121d7c8fd62c0c0dfd5b222",
+  "match": true,
+  "logged_status": "LEDGER_DEVIATION",
+  "logged_all_prior": true
+ }
+}

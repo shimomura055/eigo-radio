@@ -4337,3 +4337,14 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 - 残存リスクの明示(Fable判断2): known6は観測済みの流出クラス(`so`型)を閉じるが、未観測の接続語型の系統誤りには効かず、S1(偶発的な外れ向け)でも閉じない。今回rep27ではTier 0の発火が0件であり、Tier 0がTrial規模で効いたことは確認できていない(B3はLLM判定で検出)。目録拡張が誤停止を生んだ事実は「接続語の有無だけでは因果主張を判別できない(否定scope・多義語)」という知見として記録。
 - 出力: `er052_output/open233_self_recovery_flow_runner_01_rep26/`(`summary_01.md/.json`)、`er052_output/open233_self_recovery_flow_runner_01_rep27/`(`summary_01.md/.json`、`summary_kpi_01.json`、`blocking_claims_01.md`)、スクリプト`er052_open233_self_recovery_flow_runner_01_rep26_known_01.py`・`rep27_full_01.py`・`rep27_agg_01.py`。
 - 注: `instances_s*/*.json`の`switches`欄は`CAUSAL_FLOOR_VOCAB`を含まない(既存の記録形式。`run_log_main.json`の`switches`と本REPORTで`known6`を記録)。
+
+## 55. KPI-RECOVERY-REDESIGN-02 委任_05: rep27 Human Review 3件のRCA・L6×carry-forward順序の是正・再確認DEVIATION処理設計・Opus#12 packet(2026-10-04、費用¥0、Phase累計¥641.85)
+
+結論: **A4/A5(2件)は技術是正を実装し¥0 replayで二重Rewriteの解消を確認。neg3(1件)は設計案N1〜N3を比較(推奨N1、未実装)。raw応答が未保存のため、再確認が返したdeviationの内容は未確認。`IN_PROGRESS`のまま、`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`ではない、Production未変更。** 有料runなし(¥0)。
+
+- (確認)A4/A5: 同cycleの先行Rewriteで文が書き換わると、同じ文を引用符なしで指す後続claimが`mismatch`になり、L6が書き換え済みの文を復元→2回目のRewrite→guard失敗→ladder枯渇(rep24=L6 OFFでは`covered_by_earlier_rewrite_in_cycle`で合格)。是正=`l6_carry_forward_precedence`(runner、`run_stage3_for_claim_spans`から呼ぶ)。L6の復元が(1)cycle開始時点の照合で先行Rewrite済み、または(2)先行Rewriteの置換後の文と完全一致、ならcovered。`handoff.resolution.l6_skipped`を記録。追加call 0。設計書§12-1。
+- (確認)¥0 replay(`replay_cf_l6_order_01.*`): A4 rec 2・3、A5 rec 1がcoveredへ(再Rewriteなし)。rep26・27のL6関与の復元(rep26 6記録・rep27 9記録)は全て「書き換え済みの文への復元」型で、変わる記録は全て同型(neg5 HF-007 3件、changed_number 1件、A4 2件、A5 1件)。先行Rewriteのないcycleで単独に働いたL6の例は証跡に0件(L6本来の価値は未観測、規則(2)単独が効いた実例もなし)。委任文の「他のL6復元が変わらないこと」は満たされない(全て同型のため意図した変化)。
+- (確認)テスト: 新規7件(`TestL6CarryForwardPrecedence`)、runner単体608・er052回帰652 pass、全体回帰4575件は基準11件(6 failure+5 error)以外の新規なし。
+- (確認)neg3: **Recheck・再確認のraw応答は全ログに未保存**(従来は`prior_issues_resolved`・再確認の`deviations`を記録していなかった)。promptは決定論に再構築しsha256一致(`rca_neg3_prompt_reconstruct_01.*`)。`prior_issues`は現行本文(`current_text`)が渡っており、`issue`/`explanation`は書き換え前の文の欠陥を述べたまま。Recheckの自己矛盾(COMPLIANT∧all_prior=False)は418 Recheck中33(neg3 23/28・neg2 7/8・他3/382)=neg3/neg2にほぼ恒常的。再確認がDEVIATIONになったのはneg3 21回中5回・neg2 6回中1回、全て最終STAGE4。再確認のdeviation claimの特定・仮ラベルは**不能(未確認)**。記録専用の追加(`recheck_prior_issues_resolved`・`recheck_confirm_deviations`等、挙動不変)で次runから逐語が残る。
+- (推測)設計: 現行は再確認のdeviationsを捨て、Stage 2を通さずSTAGE4へ直行する(通常のRecheck→DEVIATIONはStage 2を通る不整合)。N1=再確認DEVIATIONのMAJORを通常のstage1_deviationsとして既存cycleへ流す(追加call 0・cycle上限不変、推奨)。N2=再確認2回(+約¥0.27、不採用)。N3=prior_issues文言の明確化(効果不明、併用候補)。Production配線は再確認callがTrial専用のため別設計。設計書§12-3(比較表・残STAGE4経路の棚卸し表)。
+- 出力: 設計書`docs/pm/design_open233_kpi_recovery_02.md`§12、`er052_output/open233_kpi_recovery_02_offline_01/`(`replay_cf_l6_order_01.*`・`rca_neg3_prompt_reconstruct_01.*`・`agg_stage4_reasons_01.*`)、`docs/pm/opus_packet_open233_kpi_recovery_02_02.md`(約12,600字)。
