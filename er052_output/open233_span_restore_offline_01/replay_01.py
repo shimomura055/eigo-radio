@@ -17,6 +17,8 @@ sys.stdout.reconfigure(encoding="utf-8")
 import er052_open233_self_recovery_flow_runner_01 as runner  # noqa: E402
 
 OUT_DIR = "er052_output/open233_span_restore_offline_01"
+USE_RUNNER = "--use-runner" in sys.argv
+OUT_SUFFIX = next((a.split("=", 1)[1] for a in sys.argv if a.startswith("--out-suffix=")), "_01")
 runner.VS_MATCH_EXT = True      # 実flow(rep24)と同じ照合設定
 runner.VS_EXPLAIN_SPLIT = True
 
@@ -196,7 +198,21 @@ def locate_part(art: Art, part: str, role: str, relaxed: bool = False):
 
 
 # ---------------- L6 本体 ----------------
+def _l6_runner(claim: str, en: str) -> dict:
+    """runner実装(`vs_sentence_restore_resolve`)の結果を、試作`l6_restore`と同じ形(status/reason/restored/span等)へ。"""
+    i = runner.vs_sentence_restore_resolve(claim, en)
+    return {"status": i["status"], "reason": i["reason"], "restore_reason": i["restore_reason"], "fired_by": i["fired_by"],
+            "restored": i["restored_sentence"], "span": i["span"], "n_sentences": i["n_sentences"],
+            "fragments": i["fragments"], "detail": i.get("detail"), "runner_info": i}
+
+
 def l6_restore(claim: str, en: str, art: Art | None = None) -> dict:
+    if USE_RUNNER:
+        return _l6_runner(claim, en)
+    return _l6_proto(claim, en, art)
+
+
+def _l6_proto(claim: str, en: str, art: Art | None = None) -> dict:
     """base照合(L0〜L5+P-strict-closed)で確定しなかったclaimに対する完結文復元の試作。
     status: restored / cand0 / cand_multi / guard_rejected / not_fired / not_applicable。"""
     art = art or Art(en)
@@ -493,6 +509,37 @@ def main():
             summary["type_d_P_rejection_reasons"].append({"claim": r["claim"][:160], "P_reason": es.get("reason"), "fragments": es.get("fragments"),
                                                             "dropped_remainders": es.get("dropped_remainders")})
 
+    # ---- 委任_66: runnerの`VS_SENTENCE_RESTORE=True`経由(`_resolve_claim_string`)が、L6本体の直接呼び出しと一致するか、
+    #      およびbaseで確定済みのclaimが旗ONでも不変か(OFF/ONの確定結果の同一性)
+    if USE_RUNNER:
+        mism_on, mism_resolved, n_on, n_res = [], [], 0, 0
+        for k, u in uniq.items():
+            if u["base_status"] == "resolved":
+                n_res += 1
+                runner.VS_SENTENCE_RESTORE = True
+                try:
+                    on = runner._resolve_claim_string(u["claim"], u["en"], None)
+                finally:
+                    runner.VS_SENTENCE_RESTORE = False
+                off = runner._resolve_claim_string(u["claim"], u["en"], None)
+                if on != off:
+                    mism_resolved.append(u["claim"][:120])
+                continue
+            n_on += 1
+            direct = l6_restore(u["claim"], u["en"])
+            runner.VS_SENTENCE_RESTORE = True
+            try:
+                on = runner._resolve_claim_string(u["claim"], u["en"], None)
+            finally:
+                runner.VS_SENTENCE_RESTORE = False
+            via_flag_restored = on["status"] == "resolved" and on.get("level") == runner.VS_L6_LEVEL
+            if via_flag_restored != (direct["status"] == "restored") or (
+                    via_flag_restored and on["ranges"][0] != direct["restored"]):
+                mism_on.append(u["claim"][:120])
+        summary["runner_flag_on_consistency"] = {
+            "unresolved_checked": n_on, "mismatch_vs_direct_l6": mism_on,
+            "base_resolved_checked": n_res, "base_resolved_changed_by_flag_on": mism_resolved}
+
     # ---- n-gram一意性(最小長しきい値の根拠): rep24で使われる全記事
     arts_u = {a: 1 for a in runner_fixtures().values()}
     ngram = {}
@@ -558,7 +605,7 @@ def main():
     summary["cost_basis"] = cost_basis()
 
     json.dump({"summary": summary, "unresolved": unresolved, "resolved_mid_number_edge": mid_num_resolved,
-               "must_check": must, "synthetic": synth, "stress": summary["stress"]}, open(f"{OUT_DIR}/results_01.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
+               "must_check": must, "synthetic": synth, "stress": summary["stress"]}, open(f"{OUT_DIR}/results{OUT_SUFFIX}.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1, default=str)
     write_md(summary, unresolved, mid_num_resolved, must, synth)
     print(json.dumps({k: v for k, v in summary.items() if k not in ("synthetic", "must_check", "ngram_uniqueness_over_all_articles", "stress")}, ensure_ascii=False, indent=1))
     print("ngram:", json.dumps(summary["ngram_uniqueness_over_all_articles"]))
@@ -732,6 +779,8 @@ def write_md(summary, unresolved, mid_num_resolved, must, synth):
               "unresolved_unique_non_japanese", "restored_unique", "restored_unique_non_japanese",
               "resolved_results_changed_by_L6", "resolved_with_mid_number_edge", "rep24_recorded_vs_replay_base_status_mismatch"):
         L.append(f"- {k}: {summary[k]}")
+    if "runner_flag_on_consistency" in summary:
+        L.append(f"- runner旗ON(`_resolve_claim_string`経由)の一致確認: {json.dumps(summary['runner_flag_on_consistency'], ensure_ascii=False)}")
     L.append(f"- type別(unique): {json.dumps(summary['type_counts_unique'], ensure_ascii=False)}")
     L.append(f"- type別(runs): {json.dumps(summary['type_counts_runs'], ensure_ascii=False)}")
     L.append(f"- L6判定別(unresolved unique): {json.dumps(summary['l6_status_unique'], ensure_ascii=False)}")
@@ -781,7 +830,7 @@ def write_md(summary, unresolved, mid_num_resolved, must, synth):
     for r in mid_num_resolved:
         L.append(f"- claim: `{r['claim'][:200]}` / 範囲先頭: {r['mid_number_edge_in_resolved_range'][0][:80]} / 出現{r['n_occ']}回 {r['occurrences'][:2]}")
         L.append(f"  - 境界修正後のL6: {json.dumps(r['l6_if_boundary_fixed'], ensure_ascii=False)[:500]}")
-    open(f"{OUT_DIR}/results_01.md", "w", encoding="utf-8").write("\n".join(L) + "\n")
+    open(f"{OUT_DIR}/results{OUT_SUFFIX}.md", "w", encoding="utf-8").write("\n".join(L) + "\n")
 
 
 if __name__ == "__main__":

@@ -6015,5 +6015,653 @@ class TestMotiveDocAlignment60(unittest.TestCase):
         self.assertIn("V7(1)(イ)への「仕組み・意図」の追加はしない", t)
 
 
+# ============================================================
+# 委任_66: L6「完結文復元」(Trial専用スイッチ`VS_SENTENCE_RESTORE`、既定OFF)+Opus#9是正のテスト。すべて¥0・ネットワークなし。
+# 実例の2件(rep24 A2A3 s2 cycle2・B3 s2 cycle2)と`6 percent`型は、rep24のinstance JSONがある場合に実データで固定する。
+# ============================================================
+L6_ART = (
+    "# Oil Plan Turns\n\n## In one line\n\n"
+    "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the flashy 20% "
+    "plan left the stage, but the chart only pulled back briefly before recovering.\n\n"
+    "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the "
+    "Gulf states were working on with the United States. "
+    "After the announcement, Brent was up about 2.6 percent, because attacks between the United States and Iran "
+    "continued, fears of a blockade at sea grew, and traders worried about tanker safety near the strait. "
+    "The chart later cooled. The chart later cooled down quickly.\n\n"
+    "Mr. Smith of the U.S. Treasury said the group met on Jan. 5 in St. Louis to review the plan. He said no. "
+    "Then he left for No. 5 Street. "
+    "The council approved the new harbor budget on Monday after a long debate about costs. "
+    "Residents objected to the proposed tunnel fees during the public hearing last week.\n"
+)
+L6_S_JULY = ("On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals "
+             "that the Gulf states were working on with the United States.")
+L6_S_BRENT = ("After the announcement, Brent was up about 2.6 percent, because attacks between the United States and "
+              "Iran continued, fears of a blockade at sea grew, and traders worried about tanker safety near the strait.")
+L6_S_ONELINE = ("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, while the "
+                "flashy 20% plan left the stage, but the chart only pulled back briefly before recovering.")
+L6_S_MR = "Mr. Smith of the U.S. Treasury said the group met on Jan. 5 in St. Louis to review the plan."
+L6_S_COUNCIL = "The council approved the new harbor budget on Monday after a long debate about costs."
+
+
+def _l6_on():
+    return mock.patch.multiple(runner, VS_SENTENCE_RESTORE=True, VS_MATCH_EXT=True, VS_EXPLAIN_SPLIT=True)
+
+
+def _l6_res(claim, art=None):
+    with _l6_on():
+        return runner._resolve_claim_string(claim, art or L6_ART)
+
+
+def _l6_info(claim, art=None):
+    with _l6_on():
+        return runner.vs_sentence_restore_resolve(claim, art or L6_ART)
+
+
+def _l6_state():
+    return {"cumulative_jpy": 0.0, "cumulative_calls": 0, "cumulative_errors": 0, "history": []}
+
+
+class TestL6SwitchOffUnchanged66(unittest.TestCase):
+    """スイッチ既定OFFで既存挙動が不変・legacy無影響。"""
+
+    CLAIMS = [
+        "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea grew",
+        "rump announced that the 20 percent plan would be replaced by trade and investment deals",
+        "On July 14, Trump announced that the 20 percent plan ... working on with the United States",
+        "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy "
+        "20% plan left the stage...",
+        L6_S_JULY, "“Prices stayed high.” This overstates the situation", "In one line", "not in the article at all, really",
+    ]
+
+    def test_default_off_and_cli_flag(self):
+        import inspect
+        self.assertFalse(runner.VS_SENTENCE_RESTORE)
+        self.assertIn("--vs-sentence-restore", inspect.getsource(runner.main))
+        self.assertIn("VS_SENTENCE_RESTORE", inspect.getsource(runner.run_instance))
+
+    def test_off_equals_p_path_for_every_claim(self):
+        with mock.patch.multiple(runner, VS_SENTENCE_RESTORE=False, VS_MATCH_EXT=True, VS_EXPLAIN_SPLIT=True):
+            for c in self.CLAIMS:
+                a = runner._resolve_claim_string(c, L6_ART)
+                b = runner._resolve_claim_string_p(c, L6_ART)
+                self.assertEqual(a, b, c)
+                self.assertNotIn("sentence_restore", a)
+
+    def test_on_does_not_change_claims_resolved_before_l6(self):
+        for c in (L6_S_JULY, "“Prices stayed high.” This overstates the situation",
+                  "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals"):
+            art = L6_ART + "\nPrices stayed high.\n"
+            with mock.patch.multiple(runner, VS_SENTENCE_RESTORE=False, VS_MATCH_EXT=True, VS_EXPLAIN_SPLIT=True):
+                off = runner._resolve_claim_string(c, art)
+            on = _l6_res(c, art)
+            self.assertEqual(off["status"], "resolved", c)
+            self.assertEqual(on, off, c)
+
+    def test_flag_requires_vs_match_ext(self):
+        c = "rump announced that the 20 percent plan would be replaced by trade and investment deals"
+        with mock.patch.multiple(runner, VS_SENTENCE_RESTORE=True, VS_MATCH_EXT=False, VS_EXPLAIN_SPLIT=True):
+            r = runner._resolve_claim_string(c, L6_ART)
+        self.assertNotEqual(r.get("level"), runner.VS_L6_LEVEL)
+        self.assertNotIn("sentence_restore", r)
+
+    def test_legacy_handoff_unaffected_by_flag(self):
+        full_text = "# Title\n\nSome sentence with a problem in it.\n\n## In one line\nA plan changed.\n"
+        claim_rec = {"claim_text": "Some sentence with a problem in it.", "rewrite_kind": "narrow_scope",
+                     "materiality": "BLOCKING", "basis": "ledger_conditions", "rewrite_hint": "",
+                     "dev": {"issue": "problem"}}
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": full_text}
+        outs = []
+        for flag in (False, True):
+            calls = []
+
+            def fake_llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+                calls.append(label)
+                return "Some sentence without the problem." if label.endswith("_e2_rewrite") else ""
+
+            with mock.patch.multiple(runner, VS_SENTENCE_RESTORE=flag, VS_MATCH_EXT=True,
+                                     HANDOFF_MODE=runner.HANDOFF_MODE_LEGACY), \
+                    mock.patch.object(runner, "simple_llm_call", side_effect=fake_llm):
+                res = runner.single_text_rewrite(None, _l6_state(), [], [], "t", fixture, "article_text", claim_rec)
+            outs.append((res["updated_text"], res["method"], calls))
+        self.assertEqual(outs[0], outs[1])
+
+    def test_e1_template_unchanged_for_non_l6(self):
+        self.assertEqual(runner.E1_RANGES_PROMPT_TEMPLATE_L6.replace("{focus_block}", ""),
+                         runner.E1_RANGES_PROMPT_TEMPLATE)
+        self.assertNotIn("focus_block", runner.E1_RANGES_PROMPT_TEMPLATE)
+
+
+class TestL6NumericBoundary66(unittest.TestCase):
+    """作業2-1: 数字に挟まれた`.`/`,`は語構成文字(VS_MATCH_EXT配下、新スイッチなし)。"""
+
+    def test_decimal_point_and_thousands_separator_are_word_chars_only_under_ext(self):
+        t = "Brent was up about 2.6 percent and 1,000 people came."
+        a = t.index("6 percent")
+        b = t.index("000 people")
+        with mock.patch.object(runner, "VS_MATCH_EXT", True):
+            self.assertFalse(runner.vs_word_boundary_ok(t, (a, a + len("6 percent"))))
+            self.assertFalse(runner.vs_word_boundary_ok(t, (b, b + len("000 people"))))
+            self.assertFalse(runner.vs_word_boundary_ok(t, (a - 2, a)))  # 「2.6」の途中(`2.`)で終わる切り方も不可
+            self.assertTrue(runner.vs_word_boundary_ok(t, (a - 2, a + len("6 percent"))))  # 2.6 percent
+            self.assertTrue(runner.vs_word_boundary_ok(t, (t.index("1,000"), t.index("1,000") + 5)))
+            self.assertTrue(runner.vs_word_boundary_ok(t, (t.index("came"), t.index("came") + 4)))
+        with mock.patch.object(runner, "VS_MATCH_EXT", False):  # OFFでは従来どおり(旧挙動の固定)
+            self.assertTrue(runner.vs_word_boundary_ok(t, (a, a + len("6 percent"))))
+
+    def test_sentence_final_period_after_digit_is_not_a_word_char(self):
+        t = "It rose to 85. Then it fell."
+        with mock.patch.object(runner, "VS_MATCH_EXT", True):
+            self.assertTrue(runner.vs_word_boundary_ok(t, (t.index("85"), t.index("85") + 2)))
+
+    def test_six_percent_claim_no_longer_resolves_by_base_and_goes_to_l6(self):
+        c = "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea grew"
+        with mock.patch.multiple(runner, VS_SENTENCE_RESTORE=False, VS_MATCH_EXT=True, VS_EXPLAIN_SPLIT=True):
+            base = runner._resolve_claim_string(c, L6_ART)
+        self.assertEqual(base["status"], "unverified")
+        self.assertEqual(base["reason"], "mismatch")
+        with mock.patch.multiple(runner, VS_SENTENCE_RESTORE=False, VS_MATCH_EXT=False, VS_EXPLAIN_SPLIT=True):
+            old = runner._resolve_claim_string(c, L6_ART)  # スイッチOFFの旧挙動(数値の途中から確定)
+        self.assertEqual(old["status"], "resolved")
+        self.assertTrue(old["ranges"][0].startswith("6 percent"))
+        r = _l6_res(c)
+        self.assertEqual(r["status"], "resolved")
+        self.assertEqual(r["level"], runner.VS_L6_LEVEL)
+        self.assertEqual(r["ranges"], [L6_S_BRENT])
+        self.assertEqual(r["sentence_restore"]["restore_reason"], ["truncated_head"])
+
+
+class TestL6FireConditions66(unittest.TestCase):
+    """発火条件(i)〜(iv)と記録。"""
+
+    def test_i_truncated_head_and_tail_restore_the_complete_sentence(self):
+        r = _l6_res("rump announced that the 20 percent plan would be replaced by trade and investment deals")
+        self.assertEqual((r["level"], r["ranges"]), (runner.VS_L6_LEVEL, [L6_S_JULY]))
+        self.assertEqual(r["sentence_restore"]["restore_reason"], ["truncated_head"])
+        r = _l6_res("Mr. Smith of the U.S. Treasury said the group met on Jan. 5 in St. Louis to rev")
+        self.assertEqual(r["ranges"], [L6_S_MR])
+        self.assertEqual(r["sentence_restore"]["restore_reason"], ["truncated_tail"])
+
+    def test_ii_ellipsis_tail_with_altered_word_and_mid_ellipsis(self):
+        r = _l6_res("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so "
+                    "the flashy 20% plan left the stage...")
+        self.assertEqual(r["ranges"], [L6_S_ONELINE])
+        self.assertIn("ellipsis_tail", r["sentence_restore"]["restore_reason"])
+        self.assertIn("anchor_with_substituted_words", r["sentence_restore"]["restore_reason"])
+        r = _l6_res("On July 14, Trump announced that the 20 percent plan ... working on with the United States")
+        self.assertEqual(r["ranges"], [L6_S_JULY])
+        self.assertEqual(r["sentence_restore"]["restore_reason"], ["ellipsis_mid"])
+
+    def test_iii_mid_ellipsis_parts_match_but_whole_does_not(self):
+        r = _l6_info("Concerns about US-Iran attacks, the sea blockade ... the chart only pulled back briefly before "
+                     "recovering")
+        self.assertEqual(r["status"], "restored")
+        self.assertEqual(r["restored_sentence"], L6_S_ONELINE)
+
+    def test_iv_anchor_with_foreign_words(self):
+        r = _l6_res("by trade and investment deals that the Gulf states were already working on with the United States")
+        self.assertEqual(r["ranges"], [L6_S_JULY])
+        sr = r["sentence_restore"]
+        self.assertEqual(sr["restore_reason"], ["anchor_with_substituted_words"])
+        self.assertEqual(sr["anchors"][0]["unmatched"], 1)
+        self.assertEqual(sr["original_claim"][:10], "by trade a")
+        self.assertEqual(sr["n_candidates"], 1)
+        self.assertEqual(sr["n_sentences"], 1)
+
+    def test_record_contains_fragments_span_and_restored_text_verbatim(self):
+        r = _l6_res("rump announced that the 20 percent plan would be replaced by trade and investment deals")
+        s, e = r["spans"][0]
+        self.assertEqual(L6_ART[s:e], r["sentence_restore"]["restored_sentence"])
+        self.assertEqual(tuple(r["sentence_restore"]["span"]), (s, e))
+        self.assertTrue(r["sentence_restore"]["fragments"])
+        self.assertEqual(L6_ART.count(r["ranges"][0]), 1)
+
+
+class TestL6Exclusions66(unittest.TestCase):
+    def test_japanese_claim_not_applicable(self):
+        i = _l6_info("日本語のclaimは対象外であることを確認するための文章です")
+        self.assertEqual((i["status"], i["reason"]), ("not_applicable", "claim_is_japanese"))
+
+    def test_explanatory_mixed_left_to_p_strict_closed(self):
+        c = ("“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 1” — the headline "
+             "and one-line summary also repeat this claim in other words")
+        i = _l6_info(c)
+        self.assertEqual((i["status"], i["reason"]), ("not_fired", "explanatory_mixed_left_to_P"))
+        r = _l6_res(c)
+        self.assertEqual(r["status"], "unverified")
+
+    def test_label_only_and_multi_match_are_never_touched(self):
+        with _l6_on():
+            r = runner._resolve_claim_string("In one line", L6_ART)
+        self.assertEqual((r["status"], r["reason"]), ("unverified", "label_only"))
+        self.assertNotIn("sentence_restore", r)
+        r = _l6_res("hart later cooled")  # 断片が2文に出現=base multi_match
+        self.assertEqual((r["status"], r["reason"]), ("unverified", "multi_match"))
+        self.assertNotIn("sentence_restore", r)
+
+    def test_label_only_range_is_refused_inside_l6(self):
+        art = "# T\n\n## In one line\nShort.\n"
+        a = runner._VsL6Art(art)
+        i = art.index("In one line")
+        self.assertEqual(runner._vs_l6_range_from(a, [(i - 3, i + len("In one line"))])[2], "label_only")
+
+    def test_candidate_multiple_is_unresolvable_and_recorded(self):
+        i = _l6_info("the chart later cooled ...")  # 同じ断片が2文に出現=候補複数(baseはmulti_matchで通常は到達しない)
+        self.assertEqual(i["status"], "cand_multi")
+        self.assertEqual(i["n_candidates"], 2)
+        self.assertIsNone(i["restored_sentence"])
+
+    def test_no_verbatim_anchor_is_cand0_and_unresolvable(self):
+        c = "Worries over attacks and shipping safety persisted, which is why the plan was dropped and prices dipped"
+        r = _l6_res(c)
+        self.assertEqual(r["status"], "unverified")
+        self.assertEqual(r["sentence_restore"]["status"], "cand0")
+        self.assertEqual(r["sentence_restore"]["reason"], "no_verbatim_anchor_in_article")
+
+    def test_exception_inside_l6_fails_closed(self):
+        with _l6_on(), mock.patch.object(runner, "_VsL6Art", side_effect=RuntimeError("boom")):
+            r = runner._resolve_claim_string("rump announced that the 20 percent plan would be replaced by trade", L6_ART)
+        self.assertEqual(r["status"], "unverified")
+        self.assertEqual(r["sentence_restore"]["status"], "exception")
+
+
+class TestL6Guards66(unittest.TestCase):
+    def test_threshold_constants(self):
+        self.assertEqual((runner.VS_L6_MIN_FRAG_WORDS, runner.VS_L6_MIN_FRAG_CHARS), (3, 12))
+        self.assertEqual((runner.VS_L6_MIN_ANCHOR_WORDS, runner.VS_L6_MIN_ANCHOR_CHARS), (4, 20))
+        self.assertEqual(runner.VS_L6_MAX_UNMATCHED_TOKENS, 6)
+        self.assertEqual(runner.VS_L6_MIN_COVER_RATIO, 0.5)
+        self.assertEqual((runner.VS_L6_MAX_SENTENCES, runner.VS_L6_MAX_RESTORED_CHARS), (2, 700))
+        self.assertEqual((runner.VS_L6_GAP_ALPHA, runner.VS_L6_RESIDUAL_MIN_WORDS), (3, 3))
+
+    def test_fragment_too_short(self):
+        i = _l6_info("he flashy 2")
+        self.assertEqual((i["status"], i["reason"]), ("guard_rejected", "fragment_too_short"))
+
+    def test_seven_substituted_words_is_cand0_six_is_ok(self):
+        base = "by trade and investment deals that the Gulf states were"
+        tail = "working on with the United States"
+        six = base + " one two three four five six " + tail
+        seven = base + " one two three four five six seven " + tail
+        self.assertEqual(_l6_info(six)["status"], "restored")
+        i = _l6_info(seven)
+        self.assertEqual(i["status"], "cand0")
+        self.assertTrue(i["reason"].startswith("unmatched_run_too_long(7>6)"))
+
+    def test_cover_ratio_below_half_is_cand0(self):
+        i = _l6_info("by trade and investment deals one two three four five six seven eight")
+        self.assertEqual(i["status"], "cand0")
+
+    def test_more_than_two_sentences_is_cand0(self):
+        c = ("ent was up about 2.6 percent, because attacks between the United States and Iran continued, fears of a "
+             "blockade at sea grew, and traders worried about tanker safety near the strait. The chart later cooled. "
+             "The chart later cooled down quickly. Mr. Smith of the U.S. Treasury said the group met on Jan. 5 in St. Lou")
+        i = _l6_info(c)
+        self.assertEqual(i["status"], "cand0")
+        self.assertTrue(i["reason"].startswith("spans_more_than_2_sentences"))
+
+    def test_restored_too_long_is_cand0(self):
+        long_sent = "Alpha " + " ".join(f"word{i}" for i in range(140)) + " omega."
+        art = "# T\n\n" + long_sent + "\n"
+        i = _l6_info("pha word0 word1 word2 word3 word4 word5", art)
+        self.assertEqual(i["status"], "cand0")
+        self.assertTrue(i["reason"].startswith("restored_too_long"))
+
+    def test_unbalanced_quote_is_closed_by_neighbour_within_two_sentences(self):
+        art = "# T\n\nOfficials said “this is not over. We will keep watching,” and prices rose sharply later.\n"
+        i = _l6_info("Officials said “this is not ove", art)
+        self.assertEqual(i["status"], "restored")
+        self.assertEqual(i["n_sentences"], 2)
+        self.assertEqual(i["restored_sentence"], art.strip().split("\n\n", 1)[1])
+
+    def test_unbalanced_quote_not_closable_is_cand0(self):
+        art = "# T\n\nOfficials said “this is not over. We will keep watching. Prices rose sharply later in the week.\n"
+        i = _l6_info("Officials said “this is not ove", art)
+        self.assertEqual(i["status"], "cand0")
+        self.assertTrue(i["reason"].startswith("unbalanced_quote_not_closable"))
+
+    def test_paragraph_boundary_is_not_crossed(self):
+        art = "# T\n\nFirst paragraph ends here and goes on a while longer than usual.\n\nSecond paragraph starts here.\n"
+        i = _l6_info("rst paragraph ends here and goes on a while longer than usu", art)
+        self.assertEqual(i["status"], "restored")
+        self.assertEqual(i["n_sentences"], 1)
+        self.assertNotIn("\n", i["restored_sentence"])
+
+
+class TestL6ResidualInclusionHoleA66(unittest.TestCase):
+    """Opus#9 穴A: アンカー外の語が記事の別の文に逐語で存在するなら、復元しない(黙って縮小しない)。"""
+
+    def test_residual_found_only_outside_restored_range_is_rejected(self):
+        i = _l6_info("The council approved the new harbor budget on Monday after a long debate about costs and the public hearing")
+        self.assertEqual((i["status"], i["reason"]), ("guard_rejected", "residual_outside_restored_range"))
+        self.assertIsNone(i["restored_sentence"])
+
+    def test_residual_found_inside_restored_range_is_accepted(self):
+        i = _l6_info("The council approved the new harbor budget on Monday after a long debate about costs and the new harbor")
+        self.assertEqual(i["status"], "restored")
+        self.assertEqual(i["restored_sentence"], L6_S_COUNCIL)
+        self.assertTrue(i["residual_check"])
+        self.assertTrue(all(x["inside_restored_range"] >= 1 for x in i["residual_check"]))
+
+    def test_short_residual_words_are_not_checked(self):
+        # 残りが1語(`so`のような記事中どこにでもある語)だけなら残余検査の対象外(B3 s2の形が通る)
+        i = _l6_info("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so "
+                     "the flashy 20% plan left the stage...")
+        self.assertEqual(i["status"], "restored")
+
+    def test_ambiguous_anchor_words_outside_range_are_rejected(self):
+        art = L6_ART + "The chart later cooled down quickly during the week.\n"
+        i = _l6_info("The council approved the new harbor budget on Monday after a long debate and the chart later cooled down", art)
+        self.assertEqual(i["status"], "guard_rejected")
+        self.assertEqual(i["reason"], "residual_outside_restored_range")
+
+
+class TestL6AnchorGapHoleB66(unittest.TestCase):
+    """Opus#9 穴B: アンカー間隔の整合・unmatched>=0・cover二重計上の修正。"""
+
+    def test_gap_inconsistent_is_rejected(self):
+        c = ("The council approved the new harbor budget on Monday also "
+             "tunnel fees during the public hearing last week")
+        i = _l6_info(c)
+        self.assertEqual(i["status"], "guard_rejected")
+        self.assertTrue(i["reason"].startswith("anchor_gap_inconsistent"), i)
+
+    def test_gap_consistent_within_alpha_is_accepted(self):
+        c = "by trade and investment deals that the Gulf states were so working on with the United States"
+        i = _l6_info(c)
+        self.assertEqual(i["status"], "restored")
+        self.assertEqual(i["anchors"][0]["gap"], {"article_gap_words": 0, "claim_gap_words": 1})
+
+    def test_overlapping_anchors_in_claim_are_rejected_not_negative_unmatched(self):
+        art = ("# T\n\nOne two three four five six seven eight nine ten.\n\n"
+               "Five six seven eight nine ten eleven twelve thirteen fourteen.\n")
+        i = _l6_info("one two three four five six seven eight nine ten eleven twelve thirteen fourteen", art)
+        self.assertEqual((i["status"], i["reason"]), ("guard_rejected", "anchors_overlap_in_claim"))
+
+
+class TestL6AbbreviationSentenceSplit66(unittest.TestCase):
+    def test_l6_split_keeps_abbreviation_sentences_whole_and_old_split_unchanged(self):
+        segs = [L6_ART[a:b] for a, b in runner.vs_sentence_segments_l6(L6_ART)]
+        self.assertIn(L6_S_MR, segs)
+        self.assertIn("He said no.", segs)  # 文末の`no.`(直後が数字でない)は文末
+        self.assertIn("Then he left for No. 5 Street.", segs)  # `No. 5`は略語
+        old = [L6_ART[a:b] for a, b in runner.vs_sentence_segments(L6_ART)]
+        self.assertNotIn(L6_S_MR, old)  # 既存の分割は変更していない(略語でも切る)
+        self.assertIn("Smith of the U.S.", old)
+
+    def test_each_listed_abbreviation_does_not_split(self):
+        for ab in ("U.S.", "Mr.", "Mrs.", "Ms.", "Dr.", "Jan.", "Feb.", "Mar.", "Apr.", "Jun.", "Jul.", "Aug.", "Sep.",
+                   "Oct.", "Nov.", "Dec.", "vs.", "e.g.", "i.e.", "Inc.", "Co.", "Ltd.", "a.m.", "p.m."):
+            t = f"The report cited {ab} figures and trends here. Next sentence follows."
+            segs = [t[a:b] for a, b in runner.vs_sentence_segments_l6(t)]
+            self.assertEqual(len(segs), 2, ab)
+            self.assertTrue(segs[0].endswith("here."), (ab, segs))
+        self.assertEqual(len(runner.vs_sentence_segments_l6("He lives in St. Louis. It is big.")), 2)
+        # `St.`は直後が大文字なら略語扱い(`St. Louis`)。文末の`St.`+次文が大文字の曖昧ケースは割らない(固定の割り切り)
+        self.assertEqual(len(runner.vs_sentence_segments_l6("That is the end of St. Then more.")), 1)
+        self.assertEqual(len(runner.vs_sentence_segments_l6("He said No. 5 is best. Done.")), 2)
+
+    def test_restore_returns_the_complete_sentence_with_abbreviations(self):
+        i = _l6_info("Treasury said the group met on Jan. 5 in St. Louis to review the pl")
+        self.assertEqual(i["restored_sentence"], L6_S_MR)
+        i = _l6_info("e said no. Then he left for No. 5 Str")  # 2文にまたがる切断
+        self.assertEqual(i["status"], "restored")
+        self.assertEqual(i["n_sentences"], 2)
+
+
+class TestL6IssueFocusAbsent66(unittest.TestCase):
+    def test_quoted_phrase_extraction_covers_curly_and_corner_and_straight_quotes(self):
+        ph = runner.vs_l6_issue_quoted_phrases("The word “so” and ‘because’ and 「ので」 and \"hence\" are used.")
+        self.assertEqual(ph, ["so", "because", "ので", "hence"])
+        self.assertEqual(runner.vs_l6_issue_quoted_phrases("no quotes here"), [])
+
+    def test_focus_absent_rules(self):
+        self.assertTrue(runner.vs_l6_focus_absent(["so"], "the plan left while it recovered")["absent"])
+        self.assertFalse(runner.vs_l6_focus_absent(["so"], "also, so the plan left")["absent"])  # 独立の`so`は数える
+        self.assertTrue(runner.vs_l6_focus_absent(["so"], "he is also happy")["absent"])  # alsoの`so`は数えない
+        self.assertFalse(runner.vs_l6_focus_absent(["a", "b"], "a only")["absent"])  # 1つでも在ればRewriteする
+        self.assertFalse(runner.vs_l6_focus_absent([], "anything")["absent"])  # 引用符付き語句なし=通常Rewrite
+
+    def _ladder(self, issue, llm):
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": L6_ART}
+        claim = ("Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the "
+                 "flashy 20% plan left the stage...")
+        claim_rec = {"claim_text": claim, "rewrite_kind": "narrow_scope", "materiality": "BLOCKING",
+                     "basis": "ledger_conditions", "rewrite_hint": "", "dev": {"issue": issue}}
+        with _l6_on(), mock.patch.object(runner, "simple_llm_call", side_effect=llm):
+            return runner.rewrite_ranges_ladder(None, _l6_state(), [0], [], "t", fixture, "article_text", claim_rec)
+
+    def test_b3_type_stale_quote_skips_rewrite_and_goes_to_recheck_only(self):
+        calls = []
+
+        def llm(*a, **k):
+            calls.append(a[4])
+            raise AssertionError("no Rewrite call must be made when the issue focus is absent")
+
+        res = self._ladder("The word “so” presents the concerns as a cause of the plan’s withdrawal.", llm)
+        self.assertEqual(calls, [])
+        self.assertEqual(res["method"], "issue_focus_absent_recheck_only")
+        self.assertFalse(res["guard_ok"])
+        self.assertEqual(res["updated_text"], L6_ART)
+        self.assertFalse(res["target_not_locatable"])
+        self.assertFalse(res.get("ladder_exhausted_without_full_rewrite"))
+        h = res["handoff"]
+        self.assertTrue(h["issue_focus_absent"])
+        self.assertEqual(h["resolution"]["level"], runner.VS_L6_LEVEL)
+        self.assertEqual(h["resolution"]["sentence_restore"]["restored_sentence"], L6_S_ONELINE)
+
+    def test_issue_phrase_present_in_range_rewrites_normally_with_fragment_in_e1_prompt(self):
+        prompts = []
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            prompts.append(prompt)
+            return json.dumps({"revised_ranges": [L6_S_ONELINE.replace("while", "meanwhile")]})
+
+        res = self._ladder("The word “while” presents the plan leaving as a contrast the Ledger does not support.", llm)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["ladder_level_used"], "1_word_connective")
+        self.assertEqual(len(prompts), 1)
+        p = prompts[0]
+        self.assertIn("[Checker's flagged fragment", p)
+        self.assertIn("so the flashy 20% plan left the stage...", p)  # 元の断片(Checker出力そのまま)
+        self.assertIn(L6_S_ONELINE, p)  # 範囲=復元文
+        self.assertLess(p.index("[Flagged range(s)"), p.index("[Checker's flagged fragment"))
+        self.assertLess(p.index("[Checker's flagged fragment"), p.index("[Paragraph context"))
+
+    def test_issue_without_quoted_phrase_rewrites_normally(self):
+        calls = []
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            return json.dumps({"revised_ranges": [L6_S_ONELINE.replace("while", "meanwhile")]})
+
+        res = self._ladder("The causal link is not supported by the Ledger.", llm)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(len(calls), 1)
+
+    def test_non_l6_resolution_has_no_focus_block_and_is_never_skipped(self):
+        fixture = {"ledger_text": "[VERIFIED] HF-007: ...", "article_text": L6_ART}
+        claim_rec = {"claim_text": L6_S_JULY, "rewrite_kind": "narrow_scope", "materiality": "BLOCKING",
+                     "basis": "ledger_conditions", "rewrite_hint": "",
+                     "dev": {"issue": "The word “zzz” is not in the article."}}
+        prompts = []
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            prompts.append(prompt)
+            return json.dumps({"revised_ranges": [L6_S_JULY.replace("working on", "discussing")]})
+
+        with _l6_on(), mock.patch.object(runner, "simple_llm_call", side_effect=llm):
+            res = runner.rewrite_ranges_ladder(None, _l6_state(), [0], [], "t", fixture, "article_text", claim_rec)
+        self.assertTrue(res["guard_ok"])
+        self.assertNotIn("flagged fragment", prompts[0])
+
+    def test_full_recheck_is_forced_when_focus_absent(self):
+        rec = [{"ladder_level_used": None, "mechanism": "single_text_local(E-2/delete-generic)",
+                "handoff": {"issue_focus_absent": True}}]
+        need, reasons = runner.full_recheck_required(rec, [{"dev": {}, "origin": "x"}], "bgroup_B3")
+        self.assertTrue(need)
+        self.assertIn("issue_focus_absent_recheck_only", reasons)
+        rec[0]["handoff"] = {}
+        need, reasons = runner.full_recheck_required(rec, [{"dev": {}, "origin": "x"}], "bgroup_B3")
+        self.assertNotIn("issue_focus_absent_recheck_only", reasons)
+
+
+class TestL6TwoSentenceFocusGuard66(unittest.TestCase):
+    ART = "# T\n\nOfficials said “this is not over. We will keep watching,” and prices rose sharply later.\n"
+    CLAIM = "Officials said “this is not ove"
+
+    def _run(self, revised_text):
+        fixture = {"ledger_text": "[VERIFIED] HF-001: ...", "article_text": self.ART}
+        claim_rec = {"claim_text": self.CLAIM, "rewrite_kind": "narrow_scope", "materiality": "BLOCKING",
+                     "basis": "ledger_conditions", "rewrite_hint": "", "dev": {"issue": "the statement is overstated"}}
+        calls = []
+
+        def llm(client, state, errs, log, label, dev_msg, prompt, model=None):
+            calls.append(label)
+            return json.dumps({"revised_ranges": [revised_text]})
+
+        with _l6_on(), mock.patch.object(runner, "simple_llm_call", side_effect=llm):
+            return runner.rewrite_ranges_ladder(None, _l6_state(), [0], [], "t", fixture, "article_text", claim_rec), calls
+
+    def test_two_sentence_restore_is_recorded(self):
+        with _l6_on():
+            r = runner._resolve_claim_string(self.CLAIM, self.ART)
+        self.assertEqual(r["sentence_restore"]["n_sentences"], 2)
+        self.assertEqual(len(r["sentence_restore"]["focus_spans"]), 1)
+
+    def test_change_inside_focus_sentence_is_accepted(self):
+        revised = "Officials said “this is not quite over. We will keep watching,” and prices rose sharply later."
+        res, calls = self._run(revised)
+        self.assertTrue(res["guard_ok"])
+        self.assertEqual(res["ladder_level_used"], "1_word_connective")
+        self.assertTrue(res["handoff"]["level_attempts"][0]["focus_guard"]["ok"])
+
+    def test_change_outside_focus_sentence_is_e1_failure_and_goes_to_existing_failure_path(self):
+        revised = "Officials said “this is not over. We will keep watching,” and prices rose a bit later."
+        res, calls = self._run(revised)
+        att = res["handoff"]["level_attempts"][0]
+        self.assertEqual(att["result"], "focus_guard_rejected")
+        self.assertFalse(att["focus_guard"]["ok"])
+        self.assertTrue(res["handoff"]["focus_guard_fired"])
+        # 既存の失敗経路(次の水準③)へ進む。E1の結果は書き戻されない(E1の変更は採用されない)
+        self.assertEqual(calls[0], "t_e1_minimal_word")
+        self.assertIn("t_e2_rewrite", calls)
+        self.assertNotEqual(res["handoff"]["level_used"], "1_word_connective")
+
+    def test_guard_function_unit(self):
+        art = "# T\n\nAlpha beta gamma delta. Epsilon zeta eta theta iota.\n"
+        a = art.index("Alpha")
+        e = art.index("iota.") + 5
+        sr = {"span": (a, e), "focus_spans": [(a, a + 10)]}
+        target = art[a:e]
+        self.assertTrue(runner.vs_l6_focus_guard(sr, target, target.replace("beta", "BETA"), art)["ok"])
+        self.assertFalse(runner.vs_l6_focus_guard(sr, target, target.replace("zeta", "ZETA"), art)["ok"])
+        self.assertTrue(runner.vs_l6_focus_guard(sr, target, target, art)["ok"])  # 変更なし
+
+
+class TestL6OrderPThenL6_66(unittest.TestCase):
+    def test_p_resolves_first_and_l6_is_not_called(self):
+        c = "“Prices stayed high.” This overstates the situation"
+        art = L6_ART + "\nPrices stayed high.\n"
+        with _l6_on(), mock.patch.object(runner, "vs_sentence_restore_resolve",
+                                         side_effect=AssertionError("L6 must not run when P resolved")):
+            r = runner._resolve_claim_string(c, art)
+        self.assertEqual(r["status"], "resolved")
+        self.assertTrue(r["level"].startswith("P:"))
+
+    def test_l6_does_not_bypass_p_guards(self):
+        c = ("“Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 1” "
+             "but the Ledger says otherwise about this headline")
+        with _l6_on():
+            r = runner._resolve_claim_string(c, L6_ART)
+        self.assertEqual(r["status"], "unverified")
+        self.assertTrue(r["explain_split"]["reason"].startswith("explain_split_rejected"))
+        self.assertEqual(r["sentence_restore"]["reason"], "explanatory_mixed_left_to_P")
+
+
+class TestL6SummaryAndRecords66(unittest.TestCase):
+    def test_summarize_counts(self):
+        def rec(sr, **h):
+            hh = {"resolution": {"sentence_restore": sr}}
+            hh.update(h)
+            return {"handoff": hh}
+        res = [{"instance_id": "x", "cycles": [{"cycle": 1, "rewrite_records": [
+            rec({"status": "restored", "n_sentences": 2, "original_claim": "c", "restored_sentence": "s"}, focus_guard_fired=True),
+            rec({"status": "restored", "n_sentences": 1, "original_claim": "c2", "restored_sentence": "s2"}, issue_focus_absent=True),
+            rec({"status": "cand0", "reason": "x"}), rec({"status": "cand_multi"}),
+            rec({"status": "guard_rejected", "reason": "residual_outside_restored_range"}),
+            rec({"status": "not_fired", "reason": "explanatory_mixed_left_to_P"}),
+            {"handoff": {"sentence_restore": {"status": "cand0"}}}, {"handoff": {}}]}]}]
+        s = runner.sentence_restore_summarize(res)
+        self.assertEqual((s["l6_fired"], s["restored"], s["restored_two_sentences"], s["cand0"], s["cand_multi"],
+                          s["guard_rejected"], s["issue_focus_absent"], s["focus_guard_fired"], s["not_fired_or_na"]),
+                         (6, 2, 1, 2, 1, 1, 1, 1, 1))
+        self.assertEqual(s["guard_rejected_by_reason"], {"residual_outside_restored_range": 1})
+
+    def test_switch_recorded_in_instance_switches_source(self):
+        import inspect
+        self.assertEqual(inspect.getsource(runner.run_instance).count('"VS_SENTENCE_RESTORE": True'), 2)
+
+
+class TestL6Rep24RealFailures66(unittest.TestCase):
+    """rep24の実データ(instance JSONがあれば): 失敗2件と`6 percent`型2件をfixture化(委任_66の主目的)。"""
+
+    BASE = "er052_output/open233_self_recovery_flow_runner_01_rep24"
+
+    def _load(self, sample, inst):
+        p = os.path.join(self.BASE, f"instances_{sample}", f"{inst}.json")
+        if not os.path.exists(p):
+            self.skipTest("rep24 instance json not present")
+        with open(p, encoding="utf-8") as f:
+            return json.load(f)
+
+    def _claim(self, d, cyc_idx):
+        c = d["cycles"][cyc_idx]
+        en = d["cycles"][cyc_idx - 1]["en_text_after_rewrite"] if cyc_idx else c["en_text_before_rewrite"]
+        return c, en
+
+    def test_a2a3_s2_cycle2_is_restored_and_rewritten_normally(self):
+        d = self._load("s2", "safety_A2A3")
+        c, en = self._claim(d, 1)
+        sr = next(x for x in c["stage2_results"] if x.get("materiality") == "BLOCKING")
+        with _l6_on():
+            r = runner._resolve_claim_string(sr["claim_text"], en)
+        self.assertEqual(r["status"], "resolved")
+        self.assertEqual(r["level"], runner.VS_L6_LEVEL)
+        self.assertTrue(r["ranges"][0].startswith("On July 14, Trump announced that the 20 percent plan"))
+        self.assertEqual(r["sentence_restore"]["restore_reason"], ["anchor_with_substituted_words"])
+        fa = runner.vs_l6_focus_absent(runner.vs_l6_issue_quoted_phrases((sr.get("dev") or {}).get("issue") or ""),
+                                       r["ranges"][0])
+        self.assertFalse(fa["absent"])  # issueに引用符付き語句なし=通常Rewrite
+
+    def test_b3_s2_cycle2_is_restored_and_stale_so_triggers_issue_focus_absent(self):
+        d = self._load("s2", "bgroup_B3")
+        c, en = self._claim(d, 1)
+        self.assertNotRegex(en, r"\bso\b")  # cycle2の本文に`so`は存在しない(古い引用)
+        sr = next(x for x in c["stage2_results"] if x.get("materiality") == "BLOCKING")
+        with _l6_on():
+            r = runner._resolve_claim_string(sr["claim_text"], en)
+        self.assertEqual(r["level"], runner.VS_L6_LEVEL)
+        self.assertIn("while the flashy 20% plan left the stage", r["ranges"][0])
+        fa = runner.vs_l6_focus_absent(runner.vs_l6_issue_quoted_phrases((sr.get("dev") or {}).get("issue") or ""),
+                                       r["ranges"][0], r["sentence_restore"].get("claim_core") or "")
+        self.assertTrue(fa["absent"])
+
+    def test_six_percent_claims_are_restored_to_the_complete_sentence(self):
+        n = 0
+        for sample in ("s1", "s2"):
+            d = self._load(sample, "safety_A2A3")
+            c, en = self._claim(d, 0)
+            hit = [x for x in c["stage2_results"] if "6 percent, because" in (x.get("claim_text") or "")]
+            if not hit:
+                continue
+            n += 1
+            with _l6_on():
+                r = runner._resolve_claim_string(hit[0]["claim_text"], en)
+            self.assertEqual(r["level"], runner.VS_L6_LEVEL, sample)
+            self.assertTrue(r["ranges"][0].startswith("After the announcement"), sample)
+            self.assertEqual(r["sentence_restore"]["restore_reason"], ["truncated_head"])
+        self.assertGreaterEqual(n, 1)
+
+
 if __name__ == "__main__":
     unittest.main()

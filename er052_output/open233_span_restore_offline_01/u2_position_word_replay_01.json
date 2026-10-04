@@ -1,0 +1,82 @@
+{
+ "summary": {
+  "d_type_unique": 5,
+  "restorable_by_u2_1": 1,
+  "still_rejected_by_reason": {
+   "explain_split_rejected:fragment_not_in_article": 1,
+   "explain_split_rejected:remainder_too_long": 3
+  },
+  "wrong_range_count": 0
+ },
+ "rows": [
+  {
+   "claim": "“Their job is visual. They add a special feeling. They say, ‘This is today’s mood.’” Also: “Large bags are the luggage crew. They carry what we need. Mini bags are the stage crew. They catch the eye and set the mood. In 2026, the runway proudly shows this split in their work.”",
+   "issue": null,
+   "occurrences": [
+    "er052_output/open233_self_recovery_flow_runner_01_iter3/instances/neg4_smallbag_div_a2.json:neg4_smallbag_div_a2:c1"
+   ],
+   "p_reason_now": "explain_split_rejected:fragment_not_in_article",
+   "u2_status": "unverified",
+   "u2_reason": "explain_split_rejected:fragment_not_in_article",
+   "added_elements": []
+  },
+  {
+   "claim": "“That was what people thought as they spoke.” The opening also presents the call as one people believed was from an AI.",
+   "issue": "The article states that the call recipients believed they were speaking with an AI. The Ledger confirms a test without appropriate disclosure, but does not establish what recipients believed.",
+   "occurrences": [
+    "er052_output/open233_self_recovery_flow_runner_01_iter5/instances_s2/safety_A4.json:safety_A4:c2"
+   ],
+   "p_reason_now": "explain_split_rejected:remainder_too_long",
+   "u2_status": "unverified",
+   "u2_reason": "explain_split_rejected:remainder_too_long",
+   "added_elements": []
+  },
+  {
+   "claim": "“Oil prices moved briefly, then returned to a high level.” The headline and one-line summary also state this more broadly as a claim about oil prices generally.",
+   "issue": "The Ledger verifies the post-withdrawal price movement for Brent futures, not for oil prices generally. The broader wording in the body, headline, and summary extends that observation beyond the verified scope.",
+   "occurrences": [
+    "er052_output/open233_self_recovery_flow_runner_01_iter7/instances_s2/hormuz_run03_standard.json:hormuz_run03_standard:c2"
+   ],
+   "p_reason_now": "explain_split_rejected:dangling_position:headline,one_line",
+   "u2_status": "unverified",
+   "u2_reason": "explain_split_rejected:remainder_too_long",
+   "added_elements": []
+  },
+  {
+   "claim": "“The human backup plan” and “that backup plan” characterize the human-staff calls as a backup arrangement.",
+   "issue": "The Ledger confirms that trained contractors handled some calls, but does not establish that they were positioned as a backup or fallback. The Japanese source already uses this framing.",
+   "occurrences": [
+    "er052_output/open233_self_recovery_flow_runner_01_rep23/instances_s1/safety_A4.json:safety_A4:c3"
+   ],
+   "p_reason_now": "explain_split_rejected:remainder_too_long",
+   "u2_status": "unverified",
+   "u2_reason": "explain_split_rejected:remainder_too_long",
+   "added_elements": []
+  },
+  {
+   "claim": "“Oil prices moved briefly, then returned to a high level”; “oil prices stayed high” (also reflected in the headline).",
+   "issue": "The article generalizes the observed Brent-futures movement to oil prices broadly. The Ledger confirms this movement for Brent futures, not the whole oil market.",
+   "occurrences": [
+    "er052_output/open233_self_recovery_flow_runner_01_rep9/instances_s1/hormuz_run03_standard.json:hormuz_run03_standard:c2"
+   ],
+   "p_reason_now": "explain_split_rejected:dangling_position:headline",
+   "u2_status": "resolved",
+   "u2_reason": null,
+   "added_elements": [
+    "headline"
+   ],
+   "u2_ranges": [
+    "The Fee Plan Leaves, But High Oil Prices Stay",
+    "Oil prices moved briefly, then returned to a high level",
+    "oil prices stayed high"
+   ],
+   "fragment_ranges": [
+    "Oil prices moved briefly, then returned to a high level",
+    "oil prices stayed high"
+   ],
+   "fragments_all_inside_final_ranges": true,
+   "added_ranges_are_exactly_named_elements": true,
+   "every_range_is_verbatim_unique_in_article": true
+  }
+ ]
+}

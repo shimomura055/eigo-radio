@@ -232,6 +232,36 @@ L6-N適用後(§4-7)、2件とも`truncated_head`で、記事の完結文(§2-3�
 - Production(正式path): Deviation→Local Rewriteの`locate_target_sentence`(`er010_ledger_local_rewrite_09.py:68-90`、呼び出し元`er003_v1_n3_01_articles_generate.py:1178`・`er003_discovery_focus_staged_production_01.py:219/252`)は、現状「exact_substring→**単語重なり0.25以上のfallback**(再推測)→not_found」で、本Trialの照合(L0〜L5・P・L6)とは別実装である。Production配線は、このfallback(類似度による文選び)を、決定論の照合(L0〜L6)に**置き換える**形になる(置き換えなしにL6を足すと再推測が残る)。この置き換えは、既存の「Safety-critical floor・retry・fallback・regeneration」と配線順序が絡むため、`OPEN-233-A1-PROD`の構成要素の一つとして追加し、`CURRENT_SPEC.md`へは`APPROVED_FOR_PRODUCTION`後に反映する(本委任ではSSOT未編集)。
 - 既存retry/fallback/regenerationとの整合: L6はunresolvableを減らすだけで、上限回数・Gate・Safety-critical floor・Stage 4(最終cycle)の機構は変更しない。L6が復元しなかった場合は従来どおり`violation_span_unverified`→Stage 4。
 
+### 6-A. Opus#9後の採否と実装(委任_66、2026-10-04。Trial実装・既定OFF、Production未変更)
+
+Opus独立レビュー#9(`docs/pm/opus_l2_review_open233_self_recovery_09.md`)に対するFableの採否(同ファイル(4))に基づき、runner(`er052_open233_self_recovery_flow_runner_01.py`)へL6を実装した。スイッチは`VS_SENTENCE_RESTORE`(既定False。CLI`--vs-sentence-restore`。`VS_MATCH_EXT`ONが前提)。Production正式path(`er003*`〜`er019*`)は変更していない。
+
+| 区分 | 項目 | 実装(runnerの行) |
+|---|---|---|
+| 採用 | 穴A: 残余包含検査(アンカー外の逐語連続部分[3語以上]が復元範囲の内側に無ければ復元しない=`residual_outside_restored_range`) | `_vs_l6_residual_check`(4166)、呼び出し(4368付近) |
+| 採用 | 穴B: アンカー間隔整合(記事上の語間隔 ≤ claim側の語間隔+α、α=3)・`unmatched≥0`(重なりは`anchors_overlap_in_claim`)・cover二重計上の解消 | `_vs_sentence_restore_core`(4285〜4308) |
+| 採用 | (2)略語対応の文分割(L6専用。既存`vs_sentence_segments`は不変) | `vs_sentence_segments_l6`(4004)、`_vs_l6_abbrev_period`(3986) |
+| 採用 | (3)`issue_focus_absent`: 復元範囲にissueの引用符付き語句が1つも無ければRewriteせず全文Recheckだけ | `vs_l6_issue_quoted_phrases`(4378)・`vs_l6_focus_absent`(4387)、`rewrite_ranges_ladder`(4750付近)、`full_recheck_required`の理由追加(5894) |
+| 採用 | (4)2文復元時のE1変更の焦点文ガード(外側の変更はE1失敗扱い=既存の次水準へ) | `vs_l6_focus_guard`(4400)、ladder(4884付近) |
+| 採用 | (5)数値境界補正は単語境界関数側(`VS_MATCH_EXT`配下、新スイッチなし) | `_vs_wordch`(3533) |
+| 採用 | (c)E1 Promptへ元断片を併記(L6復元時のみ。Checker Prompt・非L6のE1 Promptは不変) | `E1_RANGES_FOCUS_BLOCK`/`E1_RANGES_PROMPT_TEMPLATE_L6`(4612/4615) |
+| 採用 | 代替案: cycle横断replay、B3根本原因の点検(¥0) | §7-A、`cycle_cross_replay_01.{json,md}` |
+| 記録のみ | (6)runner/er010共有module化・L5末尾省略の粒度不整合・Production `sentence_fallback`集計 | `OPEN-233-A1-PROD`行・本節 |
+| 設計+replayのみ | U-2(1)位置語→構造要素 | §7-B |
+
+実装上の判断(Opusの推奨に対する具体化、いずれも「縮小・誤復元を拒否する側」への倒し方):
+- 残余包含検査の対象は3語以上の連続部分に限る。1〜2語(`so`・`the`)は記事中どこにでもあり偶然の一致と区別できないため(B3 s2の置換語`so`が検査で落ちて主目的を損なうのを避ける。3語連続の一意率95.5%が下限)。
+- アンカー間隔のα=3: Checkerが中間のN語をM語へ置換した場合の差`|N−M|`を許す。実例(B3 s2は記事間隔=claim間隔=1語、A2A3 s2はアンカー1個)は差0で、α=3はアンカー外上限(6)の約半分。replay全件(§7-A、`results_runner_01.json`)で実例・合成・ストレスの結果を変えない。
+- 文数は復元範囲に含まれる文の数(引用符を隣接文で閉じて範囲が広がった場合も2文と数える。試作は断片が触れた文数で数えていた)。
+- 略語の割り切り: `no`は直後が数字のとき、`st`は直後が大文字のときだけ略語。それ以外のリスト語(`Inc.`・`Co.`・`U.S.`等)は直後の語に関係なく文を切らない(文末の`Inc.`+次の文は1文に合体するが、2文・700字のガードで上限がある)。
+- `issue_focus_absent`の引用符には、Opus指定の“…”/‘…’/「…」に加えて直線の二重引用符も含める(含めるほど「すべて不在」が成立しにくく、Rewriteする側に倒れる)。
+
+### 6-B. L6の旗ON時の記録(handoff・summary)
+
+- `handoff.resolution.sentence_restore`(L6の試行結果: `status`[restored/cand0/cand_multi/guard_rejected/not_fired/not_applicable/exception]、`reason`、`restore_reason`、`fired_by`、`fragments`、`anchors`[先頭/末尾アンカー・アンカー外語数・記事/claimの語間隔]、`restored_sentence`、`span`、`n_sentences`、`n_candidates`、`focus_spans`、`residual_check`、`original_claim`、`claim_core`)。復元しなかった場合も同じフィールドで理由を残す(確定不能の`handoff.sentence_restore`)。
+- `handoff.issue_focus_check`(引用符付き語句と範囲内・claim内の有無)、`handoff.issue_focus_absent`、`level_attempts[*].focus_guard`、`handoff.focus_guard_fired`。
+- summary: `summary.sentence_restore`(`sentence_restore_summarize`: L6発火/復元成功/2文復元/候補0/候補複数/ガード不通過[理由別]/`issue_focus_absent`/焦点文ガード発火)。`switches.VS_SENTENCE_RESTORE`を記録。
+
 ## 7. KPI見通しと残る課題、USER_DECISION候補
 
 ### 7-1. KPI見通し(replay根拠、実flow未実証)
@@ -251,6 +281,36 @@ L6-N適用後(§4-7)、2件とも`truncated_head`で、記事の完結文(§2-3�
 **U-2(新規設計、本委任では未設計・未実装): 説明文混入型(d)の残り。** P-strict-closedの棄却理由は2種類。(1)`dangling_position`(`headline`/`one_line`): 説明文が「見出しにも同じ記述がある」と別の場所を指す。決定論の候補=記事の構造要素(見出し行・`## In one line`直下の1行、`_vs_explain_structure_elements` 3778)を追加の範囲に加える(位置語→構造要素の機械的対応)。(2)`remainder_too_long`: 引用断片は逐語で確定できるが、残りが長い説明文。候補=断片を範囲とし、残りの説明文は捨ててissueへ回す(P-strict-closedのガードを緩める案、Opus#7の判断を再検討する必要がある)。どちらも、新しい仕様=Opus独立レビュー(条件A)とユーザー判断が必要。**本委任の範囲外**であり、Sonnetは推奨しない(Fableが判断)。
 
 **U-3(新規設計、本委任では未設計・未実装): 逐語アンカー無し(候補0)・候補複数の例外を0にする最後の網。** 決定論では原理的に解けない(Checkerが記事に無い文を言い換えて返した場合)。候補=Checkerのspan再取得1回(LLM call追加、失敗claim 1件につき約¥0.14〜0.28、発生率は§5の未確定率から約1〜3%で平均<¥0.02/記事程度の見積り)。再取得でも逐語にならなければHuman Review。非決定性が増える・LLM callが増えるため、Opus条件A+ユーザー判断が必要。**本委任では推奨しない**(実例が0件で、必要性の根拠がまだ無い)。
+
+### 7-A. ¥0検証と点検の結果(委任_66)
+
+**(a) replay一致**(`er052_output/open233_span_restore_offline_01/replay_01.py --use-runner --out-suffix=_runner_01`、出力`results_runner_01.{json,md}`。試作を新base[数値境界補正後]で再実行した`results_proto_newbase_01.{json,md}`と比較。委任_65の`results_01.*`は保存):
+- 母集団(BLOCKING claim 591 runs/一意182)・復元6件・合成14件・ストレス(確定済み126一意×7変形)は、試作とrunner実装で**同じ結果**。復元文は6件とも逐語で一致。ストレスの誤復元(正解と無関係・部分重なり・上位集合・部分集合)は0件、復元709件はすべて正解の文群と完全一致。runnerの`VS_SENTENCE_RESTORE=True`経由(`_resolve_claim_string`)でも、unresolved 18件の結果はL6直接呼び出しと一致、baseで確定済み164件は旗ONでも不変(`runner_flag_on_consistency`、不一致0)。
+- 差は1件のみ: 説明文混入型(d)の1件(断片2つに「Also:」で続く巨大な引用)が、試作では`cand0`、runnerでは`guard_rejected(anchor_gap_inconsistent(115>5+3))`。いずれも復元しない(unresolvable)ままで、**穴Bの間隔整合が安全側の理由を付けた**ものであり、復元結果は変わらない。
+- 旧`results_01`との差(数値境界補正の効果)は1件のみ: 旧baseが`6 percent`から確定していた一意1件(7 runs)が、未確定になりL6で完結文へ復元される(設計書§5の予測どおり。`resolved_with_mid_number_edge`は1→0)。rep24の記録済みhandoffとの確定/未確定の不一致は、この`6 percent`の2件のみ(35件中2件、意図した変化)。
+- 穴A・穴Bの是正で結果が変わる実例・合成・ストレスは上記1件だけで、いずれも拒否側への変化。
+
+**(b) cycle横断replay**(`cycle_cross_replay_01.py`、出力`cycle_cross_replay_01.{json,md}`、Opus代替案): 475 instance JSONで、cycle N−1で確定したclaim(Checker出力)を、cycle N(N−1のRewrite後の本文)に当てた(前cycleの本文を古く引用する型の再現)。
+- L6が復元した一意46件(出現69 runs)のうち、**誤った文を選んだもの0件**(正解=N−1のRewriteが書き換えた文との重なりで判定。Rewrite記録のbefore/afterで判定できなかった分は文単位の差分[difflib、検証用オラクル。照合には使わない]で判定。判定不能0件)。N−1の文が削除されていたのにL6が別の文を復元した件数も0。
+- `issue_focus_absent`は46件中15件で発火(Rewrite見送り+Recheckのみ。前cycleで既に直った語を指す古い引用型。例: issueの`calls`が既に`one call`へ直った文)、3件は引用語句が範囲内にあり通常Rewrite、28件はissueに引用符付き語句が無く通常Rewrite。
+- 注意(Fableへの論点): 発火15件のうち9件は、issueの引用語句が**claim側に文字としては現れない**もの(例: issueが`calls`を指し、claimは`during a call`)。引用語句が「Ledger側の語」を指す場合、復元範囲に無いだけでRewriteを見送る可能性がある(Recheckで再指摘されれば次cycleで通常処理されるが、1cycle分を消費する)。Opus指定どおり「すべて不在」で実装したが、claim由来(`in_claim`)の有無を記録している(`cycle_cross_replay_01.json`の`issue_focus.phrases[*].in_claim`)。
+- 復元されなかった(従来どおりunresolvable)claimは107 runs(N−1の文が大きく書き換えられ、逐語アンカーが記事に無い等)。本replayは前cycleの引用をそのまま当てた人工的な再現であり、実flowのCheckerはcycle Nの本文を見て引用するため、これらがそのまま実flowの未確定率を表すわけではない。
+
+### 7-A'. B3根本原因の点検(¥0、点検のみ。rep24 `bgroup_B3` s2)
+
+- cycle1: Checkerのclaim=`...on July 14, so the flashy 20% plan left the stage, but...`(In one line、`so`は記事中1箇所)。Rewrite(E1)で`so`→`while`に直り、cycle2の本文にword `so`は**存在しない**(`bgroup_B3.json`のcycle1の`en_text_after_rewrite`で確認)。
+- cycle1のRecheck(`all_deviations_raw.rechecks[0]`)は`LEDGER_DEVIATION`を返し、`claim_in_article`=`...so the flashy 20% plan left the stage...`、issue=`The word “so” presents the continuing concerns as a cause...`と、**Rewrite前の語`so`を引用して再指摘**した。cycle2のstage2_resultsのclaim/issueもこれと同一。つまりCheckerは、現在の本文(`while`)ではなく、別の入力(prior_issues)にある前cycleのspan textを写して再指摘した。
+- 原因の所在(確認できたこと): `run_recheck`は`vfl01.build_prior_issues_instruction(prior_issues)`(`er003_v1_en_direct_vfl_01_generate.py` 678〜693、read-only確認)で、前cycleの各指摘を`claim_in_article={...}`として渡す。runner側の`prior_issues`の`claim_in_article`は`c.get("claim_span_text") or c["claim_text"]`(Stage 3後のRecheck直前の`prior_issues`組み立て)で、**確定範囲=Rewrite前のspan text**(`so`を含む文)。Recheckの本文はRewrite後だが、前cycleの文はRewrite前のまま入力に含まれる。したがって、Opusの仮説(prior_issuesに前cycleのtextが渡っている)は**事実**。
+- 推測(未検証): Checkerが「解消済みか」を判定する際に、prior_issuesの文を写して再指摘した可能性が高い(`prior_issues_resolved`で解消と返さず、新規deviationとして出した)。同じ型がどの程度の頻度かは、cycle横断replayでは再現できない(Checkerの出力が必要)。
+- 是正案(**Checker入力の変更=Checker Prompt/instructionの変更に当たるため、ユーザー判断事項。本委任では実装しない**): (i)`prior_issues`の`claim_in_article`にRewrite後の文(before/afterのafter)を渡す(現行の`run_recheck_confirm`はbefore/afterペアを別instructionで渡す仕組みを既に持つ)、(ii)`prior_issues`に「前cycleの引用はRewrite前の文である」旨の注記を足す。いずれもCheckerへ渡す内容の変更で、Safety(再指摘の見逃し)・コストへの影響を測る必要がある。L6+`issue_focus_absent`は、この型の症状側(古い引用を後段で受ける)の対策であり、根本の是正ではない。
+
+### 7-B. U-2(1)「位置語→構造要素」設計とreplay(実装しない、ユーザー確認後)
+
+設計(承認済みP-strict-closedの一部変更にあたるため実装せず設計+¥0 replayのみ):
+- 現行P-strict-closedは、引用符の外側の残りが位置語(`headline`/`title`/`one-line summary`/`In one line`、および`opening`)を含み、その位置語が名指しする構造要素(`# `見出し行、`## In one line`直下の1行、見出し直後の最初の段落)がどの断片とも重ならないとき、`dangling_position`で棄却する。
+- 案: 閉じた語彙(`headline`/`title`/`heading`→見出し行、`one-line summary`/`In one line`/`one line`/`summary`→`## In one line`直下の1行)だけは棄却せず、**名指しされた構造要素を範囲に加える**(範囲は広がるだけで縮小しない)。`opening`(冒頭)は閉じた語彙に含めず従来どおり棄却。位置語の拒否(`paragraph`/`closing`/`elsewhere`/`section`等)、対比・参照語、長さ(6語以上)、記事の逐語、隣接の各ガードは変えない。
+- replay(`u2_position_word_replay_01.py`、出力`u2_position_word_replay_01.{json,md}`、(d)説明文混入型5件): U-2(1)で新たに範囲を確定できるのは**1件**(`“Oil prices moved briefly...”; “oil prices stayed high” (also reflected in the headline).`、範囲=断片2つ+見出し行)。他の4件は、位置語の棄却の後ろにあるガード(`remainder_too_long`3件、`fragment_not_in_article`1件)で引き続き棄却される(現行の棄却理由が`dangling_position`だった1件も、残りの説明文が14語で`remainder_too_long`)。誤範囲(断片が最終範囲から落ちる・追加した範囲が名指しされた要素でない・範囲が記事に一意に逐語でない)は**0件**。
+- 結論: U-2(1)単独の効果は(d)型5件中1件(過去ログ全591 runs中、最大でも数runs)で、`remainder_too_long`(Opus#7の判断の再検討、Opusが「より慎重に」とした領域)を触らない限り(d)型の大半は残る。実装はユーザー確認後。
 
 ## 8. Opusに答えてほしい論点(`docs/pm/opus_packet_open233_span_restore_01.md`(a)と同一)
 

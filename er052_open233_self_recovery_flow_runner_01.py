@@ -59,6 +59,7 @@
 from __future__ import annotations
 
 import argparse
+import collections
 import difflib
 import hashlib
 import json
@@ -356,6 +357,15 @@ VS_EDGE_PUNCT = ".,;:!?"
 #   (iv)記事内で断片の直前・直後に逐語で連続、のいずれにも当たらないときだけ採用。断片なし・不一致・複数一致・
 #   閉じ忘れ・入れ子・構造ラベルだけ・上記のいずれかに該当は確定不能(`explain_split_rejected:<理由>`)。
 VS_EXPLAIN_SPLIT = False
+# 委任_66(2026-10-04、Opus独立レビュー#9[条件A]のFable採否に基づくL6「完結文復元」、設計書
+# design_open233_span_sentence_restore_01.md §4・§6): Trial専用スイッチ、既定False=委任_65時点と同一。
+# Productionに存在しない。有効化・Production採用はユーザー承認待ち(`USER_DECISION_REQUIRED`)。
+# ONのとき(かつVS_MATCH_EXT=ON、英語本文のみ)、`_resolve_claim_string`でL0〜L5・P-strict-closedの
+# いずれでも確定しなかったclaim(mismatch/explanatory_mixed)にだけ`vs_sentence_restore_resolve`(決定論、
+# 追加LLM callなし)を試す。断片が途中切断・省略記号・Checkerが記事にない語を1〜6語混ぜた型で、断片(または
+# 逐語で一意な連続語列[アンカー])を含む完結文(最大2文)が記事内で一意に決まるときだけ、その文を範囲として復元する。
+# 類似度・単語重なりは使わない。一意でなければ復元しない(従来どおりunresolvable)。
+VS_SENTENCE_RESTORE = False
 VS_EXPLAIN_CONTRAST_REF_EN_RE = re.compile(
     r"\b(ledger|source|but|instead|not|should|however|rather|whereas|contrary|versus)\b|n't", re.I)
 VS_EXPLAIN_CONTRAST_REF_JA_RE = re.compile(r"台帳|原文|ではなく|ではない|しかし|べき|一方|対して|ところが")
@@ -2635,6 +2645,47 @@ def floor_verify_summarize(stage2_results_iter) -> dict:
     return s
 
 
+def sentence_restore_summarize(instance_results) -> dict:
+    """委任_66 runtime evidence用の集計(L6発火/復元成功/候補0/候補複数/ガード不通過(理由別)/issue_focus_absent/
+    2文復元の焦点文ガード発火)。Rewrite記録(`rewrite_records[*].handoff`)の`sentence_restore`を数える。
+    発火=statusがrestored/cand0/cand_multi/guard_rejected(not_fired/not_applicableは数えない)。"""
+    s = {"n_records_with_l6_attempt": 0, "l6_fired": 0, "restored": 0, "restored_two_sentences": 0, "cand0": 0,
+         "cand_multi": 0, "guard_rejected": 0, "guard_rejected_by_reason": {}, "not_fired_or_na": 0,
+         "exception": 0, "issue_focus_absent": 0, "focus_guard_fired": 0, "restored_claims": []}
+    for res in instance_results:
+        for cyc in res.get("cycles", []):
+            for rr in cyc.get("rewrite_records", []) or []:
+                h = rr.get("handoff") or {}
+                sr = h.get("sentence_restore") or (h.get("resolution") or {}).get("sentence_restore")
+                if not sr:
+                    continue
+                s["n_records_with_l6_attempt"] += 1
+                st = sr.get("status")
+                if st in ("restored", "cand0", "cand_multi", "guard_rejected"):
+                    s["l6_fired"] += 1
+                if st == "restored":
+                    s["restored"] += 1
+                    if sr.get("n_sentences") == 2:
+                        s["restored_two_sentences"] += 1
+                    s["restored_claims"].append({"instance": res.get("instance_id"), "cycle": cyc.get("cycle"),
+                                                 "claim": sr.get("original_claim"), "restored": sr.get("restored_sentence")})
+                elif st in ("cand0", "cand_multi"):
+                    s[st] += 1
+                elif st == "guard_rejected":
+                    s["guard_rejected"] += 1
+                    k = str(sr.get("reason"))
+                    s["guard_rejected_by_reason"][k] = s["guard_rejected_by_reason"].get(k, 0) + 1
+                elif st == "exception":
+                    s["exception"] += 1
+                else:
+                    s["not_fired_or_na"] += 1
+                if h.get("issue_focus_absent"):
+                    s["issue_focus_absent"] += 1
+                if h.get("focus_guard_fired"):
+                    s["focus_guard_fired"] += 1
+    return s
+
+
 def run_stage2(client, state, consecutive_errors, call_log, label, fixture, claims: list) -> list:
     """claims: list of dict(claim_text, origin, related_fact_id, dev[元deviation])。
     戻り値: 各claimにmateriality/basis/rewrite_kind/floor_appliedを付与したlist。"""
@@ -3488,6 +3539,11 @@ def _vs_wordch(text: str, i: int) -> bool:
         return True
     if ch in ("'", "’") and 0 < i < len(text) - 1 and text[i - 1].isalnum() and text[i + 1].isalnum():
         return True
+    # 委任_66(Opus#9論点8、VS_MATCH_EXT配下・新スイッチなし): 数字に挟まれた`.`/`,`(2.6の`.`、1,000の`,`)は
+    # 数値の一部=語構成文字。`2.6 percent`の`6 percent…`を「語境界を満たす」と誤って確定しない。
+    if (VS_MATCH_EXT and ch in (".", ",") and 0 < i < len(text) - 1
+            and text[i - 1].isdigit() and text[i + 1].isdigit()):
+        return True
     return False
 
 
@@ -3891,7 +3947,511 @@ def vs_explain_split_resolve(claim_text: str, en_text: str | None) -> dict:
     return out
 
 
+# ============================================================
+# 委任_66: L6「完結文復元」(Trial専用、`VS_SENTENCE_RESTORE`ON時のみ。設計書§4+Opus#9是正)。
+# ユーザー指示(2026-10-04[6回目]): spanが途中切断・...省略でも、断片を含む意味の通る完結文が記事内で
+# 一意に特定できるなら、その文を対象範囲として復元する。複数候補・本当に一意に決められない場合のみ例外。
+# 決定論のみ(追加LLM callなし)。類似度・単語重なり・SequenceMatcherで範囲を選ばない。範囲は拡張のみ。
+# ============================================================
+VS_L6_LEVEL = "L6:sentence_restore"
+VS_L6_MIN_FRAG_WORDS = 3         # 断片(切断型・省略記号の各部分)の最小語数(fixture 3語連続の一意率95.5%)
+VS_L6_MIN_FRAG_CHARS = 12
+VS_L6_MIN_ANCHOR_WORDS = 4       # アンカー(逐語で記事に連続する語列)の最小語数(4語連続の一意率98.3%)
+VS_L6_MIN_ANCHOR_CHARS = 20
+VS_L6_MAX_UNMATCHED_TOKENS = 6   # アンカー外(記事にない語)の連続語数の上限(実例最大5)
+VS_L6_MIN_COVER_RATIO = 0.5      # アンカーがclaim文字数に占める割合の下限(逐語連続部分の長さだけ。類似度ではない)
+VS_L6_MAX_SENTENCES = 2
+VS_L6_MAX_RESTORED_CHARS = 700   # fixture単文の最大575字を超える余裕
+# 穴B(Opus#9): 先頭・末尾アンカーの記事上の語間隔 <= claim側の語間隔 + α。αの根拠: Checkerが中間のN語を
+# M語へ置換した場合の差|N-M|を許す。アンカー外の最大(VS_L6_MAX_UNMATCHED_TOKENS=6)の約半分で、実例
+# (B3 s2: 記事gap=claim gap=1語、A2A3: アンカー1個)は差0。replayで実例・合成・ストレスの全件を再確認済み。
+VS_L6_GAP_ALPHA = 3
+# 穴A(Opus#9): アンカー外の連続語のうち、記事に逐語で存在する連続部分(この語数以上)は復元範囲の内側に
+# 存在すること。1〜2語は`so`/`the`のように記事中どこにでもあり偶然の一致と区別できないため対象外
+# (3語連続の一意率95.5%が「偶然では起きにくい」下限=VS_L6_MIN_FRAG_WORDSと同じ)。
+VS_L6_RESIDUAL_MIN_WORDS = 3
+_VS_L6_ELL_RE = re.compile(r"\s*(?:\.{3,}|…+|・{2,}|(?:\.\s){2,}\.)\s*")
+_VS_L6_EDGE = ".,;:!?\"'“”‘’「」『』()[]— \t\r\n"
+_VS_L6_CJK_RE = re.compile(r"[぀-ヿ一-鿿]")
+# L6用の文分割で、直後の`.`が文末にならない略語(固定リスト、小文字・末尾の`.`なし。決定論)。
+# `no`は直後が数字のとき(`No. 5`)だけ、`st`は直後が大文字のとき(`St. Louis`)だけ略語として扱う。
+_VS_L6_ABBREV = frozenset({
+    "u.s", "u.k", "u.n", "mr", "mrs", "ms", "dr", "prof", "sr", "jr",
+    "jan", "feb", "mar", "apr", "jun", "jul", "aug", "sep", "sept", "oct", "nov", "dec",
+    "st", "no", "vs", "e.g", "i.e", "inc", "co", "ltd", "corp", "a.m", "p.m"})
+_VS_L6_ABBREV_WORD_RE = re.compile(r"([A-Za-z]+(?:\.[A-Za-z]+)*)$")
+_VS_L6_QUOTE_PAIRS = (("“", "”"), ("‘", "’"), ("「", "」"))
+
+
+def _vs_l6_abbrev_period(text: str, m) -> bool:
+    g = m.group(0)
+    if g[0] != "." or len(g) > 1:  # `...`・`."`(閉じ引用符が続く)は略語ではなく文末
+        return False
+    w = _VS_L6_ABBREV_WORD_RE.search(text[max(0, m.start() - 12):m.start()])
+    if not w:
+        return False
+    ab = w.group(1).lower()
+    if ab not in _VS_L6_ABBREV:
+        return False
+    nxt = text[m.end():].lstrip()[:1]
+    if ab == "no":
+        return nxt.isdigit()
+    if ab == "st":
+        return nxt.isupper()
+    return True
+
+
+def vs_sentence_segments_l6(text: str) -> list:
+    """L6専用の文分割(委任_66、Opus#9論点1)。既存`vs_sentence_segments`(水準③・P-strict-closed等が使用)は
+    `.`+空白で必ず文を切るため`U.S. officials`・`Mr. Trump`・`Jan. 5`で文が割れ、「完結文」が文の途中までに
+    なる。既存関数を変えると水準③等の挙動が変わるため変えず、L6用に略語(`_VS_L6_ABBREV`)直後の`.`では
+    切らない版を別に持つ(略語直後のピリオドで切らないだけで、他は同一)。"""
+    segs, pos = [], 0
+    for m in _VS_SENT_END_RE.finditer(text):
+        if m.group(0) != "\n" and _vs_l6_abbrev_period(text, m):
+            continue
+        end = m.start() if m.group(0) == "\n" else m.end()
+        segs.append((pos, end))
+        pos = m.end()
+    segs.append((pos, len(text)))
+    out = []
+    for a, b in segs:
+        while a < b and text[a].isspace():
+            a += 1
+        while b > a and text[b - 1].isspace():
+            b -= 1
+        if b > a:
+            out.append((a, b))
+    return out
+
+
+class _VsL6Art:
+    """L6が1記事に対して使う、正規化済み本文・文分割・出現位置の探索(元本文の座標で返す)。"""
+
+    def __init__(self, text: str):
+        self.text = text
+        self.nt, self.nm = vs_norm_with_map(text, True)
+        self.segs = vs_sentence_segments_l6(text)
+
+    def occ(self, nv: str, boundary: bool) -> list:
+        out = []
+        if not nv:
+            return out
+        for a, b in vs_find_all(self.nt, nv):
+            if boundary and not vs_word_boundary_ok(self.nt, (a, b)):
+                continue
+            out.append((self.nm[a][0], self.nm[b - 1][1]))
+        return out
+
+
+def _vs_l6_norm(s: str) -> str:
+    return vs_norm_with_map(s.strip(), True)[0]
+
+
+def _vs_l6_strip_edge(s: str) -> str:
+    return s.strip(_VS_L6_EDGE)
+
+
+def _vs_l6_quote_balanced(s: str) -> bool:
+    return s.count("“") == s.count("”") and s.count('"') % 2 == 0
+
+
+def _vs_l6_sentence_group(art: _VsL6Art, a: int, b: int) -> list:
+    return [s for s in art.segs if s[0] < b and s[1] > a]
+
+
+def _vs_l6_range_from(art: _VsL6Art, hit: list) -> tuple:
+    """文群hitから(start, end, 拒否理由)。引用符が閉じていなければ隣接文で閉じられるか試す(2文以内)。"""
+    text = art.text
+    if not hit:
+        return None, None, "no_sentence"
+    if len(hit) > VS_L6_MAX_SENTENCES:
+        return None, None, "spans_more_than_%d_sentences" % VS_L6_MAX_SENTENCES
+    s, e = hit[0][0], hit[-1][1]
+    if "\n\n" in text[s:e]:
+        return None, None, "crosses_paragraph"
+    if not _vs_l6_quote_balanced(text[s:e]):
+        idx, jdx = art.segs.index(hit[0]), art.segs.index(hit[-1])
+        ok = False
+        for (i0, j0) in ((idx - 1, jdx), (idx, jdx + 1)):
+            if i0 < 0 or j0 >= len(art.segs) or (j0 - i0 + 1) > VS_L6_MAX_SENTENCES:
+                continue
+            ss, ee = art.segs[i0][0], art.segs[j0][1]
+            if "\n\n" not in text[ss:ee] and _vs_l6_quote_balanced(text[ss:ee]):
+                s, e, ok = ss, ee, True
+                break
+        if not ok:
+            return None, None, "unbalanced_quote_not_closable_within_%d_sentences" % VS_L6_MAX_SENTENCES
+    if e - s > VS_L6_MAX_RESTORED_CHARS:
+        return None, None, "restored_too_long(%d)" % (e - s)
+    if vs_is_structural_label_range(text, (s, e)):
+        return None, None, "label_only"
+    return s, e, None
+
+
+def _vs_l6_anchor_scan(art: _VsL6Art, part: str) -> dict:
+    """partが記事に全体一致しないとき、先頭側・末尾側の「逐語で記事に連続する最長の語列(アンカー)」を探す。
+    返値: {"n", "toks", "head": (k, span|None, text)|None, "tail": (j, span|None, text)|None}。
+    spanがNoneのアンカーは記事に2箇所以上=曖昧(位置を決めない)。類似度は使わない。"""
+    toks = _vs_l6_norm(part).split()
+    n = len(toks)
+    res = {"n": n, "toks": toks, "head": None, "tail": None}
+    if n < VS_L6_MIN_ANCHOR_WORDS:
+        return res
+
+    def variants(seg_tokens, side):
+        s = " ".join(seg_tokens)
+        yield s
+        s2 = s.rstrip(_VS_L6_EDGE) if side == "head" else s.lstrip(_VS_L6_EDGE)
+        if s2 != s and s2:
+            yield s2
+
+    for k in range(n - 1, VS_L6_MIN_ANCHOR_WORDS - 1, -1):
+        found = None
+        for v in variants(toks[:k], "head"):
+            o = art.occ(v, True)
+            if o:
+                found = (v, o)
+                break
+        if found:
+            v, o = found
+            if len(o) == 1 and len(_vs_l6_strip_edge(v)) >= VS_L6_MIN_ANCHOR_CHARS:
+                res["head"] = (k, o[0], v)
+            elif len(o) >= 2:
+                res["head"] = (k, None, v)
+            break
+    for j in range(1, n - VS_L6_MIN_ANCHOR_WORDS + 1):
+        found = None
+        for v in variants(toks[j:], "tail"):
+            o = art.occ(v, True)
+            if o:
+                found = (v, o)
+                break
+        if found:
+            v, o = found
+            if len(o) == 1 and len(_vs_l6_strip_edge(v)) >= VS_L6_MIN_ANCHOR_CHARS:
+                res["tail"] = (j, o[0], v)
+            elif len(o) >= 2:
+                res["tail"] = (j, None, v)
+            break
+    return res
+
+
+def _vs_l6_locate_part(art: _VsL6Art, part: str, relaxed: bool = False) -> dict:
+    """1つの断片(正規化前)を記事内の範囲(元本文の座標)へ。kind: exact/anchor/none/too_short/multi。"""
+    core = _vs_l6_strip_edge(part)
+    if not core:
+        return {"kind": "none", "spans": [], "detail": "empty"}
+    nv = _vs_l6_norm(core)
+    words = nv.split()
+    if (len(words) < VS_L6_MIN_FRAG_WORDS or len(nv) < VS_L6_MIN_FRAG_CHARS) and not (relaxed and len(words) >= 1):
+        return {"kind": "too_short", "spans": [], "detail": f"words={len(words)},chars={len(nv)}"}
+    occ_any = art.occ(nv, False)
+    if len(occ_any) >= 2:
+        return {"kind": "multi", "spans": occ_any, "detail": "fragment_occurs_%d_times" % len(occ_any)}
+    if len(occ_any) == 1:
+        a, b = occ_any[0]
+        t = art.text
+        ok_head = not (_vs_wordch(t, a) and _vs_wordch(t, a - 1))
+        ok_tail = not (_vs_wordch(t, b - 1) and _vs_wordch(t, b))
+        return {"kind": "exact", "spans": [(a, b)], "detail": {"ok_head": ok_head, "ok_tail": ok_tail}}
+    an = _vs_l6_anchor_scan(art, core)
+    sp = [an[side][1] for side in ("head", "tail") if an[side] and an[side][1] is not None]
+    ambiguous = [s for s in ("head", "tail") if an[s] and an[s][1] is None]
+    if not sp:
+        return {"kind": "none", "spans": [], "detail": {"anchor": an, "ambiguous_anchor": ambiguous}}
+    return {"kind": "anchor", "spans": sp, "detail": {"anchor": an, "ambiguous_anchor": ambiguous}}
+
+
+def _vs_l6_residual_check(art: _VsL6Art, toks: list, covered: list, rng: tuple) -> tuple:
+    """穴A(Opus#9論点1): アンカーが覆わないclaimの語のうち、記事に逐語で存在する連続部分
+    (VS_L6_RESIDUAL_MIN_WORDS語以上)は、復元範囲の内側にも存在すること。記事の外側にしか無ければ、
+    Checkerが別の文の語を混ぜた(=黙って縮小する)可能性があるため復元しない。返値(ok, 詳細list)。"""
+    n = len(toks)
+    cov = set()
+    for lo, hi in covered:
+        cov.update(range(lo, hi))
+    runs, i = [], 0
+    while i < n:
+        if i in cov:
+            i += 1
+            continue
+        j = i
+        while j < n and j not in cov:
+            j += 1
+        runs.append((i, j))
+        i = j
+    detail = []
+    for lo, hi in runs:
+        p = lo
+        while p < hi:
+            best = None
+            for q in range(hi, p + VS_L6_RESIDUAL_MIN_WORDS - 1, -1):
+                v = " ".join(toks[p:q])
+                for vv in (v, v.strip(_VS_L6_EDGE)):
+                    if len(vv.split()) < VS_L6_RESIDUAL_MIN_WORDS:
+                        continue
+                    o = art.occ(vv, True)
+                    if o:
+                        best = (q, vv, o)
+                        break
+                if best:
+                    break
+            if best is None:
+                p += 1
+                continue
+            q, vv, o = best
+            inside = [x for x in o if x[0] >= rng[0] and x[1] <= rng[1]]
+            detail.append({"run": vv, "occurrences": len(o), "inside_restored_range": len(inside)})
+            if not inside:
+                return False, detail
+            p = q
+    return True, detail
+
+
+def vs_sentence_restore_resolve(claim_text: str, en_text: str | None) -> dict:
+    """委任_66 L6(Trial専用、`VS_SENTENCE_RESTORE`ON時のみ`_resolve_claim_string`から呼ばれる)。英語本文のみ。
+    返値info: status(restored/cand0/cand_multi/guard_rejected/not_fired/not_applicable)、reason、restore_reason、
+    fired_by、fragments、anchors、restored_sentence、span、n_sentences、n_candidates、focus_spans、residual_check。
+    例外が出たら復元しない(status="exception"、呼び出し側はunresolvableのまま=安全側)。"""
+    info = {"attempted": True, "status": "not_fired", "reason": None, "restore_reason": None, "fired_by": [],
+            "fragments": [], "anchors": [], "restored_sentence": None, "span": None, "n_sentences": None,
+            "n_candidates": 0, "focus_spans": [], "residual_check": [], "original_claim": claim_text}
+    try:
+        return _vs_sentence_restore_core(claim_text, en_text, info)
+    except Exception as e:  # noqa: BLE001
+        info.update(status="exception", reason=repr(e)[:200])
+        return info
+
+
+def _vs_sentence_restore_core(claim_text: str, en_text: str | None, out: dict) -> dict:
+    if en_text is None:
+        out.update(status="not_fired", reason="no_en_text")
+        return out
+    art = _VsL6Art(en_text)
+    raw = (claim_text or "").strip()
+    if _VS_L6_CJK_RE.search(raw):
+        out.update(status="not_applicable", reason="claim_is_japanese")
+        return out
+    core = vs_strip_one_pair(raw)
+    core = raw if core is None else core
+    out["claim_core"] = core
+    # 説明文混入型の除外: 断片全体が記事に出現せず、引用符の外側に「3語以上かつ記事に逐語で存在しない語句」がある
+    # claimは、Checkerの説明文が混じっているとみなし触らない(P-strict-closedの領域、Opus#7の4ガードを迂回しない)。
+    if not art.occ(_vs_l6_norm(_vs_l6_strip_edge(core)), False):
+        frags_, _bal, segs_ = _vs_explain_extract_fragments(raw)
+        if frags_:
+            expl = [sg for sg in segs_ if len(_vs_l6_strip_edge(sg).split()) >= 3
+                    and _vs_l6_norm(_vs_l6_strip_edge(sg)) not in art.nt]
+            if expl:
+                out.update(status="not_fired", reason="explanatory_mixed_left_to_P",
+                           detail=[_vs_l6_strip_edge(x) for x in expl])
+                return out
+    head_ell = bool(re.match(r"^\s*(?:\.{3,}|…+|・{2,})", core))
+    tail_ell = bool(re.search(r"(?:\.{3,}|…+|・{2,})\s*$", core))
+    parts = [p for p in _VS_L6_ELL_RE.split(core) if _vs_l6_strip_edge(p)]
+    mid_ell = len(parts) >= 2
+    if not parts:
+        out.update(status="not_fired", reason="empty")
+        return out
+    if mid_ell:
+        out["fired_by"].append("ellipsis_mid")
+    if tail_ell:
+        out["fired_by"].append("ellipsis_tail")
+    if head_ell:
+        out["fired_by"].append("ellipsis_head")
+    longest = max(parts, key=lambda p: len(_vs_l6_norm(_vs_l6_strip_edge(p))))
+    locs = [_vs_l6_locate_part(art, p, relaxed=(mid_ell and p is not longest)) for p in parts]
+    out["fragments"] = [{"part": p, "kind": lc["kind"],
+                         "detail": (lc["detail"] if lc["kind"] != "anchor" and lc["kind"] != "none" else None)}
+                        for p, lc in zip(parts, locs)]
+    kinds = [lc["kind"] for lc in locs]
+    if any(k == "too_short" for k in kinds):
+        out.update(status="guard_rejected", reason="fragment_too_short")
+        return out
+    if any(k == "none" for k in kinds):
+        amb = [lc["detail"].get("ambiguous_anchor") for lc in locs if lc["kind"] == "none"]
+        out.update(status="cand0", reason="no_verbatim_anchor_in_article", detail={"ambiguous": amb})
+        return out
+
+    cand_lists, focus, anchor_infos = [], [], []
+    for p, lc in zip(parts, locs):
+        if lc["kind"] == "anchor":
+            an = lc["detail"]["anchor"]
+            n, toks = an["n"], an["toks"]
+            h = an["head"] if an["head"] and an["head"][1] is not None else None
+            t = an["tail"] if an["tail"] and an["tail"][1] is not None else None
+            if h and t and t[0] < h[0]:
+                out.update(status="guard_rejected", reason="anchors_overlap_in_claim")
+                return out
+            covered = ([(0, h[0])] if h else []) + ([(t[0], n)] if t else [])
+            unmatched = n - sum(hi - lo for lo, hi in covered)
+            if unmatched < 0:
+                out.update(status="guard_rejected", reason="negative_unmatched")
+                return out
+            if unmatched > VS_L6_MAX_UNMATCHED_TOKENS:
+                out.update(status="cand0", reason=f"unmatched_run_too_long({unmatched}>{VS_L6_MAX_UNMATCHED_TOKENS})")
+                return out
+            cover = (len(h[2]) if h else 0) + (len(t[2]) if t else 0)
+            if cover / max(1, len(_vs_l6_norm(_vs_l6_strip_edge(p)))) < VS_L6_MIN_COVER_RATIO:
+                out.update(status="cand0", reason="anchor_cover_below_%.2f" % VS_L6_MIN_COVER_RATIO)
+                return out
+            gap_info = None
+            if h and t:
+                if t[1][0] < h[1][1]:
+                    out.update(status="cand0", reason="head_tail_anchors_out_of_order")
+                    return out
+                art_gap = len(_vs_l6_norm(art.text[h[1][1]:t[1][0]]).split())
+                claim_gap = t[0] - h[0]
+                gap_info = {"article_gap_words": art_gap, "claim_gap_words": claim_gap}
+                if art_gap > claim_gap + VS_L6_GAP_ALPHA:
+                    out.update(status="guard_rejected", reason="anchor_gap_inconsistent(%d>%d+%d)" % (
+                        art_gap, claim_gap, VS_L6_GAP_ALPHA), detail=gap_info)
+                    return out
+            out["fired_by"].append("anchor_with_substituted_words(unmatched=%d)" % unmatched)
+            anchor_infos.append({"part": p, "head": ({"k": h[0], "text": h[2], "span": h[1]} if h else None),
+                                 "tail": ({"j": t[0], "text": t[2], "span": t[1]} if t else None),
+                                 "ambiguous": lc["detail"].get("ambiguous_anchor"), "unmatched": unmatched,
+                                 "toks": toks, "covered": covered, "gap": gap_info})
+            lo = min(a for a, _ in lc["spans"])
+            hi = max(b for _, b in lc["spans"])
+            cand_lists.append([(lo, hi)])
+            focus.append((lo, hi))
+        else:
+            cand_lists.append(list(lc["spans"]))
+            if lc["kind"] == "exact":
+                focus.append(lc["spans"][0])
+            else:
+                focus.extend(lc["spans"])
+    for lc in locs:
+        if lc["kind"] == "exact":
+            d = lc["detail"]
+            if not d["ok_head"]:
+                out["fired_by"].append("truncated_head")
+            if not d["ok_tail"] and not tail_ell:
+                out["fired_by"].append("truncated_tail")
+    out["anchors"] = [{k2: v2 for k2, v2 in ai.items() if k2 not in ("toks", "covered")} for ai in anchor_infos]
+    if not out["fired_by"]:
+        out.update(status="not_fired", reason="exact_and_boundary_ok_but_base_unresolved")
+        return out
+
+    import itertools
+    groups = []
+    for combo in itertools.product(*cand_lists):
+        if any(y[0] < x[1] for x, y in zip(combo, combo[1:])):
+            continue
+        a, b = min(c[0] for c in combo), max(c[1] for c in combo)
+        hit = _vs_l6_sentence_group(art, a, b)
+        s, e, why = _vs_l6_range_from(art, hit)
+        groups.append({"span": (s, e), "why": why, "frag_span": (a, b), "n_sent": len(hit)})
+    valid = [g for g in groups if g["why"] is None]
+    if not valid:
+        why = collections.Counter(g["why"] for g in groups).most_common(1)
+        out.update(status="cand0", reason=(why[0][0] if why else "no_ordered_combination"))
+        return out
+    uniq = sorted({g["span"] for g in valid})
+    out["n_candidates"] = len(uniq)
+    if len(uniq) >= 2:
+        out.update(status="cand_multi", reason="%d_candidate_sentence_groups" % len(uniq),
+                   detail=[art.text[a:b] for a, b in uniq])
+        return out
+    s, e = uniq[0]
+    restored = art.text[s:e]
+    if art.text.count(restored) != 1:
+        out.update(status="cand_multi", reason="restored_text_occurs_%d_times" % art.text.count(restored))
+        return out
+    # 穴A: 残余包含検査(アンカー型のみ)
+    for ai in anchor_infos:
+        ok, det = _vs_l6_residual_check(art, ai["toks"], ai["covered"], (s, e))
+        out["residual_check"].extend(det)
+        if not ok:
+            out.update(status="guard_rejected", reason="residual_outside_restored_range")
+            return out
+    # 文数は復元範囲に含まれる文の数(引用符を隣接文で閉じて範囲が広がった場合も数える)。
+    n_sent = sum(1 for sg in art.segs if sg[0] >= s and sg[1] <= e)
+    reasons = sorted({f.split("(")[0] for f in out["fired_by"]})
+    out.update(status="restored", reason=None, restored_sentence=restored, span=(s, e), n_sentences=n_sent,
+               restore_reason=reasons, focus_spans=sorted({tuple(x) for x in focus}))
+    return out
+
+
+def vs_l6_issue_quoted_phrases(issue: str) -> list:
+    """Checkerの`issue`中で引用符(“…”/‘…’/「…」/"…")に囲まれた語句(Opus#9論点4(a))。直線の二重引用符も
+    LLMの出力で一般的なため含める(含めるほど「すべて不在」の成立が難しくなる=Rewriteする側へ倒れる)。"""
+    out = []
+    for pat in (r"“([^”]+)”", r"‘([^’]+)’", r"「([^」]+)」", r"\"([^\"]+)\""):
+        out.extend(m.group(1).strip() for m in re.finditer(pat, issue or ""))
+    return [p for p in dict.fromkeys(out) if p]
+
+
+def vs_l6_focus_absent(phrases: list, restored_text: str, claim_text: str = "") -> dict:
+    """引用符付き語句があり、そのすべてが復元範囲に(単語境界つきで)存在しないとき absent=True。
+    語句が無ければabsent=False(通常どおりRewrite)。claim由来かの印(`in_claim`)は記録のみ。"""
+    nt = vs_norm_str(restored_text, True)
+    nclaim = vs_norm_str(claim_text or "", True)
+
+    def present(p, hay):
+        v = vs_norm_str(p, True)
+        return bool(v) and any(vs_word_boundary_ok(hay, sp) for sp in vs_find_all(hay, v))
+    rows = [{"phrase": p, "in_restored_range": present(p, nt), "in_claim": present(p, nclaim)} for p in phrases]
+    return {"phrases": rows, "absent": bool(rows) and not any(r["in_restored_range"] for r in rows)}
+
+
+def vs_l6_focus_guard(sr: dict, target: str, revised: str, full_text: str) -> dict:
+    """Opus#9論点4(b): 2文を復元した場合、E1の結果の変更位置が「元の断片またはアンカーを含む文」の内側に
+    収まるかを書き戻し前に検査する(先頭・末尾の共通部分を除いた変更域が、焦点文だけと重なるか)。"""
+    if target == revised:  # 変更なし
+        return {"ok": True, "changed_region": None, "focus_sentences": [], "outside_sentences_touched": []}
+    start = sr["span"][0]
+    p = 0
+    mx = min(len(target), len(revised))
+    while p < mx and target[p] == revised[p]:
+        p += 1
+    s = 0
+    while s < mx - p and target[len(target) - 1 - s] == revised[len(revised) - 1 - s]:
+        s += 1
+    ca, cb = start + p, start + len(target) - s
+    segs = vs_sentence_segments_l6(full_text)
+    focus_sents = [sg for sg in segs if any(sg[0] < fb and sg[1] > fa for fa, fb in sr["focus_spans"])]
+    if ca == cb:
+        touched = [sg for sg in segs if sg[0] <= ca <= sg[1] and start <= ca <= start + len(target)]
+    else:
+        touched = [sg for sg in segs if sg[0] < cb and sg[1] > ca]
+    outside = [sg for sg in touched if sg not in focus_sents]
+    return {"ok": not outside, "changed_region": [ca, cb], "focus_sentences": [list(x) for x in focus_sents],
+            "outside_sentences_touched": [list(x) for x in outside]}
+
+
 def _resolve_claim_string(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
+    """照合の入口(1箇所)。委任_66: 既存の照合+P-strict-closed(`_resolve_claim_string_p`)で確定せず、
+    `VS_SENTENCE_RESTORE`かつ`VS_MATCH_EXT`がONなら、英語本文に限りL6(`vs_sentence_restore_resolve`)を試す
+    (P→L6の順。Pは説明文を外す・L6は断片を文へ広げる=目的が逆で、L6→Pだと説明文付き断片をL6が先に文へ広げて
+    Pの4ガードを回避してしまうため)。OFF(既定)なら従来と同一の結果を返す。対象はreasonがmismatch/
+    explanatory_mixedのときだけ(multi_match・label_only・empty_claim・no_textは触らない)。"""
+    out = _resolve_claim_string_p(claim_text, en_text, ja_text)
+    if (not VS_SENTENCE_RESTORE or not VS_MATCH_EXT or out["status"] == "resolved" or en_text is None
+            or out.get("reason") not in ("mismatch", "explanatory_mixed")):
+        return out
+    info = vs_sentence_restore_resolve(claim_text, en_text)
+    pub = {k: info.get(k) for k in (
+        "attempted", "status", "reason", "restore_reason", "fired_by", "fragments", "anchors", "restored_sentence",
+        "span", "n_sentences", "n_candidates", "focus_spans", "residual_check", "original_claim", "claim_core")}
+    pub["base_reason"] = out.get("reason")
+    if info["status"] != "restored":
+        out["sentence_restore"] = pub
+        return out
+    s, e = info["span"]
+    pl = dict(out.get("per_lang") or {})
+    pl["EN"] = {"status": "ok", "level": VS_L6_LEVEL}
+    out.update({"status": "resolved", "reason": None, "lang": "EN", "level": VS_L6_LEVEL,
+                "ranges": [en_text[s:e]], "spans": [(s, e)], "raw_spans": [(s, e)], "per_lang": pl,
+                "both_langs_ok": False, "stripped": False, "sentence_restore": pub})
+    out.pop("label_only_ranges", None)
+    out.pop("detail", None)
+    return out
+
+
+def _resolve_claim_string_p(claim_text: str, en_text: str | None, ja_text: str | None = None) -> dict:
     """照合の入口(1箇所)。既存の照合(`_resolve_claim_string_base`)で確定しない(explanatory_mixed/mismatch/
     label_only)場合にだけ、`VS_EXPLAIN_SPLIT`ONなら委任_57の`vs_explain_split_resolve`(P-strict-closed)を試す。
     OFF(既定)なら既存の照合の結果をそのまま返す(挙動不変)。拒否時も`reason`は既存の値のまま(下流の分岐を
@@ -3995,6 +4555,8 @@ def annotate_claim_span_identity(claim: dict, en_text: str | None, ja_text: str 
     res = resolve_violation_spans(claim.get("claim_text", ""), en_text, ja_text)
     claim["span_resolution_cycle_start"] = {k: res.get(k) for k in (
         "status", "lang", "level", "reason", "ranges", "both_langs_ok", "per_lang", "detail")}
+    if res.get("sentence_restore") is not None:  # 委任_66(記録専用): L6の試行結果
+        claim["span_resolution_cycle_start"]["sentence_restore"] = res["sentence_restore"]
     claim["claim_span_text"] = claim_span_text(res)
     return claim
 
@@ -4046,6 +4608,13 @@ make the tone flatter, and do NOT remove its hook or storytelling value. Preserv
 and meaning wherever the Ledger allows. Keep the same language as the input. """ + VS_RANGES_COMMON_RULES + """ \
 If this issue genuinely CANNOT be resolved by such a minimal edit, return {{"revised_ranges": []}} (do \
 not attempt a larger rewrite). """ + VS_RANGES_JSON_TAIL
+# 委任_66(Opus#9論点4(c)): L6復元時のみ、E1 Promptへ元の断片(焦点)を併記する(範囲=復元文、焦点=断片)。
+E1_RANGES_FOCUS_BLOCK = (
+    "[Checker's flagged fragment (the focus inside the range above; the range is the complete sentence(s) "
+    "containing it, restored because the Checker's quotation was cut off or partly altered)]\n{fragment}\n\n")
+E1_RANGES_PROMPT_TEMPLATE_L6 = E1_RANGES_PROMPT_TEMPLATE.replace(
+    "[Paragraph context (read-only)]\n{context_block}",
+    "{focus_block}[Paragraph context (read-only)]\n{context_block}", 1)
 E2_RANGES_DEVELOPER_MSG = (
     "You are fixing a fact deviation flagged by a Ledger Deviation Checker, using the smallest possible "
     "edit (single-shot, no escalation). You may be given Japanese or English text."
@@ -4152,8 +4721,8 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
     handoff = {"mode": HANDOFF_MODE_VIOLATION_SPAN, "checker_claim_text": claim_text, "text_lang": lang,
                "resolution": {k: resolution.get(k) for k in (
                    "status", "lang", "level", "reason", "detail", "ranges", "raw_spans", "spans",
-                   "per_lang", "both_langs_ok", "frag_levels", "stripped", "explain_split")
-                   if k != "explain_split" or resolution.get("explain_split") is not None},
+                   "per_lang", "both_langs_ok", "frag_levels", "stripped", "explain_split", "sentence_restore")
+                   if k not in ("explain_split", "sentence_restore") or resolution.get(k) is not None},
                "level_attempts": [], "level_used": None, "span_unverified": False}
 
     if resolution["status"] != "resolved":
@@ -4168,6 +4737,21 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
     ranges = list(resolution["ranges"])
     spans = list(resolution["spans"])
     locate_method = f"violation_span({lang},{resolution['level']})"
+    # 委任_66(L6、Opus#9論点4(a)): 復元範囲に対して、Checkerの`issue`が引用符で挙げた語句がすべて範囲に存在しない
+    # (例: 前cycleで既に直った接続語`so`を指す古い引用)場合は、Rewriteせず(不要Rewriteを避け)、全文Recheckに
+    # 判定を任せる(Recheckで再指摘されれば次cycleで通常処理)。引用符付き語句が`issue`に無ければ通常どおりRewrite。
+    l6 = resolution.get("sentence_restore") if resolution.get("level") == VS_L6_LEVEL else None
+    if l6 and l6.get("status") == "restored":
+        fa = vs_l6_focus_absent(vs_l6_issue_quoted_phrases(dev.get("issue") or ""), "\n".join(ranges),
+                                l6.get("claim_core") or claim_text)
+        handoff["issue_focus_check"] = fa
+        if fa["absent"]:
+            handoff["issue_focus_absent"] = True
+            return {"updated_text": full_text, "method": "issue_focus_absent_recheck_only", "guard_ok": False,
+                    "target_sentence": None, "locate_method": locate_method,
+                    "delete_reoccurrence_detected": False, "before_fragment": None, "after_fragment": None,
+                    "ladder_level_used": None, "target_not_locatable": False, "span_unverified": False,
+                    "ladder_exhausted_without_full_rewrite": False, "handoff": handoff}
     sentence_units = vs_expand_to_sentences(spans, full_text)
     context_blocks: list = []
     for u in sentence_units:
@@ -4213,12 +4797,20 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
         before_fragment = " ".join(del_units)
     else:
         levels = []
+        if l6 and l6.get("status") == "restored":
+            # 委任_66(Opus#9論点4(c)): L6復元時のみ、範囲=復元文・焦点=Checkerの元の断片を併記する。
+            e1_prompt = E1_RANGES_PROMPT_TEMPLATE_L6.format(
+                ledger_text=fixture["ledger_text"], ranges_block=vs_format_ranges(ranges),
+                focus_block=E1_RANGES_FOCUS_BLOCK.format(fragment=l6.get("claim_core") or claim_text),
+                context_block=context_block, issue=issue, rewrite_hint=rewrite_hint, n=len(ranges))
+        else:
+            e1_prompt = E1_RANGES_PROMPT_TEMPLATE.format(
+                ledger_text=fixture["ledger_text"], ranges_block=vs_format_ranges(ranges),
+                context_block=context_block, issue=issue, rewrite_hint=rewrite_hint, n=len(ranges))
         levels.append({
             "name": "1_word_connective", "tag": "e1_minimal_word_edit", "targets": ranges,
             "label": f"{label_prefix}_e1_minimal_word", "dev_msg": E1_RANGES_DEVELOPER_MSG,
-            "prompt": E1_RANGES_PROMPT_TEMPLATE.format(
-                ledger_text=fixture["ledger_text"], ranges_block=vs_format_ranges(ranges),
-                context_block=context_block, issue=issue, rewrite_hint=rewrite_hint, n=len(ranges)),
+            "prompt": e1_prompt,
             "allow_empty": False})
         levels.append({
             "name": "3_sentence", "tag": "e2_generic_rewrite", "targets": sentence_units,
@@ -4282,6 +4874,17 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
             attempt["revised"] = list(revised)
             changed = [r != t for t, r in zip(targets, revised)]
             attempt["each_target_changed"] = changed
+            if (lv["name"] == "1_word_connective" and l6 and l6.get("status") == "restored"
+                    and l6.get("n_sentences") == 2 and len(targets) == 1):
+                # 委任_66(Opus#9論点4(b)): 2文復元時、E1の変更が「断片/アンカーを含む文」の外側に及んだら
+                # E1失敗扱い(既存の失敗経路=次の水準へ)。
+                fg = vs_l6_focus_guard(l6, targets[0], revised[0], full_text)
+                attempt["focus_guard"] = fg
+                if not fg["ok"]:
+                    attempt["result"] = "focus_guard_rejected"
+                    handoff["focus_guard_fired"] = True
+                    method_used = f"{lv['tag']}_focus_guard_rejected({locate_method})"
+                    continue
             candidate, bad_idx = vs_apply_replacements(full_text, targets, revised)
             if candidate is None:
                 attempt["result"] = "writeback_failed"
@@ -5051,6 +5654,8 @@ def _run_stage3_spans_core(client, state, consecutive_errors, call_log, label_pr
                        "status", "lang", "level", "reason", "detail", "ranges", "per_lang", "both_langs_ok")},
                    "level_attempts": [], "level_used": None, "span_unverified": True,
                    "span_unverified_reason": reason, "span_unverified_detail": detail}
+        if resolution.get("sentence_restore") is not None:  # 委任_66(記録専用): L6の試行結果(復元しなかった理由)
+            handoff["sentence_restore"] = resolution["sentence_restore"]
         return {"mechanism": mechanism_paired if use_pairing else mechanism_single,
                 "en_text": current_en_text, "ja_text": current_ja_text, "method": "violation_span_unverified",
                 "guard_ok": False, "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
@@ -5283,6 +5888,10 @@ def full_recheck_required(rewrite_records: list, blocking_claims: list, instance
             r.get("ladder_level_used") in LOCAL_QA_ESCALATION_LADDER_LEVELS for r in paired_records)
         if paired_high_ladder or ja_guard_ok is False:
             reasons.append("both_ja_en_changed(paired_j1)")
+    # 委任_66(L6、Opus#9論点4(a)): issue_focus_absentでRewriteを見送ったclaimがあるcycleは、局所QA(Rewrite前後の
+    # 文だけを見る)では確認できないため、必ず全文Recheckで判定する。
+    if any(((r.get("handoff") or {}).get("issue_focus_absent")) for r in rewrite_records):
+        reasons.append("issue_focus_absent_recheck_only")
     if any(c.get("floor_reason") for c in blocking_claims):
         reasons.append("deterministic_floor_claim")
     if instance_id.startswith("safety_"):
@@ -6113,6 +6722,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
                          **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
                          **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
+                         **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
             "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
             "residual_at_pass": compute_residual_at_pass(instance_id, "ACCEPTABLE_STAGE1", fixture["article_text"],
@@ -6793,6 +7403,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
                          **({"CHECKER_SPANS_MODE": CHECKER_SPANS_MODE} if CHECKER_SPANS_MODE != CHECKER_SPANS_MODE_LEGACY else {}),
                          **({"VS_EXPLAIN_SPLIT": True} if VS_EXPLAIN_SPLIT else {}),
+                         **({"VS_SENTENCE_RESTORE": True} if VS_SENTENCE_RESTORE else {}),
                          **({"FLOOR_VERIFY_MODE": FLOOR_VERIFY_MODE} if FLOOR_VERIFY_MODE != FLOOR_VERIFY_MODE_OFF else {})},
         "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": raw_rechecks},
         "residual_at_pass": compute_residual_at_pass(instance_id, final_state, current_en_text, cycles_log,
@@ -7598,6 +8209,8 @@ def main():
                          help="委任_49: 照合の追補(L5末尾句読点・位置ラベル・単語境界)を有効化(既定OFF=委任_42の照合)")
     parser.add_argument("--vs-explain-split", action="store_true",
                          help="委任_57: 説明文混入のTrial専用後段分離P-strict-closedを有効化(既定OFF。有効化・Production採用はユーザー承認待ち)")
+    parser.add_argument("--vs-sentence-restore", action="store_true",
+                         help="委任_66: L6完結文復元(Trial専用、VS_MATCH_EXTも必要。既定OFF。有効化・Production採用はユーザー承認待ち)")
     parser.add_argument("--ja-mode", default=JA_MODE_PAIRED, choices=[JA_MODE_PAIRED, JA_MODE_ENGLISH_ONLY],
                          help="委任_49: english_onlyで日本語側の処理を迂回(既定paired=現行)")
     parser.add_argument("--checker-spans-mode", default=CHECKER_SPANS_MODE_LEGACY,
@@ -7610,6 +8223,7 @@ def main():
     globals()["FLOOR_VERIFY_MODE"] = validate_floor_verify_mode(args.floor_verify_mode)
     globals()["VS_MATCH_EXT"] = bool(args.vs_match_ext)
     globals()["VS_EXPLAIN_SPLIT"] = bool(args.vs_explain_split)
+    globals()["VS_SENTENCE_RESTORE"] = bool(args.vs_sentence_restore)
     globals()["JA_MODE"] = args.ja_mode
     globals()["CHECKER_SPANS_MODE"] = args.checker_spans_mode
     selected_groups = {g.strip() for g in args.groups.split(",") if g.strip()}
@@ -7695,6 +8309,9 @@ def main():
         summary["floor_verify"] = floor_verify_summarize(
             sr for res in sample_instance_results for r in res for cyc in r.get("cycles", [])
             for sr in cyc.get("stage2_results", []))
+    if VS_SENTENCE_RESTORE:
+        summary["sentence_restore"] = sentence_restore_summarize(
+            r for res in sample_instance_results for r in res)
     save_json(f"{OUT_DIR}/summary_flow_runner.json", {
         "summary": summary,
         "instance_results_sample1": [
