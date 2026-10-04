@@ -1,0 +1,378 @@
+{
+  "instance_id": "safety_er009_changed_causality",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+            "issue": "Ledgerが記述的な歴史的傾向としているチップ率の上昇に、デジタル画面の導入が直接の原因だったという因果関係を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "F-006の数値・時期・対象範囲は保たれているが、因果関係を示さない記述に「directly caused」という新たな因果主張を加え、断定している。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「was directly caused by the introduction of digital tip screens」を削除し、F-006に沿って、1970年代初頭の約10～15％から1990年代後半の約20％への歴史的な上昇を記述的事実として示してください。参照Fact: F-006。",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens."
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:89721925ca5a0c1f",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens."
+              ],
+              "raw_spans": [
+                [
+                  0,
+                  179
+                ]
+              ],
+              "spans": [
+                [
+                  0,
+                  179
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s occurred."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+                    "after": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s occurred."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "causality",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 30.0,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 30
+        },
+        "stats_after": {
+          "avg_sentence_len": 21.0,
+          "difficult_word_ratio": 0.0952,
+          "word_count": 21
+        },
+        "sentence_len_increase": -9.0,
+        "difficulty_ratio_increase": -0.0381,
+        "fragment_stats_before": {
+          "avg_sentence_len": 30.0,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 30
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 21.0,
+          "difficult_word_ratio": 0.0952,
+          "word_count": 21
+        },
+        "fragment_sentence_len_increase": -9.0,
+        "fragment_difficulty_ratio_increase": -0.0381,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 30,
+        "hook_word_count_after": 21,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 21,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+      "en_text_after_rewrite": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s occurred.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "今回の記事は、米国のレストランのチップ慣行が約10～15％から約20％へ上昇したという歴史的傾向を述べており、デジタル画面がその上昇を引き起こしたという因果主張は含んでいません。"
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true
+      },
+      "recheck_prior_issues_sent_count": 1
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_changed_causality_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1438,
+      "usage": {
+        "input_tokens": 6120,
+        "cached_input_tokens": 0,
+        "output_tokens": 609,
+        "reasoning_tokens": 487
+      },
+      "elapsed_seconds": 7.107,
+      "prompt_sha256": "1b37ff8dbfeb2ebd8c271a95abdbf92eb9628c8ebc81537a29dec905b1a58a5a"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_claim:89721925ca5a0c_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1176,
+      "usage": {
+        "input_tokens": 4678,
+        "cached_input_tokens": 0,
+        "output_tokens": 563,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 7.117,
+      "prompt_sha256": "aa282e5685aeb543ca341c03a31348c3c08cfeedb842793f8c062d6b32207089"
+    },
+    {
+      "label": "safety_er009_changed_causality_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1138,
+      "usage": {
+        "input_tokens": 6264,
+        "cached_input_tokens": 0,
+        "output_tokens": 198,
+        "reasoning_tokens": 79
+      },
+      "elapsed_seconds": 2.911,
+      "prompt_sha256": "16ceddfb9f81000a04f9d58a6d664e3904364a8750373144d8dc88e8d939e7e6",
+      "overall_status": "LEDGER_COMPLIANT",
+      "all_prior_issues_resolved": true
+    }
+  ],
+  "total_cost_jpy": 0.3752,
+  "total_calls": 3,
+  "elapsed_seconds": 17.151,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+        "related_fact_id": null,
+        "origin": null,
+        "issue": "Ledgerが記述的な歴史的傾向としているチップ率の上昇に、デジタル画面の導入が直接の原因だったという因果関係を追加している。",
+        "explanation": "F-006の数値・時期・対象範囲は保たれているが、因果関係を示さない記述に「directly caused」という新たな因果主張を加え、断定している。",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

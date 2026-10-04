@@ -1,0 +1,2950 @@
+{
+  "instance_id": "safety_A4",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "STAGE4_ESCALATION",
+  "stage4_reason": "cycle_limit_exhausted_after_recheck",
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+            "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“some calls”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+              "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with users. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」の「with users」を「with the businesses or stores they called」のように直し、やり取りの相手を狭めてください。参照: MUSE-HC-006。",
+          "floor_reason": "deterministic_floor:changed_actor",
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "floor_verify": {
+            "mode": "time_only",
+            "target": false,
+            "target_reason": "llm_materiality_blocking",
+            "triggered_flags": [
+              "changed_actor"
+            ],
+            "llm_materiality": "BLOCKING",
+            "confirmed": false,
+            "confirmed_basis": [],
+            "fact_block_found": null,
+            "calls": [],
+            "n_calls": 0,
+            "released": false,
+            "blocking_fixed_reason": null,
+            "release_note": null,
+            "final_materiality": "BLOCKING",
+            "cost_jpy": 0.0
+          },
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L1",
+            "reason": null,
+            "ranges": [
+              "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L1"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+        },
+        {
+          "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+            "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“people who thought they were speaking with AI”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "That was what people thought as they spoke.",
+              "So people who thought they were speaking with AI were actually speaking with human staff."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A4",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+              "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+            ],
+            "batch_cost_jpy": 0.2445,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "“One helper meant one more person handling private data.”",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "“One helper meant one more person handling private data.”",
+            "issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerが示すのは機微情報が意図せず共有される可能性であり、各ヘルパーが実際に個人情報を扱うという断定ではありません。可能性を確定的な結果に変えています。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "直前の文の “might be shared with contract workers at a call center”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "One helper meant one more person handling private data."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「One helper meant one more person handling private data.」を、実際に情報を扱ったと断定せず、契約スタッフに機微情報が共有される可能性への懸念として表現してください。参照: MUSE-HC-010。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L1",
+            "reason": null,
+            "ranges": [
+              "One helper meant one more person handling private data."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L1"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "One helper meant one more person handling private data."
+        },
+        {
+          "claim_text": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+            "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“some calls”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+              "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with users. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_scope",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」の「with users」を「with the businesses or stores they called」のように直し、やり取りの相手を狭めてください。参照: MUSE-HC-006。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+        },
+        {
+          "claim_text": "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake.",
+          "origin": "translation",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake.",
+            "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "translation",
+            "qualifier_present": true,
+            "qualifier_text": "“some calls”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+              "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A4",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+              "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+            ],
+            "batch_cost_jpy": 0.2445,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "That was what people thought as they spoke.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "That was what people thought as they spoke.",
+            "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“people who thought they were speaking with AI”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "That was what people thought as they spoke.",
+              "So people who thought they were speaking with AI were actually speaking with human staff."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A4",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "That was what people thought as they spoke.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+              "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+            ],
+            "batch_cost_jpy": 0.2445,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "So people who thought they were speaking with AI were actually speaking with human staff.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "So people who thought they were speaking with AI were actually speaking with human staff.",
+            "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“people who thought they were speaking with AI”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "That was what people thought as they spoke.",
+              "So people who thought they were speaking with AI were actually speaking with human staff."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A4",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "So people who thought they were speaking with AI were actually speaking with human staff.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+              "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+            ],
+            "batch_cost_jpy": 0.2445,
+            "batch_n_claims": 4
+          }
+        },
+        {
+          "claim_text": "One helper meant one more person handling private data.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-010",
+          "dev": {
+            "claim_in_article": "One helper meant one more person handling private data.",
+            "issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Ledgerが示すのは機微情報が意図せず共有される可能性であり、各ヘルパーが実際に個人情報を扱うという断定ではありません。可能性を確定的な結果に変えています。",
+            "related_fact_id": "MUSE-HC-010",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "直前の文の “might be shared with contract workers at a call center”",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [
+              "One helper meant one more person handling private data."
+            ],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "“One helper meant one more person handling private data.”"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "「One helper meant one more person handling private data.」を、実際に情報を扱ったと断定せず、契約スタッフに機微情報が共有される可能性への懸念として表現してください。参照: MUSE-HC-010。",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "One helper meant one more person handling private data."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "One helper meant one more person handling private data."
+        }
+      ],
+      "blocking_count": 4,
+      "non_blocking_count": 4,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "safety_A4",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+            "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+          ],
+          "batch_cost_jpy": 0.2445,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "safety_A4",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+            "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+          ],
+          "batch_cost_jpy": 0.2445,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "safety_A4",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "That was what people thought as they spoke.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+            "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+          ],
+          "batch_cost_jpy": 0.2445,
+          "batch_n_claims": 4
+        },
+        {
+          "instance_id": "safety_A4",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "So people who thought they were speaking with AI were actually speaking with human staff.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6",
+            "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+          ],
+          "batch_cost_jpy": 0.2445,
+          "batch_n_claims": 4
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L1))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L1",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+              ],
+              "raw_spans": [
+                [
+                  257,
+                  357
+                ]
+              ],
+              "spans": [
+                [
+                  257,
+                  357
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L1"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": true
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "Through Muse, trained human contract workers made some calls and completed the exchanges with businesses."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                    "after": "Through Muse, trained human contract workers made some calls and completed the exchanges with businesses."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "actor",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-010",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L1))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "“One helper meant one more person handling private data.”",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L1",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "One helper meant one more person handling private data."
+              ],
+              "raw_spans": [
+                [
+                  896,
+                  951
+                ]
+              ],
+              "spans": [
+                [
+                  896,
+                  951
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L1"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": true
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "One helper meant one more person handling private data."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "One helper risked one more person handling private data."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "One helper meant one more person handling private data.",
+                    "after": "One helper risked one more person handling private data."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "term_scope",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+              ],
+              "l6_skipped": {
+                "skipped_reason": "carry_forward_precedence",
+                "rule": "cycle_start_match",
+                "l6_restored_ranges": [
+                  "Through Muse, trained human contract workers made some calls and completed the exchanges with businesses."
+                ],
+                "sentence_restore": {
+                  "attempted": true,
+                  "status": "restored",
+                  "reason": null,
+                  "restore_reason": [
+                    "anchor_with_substituted_words"
+                  ],
+                  "fired_by": [
+                    "anchor_with_substituted_words(unmatched=1)"
+                  ],
+                  "fragments": [
+                    {
+                      "part": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                      "kind": "anchor",
+                      "detail": null
+                    }
+                  ],
+                  "anchors": [
+                    {
+                      "part": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                      "head": {
+                        "k": 14,
+                        "text": "through muse, trained human contract workers made some calls and completed the exchanges with",
+                        "span": [
+                          257,
+                          350
+                        ]
+                      },
+                      "tail": null,
+                      "ambiguous": [],
+                      "unmatched": 1,
+                      "gap": null
+                    }
+                  ],
+                  "restored_sentence": "Through Muse, trained human contract workers made some calls and completed the exchanges with businesses.",
+                  "span": [
+                    257,
+                    362
+                  ],
+                  "n_sentences": 1,
+                  "n_candidates": 1,
+                  "focus_spans": [
+                    [
+                      257,
+                      350
+                    ]
+                  ],
+                  "residual_check": [],
+                  "original_claim": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                  "claim_core": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                  "base_reason": "mismatch"
+                }
+              }
+            },
+            "carry_forward_covered": [
+              {
+                "range": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+                "covered_by_claim": "fact:MUSE-HC-006"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:MUSE-HC-006",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+                "following_issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+                "prior_related_fact_id": "MUSE-HC-006",
+                "following_related_fact_id": "MUSE-HC-006",
+                "prior_true_flags": [
+                  "changed_actor",
+                  "changed_fact",
+                  "unsupported_new_claim"
+                ],
+                "following_true_flags": [
+                  "changed_actor",
+                  "changed_fact",
+                  "unsupported_new_claim"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-010",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "One helper meant one more person handling private data.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "One helper meant one more person handling private data."
+              ],
+              "l6_skipped": {
+                "skipped_reason": "carry_forward_precedence",
+                "rule": "cycle_start_match",
+                "l6_restored_ranges": [
+                  "One helper risked one more person handling private data."
+                ],
+                "sentence_restore": {
+                  "attempted": true,
+                  "status": "restored",
+                  "reason": null,
+                  "restore_reason": [
+                    "anchor_with_substituted_words"
+                  ],
+                  "fired_by": [
+                    "anchor_with_substituted_words(unmatched=3)"
+                  ],
+                  "fragments": [
+                    {
+                      "part": "One helper meant one more person handling private data.",
+                      "kind": "anchor",
+                      "detail": null
+                    }
+                  ],
+                  "anchors": [
+                    {
+                      "part": "One helper meant one more person handling private data.",
+                      "head": null,
+                      "tail": {
+                        "j": 3,
+                        "text": "one more person handling private data",
+                        "span": [
+                          914,
+                          951
+                        ]
+                      },
+                      "ambiguous": [],
+                      "unmatched": 3,
+                      "gap": null
+                    }
+                  ],
+                  "restored_sentence": "One helper risked one more person handling private data.",
+                  "span": [
+                    896,
+                    952
+                  ],
+                  "n_sentences": 1,
+                  "n_candidates": 1,
+                  "focus_spans": [
+                    [
+                      914,
+                      951
+                    ]
+                  ],
+                  "residual_check": [],
+                  "original_claim": "One helper meant one more person handling private data.",
+                  "claim_core": "One helper meant one more person handling private data.",
+                  "base_reason": "mismatch"
+                }
+              }
+            },
+            "carry_forward_covered": [
+              {
+                "range": "One helper meant one more person handling private data.",
+                "covered_by_claim": "fact:MUSE-HC-010"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:MUSE-HC-010",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+                "following_issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+                "prior_related_fact_id": "MUSE-HC-010",
+                "following_related_fact_id": "MUSE-HC-010",
+                "prior_true_flags": [
+                  "changed_causality",
+                  "changed_certainty",
+                  "changed_fact",
+                  "changed_scope",
+                  "unsupported_new_claim"
+                ],
+                "following_true_flags": [
+                  "changed_causality",
+                  "changed_certainty",
+                  "changed_fact",
+                  "changed_scope",
+                  "unsupported_new_claim"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.87,
+          "difficult_word_ratio": 0.1284,
+          "word_count": 296
+        },
+        "stats_after": {
+          "avg_sentence_len": 13.13,
+          "difficult_word_ratio": 0.1291,
+          "word_count": 302
+        },
+        "sentence_len_increase": 0.26,
+        "difficulty_ratio_increase": 0.0007,
+        "fragment_stats_before": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 24
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 15.0,
+          "difficult_word_ratio": 0.1333,
+          "word_count": 30
+        },
+        "fragment_sentence_len_increase": 3.0,
+        "fragment_difficulty_ratio_increase": 0.0083,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "vocab_difficulty_increased_fragment(sentence_len+3.0,difficult_ratio+0.0083)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 8,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.87,
+          "difficult_word_ratio": 0.1284,
+          "word_count": 296
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.87,
+          "difficult_word_ratio": 0.1318,
+          "word_count": 296
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0034,
+        "fragment_stats_before": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 24
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 12.0,
+          "difficult_word_ratio": 0.1667,
+          "word_count": 24
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0417,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 8,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 23,
+        "sentence_count_after": 23,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 4,
+        "hedge_word_count_after": 4,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with users. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper meant one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "en_text_after_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper risked one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "english_only_ja_source_requires_full_recheck",
+        "multiple_claims_rewritten_same_cycle",
+        "deterministic_floor_claim",
+        "safety_fixture"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text",
+        "current_text",
+        "current_text"
+      ],
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "The article now says the contract workers completed exchanges with businesses, not with Muse users."
+        },
+        {
+          "index": 1,
+          "resolved": true,
+          "explanation": "The preceding sentence says the information might be shared, and “risked” frames additional handling as a risk rather than asserting that it actually occurred."
+        },
+        {
+          "index": 2,
+          "resolved": true,
+          "explanation": "The article now identifies businesses as the parties to the completed exchanges, consistent with the Ledger."
+        },
+        {
+          "index": 3,
+          "resolved": true,
+          "explanation": "The nearby “might be shared” qualifier and “risked” wording present additional handling as a possibility, not a confirmed event."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true,
+        "1": true,
+        "2": true,
+        "3": true
+      },
+      "recheck_prior_issues_sent_count": 4,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major",
+          "recheck_major"
+        ],
+        "n_merged": 2,
+        "n_dedup_dropped": 0,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "MUSE-HC-006",
+            "claim": "The idea was practical: when AI struggled, a person could help.",
+            "label": "recheck_major"
+          },
+          {
+            "fact_id": "MUSE-HC-012",
+            "claim": "AI called. That was what people thought as they spoke. ... people who thought they were speaking with AI were actually speaking with human staff.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "The idea was practical: when AI struggled, a person could help.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "The idea was practical: when AI struggled, a person could help.",
+            "issue": "The Ledger confirms that trained human contractors handled some Muse calls, but does not say their role was to step in when AI struggled. The article adds that specific operating rationale.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The claimed AI-struggle scenario is not established by the Ledger; the wording “could help” does not supply evidence for that rationale.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "“could help”",
+            "ledger_field_basis": "none",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "The human backup plan: “when AI struggled, a person could help.”",
+              "The adjacent account that trained human contract workers made some calls through Muse."
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "“The idea was practical: when AI struggled, a person could help.” Narrow this to the verified fact that trained human contract workers handled some Muse calls and completed the exchanges; do not imply that AI difficulty triggered the handoff. Ledger fact_id: MUSE-HC-006.",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The idea was practical: when AI struggled, a person could help."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The idea was practical: when AI struggled, a person could help.",
+          "escalate_to_paragraph": true
+        },
+        {
+          "claim_text": "AI called. That was what people thought as they spoke. ... people who thought they were speaking with AI were actually speaking with human staff.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "AI called. That was what people thought as they spoke. ... people who thought they were speaking with AI were actually speaking with human staff.",
+            "issue": "The Ledger establishes that human contractors handled some calls and that the test lacked proper disclosure, but it does not establish what the call recipients believed. The article states that belief as fact.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "It turns the absence of proper disclosure into a definite claim about recipients’ beliefs, which the Ledger does not report.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "Opening: “That was what people thought as they spoke.”",
+              "The hidden cost of a smooth call: “people who thought they were speaking with AI were actually speaking with human staff.”"
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A4",
+            "cycle": 2,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "AI called. That was what people thought as they spoke. ... people who thought they were speaking with AI were actually speaking with human staff.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "150a2f121fc137150c121a605290df858b0036b23af0a1244ac6cf9fa5f0462b"
+            ],
+            "batch_cost_jpy": 0.1585,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "safety_A4",
+          "cycle": 2,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "AI called. That was what people thought as they spoke. ... people who thought they were speaking with AI were actually speaking with human staff.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "150a2f121fc137150c121a605290df858b0036b23af0a1244ac6cf9fa5f0462b"
+          ],
+          "batch_cost_jpy": 0.1585,
+          "batch_n_claims": 1
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "4_paragraph",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The idea was practical: when AI struggled, a person could help.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The idea was practical: when AI struggled, a person could help."
+              ],
+              "raw_spans": [
+                [
+                  363,
+                  426
+                ]
+              ],
+              "spans": [
+                [
+                  363,
+                  426
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "4_paragraph",
+                "targets": [
+                  "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI."
+                ],
+                "revised": [
+                  "### The human calls\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.",
+                    "after": "### The human calls\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses."
+                  }
+                ]
+              }
+            ],
+            "level_used": "4_paragraph",
+            "span_unverified": false,
+            "problem_kind": "multi_sentence",
+            "levels_planned": [
+              "4_paragraph"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.87,
+          "difficult_word_ratio": 0.1318,
+          "word_count": 296
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.95,
+          "difficult_word_ratio": 0.1287,
+          "word_count": 272
+        },
+        "sentence_len_increase": 0.08,
+        "difficulty_ratio_increase": -0.0031,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 8,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 23,
+        "sentence_count_after": 21,
+        "sentence_drop_rate": 0.087,
+        "hedge_word_count_before": 4,
+        "hedge_word_count_after": 2,
+        "hedge_word_increase": -2,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human backup plan\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses. The idea was practical: when AI struggled, a person could help. Keeping a human in reserve seemed safer than leaving everything to AI.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper risked one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "en_text_after_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human calls\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper risked one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "english_only_ja_source_requires_full_recheck",
+        "safety_fixture",
+        "same_fact_id_reappeared_across_cycles"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": false,
+          "explanation": "The explicit claim that humans helped when AI struggled has been removed, but “backup plan” still characterizes the contractors as a fallback role that the Ledger does not establish."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": false
+      },
+      "recheck_prior_issues_sent_count": 1,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major",
+          "recheck_major"
+        ],
+        "n_merged": 2,
+        "n_dedup_dropped": 1,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "MUSE-HC-006",
+            "claim": "But that backup plan changed the meaning of the call.",
+            "label": "recheck_major"
+          },
+          {
+            "fact_id": "MUSE-HC-012",
+            "claim": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "claim_text": "But that backup plan changed the meaning of the call.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "But that backup plan changed the meaning of the call.",
+            "issue": "Calling the human involvement a “backup plan” adds an operational rationale—that the humans served as a fallback for Muse—not established by the Ledger. The Japanese source already included the unsupported backup framing.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "The Ledger establishes that trained contractors handled some calls, but not that they were a backup or fallback. The phrase adds that specific role; the nearby “some calls” limits the calls but does not establish the rationale.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "qualifier_present": true,
+            "qualifier_text": "some calls",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "Section “The human calls,” sentence beginning “Through Muse...” and the following sentence beginning “But that backup plan...”"
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Through Muse, trained human contract workers made some calls and completed the exchanges with businesses.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Checkerの指摘: Calling the human involvement a backup plan adds an operational rationale—that the humans served as a fallback for Muse—not established by the Ledger. The Japanese source already included the unsupported backup framing. Ledgerのnotes_for_writer: 全ての電話を人間が担当したとは書かない。一部の電話テストと限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件 fact_id=MUSE-HC-006のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 “But that backup plan changed the meaning of the call.” Narrow the wording to say that human contract workers handled some calls and that this changed the nature of the interaction; do not characterize their role as a backup plan, which the Ledger does not establish. Fact ID: MUSE-HC-006.",
+          "floor_reason": "s1_second_opinion_blocking",
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_A4",
+            "cycle": 3,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "But that backup plan changed the meaning of the call.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "BLOCKING",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": false,
+            "split": true,
+            "prompt_sha256": [
+              "3a3ecadea86973a6969e4e8933d11b386d2dd24c128c289aa24bff7b60e54d08"
+            ],
+            "batch_cost_jpy": 0.2339,
+            "batch_n_claims": 1,
+            "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "But that backup plan changed the meaning of the call."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "But that backup plan changed the meaning of the call.",
+          "escalate_to_paragraph": true
+        },
+        {
+          "claim_text": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.",
+          "origin": "ja_source",
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.",
+            "issue": "The Ledger confirms a test without appropriate disclosure and that contractors handled some calls, but it does not establish that recipients believed they were speaking with AI. The “So” also presents that belief as a consequence of the nondisclosure. This assertion was already present in the Japanese source.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "Nondisclosure and human handling are supported, but the recipients’ actual beliefs and the asserted causal link are not reported in the Ledger.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": true,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [
+              "Section “The hidden cost of a smooth call,” the two sentences beginning “The test began...” and “So people who thought...”"
+            ],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper risked one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "Checkerの指摘: The Ledger confirms a test without appropriate disclosure and that contractors handled some calls, but it does not establish that recipients believed they were speaking with AI. The So also presents that belief as a consequence of the nondisclosure. This assertion was already present in the Japanese source. Ledgerのnotes_for_writer: サービス全体を停止したとは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: 適切な開示なしで契約スタッフが電話を担当していたテスト fact_id=MUSE-HC-012のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。",
+          "floor_reason": "changed_causality_floor",
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": true,
+            "reason": "changed_causality_floor",
+            "hint": "Checkerの指摘: The Ledger confirms a test without appropriate disclosure and that contractors handled some calls, but it does not establish that recipients believed they were speaking with AI. The So also presents that belief as a consequence of the nondisclosure. This assertion was already present in the Japanese source. Ledgerのnotes_for_writer: サービス全体を停止したとは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: 適切な開示なしで契約スタッフが電話を担当していたテスト fact_id=MUSE-HC-012のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。",
+            "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff."
+        }
+      ],
+      "blocking_count": 2,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "safety_A4",
+          "cycle": 3,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "But that backup plan changed the meaning of the call.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "BLOCKING",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": false,
+          "split": true,
+          "prompt_sha256": [
+            "3a3ecadea86973a6969e4e8933d11b386d2dd24c128c289aa24bff7b60e54d08"
+          ],
+          "batch_cost_jpy": 0.2339,
+          "batch_n_claims": 1,
+          "hint_source": "checker_issue+ledger_notes_for_writer+ledger_conditions"
+        }
+      ],
+      "extra_cycle_granted": true,
+      "extra_cycle_reason": "same_fact_id_new_location(委任_18 2-3b)",
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:MUSE-HC-006",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "4_paragraph",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "But that backup plan changed the meaning of the call.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "But that backup plan changed the meaning of the call."
+              ],
+              "raw_spans": [
+                [
+                  358,
+                  411
+                ]
+              ],
+              "spans": [
+                [
+                  358,
+                  411
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "4_paragraph",
+                "targets": [
+                  "But that backup plan changed the meaning of the call."
+                ],
+                "revised": [
+                  "Human contract workers handled some calls."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": [
+                      {
+                        "class": "contractor",
+                        "new_words": [
+                          "contract workers"
+                        ],
+                        "ok": true,
+                        "basis": "related_fact",
+                        "related_fact_hits": [
+                          "契約スタッフ"
+                        ],
+                        "ledger_hits": [
+                          "契約スタッフ",
+                          "請負業者"
+                        ],
+                        "issue_named": [
+                          "contractors"
+                        ],
+                        "related_blocks_found": 1,
+                        "related_fact_empty": false
+                      }
+                    ]
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "But that backup plan changed the meaning of the call.",
+                    "after": "Human contract workers handled some calls."
+                  }
+                ]
+              }
+            ],
+            "level_used": "4_paragraph",
+            "span_unverified": false,
+            "problem_kind": "multi_sentence",
+            "levels_planned": [
+              "4_paragraph"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:MUSE-HC-012",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff."
+              ],
+              "raw_spans": [
+                [
+                  440,
+                  596
+                ]
+              ],
+              "spans": [
+                [
+                  440,
+                  596
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "The test began without properly telling people what was happening. And people were actually speaking with human staff."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.",
+                    "after": "The test began without properly telling people what was happening. And people were actually speaking with human staff."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "causality",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [
+          {
+            "paragraph_index": 2,
+            "opening": "But human contract workers handled some of the calls, changing the nature of the interaction."
+          }
+        ],
+        "orphan_contrastive_detected": true,
+        "stats_before": {
+          "avg_sentence_len": 12.95,
+          "difficult_word_ratio": 0.1287,
+          "word_count": 272
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.9,
+          "difficult_word_ratio": 0.1402,
+          "word_count": 271
+        },
+        "sentence_len_increase": -0.05,
+        "difficulty_ratio_increase": 0.0115,
+        "fragment_stats_before": {
+          "avg_sentence_len": 12.5,
+          "difficult_word_ratio": 0.12,
+          "word_count": 25
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 9.5,
+          "difficult_word_ratio": 0.2105,
+          "word_count": 19
+        },
+        "fragment_sentence_len_increase": -3.0,
+        "fragment_difficulty_ratio_increase": 0.0905,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": true,
+        "vocab_difficulty_increased": true,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": true,
+        "reasons": "orphan_contrastive_opener('But human contract workers handled some of the calls, changing the nature of the interaction.'); vocab_difficulty_increased_fragment(sentence_len+-3.0,difficult_ratio+0.0905)"
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 8,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": true,
+      "quality_degradation_v2_after_regen": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 12.95,
+          "difficult_word_ratio": 0.1287,
+          "word_count": 272
+        },
+        "stats_after": {
+          "avg_sentence_len": 12.43,
+          "difficult_word_ratio": 0.1341,
+          "word_count": 261
+        },
+        "sentence_len_increase": -0.52,
+        "difficulty_ratio_increase": 0.0054,
+        "fragment_stats_before": {
+          "avg_sentence_len": 12.5,
+          "difficult_word_ratio": 0.12,
+          "word_count": 25
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 9.0,
+          "difficult_word_ratio": 0.1667,
+          "word_count": 18
+        },
+        "fragment_sentence_len_increase": -3.5,
+        "fragment_difficulty_ratio_increase": 0.0467,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation_after_regen": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 35,
+        "hook_word_count_after": 35,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 8,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_en": {
+        "sentence_count_before": 21,
+        "sentence_count_after": 21,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 2,
+        "hedge_word_count_after": 2,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human calls\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses.\n\nBut that backup plan changed the meaning of the call.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper risked one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "en_text_after_rewrite": "# The AI Phone Call Had a Human Helper\n\nAn AI called. That was what people thought as they spoke. But a human appeared from behind the scenes. A test involving Muse, Meta’s AI agent, became a reveal of what was really happening.\n\n### The human calls\n\nThrough Muse, trained human contract workers made some calls and completed the exchanges with businesses.\n\nHuman contract workers handled some calls.\n\n### The hidden cost of a smooth call\n\nThe test began without properly telling people what was happening. And people were actually speaking with human staff. These workers did more than make the conversation smooth: the user’s sensitive information might be shared with contract workers at a call center. One helper risked one more person handling private data.\n\nThis is the interesting, slightly frightening turn. People often worry that an AI phone call will produce a strange answer. Here, the opposite happened. The voice was not simply human-like; a human was really speaking. And people were not properly told.\n\nIn response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake. The human concierge feature was then rolled back for the time being.\n\nAI stories usually focus on machines moving closer to people. Muse asks a different question: if humans enter AI’s backstage, can users be told? Who is speaking, and who can see the information?\n\n## In one line\n\nUnless both facts are explained at the start, a service of the future can quickly look like a call from a stranger.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "english_only_ja_source_requires_full_recheck",
+        "multiple_claims_rewritten_same_cycle",
+        "deterministic_floor_claim",
+        "safety_fixture",
+        "same_fact_id_reappeared_across_cycles"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text"
+      ],
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "The article no longer describes the contractors as a backup or fallback, or attributes that operational rationale to the test."
+        },
+        {
+          "index": 1,
+          "resolved": false,
+          "explanation": "The opening still asserts that people thought an AI was calling. The explicit causal link to nondisclosure is absent in this version, but the unsupported claim about recipients’ beliefs remains."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true,
+        "1": false
+      },
+      "recheck_prior_issues_sent_count": 2,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major"
+        ],
+        "n_merged": 1,
+        "n_dedup_dropped": 1,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "MUSE-HC-012",
+            "claim": "“An AI called. That was what people thought as they spoke.”",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_A4_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3776,
+      "usage": {
+        "input_tokens": 9325,
+        "cached_input_tokens": 0,
+        "output_tokens": 2949,
+        "reasoning_tokens": 2524
+      },
+      "elapsed_seconds": 26.902,
+      "prompt_sha256": "9492763518b5060654ff368bb3edb72838a950dac8fc5fbba4133958864d3838"
+    },
+    {
+      "label": "safety_A4_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1295,
+      "usage": {
+        "input_tokens": 5846,
+        "cached_input_tokens": 0,
+        "output_tokens": 482,
+        "reasoning_tokens": 409
+      },
+      "elapsed_seconds": 6.28,
+      "prompt_sha256": "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+    },
+    {
+      "label": "safety_A4_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1672,
+      "usage": {
+        "input_tokens": 8713,
+        "cached_input_tokens": 0,
+        "output_tokens": 389,
+        "reasoning_tokens": 312
+      },
+      "elapsed_seconds": 4.457,
+      "prompt_sha256": "697b92f3628a738a7b3f55aa27fad3366fcd7c00b5646736d43c27444cb298b6"
+    },
+    {
+      "label": "safety_A4_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0773,
+      "usage": {
+        "input_tokens": 5846,
+        "cached_input_tokens": 5843,
+        "output_tokens": 868,
+        "reasoning_tokens": 791
+      },
+      "elapsed_seconds": 8.608,
+      "prompt_sha256": "cb01cf72bdb6aa40e0767dc836c9efd89ac93e35d5ecc6698e613658e7f65986"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-006_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0672,
+      "usage": {
+        "input_tokens": 3781,
+        "cached_input_tokens": 0,
+        "output_tokens": 101,
+        "reasoning_tokens": 66
+      },
+      "elapsed_seconds": 2.276,
+      "prompt_sha256": "318034df7e87d63696f75317f72eb5e38093249e120283504cb50bd088171606"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-010_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0838,
+      "usage": {
+        "input_tokens": 3794,
+        "cached_input_tokens": 0,
+        "output_tokens": 309,
+        "reasoning_tokens": 285
+      },
+      "elapsed_seconds": 4.663,
+      "prompt_sha256": "749f51eb27da355af333063bee71b32ba74ed0091dfdcec71e004601aa4742c5"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-006_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0716,
+      "usage": {
+        "input_tokens": 3833,
+        "cached_input_tokens": 0,
+        "output_tokens": 146,
+        "reasoning_tokens": 116
+      },
+      "elapsed_seconds": 2.636,
+      "prompt_sha256": "90e132ec64b3c267f780599dedd7c66aa5e10bc1b48a3097b43c8a92434ffbec"
+    },
+    {
+      "label": "safety_A4_c1_fact:MUSE-HC-010_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0948,
+      "usage": {
+        "input_tokens": 3846,
+        "cached_input_tokens": 0,
+        "output_tokens": 440,
+        "reasoning_tokens": 416
+      },
+      "elapsed_seconds": 6.529,
+      "prompt_sha256": "20f2f8c543d0a5fb6be8f45b5127d966a540480199f6f552805c0cab33d6e134"
+    },
+    {
+      "label": "safety_A4_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.8057,
+      "usage": {
+        "input_tokens": 6825,
+        "cached_input_tokens": 0,
+        "output_tokens": 8906,
+        "reasoning_tokens": 8083
+      },
+      "elapsed_seconds": 73.206,
+      "prompt_sha256": "0cb83353c9d42772f1d6907d7c3a59865d2250f8876f743c56692cc661393455",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_A4_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2728,
+      "usage": {
+        "input_tokens": 8583,
+        "cached_input_tokens": 0,
+        "output_tokens": 1761,
+        "reasoning_tokens": 1626
+      },
+      "elapsed_seconds": 17.079,
+      "prompt_sha256": "7dc41916d2bc8c51de46ae63b7c333d11eb37eec25b9825c7e76f1d35e79b7d2"
+    },
+    {
+      "label": "safety_A4_c2_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1585,
+      "usage": {
+        "input_tokens": 8460,
+        "cached_input_tokens": 0,
+        "output_tokens": 329,
+        "reasoning_tokens": 278
+      },
+      "elapsed_seconds": 4.435,
+      "prompt_sha256": "150a2f121fc137150c121a605290df858b0036b23af0a1244ac6cf9fa5f0462b"
+    },
+    {
+      "label": "safety_A4_c2_fact:MUSE-HC-006_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1036,
+      "usage": {
+        "input_tokens": 3602,
+        "cached_input_tokens": 0,
+        "output_tokens": 600,
+        "reasoning_tokens": 564
+      },
+      "elapsed_seconds": 6.165,
+      "prompt_sha256": "803b4760e9e53dbabb1df14ae2f3d372375553e0af55f6939cdbe4c9ac535073"
+    },
+    {
+      "label": "safety_A4_c2_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5657,
+      "usage": {
+        "input_tokens": 6394,
+        "cached_input_tokens": 0,
+        "output_tokens": 5933,
+        "reasoning_tokens": 5216
+      },
+      "elapsed_seconds": 53.56,
+      "prompt_sha256": "f1928c500665a22e1d99d4b951bc6c3f419eba57bbe6189fce38641827ed9ebe",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    },
+    {
+      "label": "safety_A4_c3_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1768,
+      "usage": {
+        "input_tokens": 8621,
+        "cached_input_tokens": 0,
+        "output_tokens": 530,
+        "reasoning_tokens": 453
+      },
+      "elapsed_seconds": 5.21,
+      "prompt_sha256": "87c5c6c718b94577bc356e8ba1e4b5abefc76923ccdfa6cbfb2bcb816b8094cf"
+    },
+    {
+      "label": "safety_A4_c3_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2339,
+      "usage": {
+        "input_tokens": 8423,
+        "cached_input_tokens": 0,
+        "output_tokens": 1297,
+        "reasoning_tokens": 1184
+      },
+      "elapsed_seconds": 12.777,
+      "prompt_sha256": "3a3ecadea86973a6969e4e8933d11b386d2dd24c128c289aa24bff7b60e54d08"
+    },
+    {
+      "label": "safety_A4_c3_fact:MUSE-HC-006_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0701,
+      "usage": {
+        "input_tokens": 3761,
+        "cached_input_tokens": 0,
+        "output_tokens": 142,
+        "reasoning_tokens": 112
+      },
+      "elapsed_seconds": 2.158,
+      "prompt_sha256": "a06dee419b80088c1f1bb0a35d2edfb8e76124eb9a0ee7fc67f840b6044f1f66"
+    },
+    {
+      "label": "safety_A4_c3_fact:MUSE-HC-012_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1031,
+      "usage": {
+        "input_tokens": 3973,
+        "cached_input_tokens": 0,
+        "output_tokens": 520,
+        "reasoning_tokens": 485
+      },
+      "elapsed_seconds": 5.837,
+      "prompt_sha256": "640cd91e97d1a492651e9cd9c1710773b5a91d4c9581aef853f4a0d9cc4d81fd"
+    },
+    {
+      "label": "safety_A4_c3_fact:MUSE-HC-006_regen_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0788,
+      "usage": {
+        "input_tokens": 3838,
+        "cached_input_tokens": 0,
+        "output_tokens": 237,
+        "reasoning_tokens": 217
+      },
+      "elapsed_seconds": 3.16,
+      "prompt_sha256": "50aacfc644e0fa320763b718995d1e851842a22abeab7670d7ca5c844bcb688b"
+    },
+    {
+      "label": "safety_A4_c3_fact:MUSE-HC-012_regen_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1538,
+      "usage": {
+        "input_tokens": 4050,
+        "cached_input_tokens": 0,
+        "output_tokens": 1151,
+        "reasoning_tokens": 1118
+      },
+      "elapsed_seconds": 12.979,
+      "prompt_sha256": "8884740bfb474bf89307886e271a8218dc7dbb69aea0ee9ff5375ff9c2ba1aa3"
+    },
+    {
+      "label": "safety_A4_c3_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.5517,
+      "usage": {
+        "input_tokens": 6515,
+        "cached_input_tokens": 0,
+        "output_tokens": 5730,
+        "reasoning_tokens": 5271
+      },
+      "elapsed_seconds": 51.93,
+      "prompt_sha256": "771efb6af8e27e0f023515b005fb9f7e6d17a9e0e4df9ed9ae48d6e57f6b8d34",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": false
+    }
+  ],
+  "total_cost_jpy": 4.3435,
+  "total_calls": 20,
+  "elapsed_seconds": 310.961,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+        "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+          "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“people who thought they were speaking with AI were actually speaking with human staff”および冒頭の「That was what people thought as they spoke.」",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+        "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "That was what people thought as they spoke.",
+          "So people who thought they were speaking with AI were actually speaking with human staff."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "“One helper meant one more person handling private data.”",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": "ja_source",
+        "issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+        "explanation": "Ledgerが示すのは機微情報が意図せず共有される可能性であり、各ヘルパーが実際に個人情報を扱うという断定ではありません。可能性を確定的な結果に変えています。",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [
+          "One helper meant one more person handling private data."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+        "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+          "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": "translation",
+        "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+        "explanation": "Ledger上の電話相手をMuseユーザーに置き換えた具体的な主張です。changed_actorとunsupported_new_claimに該当します。",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+          "In response, a Meta executive admitted that starting a test in which contract workers made calls without properly telling people was a mistake."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "That was what people thought as they spoke.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+        "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "That was what people thought as they spoke.",
+          "So people who thought they were speaking with AI were actually speaking with human staff."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So people who thought they were speaking with AI were actually speaking with human staff.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": "ja_source",
+        "issue": "適切な開示がなかったことは確認されていますが、相手が実際にAIと話していると思っていたという認識まではLedgerで確認されていません。",
+        "explanation": "不十分な開示から相手の認識を推定し、それを確定した事実として述べています。限定表現は対象者を絞りますが、その認識自体を裏づけません。",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "That was what people thought as they spoke.",
+          "So people who thought they were speaking with AI were actually speaking with human staff."
+        ],
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "One helper meant one more person handling private data.",
+        "related_fact_id": "MUSE-HC-010",
+        "origin": "ja_source",
+        "issue": "情報が契約スタッフに共有される可能性についての懸念を、スタッフが実際に個人情報を扱うことが必ず起きるかのように述べています。",
+        "explanation": "Ledgerが示すのは機微情報が意図せず共有される可能性であり、各ヘルパーが実際に個人情報を扱うという断定ではありません。可能性を確定的な結果に変えています。",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": true,
+        "same_fact_id_locations": [
+          "One helper meant one more person handling private data."
+        ],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "The idea was practical: when AI struggled, a person could help.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "issue": "The Ledger confirms that trained human contractors handled some Muse calls, but does not say their role was to step in when AI struggled. The article adds that specific operating rationale.",
+            "explanation": "The claimed AI-struggle scenario is not established by the Ledger; the wording “could help” does not supply evidence for that rationale.",
+            "true_flags": [
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "The human backup plan: “when AI struggled, a person could help.”",
+              "The adjacent account that trained human contract workers made some calls through Muse."
+            ],
+            "passed_downstream": true
+          },
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "AI called. That was what people thought as they spoke. ... people who thought they were speaking with AI were actually speaking with human staff.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "issue": "The Ledger establishes that human contractors handled some calls and that the test lacked proper disclosure, but it does not establish what the call recipients believed. The article states that belief as fact.",
+            "explanation": "It turns the absence of proper disclosure into a definite claim about recipients’ beliefs, which the Ledger does not report.",
+            "true_flags": [
+              "changed_certainty",
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "Opening: “That was what people thought as they spoke.”",
+              "The hidden cost of a smooth call: “people who thought they were speaking with AI were actually speaking with human staff.”"
+            ],
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      },
+      {
+        "cycle": 2,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "But that backup plan changed the meaning of the call.",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": "ja_source",
+            "issue": "Calling the human involvement a “backup plan” adds an operational rationale—that the humans served as a fallback for Muse—not established by the Ledger. The Japanese source already included the unsupported backup framing.",
+            "explanation": "The Ledger establishes that trained contractors handled some calls, but not that they were a backup or fallback. The phrase adds that specific role; the nearby “some calls” limits the calls but does not establish the rationale.",
+            "true_flags": [
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "Section “The human calls,” sentence beginning “Through Muse...” and the following sentence beginning “But that backup plan...”"
+            ],
+            "passed_downstream": true
+          },
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were actually speaking with human staff.",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "issue": "The Ledger confirms a test without appropriate disclosure and that contractors handled some calls, but it does not establish that recipients believed they were speaking with AI. The “So” also presents that belief as a consequence of the nondisclosure. This assertion was already present in the Japanese source.",
+            "explanation": "Nondisclosure and human handling are supported, but the recipients’ actual beliefs and the asserted causal link are not reported in the Ledger.",
+            "true_flags": [
+              "changed_causality",
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "Section “The hidden cost of a smooth call,” the two sentences beginning “The test began...” and “So people who thought...”"
+            ],
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      },
+      {
+        "cycle": 3,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "“An AI called. That was what people thought as they spoke.”",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": "ja_source",
+            "issue": "The article asserts that people on the calls believed they were speaking with an AI. The Ledger establishes that trained contractors handled some calls and that the test lacked appropriate disclosure, but it does not establish what the people receiving the calls believed.",
+            "explanation": "The claim about recipients’ beliefs is not in the Ledger, so changed_fact and unsupported_new_claim are true; the English article does not explicitly make that belief a consequence of nondisclosure.",
+            "true_flags": [
+              "changed_fact",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [
+              "Opening: “That was what people thought as they spoke.”",
+              "The hidden cost of a smooth call: “And people were actually speaking with human staff.”"
+            ],
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 1,
+    "final_state": "STAGE4_ESCALATION",
+    "final_state_is_pass_family": false,
+    "defs": [
+      {
+        "sub_id": "A4-0",
+        "related_fact_id": "MUSE-HC-006",
+        "text_substring": "completed the exchanges with users",
+        "remains_in_final_en": false,
+        "remains_in_final_en_pattern": false,
+        "ever_blocking_flagged": true,
+        "ever_blocking_flagged_same_fact_id": true,
+        "ever_flagged_but_never_blocking": false,
+        "in_checker_raw_deviations_any_severity": [
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "MUSE-HC-006"
+          },
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "MUSE-HC-006"
+          }
+        ],
+        "pass_with_residual_unflagged": false,
+        "pass_with_residual_unflagged_pattern": false
+      }
+    ]
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}

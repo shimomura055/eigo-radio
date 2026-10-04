@@ -1,0 +1,634 @@
+{
+ "totals_rep29": {
+  "n_runs": 38,
+  "stage2_blocking": 42,
+  "floor_only_blocking": 11,
+  "floor_only_by_flag": {
+   "deterministic_floor:changed_actor": 5,
+   "changed_causality_floor": 2,
+   "s1_second_opinion_blocking": 3,
+   "precheck_floor": 1
+  },
+  "rewrite_executed": 29,
+  "runs_with_rewrite": 21,
+  "unnecessary_rewrite_def_normal_group": {
+   "definition": "NORMAL_GROUP_INSTANCE_IDS(\u6b63\u5e38\u8a18\u4e8b)\u306einstance-run\u306e\u3046\u3061Rewrite\u304c1\u4ef6\u4ee5\u4e0a\u5b9f\u884c\u3055\u308c\u305frun\u306e\u5272\u5408(\u65e2\u5b58runner\u5b9a\u7fa9)",
+   "n_normal_runs": 14,
+   "n_with_rewrite": 5,
+   "rate": 0.3571
+  },
+  "runs_with_rewrite_nonsafety": {
+   "n": 34,
+   "with_rewrite": 17
+  },
+  "stage4_count": 3,
+  "stage4_reasons": {
+   "same_claim_fact_id_reblocked": 1,
+   "cycle_limit_exhausted_after_recheck": 1,
+   "violation_span_unverified": 1
+  },
+  "cycles_ge2_runs": 7,
+  "cycles_ge3_runs": 3,
+  "cost_jpy_total": 24.4338,
+  "cost_jpy_worst": 4.3435
+ },
+ "totals_baseline": {
+  "n_runs": 38,
+  "stage2_blocking": 39,
+  "floor_only_blocking": 4,
+  "floor_only_by_flag": {
+   "deterministic_floor:changed_actor": 3,
+   "precheck_floor": 1
+  },
+  "rewrite_executed": 39,
+  "runs_with_rewrite": 23,
+  "unnecessary_rewrite_def_normal_group": {
+   "definition": "NORMAL_GROUP_INSTANCE_IDS(\u6b63\u5e38\u8a18\u4e8b)\u306einstance-run\u306e\u3046\u3061Rewrite\u304c1\u4ef6\u4ee5\u4e0a\u5b9f\u884c\u3055\u308c\u305frun\u306e\u5272\u5408(\u65e2\u5b58runner\u5b9a\u7fa9)",
+   "n_normal_runs": 14,
+   "n_with_rewrite": 3,
+   "rate": 0.2143
+  },
+  "runs_with_rewrite_nonsafety": {
+   "n": 34,
+   "with_rewrite": 19
+  },
+  "stage4_count": 7,
+  "stage4_reasons": {
+   "ja_deviation_unresolved": 6,
+   "cycle_limit_exhausted_after_recheck": 1
+  },
+  "cycles_ge2_runs": 8,
+  "cycles_ge3_runs": 5,
+  "cost_jpy_total": 39.5475,
+  "cost_jpy_worst": 8.9545
+ },
+ "item1_pass_with_residual_unflagged_count": 0,
+ "item2_floor_verify_summary": {
+  "n_floor_verify_records": 16,
+  "n_target": 0,
+  "n_confirmed": 0,
+  "n_verify_calls": 0,
+  "n_released": 0,
+  "blocking_fixed_by_reason": {},
+  "target_reason_counts": {
+   "out_of_scope_flag:changed_actor": 5,
+   "llm_materiality_blocking": 11
+  },
+  "out_of_scope_flag": {
+   "changed_actor": 5
+  },
+  "cost_jpy": 0.0
+ },
+ "item67_recorded_resolution_levels": {
+  "L1": 8,
+  "None": 12,
+  "L5_edge_punct": 2,
+  "L0": 18,
+  "P:2": 1
+ },
+ "item67_recorded_unresolved_reasons": {
+  "covered_by_earlier_rewrite_in_cycle:None": 11,
+  "unverified:explanatory_mixed": 1
+ },
+ "cost_total_jpy": 24.4338
+}
+=== KPI summary ===
+{
+ "n_runs": 38,
+ "stage4": {
+  "count": 3,
+  "rows": [
+   [
+    1,
+    "meta_run03_advanced",
+    "same_claim_fact_id_reblocked"
+   ],
+   [
+    1,
+    "safety_A4",
+    "cycle_limit_exhausted_after_recheck"
+   ],
+   [
+    2,
+    "meta_run03_advanced",
+    "violation_span_unverified"
+   ]
+  ],
+  "rep24_count": 2,
+  "iter7_count": 7
+ },
+ "safety_critical_dual": {
+  "derive_error": null,
+  "old_definition_rows": 0,
+  "old_definition_unique": 0,
+  "registered_rows_new": 0,
+  "derived_rows": 0,
+  "new_definition_rows": 0,
+  "after_label_override_registered_rows": 0,
+  "after_label_override_new_definition_rows": 0,
+  "after_label_override_dropped": [],
+  "new_definition_unique": 0,
+  "new_definition_detail": []
+ },
+ "safety_critical_registered_rows": [],
+ "pass_with_residual_unflagged": [],
+ "safety_critical6": {
+  "safety_A2A3": [
+   {
+    "sample": 1,
+    "sub_id": "A2A3-0",
+    "final_state": "RESOLVED_REWRITE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": false,
+    "n_blocking": 4,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "\u201cThe idea was that those carrying the cargo would repay the money the United States spends to keep t"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "\u201cwith its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\u201d"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep th"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea "
+     }
+    ],
+    "tier0_blocked": [],
+    "residual_defs": [
+     [
+      "A2A3-0",
+      false,
+      true,
+      false
+     ]
+    ]
+   },
+   {
+    "sample": 2,
+    "sub_id": "A2A3-0",
+    "final_state": "RESOLVED_REWRITE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": false,
+    "n_blocking": 4,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "\u201cThe idea was that those carrying the cargo would repay the money the United States spends to keep t"
+     },
+     {
+      "cycle": 1,
+      "llm": "QUALITY",
+      "floor": "s1_second_opinion_blocking",
+      "claim": "\u201cwith its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\u201d"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep th"
+     },
+     {
+      "cycle": 1,
+      "llm": "QUALITY",
+      "floor": "s1_second_opinion_blocking",
+      "claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea "
+     }
+    ],
+    "tier0_blocked": [],
+    "residual_defs": [
+     [
+      "A2A3-0",
+      false,
+      true,
+      false
+     ]
+    ]
+   }
+  ],
+  "bgroup_B3": [
+   {
+    "sample": 1,
+    "sub_id": "B3",
+    "final_state": "RESOLVED_REWRITE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": true,
+    "n_blocking": 1,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the fla"
+     }
+    ],
+    "tier0_blocked": [],
+    "residual_defs": [
+     [
+      "B3",
+      true,
+      true,
+      false
+     ]
+    ]
+   },
+   {
+    "sample": 2,
+    "sub_id": "B3",
+    "final_state": "RESOLVED_REWRITE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": true,
+    "n_blocking": 1,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the fla"
+     }
+    ],
+    "tier0_blocked": [],
+    "residual_defs": [
+     [
+      "B3",
+      true,
+      true,
+      false
+     ]
+    ]
+   }
+  ],
+  "bgroup_B4": [
+   {
+    "sample": 1,
+    "sub_id": "B4-a",
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": false,
+    "n_blocking": 2,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "\u201cA person can take over when AI alone has trouble.\u201d"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "A person can take over when AI alone has trouble."
+     }
+    ],
+    "tier0_blocked": [],
+    "residual_defs": [
+     [
+      "B4-a",
+      false,
+      true,
+      false
+     ]
+    ]
+   }
+  ],
+  "neg5_hormuz_div_a2": [
+   {
+    "sample": 1,
+    "sub_id": "B3-same@neg5",
+    "final_state": "RESOLVED_REWRITE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": false,
+    "n_blocking": 2,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "\u201cConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the fl"
+     },
+     {
+      "cycle": 1,
+      "llm": "ACCEPTABLE",
+      "floor": "changed_causality_floor",
+      "claim": "So the flashy 20% plan left the stage."
+     }
+    ],
+    "tier0_blocked": [
+     {
+      "cycle": 1,
+      "reason": "changed_causality_floor",
+      "claim": "So the flashy 20% plan left the stage."
+     }
+    ],
+    "residual_defs": [
+     [
+      "B3-same@neg5",
+      true,
+      true,
+      false
+     ]
+    ]
+   }
+  ],
+  "safety_A4": [
+   {
+    "sample": 1,
+    "sub_id": "A4-0",
+    "final_state": "STAGE4_ESCALATION",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": false,
+    "n_blocking": 7,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": "deterministic_floor:changed_actor",
+      "claim": "\u201cThrough Muse, trained human contract workers made some calls and completed the exchanges with users"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "\u201cOne helper meant one more person handling private data.\u201d"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "One helper meant one more person handling private data."
+     },
+     {
+      "cycle": 2,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "The idea was practical: when AI struggled, a person could help."
+     },
+     {
+      "cycle": 3,
+      "llm": "ACCEPTABLE",
+      "floor": "s1_second_opinion_blocking",
+      "claim": "But that backup plan changed the meaning of the call."
+     },
+     {
+      "cycle": 3,
+      "llm": "ACCEPTABLE",
+      "floor": "changed_causality_floor",
+      "claim": "The test began without properly telling people what was happening. So people who thought they were s"
+     }
+    ],
+    "tier0_blocked": [
+     {
+      "cycle": 3,
+      "reason": "changed_causality_floor",
+      "claim": "The test began without properly telling people what was happening. So people who"
+     }
+    ],
+    "residual_defs": [
+     [
+      "A4-0",
+      false,
+      true,
+      false
+     ]
+    ]
+   }
+  ],
+  "safety_A5": [
+   {
+    "sample": 1,
+    "sub_id": "A5-0",
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "stage1_call_used": false,
+    "stage1_recall_miss_substituted": false,
+    "n_blocking": 2,
+    "blocking": [
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "They also temporarily put back the feature in which humans handled the calls. They did not stop Muse"
+     },
+     {
+      "cycle": 1,
+      "llm": "BLOCKING",
+      "floor": null,
+      "claim": "They also temporarily put back the feature in which humans handled the calls."
+     }
+    ],
+    "tier0_blocked": [],
+    "residual_defs": [
+     [
+      "A5-0",
+      false,
+      true,
+      false
+     ]
+    ]
+   }
+  ]
+ },
+ "tier0": {
+  "n_records": 111,
+  "n_target": 75,
+  "n_blocked": 2,
+  "blocked_by_reason": {
+   "changed_causality_floor": 2
+  },
+  "blocked_claims": [
+   {
+    "instance_id": "neg5_hormuz_div_a2",
+    "cycle": 1,
+    "reason": "changed_causality_floor",
+    "claim": "So the flashy 20% plan left the stage."
+   },
+   {
+    "instance_id": "safety_A4",
+    "cycle": 3,
+    "reason": "changed_causality_floor",
+    "claim": "The test began without properly telling people what was happening. So people who thought they were speaking with AI were"
+   }
+  ]
+ },
+ "s1": {
+  "n_target": 73,
+  "n_confirmed": 70,
+  "n_split": 3,
+  "n_api_failure": 0,
+  "n_schema_mismatch": 0,
+  "n_floor_anomaly": 0,
+  "batches": 28,
+  "cost_jpy": 3.5352,
+  "split_claims": [
+   {
+    "instance_id": "safety_A4",
+    "cycle": 3,
+    "claim": "But that backup plan changed the meaning of the call.",
+    "second": "BLOCKING",
+    "status": "ok"
+   },
+   {
+    "instance_id": "safety_A2A3",
+    "cycle": 1,
+    "claim": "\u201cwith its distant danger reaching gasoline prices and the cost of moving goods through crude oil.\u201d",
+    "second": "BLOCKING",
+    "status": "ok"
+   },
+   {
+    "instance_id": "safety_A2A3",
+    "cycle": 1,
+    "claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people",
+    "second": "BLOCKING",
+    "status": "ok"
+   }
+  ]
+ },
+ "rewrite": {
+  "rep29": {
+   "n_runs": 38,
+   "rewrite_executed_total": 29,
+   "runs_with_rewrite": 21
+  },
+  "rep24": {
+   "n_runs": 38,
+   "rewrite_executed_total": 24,
+   "runs_with_rewrite": 19
+  },
+  "iter7": {
+   "n_runs": 38,
+   "rewrite_executed_total": 39,
+   "runs_with_rewrite": 23
+  }
+ },
+ "unnecessary_rewrite_normal_group": {
+  "rep29": {
+   "n_normal": 14,
+   "normal_with_rewrite": 5
+  },
+  "rep24": {
+   "n_normal": 14,
+   "normal_with_rewrite": 3
+  },
+  "iter7": {
+   "n_normal": 14,
+   "normal_with_rewrite": 3
+  }
+ },
+ "blocking": {
+  "rep29": {
+   "stage2_blocking": 42,
+   "floor_only_blocking": 11
+  },
+  "rep24": {
+   "stage2_blocking": 35,
+   "floor_only_blocking": 4
+  },
+  "iter7": {
+   "stage2_blocking": 39,
+   "floor_only_blocking": 4
+  }
+ },
+ "l6": {
+  "n_records_with_l6_attempt": 3,
+  "l6_fired": 2,
+  "restored": 2,
+  "restored_two_sentences": 0,
+  "cand0": 0,
+  "cand_multi": 0,
+  "guard_rejected": 0,
+  "guard_rejected_by_reason": {},
+  "not_fired_or_na": 1,
+  "exception": 0,
+  "issue_focus_absent": 0,
+  "focus_guard_fired": 0,
+  "restored_claims": [
+   {
+    "instance": "safety_A2A3",
+    "cycle": 1,
+    "claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely\u2014showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+    "restored": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely\u2014showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+   },
+   {
+    "instance": "safety_A2A3",
+    "cycle": 1,
+    "claim": "6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely\u2014showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+    "restored": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely\u2014showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+   }
+  ]
+ },
+ "explain_split_P_rows": [
+  {
+   "sample": 1,
+   "iid": "meta_run03_advanced",
+   "cycle": 2,
+   "level": "P:2",
+   "status": "resolved"
+  }
+ ],
+ "partial_overlap_carry_forward": [
+  {
+   "sample": 1,
+   "iid": "safety_A2A3",
+   "cycle": 1,
+   "claim": "fact:HF-006"
+  }
+ ],
+ "prior_issues": {
+  "records": 40,
+  "current_text": 38
+ },
+ "cycles": {
+  "ge2": 7,
+  "ge3": 3
+ },
+ "ja_changed": 0,
+ "cost": {
+  "rep29_total": 24.4338,
+  "rep29_mean_per_run": 0.643,
+  "rep29_worst_run": 4.3435,
+  "rep24_total": 16.7238,
+  "rep24_mean_per_run": 0.4401,
+  "iter7_total": 39.5475,
+  "iter7_mean_per_run": 1.0407,
+  "avg_add_per_article_vs_rep24_mean": 0.2029,
+  "avg_add_per_article_vs_iter7_mean": -0.3977,
+  "avg_add_matched_instance_vs_rep24": 0.2029,
+  "avg_add_matched_instance_vs_iter7": -0.3977,
+  "worst_add_vs_rep24_instance_mean": [
+   1,
+   "safety_A4",
+   3.336
+  ],
+  "worst_add_vs_iter7_instance_mean": [
+   1,
+   "meta_run03_advanced",
+   2.0418
+  ],
+  "runs_over_cap_plus3_vs_rep24": [
+   [
+    1,
+    "safety_A4",
+    3.336
+   ]
+  ],
+  "runs_over_cap_plus3_vs_ite

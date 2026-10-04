@@ -1,0 +1,533 @@
+{
+  "instance_id": "safety_er009_unsupported_new_claim",
+  "group": "safety",
+  "expected_group_label": "BLOCKING(Safety、§7-1)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+          "origin": null,
+          "related_fact_id": null,
+          "dev": {
+            "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+            "issue": "Ledgerには、推奨率の高いメニューを見た乗客がより多くチップを残したという結果はあるが、男女間の差や「2倍」という結果は記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "男女間のチップ額の差はLedgerにない具体的主張の追加である。Ledgerにある数値を別の値に変更したわけではないためchanged_numberはfalse。",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations": [],
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_numeric_value",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "「The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.」を、性別による比較と「2倍」という未確認の数値を削り、F-004に沿って「より高い推奨チップ率を見た乗客は、実際により多くチップを残した」と置き換えてください。参照Fact: F-004。",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": false,
+            "target_reason": "final_blocking",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate."
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 0,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [],
+      "rewrite_records": [
+        {
+          "claim_identity": "claim:40e72efd1108a93d",
+          "rewrite_kind": "replace_with_ledger_value",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "4_paragraph",
+          "section_type": "title",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate."
+              ],
+              "raw_spans": [
+                [
+                  0,
+                  149
+                ]
+              ],
+              "spans": [
+                [
+                  0,
+                  149
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "4_paragraph",
+                "targets": [
+                  "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate."
+                ],
+                "revised": [
+                  "Passengers who saw a menu with higher suggested tip rates left more in tips."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+                    "after": "Passengers who saw a menu with higher suggested tip rates left more in tips."
+                  }
+                ]
+              }
+            ],
+            "level_used": "4_paragraph",
+            "span_unverified": false,
+            "problem_kind": "multi_sentence",
+            "levels_planned": [
+              "4_paragraph"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 25.0,
+          "difficult_word_ratio": 0.2,
+          "word_count": 25
+        },
+        "stats_after": {
+          "avg_sentence_len": 14.0,
+          "difficult_word_ratio": 0.1429,
+          "word_count": 14
+        },
+        "sentence_len_increase": -11.0,
+        "difficulty_ratio_increase": -0.0571,
+        "fragment_stats_before": null,
+        "fragment_stats_after": null,
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": true,
+        "first_paragraph_changed": true,
+        "hook_or_title_changed": true,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 25,
+        "hook_word_count_after": 14,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 14,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 1,
+        "sentence_count_after": 1,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 1,
+        "paragraph_count_after": 1,
+        "paragraph_delta": 0,
+        "title_changed": true,
+        "degradation_candidate": true
+      },
+      "en_text_before_rewrite": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+      "en_text_after_rewrite": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "safety_fixture",
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "The article does not claim a difference between men and women or a twofold difference; it states only that passengers exposed to higher suggested rates left more in tips."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true
+      },
+      "recheck_prior_issues_sent_count": 1,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major"
+        ],
+        "n_merged": 1,
+        "n_dedup_dropped": 0,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "F-004",
+            "claim": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+          "origin": null,
+          "related_fact_id": "F-004",
+          "dev": {
+            "claim_in_article": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+            "issue": "The claim presents the result for passengers generally, while the Ledger limits the finding to New York City taxi passengers using credit cards.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "The direction of the result matches the Ledger, but the article omits the study's specific population and thereby broadens its scope.",
+            "related_fact_id": "F-004",
+            "qualifier_present": false,
+            "qualifier_text": "",
+            "ledger_field_basis": "ledger_fact",
+            "observation_consistent": false,
+            "matched_notes_id": "",
+            "same_fact_id_locations": [],
+            "auto_downgraded": false,
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "tier0": {
+            "target": true,
+            "target_reason": "checker_major_downgraded",
+            "blocked": false,
+            "reason": null,
+            "hint": null,
+            "hint_source": null
+          },
+          "second_opinion": {
+            "instance_id": "safety_er009_unsupported_new_claim",
+            "cycle": 2,
+            "route": "hook",
+            "claim_identity": "fact:F-004",
+            "claim_text": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "33c4fb12dbf5c87b3caf4e5fe2e3095eec889d4cba8027e0a2f1e197b5a0e2a5"
+            ],
+            "batch_cost_jpy": 0.0537,
+            "batch_n_claims": 1
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 1,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "safety_er009_unsupported_new_claim",
+          "cycle": 2,
+          "route": "hook",
+          "claim_identity": "fact:F-004",
+          "claim_text": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "33c4fb12dbf5c87b3caf4e5fe2e3095eec889d4cba8027e0a2f1e197b5a0e2a5"
+          ],
+          "batch_cost_jpy": 0.0537,
+          "batch_n_claims": 1
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": false,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "safety_er009_unsupported_new_claim_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1654,
+      "usage": {
+        "input_tokens": 6069,
+        "cached_input_tokens": 0,
+        "output_tokens": 895,
+        "reasoning_tokens": 742
+      },
+      "elapsed_seconds": 10.184,
+      "prompt_sha256": "807d4d22f1e9833999d04d5905cdf453626859e50a29465aa77f7ca765d6eebf"
+    },
+    {
+      "label": "safety_er009_unsupported_new_claim_c1_claim:40e72efd1108a9_e2_paragraph_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0779,
+      "usage": {
+        "input_tokens": 4514,
+        "cached_input_tokens": 0,
+        "output_tokens": 90,
+        "reasoning_tokens": 62
+      },
+      "elapsed_seconds": 2.09,
+      "prompt_sha256": "e81218b736c2dbe7ebde5768b66d1c9c4c8d5d8cd56e4fac946a0ef7162b6932"
+    },
+    {
+      "label": "safety_er009_unsupported_new_claim_c1_recheck",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1913,
+      "usage": {
+        "input_tokens": 6219,
+        "cached_input_tokens": 0,
+        "output_tokens": 1195,
+        "reasoning_tokens": 867
+      },
+      "elapsed_seconds": 13.31,
+      "prompt_sha256": "e86c85e1ae96cf83c6a848eb458fbe4073f341360dcf7a99f4e6911becb6bf88",
+      "overall_status": "LEDGER_DEVIATION",
+      "all_prior_issues_resolved": true
+    },
+    {
+      "label": "safety_er009_unsupported_new_claim_c2_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1064,
+      "usage": {
+        "input_tokens": 6039,
+        "cached_input_tokens": 0,
+        "output_tokens": 149,
+        "reasoning_tokens": 97
+      },
+      "elapsed_seconds": 2.785,
+      "prompt_sha256": "33c4fb12dbf5c87b3caf4e5fe2e3095eec889d4cba8027e0a2f1e197b5a0e2a5"
+    },
+    {
+      "label": "safety_er009_unsupported_new_claim_c2_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0537,
+      "usage": {
+        "input_tokens": 6039,
+        "cached_input_tokens": 6036,
+        "output_tokens": 563,
+        "reasoning_tokens": 511
+      },
+      "elapsed_seconds": 8.775,
+      "prompt_sha256": "33c4fb12dbf5c87b3caf4e5fe2e3095eec889d4cba8027e0a2f1e197b5a0e2a5"
+    }
+  ],
+  "total_cost_jpy": 0.5947,
+  "total_calls": 5,
+  "elapsed_seconds": 37.167,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "FLOOR_VERIFY_MODE": "time_only",
+    "CAUSAL_FLOOR": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The same New York City taxi researchers also found that male passengers tipped twice as much as female passengers when shown a higher suggested rate.",
+        "related_fact_id": null,
+        "origin": null,
+        "issue": "Ledgerには、推奨率の高いメニューを見た乗客がより多くチップを残したという結果はあるが、男女間の差や「2倍」という結果は記載されていない。",
+        "explanation": "男女間のチップ額の差はLedgerにない具体的主張の追加である。Ledgerにある数値を別の値に変更したわけではないためchanged_numberはfalse。",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": [],
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "Passengers who saw a menu with higher suggested tip rates left more in tips.",
+            "related_fact_id": "F-004",
+            "origin": null,
+            "issue": "The claim presents the result for passengers generally, while the Ledger limits the finding to New York City taxi passengers using credit cards.",
+            "explanation": "The direction of the result matches the Ledger, but the article omits the study's specific population and thereby broadens its scope.",
+            "true_flags": [
+              "changed_scope"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": [],
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": []
+}
