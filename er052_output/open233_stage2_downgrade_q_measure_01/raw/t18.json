@@ -1,0 +1,70 @@
+{
+ "sel_id": "t18",
+ "instance_id": "neg1_meta_b3prod_a2",
+ "cycle": 1,
+ "route_first": "hook",
+ "first": {
+  "llm": "QUALITY",
+  "final": "QUALITY",
+  "basis": "ledger_claim",
+  "floor_reason": null
+ },
+ "second": {
+  "llm": "QUALITY",
+  "final": "QUALITY",
+  "basis": "none",
+  "rewrite_kind": "replace_with_ledger_value",
+  "rewrite_hint": "",
+  "floor_reason": null,
+  "route": "hook"
+ },
+ "claim_text": "“A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person. Meta had run a test that caused exactly this surprise.”",
+ "issue": "The article presents a recipient discovering during a call that a person, not AI, was speaking, and says the test caused this surprise. The Ledger verifies that trained contract workers made some Muse calls, but does not establish that recipients experienced this reveal.",
+ "local_context": "# We Thought It Was AI—But There Was a Person Inside Meta’s Muse\n\nRing, ring. A call seemed to come from an AI agent. But as the conversation went on, the voice was not AI at all. It was a person.\n\nMeta had run a test that caused exactly this surprise.",
+ "cost_jpy": 0.0421,
+ "call_log": [
+  {
+   "label": "t18_stage2_hook",
+   "recovery_stage": "stage2_second_judge",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.0421,
+   "usage": {
+    "input_tokens": 5892,
+    "cached_input_tokens": 5889,
+    "output_tokens": 418,
+    "reasoning_tokens": 369
+   },
+   "elapsed_seconds": 4.786,
+   "prompt_sha256": "17ff6ca6b521cb32ea31ce74da2650304300230a5f9006ea2eeecfc3e9c76493"
+  }
+ ],
+ "raw": [
+  {
+   "kind": "hook",
+   "result": {
+    "prompt_sha256": "17ff6ca6b521cb32ea31ce74da2650304300230a5f9006ea2eeecfc3e9c76493",
+    "parsed": {
+     "judgments": [
+      {
+       "claim_index": 0,
+       "materiality": "QUALITY",
+       "basis": "none",
+       "rewrite_kind": "none",
+       "rewrite_hint": ""
+      }
+     ]
+    },
+    "model": "gpt-6-luna",
+    "response_id": "resp_00edff974b1cca04006ac1f86830d087d091b1b2838dedd22e",
+    "usage": {
+     "input_tokens": 5892,
+     "cached_input_tokens": 5889,
+     "output_tokens": 418,
+     "reasoning_tokens": 369
+    },
+    "cost_jpy": 0.0421,
+    "elapsed_seconds": 4.786
+   }
+  }
+ ]
+}

@@ -203,3 +203,29 @@ Stage 2は「Checkerが重大(MAJOR)と検出した指摘を、軽微/問題な�
 
 - 確認できたこと: §1全項(rep25 JSON・runnerコード・call_log)、§2の集計(JSON走査、rubric版はdir名から推定)、§3(実測50 call)。
 - 推測: 見逃し率pの値(CIが広い)、「reasoning tokensが少ない回に降格が出る」仮説、Rewrite追加費用(約¥0.5〜0.8/回)、q、S1の費用(¥0.11〜0.45/記事)。
+
+## §7 Opus#10後の採否(Fable、委任_68)
+
+Opus独立技術レビュー#10(条件A、`docs/pm/opus_l2_review_open233_self_recovery_10.md`)に対するFableの照合判断(ユーザー決定ではない):
+
+1. 対策S1(重大検出の降格は、独立2回目の判定も非BLOCKINGのときだけ許可。失敗はBLOCKING)は必要。Opus#10の3修正を採用: (i)2回目の比較は`run_stage2`の最終`materiality`で行い、2回目に`floor_reason`がfloor由来になったら異常としてログに残す(§4-2の「`llm_materiality`で比較」は撤回)、(ii)既存NORMAL群2-of-2(`apply_stage2_two_of_two`、正解ラベル依存・Production不可・向きが逆)はProduction候補の構成から外し既定OFFとする(外した構成でNORMAL群の過剰Majorを測り直す)、(iii)Safety KPIは「Stage 1代替投入ありの条件付き値」と「代替なしの通し値」を分けて報告する。
+2. 2回目にF5型prompt(Checker指摘を仮説として示す)は不採用(priming・再較正・基準混在)。Stage 2 promptへChecker issue/flagを渡す案も不採用(記録のみ)。§4-5のS4は引き続き今回対象外。
+3. 案(i)「`basis`非none要求」は不採用(正当なACCEPTABLEでも`basis=none`が自然、過去の見逃し8件はQUALITYで防げない。定量は`er052_output/open233_stage2_b3_misdowngrade_diag_01/recount_01.md`)。(ii)MAJOR降格不可・(iii)Safety-critical登録文のみ降格不可・(iv)理由欄追加は不採用(理由欄は観測性のみ)。§4-2の「floor_verify解放済みは要Opus確認」はOpusが除外妥当と確認。
+4. qの限定測定をcycle 1/cycle 2以降に分けて実装前に実施(`er052_output/open233_stage2_downgrade_q_measure_01/`)。STOP閾値(事前設定): 追加Rewrite率(2回目だけBLOCKING)がcycle 1で30%超、またはcycle 2以降で20%超ならS1の設計を見直す(自動実装へ進まない)。
+5. S1はユーザー承認が必要(既存より厳しくする変更)。「重大見逃し0」は決定論で保証できない(Stage 1がLLM)ため、KPIを確率的極小化として扱うかはSafety原則に関わりユーザー判断(STOP条件該当)。
+6. Stage 1 recall欠落はS1と別管理(Checker 2回和集合/合格直前検査強化は「判定方法の変更」に当たりうるためユーザー判断候補)。
+7. Production配線原則: Stage 2(降格権限)をProductionへ移すときはS1と一体で移す。NORMAL群2-of-2は移さない(`OPEN-233-A1-PROD`へ記録)。
+
+## §8 修正版S1の仕様(実装しない。ユーザー承認後に実装)
+
+- 名称: 降格確認2-of-2(修正版S1)。別関数(例: `apply_stage2_downgrade_confirm`)で、既存`apply_stage2_two_of_two`は変更しない。
+- 比較基準: 2回目`run_stage2`の最終`materiality`(hook-aware降格・disclosure-gap降格後の値)。「2回とも最終materialityが非BLOCKING」のときだけ降格を確定。
+- 異常ログ: 2回目の`floor_reason`がfloor由来(None以外)になった場合は異常として`stage2_downgrade_confirm_log`に記録(判定自体はBLOCKING)。
+- 対象: Checker `severity==MAJOR`、かつStage 2 1回目の最終`materiality`が非BLOCKING、かつ`floor_verify.released`のclaim(既に2回確認済み)を除く。precheck floor claim(Stage 2非経由)・1回目BLOCKINGも対象外。
+- 呼び出し粒度: 対象claimのみのbatch(instance・cycle・route[body/hook]ごとに1 call、最大2 call/cycle)。同一rubric(V7b)・同一本文・Ledger。hook経路はhook-aware Stage 2。
+- 失敗時: API失敗・schema不一致・claim_index欠落は全てBLOCKING(fail-closed、既存`*_api_failure_failclosed`と同じ向き)。
+- 適用範囲: cycleごと、Recheck由来のMAJORにも適用(Rewrite後cycleも同じ)。
+- 2回とも非BLOCKINGの場合の採用値: 重い方の`materiality`(安全側)。1回でもBLOCKINGなら2回目のBLOCKING判定の`rewrite_hint`/`rewrite_kind`を採用。
+- 記録フィールド(`stage2_downgrade_confirm_log`、既存`stage2_two_of_two_log`は不変): instance_id、cycle、route、claim識別子、first_materiality/first_basis、second_materiality/second_basis、second_floor_reason、second_status(ok/api_failure/schema_mismatch)、confirmed_downgrade(bool)、prompt_sha256、cost_jpy。
+- 構成: NORMAL群2-of-2は既定OFF(Production候補構成から除外)。Safety KPIは「Stage 1代替投入あり条件付き値」と「代替なし通し値」を分けて報告。
+- 実装しない理由: ユーザー承認待ち(既存より厳しくする変更、Safety KPIの扱いがSafety原則に関わる)。

@@ -18486,3 +18486,28 @@ Production量産性を成立させるためのTrialであることを忘れな�
 - Fableの前回推奨(A)「現状維持(Checker範囲切断型の照合許容=Human Review維持)」は、Primary KPI(Human Review 0件)と矛盾していたため**撤回**する。判断(A)は「span切断の自動復元を設計・検証」へ変更。
 - 分担: 委任_65=設計(L6「完結文復元」)+¥0検証(決定論replay)+Opus向けcontext packet作成(コード変更なし、API課金なし)。次にOpus独立技術レビュー(条件A: 後段照合に新しい処理レベルを追加、Opusへの依頼はFable)。Fable照合後、委任_66=実装(Trial専用スイッチ、既定OFF)+単体テスト+影響instance再実行。その後29件横断の再確認で、Human Review 0件を実証する。
 - 本エントリはユーザー指示の記録であり、Production採用(`APPROVED_FOR_PRODUCTION`)の決定ではない。Production未接続、`PRODUCTION_WIRED`なし。
+
+## OPEN-233-SELF-RECOVERY-TRIAL-01(2026-10-04、Fable判断: rep25のSafety-critical B3見逃しの原因診断・Opus#9/#10の照合・USER_DECISION_REQUIRED、委任_65〜68。**ユーザー決定ではない**)
+
+### (a) L6完結文復元の実装状況(委任_66)
+- Opus#9採用の是正ガード付きでTrial専用runnerへ実装済み(既定OFF、`VS_SENTENCE_RESTORE`)。¥0検証は良好(rep24失敗2/2復元・英語Checker過去未確定5/10復元・誤復元0、cycle横断replay 46件誤選択0)。実flowでの復元は未実証(rep25の2 runは記録0件、carry-forward記録抜けは是正済み、決定論replayではA2A3 s1で1件)。`PRODUCTION_WIRED`ではない。
+
+### (b) B3見逃しの原因(委任_66〜67)
+- rep25 B3 s1(Safety-critical)は、入力・batch構成・V7b文言・floor・Stage 1に差が無いまま、Stage 2(単独のLLM判定、1 call)がACCEPTABLEへ降格し、Rewriteなしで合格した。原因=同一入力に対するStage 2単独判定の非決定性(同一入力再実行でV7b 10/10 BLOCKING・V7 9/10)。MAJOR→非BLOCKINGの降格に確認の仕組みが無かった(既存2-of-2は「BLOCKING→降格」方向のみ・NORMAL群限定、floorは`changed_causality`が対象外)。
+
+### (c) Fableの照合判断(Opus#10に対する採否、委任_68の委任文から逐語。ユーザー決定ではない)
+1. 対策S1(重大検出の降格は、独立2回目の判定も非BLOCKINGのときだけ許可。失敗はBLOCKING)は必要。Opus#10の3修正を採用: (i)2回目の比較は`run_stage2`の最終`materiality`で行い、2回目に`floor_reason`がfloor由来になったら異常としてログに残す、(ii)既存NORMAL群2-of-2(`apply_stage2_two_of_two`、正解ラベル依存・Production不可・向きが逆)はProduction候補の構成から外し既定OFFとする(外した構成でNORMAL群の過剰Majorを測り直す)、(iii)Safety KPIは「Stage 1代替投入ありの条件付き値」と「代替なしの通し値」を分けて報告する。
+2. 2回目にF5型prompt(Checker指摘を仮説として示す)を使う案は採用しない(priming・再較正・基準混在)。Stage 2 promptにChecker issue/flagを渡す案も採用しない(記録のみ)。
+3. 案(i)「`basis`非none要求」は不採用(schemaの意味上、正当なACCEPTABLEでも`basis=none`が自然。過去の見逃し8件はQUALITYで防げない)。¥0再集計で定量を確認して記録。(ii)MAJOR降格不可・(iii)Safety-critical登録文のみ降格不可・(iv)理由欄追加は不採用(理由欄は観測性のみ、安全装置にならない)。
+4. qの限定測定はcycle 1/cycle 2以降に分けて実装前に行う。STOP閾値を事前設定: 追加Rewrite率(2回目だけBLOCKING)がcycle 1で30%超、またはcycle 2以降で20%超なら、S1の設計を見直す(自動実装へ進まない)。
+5. S1はユーザー承認が必要(既存より厳しくする変更)。「重大見逃し0」を決定論で保証できない(Stage 1がLLM)点、KPIを確率的極小化として扱うかはSafety原則に関わるためユーザー判断(STOP条件該当)。
+6. Stage 1 recall欠落はS1と別の管理事項として明示(Checker 2回和集合/合格直前検査強化は「判定方法の変更」に当たりうるためユーザー判断候補)。
+7. Production配線原則: Stage 2(降格権限)をProductionへ移すときはS1と一体で移す。NORMAL群2-of-2は移さない。`OPEN-233-A1-PROD`へ記録。
+
+### (d) q測定・¥0再集計の結果(委任_68、実行層が取得)
+- q測定(30 call、¥4.3265、error 0): 2回目だけBLOCKINGの率 cycle 1 0/24(Wilson95 0〜13.8%)、cycle 2以降 0/6(0〜39%)、全体0/30。STOP閾値(30%/20%)に該当せず。cycle 2以降はn=6で上限が閾値を超えるため「20%超でない」とは言えない。hook経路1件(t12)は再実行でbody routeになった。S1の追加費用(推定)は約¥0.11/instance-run・約¥0.15/記事。
+- ¥0再集計: S1対象(Checker MAJOR→1回目LLM非BLOCKING)471件のうちbasis=none ACCEPTABLE 82.5%・QUALITY 13.7%(V7b: 94.2%・28.6%)→案(i)不採用の根拠。既存2-of-2はNORMAL群で46件に2回目を呼び14件を降格(R3'''期のみ=2-of-2無しならBLOCKINGのまま残った14件が見かけの改善幅)。
+- 詳細: `docs/pm/opus_l2_review_open233_self_recovery_10.md`、`docs/pm/design_open233_stage2_safety_downgrade_01.md`§7・§8、REPORT§50。
+
+### (e) ユーザー判断待ち項目(`USER_DECISION_REQUIRED`、STOP条件: Safety原則に関わる判断[KPI 0件の扱い]・既存より厳しくする変更[S1])
+(1)S1採用 (2)Safety KPI 0件の扱い(確率的極小化+Stage 1 recall別管理) (3)NORMAL群2-of-2の既定OFF化 (4)アンカー型L6の確認 (5)prior_issuesにRewrite後の文を渡す是正(Checker入力の変更) (6)U-2(1)位置語→構造要素 (7)Stage 1 recall対策の方向。承認後の流れ: S1+(3)(5)実装→単体テスト→rep25再開(A2A3/B3 n=2)→29件再確認→STOP報告。次Trial(10本)は開始しない。本エントリはFableの照合・整理の記録であり、ユーザー決定でも`APPROVED_FOR_PRODUCTION`でもない。Production未接続、`PRODUCTION_WIRED`なし。

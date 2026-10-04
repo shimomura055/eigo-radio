@@ -1,0 +1,172 @@
+{
+ "cost_jpy_total": 4.3265,
+ "calls": 30,
+ "errors": 0,
+ "n_results": 30,
+ "overall": {
+  "n": 30,
+  "api_failure_or_schema": 0,
+  "n_valid": 30,
+  "blocking": 0,
+  "q": 0.0,
+  "q_wilson95": [
+   0,
+   0.114
+  ]
+ },
+ "by_cycle": {
+  "cycle1": {
+   "n": 24,
+   "api_failure_or_schema": 0,
+   "n_valid": 24,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.138
+   ]
+  },
+  "cycle2plus": {
+   "n": 6,
+   "api_failure_or_schema": 0,
+   "n_valid": 6,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.39
+   ]
+  }
+ },
+ "by_route": {
+  "body": {
+   "n": 23,
+   "api_failure_or_schema": 0,
+   "n_valid": 23,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.143
+   ]
+  },
+  "hook": {
+   "n": 7,
+   "api_failure_or_schema": 0,
+   "n_valid": 7,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.354
+   ]
+  }
+ },
+ "by_first_final": {
+  "ACCEPTABLE": {
+   "n": 18,
+   "api_failure_or_schema": 0,
+   "n_valid": 18,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.176
+   ]
+  },
+  "QUALITY": {
+   "n": 12,
+   "api_failure_or_schema": 0,
+   "n_valid": 12,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.243
+   ]
+  }
+ },
+ "by_cycle_route": {
+  "cycle1/body": {
+   "n": 18,
+   "api_failure_or_schema": 0,
+   "n_valid": 18,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.176
+   ]
+  },
+  "cycle1/hook": {
+   "n": 6,
+   "api_failure_or_schema": 0,
+   "n_valid": 6,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.39
+   ]
+  },
+  "cycle2plus/body": {
+   "n": 5,
+   "api_failure_or_schema": 0,
+   "n_valid": 5,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.434
+   ]
+  },
+  "cycle2plus/hook": {
+   "n": 1,
+   "api_failure_or_schema": 0,
+   "n_valid": 1,
+   "blocking": 0,
+   "q": 0.0,
+   "q_wilson95": [
+    0,
+    0.793
+   ]
+  }
+ },
+ "route_mismatch": [
+  "t12"
+ ],
+ "second_floor_reason_anomaly": [],
+ "second_blocking_only_via_llm_vs_final": {
+  "llm_blocking": 0,
+  "final_blocking": 0
+ },
+ "blocking_cases": [],
+ "blocking_provisional_label_counts": {},
+ "stop_threshold": {
+  "cycle1_limit": 0.3,
+  "cycle2plus_limit": 0.2,
+  "cycle1_exceeds": false,
+  "cycle2plus_exceeds": false
+ },
+ "s1_cost_estimate": {
+  "rep24_targets": {
+   "cycle1": 62,
+   "cycle2plus": 6
+  },
+  "rep24_s2_second_calls_batched": 30,
+  "unit_cost_per_call_measured_single_claim": 0.1442,
+  "extra_rewrites_total_rep24": 0,
+  "extra_rewrites_per_instance_run(38)": 0.0,
+  "stage2_second_cost_per_instance_run(batched)": 0.114,
+  "stage2_second_cost_per_article(29)": 0.149,
+  "rewrite_cost_per_instance_run_range": [
+   0.0,
+   0.0
+  ],
+  "total_extra_per_instance_run_range": [
+   0.114,
+   0.114
+  ],
+  "note": "推定。Rewriteの再帰(Recheckで新MAJOR等)・STAGE4への移行は含まない。+2円枠はfloor_verify/L6/Recheck等の合計に対する上限(Opus#10)。"
+ }
+}

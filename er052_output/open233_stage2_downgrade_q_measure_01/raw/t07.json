@@ -1,0 +1,70 @@
+{
+ "sel_id": "t07",
+ "instance_id": "safety_A5",
+ "cycle": 1,
+ "route_first": "body",
+ "first": {
+  "llm": "ACCEPTABLE",
+  "final": "ACCEPTABLE",
+  "basis": "none",
+  "floor_reason": null
+ },
+ "second": {
+  "llm": "ACCEPTABLE",
+  "final": "ACCEPTABLE",
+  "basis": "ledger_scope",
+  "rewrite_kind": "replace_with_ledger_value",
+  "rewrite_hint": "",
+  "floor_reason": null,
+  "route": "body"
+ },
+ "claim_text": "They did not stop Muse itself.",
+ "issue": "The article says the human-call feature was put back, reversing the reported action: Meta temporarily rolled back that feature. The clarification that Muse itself was not stopped does not correct this reversal.",
+ "local_context": "This is an important point. There was no confirmation that a large-scale information leak had taken place. But people did not know who was actually handling the work they had asked AI to do. Also, their personal information might reach that person. When that happens, a convenient service suddenly starts to look like a mystery story.\n\nMeta executives admitted that starting the test without a proper explanation was a mistake. They also temporarily put back the feature in which humans handled the calls. They did not stop Muse itself.\n\nGoing forward, Meta plans to make the feature available only when preparations are complete and it can clearly explain who will make the calls.",
+ "cost_jpy": 0.1498,
+ "call_log": [
+  {
+   "label": "t07_stage2_body",
+   "recovery_stage": "stage2_second_judge",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1498,
+   "usage": {
+    "input_tokens": 8535,
+    "cached_input_tokens": 0,
+    "output_tokens": 203,
+    "reasoning_tokens": 151
+   },
+   "elapsed_seconds": 2.95,
+   "prompt_sha256": "b205eec4ef62d88d57671d3b80ef0e08fd55ef10389ca239934a5409f12f3d93"
+  }
+ ],
+ "raw": [
+  {
+   "kind": "body",
+   "result": {
+    "prompt_sha256": "b205eec4ef62d88d57671d3b80ef0e08fd55ef10389ca239934a5409f12f3d93",
+    "parsed": {
+     "judgments": [
+      {
+       "claim_index": 0,
+       "materiality": "ACCEPTABLE",
+       "basis": "ledger_scope",
+       "rewrite_kind": "none",
+       "rewrite_hint": ""
+      }
+     ]
+    },
+    "model": "gpt-6-luna",
+    "response_id": "resp_0dfce2d3624e01c4006ac1f8344a1887d0a6a176e789d47b10",
+    "usage": {
+     "input_tokens": 8535,
+     "cached_input_tokens": 0,
+     "output_tokens": 203,
+     "reasoning_tokens": 151
+    },
+    "cost_jpy": 0.1498,
+    "elapsed_seconds": 2.95
+   }
+  }
+ ]
+}
