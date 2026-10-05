@@ -4565,3 +4565,10 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - Step 1(保存r3 42 run): low ∪M 16/18・A4-0救済0/2、medium ∪M 18/18・A4-0救済2/2(1件は角括弧ID経由、厳密集計では17/18・1/2)、hold-out 9/9、neg5 3/3、NORMAL候補∪ 19.6/20.0(段階A 24.0)、r5-V費用 ¥0.164/¥0.285/run、worst ¥0.31/¥0.65、API失敗0、欠落ID 0%。
 - Step 1b(gold強制対象、SC 18): r5-V M low 10/18・medium 12/18(基準17/18=段階A r5 full high並み)未達。A4-0・neg5で不安定。費用 ¥4.94/¥8.01。
 - 詳細: `er052_output/open233_stage1_loop2_r5v_fix_01/loop2_trial_summary_02.md`、各dir`..._r5v_fix_medium_01`/`..._r5v_cap_01`/`..._r5v_cap_medium_01`。累計 本管理ID ¥111.91/枠¥238。(iii)見込みは更新不能(Step 2未実施)。
+
+## 70. Stage 1 ループ2 G arm 限定Trial+E2E計画書(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_14、2026-10-05、実費¥27.80)
+- provenance=fresh Stage 1限定(33 run、r3 medium+r5 medium+否定案a)/E2Eではない。Trial(DEV)、Production未変更。r5-V構成は委任_13の能力テスト(M 10〜12/18)により不採用としてクローズ(Fable判断)。
+- G arm: r3 M 16/18(合格)、r5 M 15/18(基準17未達、A4-0 0/3)、∪M 17/18(基準18未達、A4-0の1/3を両経路見逃し)、hold-out 9/9、neg5 3/3、欠落ID 0%、API失敗0、worst ¥1.30、NORMAL候補∪ 21.83/記事。費用: Stage 1 ¥0.843/run(段階A同mix high ¥1.394)、reasoning tokens r3 3,208→1,371・r5 6,900→2,348。
+- 判定規則: r5のみ未達→採用構成=r3 medium+r5 high+否定案a(混合構成のfresh測定は未実施、費用は合算推測 約¥1.23/run、-¥0.16/run)。r5 low追加は省略。
+- E2E計画書: `docs/pm/e2e_plan_open233_stage1_loop2_01.md`(rep30スイッチ突合=不一致0、ただしSTAGE2_VERDICT_REUSE/SIBLINGはモジュール既定Falseのため明示設定が必要。Rewrite後Recheckの新Stage 1仕様は未実装、実装見積約150〜200行。推奨20 run ≈¥62(48〜86)、最小18 run ≈¥56。shadow V4A費用測定を同一run内に設計)。
+- 詳細: `er052_output/open233_stage1_loop2_garm_01/loop2_trial_summary_03.md`。累計 本管理ID ¥139.71/枠¥238。

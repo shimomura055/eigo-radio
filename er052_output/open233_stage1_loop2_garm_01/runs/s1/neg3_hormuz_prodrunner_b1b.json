@@ -1,0 +1,1164 @@
+{
+  "sample": 1,
+  "instance_id": "neg3_hormuz_prodrunner_b1b",
+  "group": "negative",
+  "switches": {
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "MODEL": "gpt-6-luna",
+    "TOTAL_BUDGET_JPY": 35.0,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "medium",
+    "STAGE1_NEGATION_MODE": "a",
+    "REUSE_R3_DIR": null
+  },
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 27,
+    "n_judged_units": 20,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "H2",
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S2.2",
+          "S3.3",
+          "S4.4",
+          "S6.1",
+          "S6.2",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "H1": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "H2": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4493,
+            "usage": {
+              "input_tokens": 4928,
+              "cached_input_tokens": 0,
+              "output_tokens": 4742,
+              "reasoning_tokens": 1551
+            },
+            "elapsed_seconds": 34.552,
+            "prompt_sha256": "8b78fb422ec5d53039aba011d47156e32d92eab32987b4bf5261cf6190c6175e",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "H1": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "H2": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return",
+            "span": [
+              0,
+              68
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「oil prices」と広く述べており、Ledgerが報じるBrent先物の値動きより対象を広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it.",
+            "span": [
+              70,
+              183
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "政策発表よりもその後の価格変動が「最大のひねり」になるという比較・一般論はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "This time, the fee plan left the stage, but the price did not leave with it.",
+            "span": [
+              184,
+              260
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "撤回後に価格が「去らなかった」と一般化していますが、Ledgerが確認するのはBrent先物が一時上げ幅を縮小した後に回復した値動きです。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "This time, the fee plan left the stage, but the price did not leave with it."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "A large number suddenly appeared, making the proposal the story’s new lead.",
+            "span": [
+              423,
+              498
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「大きな数字が突然現れた」「提案が新たな主役になった」という評価・出来事はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "A large number suddenly appeared, making the proposal the story’s new lead."
+          },
+          {
+            "unit_id": "H2",
+            "unit_ids": [
+              "H2"
+            ],
+            "claim_text": "### The price refuses to follow",
+            "span": [
+              652,
+              683
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案撤回後に価格が追随しなかったという結び付けを示していますが、LedgerはBrent先物の一時的な上げ幅縮小と回復を報じるにとどまり、一般的な「価格」の動向や撤回との因果を確定していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "### The price refuses to follow"
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Normally, removing the fee plan would seem likely to calm oil prices.",
+            "span": [
+              913,
+              982
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の撤回が通常なら原油価格を落ち着かせるという予想はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Normally, removing the fee plan would seem likely to calm oil prices."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "At the time of publication, oil was up about 2.6 percent and above $85 a barrel.",
+            "span": [
+              1253,
+              1333
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerが示すのは記事掲載時点のBrent先物の値であり、「oil」と一般化すると対象範囲が広がります。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "At the time of publication, oil was up about 2.6 percent and above $85 a barrel."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The lesson is that changing the words in an announcement does not always change the price in the same way.",
+            "span": [
+              1460,
+              1566
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "発表の文言変更と価格変動の関係について一般化した教訓を述べていますが、Ledgerが示すのは特定日の出来事とBrent先物の値動きであり、この一般的な関係は確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The lesson is that changing the words in an announcement does not always change the price in the same way."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+            "span": [
+              1567,
+              1698
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "他の出来事が一つの発表によって消えないという一般化、および発表との因果的な結び付けはLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+            "span": [
+              1716,
+              1822
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerでは関連する市場要因は継続していたとされるため、「価格を動かす出来事が戻った」は時系列を変えています。また、それらを原油価格を動かす要因と断定し、対象を一般的な原油価格に広げています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S3.3",
+          "S6.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "T": "MATCH",
+          "S1.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "MATCH",
+          "S4.2": "MATCH",
+          "L1": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.3": "DEVIATION",
+          "S3.4": "MATCH",
+          "S4.1": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S5.1": "MATCH",
+          "S6.1": "DEVIATION",
+          "S6.2": "MATCH",
+          "S1.1": "UNMENTIONED",
+          "H1": "UNMENTIONED",
+          "H2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.4073,
+            "usage": {
+              "input_tokens": 4585,
+              "cached_input_tokens": 0,
+              "output_tokens": 4275,
+              "reasoning_tokens": 2315
+            },
+            "elapsed_seconds": 37.17,
+            "prompt_sha256": "7b58f3c2490d3ab6373339f3f49a000f6120ee431c3d896d9e9715d94dcda23e",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Normally, removing the fee plan would seem likely to calm oil prices.",
+            "span": [
+              913,
+              982
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "撤回が通常なら原油価格を落ち着かせるという予想・因果関係はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Normally, removing the fee plan would seem likely to calm oil prices."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The lesson is that changing the words in an announcement does not always change the price in the same way.",
+            "span": [
+              1460,
+              1566
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "観測された一連の値動きから、発表の言葉を変えても価格は必ずしも同じようには変わらないという一般的な教訓へ拡張しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The lesson is that changing the words in an announcement does not always change the price in the same way."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+            "span": [
+              1716,
+              1822
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "継続中の出来事を原油価格を動かす要因だと断定する因果関係は、Ledgerの記述を超えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S3.3",
+        "S6.1"
+      ],
+      "r3_only": [
+        "H2",
+        "S1.1",
+        "S1.2",
+        "S2.2",
+        "S4.4",
+        "S6.2",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 0
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return",
+        "span": [
+          0,
+          68
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「oil prices」と広く述べており、Ledgerが報じるBrent先物の値動きより対象を広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return"
+        ]
+      },
+      {
+        "claim_text": "Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it.",
+        "span": [
+          70,
+          183
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "政策発表よりもその後の価格変動が「最大のひねり」になるという比較・一般論はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [],
+        "model_claims": [
+          "Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it."
+        ]
+      },
+      {
+        "claim_text": "This time, the fee plan left the stage, but the price did not leave with it.",
+        "span": [
+          184,
+          260
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "撤回後に価格が「去らなかった」と一般化していますが、Ledgerが確認するのはBrent先物が一時上げ幅を縮小した後に回復した値動きです。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "This time, the fee plan left the stage, but the price did not leave with it."
+        ]
+      },
+      {
+        "claim_text": "A large number suddenly appeared, making the proposal the story’s new lead.",
+        "span": [
+          423,
+          498
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「大きな数字が突然現れた」「提案が新たな主役になった」という評価・出来事はLedgerに記載されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": [
+          "A large number suddenly appeared, making the proposal the story’s new lead."
+        ]
+      },
+      {
+        "claim_text": "### The price refuses to follow",
+        "span": [
+          652,
+          683
+        ],
+        "unit_ids": [
+          "H2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "料金案撤回後に価格が追随しなかったという結び付けを示していますが、LedgerはBrent先物の一時的な上げ幅縮小と回復を報じるにとどまり、一般的な「価格」の動向や撤回との因果を確定していません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "### The price refuses to follow"
+        ]
+      },
+      {
+        "claim_text": "Normally, removing the fee plan would seem likely to calm oil prices.",
+        "span": [
+          913,
+          982
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "料金案の撤回が通常なら原油価格を落ち着かせるという予想はLedgerにありません。",
+          "撤回が通常なら原油価格を落ち着かせるという予想・因果関係はLedgerに記載されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Normally, removing the fee plan would seem likely to calm oil prices."
+        ]
+      },
+      {
+        "claim_text": "At the time of publication, oil was up about 2.6 percent and above $85 a barrel.",
+        "span": [
+          1253,
+          1333
+        ],
+        "unit_ids": [
+          "S4.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerが示すのは記事掲載時点のBrent先物の値であり、「oil」と一般化すると対象範囲が広がります。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "At the time of publication, oil was up about 2.6 percent and above $85 a barrel."
+        ]
+      },
+      {
+        "claim_text": "The lesson is that changing the words in an announcement does not always change the price in the same way.",
+        "span": [
+          1460,
+          1566
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "発表の文言変更と価格変動の関係について一般化した教訓を述べていますが、Ledgerが示すのは特定日の出来事とBrent先物の値動きであり、この一般的な関係は確認していません。",
+          "観測された一連の値動きから、発表の言葉を変えても価格は必ずしも同じようには変わらないという一般的な教訓へ拡張しています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The lesson is that changing the words in an announcement does not always change the price in the same way."
+        ]
+      },
+      {
+        "claim_text": "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement.",
+        "span": [
+          1567,
+          1698
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "他の出来事が一つの発表によって消えないという一般化、および発表との因果的な結び付けはLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The fee plan may be replaced, but events continuing at the same time do not simply disappear backstage because of one announcement."
+        ]
+      },
+      {
+        "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+        "span": [
+          1716,
+          1822
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerでは関連する市場要因は継続していたとされるため、「価格を動かす出来事が戻った」は時系列を変えています。また、それらを原油価格を動かす要因と断定し、対象を一般的な原油価格に広げています。",
+          "継続中の出来事を原油価格を動かす要因だと断定する因果関係は、Ledgerの記述を超えています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned."
+        ]
+      }
+    ],
+    "n_union_candidates": 10,
+    "n_model_candidates": 10,
+    "n_deterministic_only_candidates": 0,
+    "total_cost_jpy": 0.8566,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_s1_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4493,
+      "usage": {
+        "input_tokens": 4928,
+        "cached_input_tokens": 0,
+        "output_tokens": 4742,
+        "reasoning_tokens": 1551
+      },
+      "elapsed_seconds": 34.552,
+      "prompt_sha256": "8b78fb422ec5d53039aba011d47156e32d92eab32987b4bf5261cf6190c6175e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "neg3_hormuz_prodrunner_b1b_s1_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4073,
+      "usage": {
+        "input_tokens": 4585,
+        "cached_input_tokens": 0,
+        "output_tokens": 4275,
+        "reasoning_tokens": 2315
+      },
+      "elapsed_seconds": 37.17,
+      "prompt_sha256": "7b58f3c2490d3ab6373339f3f49a000f6120ee431c3d896d9e9715d94dcda23e",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 0.8566
+}

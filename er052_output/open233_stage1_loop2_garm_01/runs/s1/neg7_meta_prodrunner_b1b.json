@@ -1,0 +1,2389 @@
+{
+  "sample": 1,
+  "instance_id": "neg7_meta_prodrunner_b1b",
+  "group": "negative",
+  "switches": {
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "MODEL": "gpt-6-luna",
+    "TOTAL_BUDGET_JPY": 35.0,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "medium",
+    "STAGE1_NEGATION_MODE": "a",
+    "REUSE_R3_DIR": null
+  },
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 44,
+    "n_judged_units": 34,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S2.1+S2.2"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "H1",
+          "L1",
+          "R:S2.1+S2.2",
+          "S1.4",
+          "S2.2",
+          "S2.3",
+          "S3.1",
+          "S3.3",
+          "S3.5",
+          "S4.1",
+          "S5.2",
+          "S5.4",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S7.2",
+          "S7.3",
+          "S8.1",
+          "S9.1",
+          "S9.2",
+          "S9.3",
+          "S9.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "CANDIDATE",
+          "H1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S3.6": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "H2": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.3": "CANDIDATE",
+          "S8.1": "CANDIDATE",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S2.1+S2.2": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6845,
+            "usage": {
+              "input_tokens": 5299,
+              "cached_input_tokens": 0,
+              "output_tokens": 7666,
+              "reasoning_tokens": 2070
+            },
+            "elapsed_seconds": 59.83,
+            "prompt_sha256": "637cd71c17f9ec868789003d463d72b0707d7dcda991f3042a11218859a9baf5",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "CANDIDATE",
+          "H1": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S3.6": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "H2": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "SUPPORTED",
+          "S5.4": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "S8.1": "CANDIDATE",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S2.1+S2.2": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage",
+            "span": [
+              0,
+              66
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が裏で登場したという表現は、適切な開示がなかったとの事実に関連するが、見出し全体の含意をLedgerが直接支えているとは言い切れない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage"
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "In this convenient future, the AI on your screen handles everything for you.",
+            "span": [
+              226,
+              302
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIが画面上で『everything』を処理するという包括的な主張は、電話機能の特定例を超えている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "In this convenient future, the AI on your screen handles everything for you."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+            "span": [
+              371,
+              455
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "『So』で前文と結び、依頼後はAIが電話を処理するという筋書きを導いているが、Ledgerは一部の電話を人間が担当したと記録しており、この関係・含意を支えていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "So it sounds like a simple story: you make a request, and AI takes care of the call."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "But the picture changed once people looked behind the stage.",
+            "span": [
+              456,
+              516
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人々が調べた結果として状況が変わったという時間的・因果的な叙述は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "But the picture changed once people looked behind the stage."
+          },
+          {
+            "unit_id": "H1",
+            "unit_ids": [
+              "H1"
+            ],
+            "claim_text": "### The call that was not made by AI",
+            "span": [
+              518,
+              554
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "Some calls through Muse were not made by AI at all.",
+            "span": [
+              556,
+              607
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Muse received the request—that part was AI—but then passed the job to a person.",
+            "span": [
+              650,
+              729
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Museが依頼を受け、それを人間に引き渡すという具体的な処理手順は、Ledgerの事実本文だけでは直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Muse received the request—that part was AI—but then passed the job to a person."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "It was like an AI-led play with a hidden supporting actor.",
+            "span": [
+              786,
+              844
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "舞台と隠れた助演者という比喩は、実験で人間の役割が利用者に開示されていなかったという含意を持つが、この文の比喩的な描写全体をLedgerが直接述べているわけではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "It was like an AI-led play with a hidden supporting actor."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The hidden role made the simple picture less simple.",
+            "span": [
+              888,
+              940
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "隠れた役割が単純な見方を複雑にしたという因果・評価は、Ledgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "The hidden role made the simple picture less simple."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "The issue was not that humans handled calls.",
+            "span": [
+              1114,
+              1158
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "従業員の懸念が人間による電話対応そのものではなかった、という限定・対比はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "The issue was not that humans handled calls."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "A service that seemed simple now looked like a mystery story.",
+            "span": [
+              1225,
+              1286
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "サービスが謎めいたものに見えたという評価は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "A service that seemed simple now looked like a mystery story."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "No large information leak was confirmed.",
+            "span": [
+              1288,
+              1328
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "大規模な情報漏えいが確認されなかったという否定的事実は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "No large information leak was confirmed."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person.",
+            "span": [
+              1329,
+              1463
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が実際に作業していることを利用者が知り得なかったという断定はLedgerにない。機微情報が人に届く可能性の懸念は記録されているが、ここでは利用者全般について述べている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "That uncertainty turned convenience into a mystery.",
+            "span": [
+              1464,
+              1515
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "不確実性が利便性を謎に変えたという因果・評価は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "That uncertainty turned convenience into a mystery."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "Meta then temporarily put the human-call feature back on hold.",
+            "span": [
+              1610,
+              1672
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "The company did not stop Muse itself.",
+            "span": [
+              1673,
+              1710
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間コンシェルジュ機能のロールバックは記載されているが、Muse自体を停止しなかったという明示的な事実はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The company did not stop Muse itself."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.",
+            "span": [
+              1712,
+              1830
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話機能の公開展開は準備が整い適切な開示ができる場合に限るとの説明はあるが、『誰が電話をかけるかを明確に説明できる』という具体的条件はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "Even in an age when AI does our work, a human may still need to help.",
+            "span": [
+              1832,
+              1901
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間がAIの仕事を助ける必要がある場合がある、という一般的な将来・可能性の主張は、特定の電話テストの範囲を超えている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Even in an age when AI does our work, a human may still need to help."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "But that person should not appear secretly.",
+            "span": [
+              1902,
+              1945
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が秘密裏に現れるべきではないという規範的主張は、Ledgerの事実としては記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "But that person should not appear secretly."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "If they step onto the stage, they should give their name first.",
+            "span": [
+              1946,
+              2009
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話を担当する人間が名乗るべきという具体的な規範は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "If they step onto the stage, they should give their name first."
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "This case made that simple rule unusually clear.",
+            "span": [
+              2010,
+              2058
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "この事例がその規則を明確にしたという因果・評価は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "This case made that simple rule unusually clear."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "AI may need human help, but humans must say clearly when they take over.",
+            "span": [
+              2076,
+              2148
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間がAIを助ける可能性と、人間が交代する際に明確に伝えるべきという一般的・規範的な要約は、Ledgerの直接的な事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "AI may need human help, but humans must say clearly when they take over."
+          },
+          {
+            "unit_id": "R:S2.1+S2.2",
+            "unit_ids": [
+              "R:S2.1+S2.2"
+            ],
+            "claim_text": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+            "span": [
+              371,
+              455
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "『So』が電話機能の存在から『AIが電話を処理する』という単純な筋書きを導いているが、LedgerはMuse経由の一部電話を人間が担当したと述べ、この関係を支えていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Meta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "R:S2.1+S2.2",
+          "S2.2",
+          "S5.3",
+          "S6.1",
+          "S6.2",
+          "S8.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "R:S2.1+S2.2": "DEVIATION",
+          "S2.2": "DEVIATION",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S3.6": "MATCH",
+          "S5.1": "MATCH",
+          "S6.1": "DEVIATION",
+          "S6.2": "DEVIATION",
+          "S5.3": "DEVIATION",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S8.1": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S1.4": "UNMENTIONED",
+          "S2.3": "UNMENTIONED",
+          "H1": "UNMENTIONED",
+          "S4.1": "UNMENTIONED",
+          "H2": "UNMENTIONED",
+          "S5.2": "UNMENTIONED",
+          "S5.4": "UNMENTIONED",
+          "S6.3": "UNMENTIONED",
+          "S9.1": "UNMENTIONED",
+          "S9.2": "UNMENTIONED",
+          "S9.3": "UNMENTIONED",
+          "S9.4": "UNMENTIONED",
+          "L1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.4769,
+            "usage": {
+              "input_tokens": 4937,
+              "cached_input_tokens": 0,
+              "output_tokens": 5092,
+              "reasoning_tokens": 2836
+            },
+            "elapsed_seconds": 53.162,
+            "prompt_sha256": "09dd5e5651f4079e95eee6776a73993c14e558c224f2ee8c46d1d488fa7ec414",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "R:S2.1+S2.2",
+            "unit_ids": [
+              "R:S2.1+S2.2"
+            ],
+            "claim_text": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+            "span": [
+              371,
+              455
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「AI takes care of the call」と一般化し、米国内の特定の電話機能についての事実を、AIが電話を処理するという広い説明にしている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "Meta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+            "span": [
+              371,
+              455
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "AIが電話を処理すると描いており、一部の電話では人間が発信・会話を完了したという事実と行為者が異なる。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "So it sounds like a simple story: you make a request, and AI takes care of the call."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "No large information leak was confirmed.",
+            "span": [
+              1288,
+              1328
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "大規模な情報漏えいが確認されていないという情報はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "No large information leak was confirmed."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person.",
+            "span": [
+              1329,
+              1463
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "懸念の対象をテストに関わる従業員から「users」へ広げ、ユーザーが実際に誰の作業か知り得なかったと断定している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "It was that testing began without clearly telling users about it.",
+            "span": [
+              1159,
+              1224
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは適切な開示なしで契約スタッフが電話を担当したテストについて述べているが、記事は「users」に明確に伝えていなかったと対象を特定している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "It was that testing began without clearly telling users about it."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.",
+            "span": [
+              1712,
+              1830
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerの「適切な開示」を、誰が電話をかけるかを明確に説明することに特定している。この具体的な開示内容はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "R:S2.1+S2.2",
+        "S2.2",
+        "S6.1",
+        "S6.2",
+        "S8.1"
+      ],
+      "r3_only": [
+        "H1",
+        "L1",
+        "S1.4",
+        "S2.3",
+        "S3.1",
+        "S3.3",
+        "S3.5",
+        "S4.1",
+        "S5.2",
+        "S5.4",
+        "S6.3",
+        "S7.2",
+        "S7.3",
+        "S9.1",
+        "S9.2",
+        "S9.3",
+        "S9.4",
+        "T"
+      ],
+      "r5_only": [
+        "S5.3"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 3
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage",
+        "span": [
+          0,
+          66
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間が裏で登場したという表現は、適切な開示がなかったとの事実に関連するが、見出し全体の含意をLedgerが直接支えているとは言い切れない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "# It Was Supposed to Be an AI Call—Then a Human Appeared Backstage"
+        ]
+      },
+      {
+        "claim_text": "In this convenient future, the AI on your screen handles everything for you.",
+        "span": [
+          226,
+          302
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "AIが画面上で『everything』を処理するという包括的な主張は、電話機能の特定例を超えている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "In this convenient future, the AI on your screen handles everything for you."
+        ]
+      },
+      {
+        "claim_text": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+        "span": [
+          371,
+          455
+        ],
+        "unit_ids": [
+          "S2.2",
+          "R:S2.1+S2.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "『So』で前文と結び、依頼後はAIが電話を処理するという筋書きを導いているが、Ledgerは一部の電話を人間が担当したと記録しており、この関係・含意を支えていない。",
+          "『So』が電話機能の存在から『AIが電話を処理する』という単純な筋書きを導いているが、LedgerはMuse経由の一部電話を人間が担当したと述べ、この関係を支えていない。",
+          "「AI takes care of the call」と一般化し、米国内の特定の電話機能についての事実を、AIが電話を処理するという広い説明にしている。",
+          "AIが電話を処理すると描いており、一部の電話では人間が発信・会話を完了したという事実と行為者が異なる。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006",
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+          "Meta’s AI agent, Muse, really does have phone features like these. So it sounds like a simple story: you make a request, and AI takes care of the call."
+        ]
+      },
+      {
+        "claim_text": "But the picture changed once people looked behind the stage.",
+        "span": [
+          456,
+          516
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人々が調べた結果として状況が変わったという時間的・因果的な叙述は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "But the picture changed once people looked behind the stage."
+        ]
+      },
+      {
+        "claim_text": "### The call that was not made by AI",
+        "span": [
+          518,
+          554
+        ],
+        "unit_ids": [
+          "H1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Some calls through Muse were not made by AI at all.",
+        "span": [
+          556,
+          607
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Muse received the request—that part was AI—but then passed the job to a person.",
+        "span": [
+          650,
+          729
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Museが依頼を受け、それを人間に引き渡すという具体的な処理手順は、Ledgerの事実本文だけでは直接確認できない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "Muse received the request—that part was AI—but then passed the job to a person."
+        ]
+      },
+      {
+        "claim_text": "It was like an AI-led play with a hidden supporting actor.",
+        "span": [
+          786,
+          844
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "舞台と隠れた助演者という比喩は、実験で人間の役割が利用者に開示されていなかったという含意を持つが、この文の比喩的な描写全体をLedgerが直接述べているわけではない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "It was like an AI-led play with a hidden supporting actor."
+        ]
+      },
+      {
+        "claim_text": "The hidden role made the simple picture less simple.",
+        "span": [
+          888,
+          940
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "隠れた役割が単純な見方を複雑にしたという因果・評価は、Ledgerに明記されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "The hidden role made the simple picture less simple."
+        ]
+      },
+      {
+        "claim_text": "The issue was not that humans handled calls.",
+        "span": [
+          1114,
+          1158
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "従業員の懸念が人間による電話対応そのものではなかった、という限定・対比はLedgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "The issue was not that humans handled calls."
+        ]
+      },
+      {
+        "claim_text": "A service that seemed simple now looked like a mystery story.",
+        "span": [
+          1225,
+          1286
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "サービスが謎めいたものに見えたという評価は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "A service that seemed simple now looked like a mystery story."
+        ]
+      },
+      {
+        "claim_text": "No large information leak was confirmed.",
+        "span": [
+          1288,
+          1328
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "大規模な情報漏えいが確認されなかったという否定的事実は、Ledgerに記載されていない。",
+          "大規模な情報漏えいが確認されていないという情報はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "No large information leak was confirmed."
+        ]
+      },
+      {
+        "claim_text": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person.",
+        "span": [
+          1329,
+          1463
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "人間が実際に作業していることを利用者が知り得なかったという断定はLedgerにない。機微情報が人に届く可能性の懸念は記録されているが、ここでは利用者全般について述べている。",
+          "懸念の対象をテストに関わる従業員から「users」へ広げ、ユーザーが実際に誰の作業か知り得なかったと断定している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person."
+        ]
+      },
+      {
+        "claim_text": "That uncertainty turned convenience into a mystery.",
+        "span": [
+          1464,
+          1515
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "不確実性が利便性を謎に変えたという因果・評価は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-010"
+        ],
+        "model_claims": [
+          "That uncertainty turned convenience into a mystery."
+        ]
+      },
+      {
+        "claim_text": "Meta then temporarily put the human-call feature back on hold.",
+        "span": [
+          1610,
+          1672
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The company did not stop Muse itself.",
+        "span": [
+          1673,
+          1710
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間コンシェルジュ機能のロールバックは記載されているが、Muse自体を停止しなかったという明示的な事実はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "The company did not stop Muse itself."
+        ]
+      },
+      {
+        "claim_text": "In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call.",
+        "span": [
+          1712,
+          1830
+        ],
+        "unit_ids": [
+          "S8.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "電話機能の公開展開は準備が整い適切な開示ができる場合に限るとの説明はあるが、『誰が電話をかけるかを明確に説明できる』という具体的条件はLedgerに明記されていない。",
+          "Ledgerの「適切な開示」を、誰が電話をかけるかを明確に説明することに特定している。この具体的な開示内容はLedgerに明記されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-014"
+        ],
+        "model_claims": [
+          "In the future, Meta will make the feature public only when it is ready and can clearly explain who will make the call."
+        ]
+      },
+      {
+        "claim_text": "Even in an age when AI does our work, a human may still need to help.",
+        "span": [
+          1832,
+          1901
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間がAIの仕事を助ける必要がある場合がある、という一般的な将来・可能性の主張は、特定の電話テストの範囲を超えている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "Even in an age when AI does our work, a human may still need to help."
+        ]
+      },
+      {
+        "claim_text": "But that person should not appear secretly.",
+        "span": [
+          1902,
+          1945
+        ],
+        "unit_ids": [
+          "S9.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間が秘密裏に現れるべきではないという規範的主張は、Ledgerの事実としては記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "But that person should not appear secretly."
+        ]
+      },
+      {
+        "claim_text": "If they step onto the stage, they should give their name first.",
+        "span": [
+          1946,
+          2009
+        ],
+        "unit_ids": [
+          "S9.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "電話を担当する人間が名乗るべきという具体的な規範は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "If they step onto the stage, they should give their name first."
+        ]
+      },
+      {
+        "claim_text": "This case made that simple rule unusually clear.",
+        "span": [
+          2010,
+          2058
+        ],
+        "unit_ids": [
+          "S9.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "この事例がその規則を明確にしたという因果・評価は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "This case made that simple rule unusually clear."
+        ]
+      },
+      {
+        "claim_text": "AI may need human help, but humans must say clearly when they take over.",
+        "span": [
+          2076,
+          2148
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間がAIを助ける可能性と、人間が交代する際に明確に伝えるべきという一般的・規範的な要約は、Ledgerの直接的な事実ではない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "AI may need human help, but humans must say clearly when they take over."
+        ]
+      },
+      {
+        "claim_text": "It was that testing began without clearly telling users about it.",
+        "span": [
+          1159,
+          1224
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは適切な開示なしで契約スタッフが電話を担当したテストについて述べているが、記事は「users」に明確に伝えていなかったと対象を特定している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "It was that testing began without clearly telling users about it."
+        ]
+      }
+    ],
+    "n_union_candidates": 23,
+    "n_model_candidates": 20,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.1614,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "neg7_meta_prodrunner_b1b_s1_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6845,
+      "usage": {
+        "input_tokens": 5299,
+        "cached_input_tokens": 0,
+        "output_tokens": 7666,
+        "reasoning_tokens": 2070
+      },
+      "elapsed_seconds": 59.83,
+      "prompt_sha256": "637cd71c17f9ec868789003d463d72b0707d7dcda991f3042a11218859a9baf5",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "neg7_meta_prodrunner_b1b_s1_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4769,
+      "usage": {
+        "input_tokens": 4937,
+        "cached_input_tokens": 0,
+        "output_tokens": 5092,
+        "reasoning_tokens": 2836
+      },
+      "elapsed_seconds": 53.162,
+      "prompt_sha256": "09dd5e5651f4079e95eee6776a73993c14e558c224f2ee8c46d1d488fa7ec414",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 1.1614
+}

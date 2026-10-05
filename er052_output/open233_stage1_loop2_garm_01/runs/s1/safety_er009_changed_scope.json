@@ -1,0 +1,377 @@
+{
+  "sample": 1,
+  "instance_id": "safety_er009_changed_scope",
+  "group": "safety",
+  "switches": {
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "MODEL": "gpt-6-luna",
+    "TOTAL_BUDGET_JPY": 35.0,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "medium",
+    "STAGE1_NEGATION_MODE": "a",
+    "REUSE_R3_DIR": null
+  },
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 2,
+    "n_judged_units": 1,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 17,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1"
+        ],
+        "unit_status": {
+          "S1.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.1234,
+            "usage": {
+              "input_tokens": 5292,
+              "cached_input_tokens": 0,
+              "output_tokens": 515,
+              "reasoning_tokens": 242
+            },
+            "elapsed_seconds": 7.291,
+            "prompt_sha256": "f2a9651b2127fa6984fe6a99882bc16a6db8842e50d9b9d8801762ba22934868",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "S1.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "span": [
+              0,
+              219
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "タクシー研究の結果が全国のレストランで直接確認されたという主張、およびレストラン画面の高い推奨率が顧客により多く支払わせるという因果関係はLedgerにありません。タクシーで高い推奨率がより多いチップにつながったという結果はありますが、レストランへの一般化や同じ因果効果の確認までは支えられていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-004"
+            ],
+            "model_claim": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1"
+        ],
+        "unit_status": {
+          "S1.1": "DEVIATION"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.2334,
+            "usage": {
+              "input_tokens": 5055,
+              "cached_input_tokens": 0,
+              "output_tokens": 1964,
+              "reasoning_tokens": 1278
+            },
+            "elapsed_seconds": 17.034,
+            "prompt_sha256": "a8c059587377a66575ffecdd14eefd09c3089562dadce31681b5cd3db54c1c98",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "span": [
+              0,
+              219
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "記事はタクシー研究の結果が全国のレストランで直接確認されたと述べ、Ledgerが記述する研究対象・分析内容を超えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "span": [
+              0,
+              219
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "タクシー利用者についての研究結果を、全国のレストランで直接確認された因果効果として拡張している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-004"
+            ],
+            "model_claim": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+            "span": [
+              0,
+              219
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "政策ブリーフによる事業収入についての解釈を、全国のレストランで顧客がより多くチップを残すことが直接確認されたという断定的な因果主張に置き換えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-010"
+            ],
+            "model_claim": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1"
+      ],
+      "r3_only": [],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 0
+    },
+    "union_candidates": [
+      {
+        "claim_text": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data.",
+        "span": [
+          0,
+          219
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "タクシー研究の結果が全国のレストランで直接確認されたという主張、およびレストラン画面の高い推奨率が顧客により多く支払わせるという因果関係はLedgerにありません。タクシーで高い推奨率がより多いチップにつながったという結果はありますが、レストランへの一般化や同じ因果効果の確認までは支えられていません。",
+          "記事はタクシー研究の結果が全国のレストランで直接確認されたと述べ、Ledgerが記述する研究対象・分析内容を超えている。",
+          "タクシー利用者についての研究結果を、全国のレストランで直接確認された因果効果として拡張している。",
+          "政策ブリーフによる事業収入についての解釈を、全国のレストランで顧客がより多くチップを残すことが直接確認されたという断定的な因果主張に置き換えている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-004",
+          "F-001",
+          "F-010"
+        ],
+        "model_claims": [
+          "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggested tip rates on restaurant screens cause customers to leave more money, just as they did in the New York City taxi data."
+        ]
+      }
+    ],
+    "n_union_candidates": 1,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 0,
+    "total_cost_jpy": 0.3568,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "safety_er009_changed_scope_s1_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.1234,
+      "usage": {
+        "input_tokens": 5292,
+        "cached_input_tokens": 0,
+        "output_tokens": 515,
+        "reasoning_tokens": 242
+      },
+      "elapsed_seconds": 7.291,
+      "prompt_sha256": "f2a9651b2127fa6984fe6a99882bc16a6db8842e50d9b9d8801762ba22934868",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "safety_er009_changed_scope_s1_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.2334,
+      "usage": {
+        "input_tokens": 5055,
+        "cached_input_tokens": 0,
+        "output_tokens": 1964,
+        "reasoning_tokens": 1278
+      },
+      "elapsed_seconds": 17.034,
+      "prompt_sha256": "a8c059587377a66575ffecdd14eefd09c3089562dadce31681b5cd3db54c1c98",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 0.3568
+}
