@@ -8,9 +8,11 @@ docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md の必須構成を満たして
 (+PM-CLOSEOUT-CONSOLIDATION-117、2026-09-13)。
 
 検証項目:
-  1. 必須セクション見出し(の代表キーワード)の有無
-     - 管理ID / 性質 / 事前指定Read / 事前指定Grep / 実行コマンド全文 /
-       SSOT / Git / 報告
+  1. 必須セクション見出し(の代表キーワード)の有無(現行テンプレート見出しに整合、
+     全角/半角・句読点の表記ゆれを許容。2026-10-05更新)
+     - 管理ID / 性質 / 事前指定Read一覧 / 事前指定Grep一覧+追記位置・更新位置の手順 /
+       実行コマンド全文 / SSOT追記文 / Git / 報告
+     - 警告のみ(非ブロッキング): KPI provenance欄、Opus台帳更新欄
   2. 固定ブロックのラベル(E-1/D-1/G-1/F-1)の有無(T-1は任意)
   3. プレースホルダ語の混入(同上/前回と同じ/前回同様/<引数>/TBD)
   4. 「実行コマンド全文」セクション内の各コマンド行に、`--`長形式引数
@@ -29,18 +31,34 @@ import argparse
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
+# 現行テンプレート(docs/pm/templates/DELEGATION_STANDARD_TEMPLATE.md)の見出しに整合
+# (2026-10-05、OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01委任_04)。
+# 各要素は (表示ラベル, 許容する正規化済み語のリスト) 。完全な見出し語と短縮語のどちらでも
+# 検出する(全角/半角・空白・句読点の表記ゆれは normalize_for_match で吸収)。
 REQUIRED_KEYWORDS = [
-    ("管理ID", "管理ID"),
-    ("性質", "性質(または到達上限Status/禁止事項)"),
-    ("事前指定Read", "事前指定Read一覧"),
-    ("事前指定Grep", "事前指定Grep一覧+追記位置・更新位置の手順"),
-    ("実行コマンド全文", "実行コマンド全文"),
-    ("SSOT", "SSOT追記文"),
-    ("Git", "Git(明示add対象・コミットメッセージ・trailer)"),
-    ("報告", "報告(RESULT_PACKET項目)"),
+    ("管理ID", ["管理id"]),
+    ("性質(または到達上限Status/禁止事項)", ["性質", "禁止事項"]),
+    ("事前指定Read一覧", ["事前指定read一覧", "事前指定read"]),
+    (
+        "事前指定Grep一覧+追記位置・更新位置の手順",
+        ["事前指定grep一覧追記位置更新位置の手順", "事前指定grep一覧", "事前指定grep"],
+    ),
+    ("実行コマンド全文", ["実行コマンド全文"]),
+    ("SSOT追記文", ["ssot追記文", "ssot追記先", "ssot"]),
+    ("Git(明示add対象・コミットメッセージ・trailer)", ["git"]),
+    ("報告(RESULT_PACKET項目)", ["報告"]),
 ]
+
+_NORM_STRIP_RE = re.compile(r"[\s　・、。,.:：;；+＋/／()（）\[\]［］「」『』`*_\-]")
+
+
+def normalize_for_match(s: str) -> str:
+    """全角/半角(NFKC)・大文字小文字・空白・句読点・記号の表記ゆれを吸収する。"""
+    return _NORM_STRIP_RE.sub("", unicodedata.normalize("NFKC", s)).lower()
+
 
 FIXED_BLOCK_LABELS = ["E-1", "D-1", "G-1", "F-1"]
 OPTIONAL_LABEL = "T-1"
@@ -67,11 +85,31 @@ def find_section_text(text: str, keyword: str) -> str | None:
 
 
 def check_required_keywords(text: str) -> list[dict]:
+    norm = normalize_for_match(text)
     results = []
-    for kw, label in REQUIRED_KEYWORDS:
-        present = kw in text
-        results.append({"keyword": kw, "label": label, "present": present})
+    for label, alts in REQUIRED_KEYWORDS:
+        present = any(a in norm for a in alts)
+        results.append({"keyword": alts[0], "label": label, "present": present})
     return results
+
+
+KPI_MENTION_RE = re.compile(r"KPI|E2E|VALIDATED")
+KPI_PROVENANCE_RE = re.compile(r"KPI\s*provenance|KPI経路|provenance欄", re.IGNORECASE)
+OPUS_MENTION_RE = re.compile(r"Opus")
+OPUS_LEDGER_RE = re.compile(r"Opus台帳|OPUS_FINDINGS_LEDGER")
+
+
+def check_provenance_and_ledger_reminder(text: str) -> dict:
+    """OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01委任_04(PM_GOVERNANCE 24-1/11-5)。
+
+    KPI/E2E/VALIDATEDを扱う委任文に「KPI provenance欄」が、Opusを扱う委任文に
+    「Opus台帳更新」欄(または台帳への言及)が無い場合に警告する。ブロッキングでは
+    ない(status/PASS判定には影響せず`warnings`にのみ記録。テンプレート上も
+    「該当する委任のみ必須」のため)。
+    """
+    kpi_triggered = bool(KPI_MENTION_RE.search(text)) and not KPI_PROVENANCE_RE.search(text)
+    opus_triggered = bool(OPUS_MENTION_RE.search(text)) and not OPUS_LEDGER_RE.search(text)
+    return {"kpi_provenance_missing": kpi_triggered, "opus_ledger_missing": opus_triggered}
 
 
 def check_fixed_block(text: str) -> dict:
@@ -264,6 +302,7 @@ def run_check(text: str) -> dict:
     tts_mode_check = check_tts_standard_mode_reminder(text)
     tts_budget_check = check_tts_budget_deviation_reminder(text)
     budget_cap_wording_check = check_budget_cap_guardrail_wording(text)
+    prov_ledger_check = check_provenance_and_ledger_reminder(text)
 
     missing_keywords = [r["label"] for r in keyword_results if not r["present"]]
     missing_fixed_labels = [
@@ -309,6 +348,17 @@ def run_check(text: str) -> dict:
             "PM-BUDGET-CAP-GUARDRAIL-POLICY-01)"
         )
 
+    if prov_ledger_check["kpi_provenance_missing"]:
+        warnings.append(
+            "KPI/E2E/VALIDATEDに言及しているが「KPI provenance欄」が見つからない"
+            "(KPI・Gate判定を扱う委任のみ必須、PM_GOVERNANCE.md 24-1)"
+        )
+    if prov_ledger_check["opus_ledger_missing"]:
+        warnings.append(
+            "Opusに言及しているが「Opus台帳更新」欄/OPUS_FINDINGS_LEDGER.mdへの"
+            "言及が見つからない(Opus指摘が関係する委任のみ必須、PM_GOVERNANCE.md 11-5)"
+        )
+
     status = "PASS" if not reasons else "FAIL"
 
     return {
@@ -322,6 +372,7 @@ def run_check(text: str) -> dict:
         "tts_mode_check": tts_mode_check,
         "tts_budget_check": tts_budget_check,
         "budget_cap_wording_check": budget_cap_wording_check,
+        "provenance_ledger_check": prov_ledger_check,
     }
 
 

@@ -515,7 +515,8 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
     (2026-09-11追記、PM-CLOSEOUT-CONSOLIDATION-74-USER-ANSWERS-
     2026-09-11-02): (a) 未処理の`USER_DECISION_REQUIRED` (b) 採否未決の
     `VALIDATED` (c) 未配線の`APPROVED_FOR_PRODUCTION` (d) 未報告のTrial
-    (e) 未登録のOpen Item。既存項目1〜4・8・9と重複する場合は個別確認を
+    (e) 未登録のOpen Item(「第二段階」「別管理」等のdefer同等語で扱われた
+    Safety未解決項目を含む。5節末尾・項目29と統合、2026-10-05)。既存項目1〜4・8・9と重複する場合は個別確認を
     省略せず、closeout直前のまとめ確認として本項目でも通しで再確認する。
 21. `APPROVED_FOR_PRODUCTION`化の根拠となるユーザー承認が、要約引用
     ではなく原文全文で`DECISION_LOG.md`に記録されていること(2026-09-12
@@ -538,6 +539,15 @@ PM-CLOSEOUT-CONSOLIDATION-59)。
 25. 既決事項を再質問していないか(同上)
 26. 既存仕様の未発火を新仕様と誤認していないか(同上。該当する場合は
     新仕様ではなくwiring/implementation/regression問題として扱う)
+27. 重要Opus警告(11-5)が全て`CLOSEOUT_CONFIRMED`または`REJECTED`(理由・
+    Fable判断あり)か(`OPUS_FINDINGS_LEDGER.md`で確認。2026-10-05追記、
+    `OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01`)。
+28. 各KPIにKPI provenance(6区分・件数内訳)とE2E自己確認(Yes/No)が
+    あるか(24-1/24-3)。Noなのに「E2E達成」と表記していないか(24-2)。
+29. Safety未解決項目が、独立Open ID・発火可能な再開条件・ユーザー明示承認
+    を持つか。defer同等語(5節末尾)の使用箇所が全て3条件を満たすか。
+30. 条件付き`VALIDATED`をProduction採用提案の材料にする場合、経路内訳・
+    自己確認結果・E2E未検証リスクが報告冒頭にあるか(24-4)。
 
 ## 4. 「1記事ずつ完結させる」原則と例外
 
@@ -574,6 +584,18 @@ Production配線状態を必ず整理する。
   (Gate 6で確認する)。
 - 「今後個別判断する」と指定された項目はdeferではなく未決
   (`USER_DECISION_REQUIRED`維持)として区別する。
+- **defer同等語(2026-10-05追記、`OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-
+  RCA-01`、Fable評価採用。委任_02 RCA問5: Stage 1 recallが「別管理」「第二段階」
+  等でdefer以外の語として扱われ、本節・項目9の対象に入らなかった)**:
+  「第二段階」「別管理」「本委任では着手しない」「後回し」(および「着手しない」
+  「範囲外」「次ループ」)は、Safety・Fact・Production採用判断に関わる未解決項目に
+  用いた場合、deferと同等に扱う。使用時は(1)独立したOpen ID(`OPEN_ITEMS.md`の
+  独立行。巨大行内の履歴記載は不可)、(2)発火可能な再開条件(後段から観測できない
+  事象を条件にしない)、(3)ユーザーの明示承認(順序指定は、blocking/non-blockingの
+  別をユーザーが明示した記録がある場合に限り承認済み)を必須とし、いずれか欠く
+  Safety未解決項目を`non-blocking`/`deferred`にしてはならない。Closeout項目20(e)
+  「未登録のOpen Item」の棚卸しは、行頭ID単位に加えて本語彙のGrepでも行う
+  (項目29参照。20節の区分に`safety_unresolved: Y/N`を併記する運用)。
 
 ## 6. 「安全になっただけでは成功としない」原則
 
@@ -1855,6 +1877,11 @@ Status・禁止事項/固定ブロック[E-1/D-1/G-1/F-1/T-1]/ユーザー指示
 事前指定Read一覧/事前指定Grep一覧+追記位置・更新位置の手順/実行コマンド
 全文[引数実値を含む、プレースホルダ禁止]/SSOT追記文/Git[明示add対象・
 コミットメッセージ・trailer]/報告[RESULT_PACKET項目])に従って作成する。
+**2026-10-05追加(`OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01`委任_04)**:
+KPI・Gate判定を扱う委任文は「KPI provenance欄(6区分: fresh/frozen/reuse/
+manual_substitution/synthetic/production_formal_path+件数内訳、24-1)」、
+Opus指摘が関係する委任文は「Opus台帳更新欄(関連指摘IDと本委任での状態遷移、
+11-5)」を持つ(テンプレート`DELEGATION_STANDARD_TEMPLATE.md`へ反映済み)。
 固定ブロックにはT-0(受領した委任文を`docs/pm/delegation_log/<管理ID>.md`
 へ保存し`python docs/pm/tools/check_delegation_prompt.py --file <path>
 --json-out <path>_check.json`で検証、結果をRESULT_PACKETへ1行記録。
@@ -2172,6 +2199,16 @@ OPEN-233 Trialで有効だった改善ループを、今後の通常ルールと
 - **ユーザーGateの継続**: ユーザーが明示的に4回目の実施を指示した場合でも、5回目以降も同じルールを継続する(4回目以降は毎回ユーザーGateを通す)。
 - **例外**: ユーザーが別途ルール変更を明示した場合のみ。
 - **別カウント**: 本ループ回数は、本11節の「Sonnet委任上限(初回+3)」・「Opus難問診断1回」・11-3「Opus独立技術レビューGate」とは別カウントである。
+
+### 11-5. Opus指摘トレーサビリティ(2026-10-05ユーザー指示、`OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01`、Fable評価案C採用)
+
+背景: Opus#10がStage 1 recallを支配的リスクと警告し「条件付きSafety値と代替なしE2E値の分離」を求めたが、Fable採用後も最終KPI報告まで追跡されなかった(委任_02 RCA問3・問8)。11-3は発火条件・採否後の進行を定める。本節は**採否後の追跡**のみを追加する(Opusレビュー自体をユーザーGateにしない方針は維持)。
+
+- **台帳**: `docs/pm/OPUS_FINDINGS_LEDGER.md`(列: ID/日付/Opus#/区分/指摘要旨/Fable採否/反映[委任#]/Evidence/Closeout確認/Status)。
+- **重要警告(登録必須)**: Opus指摘のうちSafety hole・BLOCKER・MAJOR相当、およびFableが採用した全項目。「支配的リスク」「報告してはならない」等の制約表現を含む指摘も登録する。
+- **状態遷移**: `RAISED → FABLE_DECIDED(ADOPTED/REJECTED/MANAGED_SEPARATELY) → IMPLEMENTED/TRIALED → EVIDENCED(Evidence path) → CLOSEOUT_CONFIRMED`。`ADOPTED`は反映先、`REJECTED`は理由とFable判断、`MANAGED_SEPARATELY`は独立Open ID(5節末尾)を必須とする。
+- **禁止**: 未解決の重要警告(`EVIDENCED`未達かつ`REJECTED`理由なし)がある状態でのCloseout・Production採用提案を禁止する。該当時はSTOPし`USER_DECISION_REQUIRED`とする(Closeout項目27)。
+- **運用**: Opusレビュー受領時にFableが台帳へ登録(委任文テンプレートの「Opus台帳更新」欄で委任ごとに状態遷移を記録)。11-4の改善ループ回数とは別カウント。
 
 ## 12. 報告単位管理ルール(Reporting Unit Rule): 即時報告・未回答フル再掲・Next Action提示
 
@@ -2968,7 +3005,36 @@ STOPして報告する(広いTrialへは進まない。委任_16実例: Hook-awa
 誤解を与えるか」であり、「厳密には違う」というだけでBLOCKしない
 (詳細・許容/BLOCK候補の具体例は design書§0-2 参照)。
 
+## 24. KPI provenance・条件付きKPIとE2E KPIの分離・Closeout自己確認・条件付きVALIDATED表記(2026-10-05ユーザー指示、OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01)
+
+**背景**: rep30のKPI(重大見逃し0等)がStage 1をfrozen再利用31run・V0差替え3run・fresh 3call(4run)で測った条件付き値(出典`rep30_stage1_provenance_01.md`)であるにもかかわらず、Closeout・Production採用決定の入力としてE2E値のように扱われた。再発防止の正本は本節(案文の根拠: `docs/pm/pm_rca_open233_stage1_closeout_01.md` §4、Fable評価はDECISION_LOG 2026-10-05エントリ)。
+
+### 24-1. KPI provenance(測定経路の明記、案A)
+- Trial/Closeout/Production採用提案で報告するKPI・Gate判定数値は、数値ごとに測定経路を次の6区分から1つ以上明記し、混在時は件数内訳を併記する(例: fresh 4 / frozen 31 / manual_substitution 3)。
+  `fresh`(当該構成を新規API実行) / `frozen`(過去出力の読み込み) / `reuse`(同一run内・run間キャッシュ) / `manual_substitution`(差替え・手動投入・fixture置換) / `synthetic`(合成fixture) / `production_formal_path`(正式量産経路を通過)。
+- 対象はKPI・Gate判定・Production採用判断の根拠数値すべて。探索的な内部診断は対象外。
+- 反映: 委任文テンプレートに「KPI provenance欄」、REPORT/RESULT_PACKETのKPI表に「経路」列(9節・15節の書式へ列追加、書式の二重定義はしない)。
+
+### 24-2. 条件付きKPIとE2E KPIの分離(案B)
+- 測定に`frozen`・`manual_substitution`・`synthetic`が**1件でも**含まれるKPIは「E2E Safety KPI」「E2E達成」と呼ばない(ユーザー文言どおり)。「条件付きKPI(条件: ○○)」と呼び、条件を値の隣に書く。
+- E2E KPIは`fresh`かつ`production_formal_path`の入力のみで別途算出し両値を併記する。未測定なら「E2E未測定」と明記する。
+- 適用: Closeout報告の表題・結論文、DECISION_LOGのStatus文、ユーザー向け報告(9節)。6節(安全≠成功)は品質観点、本節は測定条件の観点で独立。
+
+### 24-3. Closeout自己確認(案D)
+- Trial終了時(Gate 1)に、KPIごとに「このKPIはfresh Production初回pathを含むE2E値か」をYes/Noで判定し、根拠として24-1の経路内訳を書く(責任者はCloseoutを書くFable、Sonnet報告に含めさせる)。
+- Noの場合は「E2E達成」「Production級の検証済み」と表記しない(24-2)。Production採用提案にNoのまま提出する場合は「何が未検証か」1行を必須とする(Closeout項目28)。
+
+### 24-4. 条件付きVALIDATED表記(案F)
+- 新Statusは作らない。Gate 1の`VALIDATED`定義は変更せず、修飾子方式で表記する: `VALIDATED(条件付き: <経路内訳>)`。24-3がNoを含むとき`VALIDATED`単独表記を禁じる。
+- 条件付き`VALIDATED`をProduction採用提案(Gate 2)の材料にする際は、ユーザー向け報告冒頭に(1)24-1の経路内訳、(2)24-3の自己確認結果、(3)E2E未検証部分のリスク(何が未検証で、採用すると何が起こり得るか)を併記する(Closeout項目30)。ユーザー承認記録(DECISION_LOG原文)にも同条件を残す。
+- 遡及: rep30は事実訂正として`VALIDATED(条件付き)`へ再表記済み(ユーザー決定2026-10-05の変更ではなく、入力が条件付き値であった事実の明示)。
+
+### 24-5. 15節(コスト報告)・9節との整合確認(2026-10-05)
+15-5の「最低限5区分」は費用内訳の書式であり、24-1の測定経路区分(KPIの出所)とは別軸のため矛盾しない。KPI表を伴うコスト報告では、15-5の5区分に加えてKPI表へ「経路」列を付ける(15節本文は変更しない)。`fresh`のAPI実行費は15-5「今回実測」、`frozen`/`reuse`は費用0としてこの区分で内訳が一致する。
+
 ## 変更履歴
+
+- 2026-10-05(`OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01`委任_04、ユーザー指示+Fable評価): 24節(KPI provenance/E2E分離/Closeout自己確認/条件付きVALIDATED)・11-5(Opus指摘トレーサビリティ、`OPUS_FINDINGS_LEDGER.md`)新設、5節末尾にdefer同等語追記、Closeout項目20(e)統合+27〜30追加、D-2に委任文テンプレート2欄追加。コード変更なし。
 
 - 2026-09-05(PM-HANDOFF-CHATGPT-001-CLOSEOUT-SSOT-01): 新設。PM Gate 1〜7・
   PM Closeout Mandatory Check・1記事ずつ完結(例外含む)・安全≠成功を

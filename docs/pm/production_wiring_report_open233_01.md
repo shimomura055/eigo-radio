@@ -2,6 +2,8 @@
 
 ## 1. 目的・Status
 
+> **遡及注記(2026-10-05、委任_04)**: 本配線の根拠であるrep30 `VALIDATED`は`VALIDATED(条件付き: Stage 1はfrozen再利用31 run/V0差替え3 run/fresh 3 call[4 run]。E2E Safety KPIではない。出典`docs/pm/rep30_stage1_provenance_01.md`)`。E2E Safety KPIではない(`PM_GOVERNANCE.md` 24節)。
+
 目的: `OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`の配線作業の記録場所。Status: 対象仕様=`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`ではない(完了条件1〜12達成後のみ)。仕様正本: `CURRENT_SPEC.md`「OPEN-233 Self-Recovery Production Flow仕様」。
 
 ## 2. rep30有効構成とProduction対応

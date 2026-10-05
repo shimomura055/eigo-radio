@@ -4477,6 +4477,8 @@ A4-1の正解ラベルをACCEPTABLEへ修正(旧: BLOCKING Safety-critical)。`S
 
 ## 63. Trial Closeout(VALIDATED)・Production正式採用(2026-10-05、委任_01c、¥0・SSOT記録のみ)
 
+> **遡及注記(2026-10-05、`OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01`委任_04)**: 本節のrep30 `VALIDATED`は`VALIDATED(条件付き: Stage 1はfrozen再利用31 run/V0差替え3 run/fresh 3 call[4 run]。E2E Safety KPIではない。出典`docs/pm/rep30_stage1_provenance_01.md`)`。以降の「重大見逃し0」等のKPIは条件付き値でありE2E値ではない(`PM_GOVERNANCE.md` 24節)。
+
 - **Status**: Trial `VALIDATED`(rep30)。対象仕様=`APPROVED_FOR_PRODUCTION`(ユーザー決定、`DECISION_LOG.md` 2026-10-05エントリ)。`PRODUCTION_WIRED`ではない(管理ID`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`、完了条件1〜12達成後のみ)。
 - **最終数値(rep30)**: 29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run(rep24比+¥0.13/run)・不要Rewrite 3/14・worst +¥3.135(1/38 run、報告対象。単発+¥3 Capは撤回済み)。
 - **Human Review推移**: iter7 7 → rep24 2 → rep27 3 → rep28 3 → rep29 3 → rep30 0。

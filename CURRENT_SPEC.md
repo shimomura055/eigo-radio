@@ -2392,7 +2392,7 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 **Status**: 対象仕様=`APPROVED_FOR_PRODUCTION`(人間ユーザー決定)。**`PRODUCTION_WIRED`ではない**(配線の完了条件1〜12達成後のみ)。ユーザー決定原文(逐語)・Fable評価は`DECISION_LOG.md`の2026-10-05エントリ(`OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01`)が正本。
 
-- **Trial結果**: rep30 `VALIDATED`(29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run・rep24比+¥0.13/run・不要Rewrite 3/14、worst +¥3.135[1/38 run、報告対象])。
+- **Trial結果**: rep30 `VALIDATED(条件付き: Stage 1はfrozen再利用31 run/V0差替え3 run/fresh 3 call[4 run]。E2E Safety KPIではない。出典`docs/pm/rep30_stage1_provenance_01.md`)`(29ケース・38 run・Human Review 0・重大見逃し0・平均¥0.573/run・rep24比+¥0.13/run・不要Rewrite 3/14、worst +¥3.135[1/38 run、報告対象])。
 - **採用対象**: ユーザー列挙22項目(`DECISION_LOG.md`参照)+rep30有効構成のスイッチ全体:
   - HANDOFF_MODE=violation_span / VS_MATCH_EXT / VS_EXPLAIN_SPLIT(+Q, U-2(1)) / JA_MODE=english_only / V7b / FLOOR_VERIFY_MODE=time_only
   - VS_SENTENCE_RESTORE(L6、focus_absentは本文全体判定) / CAUSAL_FLOOR known6+issue_actor / STAGE2_SECOND_OPINION(S1) / RECHECK_MERGE_UNRESOLVED(N1') / STRUCTURAL_ELEMENT_REWRITE / STRUCTURAL_PAIRS_TO_RECHECK

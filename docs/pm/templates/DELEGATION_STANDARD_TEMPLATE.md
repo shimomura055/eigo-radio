@@ -41,6 +41,18 @@ T-3は費用上限[Cap]を伴う委任のみ)。T-0は委任文標準の検証�
 
 (該当する場合、ユーザーの承認・指示原文をそのまま引用する。)
 
+## KPI provenance欄(KPI・Gate判定を扱う委任のみ必須、PM_GOVERNANCE 24節)
+
+(KPI・合否数値ごとの測定経路を6区分[fresh/frozen/reuse/manual_substitution/
+synthetic/production_formal_path]から明記し、混在時は件数内訳を書く。E2E自己確認
+[「fresh Production初回pathを含むE2E値か」Yes/No]の欄も置く。該当しない委任は「該当なし」。)
+
+## Opus台帳更新(Opus指摘が関係する委任のみ必須、PM_GOVERNANCE 11-5)
+
+(`docs/pm/OPUS_FINDINGS_LEDGER.md`の関連指摘IDと、本委任での状態遷移
+[RAISED→FABLE_DECIDED→IMPLEMENTED/TRIALED→EVIDENCED→CLOSEOUT_CONFIRMED]を書く。
+該当しない委任は「該当なし」。)
+
 ## 事前指定Read一覧
 
 (「ファイル:行範囲」または「Grepで位置特定→該当範囲Read」の形式で列挙する。
