@@ -26,5 +26,12 @@
 | OF-016 | 2026-10-05 | #15 | MAJOR | F3: Stage 1非検出だと決定論floorも走らない | 未確認 | 未確認 | 同上§4 | 未 | UNVERIFIED_BACKFILL |
 | OF-017 | 2026-10-05 | #15 | 採用項目 | F4: 凍結V4A出力の生成条件が未確認(推測) | 未確認 | 未確認 | 同上(未確認事項節) | 未 | UNVERIFIED_BACKFILL |
 | OF-018 | 2026-10-05 | #15 | Safety hole | 未検証経路: T使用済み時のsub_reason欠落 | 未確認 | 未確認 | 同上Safety hole節3 | 未 | UNVERIFIED_BACKFILL |
+| OF-019 | 2026-10-05 | #16 | Safety hole(重大) | Stage 1 API失敗がPASSへ抜けるfail-open(`_stage1_api_failure`未参照)(Opus#16 H1) | 採用(バグ是正。再実行→なお失敗ならSTOP) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H1 | 未 | FABLE_DECIDED→委任_06で実装 |
+| OF-020 | 2026-10-05 | #16 | Safety hole | MINORが後段へ渡らず、重大をMINORに付けた時点で見逃し確定(Opus#16 H2) | 採用(判定方針を「迷えば候補」へ、重大度判定はStage 2)。ただしA構成freshではMINOR 0/32で主因ではない(委任_05確認) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H2、`er052_output/open233_kpi_recovery_02_offline_01/agg_fresh_minor_check_01.md` | 未 | FABLE_DECIDED→委任_06で実装 |
+| OF-021 | 2026-10-05 | #16 | Safety hole | 因果は決定論floor対象外(CAUSAL_FLOOR=False)、SC 6件中2件が因果型でStage 2判断のみ(Opus#16 H3) | 採用(決定論検査に因果語チェックを追加) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H3 | 未 | FABLE_DECIDED→委任_06で実装 |
+| OF-022 | 2026-10-05 | #16 | Safety hole | Stage 1非検出だとprecheck・floorが走らない(F3、OF-016と同根)(Opus#16 H4) | 採用(F3配線: 非検出時も実行) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H4 | 未 | FABLE_DECIDED→委任_06で実装 |
+| OF-023 | 2026-10-05 | #16 | 採用項目 | neg5は文をまたぐ因果「. So」で、文単位分割は悪化しうる(Opus#16 1-a) | 採用(関係単位ID: 文頭因果・照応語で直前文と組) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` 論点別判定 | 未 | FABLE_DECIDED→委任_06で実装 |
+| OF-024 | 2026-10-05 | #16 | 採用項目 | Stage 1 promptの「迷えば許容」「MAJORのみ後段」「flag全falseはMINOR降格」が再現率を下げる(Opus#16 1-b) | 採用(3'-R: 迷えば候補、OKはsupport_fact_ids+逐語引用で機械検査) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` 論点別判定 | 未 | FABLE_DECIDED→委任_06で実装 |
+| OF-025 | 2026-10-05 | #16 | 採用項目 | HF-011は正式`SAFETY_CRITICAL_CLAIM_DEFS`外で設計書の「gold 7」は不整合(Opus#16 1-c) | 採用(gold=正式BLOCKING 6件に限定、HF-011は監視項目。gold変更ではなく正式定義へ戻す是正。Closeoutでユーザーへ開示、HF-011のgold化はユーザー判断事項) | 設計書§6(委任_05) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` 論点別判定、`docs/pm/design_open233_stage1_redesign_01.md` §6 | 未 | FABLE_DECIDED(gold 6限定・HF-011監視) |
 
 注記: OF-014〜OF-018のうちF1〜F4は、本委任の指示(Opus#15 F1〜F4をbackfill)に基づく。F3/F4の区分(MAJOR/採用項目)は台帳作成者による暫定分類で、Opus原文は番号付き所見のみ(重大度の明示なし)。OF-018はSafety hole節の項目3で、F番号とは別。

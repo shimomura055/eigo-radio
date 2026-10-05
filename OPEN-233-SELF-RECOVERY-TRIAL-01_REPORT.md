@@ -4536,3 +4536,9 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - **§6調査(確認)**: prompt sha100%一致、model_returned=gpt-6-luna(frozenと同一)、schema・paramsは同一コード、developer messageは定数不変(保存データでは未確認)。復元差は見つからず、是正対象なし。A4-0・neg5 B3-sameの未検出runはMINOR降格ではなく指摘自体なし(確認)。B4のMAJOR数はfrozen 10に対しfresh 3/1、A4はfrozen 8に対しfresh 2〜4、neg5はfrozen 7に対しfresh 1/0。
 - **所見(推測)**: frozen出力はA構成の単発サンプルで、同一構成のfresh再実行では検出量・claim集合が大きく揺れる(run間変動)。frozenを根拠とするrep30のStage 1検出能力は、A構成そのものでは再現されない。新Checker・N増し・B/C切替はしていない。
 - Production未変更、`PRODUCTION_WIRED`ではない。次はFableがSTOP/継続を判断(§6に従い、復元是正で解決できないため`USER_DECISION_REQUIRED`候補)。
+
+## 66. Stage 1再設計Trial開始・設計確定(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_05、2026-10-05、¥0)
+
+- Opus#16(`docs/pm/opus_l2_review_open233_stage1_redesign_16.md`、10,484字)を機械抽出して保存。Fable評価でループ1構成を確定(設計書`docs/pm/design_open233_stage1_redesign_01.md`§6): 3'-R+5-lite 2経路∪+F3配線+H1是正(fail-open→STOP)+決定論検査。gold=正式SC 6件(HF-011は監視項目、ユーザー判断事項としてCloseoutで開示)。
+- 事前作業(¥0、既存データ): (1) A構成fresh 32 runでMINOR出力0件(`er052_output/open233_kpi_recovery_02_offline_01/agg_fresh_minor_check_01.md`)→MINOR切り捨て(H2)は主因ではない【確認】。見逃しの実体は指摘自体なし。(2) V0∪V4A基準線(`agg_v0_v4a_union_baseline_01.md`): SC 6件中5件は∪で2/2、B3-same@neg5はV0記録・V4Aとも見逃し(0/2)。基準線のみで採用提案ではない。
+- 実装は委任_06(並行)。段階A/Bの実行は未実施。Production未変更、`PRODUCTION_WIRED`ではない。

@@ -1,0 +1,870 @@
+{
+ "summary": {
+  "n_gold": 7,
+  "found": 7,
+  "gold_in_L0": 6,
+  "gold_in_L1": 0,
+  "gold_in_L2": 1,
+  "gold_aligned_loose": 6,
+  "gold_aligned_L2": 5
+ },
+ "negatives": {
+  "L0": {
+   "per_instance": {
+    "neg1_meta_b3prod_a2": 27,
+    "neg2_meta_refresh_a2": 24,
+    "neg3_hormuz_prodrunner_b1b": 12,
+    "hormuz_run03_advanced": 18,
+    "meta_run03_advanced": 21,
+    "hormuz_run02_advanced": 20
+   },
+   "mean": 20.33,
+   "instances_with_ge1": 6,
+   "n": 6,
+   "mean_sentences": 26.7
+  },
+  "L1": {
+   "per_instance": {
+    "neg1_meta_b3prod_a2": 1,
+    "neg2_meta_refresh_a2": 2,
+    "neg3_hormuz_prodrunner_b1b": 0,
+    "hormuz_run03_advanced": 2,
+    "meta_run03_advanced": 3,
+    "hormuz_run02_advanced": 6
+   },
+   "mean": 2.33,
+   "instances_with_ge1": 5,
+   "n": 6,
+   "mean_sentences": 26.7
+  },
+  "L2": {
+   "per_instance": {
+    "neg1_meta_b3prod_a2": 9,
+    "neg2_meta_refresh_a2": 11,
+    "neg3_hormuz_prodrunner_b1b": 4,
+    "hormuz_run03_advanced": 7,
+    "meta_run03_advanced": 9,
+    "hormuz_run02_advanced": 11
+   },
+   "mean": 8.5,
+   "instances_with_ge1": 6,
+   "n": 6,
+   "mean_sentences": 26.7
+  }
+ },
+ "nonsc_B4": {
+  "bgroup_B4": [
+   {
+    "related_fact_id": "MUSE-HC-004",
+    "claim": "“As AI makes calls and reservations, useful features make people want to know whether AI o",
+    "sentence_located": false,
+    "in_L0": false,
+    "in_L2": false
+   },
+   {
+    "related_fact_id": "MUSE-HC-010",
+    "claim": "People feel differently when they think they are speaking to a machine and when they know ",
+    "sentence_located": true,
+    "in_L0": true,
+    "in_L2": false
+   },
+   {
+    "related_fact_id": "MUSE-HC-010",
+    "claim": "As AI makes calls and reservations, useful features make people want to know whether AI or",
+    "sentence_located": true,
+    "in_L0": true,
+    "in_L2": false
+   },
+   {
+    "related_fact_id": "MUSE-HC-004",
+    "claim": "In the AI age, making a voice sound human is not enough: people must first be told who is ",
+    "sentence_located": true,
+    "in_L0": true,
+    "in_L2": false
+   }
+  ],
+  "bgroup_B1": []
+ },
+ "existing_precheck_total": 1,
+ "costs": {
+  "A_single_mean_cost_jpy": 0.3568,
+  "n_runs": 32,
+  "input_fit": {
+   "a": 5333.0,
+   "b_per_char": 0.1198,
+   "r": 0.525
+  },
+  "A_mean_in_tokens": 6244,
+  "A_mean_out_tokens": 3741,
+  "plan5_g3_kappa1.0_cost_jpy": 0.694,
+  "plan5_g3_kappa1.5_cost_jpy": 0.841,
+  "plan5_g5_kappa1.0_cost_jpy": 0.566,
+  "plan5_g5_kappa1.5_cost_jpy": 0.713,
+  "plan5_mean_calls_g3": 4.5,
+  "plan5_mean_calls_g5": 3.0,
+  "plan3p_sentenceid_kappa1.0_cost_jpy": 0.476,
+  "plan3p_sentenceid_kappa1.5_cost_jpy": 0.622,
+  "plan3_pairs_out150_cost_jpy": 0.727,
+  "plan3_pairs_out400_cost_jpy": 1.669,
+  "plan3_mean_pairs_L2": 48.0,
+  "plan2_n2": 0.714,
+  "plan2_n3": 1.07,
+  "plan6_extra_assumed_range": [
+   0.178,
+   0.357
+  ],
+  "stage2_fit": {
+   "a": 0.099,
+   "b_per_major": 0.073,
+   "r": 0.779,
+   "n": 30,
+   "major_n_range": [
+    0,
+    10
+   ]
+  },
+  "neg_stage2_cost_now_A_single": 0.107,
+  "neg_stage2_cost_if_all_L0_candidates_sent": 1.59,
+  "neg_stage2_cost_if_all_L2_candidates_sent": 0.722
+ },
+ "case2_recap": {
+  "B3": {
+   "A_single": "2/2",
+   "union_run1_run2": true,
+   "union_all_runs": true,
+   "n": 2
+  },
+  "B4-a": {
+   "A_single": "2/2",
+   "union_run1_run2": true,
+   "union_all_runs": true,
+   "n": 2
+  },
+  "A2A3-0": {
+   "A_single": "2/2",
+   "union_run1_run2": true,
+   "union_all_runs": true,
+   "n": 2
+  },
+  "A4-0": {
+   "A_single": "2/4",
+   "union_run1_run2": true,
+   "union_all_runs": true,
+   "n": 4
+  },
+  "A5-0": {
+   "A_single": "2/2",
+   "union_run1_run2": true,
+   "union_all_runs": true,
+   "n": 2
+  },
+  "B3-same@neg5": {
+   "A_single": "0/2",
+   "union_run1_run2": false,
+   "union_all_runs": false,
+   "n": 2
+  },
+  "HF-011": {
+   "A_single": "0/2",
+   "union_run1_run2": false
+  }
+ },
+ "per_instance": {
+  "bgroup_B3": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 23,
+   "L0_candidate_sentences": 20,
+   "L1_candidate_sentences": 4,
+   "L2_candidate_sentences": 10,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 2,
+    "negation": 0,
+    "comparison": 0,
+    "time": 2,
+    "causal": 0
+   },
+   "pairs_L2": 54,
+   "unaligned_sentences": 5,
+   "aligned_pairs_fact_x_sentence": 144,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "B3",
+     "fact_id": "HF-007",
+     "sentence_found": true,
+     "L0_cats": [
+      "causal",
+      "comparison",
+      "negation",
+      "number",
+      "time"
+     ],
+     "L1_cats": [],
+     "in_L0_candidates": true,
+     "in_L1_candidates": false,
+     "L2_cats": [],
+     "in_L2_candidates": false,
+     "L2_aligned_ids": [
+      "HF-011"
+     ],
+     "L2_aligned_to_related": false,
+     "aligned_to_related_fact": true,
+     "n_aligned_facts": 12,
+     "sentence": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the cha"
+    }
+   ]
+  },
+  "bgroup_B4": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 23,
+   "L0_candidate_sentences": 17,
+   "L1_candidate_sentences": 1,
+   "L2_candidate_sentences": 3,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 1,
+    "causal": 0
+   },
+   "pairs_L2": 45,
+   "unaligned_sentences": 6,
+   "aligned_pairs_fact_x_sentence": 205,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "B4-a",
+     "fact_id": "MUSE-HC-002",
+     "sentence_found": true,
+     "L0_cats": [
+      "actor"
+     ],
+     "L1_cats": [],
+     "in_L0_candidates": true,
+     "in_L1_candidates": false,
+     "L2_cats": [],
+     "in_L2_candidates": false,
+     "L2_aligned_ids": [
+      "MUSE-HC-001",
+      "MUSE-HC-006",
+      "MUSE-HC-008"
+     ],
+     "L2_aligned_to_related": false,
+     "aligned_to_related_fact": false,
+     "n_aligned_facts": 11,
+     "sentence": "A person can take over when AI alone has trouble."
+    }
+   ]
+  },
+  "safety_A2A3": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 18,
+   "L0_candidate_sentences": 11,
+   "L1_candidate_sentences": 2,
+   "L2_candidate_sentences": 4,
+   "L1_cat_counts": {
+    "actor": 1,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 1,
+    "causal": 0
+   },
+   "pairs_L2": 46,
+   "unaligned_sentences": 4,
+   "aligned_pairs_fact_x_sentence": 120,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "A2A3-0",
+     "fact_id": "HF-003",
+     "sentence_found": true,
+     "L0_cats": [],
+     "L1_cats": [],
+     "in_L0_candidates": false,
+     "in_L1_candidates": false,
+     "L2_cats": [],
+     "in_L2_candidates": false,
+     "L2_aligned_ids": [
+      "HF-002",
+      "HF-003",
+      "HF-007"
+     ],
+     "L2_aligned_to_related": true,
+     "aligned_to_related_fact": true,
+     "n_aligned_facts": 9,
+     "sentence": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+    }
+   ]
+  },
+  "safety_A4": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 23,
+   "L0_candidate_sentences": 18,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 6,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 42,
+   "unaligned_sentences": 3,
+   "aligned_pairs_fact_x_sentence": 236,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "A4-0",
+     "fact_id": "MUSE-HC-006",
+     "sentence_found": true,
+     "L0_cats": [
+      "actor",
+      "number"
+     ],
+     "L1_cats": [],
+     "in_L0_candidates": true,
+     "in_L1_candidates": false,
+     "L2_cats": [
+      "actor"
+     ],
+     "in_L2_candidates": true,
+     "L2_aligned_ids": [
+      "MUSE-HC-006"
+     ],
+     "L2_aligned_to_related": true,
+     "aligned_to_related_fact": true,
+     "n_aligned_facts": 15,
+     "sentence": "Through Muse, trained human contract workers made some calls and completed the exchanges with users."
+    }
+   ]
+  },
+  "safety_A5": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 28,
+   "L0_candidate_sentences": 19,
+   "L1_candidate_sentences": 3,
+   "L2_candidate_sentences": 8,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 2,
+    "comparison": 0,
+    "time": 0,
+    "causal": 1
+   },
+   "pairs_L2": 49,
+   "unaligned_sentences": 8,
+   "aligned_pairs_fact_x_sentence": 217,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "A5-0",
+     "fact_id": "MUSE-HC-012",
+     "sentence_found": true,
+     "L0_cats": [
+      "actor",
+      "comparison",
+      "time"
+     ],
+     "L1_cats": [],
+     "in_L0_candidates": true,
+     "in_L1_candidates": false,
+     "L2_cats": [],
+     "in_L2_candidates": false,
+     "L2_aligned_ids": [
+      "MUSE-HC-006",
+      "MUSE-HC-012",
+      "MUSE-HC-014"
+     ],
+     "L2_aligned_to_related": true,
+     "aligned_to_related_fact": true,
+     "n_aligned_facts": 14,
+     "sentence": "They also temporarily put back the feature in which humans handled the calls."
+    }
+   ]
+  },
+  "bgroup_B2_hormuz": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 26,
+   "L0_candidate_sentences": 20,
+   "L1_candidate_sentences": 6,
+   "L2_candidate_sentences": 11,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 3,
+    "negation": 2,
+    "comparison": 0,
+    "time": 3,
+    "causal": 0
+   },
+   "pairs_L2": 50,
+   "unaligned_sentences": 6,
+   "aligned_pairs_fact_x_sentence": 151,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "HF-011",
+     "fact_id": "HF-011",
+     "sentence_found": true,
+     "L0_cats": [
+      "causal",
+      "comparison",
+      "negation"
+     ],
+     "L1_cats": [],
+     "in_L0_candidates": true,
+     "in_L1_candidates": false,
+     "L2_cats": [],
+     "in_L2_candidates": false,
+     "L2_aligned_ids": [
+      "HF-011"
+     ],
+     "L2_aligned_to_related": true,
+     "aligned_to_related_fact": true,
+     "n_aligned_facts": 12,
+     "sentence": "The disappearance of the fee plan did not lead to a large, lasting fall in prices."
+    }
+   ]
+  },
+  "bgroup_B1": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 9,
+   "L0_candidate_sentences": 4,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 16,
+   "unaligned_sentences": 5,
+   "aligned_pairs_fact_x_sentence": 35,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "neg5_hormuz_div_a2": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 34,
+   "L0_candidate_sentences": 28,
+   "L1_candidate_sentences": 5,
+   "L2_candidate_sentences": 14,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 1,
+    "negation": 2,
+    "comparison": 0,
+    "time": 2,
+    "causal": 0
+   },
+   "pairs_L2": 63,
+   "unaligned_sentences": 7,
+   "aligned_pairs_fact_x_sentence": 200,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": [
+    {
+     "sub": "B3-same@neg5",
+     "fact_id": "HF-007",
+     "sentence_found": true,
+     "L0_cats": [
+      "causal",
+      "number"
+     ],
+     "L1_cats": [],
+     "in_L0_candidates": true,
+     "in_L1_candidates": false,
+     "L2_cats": [],
+     "in_L2_candidates": false,
+     "L2_aligned_ids": [
+      "HF-002",
+      "HF-003",
+      "HF-007",
+      "HF-011"
+     ],
+     "L2_aligned_to_related": true,
+     "aligned_to_related_fact": true,
+     "n_aligned_facts": 8,
+     "sentence": "So the flashy 20% plan left the stage."
+    }
+   ]
+  },
+  "meta_run03_standard": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 36,
+   "L0_candidate_sentences": 26,
+   "L1_candidate_sentences": 4,
+   "L2_candidate_sentences": 12,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 1,
+    "negation": 1,
+    "comparison": 0,
+    "time": 1,
+    "causal": 1
+   },
+   "pairs_L2": 61,
+   "unaligned_sentences": 7,
+   "aligned_pairs_fact_x_sentence": 339,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "neg1_meta_b3prod_a2": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 35,
+   "L0_candidate_sentences": 27,
+   "L1_candidate_sentences": 1,
+   "L2_candidate_sentences": 9,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 1,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 1
+   },
+   "pairs_L2": 63,
+   "unaligned_sentences": 8,
+   "aligned_pairs_fact_x_sentence": 317,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "neg2_meta_refresh_a2": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 32,
+   "L0_candidate_sentences": 24,
+   "L1_candidate_sentences": 2,
+   "L2_candidate_sentences": 11,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 1,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 1
+   },
+   "pairs_L2": 55,
+   "unaligned_sentences": 3,
+   "aligned_pairs_fact_x_sentence": 343,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "neg3_hormuz_prodrunner_b1b": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 17,
+   "L0_candidate_sentences": 12,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 4,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 34,
+   "unaligned_sentences": 3,
+   "aligned_pairs_fact_x_sentence": 120,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "hormuz_run03_advanced": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 23,
+   "L0_candidate_sentences": 18,
+   "L1_candidate_sentences": 2,
+   "L2_candidate_sentences": 7,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 1,
+    "negation": 1,
+    "comparison": 0,
+    "time": 1,
+    "causal": 0
+   },
+   "pairs_L2": 51,
+   "unaligned_sentences": 3,
+   "aligned_pairs_fact_x_sentence": 160,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "meta_run03_advanced": {
+   "kind": "A",
+   "n_facts": 15,
+   "n_sentences": 27,
+   "L0_candidate_sentences": 21,
+   "L1_candidate_sentences": 3,
+   "L2_candidate_sentences": 9,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 2,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 1
+   },
+   "pairs_L2": 41,
+   "unaligned_sentences": 4,
+   "aligned_pairs_fact_x_sentence": 296,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "hormuz_run02_advanced": {
+   "kind": "A",
+   "n_facts": 12,
+   "n_sentences": 26,
+   "L0_candidate_sentences": 20,
+   "L1_candidate_sentences": 6,
+   "L2_candidate_sentences": 11,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 3,
+    "negation": 2,
+    "comparison": 0,
+    "time": 3,
+    "causal": 0
+   },
+   "pairs_L2": 50,
+   "unaligned_sentences": 6,
+   "aligned_pairs_fact_x_sentence": 151,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_number": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 1,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 1,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 1,
+   "existing_run_precheck_candidates": 1,
+   "existing_run_precheck_kinds": [
+    "number_mismatch"
+   ],
+   "gold": []
+  },
+  "safety_er009_changed_actor": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 1,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 1,
+    "number": 1,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 1,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_scope": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 5,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_causality": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 0,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 4,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_certainty": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 0,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 4,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_negation": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 1,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 1,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 1,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_comparison": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 1,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_changed_time": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 0,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 0,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 0,
+   "aligned_pairs_fact_x_sentence": 1,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  },
+  "safety_er009_unsupported_new_claim": {
+   "kind": "er009_synthetic",
+   "n_facts": 17,
+   "n_sentences": 1,
+   "L0_candidate_sentences": 1,
+   "L1_candidate_sentences": 1,
+   "L2_candidate_sentences": 1,
+   "L1_cat_counts": {
+    "actor": 0,
+    "number": 0,
+    "negation": 0,
+    "comparison": 1,
+    "time": 0,
+    "causal": 0
+   },
+   "pairs_L2": 1,
+   "unaligned_sentences": 1,
+   "aligned_pairs_fact_x_sentence": 0,
+   "existing_run_precheck_candidates": 0,
+   "existing_run_precheck_kinds": [],
+   "gold": []
+  }
+ }
+}

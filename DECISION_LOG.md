@@ -19631,3 +19631,11 @@ PM RCA文書: `docs/pm/pm_rca_open233_stage1_closeout_01.md`(委任_02)。Fable�
 出典: docs/pm/delegation_log/2026-10-05_OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01_04.md L10-10
 
 - **Fable評価(逐語記録)**: 「委任_02の再発防止案A〜Fを以下のとおり採用する。A(KPI provenance 6区分: fresh/frozen/reuse/manual substitution/synthetic/Production formal path、件数内訳必須)・B(固定入力・差替えが1件でも含まれる場合は『E2E Safety KPI』と呼ばない=ユーザー文言どおり)・D(Closeout自己確認『このKPIはfresh Production初回pathを含むE2E値か』Yes/No必須、NoならE2E達成扱い禁止)・F(`VALIDATED(条件付き: <内訳>)`の修飾子方式、新Statusは作らない。条件付きVALIDATEDをProduction採用提案の材料にする際は経路内訳・自己確認結果・E2E未検証リスクの併記必須)を新設24節へ。C(Opus指摘トレーサビリティ: RAISED→FABLE_DECIDED→IMPLEMENTED/TRIALED→EVIDENCED→CLOSEOUT_CONFIRMEDの台帳`docs/pm/OPUS_FINDINGS_LEDGER.md`、Safety hole/BLOCKER/MAJOR相当とFable採用項目を『重要警告』として登録必須、未解決の重要警告がある状態でのCloseout禁止)を11-5へ。E(『第二段階』『別管理』『本委任では着手しない』『後回し』をdefer同等語として扱い、Safety未解決項目は独立Open ID・発火可能な再開条件・ユーザー明示承認なしにnon-blocking化禁止)を5節末尾へ追記し項目20(e)と統合。Closeout Mandatory Checkに項目27〜30(C・A+D・E・F)を追加。rep30は事実訂正として`VALIDATED(条件付き)`へ遡及再表記する(ユーザー決定2026-10-05の変更ではなく、その入力が条件付き値であった事実の明示)。委任文テンプレートに『KPI provenance欄』『Opus台帳更新』を追加。」
+
+## 2026-10-05 Fable評価 Opus#16(Stage 1再設計)とループ1確定構成(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01)
+
+出典: `docs/pm/delegation_log/2026-10-05_OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01_05.md`。Opus#16全文は`docs/pm/opus_l2_review_open233_stage1_redesign_16.md`、Fable評価全文(1〜7)は`docs/pm/design_open233_stage1_redesign_01.md`§6を参照(ここへは複製しない)。
+
+- 条件B判定「根本設計の問題」を採用。ループ1はOpus修正案(3'-R+5-lite 2経路∪+F3配線+H1是正[Stage 1 API失敗のfail-open→再実行→なお失敗ならSTOP]+決定論検査)。案6はループ2で判断。
+- **gold=正式`SAFETY_CRITICAL_CLAIM_DEFS`のBLOCKING 6件に限定、HF-011は監視項目**(gold変更ではなく設計書の非公式「7 gold」を正式定義へ戻す是正)。HF-011をgoldに加えるかはユーザー判断事項としてCloseoutで開示、本Trialでは加えない。
+- 採用基準(段階A: 正式SC 6件∪で3/3、hold-out見逃しなし、欠落ID5%超でSTOP)・段階B(E2E約26〜30 run)・費用(ループ1約¥90〜110、枠内)は設計書§6。Production採用は人間ユーザーのみ(`APPROVED_FOR_PRODUCTION`ではない)。
