@@ -4587,3 +4587,11 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - E2Eスクリプト`er052_open233_e2e_acceptance_01.py`: 20 run(SC 6x2+Std/Adv対2組+負例4)、fresh Stage 1(stage1_cache=None・baseline代替無効)、provenance記録・照合、Waste検知(cost/call数/API失敗/cycle/同一候補再Rewrite)、セット集計(実測対と1記事x2推計を別列)。単体テスト7件。計画表: `docs/pm/e2e_plan_open233_stage1_loop2_01.md` 追補。
 - dry-run(API stub、¥0、`er052_output/open233_e2e_acceptance_01_dryrun/`): 全20 runが最終出口まで通過、provenance全fresh、対2組の実測合算、集計欄が埋まることを確認(値自体はstubで意味なし)。見積(推計、`er052_output/open233_e2e_acceptance_01/estimate.json`): 20 run合計 low¥47.3/mid¥66.5/high¥86.0(残¥98.29内)。
 - 設計上の注意(未実測・推測): 出口3'-R全文は決定論検査を含むためNORMAL記事でも約22候補/記事(G arm実測)を出し得て、Rewrite発生記事では再入によりStage 2(約¥1.5)が追加される可能性がある(計画書の出口3'-R平均¥0.22は候補再判定を含まない)。E2E実測で確認する。
+
+## 73. E2E-ACCEPTANCE-01 E2E停止(2 run目、¥6/run Waste閾値該当)の¥0原因分析(委任_19本番→委任_20分析、2026-10-05)
+- provenance: fresh Stage 1(E2E)だが**20 run中2 runで途中停止**。VALIDATED不可(Safety/Cost/Human Reviewの正式判定はE2E完走が前提)。費用: 本番E2E累計¥10.76(B3完走¥4.55、A2A3 abort時¥6.21)、委任_20は¥0。本管理ID累計は枠¥238に対し約¥150.47、残約¥87.53。
+- 経緯(確認): s1/bgroup_B3完走(RESOLVED_REWRITE_THEN_DOWNGRADE、15 call、¥4.55)。s1/safety_A2A3は23 call・cycle 2のc2 Recheck r5v直後に1 run>¥6(Fable設定のWaste閾値、ユーザーKPIではない)で`RunWaste`、E2E全体STOP。`runs/s1/safety_A2A3.json`はabort記録のみ(call_log/cycles無し)。aborted jsonは保存、削除・E2E再開はしていない。
+- 原因分類(詳細`docs/pm/e2e_stop_analysis_open233_01.md`): (a)見積誤り=新Recheck仕様(r3+r5v 2 call、1回¥0.47〜0.93)と出口3'-R全文(B3 ¥0.62)が見積(Rewrite+Recheck 0.17、出口0.22)に未反映、floor_verifyは見積項目なし。(b)SC fixtureの性質=A2A3はcycle 2で¥1.55追加。(c)構造的Waste=確認できず(B3 HF-007の2回は別span、call数15/23<80、API失敗0。A2A3 HF-009の4 callは別span複数Rewriteと推測だが、abort記録に無く断定不可)。Stage 2はB3で見積を下回った。
+- rep30(Stage 1凍結)後段との比較(同一instance): B3 後段0.83→3.05、A2A3 1.43→4.44(abort時)。増分の内訳はB3: 候補増約28%・追加cycle約10%・新Recheck約34%・出口全文約28%、A2A3: 候補増54%・追加cycle15%・Recheck31%(出口未到達)。
+- 20 run再予測(モデル、推測含む): low¥62.1/mid¥98.6/high¥122.8(元見積47.3/66.5/86.0)。残19 run mid¥94.0で残予算¥87.53を¥6.5超過。SC n=1の14 run案(残13 run)mid¥55.3、対+負例のみ8 run案mid¥21.1(SCなし=重大逸脱見逃しの測定不能)。閾値¥10化では構造的Wasteは捕捉されない(同一候補反復検査は完走後のみ)。純増参考: B3同額なら+¥8.27/セット(見込み+5.4/上振れ+6.7、SCは非代表)。
+- Status: `USER_DECISION_REQUIRED(E2E停止)`。再開・run数・閾値・予算追加はユーザー判断待ち。Production未変更、コード変更なし。
