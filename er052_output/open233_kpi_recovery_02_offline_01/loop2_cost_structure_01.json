@@ -1,0 +1,2623 @@
+{
+ "n_runs": 42,
+ "kpi_provenance": "既存fresh出力(段階A 42 run・rep30)の再集計と仮定付き積み上げ。E2Eではない。見込みは推測を含む",
+ "cost_rca": {
+  "price_jpy_per_Mtok": {
+   "in": 15.687999999999999,
+   "cached": 1.5688,
+   "out": 78.44
+  },
+  "note": "output_tokensはreasoningを含む(official_cost_jpyがoutput_tokensだけに単価を掛けるため、reasoningの別加算は無い)。可視出力=output-reasoning",
+  "by_call_type": {
+   "r3/r3": {
+    "n_calls": 42,
+    "mean_input_tokens": 5160.4286,
+    "mean_cached_tokens": 122.8571,
+    "mean_output_tokens": 7290.119,
+    "mean_reasoning_tokens": 3465.0714,
+    "mean_visible_tokens": 3825.0476,
+    "mean_cost_jpy": 0.6511,
+    "recomputed_cost_jpy": 0.6511,
+    "share_in_uncached_jpy": 0.121,
+    "share_in_cached_jpy": 0.0,
+    "share_out_reasoning_jpy": 0.417,
+    "share_out_visible_jpy": 0.461
+   },
+   "r5/r5": {
+    "n_calls": 41,
+    "mean_input_tokens": 4820.8537,
+    "mean_cached_tokens": 117.5122,
+    "mean_output_tokens": 10253.439,
+    "mean_reasoning_tokens": 7673.6585,
+    "mean_visible_tokens": 2579.7805,
+    "mean_cost_jpy": 0.8783,
+    "recomputed_cost_jpy": 0.8783,
+    "share_in_uncached_jpy": 0.084,
+    "share_in_cached_jpy": 0.0,
+    "share_out_reasoning_jpy": 0.685,
+    "share_out_visible_jpy": 0.23
+   }
+  },
+  "all_calls": {
+   "n": 83,
+   "mean_jpy": 0.7633,
+   "share_in_uncached_jpy": 0.1,
+   "share_in_cached_jpy": 0.0,
+   "share_out_reasoning_jpy": 0.57,
+   "share_out_visible_jpy": 0.33
+  },
+  "failed_or_retry_calls": 2,
+  "cached_zero_calls": 81,
+  "r3_visible_regression": {
+   "features": [
+    "per SUPPORTED unit",
+    "per CANDIDATE unit(skeleton)",
+    "per candidate text char(issue+claim)"
+   ],
+   "coef_tokens": [
+    179.243,
+    149.445,
+    -0.018
+   ],
+   "r2": 0.965,
+   "n": 42
+  },
+  "r5_visible_regression": {
+   "features": [
+    "per fact",
+    "per matched unit",
+    "per issue char"
+   ],
+   "coef_tokens": [
+    19.437,
+    107.067,
+    0.678
+   ],
+   "r2": 0.929,
+   "n": 41
+  },
+  "r3_visible_decomposition_mean_tokens": {
+   "visible_mean": 3825.0476,
+   "SUPPORTED_units_part": 2022.9,
+   "CANDIDATE_skeleton_part": 1789.8,
+   "candidate_text_part": -29.9,
+   "SUPPORTED_share_of_visible": 0.529,
+   "mean_SUPPORTED_units": 11.2857,
+   "mean_CANDIDATE_units": 11.9762,
+   "mean_candidate_chars": 1661.2857
+  },
+  "_r3_rows": [
+   {
+    "iid": "bgroup_B2_hormuz",
+    "ns": 21,
+    "nc": 7,
+    "chars": 1076,
+    "visible": 4923,
+    "reasoning": 4427
+   },
+   {
+    "iid": "bgroup_B3",
+    "ns": 21,
+    "nc": 6,
+    "chars": 871,
+    "visible": 5005,
+    "reasoning": 4279
+   },
+   {
+    "iid": "bgroup_B4",
+    "ns": 5,
+    "nc": 21,
+    "chars": 2431,
+    "visible": 4182,
+    "reasoning": 4848
+   },
+   {
+    "iid": "neg1_meta_b3prod_a2",
+    "ns": 8,
+    "nc": 30,
+    "chars": 3079,
+    "visible": 5591,
+    "reasoning": 3976
+   },
+   {
+    "iid": "neg2_meta_refresh_a2",
+    "ns": 19,
+    "nc": 14,
+    "chars": 1635,
+    "visible": 5407,
+    "reasoning": 4980
+   },
+   {
+    "iid": "neg3_hormuz_prodrunner_b1b",
+    "ns": 11,
+    "nc": 9,
+    "chars": 1574,
+    "visible": 3550,
+    "reasoning": 5942
+   },
+   {
+    "iid": "neg4_smallbag_div_a2",
+    "ns": 13,
+    "nc": 23,
+    "chars": 2471,
+    "visible": 4885,
+    "reasoning": 3358
+   },
+   {
+    "iid": "neg5_hormuz_div_a2",
+    "ns": 32,
+    "nc": 6,
+    "chars": 775,
+    "visible": 6253,
+    "reasoning": 4967
+   },
+   {
+    "iid": "neg6_smallbag_div_b1b",
+    "ns": 8,
+    "nc": 18,
+    "chars": 4514,
+    "visible": 3752,
+    "reasoning": 4832
+   },
+   {
+    "iid": "neg7_meta_prodrunner_b1b",
+    "ns": 14,
+    "nc": 20,
+    "chars": 2568,
+    "visible": 5447,
+    "reasoning": 4566
+   },
+   {
+    "iid": "safety_A2A3",
+    "ns": 10,
+    "nc": 12,
+    "chars": 2219,
+    "visible": 3953,
+    "reasoning": 4204
+   },
+   {
+    "iid": "safety_A4",
+    "ns": 10,
+    "nc": 17,
+    "chars": 2109,
+    "visible": 4236,
+    "reasoning": 4822
+   },
+   {
+    "iid": "safety_A5",
+    "ns": 9,
+    "nc": 21,
+    "chars": 2515,
+    "visible": 6156,
+    "reasoning": 3106
+   },
+   {
+    "iid": "safety_er009_changed_actor",
+    "ns": 0,
+    "nc": 1,
+    "chars": 254,
+    "visible": 191,
+    "reasoning": 631
+   },
+   {
+    "iid": "safety_er009_changed_causality",
+    "ns": 0,
+    "nc": 1,
+    "chars": 289,
+    "visible": 248,
+    "reasoning": 361
+   },
+   {
+    "iid": "safety_er009_changed_certainty",
+    "ns": 0,
+    "nc": 1,
+    "chars": 211,
+    "visible": 217,
+    "reasoning": 252
+   },
+   {
+    "iid": "safety_er009_changed_comparison",
+    "ns": 0,
+    "nc": 1,
+    "chars": 217,
+    "visible": 200,
+    "reasoning": 352
+   },
+   {
+    "iid": "safety_er009_changed_negation",
+    "ns": 0,
+    "nc": 1,
+    "chars": 233,
+    "visible": 225,
+    "reasoning": 417
+   },
+   {
+    "iid": "safety_er009_changed_number",
+    "ns": 0,
+    "nc": 1,
+    "chars": 223,
+    "visible": 197,
+    "reasoning": 262
+   },
+   {
+    "iid": "safety_er009_changed_scope",
+    "ns": 0,
+    "nc": 1,
+    "chars": 281,
+    "visible": 208,
+    "reasoning": 725
+   },
+   {
+    "iid": "safety_er009_changed_time",
+    "ns": 0,
+    "nc": 1,
+    "chars": 294,
+    "visible": 231,
+    "reasoning": 702
+   },
+   {
+    "iid": "safety_er009_unsupported_new_claim",
+    "ns": 0,
+    "nc": 1,
+    "chars": 220,
+    "visible": 204,
+    "reasoning": 696
+   },
+   {
+    "iid": "bgroup_B2_hormuz",
+    "ns": 23,
+    "nc": 5,
+    "chars": 841,
+    "visible": 4777,
+    "reasoning": 5369
+   },
+   {
+    "iid": "bgroup_B3",
+    "ns": 22,
+    "nc": 5,
+    "chars": 803,
+    "visible": 4389,
+    "reasoning": 3601
+   },
+   {
+    "iid": "bgroup_B4",
+    "ns": 4,
+    "nc": 22,
+    "chars": 2649,
+    "visible": 4207,
+    "reasoning": 2998
+   },
+   {
+    "iid": "neg1_meta_b3prod_a2",
+    "ns": 8,
+    "nc": 30,
+    "chars": 3215,
+    "visible": 5792,
+    "reasoning": 2972
+   },
+   {
+    "iid": "neg2_meta_refresh_a2",
+    "ns": 20,
+    "nc": 13,
+    "chars": 1539,
+    "visible": 5360,
+    "reasoning": 3684
+   },
+   {
+    "iid": "neg3_hormuz_prodrunner_b1b",
+    "ns": 13,
+    "nc": 7,
+    "chars": 1091,
+    "visible": 3477,
+    "reasoning": 4236
+   },
+   {
+    "iid": "neg4_smallbag_div_a2",
+    "ns": 10,
+    "nc": 26,
+    "chars": 4816,
+    "visible": 4709,
+    "reasoning": 4052
+   },
+   {
+    "iid": "neg5_hormuz_div_a2",
+    "ns": 33,
+    "nc": 5,
+    "chars": 611,
+    "visible": 7187,
+    "reasoning": 4142
+   },
+   {
+    "iid": "neg6_smallbag_div_b1b",
+    "ns": 9,
+    "nc": 17,
+    "chars": 2398,
+    "visible": 4143,
+    "reasoning": 4141
+   },
+   {
+    "iid": "neg7_meta_prodrunner_b1b",
+    "ns": 13,
+    "nc": 21,
+    "chars": 2663,
+    "visible": 5437,
+    "reasoning": 5632
+   },
+   {
+    "iid": "safety_A2A3",
+    "ns": 10,
+    "nc": 12,
+    "chars": 2274,
+    "visible": 3964,
+    "reasoning": 3460
+   },
+   {
+    "iid": "safety_A4",
+    "ns": 9,
+    "nc": 18,
+    "chars": 2537,
+    "visible": 4501,
+    "reasoning": 4549
+   },
+   {
+    "iid": "safety_A5",
+    "ns": 12,
+    "nc": 18,
+    "chars": 2097,
+    "visible": 4836,
+    "reasoning": 3844
+   },
+   {
+    "iid": "bgroup_B2_hormuz",
+    "ns": 20,
+    "nc": 8,
+    "chars": 1226,
+    "visible": 4845,
+    "reasoning": 5135
+   },
+   {
+    "iid": "bgroup_B3",
+    "ns": 24,
+    "nc": 3,
+    "chars": 575,
+    "visible": 5019,
+    "reasoning": 3437
+   },
+   {
+    "iid": "bgroup_B4",
+    "ns": 4,
+    "nc": 22,
+    "chars": 2347,
+    "visible": 3978,
+    "reasoning": 2483
+   },
+   {
+    "iid": "neg5_hormuz_div_a2",
+    "ns": 31,
+    "nc": 7,
+    "chars": 833,
+    "visible": 6063,
+    "reasoning": 4387
+   },
+   {
+    "iid": "safety_A2A3",
+    "ns": 8,
+    "nc": 14,
+    "chars": 2669,
+    "visible": 4095,
+    "reasoning": 5029
+   },
+   {
+    "iid": "safety_A4",
+    "ns": 6,
+    "nc": 21,
+    "chars": 2778,
+    "visible": 4244,
+    "reasoning": 4595
+   },
+   {
+    "iid": "safety_A5",
+    "ns": 14,
+    "nc": 16,
+    "chars": 1753,
+    "visible": 4368,
+    "reasoning": 5082
+   }
+  ]
+ },
+ "sc_specificity": {
+  "sc_rows": [
+   {
+    "iid": "bgroup_B3",
+    "sub_id": "B3",
+    "sample": 1,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-007"
+      ],
+      "issue": "「so」により、攻撃・封鎖・タンカー安全への懸念が続いたことが20％案の撤回・置換の原因だったと結び付けているが、Ledgerはその因果関係を示していない。 / 継続する攻撃・封鎖・タンカー安全上の懸念が、20％案の撤回理由だったという因果関係はLedgerにない。Ledgerが記すのは、中東指導者との協議に基づく決定との説明。",
+      "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the fla",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "bgroup_B4",
+    "sub_id": "B4-a",
+    "sample": 1,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_causality",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-006"
+      ],
+      "issue": "人間がAIの苦手な場合に引き継ぐという条件・仕組みはLedgerに記載されていない。 / 人間が担当した理由を、AIだけでは困難なときに人間が引き継ぐことだと説明しているが、Ledgerにその引き継ぎや理由はない。",
+      "claim": "A person can take over when AI alone has trouble.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "neg5_hormuz_div_a2",
+    "sub_id": "B3-same@neg5",
+    "sample": 1,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-007"
+      ],
+      "issue": "「So」が直前の懸念継続を、20％案が撤回・置換された理由として結び付けているが、Ledgerはその因果関係を述べていない。 / 「So」でL1の懸念継続とL2の20％案の退場を因果関係として結び付けているが、Ledgerは懸念が案の撤回・置換を引き起こしたとは述べていない。 / 「So」によって、7月14日に懸念が続いていたことが20％",
+      "claim": "So the flashy 20% plan left the stage.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A2A3",
+    "sub_id": "A2A3-0",
+    "sample": 1,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_certainty",
+       "changed_actor",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-003",
+       "HF-002"
+      ],
+      "issue": "貨物を運ぶ者が支払うと特定しているが、Ledgerでは支払義務者は示されなかったとされている。 / 貨物を運ぶ者が償還するという支払義務者を特定しているが、Ledgerでは具体的な支払義務者は示されていない。 / Ledgerでは徴収制度や支払義務者などの具体的設計は示されなかったとしているが、記事は貨物を運ぶ者が支払う仕組みを具体的に示",
+      "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep th",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A4",
+    "sub_id": "A4-0",
+    "sample": 1,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_actor"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-006"
+      ],
+      "issue": "決定論検査で戻した: negation_polarity_mismatch / 人間の契約スタッフが一部の電話をかけた点は一致するが、Ledgerは相手とのやり取りを完了したとしており、「users」と相手を置き換えている。",
+      "claim": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "negation_polarity_mismatch",
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A5",
+    "sub_id": "A5-0",
+    "sample": 1,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_negation",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "issue": "Ledgerは人間コンシェルジュ機能をロールバックしたとするが、記事の「put back」は機能を再導入したという反対方向の意味になる。 / Ledgerの「ロールバック」は機能を戻す・取り下げる意味だが、記事は機能を再び導入したと述べており、状態を逆にしている。",
+      "claim": "They also temporarily put back the feature in which humans handled the calls.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "bgroup_B3",
+    "sub_id": "B3",
+    "sample": 2,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality"
+      ],
+      "related_fact_ids": [
+       "HF-007",
+       "HF-009"
+      ],
+      "issue": "「so」が、米・イラン間の攻撃、封鎖、タンカー安全への懸念が続いたことを、20％案が退場した原因として結び付けている。Ledgerは撤回・置換を中東指導者との協議に基づく決定と記録しており、この因果関係を支えていない。文中の価格の一時的な縮小・回復と同日性は記録されている。 / 継続する懸念が、価格の一時的な反落後の回復を引き起こしたと因",
+      "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the fla",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "bgroup_B4",
+    "sub_id": "B4-a",
+    "sample": 2,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_causality",
+       "changed_certainty",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-008",
+       "MUSE-HC-006"
+      ],
+      "issue": "AIだけでは難しいときに人間が引き継ぐという運用・因果関係はLedgerにありません。成功率に関する報告も、この引き継ぎ条件を示していません。 / 人間がAIの苦手な場面で引き継ぐという理由・運用はLedgerに記載されていない。",
+      "claim": "A person can take over when AI alone has trouble.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "neg5_hormuz_div_a2",
+    "sub_id": "B3-same@neg5",
+    "sample": 2,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-007"
+      ],
+      "issue": "文頭の「So」が、7月14日に懸念が続いたことを理由として20％案が撤回されたという因果関係を示しているが、Ledgerはその因果関係を述べていない。 / 「So」が、懸念が続いたことから20％案の撤回・置換が生じたという因果関係を作っている。Ledgerが示す置換理由はトランプ氏が述べた中東指導者との協議であり、懸念の継続を撤回の原因と",
+      "claim": "So the flashy 20% plan left the stage.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A2A3",
+    "sub_id": "A2A3-0",
+    "sample": 2,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_actor",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-003",
+       "HF-002"
+      ],
+      "issue": "支払義務者はLedgerで特定されていない。貨物を運ぶ者が米国に返済するという主体の追加がある。 / Ledgerでは支払義務者は示されていないが、貨物を運ぶ者が返済すると特定している。 / Ledgerでは支払義務者は未提示とされているのに、貨物を運ぶ者が支払う設計だったと記述している。",
+      "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep th",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A4",
+    "sub_id": "A4-0",
+    "sample": 2,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_actor",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-006",
+       "MUSE-HC-004"
+      ],
+      "issue": "決定論検査で戻した: negation_polarity_mismatch / Museの電話機能は米国内の企業・店舗への発信として説明されているが、記事は契約スタッフがユーザーとやり取りを完了したと記し、通話相手・対象を変えている。 / 一部の電話を人間の契約スタッフが担当した点は一致するが、Ledgerは相手とのやり取りを完了したとし",
+      "claim": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "negation_polarity_mismatch",
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A5",
+    "sub_id": "A5-0",
+    "sample": 2,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_negation"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-012",
+       "MUSE-HC-006"
+      ],
+      "issue": "「temporarily put back」は機能を再導入した意味になりますが、Ledgerでは人間コンシェルジュ機能を当面ロールバックしたとされています。 / 人間が電話を担当する機能を一時的に「元に戻した」としており、機能をロールバックしたというLedgerの説明と逆です。",
+      "claim": "They also temporarily put back the feature in which humans handled the calls.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "bgroup_B3",
+    "sub_id": "B3",
+    "sample": 3,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-007"
+      ],
+      "issue": "「so」が、7月14日に懸念が続いたことを20％案が撤回された理由として結び付けているが、その因果関係はLedgerにない。置換の説明としてLedgerが記録しているのは、中東指導者との協議に基づくとのトランプ氏の説明。 / 継続する攻撃・封鎖・タンカー安全上の懸念を、20％案の撤回の理由として結び付けています。Ledgerは置換決定を中",
+      "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the fla",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "bgroup_B4",
+    "sub_id": "B4-a",
+    "sample": 3,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_causality",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-006",
+       "MUSE-HC-008"
+      ],
+      "issue": "人間がAIの苦手な場合に引き継ぐという理由・運用はLedgerにありません。 / Ledgerでは、人間のスタッフが電話を担当したテストは報告されていますが、AIが苦戦した際に人間へ切り替える仕組みや条件は示されていません。 / Ledgerが報じているのは一部テストでの成功率比較です。AIが苦戦した場合に人間が引き継ぐという因果関係・運",
+      "claim": "A person can take over when AI alone has trouble.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "neg5_hormuz_div_a2",
+    "sub_id": "B3-same@neg5",
+    "sample": 3,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality"
+      ],
+      "related_fact_ids": [
+       "HF-007"
+      ],
+      "issue": "「So」が、米・イラン間の攻撃等への懸念が続いたことを理由に20％案が撤回されたという因果関係を示していますが、Ledgerはその因果関係を述べていません。 / 関係単位は「So」による因果的な結び付けを判定します。懸念が7月14日に続いていたことと、20％案が置き換えられたことの間に因果関係があるとはLedgerに記載されていません。",
+      "claim": "So the flashy 20% plan left the stage.",
+      "routes": [
+       "r3"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A2A3",
+    "sub_id": "A2A3-0",
+    "sample": 3,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_actor",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "HF-003",
+       "HF-002"
+      ],
+      "issue": "支払義務者は具体的に示されていないとLedgerにありますが、記事は貨物を運ぶ者が支払うと特定しています。 / Ledgerでは支払義務者は示されていないが、貨物を運ぶ者が費用を返済すると特定している。 / 具体的な制度設計は示されていないというLedgerに対し、支払義務者を貨物を運ぶ者と特定している。",
+      "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep th",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A4",
+    "sub_id": "A4-0",
+    "sample": 3,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_actor",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-006",
+       "MUSE-HC-004"
+      ],
+      "issue": "訓練を受けた人間の契約スタッフが一部の電話をかけた点は合いますが、やり取りの相手を「users」とするのはLedgerの「相手」と異なり、誰とのやり取りかが変わっています。 / 電話機能について、LedgerはユーザーがMuseに米国内の企業・店舗へ電話するよう指示できるとするが、記事は契約スタッフが「users」とやり取りしたと記述し、",
+      "claim": "Through Muse, trained human contract workers made some calls and completed the exchanges with users.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_A5",
+    "sub_id": "A5-0",
+    "sample": 3,
+    "n_matching": 1,
+    "best_tier": "CONCRETE",
+    "model_judged": true,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_negation"
+      ],
+      "related_fact_ids": [
+       "MUSE-HC-012"
+      ],
+      "issue": "記事は人間が電話を担当する機能を「put back」したと述べていますが、Ledgerではその機能をロールバックしたとされています。 / Ledgerは人間コンシェルジュ機能をロールバックしたとしているが、記事の「put back」は機能を戻した・再導入したという逆の意味になる。",
+      "claim": "They also temporarily put back the feature in which humans handled the calls.",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   }
+  ],
+  "holdout_rows": [
+   {
+    "iid": "safety_er009_changed_actor",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_actor",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "F-002",
+       "F-001",
+       "F-004"
+      ],
+      "issue": "Ledgerは研究対象と結果を支えているが、研究チームをHarvard Business School所属とする記述はLedgerにない。 / 研究主体をHarvard Business Schoolのチームとする情報はLedgerにありません。 / 「1,300万件超」は一致していますが、研究主体をHarvard Business Sc",
+      "claim": "A team at Harvard Business School studied more than 13 million credit card payments in New York City",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_causality",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_causality",
+       "changed_certainty",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "F-006"
+      ],
+      "issue": "数値と時期を含む歴史的なチップ率の上昇はF-006と一致しますが、それがデジタルチップ画面の導入によって直接引き起こされたという因果関係はLedgerにありません。F-006は因果関係を示す証拠ではないと明記しています。 / Ledgerはチップ慣行の上昇を記述的傾向として記載し、因果関係を示す証拠ではないとしている。記事はデジタルチップ",
+      "claim": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_certainty",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_causality",
+       "changed_certainty",
+       "changed_number",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "F-008",
+       "F-012"
+      ],
+      "issue": "Ledgerは「guilt tipping」を著者によるメカニズム説明として述べており、実証的な因果効果や、画面を見た全顧客に生じる効果は確認していない。「証明済み」とする確信度もLedgerを超えている。 / 著者の議論として述べられた社会的圧力の説明を、画面を見た全顧客に生じることが証明済みの因果効果として一般化している。 / 調査回",
+      "claim": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who s",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_comparison",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_causality",
+       "changed_comparison"
+      ],
+      "related_fact_ids": [
+       "F-004"
+      ],
+      "issue": "提示率の比較方向がLedgerと逆です。Ledgerでは、より高い推奨チップ率を見た乗客のほうが、実際により多くチップを残したとされています。 / The article reverses the reported comparison: the Ledger says passengers who saw higher suggeste",
+      "claim": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rat",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_negation",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_causality",
+       "changed_negation"
+      ],
+      "related_fact_ids": [
+       "F-004"
+      ],
+      "issue": "F-004は、より高い推奨チップ率のメニューを見た乗客は実際により多くチップを残したと述べている。記事はその逆に、チップ額は増えず、推奨率に効果がなかったと否定している。 / Ledgerでは、より高い推奨チップ率を見た乗客は実際により多くチップを残したとされているが、記事はより多く残さず、推奨率に効果がなかったと逆の結論を述べている。",
+      "claim": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; th",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_number",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_number"
+      ],
+      "related_fact_ids": [
+       "F-002"
+      ],
+      "issue": "記事は取引件数を「3,000万件超」としているが、Ledgerでは「1,300万件超」とされており、数値が一致しません。 / 記事は取引件数を3,000万件超としているが、Ledgerは1,300万件超としている。",
+      "claim": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_scope",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_causality",
+       "changed_certainty",
+       "changed_actor",
+       "changed_time",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "F-004",
+       "F-001"
+      ],
+      "issue": "F-004はニューヨーク市タクシーでの結果を支えるが、レストラン全国で同じ因果効果が直接確認されたことはLedgerにない。 / ニューヨーク市タクシー研究への言及はあるものの、レストラン全国で結果が直接確認されたというLedgerにない主張を加え、対象範囲と確実性を広げています。 / タクシー研究で報告された因果効果を、全国のレストラン",
+      "claim": "The taxi study's results have now been directly confirmed in restaurants nationwide: higher suggeste",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_changed_time",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_time"
+      ],
+      "related_fact_ids": [
+       "F-001",
+       "F-004"
+      ],
+      "issue": "Ledgerの出典情報は2014年発表としているが、記事は2019年と記載している。また、Ledgerが対象としているのはニューヨーク市タクシーのクレジットカード利用者だが、記事では対象をタクシー乗客一般に広げている。 / Ledgerの出典は2014年発表だが、記事は2019年に発表されたと述べている。また、Ledgerの対象はクレジッ",
+      "claim": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing t",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   },
+   {
+    "iid": "safety_er009_unsupported_new_claim",
+    "n_cands": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_fact",
+       "changed_scope",
+       "changed_number",
+       "changed_actor",
+       "changed_comparison",
+       "unsupported_new_claim"
+      ],
+      "related_fact_ids": [
+       "F-004",
+       "F-001"
+      ],
+      "issue": "Ledgerは高い推奨チップ率を見た乗客全体について、実際のチップがより多かったと述べるだけで、男女別の差や「2倍」という数値を示していない。 / ニューヨーク市タクシー研究への言及はありますが、Ledgerにない男女別のチップ額の差と「2倍」という結果を研究の発見として追加しています。 / 高い推奨率を見た乗客のチップに関する点は重なり",
+      "claim": "The same New York City taxi researchers also found that male passengers tipped twice as much as fema",
+      "routes": [
+       "r3",
+       "r5"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   }
+  ],
+  "hf011_rows": [
+   {
+    "sample": 1,
+    "n_matching": 0,
+    "cands": []
+   },
+   {
+    "sample": 2,
+    "n_matching": 0,
+    "cands": []
+   },
+   {
+    "sample": 3,
+    "n_matching": 1,
+    "cands": [
+     {
+      "flags_on": [
+       "changed_causality",
+       "changed_certainty"
+      ],
+      "related_fact_ids": [
+       "HF-009"
+      ],
+      "issue": "一時的な上げ幅縮小と回復は報じられているが、料金案の撤回が価格下落を引き起こさなかったという因果関係まではLedgerに記載されていない。",
+      "claim": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+      "routes": [
+       "r3"
+      ],
+      "sub_reasons": [
+       "model"
+      ],
+      "tier": "CONCRETE"
+     }
+    ]
+   }
+  ],
+  "tier_by_group": {
+   "permissive:B2watch": {
+    "CONCRETE": 17,
+    "SEMI": 1
+   },
+   "permissive:NORMAL": {
+    "CONCRETE": 168,
+    "VAGUE": 15,
+    "SEMI": 54
+   },
+   "permissive:SC": {
+    "SEMI": 60,
+    "CONCRETE": 184,
+    "VAGUE": 5
+   },
+   "permissive:holdout": {
+    "CONCRETE": 9
+   },
+   "strict:B2watch": {
+    "SEMI": 6,
+    "CONCRETE": 12
+   },
+   "strict:NORMAL": {
+    "CONCRETE": 133,
+    "VAGUE": 15,
+    "SEMI": 89
+   },
+   "strict:SC": {
+    "SEMI": 94,
+    "CONCRETE": 150,
+    "VAGUE": 5
+   },
+   "strict:holdout": {
+    "CONCRETE": 9
+   }
+  },
+  "tier_by_label": {
+   "permissive:N|CONCRETE": 2,
+   "permissive:N|DETERMINISTIC_ONLY": 3,
+   "permissive:N|SEMI": 1,
+   "permissive:R|CONCRETE": 4,
+   "permissive:U|CONCRETE": 12,
+   "permissive:U|SEMI": 7,
+   "permissive:U|VAGUE": 1,
+   "strict:N|CONCRETE": 2,
+   "strict:N|DETERMINISTIC_ONLY": 3,
+   "strict:N|SEMI": 1,
+   "strict:R|CONCRETE": 4,
+   "strict:U|CONCRETE": 10,
+   "strict:U|SEMI": 9,
+   "strict:U|VAGUE": 1
+  },
+  "sc_summary": {
+   "n_sc_runs_x_defs": 18,
+   "best_tier": {
+    "CONCRETE": 18
+   },
+   "model_judged": 18
+  }
+ },
+ "negation": {
+  "fired_total": 149,
+  "orig_reproduced_with_first_fact_only": 149,
+  "v2_remaining_total": 9,
+  "v2b_allLines_remaining_total": 7,
+  "v2_remaining_unique_unit": 6,
+  "v2_remaining_rows": [
+   {
+    "iid": "bgroup_B2_hormuz",
+    "unit": "S10.1",
+    "sample": 1,
+    "claim": "Of course, this price movement alone cannot tell us that there was just one reason for the price.",
+    "fact_id": "HF-006",
+    "fact_line": "[VERIFIED] HF-006: Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホル",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "neg4_smallbag_div_a2",
+    "unit": "S2.2",
+    "sample": 1,
+    "claim": "They are not pushing large bags away.",
+    "fact_id": "F004",
+    "fact_line": "[VERIFIED] F004: Vogue's Summer 2026 handbag coverage identified petite pouches at Prada, Loewe, Miu Miu, and ",
+    "other_sub_reasons": [
+     "model"
+    ],
+    "model_flagged": true
+   },
+   {
+    "iid": "neg4_smallbag_div_a2",
+    "unit": "S6.2",
+    "sample": 1,
+    "claim": "Large bags had not disappeared.",
+    "fact_id": "F004",
+    "fact_line": "[VERIFIED] F004: Vogue's Summer 2026 handbag coverage identified petite pouches at Prada, Loewe, Miu Miu, and ",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "neg6_smallbag_div_b1b",
+    "unit": "S5.2",
+    "sample": 1,
+    "claim": "This lineup matters: large bags had not vanished.",
+    "fact_id": "F004",
+    "fact_line": "[VERIFIED] F004: Vogue's Summer 2026 handbag coverage identified petite pouches at Prada, Loewe, Miu Miu, and ",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "bgroup_B2_hormuz",
+    "unit": "S3.4",
+    "sample": 2,
+    "claim": "It was still only at the stage of announcing the policy.",
+    "fact_id": "HF-003",
+    "fact_line": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "bgroup_B2_hormuz",
+    "unit": "S10.1",
+    "sample": 2,
+    "claim": "Of course, this price movement alone cannot tell us that there was just one reason for the price.",
+    "fact_id": "HF-006",
+    "fact_line": "[VERIFIED] HF-006: Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホル",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "bgroup_B3",
+    "unit": "S3.3",
+    "sample": 2,
+    "claim": "For the moment, only a large number stood at center stage.",
+    "fact_id": "HF-003",
+    "fact_line": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "neg6_smallbag_div_b1b",
+    "unit": "S5.2",
+    "sample": 2,
+    "claim": "This lineup matters: large bags had not vanished.",
+    "fact_id": "F004",
+    "fact_line": "[VERIFIED] F004: Vogue's Summer 2026 handbag coverage identified petite pouches at Prada, Loewe, Miu Miu, and ",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   },
+   {
+    "iid": "bgroup_B3",
+    "unit": "S3.3",
+    "sample": 3,
+    "claim": "For the moment, only a large number stood at center stage.",
+    "fact_id": "HF-003",
+    "fact_line": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+    "other_sub_reasons": [],
+    "model_flagged": false
+   }
+  ],
+  "gold_or_holdout_candidates_found_only_by_negation_check": [],
+  "synthetic_negation_holdout": {
+   "claim": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+   "fact_id": "F-004",
+   "fact_line": "[F-004] より高い推奨チップ率のメニューを偶然見た乗客は、実際により多くチップを残した。研究は、表示された割合が最初の基準になるアンカリングを示すと要約されている。",
+   "flags_on": [
+    "changed_fact",
+    "changed_causality",
+    "changed_negation"
+   ],
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "sub_reasons": [
+    "model"
+   ],
+   "orig_det_detects": true,
+   "v2_det_detects": true,
+   "v2b_allLines_det_detects": false,
+   "fact_block_line_count": 5
+  },
+  "variantB_remove_check_remaining": 0
+ },
+ "route_model_detection": {
+  "per_gold": {
+   "B3": {
+    "r3": "MMM",
+    "r5": "MMM"
+   },
+   "B4-a": {
+    "r3": "MMM",
+    "r5": "MMM"
+   },
+   "B3-same@neg5": {
+    "r3": "MMM",
+    "r5": "MM-"
+   },
+   "A2A3-0": {
+    "r3": "MMM",
+    "r5": "MMM"
+   },
+   "A4-0": {
+    "r3": "DDM",
+    "r5": "MMM"
+   },
+   "A5-0": {
+    "r3": "MMM",
+    "r5": "MMM"
+   },
+   "changed_actor": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_causality": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_certainty": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_comparison": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_negation": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_number": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_scope": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "changed_time": {
+    "r3": "M",
+    "r5": "M"
+   },
+   "unsupported_new_claim": {
+    "r3": "M",
+    "r5": "M"
+   }
+  },
+  "SC_model_judged_detection_by_route": {
+   "r3": [
+    16,
+    18
+   ],
+   "r5": [
+    17,
+    18
+   ]
+  },
+  "note": "M=その経路のモデル判定が候補化、D=決定論検査(SUPPORTED->CANDIDATE)でのみ候補化、-=その経路では候補なし。A4-0のr3はs1/s2がD(=誤発火の決定論否定検査が偶然goldに当たっただけ)"
+ },
+ "stage2_structure": {
+  "n_cycle1_instances_with_stage2": 30,
+  "mean_calls_per_instance_cycle1": 2.4333,
+  "input_tokens_vs_n_candidates(intercept,slope)": [
+   7612.36,
+   2695.968
+  ],
+  "r2_in": 0.712,
+  "output_tokens_vs_n(intercept,slope)": [
+   -209.869,
+   551.141
+  ],
+  "r2_out": 0.853,
+  "cost_jpy_vs_n(intercept,slope)": [
+   0.057,
+   0.064
+  ],
+  "r2_cost": 0.72,
+  "per_candidate_cost_split_jpy": {
+   "input_part": 0.0269,
+   "output_part(incl_reasoning)": 0.0432
+  },
+  "note": "Stage 2は既にtitle/hook群とbody群のbatch callで、候補ごとにlocal_contextを入力へ載せる。費用の候補数依存は入力(local_context)と出力(判定+reasoning)の両方"
+ },
+ "rep30_rates": {
+  "blocking_rate_all": 0.289,
+  "blocking_rate_NORMAL": 0.1,
+  "cost_per_rewrite_excl_stage2": 0.314
+ },
+ "production_baseline_check_plus_mustfix_jpy": {
+  "n": 8,
+  "mean": 2.774,
+  "median": 2.502,
+  "min": 1.278,
+  "max": 4.482,
+  "run_02_hormuz": 2.767
+ },
+ "scenarios": {
+  "S0 現行(r3+r5、全候補)": {
+   "flags": {},
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.5084,
+     "triage": 0.0,
+     "cands_to_stage2": 15.6667,
+     "stage2_delta": 0.845,
+     "extra_rewrite": 0.6567,
+     "expected_extra_blocking": 2.0913,
+     "add_vs_rep30": 3.01,
+     "add_vs_rep24": 3.46,
+     "total_per_run": 3.9,
+     "vs_production_2.77": 1.13
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.8183,
+     "triage": 0.0,
+     "cands_to_stage2": 19.6667,
+     "stage2_delta": 1.0776,
+     "extra_rewrite": 0.8358,
+     "expected_extra_blocking": 2.6616,
+     "add_vs_rep30": 3.7317,
+     "add_vs_rep24": 4.289,
+     "total_per_run": 4.73,
+     "vs_production_2.77": 1.96
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 2.0441,
+     "triage": 0.0,
+     "cands_to_stage2": 24.0,
+     "stage2_delta": 1.6798,
+     "extra_rewrite": 0.7013,
+     "expected_extra_blocking": 2.2333,
+     "add_vs_rep30": 4.4252,
+     "add_vs_rep24": 4.177,
+     "total_per_run": 4.618,
+     "vs_production_2.77": 1.848
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.6528,
+     "triage": 0.0,
+     "cands_to_stage2": 17.8333,
+     "stage2_delta": 0.7057,
+     "extra_rewrite": 0.878,
+     "expected_extra_blocking": 2.7961,
+     "add_vs_rep30": 3.2365,
+     "add_vs_rep24": 4.464,
+     "total_per_run": 4.904,
+     "vs_production_2.77": 2.134
+    }
+   }
+  },
+  "B 否定検査是正のみ": {
+   "flags": {
+    "B": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.5084,
+     "triage": 0.0,
+     "cands_to_stage2": 12.5476,
+     "stage2_delta": 0.6173,
+     "extra_rewrite": 0.4637,
+     "expected_extra_blocking": 1.4766,
+     "add_vs_rep30": 2.5893,
+     "add_vs_rep24": 3.039,
+     "total_per_run": 3.479,
+     "vs_production_2.77": 0.709
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.8183,
+     "triage": 0.0,
+     "cands_to_stage2": 15.697,
+     "stage2_delta": 0.7878,
+     "extra_rewrite": 0.5901,
+     "expected_extra_blocking": 1.8793,
+     "add_vs_rep30": 3.1963,
+     "add_vs_rep24": 3.754,
+     "total_per_run": 4.194,
+     "vs_production_2.77": 1.424
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 2.0441,
+     "triage": 0.0,
+     "cands_to_stage2": 20.0833,
+     "stage2_delta": 1.3939,
+     "extra_rewrite": 0.5783,
+     "expected_extra_blocking": 1.8417,
+     "add_vs_rep30": 4.0163,
+     "add_vs_rep24": 3.769,
+     "total_per_run": 4.209,
+     "vs_production_2.77": 1.439
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.6528,
+     "triage": 0.0,
+     "cands_to_stage2": 14.1667,
+     "stage2_delta": 0.438,
+     "extra_rewrite": 0.6005,
+     "expected_extra_blocking": 1.9123,
+     "add_vs_rep30": 2.6913,
+     "add_vs_rep24": 3.918,
+     "total_per_run": 4.359,
+     "vs_production_2.77": 1.589
+    }
+   }
+  },
+  "D r5廃止(r3のみ)": {
+   "flags": {
+    "D": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 0.6511,
+     "triage": 0.0,
+     "cands_to_stage2": 15.3571,
+     "stage2_delta": 0.8224,
+     "extra_rewrite": 0.6399,
+     "expected_extra_blocking": 2.0378,
+     "add_vs_rep30": 2.1133,
+     "add_vs_rep24": 2.563,
+     "total_per_run": 3.003,
+     "vs_production_2.77": 0.233
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 0.791,
+     "triage": 0.0,
+     "cands_to_stage2": 19.2727,
+     "stage2_delta": 1.0488,
+     "extra_rewrite": 0.8144,
+     "expected_extra_blocking": 2.5935,
+     "add_vs_rep30": 2.6542,
+     "add_vs_rep24": 3.212,
+     "total_per_run": 3.652,
+     "vs_production_2.77": 0.882
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 0.7987,
+     "triage": 0.0,
+     "cands_to_stage2": 23.3333,
+     "stage2_delta": 1.6312,
+     "extra_rewrite": 0.6803,
+     "expected_extra_blocking": 2.1667,
+     "add_vs_rep30": 3.1102,
+     "add_vs_rep24": 2.862,
+     "total_per_run": 3.302,
+     "vs_production_2.77": 0.532
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 0.7757,
+     "triage": 0.0,
+     "cands_to_stage2": 17.6111,
+     "stage2_delta": 0.6894,
+     "extra_rewrite": 0.8578,
+     "expected_extra_blocking": 2.7319,
+     "add_vs_rep30": 2.3229,
+     "add_vs_rep24": 3.55,
+     "total_per_run": 3.99,
+     "vs_production_2.77": 1.22
+    }
+   }
+  },
+  "B+D【Safety基準未達: r3単独のモデル判定16/18】": {
+   "flags": {
+    "B": true,
+    "D": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 0.6511,
+     "triage": 0.0,
+     "cands_to_stage2": 12.2381,
+     "stage2_delta": 0.5947,
+     "extra_rewrite": 0.449,
+     "expected_extra_blocking": 1.43,
+     "add_vs_rep30": 1.6948,
+     "add_vs_rep24": 2.144,
+     "total_per_run": 2.585,
+     "vs_production_2.77": -0.185
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 0.791,
+     "triage": 0.0,
+     "cands_to_stage2": 15.303,
+     "stage2_delta": 0.7591,
+     "extra_rewrite": 0.5715,
+     "expected_extra_blocking": 1.82,
+     "add_vs_rep30": 2.1216,
+     "add_vs_rep24": 2.679,
+     "total_per_run": 3.119,
+     "vs_production_2.77": 0.349
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 0.7987,
+     "triage": 0.0,
+     "cands_to_stage2": 19.4167,
+     "stage2_delta": 1.3453,
+     "extra_rewrite": 0.5574,
+     "expected_extra_blocking": 1.775,
+     "add_vs_rep30": 2.7013,
+     "add_vs_rep24": 2.453,
+     "total_per_run": 2.894,
+     "vs_production_2.77": 0.124
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 0.7757,
+     "triage": 0.0,
+     "cands_to_stage2": 13.9444,
+     "stage2_delta": 0.4218,
+     "extra_rewrite": 0.5853,
+     "expected_extra_blocking": 1.8641,
+     "add_vs_rep30": 1.7828,
+     "add_vs_rep24": 3.01,
+     "total_per_run": 3.45,
+     "vs_production_2.77": 0.68
+    }
+   }
+  },
+  "E r3出力軽量化": {
+   "flags": {
+    "E": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.3851,
+     "triage": 0.0,
+     "cands_to_stage2": 15.6667,
+     "stage2_delta": 0.845,
+     "extra_rewrite": 0.6567,
+     "expected_extra_blocking": 2.0913,
+     "add_vs_rep30": 2.8868,
+     "add_vs_rep24": 3.337,
+     "total_per_run": 3.777,
+     "vs_production_2.77": 1.007
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.6614,
+     "triage": 0.0,
+     "cands_to_stage2": 19.6667,
+     "stage2_delta": 1.0776,
+     "extra_rewrite": 0.8358,
+     "expected_extra_blocking": 2.6616,
+     "add_vs_rep30": 3.5748,
+     "add_vs_rep24": 4.133,
+     "total_per_run": 4.573,
+     "vs_production_2.77": 1.803
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.9112,
+     "triage": 0.0,
+     "cands_to_stage2": 24.0,
+     "stage2_delta": 1.6798,
+     "extra_rewrite": 0.7013,
+     "expected_extra_blocking": 2.2333,
+     "add_vs_rep30": 4.2923,
+     "add_vs_rep24": 4.045,
+     "total_per_run": 4.485,
+     "vs_production_2.77": 1.715
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.4926,
+     "triage": 0.0,
+     "cands_to_stage2": 17.8333,
+     "stage2_delta": 0.7057,
+     "extra_rewrite": 0.878,
+     "expected_extra_blocking": 2.7961,
+     "add_vs_rep30": 3.0763,
+     "add_vs_rep24": 4.303,
+     "total_per_run": 4.744,
+     "vs_production_2.77": 1.974
+    }
+   }
+  },
+  "B+E": {
+   "flags": {
+    "B": true,
+    "E": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.3851,
+     "triage": 0.0,
+     "cands_to_stage2": 12.5476,
+     "stage2_delta": 0.6173,
+     "extra_rewrite": 0.4637,
+     "expected_extra_blocking": 1.4766,
+     "add_vs_rep30": 2.4661,
+     "add_vs_rep24": 2.916,
+     "total_per_run": 3.356,
+     "vs_production_2.77": 0.586
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.6614,
+     "triage": 0.0,
+     "cands_to_stage2": 15.697,
+     "stage2_delta": 0.7878,
+     "extra_rewrite": 0.5901,
+     "expected_extra_blocking": 1.8793,
+     "add_vs_rep30": 3.0394,
+     "add_vs_rep24": 3.597,
+     "total_per_run": 4.037,
+     "vs_production_2.77": 1.267
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.9112,
+     "triage": 0.0,
+     "cands_to_stage2": 20.0833,
+     "stage2_delta": 1.3939,
+     "extra_rewrite": 0.5783,
+     "expected_extra_blocking": 1.8417,
+     "add_vs_rep30": 3.8834,
+     "add_vs_rep24": 3.636,
+     "total_per_run": 4.076,
+     "vs_production_2.77": 1.306
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.4926,
+     "triage": 0.0,
+     "cands_to_stage2": 14.1667,
+     "stage2_delta": 0.438,
+     "extra_rewrite": 0.6005,
+     "expected_extra_blocking": 1.9123,
+     "add_vs_rep30": 2.5311,
+     "add_vs_rep24": 3.758,
+     "total_per_run": 4.198,
+     "vs_production_2.77": 1.428
+    }
+   }
+  },
+  "B+R5推論cap2000(未検証)": {
+   "flags": {
+    "B": true,
+    "R5CAP": 2000
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.064,
+     "triage": 0.0,
+     "cands_to_stage2": 12.5476,
+     "stage2_delta": 0.6173,
+     "extra_rewrite": 0.4637,
+     "expected_extra_blocking": 1.4766,
+     "add_vs_rep30": 2.145,
+     "add_vs_rep24": 2.595,
+     "total_per_run": 3.035,
+     "vs_production_2.77": 0.265
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.2543,
+     "triage": 0.0,
+     "cands_to_stage2": 15.697,
+     "stage2_delta": 0.7878,
+     "extra_rewrite": 0.5901,
+     "expected_extra_blocking": 1.8793,
+     "add_vs_rep30": 2.6323,
+     "add_vs_rep24": 3.19,
+     "total_per_run": 3.63,
+     "vs_production_2.77": 0.86
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.3151,
+     "triage": 0.0,
+     "cands_to_stage2": 20.0833,
+     "stage2_delta": 1.3939,
+     "extra_rewrite": 0.5783,
+     "expected_extra_blocking": 1.8417,
+     "add_vs_rep30": 3.2873,
+     "add_vs_rep24": 3.039,
+     "total_per_run": 3.48,
+     "vs_production_2.77": 0.71
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.1924,
+     "triage": 0.0,
+     "cands_to_stage2": 14.1667,
+     "stage2_delta": 0.438,
+     "extra_rewrite": 0.6005,
+     "expected_extra_blocking": 1.9123,
+     "add_vs_rep30": 2.2309,
+     "add_vs_rep24": 3.458,
+     "total_per_run": 3.898,
+     "vs_production_2.77": 1.128
+    }
+   }
+  },
+  "A(e=0.1)+B": {
+   "flags": {
+    "A": 0.1,
+    "B": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.5084,
+     "triage": 0.1943,
+     "cands_to_stage2": 8.069,
+     "stage2_delta": 0.2903,
+     "extra_rewrite": 0.2215,
+     "expected_extra_blocking": 0.7055,
+     "add_vs_rep30": 2.2146,
+     "add_vs_rep24": 2.664,
+     "total_per_run": 3.104,
+     "vs_production_2.77": 0.334
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.8183,
+     "triage": 0.2473,
+     "cands_to_stage2": 9.997,
+     "stage2_delta": 0.3717,
+     "extra_rewrite": 0.282,
+     "expected_extra_blocking": 0.898,
+     "add_vs_rep30": 2.7193,
+     "add_vs_rep24": 3.277,
+     "total_per_run": 3.717,
+     "vs_production_2.77": 0.947
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 2.0441,
+     "triage": 0.2617,
+     "cands_to_stage2": 12.2833,
+     "stage2_delta": 0.8245,
+     "extra_rewrite": 0.3334,
+     "expected_extra_blocking": 1.0617,
+     "add_vs_rep30": 3.4637,
+     "add_vs_rep24": 3.216,
+     "total_per_run": 3.656,
+     "vs_production_2.77": 0.886
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.6528,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.2167,
+     "stage2_delta": 0.0767,
+     "extra_rewrite": 0.2261,
+     "expected_extra_blocking": 0.7199,
+     "add_vs_rep30": 2.1943,
+     "add_vs_rep24": 3.421,
+     "total_per_run": 3.862,
+     "vs_production_2.77": 1.092
+    }
+   }
+  },
+  "A(e=0.2)+B": {
+   "flags": {
+    "A": 0.2,
+    "B": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.5084,
+     "triage": 0.1943,
+     "cands_to_stage2": 8.5667,
+     "stage2_delta": 0.3267,
+     "extra_rewrite": 0.2475,
+     "expected_extra_blocking": 0.7882,
+     "add_vs_rep30": 2.2768,
+     "add_vs_rep24": 2.727,
+     "total_per_run": 3.167,
+     "vs_production_2.77": 0.397
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.8183,
+     "triage": 0.2473,
+     "cands_to_stage2": 10.6303,
+     "stage2_delta": 0.418,
+     "extra_rewrite": 0.315,
+     "expected_extra_blocking": 1.0031,
+     "add_vs_rep30": 2.7986,
+     "add_vs_rep24": 3.356,
+     "total_per_run": 3.796,
+     "vs_production_2.77": 1.026
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 2.0441,
+     "triage": 0.2617,
+     "cands_to_stage2": 13.15,
+     "stage2_delta": 0.8878,
+     "extra_rewrite": 0.3606,
+     "expected_extra_blocking": 1.1483,
+     "add_vs_rep30": 3.5542,
+     "add_vs_rep24": 3.306,
+     "total_per_run": 3.746,
+     "vs_production_2.77": 0.976
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.6528,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.7667,
+     "stage2_delta": 0.1168,
+     "extra_rewrite": 0.2654,
+     "expected_extra_blocking": 0.8453,
+     "add_vs_rep30": 2.2738,
+     "add_vs_rep24": 3.501,
+     "total_per_run": 3.941,
+     "vs_production_2.77": 1.171
+    }
+   }
+  },
+  "A(e=0.3)+B": {
+   "flags": {
+    "A": 0.3,
+    "B": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.5084,
+     "triage": 0.1943,
+     "cands_to_stage2": 9.0643,
+     "stage2_delta": 0.363,
+     "extra_rewrite": 0.2734,
+     "expected_extra_blocking": 0.8708,
+     "add_vs_rep30": 2.3391,
+     "add_vs_rep24": 2.789,
+     "total_per_run": 3.229,
+     "vs_production_2.77": 0.459
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.8183,
+     "triage": 0.2473,
+     "cands_to_stage2": 11.2636,
+     "stage2_delta": 0.4642,
+     "extra_rewrite": 0.348,
+     "expected_extra_blocking": 1.1082,
+     "add_vs_rep30": 2.8778,
+     "add_vs_rep24": 3.436,
+     "total_per_run": 3.876,
+     "vs_production_2.77": 1.106
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 2.0441,
+     "triage": 0.2617,
+     "cands_to_stage2": 14.0167,
+     "stage2_delta": 0.951,
+     "extra_rewrite": 0.3878,
+     "expected_extra_blocking": 1.235,
+     "add_vs_rep30": 3.6447,
+     "add_vs_rep24": 3.397,
+     "total_per_run": 3.837,
+     "vs_production_2.77": 1.067
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.6528,
+     "triage": 0.2388,
+     "cands_to_stage2": 10.3167,
+     "stage2_delta": 0.157,
+     "extra_rewrite": 0.3048,
+     "expected_extra_blocking": 0.9706,
+     "add_vs_rep30": 2.3533,
+     "add_vs_rep24": 3.58,
+     "total_per_run": 4.021,
+     "vs_production_2.77": 1.251
+    }
+   }
+  },
+  "A(e=0.2)+B+E": {
+   "flags": {
+    "A": 0.2,
+    "B": true,
+    "E": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.3851,
+     "triage": 0.1943,
+     "cands_to_stage2": 8.5667,
+     "stage2_delta": 0.3267,
+     "extra_rewrite": 0.2475,
+     "expected_extra_blocking": 0.7882,
+     "add_vs_rep30": 2.1536,
+     "add_vs_rep24": 2.603,
+     "total_per_run": 3.043,
+     "vs_production_2.77": 0.273
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.6614,
+     "triage": 0.2473,
+     "cands_to_stage2": 10.6303,
+     "stage2_delta": 0.418,
+     "extra_rewrite": 0.315,
+     "expected_extra_blocking": 1.0031,
+     "add_vs_rep30": 2.6417,
+     "add_vs_rep24": 3.2,
+     "total_per_run": 3.64,
+     "vs_production_2.77": 0.87
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.9112,
+     "triage": 0.2617,
+     "cands_to_stage2": 13.15,
+     "stage2_delta": 0.8878,
+     "extra_rewrite": 0.3606,
+     "expected_extra_blocking": 1.1483,
+     "add_vs_rep30": 3.4213,
+     "add_vs_rep24": 3.173,
+     "total_per_run": 3.614,
+     "vs_production_2.77": 0.844
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.4926,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.7667,
+     "stage2_delta": 0.1168,
+     "extra_rewrite": 0.2654,
+     "expected_extra_blocking": 0.8453,
+     "add_vs_rep30": 2.1136,
+     "add_vs_rep24": 3.341,
+     "total_per_run": 3.781,
+     "vs_production_2.77": 1.011
+    }
+   }
+  },
+  "A(e=0.2)+B+D": {
+   "flags": {
+    "A": 0.2,
+    "B": true,
+    "D": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 0.6511,
+     "triage": 0.1939,
+     "cands_to_stage2": 8.3714,
+     "stage2_delta": 0.3124,
+     "extra_rewrite": 0.2366,
+     "expected_extra_blocking": 0.7535,
+     "add_vs_rep30": 1.3939,
+     "add_vs_rep24": 1.844,
+     "total_per_run": 2.284,
+     "vs_production_2.77": -0.486
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 0.791,
+     "triage": 0.2467,
+     "cands_to_stage2": 10.3818,
+     "stage2_delta": 0.3998,
+     "extra_rewrite": 0.3011,
+     "expected_extra_blocking": 0.9589,
+     "add_vs_rep30": 1.7387,
+     "add_vs_rep24": 2.296,
+     "total_per_run": 2.737,
+     "vs_production_2.77": -0.033
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 0.7987,
+     "triage": 0.2602,
+     "cands_to_stage2": 12.8833,
+     "stage2_delta": 0.8683,
+     "extra_rewrite": 0.3527,
+     "expected_extra_blocking": 1.1233,
+     "add_vs_rep30": 2.2799,
+     "add_vs_rep24": 2.032,
+     "total_per_run": 2.472,
+     "vs_production_2.77": -0.298
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 0.7757,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.5444,
+     "stage2_delta": 0.1006,
+     "extra_rewrite": 0.2503,
+     "expected_extra_blocking": 0.7971,
+     "add_vs_rep30": 1.3653,
+     "add_vs_rep24": 2.592,
+     "total_per_run": 3.033,
+     "vs_production_2.77": 0.263
+    }
+   }
+  },
+  "A(e=0.2)+B+D+E": {
+   "flags": {
+    "A": 0.2,
+    "B": true,
+    "D": true,
+    "E": true
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 0.5278,
+     "triage": 0.1939,
+     "cands_to_stage2": 8.3714,
+     "stage2_delta": 0.3124,
+     "extra_rewrite": 0.2366,
+     "expected_extra_blocking": 0.7535,
+     "add_vs_rep30": 1.2706,
+     "add_vs_rep24": 1.72,
+     "total_per_run": 2.16,
+     "vs_production_2.77": -0.61
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 0.6341,
+     "triage": 0.2467,
+     "cands_to_stage2": 10.3818,
+     "stage2_delta": 0.3998,
+     "extra_rewrite": 0.3011,
+     "expected_extra_blocking": 0.9589,
+     "add_vs_rep30": 1.5818,
+     "add_vs_rep24": 2.14,
+     "total_per_run": 2.58,
+     "vs_production_2.77": -0.19
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 0.6658,
+     "triage": 0.2602,
+     "cands_to_stage2": 12.8833,
+     "stage2_delta": 0.8683,
+     "extra_rewrite": 0.3527,
+     "expected_extra_blocking": 1.1233,
+     "add_vs_rep30": 2.147,
+     "add_vs_rep24": 1.899,
+     "total_per_run": 2.339,
+     "vs_production_2.77": -0.431
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 0.6155,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.5444,
+     "stage2_delta": 0.1006,
+     "extra_rewrite": 0.2503,
+     "expected_extra_blocking": 0.7971,
+     "add_vs_rep30": 1.2051,
+     "add_vs_rep24": 2.432,
+     "total_per_run": 2.872,
+     "vs_production_2.77": 0.102
+    }
+   }
+  },
+  "A(e=0.2)+B+E+R5cap2000(未検証)": {
+   "flags": {
+    "A": 0.2,
+    "B": true,
+    "E": true,
+    "R5CAP": 2000
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 0.9408,
+     "triage": 0.1943,
+     "cands_to_stage2": 8.5667,
+     "stage2_delta": 0.3267,
+     "extra_rewrite": 0.2475,
+     "expected_extra_blocking": 0.7882,
+     "add_vs_rep30": 1.7092,
+     "add_vs_rep24": 2.159,
+     "total_per_run": 2.599,
+     "vs_production_2.77": -0.171
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.0975,
+     "triage": 0.2473,
+     "cands_to_stage2": 10.6303,
+     "stage2_delta": 0.418,
+     "extra_rewrite": 0.315,
+     "expected_extra_blocking": 1.0031,
+     "add_vs_rep30": 2.0777,
+     "add_vs_rep24": 2.635,
+     "total_per_run": 3.076,
+     "vs_production_2.77": 0.306
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.1822,
+     "triage": 0.2617,
+     "cands_to_stage2": 13.15,
+     "stage2_delta": 0.8878,
+     "extra_rewrite": 0.3606,
+     "expected_extra_blocking": 1.1483,
+     "add_vs_rep30": 2.6923,
+     "add_vs_rep24": 2.444,
+     "total_per_run": 2.885,
+     "vs_production_2.77": 0.115
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.0322,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.7667,
+     "stage2_delta": 0.1168,
+     "extra_rewrite": 0.2654,
+     "expected_extra_blocking": 0.8453,
+     "add_vs_rep30": 1.6532,
+     "add_vs_rep24": 2.88,
+     "total_per_run": 3.321,
+     "vs_production_2.77": 0.55
+    }
+   }
+  },
+  "B+RS0.5(両経路reasoning半減、未検証)": {
+   "flags": {
+    "B": true,
+    "RS": 0.5
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.0787,
+     "triage": 0.0,
+     "cands_to_stage2": 12.5476,
+     "stage2_delta": 0.6173,
+     "extra_rewrite": 0.4637,
+     "expected_extra_blocking": 1.4766,
+     "add_vs_rep30": 2.1596,
+     "add_vs_rep24": 2.609,
+     "total_per_run": 3.049,
+     "vs_production_2.77": 0.279
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.2925,
+     "triage": 0.0,
+     "cands_to_stage2": 15.697,
+     "stage2_delta": 0.7878,
+     "extra_rewrite": 0.5901,
+     "expected_extra_blocking": 1.8793,
+     "add_vs_rep30": 2.6705,
+     "add_vs_rep24": 3.228,
+     "total_per_run": 3.668,
+     "vs_production_2.77": 0.898
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.43,
+     "triage": 0.0,
+     "cands_to_stage2": 20.0833,
+     "stage2_delta": 1.3939,
+     "extra_rewrite": 0.5783,
+     "expected_extra_blocking": 1.8417,
+     "add_vs_rep30": 3.4022,
+     "add_vs_rep24": 3.154,
+     "total_per_run": 3.595,
+     "vs_production_2.77": 0.825
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.1877,
+     "triage": 0.0,
+     "cands_to_stage2": 14.1667,
+     "stage2_delta": 0.438,
+     "extra_rewrite": 0.6005,
+     "expected_extra_blocking": 1.9123,
+     "add_vs_rep30": 2.2262,
+     "add_vs_rep24": 3.453,
+     "total_per_run": 3.893,
+     "vs_production_2.77": 1.123
+    }
+   }
+  },
+  "A(e=0.2)+B+RS0.5(未検証)": {
+   "flags": {
+    "A": 0.2,
+    "B": true,
+    "RS": 0.5
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 1.0787,
+     "triage": 0.1943,
+     "cands_to_stage2": 8.5667,
+     "stage2_delta": 0.3267,
+     "extra_rewrite": 0.2475,
+     "expected_extra_blocking": 0.7882,
+     "add_vs_rep30": 1.8472,
+     "add_vs_rep24": 2.297,
+     "total_per_run": 2.737,
+     "vs_production_2.77": -0.033
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 1.2925,
+     "triage": 0.2473,
+     "cands_to_stage2": 10.6303,
+     "stage2_delta": 0.418,
+     "extra_rewrite": 0.315,
+     "expected_extra_blocking": 1.0031,
+     "add_vs_rep30": 2.2728,
+     "add_vs_rep24": 2.831,
+     "total_per_run": 3.271,
+     "vs_production_2.77": 0.501
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 1.43,
+     "triage": 0.2617,
+     "cands_to_stage2": 13.15,
+     "stage2_delta": 0.8878,
+     "extra_rewrite": 0.3606,
+     "expected_extra_blocking": 1.1483,
+     "add_vs_rep30": 2.9401,
+     "add_vs_rep24": 2.692,
+     "total_per_run": 3.132,
+     "vs_production_2.77": 0.362
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 1.1877,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.7667,
+     "stage2_delta": 0.1168,
+     "extra_rewrite": 0.2654,
+     "expected_extra_blocking": 0.8453,
+     "add_vs_rep30": 1.8087,
+     "add_vs_rep24": 3.036,
+     "total_per_run": 3.476,
+     "vs_production_2.77": 0.706
+    }
+   }
+  },
+  "A(e=0.2)+B+D+RS0.5(未検証)": {
+   "flags": {
+    "A": 0.2,
+    "B": true,
+    "D": true,
+    "RS": 0.5
+   },
+   "result": {
+    "ALL42": {
+     "n": 42,
+     "stage1": 0.5152,
+     "triage": 0.1939,
+     "cands_to_stage2": 8.3714,
+     "stage2_delta": 0.3124,
+     "extra_rewrite": 0.2366,
+     "expected_extra_blocking": 0.7535,
+     "add_vs_rep30": 1.258,
+     "add_vs_rep24": 1.708,
+     "total_per_run": 2.148,
+     "vs_production_2.77": -0.622
+    },
+    "ARTICLE33(holdout除く)": {
+     "n": 33,
+     "stage1": 0.6233,
+     "triage": 0.2467,
+     "cands_to_stage2": 10.3818,
+     "stage2_delta": 0.3998,
+     "extra_rewrite": 0.3011,
+     "expected_extra_blocking": 0.9589,
+     "add_vs_rep30": 1.5709,
+     "add_vs_rep24": 2.129,
+     "total_per_run": 2.569,
+     "vs_production_2.77": -0.201
+    },
+    "NORMAL": {
+     "n": 12,
+     "stage1": 0.6275,
+     "triage": 0.2602,
+     "cands_to_stage2": 12.8833,
+     "stage2_delta": 0.8683,
+     "extra_rewrite": 0.3527,
+     "expected_extra_blocking": 1.1233,
+     "add_vs_rep30": 2.1087,
+     "add_vs_rep24": 1.861,
+     "total_per_run": 2.301,
+     "vs_production_2.77": -0.469
+    },
+    "SC": {
+     "n": 18,
+     "stage1": 0.6148,
+     "triage": 0.2388,
+     "cands_to_stage2": 9.5444,
+     "stage2_delta": 0.1006,
+     "extra_rewrite": 0.2503,
+     "expected_extra_blocking": 0.7971,
+     "add_vs_rep30": 1.2044,
+     "add_vs_rep24": 2.432,
+     "total_per_run": 2.872,
+     "vs_production_2.77": 0.102
+    }
+   }
+  }
+ },
+ "scenarios_cap10": {
+  "S0 現行(r3+r5、全候補)": 3.0216,
+  "B 否定検査是正のみ": 2.7007,
+  "D r5廃止(r3のみ)": 1.9729,
+  "B+D【Safety基準未達: r3単独のモデル判定16/18】": 1.6482,
+  "E r3出力軽量化": 2.8647,
+  "B+E": 2.5439,
+  "B+R5推論cap2000(未検証)": 2.1368,
+  "A(e=0.1)+B": 2.5532,
+  "A(e=0.2)+B": 2.6039,
+  "A(e=0.3)+B": 2.6519,
+  "A(e=0.2)+B+E": 2.447,
+  "A(e=0.2)+B+D": 1.5551,
+  "A(e=0.2)+B+D+E": 1.3982,
+  "A(e=0.2)+B+E+R5cap2000(未検証)": 1.883,
+  "B+RS0.5(両経路reasoning半減、未検証)": 2.175,
+  "A(e=0.2)+B+RS0.5(未検証)": 2.0781,
+  "A(e=0.2)+B+D+RS0.5(未検証)": 1.3873
+ },
+ "scenarios_triage_reasoning_high_4500": {
+  "A(e=0.1)+B": 2.8714,
+  "A(e=0.2)+B": 2.9507,
+  "A(e=0.3)+B": 3.0299,
+  "A(e=0.2)+B+E": 2.7938,
+  "A(e=0.2)+B+D": 1.8908,
+  "A(e=0.2)+B+D+E": 1.7339,
+  "A(e=0.2)+B+E+R5cap2000(未検証)": 2.2298,
+  "A(e=0.2)+B+RS0.5(未検証)": 2.4249,
+  "A(e=0.2)+B+D+RS0.5(未検証)": 1.723
+ },
+ "batching_C": {
+  "mean_candidates": 19.6667,
+  "mean_distinct_fact_groups": 5.1212,
+  "mergeable": 14.55,
+  "max_saving_per_article_jpy(入力分のみ上限)": 0.391,
+  "note": "出力・reasoning分は候補ごとに必要なため束ねても減らない前提(推測)。上限であり実測ではない"
+ }
+}
