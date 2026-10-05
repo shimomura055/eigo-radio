@@ -1,0 +1,1427 @@
+{
+ "e2e": {
+  "bgroup_B3": {
+   "group": "b_group",
+   "expected": "claim単位混在(§7-0)",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 4.5494,
+   "n_cycles": 3,
+   "n_stage1_union": 8,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 3,
+     "non_blocking_count": 13,
+     "n_rewrite": 3,
+     "blocking": [
+      {
+       "fact": "HF-007",
+       "claim": "### The 20% plan changes overnight",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "置換発表が翌日だったことは確認できますが、「overnight」は夜間に変更されたと読める表現です。記録された発表時刻は7月14日午前11時4分です。"
+      },
+      {
+       "fact": "HF-007",
+       "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back ",
+       "llm_materiality": "BLOCKING",
+       "basis": "unsupported_relationship",
+       "floor": null,
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "「Concerns ... continued ... so the ... plan left the stage」は、継続していた懸念が計画の撤回を引き起こしたという因果関係を示しますが、Ledgerはその因果関係を述べていません。 / 「so」で、継続していた攻撃・封鎖・タンカー安全上の懸念が20％案の撤回を招いたように結び付けています。Ledgerでは撤回の理由としてトランプ氏が挙げたのは"
+      },
+      {
+       "fact": "HF-001",
+       "claim": "He also said no one should charge ships in the strait, and that he disliked fees.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_actor,changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "「海峡を通る船舶に料金を課すべきでない」という類似の主張を、IMO理事会の再確認ではなくトランプ大統領の発言として記述しており、主体と時期が異なります。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:HF-007",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:HF-007",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:HF-001",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 2,
+     "recheck_total": 3,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim",
+      "short_section_no_window(title_hook_in_one_line)"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 0,
+     "non_blocking_count": 2,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 0,
+     "non_blocking_count": 6,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "hormuz_run03_advanced": {
+   "group": "hormuz",
+   "expected": "Normal群(§7-5)",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 3.4427,
+   "n_cycles": 3,
+   "n_stage1_union": 9,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 1,
+     "non_blocking_count": 14,
+     "n_rewrite": 1,
+     "blocking": [
+      {
+       "fact": "HF-009",
+       "claim": "At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "ledger_conditions",
+       "floor": "deterministic_floor:changed_actor",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerは米・イラン間の攻撃と記述していますが、記事は「by the United States and Iran」として米国とイラン双方が攻撃主体であるように記しています。主体の範囲が変わっています。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:HF-009",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 1,
+     "recheck_total": 1,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "deterministic_floor_claim"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 0,
+     "non_blocking_count": 1,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 0,
+     "non_blocking_count": 12,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "hormuz_run03_standard": {
+   "group": "hormuz",
+   "expected": "BLOCKING(Safety群、§7-1、narrow_scope)",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 2.1737,
+   "n_cycles": 1,
+   "n_stage1_union": 10,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 0,
+     "non_blocking_count": 15,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "meta_run03_advanced": {
+   "group": "meta",
+   "expected": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "cost": 5.4284,
+   "n_cycles": 3,
+   "n_stage1_union": 16,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 3,
+     "non_blocking_count": 15,
+     "n_rewrite": 3,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The issue was not that humans made the calls themselves.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_negation",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "人間が電話をかけること自体は問題ではなかった、という評価・問題設定はLedgerにありません。"
+      },
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The real challenge for AI phone calls is not just how they talk.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "AI電話の「本当の課題」が話し方だけではないという一般的な評価・結論はLedgerにありません。"
+      },
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The more useful a service is, the less it should hide the people working behind the scenes.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "サービスの有用性が高いほど舞台裏の人々を隠すべきでない、という規範的・比較的主張はLedgerにありません。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "lvl": "4_paragraph",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "lvl": "4_paragraph",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 3,
+     "recheck_total": 3,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "paragraph_or_full_or_delete_rewrite",
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 0,
+     "non_blocking_count": 5,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 1,
+     "non_blocking_count": 9,
+     "n_rewrite": 1,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-011",
+       "claim": "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+       "llm_materiality": "QUALITY",
+       "basis": "ledger_scope",
+       "floor": "deterministic_floor:changed_actor",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerが示すのは料金交渉の1件として報道された従業員報告です。記事の「human staff」「during calls」という表現は、複数のスタッフや通話に一般化して読めます。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-011",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 0,
+     "recheck_total": 1,
+     "merge_decision": null,
+     "full_recheck_reasons": [
+      "deterministic_floor_claim"
+     ],
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "meta_run03_standard": {
+   "group": "meta",
+   "expected": "BLOCKING→Rewrite→PASS(§7-1、現行は既存retry1回で通過)",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 5.1642,
+   "n_cycles": 3,
+   "n_stage1_union": 23,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 5,
+     "non_blocking_count": 19,
+     "n_rewrite": 5,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The problem was not that humans made the calls.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_negation,changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "「人間が電話したことは問題ではなかった」という評価・対比はLedgerに示されていない。 / Ledgerは開示なしでテストを始めたことをミスとするが、人間が電話を担当すること自体は問題ではなかったという評価までは示していない。"
+      },
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The real challenge for AI calls is not only how they talk.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "AI電話全般の課題は話し方だけではないという一般論はLedgerに記載されていない。"
+      },
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The more useful a service is, the less it should hide workers behind the scenes.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "有用性と、裏側のスタッフを隠すべきかどうかを結び付ける一般的・規範的主張はLedgerにない。"
+      },
+      {
+       "fact": "MUSE-HC-011",
+       "claim": "It said human staff made inappropriate comments about race during calls.",
+       "llm_materiality": "BLOCKING",
+       "basis": "ledger_scope",
+       "floor": "deterministic_floor:changed_number",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerが記録するのは従業員が報告した個別の不適切発言だが、記事は複数の発言があったように表現している。"
+      },
+      {
+       "fact": "MUSE-HC-011",
+       "claim": "These calls were about trying to lower internet or cable fees.",
+       "llm_materiality": "BLOCKING",
+       "basis": "ledger_scope",
+       "floor": "deterministic_floor:changed_number",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerの対象は料金交渉の個別事例だが、記事は複数の電話に一般化している。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-011",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-011",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 3,
+     "recheck_total": 5,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 0,
+     "non_blocking_count": 6,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 0,
+     "non_blocking_count": 17,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg1_meta_b3prod_a2": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 8.8186,
+   "n_cycles": 4,
+   "n_stage1_union": 32,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 7,
+     "non_blocking_count": 26,
+     "n_rewrite": 7,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-006",
+       "claim": "But as the conversation went on, the voice was not AI at all.",
+       "llm_materiality": "QUALITY",
+       "basis": "ledger_claim",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "会話が進むにつれて声がAIではないと分かったという個別の出来事はLedgerにありません。"
+      },
+      {
+       "fact": "MUSE-HC-008",
+       "claim": "A human can handle situations that AI alone finds difficult.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "人間がAI単独では難しい状況に対処できるという一般的な能力比較は、限定されたテストについてのLedgerの記載を超えています。 / 一部テストで報告された成功率の比較を、AIが難しい状況を人間が扱えるという一般的な能力の主張に広げています。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "But this was where the problem began.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "ここから問題が始まったという前文との関係・因果づけはLedgerにありません。 / 従業員が示したプライバシー上の懸念を、問題が実際に始まったかのように述べています。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "It is another when you know a person is listening.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "人が聞いていると知って話すこととの対比は、Ledgerに記載されていません。"
+      },
+      {
+       "fact": "MUSE-HC-004",
+       "claim": "As AI becomes able to make calls or reservations for us, this question will become more familiar.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "この問いが今後より身近になるという予測はLedgerにありません。また、予約を含む将来の一般的な利用範囲も断定されていません。"
+      },
+      {
+       "fact": "",
+       "claim": "The more useful the feature, the more people will want to know who is on the other side.",
+       "llm_materiality": "QUALITY",
+       "basis": "unsupported_relationship",
+       "floor": "deterministic_floor:changed_comparison,changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "機能が有用になるほど人々が相手を知りたくなるという予測的な比較・因果関係はLedgerにありません。"
+      },
+      {
+       "fact": "",
+       "claim": "They will want to know if it is AI or human.",
+       "llm_materiality": "QUALITY",
+       "basis": "unsupported_relationship",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "人々がAIか人間かを知りたがるという将来予測はLedgerにありません。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-006",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-008",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-004",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "claim:0abb7797fa802707",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "claim:68a4dc9f9e426432",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 4,
+     "recheck_total": 7,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim",
+      "short_section_no_window(title_hook_in_one_line)"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 2,
+     "non_blocking_count": 13,
+     "n_rewrite": 2,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "And this was where the concern began.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "従業員がプライバシー上の懸念を示したことはLedgerにあるが、懸念がこの時点で始まったという時期・展開は示されていない。 / Ledgerは従業員がプライバシー上の懸念を示したことを記録しているが、その懸念がこの時点で始まったという時期・起点は示していない。"
+      },
+      {
+       "fact": "",
+       "claim": "People will want to know who is on the other side.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison,changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "機能が有用になるほど人々が相手を知りたくなるという予測的な比較・因果関係はLedgerにありません。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "claim:337e43976eb76762",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 0,
+     "recheck_total": 2,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim",
+      "same_fact_id_reappeared_across_cycles"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 0,
+     "non_blocking_count": 6,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 4,
+     "blocking_count": 0,
+     "non_blocking_count": 28,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg2_meta_refresh_a2": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 3.7869,
+   "n_cycles": 3,
+   "n_stage1_union": 16,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 2,
+     "non_blocking_count": 15,
+     "n_rewrite": 2,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-011",
+       "claim": "News reports also quoted a report from an employee.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_number",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerが示すのは個別事例を紹介した報道であり、「reports」と複数の報道が引用したという範囲は確認できない。"
+      },
+      {
+       "fact": "MUSE-HC-011",
+       "claim": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+       "llm_materiality": "QUALITY",
+       "basis": "ledger_scope",
+       "floor": "deterministic_floor:changed_number",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerの報道された1件の従業員報告を、複数の人間スタッフが複数の電話で発言したかのように範囲・件数を広げている。 / 個別事例の従業員報告を、複数の電話での出来事のように表現しており、報道された事例の範囲を広げています。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-011",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-011",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 2,
+     "recheck_total": 2,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 0,
+     "non_blocking_count": 2,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 0,
+     "non_blocking_count": 14,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg3_hormuz_prodrunner_b1b": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 3.9982,
+   "n_cycles": 3,
+   "n_stage1_union": 13,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 2,
+     "non_blocking_count": 14,
+     "n_rewrite": 2,
+     "blocking": [
+      {
+       "fact": "HF-003",
+       "claim": "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+       "llm_materiality": "BLOCKING",
+       "basis": "ledger_conditions",
+       "floor": "deterministic_floor:changed_actor",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerでは徴収主体や支払義務者などの制度設計は示されていません。「貨物が提供すべき」とすると、貨物側に支払義務があるという未確認の具体化になります。"
+      },
+      {
+       "fact": "HF-009",
+       "claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+       "llm_materiality": "BLOCKING",
+       "basis": "ledger_conditions",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "「価格を動かしていた事象」が戻ったという因果的な断定はLedgerにありません。また、Ledgerでは事象は継続していたとされており、「戻った」とする時系列も異なります。 / 価格が戻ったことに加え、価格を動かす出来事自体も戻ったとし、それらが価格を動かしていたという因果を付けています。Ledgerでは関連する懸念は継続していたとされています。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:HF-003",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:HF-009",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 1,
+     "recheck_total": 2,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim",
+      "short_section_no_window(title_hook_in_one_line)"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 0,
+     "non_blocking_count": 3,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 3,
+     "blocking_count": 0,
+     "non_blocking_count": 8,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg7_meta_prodrunner_b1b": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "STAGE4_ESCALATION",
+   "stage4_reason": "blocking_structural_after_ladder",
+   "cost": 6.5503,
+   "n_cycles": 2,
+   "n_stage1_union": 24,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 9,
+     "non_blocking_count": 15,
+     "n_rewrite": 9,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-004",
+       "claim": "Imagine asking AI to book a haircut.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "ledger_claim",
+       "floor": "deterministic_floor:changed_actor",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "Ledgerが支えるのはMuseに散髪の予約電話を依頼できることです。AIに散髪の予約そのものをさせる表現は、電話をかける範囲を超えています。"
+      },
+      {
+       "fact": "MUSE-HC-006",
+       "claim": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_actor",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "「So」で直前の電話機能と結び、依頼後はAIが電話を処理するという説明にしていますが、一部の電話は人間の契約スタッフが担当したというLedgerの範囲・行為者と異なります。 / 「So」がMuseに電話機能があることからAIが電話を処理するという結論を導きますが、Ledgerでは一部の電話を人間の契約スタッフが担当したとされています。 / 電話を依頼できるという機能説明を、AIが電話そのものを処理"
+      },
+      {
+       "fact": "MUSE-HC-006",
+       "claim": "It was like an AI-led play with a hidden supporting actor.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "人間の担当者を「隠れた脇役」とする比喩的な位置づけはLedgerに直接記載されておらず、事実としての対応を確認できません。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "The issue was not that humans handled calls.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "ledger_claim",
+       "floor": "deterministic_floor:changed_negation,changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "従業員の懸念が人間による電話対応そのものではなかったという区別は、Ledgerに明記されていません。 / Ledgerにあるプライバシー上の懸念を踏まえず、「問題は人間が電話を担当したことではない」と問題の内容を限定しています。 / Ledgerは適切な開示なしでテストを始めたことをミスとしたと述べますが、「問題は人間が電話をしたことではない」という限定は記載していません。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "A service that seemed simple now looked like a mystery story.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "サービスが「ミステリー物語」のように見えたという評価はLedgerにありません。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "No large information leak was confirmed.",
+       "llm_materiality": "QUALITY",
+       "basis": "ledger_claim",
+       "floor": "deterministic_floor:changed_negation",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "大規模な情報漏えいが確認されていないという否定的事実はLedgerに記載されていません。懸念が記録されていることだけでは、漏えいの有無を確定できません。 / 大規模な情報漏えいが確認されていないという状況はLedgerに記載されていません。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "ledger_conditions",
+       "floor": "deterministic_floor:changed_actor",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "情報が人間に届く可能性はLedgerにありますが、ユーザーが誰の作業か知り得なかったという断定は記載されていません。 / 従業員が懸念を示したという報告を、ユーザーが誰の作業か知り得なかったという断定的な説明に広げています。情報が人に届く可能性の主体・範囲も広げています。 / 適切な開示がなかったという事実を、ユーザーが誰が作業するか知り得なかったという、より強い範囲の主張にしています。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "That uncertainty turned convenience into a mystery.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "不確実性が利便性をミステリーに変えたという因果・評価はLedgerに記載されていません。"
+      },
+      {
+       "fact": "MUSE-HC-012",
+       "claim": "The company did not stop Muse itself.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "ledger_scope",
+       "floor": "deterministic_floor:changed_negation",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "人間コンシェルジュ機能をロールバックした事実はありますが、Muse自体を停止しなかったという明示的な事実はLedgerにありません。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-004",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-006",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-006",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "lvl": "4_paragraph",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "lvl": "4_paragraph",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "lvl": "4_paragraph",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "covered_by_earlier_rewrite_in_cycle",
+       "lvl": null,
+       "guard": false,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-012",
+       "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+       "lvl": "4_paragraph",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 9,
+     "recheck_total": 9,
+     "merge_decision": "NEXT_CYCLE",
+     "full_recheck_reasons": [
+      "paragraph_or_full_or_delete_rewrite",
+      "multiple_claims_rewritten_same_cycle",
+      "deterministic_floor_claim",
+      "short_section_no_window(title_hook_in_one_line)"
+     ],
+     "last_resort_delete_failed": null
+    },
+    {
+     "cycle": 2,
+     "blocking_count": 3,
+     "non_blocking_count": 10,
+     "n_rewrite": 5,
+     "blocking": [
+      {
+       "fact": "MUSE-HC-004",
+       "claim": "So it sounds like a simple story: you make a request, and someone takes care of the call.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "changed_causality_floor",
+       "tier0_reason": "changed_causality_floor",
+       "s1": null,
+       "issue": "「So」で電話機能から「単純な話」という評価や、誰かが電話を引き受けるという見立てを導いているが、その関係・評価はLedgerにない。 / 電話機能があることから「単純な話」で「誰かが電話を引き受ける」という結論に至る因果・照応関係をLedgerは述べていない。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "The issue was not just that humans handled calls.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "deterministic_floor:changed_comparison",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "問題は人間が電話を担当したことだけではなかった、という対比・評価をLedgerは述べていない。"
+      },
+      {
+       "fact": "MUSE-HC-010",
+       "claim": "Users might not know who was doing the work they had asked AI to do—and their personal information might reach that person.",
+       "llm_materiality": "ACCEPTABLE",
+       "basis": "none",
+       "floor": "tier0:aux:issue_actor",
+       "tier0_reason": "aux:issue_actor",
+       "s1": null,
+       "issue": "契約スタッフへの情報共有の可能性に関する懸念は支えられるが、ユーザーが担当者を知らない可能性や個人情報がその人に届くという一連の主張は、記載された範囲を超える。 / 懸念の対象を、必要となる機微情報が契約スタッフへ意図せず共有される可能性から、ユーザーの個人情報全般がその担当者に届く可能性へ広げています。 / 社内テストで適切な開示がなかったというLedgerの範囲から、ユーザー一般が担当者を知ら"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:MUSE-HC-004",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "+ladder6_disabled",
+       "lvl": null,
+       "guard": false,
+       "notloc": false,
+       "exhausted": true
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "e2_generic_rewrite(violation_span(EN,L0))",
+       "lvl": "3_sentence",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "deterministic_delete(violation_span(EN,L0))",
+       "lvl": "0_delete",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:MUSE-HC-010",
+       "method": "violation_span_unverified",
+       "lvl": null,
+       "guard": false,
+       "notloc": true,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": true
+    }
+   ]
+  }
+ },
+ "rep30": {
+  "bgroup_B3": {
+   "group": "b_group",
+   "expected": "claim単位混在(§7-0)",
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "cost": 0.8283,
+   "n_cycles": 1,
+   "n_stage1_union": null,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 2,
+     "non_blocking_count": 5,
+     "n_rewrite": 2,
+     "blocking": [
+      {
+       "fact": "HF-007",
+       "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back ",
+       "llm_materiality": "BLOCKING",
+       "basis": "unsupported_relationship",
+       "floor": null,
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。"
+      },
+      {
+       "fact": "HF-007",
+       "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back ",
+       "llm_materiality": "BLOCKING",
+       "basis": "unsupported_relationship",
+       "floor": null,
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "継続していた攻撃・封鎖・タンカー安全への懸念が、20％案の撤回・置換や価格回復の原因だったかのように読める。Ledgerは、撤回・置換の理由としてトランプ氏が「非常に生産的な協議」を挙げたことと、供給懸念が継続していたことを確認しているが、両者の因果関係は確認していない。"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:HF-007",
+       "method": "e1_minimal_word_edit(violation_span(EN,L5_edge_punct))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      },
+      {
+       "id": "fact:HF-007",
+       "method": "covered_by_earlier_rewrite_in_cycle",
+       "lvl": null,
+       "guard": false,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 0,
+     "recheck_total": 2,
+     "merge_decision": null,
+     "full_recheck_reasons": [
+      "paragraph_or_full_or_delete_rewrite",
+      "english_only_ja_source_requires_full_recheck",
+      "multiple_claims_rewritten_same_cycle",
+      "short_section_no_window(title_hook_in_one_line)"
+     ],
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "hormuz_run03_advanced": {
+   "group": "hormuz",
+   "expected": "Normal群(§7-5)",
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "cost": 0,
+   "n_cycles": 0,
+   "n_stage1_union": null,
+   "cycles": []
+  },
+  "hormuz_run03_standard": {
+   "group": "hormuz",
+   "expected": "BLOCKING(Safety群、§7-1、narrow_scope)",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 0.4119,
+   "n_cycles": 1,
+   "n_stage1_union": null,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 0,
+     "non_blocking_count": 6,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "meta_run03_advanced": {
+   "group": "meta",
+   "expected": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "cost": 0.1395,
+   "n_cycles": 0,
+   "n_stage1_union": null,
+   "cycles": []
+  },
+  "meta_run03_standard": {
+   "group": "meta",
+   "expected": "BLOCKING→Rewrite→PASS(§7-1、現行は既存retry1回で通過)",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 0.2184,
+   "n_cycles": 1,
+   "n_stage1_union": null,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 0,
+     "non_blocking_count": 3,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg1_meta_b3prod_a2": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 0.2339,
+   "n_cycles": 1,
+   "n_stage1_union": null,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 0,
+     "non_blocking_count": 4,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg2_meta_refresh_a2": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "stage4_reason": null,
+   "cost": 0.204,
+   "n_cycles": 1,
+   "n_stage1_union": null,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 0,
+     "non_blocking_count": 2,
+     "n_rewrite": 0,
+     "blocking": [],
+     "rewrites": [],
+     "recheck_unresolved": 0,
+     "recheck_total": 0,
+     "merge_decision": null,
+     "full_recheck_reasons": null,
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg3_hormuz_prodrunner_b1b": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "RESOLVED_REWRITE",
+   "stage4_reason": null,
+   "cost": 0.9211,
+   "n_cycles": 1,
+   "n_stage1_union": null,
+   "cycles": [
+    {
+     "cycle": 1,
+     "blocking_count": 1,
+     "non_blocking_count": 3,
+     "n_rewrite": 1,
+     "blocking": [
+      {
+       "fact": "HF-009",
+       "claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+       "llm_materiality": "BLOCKING",
+       "basis": "ledger_conditions",
+       "floor": "deterministic_floor:changed_time",
+       "tier0_reason": null,
+       "s1": null,
+       "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blockade and tanker-safety concerns continued during the price mov"
+      }
+     ],
+     "rewrites": [
+      {
+       "id": "fact:HF-009",
+       "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+       "lvl": "1_word_connective",
+       "guard": true,
+       "notloc": false,
+       "exhausted": false
+      }
+     ],
+     "recheck_unresolved": 0,
+     "recheck_total": 2,
+     "merge_decision": null,
+     "full_recheck_reasons": [
+      "deterministic_floor_claim",
+      "short_section_no_window(title_hook_in_one_line)"
+     ],
+     "last_resort_delete_failed": null
+    }
+   ]
+  },
+  "neg7_meta_prodrunner_b1b": {
+   "group": "negative",
+   "expected": "ACCEPTABLE(Normal群、§7-5)",
+   "final_state": "ACCEPTABLE_STAGE1",
+   "stage4_reason": null,
+   "cost": 0,
+   "n_cycles": 0,
+   "n_stage1_union": null,
+   "cycles": []
+  }
+ }
+}

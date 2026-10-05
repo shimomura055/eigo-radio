@@ -4604,3 +4604,14 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - 実測所見(8 run、推測なし): 負例/NORMAL相当6 runの全件でRewriteが発火(Rewrite率100%、見込み0.53と乖離)、うち1件が人間確認行き。cycle分布(1/2/3/4)=1/1/6/1。
 - Worker判断: 上記Waste判定を緩めて再開する案を試みたがPermission拒否(Security Weaken)のため再開せず停止。再開可否・判定基準はユーザー/Fable判断待ち。
 - Status: `USER_DECISION_REQUIRED(E2E停止、neg7 Waste検知)`。詳細: er052_output/open233_e2e_acceptance_01/(run_log_main_part1_stopped_neg7.json、e2e_aggregate.json、runs/)。
+
+## §75 OPEN-233 E2E-ACCEPTANCE-01 委任_22(2026-10-05): neg7 Human Review発生のRCA(¥0、コード変更なし、E2E再開せず)
+- provenance: fresh Stage 1 / E2E途中(frozen・reuse・代替なし)。VALIDATED不可、Production未反映。ラベルは【確認】/【推測】を分けて記載。
+- **Human Review KPI: FAIL確定(1/9 run)**。neg7(負例、meta)がSTAGE4_ESCALATION(`blocking_structural_after_ladder`)。非SC 8 runのうち7 runでRewrite発火(hormuz_standardのみ0。集計上のnormal-like 6 runは全件)。
+- 分類【確認+推測】: 直接原因=**①実装不具合**(T経路が同cycleでRewrite成功済みのHC-010 claimを再度削除対象にし位置特定不能→`_t_fail`→構造要素でない(`structural_reasons=[]`)のに`blocking_structural_after_ladder`。設計doc L704の既知の範囲外観察と同型)。全件Rewriteの原因=**②設計問題**(Stage 1 r3の候補過剰[neg7は29単位中24候補]、Stage 1 changed_*由来のdeterministic_floorがLLM ACCEPTABLEを覆す[FLOOR_VERIFY=time_onlyで非時期floorは再確認/S1非経由]、Recheckのfact_id粒度fail-closed、ladder location_carry)。③正当は該当なし。
+- BLOCKING審査(非SC 8 run計35件): 全件floor強制(うち31件はStage 2 LLMがBLOCKING以外)。【推測】誤BLOCKING24/判断不能5/正当6(HC-011複数化・HF-003/009等)。neg7は12件で誤9/判断不能3/正当0。S1が割れてBLOCKINGになった例は0。
+- rep30同instance比較: BLOCKING 1件・Rewrite 1/8 run → E2E 35件・7/8 run。OF-032(BLOCKING率0.10は過小評価)は実測で裏付け(n小)。
+- 是正案(列挙のみ、実装なし): A T除外(不具合修正)、B STAGE4前の構造検証必須化、C floor_verify拡張(要承認)、D r3 prompt(要承認)、E Recheck claim単位化(要承認)、F ladder再試行、G閾値(非推奨)。詳細は`docs/pm/rca_open233_e2e_neg7_human_review_01.md`。
+- 残11 run(SC): 未再開。継続で得るのはE2E Safety見逃し0の実測(未修正コードだと修正後に再測定が必要)。費用mid¥55〜70/残¥83.17。結論はFable/ユーザー。累計¥189.83不変(本委任¥0)。
+- 証跡: er052_output/open233_kpi_recovery_02_offline_01/e2e_neg7_rca_extract_01.json。
+- Status: `USER_DECISION_REQUIRED(E2E: Human Review KPI FAIL 1件・分類【①実装不具合(直接)+②設計問題(Rewrite全件)】)`。
