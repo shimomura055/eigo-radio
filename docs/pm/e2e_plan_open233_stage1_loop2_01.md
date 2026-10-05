@@ -48,3 +48,20 @@ Human Review/STAGE4出口(件数・理由)、重大見逃し(gold SC各instance�
 ## 7. STOP条件
 Opus#16は「E2EでHuman Reviewまたはworst run ¥3超でSTOP」としている。本計画は、Human Review/STAGE4発生は合否の不合格要因として記録しつつ集計完了まで継続し報告、worst ¥3超は全件記録(停止は¥6超)とする案を採る【Fable判断要】。以下は即停止: 1 run ¥6超、見積+30%超、API失敗3 run超、gold SCのいずれかが∪で見逃し(原因機構を分析、Prompt追加で追い込まない)、hold-outで新規見逃し、欠落ID 5%超、想定外の大量API発火、累計がGuardrail超。
 - 禁止: Production正式path変更、prompt定数/gold/fixture/Safety-critical定義/Stage 2変更。委任_15は(a)Recheck新仕様実装+単体テスト(¥0)、(b)E2Eスクリプト作成、(c)見積、(d)Fable確認後に本番、の順。
+
+## 追補(委任_18、2026-10-05): E2E-ACCEPTANCE-01 instance計画(20 run、Standard/Advanced対を含む調整版)
+ユーザー決定(DECISION_LOG 2026-10-05): Cost KPIのみ例外承認、Safety/Human Review KPIは不変、原則20 run、到達最大VALIDATED。実行は委任_19(`er052_open233_e2e_acceptance_01.py --stage main --yes-run-paid`)。本追補時点では**未実行**(dry-runと見積のみ)。
+
+| instance | レベル | 群 | n | セット対 |
+|---|---|---|---|---|
+| bgroup_B3 / safety_A2A3 / safety_A4 / safety_A5 / bgroup_B4 / neg5_hormuz_div_a2 | fixture由来(Std/Adv区分なし) | SC(gold 6) | 各2=12 | なし(1記事x2の推計列) |
+| hormuz_run03_advanced + hormuz_run03_standard | Advanced+Standard | 対(Normal群+Safety群) | 各1=2 | あり(実測合算) |
+| meta_run03_advanced + meta_run03_standard | Advanced+Standard | 対(Normal群+Safety群) | 各1=2 | あり(実測合算) |
+| neg1_meta_b3prod_a2 / neg2_meta_refresh_a2 / neg3_hormuz_prodrunner_b1b / neg7_meta_prodrunner_b1b | fixture由来 | 負例/NORMAL | 各1=4 | なし(推計列) |
+合計20 run(SC 12+対4+負例4)。実行順はsample-major(sample 1に14 instance、sample 2にSC 6)。途中停止でも対が先に揃う。
+
+計画(推奨案)からの調整: 推奨案のB2_hormuz n=2(HF-011監視)・neg4/neg6(各n=1)を外し、Standard/Advanced対4 runを入れた(20 runを維持)。外した理由=1セット単位の実測(ユーザー要求)を優先。影響: (1)HF-011監視のn=2が無くなる(B2_hormuzは今回E2E対象外、Fable判断要)、(2)負例はneg1/2/3/7の4件(neg4/neg6[smallbag系]は今回なし)、(3)er009 hold-out 9種は計画どおり対象外(段階Aで検出確認済み)。
+
+構成(provenance): Stage 1=coverage_union(r3 medium+r5 high full+否定案a、F3常時、H1 fail-closed)、後段=rep30有効構成(STAGE2_VERDICT_REUSE_NONBLOCKING/STAGE2_SIBLING_LOCATIONS_CYCLE1/STAGE4_ALLOWLIST等をスクリプトで明示設定)、Recheck=`RECHECK_MODE=coverage_union`(変更単位+前後1単位、Rewrite発生記事は出口3'-R全文1回)。全runでstage1_cache=None・baseline代替無効(substitute_baseline_on_stage1_miss=False)・frozen/reuseなし。shadow V4Aは省略(差し引きは既存Productionログ換算の推計0.76/0.91)。
+Waste検知: 1 run内のcost>¥6/call数>80/API失敗>3/cycle番号>5で当該run停止、同一claim_identityのRewrite試行>3回・出口3'-R反復を事後検出。いずれもE2E全体をSTOPし報告。provenance違反(Stage 1 call無し/代替/宣言不一致)も即STOP。
+見積(¥0、推計、`er052_output/open233_e2e_acceptance_01/estimate.json`): 20 run合計 low¥47.3 / mid¥66.5 / high¥86.0(1セット=1記事平均x2: ¥4.7/6.7/8.6)。残予算¥98.29内(high側でも収まる)。

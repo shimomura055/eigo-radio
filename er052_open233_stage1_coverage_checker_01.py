@@ -761,8 +761,9 @@ def _call_with_one_retry(call_fn, label: str, developer: str, prompt: str, schem
     return None
 
 
-def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, negation_mode: str = "legacy") -> dict:
-    required = list(split["judged_ids"])
+def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, negation_mode: str = "legacy",
+            required_ids: list | None = None) -> dict:
+    required = list(split["judged_ids"]) if required_ids is None else list(required_ids)  # 委任_18: Recheck用の対象限定(既定None=従来)
     calls: list = []
     out = {"route": "r3", "calls": calls, "api_failure": False, "rerun_used": False}
     parsed = _call_with_one_retry(call_fn, "r3", R3_DEVELOPER_MESSAGE,
@@ -924,3 +925,133 @@ def to_stage1_parsed(result: dict) -> dict:
         parsed = {"overall_status": "LEDGER_DEVIATION", "deviations": [], "_stage1_api_failure": True,
                   "variant": "coverage_union", "stage1_coverage_audit": result["audit"]}
     return parsed
+
+
+# ------------------------------------------------------------
+# 7. 委任_18(OPEN-233 E2E-ACCEPTANCE-01、Trial専用・Production未配線): Rewrite後Recheckの新Stage 1仕様(Opus#16 論点8/9)。
+#    (a) Recheck=「変更された単位とその前後1単位」を3'-R+5-lite(対象限定)で再判定 (b) Rewrite発生記事は出口前に3'-R全文1回。
+#    単位IDは位置で決まるためRewrite後は`split_units`をやり直す。判定規則・prompt定数・決定論検査は変更しない(対象限定のみ)。
+# ------------------------------------------------------------
+def coverage_changed_scope(before_text: str, after_text: str, segment_fn=None, initial_extra=(), prior_claims=()) -> dict:
+    """before/afterを`split_units`で分割し、文・タイトル・見出しの正規化列をdifflibで比較して「変更された単位」(after側ID)を求める。
+    純削除は削除位置の前後の単位を変更扱い。さらに前回指摘の箇所(`prior_claims`)が現行本文に残っている単位も変更扱い
+    (Rewriteが効かず本文が不変でも、未解消を範囲外として見逃さないための安全側)。scope=変更単位+前後1単位(+それを含む関係単位)。"""
+    import difflib
+    sb = split_units(before_text, segment_fn, initial_extra)
+    sa = split_units(after_text, segment_fn, initial_extra)
+    base_b = [u for u in sb["units"] if u["type"] in ("sentence", "title", "heading")]
+    base_a = [u for u in sa["units"] if u["type"] in ("sentence", "title", "heading")]
+    nb = [norm_sentence(u["text"]) for u in base_b]
+    na = [norm_sentence(u["text"]) for u in base_a]
+    changed = set()
+    for tag, i1, i2, j1, j2 in difflib.SequenceMatcher(None, nb, na, autojunk=False).get_opcodes():
+        if tag == "equal":
+            continue
+        if j1 == j2:  # 純削除: 削除位置の前後
+            changed.update(k for k in (j1 - 1, j1) if 0 <= k < len(base_a))
+        else:
+            changed.update(range(j1, j2))
+    n_prior_hit = 0
+    for c in prior_claims or []:
+        nc = norm_sentence(c or "")
+        if len(nc) < 8:
+            continue
+        for k in range(len(base_a)):
+            if nc in na[k] or (len(na[k]) >= 8 and na[k] in nc):
+                changed.add(k)
+                n_prior_hit += 1
+    idx = set()
+    for k in changed:
+        idx.update(x for x in (k - 1, k, k + 1) if 0 <= x < len(base_a))
+    scope_base = {base_a[k]["id"] for k in idx}
+    scope = set(scope_base)
+    for r in sa["units"]:
+        if r["type"] == "relation" and (r["prev_id"] in scope_base or r["cur_id"] in scope_base):
+            scope.add(r["id"])
+    scope_ids = [u["id"] for u in sa["units"] if u["judged"] and u["id"] in scope]
+    return {"scope_ids": scope_ids, "changed_ids": sorted(base_a[k]["id"] for k in changed), "n_base_after": len(base_a),
+            "n_prior_claim_hits": n_prior_hit, "split": sa}
+
+
+def _run_r5_scope(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, scope_ids: list) -> dict:
+    """5-liteの対象限定版(Recheck用)。既存`R5V_*`prompt(検証対象の単位だけを判定、記事全文は文脈)を再利用する。判定規則は不変。"""
+    calls: list = []
+    fact_ids = list(blocks.keys())
+    out = {"route": "r5", "calls": calls, "api_failure": False, "rerun_used": False, "r5_mode": "scope"}
+    sset = set(scope_ids)
+    targets = [u for u in split["units"] if u["id"] in sset and u["type"] != "paragraph"]
+    if not targets:
+        out.update(status={}, candidates=[], facts_missing=[], unknown_unit_ids=[], skipped_no_targets=True)
+        return out
+    parsed = _call_with_one_retry(call_fn, "r5v", R5V_DEVELOPER_MESSAGE,
+                                  build_r5v_prompt(fixture["ledger_text"], fixture["article_text"], targets, fact_ids),
+                                  R5_JSON_SCHEMA, calls)
+    if parsed is None:
+        out.update(api_failure=True, status={}, candidates=[], facts_missing=fact_ids)
+        return out
+    ev = evaluate_r5(parsed.get("facts") or [], units_by_id, fact_ids, fixture["article_text"], sset)
+    out.update(status=ev["status"], candidates=ev["candidates"], facts_missing=ev["facts_missing"],
+               unknown_unit_ids=ev["unknown_unit_ids"], n_targets=len(targets))
+    return out
+
+
+def prior_issue_resolution(prior_issues: list, cands: list, units_by_id: dict) -> list:
+    """前回指摘(prior_issues)ごとに、今回のscope判定候補(∪)が同じ箇所/同じfactを指していれば未解消(resolved=False)。
+    判定は保守側(同fact_idの候補は別単位でも未解消扱い=fail-closed)。戻り値は`aggregate_prior_issues_resolved`が読む形。"""
+    items = []
+    for i, pi in enumerate(prior_issues or []):
+        fid = (pi.get("fact_id") or "").strip()
+        nc = norm_sentence(pi.get("claim_in_article") or "")
+        hit = None
+        for c in cands:
+            ct = norm_sentence(c.get("claim_text") or "")
+            same_text = bool(nc and ct and len(nc) >= 8 and (nc in ct or ct in nc))
+            same_fact = bool(fid and fid in (c.get("related_fact_ids") or []))
+            if same_text or same_fact:
+                hit = c
+                break
+        items.append({"index": i, "resolved": hit is None,
+                      "explanation": ("coverage scope recheck: no candidate for this issue" if hit is None else
+                                      "coverage scope recheck: candidate remains (" + ",".join(hit.get("sub_reasons") or []) + ")"),
+                      "remaining_sentence": hit.get("claim_text", "") if hit else ""})
+    return items
+
+
+def run_recheck_scope(fixture: dict, call_fn, before_text: str, prior_issues: list, segment_fn=None, initial_extra=(),
+                      negation_mode: str = "legacy") -> dict:
+    """Rewrite後Recheck(新仕様)。fixture["article_text"]=Rewrite後本文。scope=変更単位+前後1単位を3'-R(欠落ID再実行・決定論検査込み)と
+    5-lite(対象限定)で判定し、∪を返す。API失敗(再実行1回後も)は`api_failure=True`(呼び出し側がfail-closed)。"""
+    sc = coverage_changed_scope(before_text, fixture["article_text"], segment_fn, initial_extra,
+                                [pi.get("claim_in_article") or "" for pi in prior_issues or []])
+    split = sc["split"]
+    units_by_id = {u["id"]: u for u in split["units"]}
+    blocks = ledger_fact_blocks(fixture["ledger_text"])
+    res = {}
+    if sc["scope_ids"]:
+        res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode, required_ids=sc["scope_ids"])
+        res["r5"] = _run_r5_scope(call_fn, split, fixture, blocks, units_by_id, sc["scope_ids"])
+    failed = [k for k, v in res.items() if v["api_failure"]]
+    merged = union_candidates([c for v in res.values() for c in v["candidates"]])
+    calls = [c for v in res.values() for c in v["calls"]]
+    return {"candidates": merged, "api_failure": bool(failed), "failed_routes": failed,
+            "prior_issues_resolved": prior_issue_resolution(prior_issues, merged, units_by_id),
+            "audit": {"module_version": MODULE_VERSION, "kind": "recheck_scope", "scope_ids": sc["scope_ids"],
+                      "changed_ids": sc["changed_ids"], "n_prior_claim_hits": sc["n_prior_claim_hits"],
+                      "n_scope": len(sc["scope_ids"]), "n_judged_units": len(split["judged_ids"]),
+                      "n_union_candidates": len(merged), "n_calls": len(calls),
+                      "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) or 0.0 for c in calls), 4),
+                      "missing_after_rerun": (res.get("r3") or {}).get("missing_after_rerun"), "calls": calls}}
+
+
+def run_exit_full_r3(fixture: dict, call_fn, segment_fn=None, initial_extra=(), negation_mode: str = "legacy") -> dict:
+    """Rewrite発生記事の最終出口前に、現行本文の全判定単位へ3'-Rを1回(欠落ID再実行・決定論検査・同文グループ一貫性は初回Stage 1と同じ)。"""
+    split = split_units(fixture["article_text"], segment_fn, initial_extra)
+    units_by_id = {u["id"]: u for u in split["units"]}
+    blocks = ledger_fact_blocks(fixture["ledger_text"])
+    r3 = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode)
+    merged = union_candidates(r3["candidates"])
+    return {"candidates": merged, "api_failure": bool(r3["api_failure"]),
+            "audit": {"module_version": MODULE_VERSION, "kind": "exit_full_r3", "n_judged_units": len(split["judged_ids"]),
+                      "n_union_candidates": len(merged), "n_calls": len(r3["calls"]),
+                      "missing_first": r3.get("missing_first"), "missing_after_rerun": r3.get("missing_after_rerun"),
+                      "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) or 0.0 for c in r3["calls"]), 4), "calls": r3["calls"]}}

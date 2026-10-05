@@ -4580,3 +4580,10 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - ユーザー判断事項: KPI基準点(iii)(shadow実測の可否)、Cost Cap +¥3との関係、Stage 2費用削減(承認済み構成の変更)、本管理IDの最終Status案(`TRIAL_RESULT: SAFETY_MET_COST_UNMET`等)。資料: `docs/pm/user_decision_open233_stage1_loop2_01.md`(§4選択肢A〜D、§6 Q1〜Q5、§7停止時点の自己確認)。
 - Opus台帳Closeout確認: `docs/pm/OPUS_FINDINGS_LEDGER.md` OF-001〜037を1件ずつ更新(対応済9・部分13・未対応2・対象外13、CLOSEOUT_CONFIRMED遷移0)。未達の自己確認: 項目27(Close不可)、項目29(OF-018・CURRENT_SPECプレースホルダに独立Open ID未設定)。
 - 累計 本管理ID ¥139.71/枠¥238(残¥98.29)。
+
+## 72. E2E-ACCEPTANCE-01 準備(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_18、2026-10-05、¥0、**E2E本番は未実行**)
+- ユーザー決定(DECISION_LOG 2026-10-05逐語記録): Cost KPI(+¥2/セット)のみ例外承認(本管理ID限定)、Safety/Human Review KPI不変、Cost未達は`OPEN-233-COST-REDUCTION-01`で継続、到達最大=`VALIDATED`(Production未反映)。独立Open ID化: `OPEN-233-OF018-SUBREASON-01`、`OPEN-233-SPEC-STAGE1-PLACEHOLDER-01`。
+- Recheck新仕様(Trial専用、`RECHECK_MODE`既定legacy_v4a=従来不変)を実装: `cov.coverage_changed_scope`(変更単位+前後1単位+前回指摘の残存箇所、関係単位を含む)、`cov.run_recheck_scope`(3'-R対象限定+5-lite[R5Vのprompt流用]対象限定、欠落ID再実行・決定論検査は初回と同じ)、`cov.run_exit_full_r3`、runner `run_recheck_coverage`/`run_exit_check_coverage`/出口ゲート(Rewrite発生記事がRESOLVED_*で出る直前に3'-R全文1回、新規CANDIDATEは次cycleのStage 2へ合流、API失敗は許可リスト`api_failure`)。`make_stage1_call_fn`を関数化(挙動不変)、`RUN_CALL_HOOK`(既定None)追加。単体テスト17件(`er052_open233_recheck_coverage_test_01.py`)+既存全793件PASS。
+- E2Eスクリプト`er052_open233_e2e_acceptance_01.py`: 20 run(SC 6x2+Std/Adv対2組+負例4)、fresh Stage 1(stage1_cache=None・baseline代替無効)、provenance記録・照合、Waste検知(cost/call数/API失敗/cycle/同一候補再Rewrite)、セット集計(実測対と1記事x2推計を別列)。単体テスト7件。計画表: `docs/pm/e2e_plan_open233_stage1_loop2_01.md` 追補。
+- dry-run(API stub、¥0、`er052_output/open233_e2e_acceptance_01_dryrun/`): 全20 runが最終出口まで通過、provenance全fresh、対2組の実測合算、集計欄が埋まることを確認(値自体はstubで意味なし)。見積(推計、`er052_output/open233_e2e_acceptance_01/estimate.json`): 20 run合計 low¥47.3/mid¥66.5/high¥86.0(残¥98.29内)。
+- 設計上の注意(未実測・推測): 出口3'-R全文は決定論検査を含むためNORMAL記事でも約22候補/記事(G arm実測)を出し得て、Rewrite発生記事では再入によりStage 2(約¥1.5)が追加される可能性がある(計画書の出口3'-R平均¥0.22は候補再判定を含まない)。E2E実測で確認する。

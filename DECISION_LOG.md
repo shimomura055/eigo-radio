@@ -19784,3 +19784,106 @@ Fable評価: 下記「出典: docs/pm/cost_feasibility_open233_stage1_01.md」�
 **ループ3続行の推奨**: 推奨しない(+¥2/セット達成を目的とする限り)。Safetyを維持した到達可能な水準は、安全レバーを全て入れた場合で純増約+¥3〜4.5/セット(推計)。これを受け入れるかはKPI判断(ユーザー)であり、Fableは提案しない。Production採用判断もユーザーのみ。
 
 **量産原価(参考、委任_16実測+推計)**: ベース約¥62.1/セット(TTS Standard同期、Research/Ledger約¥28.7・TTS約¥15.6〜20.8が大)+品質チェック純増+¥5.4=合計約¥67.5/セット(TTS Batch換算¥58.4)。純増は総額の約9%。Support/Key Phrase/Pronunciationはログに無く下限寄り。「約¥40/記事」の出典は特定不能。
+
+
+
+## OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 / E2E-ACCEPTANCE-01(2026-10-05、ユーザー決定: Cost KPI例外承認・fresh E2E最終確認・到達最大VALIDATED)
+
+以下はユーザー原文の逐語記録(委任_18、Fable経由)。
+
+````
+Claude Code 指示
+管理ID：OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 / E2E-ACCEPTANCE-01
+ユーザー判断
+今回、Cost KPIについて例外承認する。
+従来KPI：
+- Human Review / USER_DECISION_REQUIRED：0件
+- 重大Fact見逃し：0件
+- 平均追加費用：+¥2 / Standard+Advanced 1セット以内
+のうち、Cost KPIのみ今回のOPEN-233について例外を認める。
+理由は以下。
+1. 現時点の技術検証では、Safetyを維持したまま平均+¥2/セットへ到達する見込みが低く、追加開発に対して現実的ではない。
+2. コストは今後も可能な限り下げたい。
+3. 一方で、この品質問題への開発期間が長期化し、他の開発・リリースが遅延している。
+4. 顧客獲得→収益化の開始が遅れることによる機会損失の方が、今回見込まれる1セット数円程度の原価上昇より大きいとユーザーが判断した。
+5. よって、リリースをこれ以上遅らせないことを優先する。
+この判断を DECISION_LOG / CURRENT_SPECの必要箇所 / OPEN_ITEMS に正確に記録すること。
+また、Cost KPI未達を「解決済み」と消さず、
+将来の量産原価低減
+
+としてOpen Itemに残すこと。
+今回のE2E目的
+これ以上Cost最適化Trialは行わず、現在のSafetyを優先した構成でfresh E2E最終確認へ進む。
+今回確認する主目的は、
+1. Safety
+重大Fact見逃し 0件
+2. 運用性
+Human Review / USER_DECISION_REQUIRED 0件
+3. Cost
+合否Gateにはしないが、
+- 実際の平均追加費用
+- Standard+Advanced 1セット換算
+- Rewrite / Recheck発火時の上振れ
+- worst run
+を実測して記録する。
+Costについて、今回の例外承認を理由に計測を省略してはいけない。
+E2E条件
+原則として計画済みの 20 run を実施する。
+必ず、
+fresh Stage 1 → Stage 2 → 必要なRewrite / Recheck / Self-Recovery → 最終出口
+まで通す。
+以下は禁止。
+- frozen Stage 1出力
+- 過去判定の手動差替え
+- Safety結果を良くするためのgold変更
+- Safety-critical候補の除外
+- Checkerを甘くする変更
+- E2Eの一部をTrial artifactで代替して「E2E」と呼ぶこと
+Standard / Advancedについて、今回正式に採用した1セット単位で結果を整理する。
+受入条件
+Safety
+重大Fact見逃し 0件
+Human Review
+USER_DECISION_REQUIRED / Human Review 0件
+Cost
+今回のみ +¥2/セットを必須PASS条件から外す。
+ただし実測コストが、事前見込みの通常約+¥5.4/セットから大幅に乖離した場合は原因を確認する。
+特に異常なAPI発火、無限的retry、不要Rewrite等による構造的なWasteがあれば、Cost例外承認とは別問題なのでSTOPして報告すること。
+Productionとの区別
+このE2EはTrial最終確認である。
+Production正式pathへ新仕様をまだ配線しない。
+E2EがPASSした場合の到達Statusは、
+VALIDATED
+まで。
+自動的に APPROVED_FOR_PRODUCTION や PRODUCTION_WIRED にしてはならない。
+E2E結果をユーザーへ提示し、正式Production採用判断を受けること。
+再発防止確認
+今回のCloseoutでは、前回のStage 1見落とし再発を防ぐため、必ず以下を自己確認する。
+- fresh Stage 1から開始したか
+- upstreamのfrozen / reuse / substitutionがないか
+- Safety値は本当にE2E値か
+- Standard / Advanced双方を対象にしているか
+- Human Review 0を実測したか
+- Opus/Fableの未解決Safety警告が残っていないか
+- Trial結果を条件付き値とE2E値で混同していないか
+- 未解決項目をOpen Itemへ漏れなく残したか
+前回のように、条件付き検証をE2E Safety達成としてCloseしないこと。
+費用
+現管理IDの残予算は約 ¥98.29。
+E2E 20 runは約 ¥62 見込みなので、この範囲で実施してよい。
+ただし想定外の大量API発火が見えた場合は中断すること。
+E2E確認のために新しい改善ループ3を開始する必要はない。
+E2E後
+PASSの場合：
+- Trial Status：VALIDATED
+- Cost +¥2未達：ユーザー承認済み例外
+- 原価低減：Open Itemとして継続
+- Production：未反映
+として整理してSTOPする。
+SafetyまたはHuman Review KPIがFAILした場合：
+原因を確認し、単純な実装不具合なのか設計問題なのかを分類してSTOP。
+ユーザー承認なしに新しい改善Trialを開始しない。
+今回の目的は、Cost最適化を続けることではなく、現在の品質仕様がfresh E2Eで安全かつHuman Reviewなしで量産運用できることを最終確認すること。
+````
+
+Fable記録(Sonnet転記): 到達最大=VALIDATED。Cost例外は本管理ID限定(OPEN-233)で、他管理IDへは波及しない。Safety/Human Review KPIは不変。Cost未達は`OPEN-233-COST-REDUCTION-01`で継続。

@@ -466,6 +466,12 @@ STAGE1_R3_REASONING = "high"          # r3の推論effort(high/medium/low)。既
 STAGE1_R5_REASONING = "high"          # r5/r5-Vの推論effort(high/medium/low)
 STAGE1_NEGATION_MODE = "legacy"       # legacy=従来の決定論否定検査 / a=是正案a(対比構文除外・なし追加・英語Ledger対応・not only除外)
 STAGE1_FAIL_CLOSED = False            # H1: Stage 1 API失敗はPASSへ抜けず、再実行1回→なお失敗なら許可リスト`api_failure`でSTOP
+# 委任_18(E2E-ACCEPTANCE-01、Trial専用・Production未配線・既定=従来): Rewrite後Recheckの新Stage 1仕様(Opus#16 論点8/9)。
+# coverage_union=Recheckを「変更単位+前後1単位」の3'-R+5-lite(対象限定)で行い、Rewrite発生記事は最終出口前に3'-R全文を1回行う。
+RECHECK_MODE_LEGACY, RECHECK_MODE_COVERAGE_UNION = "legacy_v4a", "coverage_union"
+RECHECK_MODES = (RECHECK_MODE_LEGACY, RECHECK_MODE_COVERAGE_UNION)
+RECHECK_MODE = RECHECK_MODE_LEGACY
+RUN_CALL_HOOK = None                  # E2E Waste検知用(既定None=無効)。`check_budget`の冒頭で呼ばれる(call前、state渡し)
 
 
 def apply_kpi_trial_switches() -> dict:
@@ -1254,6 +1260,8 @@ def save_budget_state(state: dict) -> None:
 
 
 def check_budget(state: dict) -> None:
+    if RUN_CALL_HOOK is not None:  # 委任_18: E2E Waste検知フック(既定None=従来と同一)
+        RUN_CALL_HOOK(state)
     if state["cumulative_jpy"] >= TOTAL_BUDGET_JPY:
         raise TrialAbort(f"累計¥{state['cumulative_jpy']:.3f}が委任_09 Guardrail¥{TOTAL_BUDGET_JPY}に到達")
 
@@ -1763,10 +1771,9 @@ def stage1_effort_for_label(lbl: str) -> str:
     return vfl01.REASONING_EFFORT if eff == "high" else eff
 
 
-def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture, r3_precomputed=None) -> dict:
-    """委任_06: `STAGE1_MODE=coverage_union`のStage 1(文ID網羅3'-R+Ledger逆照合5-liteの2経路∪)。LLM呼び出しは本関数が
-    `cov.run_stage1_coverage`へ注入する`call_fn`で行い、retry/cost計上(`check_budget`/`record_call`)は`stage1_fresh_with_enumeration`
-    と同一パターン。経路のAPI失敗(module内で再実行1回後も失敗)は`_stage1_api_failure=True`で返す(H1: 呼び出し側でfail-closed)。"""
+def make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage: str = "stage1_initial"):
+    """委任_18: coverage module用の`call_fn`(retry/cost計上/budget check)を作る。委任_06の`stage1_coverage_fresh`内の実装を
+    そのまま関数化しただけ(既定`recovery_stage="stage1_initial"`では従来と同一)。Recheck/出口3'-Rでは`recovery_stage`だけ変える。"""
     def call_fn(lbl, developer_message, prompt, schema):
         check_budget(state)
         full_label = f"{label}_{lbl}"
@@ -1784,14 +1791,14 @@ def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fi
                 time.sleep(1.0)
         elapsed = round(time.time() - t0, 3)
         if response is None:
-            call_log.append({"label": full_label, "recovery_stage": "stage1_initial", "error": last_err})
-            record_call(state, consecutive_errors, full_label, 0.0, False, "stage1_initial")
+            call_log.append({"label": full_label, "recovery_stage": recovery_stage, "error": last_err})
+            record_call(state, consecutive_errors, full_label, 0.0, False, recovery_stage)
             return None, {"error": last_err, "cost_jpy": 0.0}
         usage = s2p._extract_usage(response)
         cost = round(s2p.official_cost_jpy(usage), 4)
-        call_log.append({"label": full_label, "recovery_stage": "stage1_initial", "cost_jpy": cost, "usage": usage,
+        call_log.append({"label": full_label, "recovery_stage": recovery_stage, "cost_jpy": cost, "usage": usage,
                           "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt), "reasoning_effort": effort})
-        record_call(state, consecutive_errors, full_label, cost, True, "stage1_initial", usage)
+        record_call(state, consecutive_errors, full_label, cost, True, recovery_stage, usage)
         meta = {"cost_jpy": cost, "usage": usage, "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt),
                 "reasoning_effort": effort}
         try:
@@ -1799,10 +1806,50 @@ def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fi
         except ValueError as e:
             return None, {**meta, "error": f"json_decode: {e}"}
 
+    return call_fn
+
+
+def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture, r3_precomputed=None) -> dict:
+    """委任_06: `STAGE1_MODE=coverage_union`のStage 1(文ID網羅3'-R+Ledger逆照合5-liteの2経路∪)。LLM呼び出しは
+    `make_stage1_call_fn`(委任_18で関数化)の`call_fn`を`cov.run_stage1_coverage`へ注入して行う。経路のAPI失敗
+    (module内で再実行1回後も失敗)は`_stage1_api_failure=True`で返す(H1: 呼び出し側でfail-closed)。"""
+    call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label)
     res = cov.run_stage1_coverage(fixture, call_fn, routes=STAGE1_ROUTES, segment_fn=vs_sentence_segments_l6,
                                   initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE,
                                   r5_mode=STAGE1_R5_MODE, r3_precomputed=r3_precomputed)
     return cov.to_stage1_parsed(res)
+
+
+def run_recheck_coverage(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
+                         prior_issues: list, before_text: str) -> dict:
+    """委任_18(`RECHECK_MODE=coverage_union`): `run_recheck`と同形の戻り値(overall_status/deviations/prior_issues_resolved/
+    all_prior_issues_resolved/prior_issues_resolved_by_index)を、変更単位+前後1単位の3'-R+5-lite(対象限定)で作る。
+    API失敗(再実行1回後も)は`run_recheck`と同じくfail-closed(LEDGER_DEVIATION・未解消・`_recheck_api_failure`)。"""
+    rf = dict(fixture)
+    rf["article_text"] = article_text
+    call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage="stage1_recheck")
+    res = cov.run_recheck_scope(rf, call_fn, before_text, prior_issues, segment_fn=vs_sentence_segments_l6,
+                                initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE)
+    if res["api_failure"]:
+        return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "all_prior_issues_resolved": False,
+                "_recheck_api_failure": True, "recheck_coverage_audit": res["audit"]}
+    devs = cov.candidates_to_deviations(res["candidates"])
+    all_res, by_idx = aggregate_prior_issues_resolved(prior_issues, res["prior_issues_resolved"])
+    return {"overall_status": "LEDGER_DEVIATION" if devs else "LEDGER_COMPLIANT", "deviations": devs,
+            "prior_issues_resolved": res["prior_issues_resolved"], "all_prior_issues_resolved": all_res,
+            "prior_issues_resolved_by_index": by_idx, "variant": "coverage_union_recheck",
+            "recheck_coverage_audit": res["audit"]}
+
+
+def run_exit_check_coverage(client, state, consecutive_errors, call_log, label, fixture, article_text: str) -> dict:
+    """委任_18(`RECHECK_MODE=coverage_union`): Rewrite発生記事の最終出口前の3'-R全文1回。候補は`deviations`(Stage 2へ渡す形)で返す。"""
+    rf = dict(fixture)
+    rf["article_text"] = article_text
+    call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage="stage1_exit_check")
+    res = cov.run_exit_full_r3(rf, call_fn, segment_fn=vs_sentence_segments_l6, initial_extra=CAUSAL_SENTENCE_INITIAL_EN,
+                               negation_mode=STAGE1_NEGATION_MODE)
+    return {"api_failure": res["api_failure"], "deviations": cov.candidates_to_deviations(res["candidates"]),
+            "audit": res["audit"]}
 
 
 def stage1_fresh_dispatch(client, state, consecutive_errors, call_log, label, fixture, developer_message,
@@ -8417,6 +8464,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     t_used = False                      # T(最終手段)は1記事1回
     carry_blocking: list = []           # H-1: 書き換えられなかった(位置を取れなかった)BLOCKING。空でない間はPASSを返さない
     rewritten_regions: list = []        # I-1最小: 前cycleまでの置換範囲(置換後文字列+試行level)
+    en_text_before_rewrite = current_en_text  # 委任_18: coverage Recheckのbefore(各cycleのRewrite直前で更新される)
+    exit_check_done = False             # 委任_18: 出口3'-R全文は1記事1回
+    exit_check_log: list = []
     article_state_history: list = []    # A2: 過去の本文(原文・前cycleまで)
     pinned_blocking: dict = {}          # S-4: キー(span集合,fact_id)->BLOCKING確定済みのStage 2結果
     nonblocking_registry: dict = {}     # S-4: 一致した2-of-2非BLOCKINGの結果(再利用スイッチ用)
@@ -8427,6 +8477,26 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         d = stage4_allowlist_decision(reason, ctx)
         allowlist_log.append({"cycle": cycle, "decision": d, "legacy_reason": legacy})
         return d
+
+    def _exit_gate(cyc_rec: dict) -> dict | None:
+        """委任_18(RECHECK_MODE=coverage_union): Rewrite発生記事(本文が原文から変わった)がRESOLVED_*で出口へ向かう直前に、3'-R全文を1回行う。
+        戻り値: None=そのまま出口 / {"action":"api_failure"}=fail-closed(許可リスト`api_failure`) / {"action":"reenter","deviations":[...]}=
+        新規CANDIDATEを次cycleのStage 2(funnel)へ合流させる。1記事1回(`exit_check_done`)。"""
+        nonlocal exit_check_done
+        if RECHECK_MODE != RECHECK_MODE_COVERAGE_UNION or exit_check_done or current_en_text == fixture["article_text"]:
+            return None
+        exit_check_done = True
+        r = run_exit_check_coverage(client, state, consecutive_errors, call_log, f"{instance_id}_exit", fixture, current_en_text)
+        devs = [d for d in r["deviations"] if d.get("severity") == "MAJOR"]
+        a_ = r["audit"]
+        entry = {"cycle": cycle, "n_candidates": len(devs), "api_failure": bool(r["api_failure"]), "n_calls": a_.get("n_calls"),
+                 "n_judged_units": a_.get("n_judged_units"), "total_cost_jpy": a_.get("total_cost_jpy"),
+                 "missing_after_rerun": a_.get("missing_after_rerun")}
+        exit_check_log.append(entry)
+        cyc_rec["exit_check"] = entry
+        if r["api_failure"]:
+            return {"action": "api_failure"}
+        return {"action": "reenter", "deviations": devs} if devs else None
 
     while True:
         working_fixture = dict(fixture)
@@ -8600,6 +8670,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             else:
                 final_state = "RESOLVED_STAGE2_DOWNGRADE" if cycle == 1 else "RESOLVED_REWRITE_THEN_DOWNGRADE"
             cycles_log.append(cycle_record)
+            g_ = _exit_gate(cycle_record) if final_state != "STAGE4_ESCALATION" else None  # 委任_18
+            if g_ is not None:
+                if g_["action"] == "api_failure":
+                    final_state, stage4_reason = "STAGE4_ESCALATION", _allow("api_failure", {})["reason"]
+                else:
+                    stage1_deviations, final_state, stage4_reason = g_["deviations"], None, None
+                    cycle += 1
+                    continue
             break
 
         _newroute = bool(STAGE4_ALLOWLIST and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN)
@@ -9168,6 +9246,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 _record_carry_forward_recheck(rewrite_records, None, "local_qa_fastpath_no_full_recheck")
                 cycles_log.append(cycle_record)
                 final_state = "RESOLVED_REWRITE"
+                g_ = _exit_gate(cycle_record)  # 委任_18
+                if g_ is not None:
+                    if g_["action"] == "api_failure":
+                        final_state, stage4_reason = "STAGE4_ESCALATION", _allow("api_failure", {})["reason"]
+                    else:
+                        stage1_deviations, final_state, stage4_reason = g_["deviations"], None, None
+                        cycle += 1
+                        continue
                 break
         else:
             cycle_record["local_qa_fastpath_attempted"] = False
@@ -9197,9 +9283,19 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         recheck_fixture["article_text"] = current_en_text
         if current_ja_text is not None:
             recheck_fixture["source_article_text"] = current_ja_text
-        recheck_parsed = run_recheck(client, state, consecutive_errors, call_log,
-                                      f"{instance_id}_c{cycle}_recheck", recheck_fixture, current_en_text,
-                                      prior_issues, before_after_pairs=before_after_pairs)
+        if RECHECK_MODE == RECHECK_MODE_COVERAGE_UNION:  # 委任_18: 新Stage 1仕様のRecheck(変更単位+前後1単位、既定legacy_v4a=従来)
+            recheck_parsed = run_recheck_coverage(client, state, consecutive_errors, call_log,
+                                                  f"{instance_id}_c{cycle}_recheck", recheck_fixture, current_en_text,
+                                                  prior_issues, en_text_before_rewrite)
+            _ra = recheck_parsed.get("recheck_coverage_audit") or {}
+            cycle_record["recheck_coverage"] = {k: _ra.get(k) for k in (
+                "scope_ids", "changed_ids", "n_scope", "n_judged_units", "n_union_candidates", "n_calls", "total_cost_jpy",
+                "n_prior_claim_hits", "missing_after_rerun")}
+            cycle_record["recheck_coverage"]["api_failure"] = bool(recheck_parsed.get("_recheck_api_failure"))
+        else:
+            recheck_parsed = run_recheck(client, state, consecutive_errors, call_log,
+                                          f"{instance_id}_c{cycle}_recheck", recheck_fixture, current_en_text,
+                                          prior_issues, before_after_pairs=before_after_pairs)
         if RECHECK_BEFORE_AFTER_PAIRS:
             cycle_record["recheck_before_after_pairs_n"] = len(
                 [p_ for p_ in before_after_pairs if p_.get("before") and p_.get("after") is not None])
@@ -9317,6 +9413,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             en_ok = False
         if en_ok and ja_ok:
             final_state = "RESOLVED_REWRITE"
+            g_ = _exit_gate(cycle_record)  # 委任_18
+            if g_ is not None:
+                if g_["action"] == "api_failure":
+                    final_state, stage4_reason = "STAGE4_ESCALATION", _allow("api_failure", {})["reason"]
+                else:
+                    stage1_deviations, final_state, stage4_reason = g_["deviations"], None, None
+                    cycle += 1
+                    continue
             break
 
         if cycle_record.get("recheck_reconfirmed") is False and not RECHECK_MERGE_UNRESOLVED and not _newroute:
@@ -9423,6 +9527,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         result["stage1_coverage"] = stage1_audit
     if f3_precheck_hits is not None:
         result["f3_precheck_always"] = {"precheck_floor_hits": f3_precheck_hits}
+    if RECHECK_MODE != RECHECK_MODE_LEGACY:  # 委任_18(記録専用、legacyではキーを足さない)
+        result["switches"] = {**result["switches"], "RECHECK_MODE": RECHECK_MODE}
+        result["recheck_exit_check"] = {"done": exit_check_done, "log": exit_check_log}
     if STAGE1_MODE != STAGE1_MODE_LEGACY or F3_PRECHECK_ALWAYS or STAGE1_FAIL_CLOSED:
         result["switches"] = {**result["switches"], "STAGE1_MODE": STAGE1_MODE, "STAGE1_ROUTES": STAGE1_ROUTES,
                               "F3_PRECHECK_ALWAYS": F3_PRECHECK_ALWAYS, "STAGE1_FAIL_CLOSED": STAGE1_FAIL_CLOSED,
