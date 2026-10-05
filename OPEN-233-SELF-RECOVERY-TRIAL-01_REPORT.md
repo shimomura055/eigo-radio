@@ -4542,3 +4542,11 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - Opus#16(`docs/pm/opus_l2_review_open233_stage1_redesign_16.md`、10,484字)を機械抽出して保存。Fable評価でループ1構成を確定(設計書`docs/pm/design_open233_stage1_redesign_01.md`§6): 3'-R+5-lite 2経路∪+F3配線+H1是正(fail-open→STOP)+決定論検査。gold=正式SC 6件(HF-011は監視項目、ユーザー判断事項としてCloseoutで開示)。
 - 事前作業(¥0、既存データ): (1) A構成fresh 32 runでMINOR出力0件(`er052_output/open233_kpi_recovery_02_offline_01/agg_fresh_minor_check_01.md`)→MINOR切り捨て(H2)は主因ではない【確認】。見逃しの実体は指摘自体なし。(2) V0∪V4A基準線(`agg_v0_v4a_union_baseline_01.md`): SC 6件中5件は∪で2/2、B3-same@neg5はV0記録・V4Aとも見逃し(0/2)。基準線のみで採用提案ではない。
 - 実装は委任_06(並行)。段階A/Bの実行は未実施。Production未変更、`PRODUCTION_WIRED`ではない。
+
+## 67. Stage 1再設計 段階A fresh実測(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_07〜07c、2026-10-05、実費約¥63.4〜64.2)
+- provenance=fresh / Stage 1のみ / 条件付き中間測定(E2Eではない)。Trial(DEV)、Production未変更。
+- 規模: 42 run(SC 6+B2_hormuz監視 n=3、NORMAL 6 n=2、hold-out 9 n=1)。スクリプト`er052_open233_stage1_stageA_01.py`(`--normal-n 2`追加のみ)、出力`er052_output/open233_stage1_stageA_01/`(runs/、stageA_aggregate.json、aborted_07/)。
+- 採用基準(事前固定): (1)SC 6件∪ 3/3: 6/6【合格】(B3・A2A3-0・A4-0・A5-0・B4-a・B3-same@neg5 全て3/3)。経路別: r3 6/6、r5 5件3/3+B3-same@neg5が2/3(該当sample3 runはr5がAPI失敗でr5欠落、判定誤りではない)。(2)hold-out新規見逃し0【合格】(9種とも候補1)。(3)欠落ID再実行後残存0%【合格】(再実行発生0 run)。
+- 参考: r3×r5(SC 18 run) hit/hit 17、r3のみ1、r5のみ0、両miss 0。NORMAL候補/記事 r3 23.5・r5 13.8・∪24.0。B2_hormuz(監視)∪平均13.33。決定論検査で戻した件数 negation_polarity_mismatch 149・quote_not_in_ledger 4。HF-011は集計に項目なし(未測定)。
+- 費用: 83 call、平均¥0.763/call、¥1.51/run、worst run ¥2.71(neg4_smallbag_div_a2)、run json合計¥63.35、budget state累計¥64.20。API失敗run 1(s3/neg5_hormuz_div_a2、r5失敗)。委任_07でr5 API失敗1件がaborted_07に退避。runtime: 約2h13分(委任_07〜07cの停止・再開を含む壁時計)。
+- 注意: 判定はStage 1検出のみ。E2E(Stage 2以降)・Production採用は未評価。段階B移行は別判断。

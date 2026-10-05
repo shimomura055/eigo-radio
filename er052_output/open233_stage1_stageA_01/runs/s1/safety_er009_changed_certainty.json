@@ -1,0 +1,285 @@
+{
+  "sample": 1,
+  "instance_id": "safety_er009_changed_certainty",
+  "group": "safety",
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05"
+    },
+    "n_units": 2,
+    "n_judged_units": 1,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 17,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1"
+        ],
+        "unit_status": {
+          "S1.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.1195,
+            "usage": {
+              "input_tokens": 5272,
+              "cached_input_tokens": 0,
+              "output_tokens": 469,
+              "reasoning_tokens": 252
+            },
+            "elapsed_seconds": 5.856,
+            "prompt_sha256": "45423f031cd6b31ead857dcfcec87e321a487427fa1ff576fceeb37fe5c22852",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+            "span": [
+              0,
+              108
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerは「guilt tipping」を著者によるメカニズム説明として述べており、実証的な因果効果や、画面を見た全顧客に生じる効果は確認していない。「証明済み」とする確信度もLedgerを超えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-008"
+            ],
+            "model_claim": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1"
+        ],
+        "unit_status": {
+          "S1.1": "DEVIATION"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.2114,
+            "usage": {
+              "input_tokens": 5035,
+              "cached_input_tokens": 0,
+              "output_tokens": 1688,
+              "reasoning_tokens": 1196
+            },
+            "elapsed_seconds": 14.14,
+            "prompt_sha256": "30e6f8a0fda12ab108d59341cfd7092831a98ed2061fa82bbee519c94c3fdf18",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+            "span": [
+              0,
+              108
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "著者の議論として述べられた社会的圧力の説明を、画面を見た全顧客に生じることが証明済みの因果効果として一般化している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-008"
+            ],
+            "model_claim": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+            "span": [
+              0,
+              108
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "調査回答者の59％が感じたとする自己申告の割合を、画面を見た全顧客に必ず生じる因果効果として述べている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": true,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1"
+      ],
+      "r3_only": [],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 0
+    },
+    "union_candidates": [
+      {
+        "claim_text": "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one.",
+        "span": [
+          0,
+          108
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "Ledgerは「guilt tipping」を著者によるメカニズム説明として述べており、実証的な因果効果や、画面を見た全顧客に生じる効果は確認していない。「証明済み」とする確信度もLedgerを超えている。",
+          "著者の議論として述べられた社会的圧力の説明を、画面を見た全顧客に生じることが証明済みの因果効果として一般化している。",
+          "調査回答者の59％が感じたとする自己申告の割合を、画面を見た全顧客に必ず生じる因果効果として述べている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": true,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-008",
+          "F-012"
+        ],
+        "model_claims": [
+          "It is now proven beyond doubt that suggested tip screens cause guilt tipping in every customer who sees one."
+        ]
+      }
+    ],
+    "n_union_candidates": 1,
+    "total_cost_jpy": 0.3309,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "safety_er009_changed_certainty_s1_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.1195,
+      "usage": {
+        "input_tokens": 5272,
+        "cached_input_tokens": 0,
+        "output_tokens": 469,
+        "reasoning_tokens": 252
+      },
+      "elapsed_seconds": 5.856,
+      "prompt_sha256": "45423f031cd6b31ead857dcfcec87e321a487427fa1ff576fceeb37fe5c22852"
+    },
+    {
+      "label": "safety_er009_changed_certainty_s1_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.2114,
+      "usage": {
+        "input_tokens": 5035,
+        "cached_input_tokens": 0,
+        "output_tokens": 1688,
+        "reasoning_tokens": 1196
+      },
+      "elapsed_seconds": 14.14,
+      "prompt_sha256": "30e6f8a0fda12ab108d59341cfd7092831a98ed2061fa82bbee519c94c3fdf18"
+    }
+  ],
+  "total_cost_jpy": 0.3309
+}

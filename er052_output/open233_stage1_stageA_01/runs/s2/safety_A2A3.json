@@ -1,0 +1,1461 @@
+{
+  "sample": 2,
+  "instance_id": "safety_A2A3",
+  "group": "safety",
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05"
+    },
+    "n_units": 29,
+    "n_judged_units": 22,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "H1",
+          "L1",
+          "S1.1",
+          "S1.4",
+          "S2.1",
+          "S2.2",
+          "S2.3",
+          "S2.6",
+          "S3.2",
+          "S3.3",
+          "S4.1",
+          "S5.1",
+          "S6.1"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "CANDIDATE",
+          "S2.1": "CANDIDATE",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.4": "SUPPORTED",
+          "S2.5": "SUPPORTED",
+          "S2.6": "CANDIDATE",
+          "H1": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S4.1": "CANDIDATE",
+          "H2": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6614,
+            "usage": {
+              "input_tokens": 5041,
+              "cached_input_tokens": 0,
+              "output_tokens": 7424,
+              "reasoning_tokens": 3460
+            },
+            "elapsed_seconds": 58.578,
+            "prompt_sha256": "04858bbb24c14832947fef148ed701d0e43db2ff772a9c47ecc8780952b5afd2",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "In the oil market, the lead role changed in a single day.",
+            "span": [
+              63,
+              120
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "市場の「主役」が一日で変わったという具体的な市場の変化はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "In the oil market, the lead role changed in a single day."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+            "span": [
+              267,
+              333
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "通常なら原油価格に安心材料となった可能性があるという反実仮想・市場反応はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Normally, that might have brought some relief to crude oil prices."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "But the market reacted differently.",
+            "span": [
+              335,
+              370
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "直前の「通常なら安心をもたらす」という想定と市場反応が異なったという比較は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But the market reacted differently."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+            "span": [
+              371,
+              432
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerが述べるのはBrent先物の上げ幅が一時的に縮小したこと。価格全般が下落し始めたという表現は範囲と値動きを強めている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Just after the charge plan disappeared, prices began to fall."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "Soon, however, they returned to a high level.",
+            "span": [
+              433,
+              478
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.6",
+            "unit_ids": [
+              "S2.6"
+            ],
+            "claim_text": "To understand the turn, we need to look at what the charge was meant to do.",
+            "span": [
+              631,
+              706
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "料金案の目的を見ることが市場の値動きを理解するのに必要、または説明になるという結び付きはLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "To understand the turn, we need to look at what the charge was meant to do."
+          },
+          {
+            "unit_id": "H1",
+            "unit_ids": [
+              "H1"
+            ],
+            "claim_text": "### A fee meant to protect the strait",
+            "span": [
+              708,
+              745
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerは安全確保に要する米国の費用の償還案とするが、料金自体が海峡を守るためのものと表現することは、資金の使途・目的を付け加えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "A fee meant to protect the strait"
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+            "span": [
+              845,
+              959
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "支払義務者はLedgerで特定されていない。貨物を運ぶ者が米国に返済するという主体の追加がある。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+            "span": [
+              960,
+              1048
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "原油が海峡を通るという事実はLedgerに記載されていない。また、輸送上の問題が原油価格を押し上げるという一般的な因果関係も、この形ではLedgerにより直接支えられていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Crude oil also passes through it, so trouble with transport could push its price higher."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The stage was ready for a quick change, but the market still had another question.",
+            "span": [
+              1050,
+              1132
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "市場に「別の問い」があったという具体的な市場の考え・関心はLedgerに記載されていない。「素早い変化」の準備ができていたという点も確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The stage was ready for a quick change, but the market still had another question."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States.",
+            "span": [
+              1179,
+              1340
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "置き換え先が貿易・投資案件であることは支えられるが、それらを湾岸諸国が米国と「進めていた」という状況はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+            "span": [
+              1508,
+              2083
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "値動きと掲載時点の価格は支えられるが、攻撃・封鎖懸念・タンカー安全上の懸念を値動きの直接原因と断定している。また「人々がタンカーの通航可否を知らなかった」「危険な航路が真の主役」「ガソリン価格や輸送費に危険が波及した」という主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+            "span": [
+              2101,
+              2183
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "7月13日の投稿から7月14日の置換発表まではLedger上で約24時間48分後であり、「in a day」は24時間以内に消えたと受け取れる時間表現になっている。危険・懸念が続いた点は支えられる。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The fee disappeared in a day, but the danger around the Strait of Hormuz remained."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.4",
+          "S2.2",
+          "S3.2",
+          "S3.3",
+          "S6.1"
+        ],
+        "unit_status": {
+          "T": "MATCH",
+          "H1": "MATCH",
+          "S1.2": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "DEVIATION",
+          "S3.3": "DEVIATION",
+          "H2": "MATCH",
+          "S1.1": "DEVIATION",
+          "S1.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "DEVIATION",
+          "L1": "DEVIATION",
+          "S1.4": "DEVIATION",
+          "S2.1": "MATCH",
+          "S2.2": "DEVIATION",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S2.5": "MATCH",
+          "S2.6": "UNMENTIONED",
+          "S4.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.1301,
+            "usage": {
+              "input_tokens": 4688,
+              "cached_input_tokens": 0,
+              "output_tokens": 13470,
+              "reasoning_tokens": 10494
+            },
+            "elapsed_seconds": 101.587,
+            "prompt_sha256": "3ad709a1bc520bec54d67318be83921c1427ad9919118bf00ec4af2467194002",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+            "span": [
+              845,
+              959
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerでは支払義務者は示されていないが、貨物を運ぶ者が返済すると特定している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+            "span": [
+              845,
+              959
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerでは支払義務者は未提示とされているのに、貨物を運ぶ者が支払う設計だったと記述している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+            "span": [
+              960,
+              1048
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerが扱うのは7月13日の上昇と海峡のエネルギー輸送懸念との関連だが、記事は輸送上の問題一般が原油価格を押し上げるという広い因果主張にしている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Crude oil also passes through it, so trouble with transport could push its price higher."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "In the oil market, the lead role changed in a single day.",
+            "span": [
+              63,
+              120
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「一日で」とするが、提案から置換発表まではLedger上で約24時間48分後。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "In the oil market, the lead role changed in a single day."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+            "span": [
+              2101,
+              2183
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「一日で」は、提案から置換発表まで約24時間48分というLedgerの時間幅とずれる。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The fee disappeared in a day, but the danger around the Strait of Hormuz remained."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+            "span": [
+              267,
+              333
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "撤回後に通常なら価格が落ち着くという予測は、Ledgerで確認された価格推移とは別の未確認の主張。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Normally, that might have brought some relief to crude oil prices."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+            "span": [
+              371,
+              432
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerが報じるのはBrent先物の上げ幅の一時的な縮小であり、価格そのものが下落し始めたとするのは範囲と比較の表現が異なる。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Just after the charge plan disappeared, prices began to fall."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+            "span": [
+              1508,
+              2083
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "一時的な上げ幅縮小と回復、報告時点の価格は一致する一方、継続する懸念を価格の直接原因と断定し、ガソリン価格や輸送費への波及も追加している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S1.1",
+        "S1.4",
+        "S2.2",
+        "S3.2",
+        "S3.3",
+        "S6.1"
+      ],
+      "r3_only": [
+        "H1",
+        "S2.1",
+        "S2.3",
+        "S2.6",
+        "S4.1",
+        "S5.1"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "In the oil market, the lead role changed in a single day.",
+        "span": [
+          63,
+          120
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "市場の「主役」が一日で変わったという具体的な市場の変化はLedgerに記載されていない。",
+          "「一日で」とするが、提案から置換発表まではLedger上で約24時間48分後。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-007"
+        ],
+        "model_claims": [
+          "In the oil market, the lead role changed in a single day."
+        ]
+      },
+      {
+        "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+        "span": [
+          267,
+          333
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "通常なら原油価格に安心材料となった可能性があるという反実仮想・市場反応はLedgerに記載されていない。",
+          "撤回後に通常なら価格が落ち着くという予測は、Ledgerで確認された価格推移とは別の未確認の主張。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Normally, that might have brought some relief to crude oil prices."
+        ]
+      },
+      {
+        "claim_text": "But the market reacted differently.",
+        "span": [
+          335,
+          370
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "直前の「通常なら安心をもたらす」という想定と市場反応が異なったという比較は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "But the market reacted differently."
+        ]
+      },
+      {
+        "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+        "span": [
+          371,
+          432
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "Ledgerが述べるのはBrent先物の上げ幅が一時的に縮小したこと。価格全般が下落し始めたという表現は範囲と値動きを強めている。",
+          "Ledgerが報じるのはBrent先物の上げ幅の一時的な縮小であり、価格そのものが下落し始めたとするのは範囲と比較の表現が異なる。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Just after the charge plan disappeared, prices began to fall."
+        ]
+      },
+      {
+        "claim_text": "Soon, however, they returned to a high level.",
+        "span": [
+          433,
+          478
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "To understand the turn, we need to look at what the charge was meant to do.",
+        "span": [
+          631,
+          706
+        ],
+        "unit_ids": [
+          "S2.6"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "料金案の目的を見ることが市場の値動きを理解するのに必要、または説明になるという結び付きはLedgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": [
+          "To understand the turn, we need to look at what the charge was meant to do."
+        ]
+      },
+      {
+        "claim_text": "### A fee meant to protect the strait",
+        "span": [
+          708,
+          745
+        ],
+        "unit_ids": [
+          "H1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "Ledgerは安全確保に要する米国の費用の償還案とするが、料金自体が海峡を守るためのものと表現することは、資金の使途・目的を付け加えている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": [
+          "A fee meant to protect the strait"
+        ]
+      },
+      {
+        "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+        "span": [
+          845,
+          959
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "支払義務者はLedgerで特定されていない。貨物を運ぶ者が米国に返済するという主体の追加がある。",
+          "Ledgerでは支払義務者は示されていないが、貨物を運ぶ者が返済すると特定している。",
+          "Ledgerでは支払義務者は未提示とされているのに、貨物を運ぶ者が支払う設計だったと記述している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe."
+        ]
+      },
+      {
+        "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+        "span": [
+          960,
+          1048
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "原油が海峡を通るという事実はLedgerに記載されていない。また、輸送上の問題が原油価格を押し上げるという一般的な因果関係も、この形ではLedgerにより直接支えられていない。",
+          "Ledgerが扱うのは7月13日の上昇と海峡のエネルギー輸送懸念との関連だが、記事は輸送上の問題一般が原油価格を押し上げるという広い因果主張にしている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": [
+          "Crude oil also passes through it, so trouble with transport could push its price higher."
+        ]
+      },
+      {
+        "claim_text": "The stage was ready for a quick change, but the market still had another question.",
+        "span": [
+          1050,
+          1132
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "市場に「別の問い」があったという具体的な市場の考え・関心はLedgerに記載されていない。「素早い変化」の準備ができていたという点も確認できない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The stage was ready for a quick change, but the market still had another question."
+        ]
+      },
+      {
+        "claim_text": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States.",
+        "span": [
+          1179,
+          1340
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "置き換え先が貿易・投資案件であることは支えられるが、それらを湾岸諸国が米国と「進めていた」という状況はLedgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States."
+        ]
+      },
+      {
+        "claim_text": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+        "span": [
+          1508,
+          2083
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "値動きと掲載時点の価格は支えられるが、攻撃・封鎖懸念・タンカー安全上の懸念を値動きの直接原因と断定している。また「人々がタンカーの通航可否を知らなかった」「危険な航路が真の主役」「ガソリン価格や輸送費に危険が波及した」という主張はLedgerにない。",
+          "一時的な上げ幅縮小と回復、報告時点の価格は一致する一方、継続する懸念を価格の直接原因と断定し、ガソリン価格や輸送費への波及も追加している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil."
+        ]
+      },
+      {
+        "claim_text": "The fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+        "span": [
+          2101,
+          2183
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "7月13日の投稿から7月14日の置換発表まではLedger上で約24時間48分後であり、「in a day」は24時間以内に消えたと受け取れる時間表現になっている。危険・懸念が続いた点は支えられる。",
+          "「一日で」は、提案から置換発表まで約24時間48分というLedgerの時間幅とずれる。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "The fee disappeared in a day, but the danger around the Strait of Hormuz remained."
+        ]
+      }
+    ],
+    "n_union_candidates": 13,
+    "total_cost_jpy": 1.7915,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "safety_A2A3_s2_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6614,
+      "usage": {
+        "input_tokens": 5041,
+        "cached_input_tokens": 0,
+        "output_tokens": 7424,
+        "reasoning_tokens": 3460
+      },
+      "elapsed_seconds": 58.578,
+      "prompt_sha256": "04858bbb24c14832947fef148ed701d0e43db2ff772a9c47ecc8780952b5afd2"
+    },
+    {
+      "label": "safety_A2A3_s2_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.1301,
+      "usage": {
+        "input_tokens": 4688,
+        "cached_input_tokens": 0,
+        "output_tokens": 13470,
+        "reasoning_tokens": 10494
+      },
+      "elapsed_seconds": 101.587,
+      "prompt_sha256": "3ad709a1bc520bec54d67318be83921c1427ad9919118bf00ec4af2467194002"
+    }
+  ],
+  "total_cost_jpy": 1.7915
+}

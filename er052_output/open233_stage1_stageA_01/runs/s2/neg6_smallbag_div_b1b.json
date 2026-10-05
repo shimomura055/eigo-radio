@@ -1,0 +1,2640 @@
+{
+  "sample": 2,
+  "instance_id": "neg6_smallbag_div_b1b",
+  "group": "negative",
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05"
+    },
+    "n_units": 33,
+    "n_judged_units": 26,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 17,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S2.1",
+          "S2.3",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "S4.1",
+          "S5.1",
+          "S5.2",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S6.5",
+          "S6.6",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S2.3": "CANDIDATE",
+          "S2.4": "SUPPORTED",
+          "H1": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "CANDIDATE",
+          "S3.5": "CANDIDATE",
+          "S4.1": "CANDIDATE",
+          "H2": "SUPPORTED",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "CANDIDATE",
+          "S6.5": "CANDIDATE",
+          "S6.6": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.7267,
+            "usage": {
+              "input_tokens": 4899,
+              "cached_input_tokens": 0,
+              "output_tokens": 8284,
+              "reasoning_tokens": 4141
+            },
+            "elapsed_seconds": 74.081,
+            "prompt_sha256": "42cfd1c5ca4d4265ea7768e78a59a8ef3dcf44a574ed28adbb6a862b08611511",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load",
+            "span": [
+              0,
+              71
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "一般的な2026年のバッグ全体について、大小のバッグが一律に異なる役割を担うと広げています。Ledgerが示すのは特定の編集・ランウェイ上の例です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Looking at fashion for 2026, mini bags are having a big moment.",
+            "span": [
+              73,
+              136
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「2026年」の一年全体でミニバッグが大きな注目を集めているとの範囲は、Fall 2026のスタイリング報道や選定されたランウェイ例を超えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F006"
+            ],
+            "model_claim": "Looking at fashion for 2026, mini bags are having a big moment."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.",
+            "span": [
+              137,
+              243
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "挙げた種類の一部は報道されていますが、「all over runways and fashion reports」は掲載範囲を一般化しすぎています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F006"
+            ],
+            "model_claim": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Some are so small that you might ask, “Can you really fit anything in that?”",
+            "span": [
+              244,
+              320
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "小さくて何も入らないかのような含意は、特定のBulgari製品についての記述や、必需品を入れるというELLEの説明を一般化しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": "Some are so small that you might ask, “Can you really fit anything in that?”"
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "But this is not a takeover, with mini bags pushing large bags out.",
+            "span": [
+              322,
+              388
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "同じ季節に大小両方が見られた事実はありますが、ファッション市場全体で大きなバッグが押し出されていないという範囲までは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F003"
+            ],
+            "model_claim": "But this is not a takeover, with mini bags pushing large bags out."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "One carries what we need.",
+            "span": [
+              441,
+              466
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "大きなバッグが一般に「必要なもの」を運ぶという広い主張です。Ledgerには日常用の容量やノートPCを入れられる例がありますが、この一般化は直接支えられていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "One carries what we need."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "They mainly hold the basics: a phone, wallet, keys, and lip products.",
+            "span": [
+              698,
+              767
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLEは小さなバッグの魅力と、限られた必需品を持ち歩くことを結び付けていますが、これらのバッグが通常その品々を「主に入れている」とまでは述べていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "They mainly hold the basics: a phone, wallet, keys, and lip products."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "They do not challenge roomy bags on storage.",
+            "span": [
+              768,
+              812
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "小さなバッグの価値が収納力より視覚的効果にあるとの説明はありますが、roomy bagsとの収納力比較はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "They do not challenge roomy bags on storage."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”",
+            "span": [
+              813,
+              896
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLEの「visual impact」「adding occasion」という説明を超えて、「今日のムードを伝える」という具体的な効果を加えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”"
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The season’s picture becomes clearer when we look at what appeared beside them.",
+            "span": [
+              898,
+              977
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「隣にあったものを見ると季節像がより明確になる」という情報上の因果・関係は、Ledgerが述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F004"
+            ],
+            "model_claim": "The season’s picture becomes clearer when we look at what appeared beside them."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Vogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands.",
+            "span": [
+              1011,
+              1208
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F004"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "This lineup matters: large bags had not vanished.",
+            "span": [
+              1209,
+              1258
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F004"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "What we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways.",
+            "span": [
+              1316,
+              1446
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerは市場全体への広がりを調査しておらず、ミニバッグが市場全体には広がっていないという否定も、選定された報道・ランウェイ例以外の「return」も確認していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F006"
+            ],
+            "model_claim": "What we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "Even so, the way trends look has changed.",
+            "span": [
+              1447,
+              1488
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "トレンドの見え方が以前から変化したという時系列比較を示していますが、Ledgerはその変化を述べていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F003"
+            ],
+            "model_claim": "Even so, the way trends look has changed."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Bags are no longer in a game where one size alone sits on the throne.",
+            "span": [
+              1489,
+              1558
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「no longer」は過去には単一サイズが優勢だったという時間的変化を主張します。Ledgerは同時に大小が見られた例を示しますが、この広い変化を確認していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F003"
+            ],
+            "model_claim": "Bags are no longer in a game where one size alone sits on the throne."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Large bags are the luggage crew, carrying what we need.",
+            "span": [
+              1559,
+              1614
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "特定の大型バッグがノートPCを収納できる例や日常用にroomyなバッグの報道はありますが、大型バッグ全般が必要なものを運ぶとの一般化は支えられていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "Large bags are the luggage crew, carrying what we need."
+          },
+          {
+            "unit_id": "S6.5",
+            "unit_ids": [
+              "S6.5"
+            ],
+            "claim_text": "Mini bags are the stage crew, drawing the eye and setting the mood.",
+            "span": [
+              1615,
+              1682
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLEは特定のFall 2026ミニバッグについて視覚的効果や機会性を説明していますが、ミニバッグ全般の役割として「目を引き、ムードを作る」と断定する範囲は超えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "Mini bags are the stage crew, drawing the eye and setting the mood."
+          },
+          {
+            "unit_id": "S6.6",
+            "unit_ids": [
+              "S6.6"
+            ],
+            "claim_text": "In 2026, the runway is proudly showing this division of labor.",
+            "span": [
+              1683,
+              1745
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "同時に大小のバッグが見られたことは支えられますが、ランウェイが「誇らしく」分業を示しているという意図・評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F004"
+            ],
+            "model_claim": "In 2026, the runway is proudly showing this division of labor."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+            "span": [
+              1763,
+              1830
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "2026年の大小のバッグ全般がそれぞれ荷物とムードを担うという要約は、限られた編集・ランウェイ上の例から範囲を広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "In 2026, large bags carry the load, while mini bags carry the mood."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S2.2",
+          "S2.3",
+          "S2.4",
+          "S3.5",
+          "S6.3",
+          "S6.4",
+          "S6.5",
+          "S6.6"
+        ],
+        "unit_status": {
+          "S2.3": "DEVIATION",
+          "S6.4": "DEVIATION",
+          "L1": "DEVIATION",
+          "S6.3": "DEVIATION",
+          "S1.2": "DEVIATION",
+          "S2.1": "MATCH",
+          "S4.1": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "MATCH",
+          "S2.2": "DEVIATION",
+          "S6.6": "DEVIATION",
+          "S1.1": "DEVIATION",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S1.3": "MATCH",
+          "S2.4": "DEVIATION",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "DEVIATION",
+          "S6.5": "DEVIATION",
+          "T": "UNMENTIONED",
+          "H1": "UNMENTIONED",
+          "H2": "UNMENTIONED",
+          "S6.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.3956,
+            "usage": {
+              "input_tokens": 4529,
+              "cached_input_tokens": 0,
+              "output_tokens": 16886,
+              "reasoning_tokens": 11852
+            },
+            "elapsed_seconds": 151.009,
+            "prompt_sha256": "c8e01013f1bc2a4a8467ca10b13f7e732fa562876a82f7a177365f61936837b7",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "One carries what we need.",
+            "span": [
+              441,
+              466
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The 2025 runway/editorial observation is generalized to a 2026 claim about large bags."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F001"
+            ],
+            "model_claim": "One carries what we need."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Large bags are the luggage crew, carrying what we need.",
+            "span": [
+              1559,
+              1614
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The article applies the everyday-use observation about most bags shown in Fall/Winter 2025 to large bags generally in 2026."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F001"
+            ],
+            "model_claim": "Large bags are the luggage crew, carrying what we need."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+            "span": [
+              1763,
+              1830
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The article generalizes the 2025 runway observation to large bags generally in 2026."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F001"
+            ],
+            "model_claim": "In 2026, large bags carry the load, while mini bags carry the mood."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Bags are no longer in a game where one size alone sits on the throne.",
+            "span": [
+              1489,
+              1558
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The coexistence documented on selected 2025 runways is turned into a broader claim about bags in 2026 and a temporal shift."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F003"
+            ],
+            "model_claim": "Bags are no longer in a game where one size alone sits on the throne."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.",
+            "span": [
+              137,
+              243
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The specific Vogue selection of petite pouches and oversized styles is broadened to bags being all over runways and fashion reports."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F004"
+            ],
+            "model_claim": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Bags are no longer in a game where one size alone sits on the throne.",
+            "span": [
+              1489,
+              1558
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Runway and editorial visibility in selected collections is generalized to a broader claim that no single bag size has dominance."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F004"
+            ],
+            "model_claim": "Bags are no longer in a game where one size alone sits on the throne."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "One carries what we need.",
+            "span": [
+              441,
+              466
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The laptop capacity of selected Fall 2026 shoulder bags is generalized to a broad claim about large bags carrying what is needed."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "One carries what we need."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Bags are no longer in a game where one size alone sits on the throne.",
+            "span": [
+              1489,
+              1558
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The selected Fall 2026 trend roundup is generalized into a broad claim that no bag size dominates."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "Bags are no longer in a game where one size alone sits on the throne."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Large bags are the luggage crew, carrying what we need.",
+            "span": [
+              1559,
+              1614
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The reported laptop capacity of selected shoulder bags is generalized to large bags as a category."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "Large bags are the luggage crew, carrying what we need."
+          },
+          {
+            "unit_id": "S6.6",
+            "unit_ids": [
+              "S6.6"
+            ],
+            "claim_text": "In 2026, the runway is proudly showing this division of labor.",
+            "span": [
+              1683,
+              1745
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The selected trend roundup is generalized into a runway-wide division of labor between bag sizes."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "In 2026, the runway is proudly showing this division of labor."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+            "span": [
+              1763,
+              1830
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The selected examples of functional larger forms are generalized to large bags as a category."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F005"
+            ],
+            "model_claim": "In 2026, large bags carry the load, while mini bags carry the mood."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Looking at fashion for 2026, mini bags are having a big moment.",
+            "span": [
+              73,
+              136
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLE's Fall 2026 styling direction and selected examples are broadened to mini bags having a big moment across 2026 fashion generally."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F006"
+            ],
+            "model_claim": "Looking at fashion for 2026, mini bags are having a big moment."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.",
+            "span": [
+              137,
+              243
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLE's selected runway examples are overstated as styles being all over runways and fashion reports."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F006"
+            ],
+            "model_claim": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "In 2026, the two sizes seem to have different jobs.",
+            "span": [
+              389,
+              440
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLE's interpretation of mini-bag appeal is generalized into a division of roles for both size categories."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "In 2026, the two sizes seem to have different jobs."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "The other helps create the look.",
+            "span": [
+              467,
+              499
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLE's source-level interpretation of mini-bag appeal is generalized to mini bags as a whole."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "The other helps create the look."
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”",
+            "span": [
+              813,
+              896
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The mood-signaling claim goes beyond ELLE's stated visual impact and occasion framing."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”"
+          },
+          {
+            "unit_id": "S6.5",
+            "unit_ids": [
+              "S6.5"
+            ],
+            "claim_text": "Mini bags are the stage crew, drawing the eye and setting the mood.",
+            "span": [
+              1615,
+              1682
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLE's editorial interpretation is generalized to mini bags as a category and adds a mood-setting role."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "Mini bags are the stage crew, drawing the eye and setting the mood."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+            "span": [
+              1763,
+              1830
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ELLE's interpretation of mini-bag appeal is generalized to mini bags as a category and recast as carrying mood."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F007"
+            ],
+            "model_claim": "In 2026, large bags carry the load, while mini bags carry the mood."
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "The other helps create the look.",
+            "span": [
+              467,
+              499
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The stated rationale for one Bulgari minaudière project is generalized to mini bags overall."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": "The other helps create the look."
+          },
+          {
+            "unit_id": "S6.5",
+            "unit_ids": [
+              "S6.5"
+            ],
+            "claim_text": "Mini bags are the stage crew, drawing the eye and setting the mood.",
+            "span": [
+              1615,
+              1682
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The meaning-over-utility rationale for one Bulgari project is generalized to mini bags overall and recast as a mood-setting role."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": "Mini bags are the stage crew, drawing the eye and setting the mood."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+            "span": [
+              1763,
+              1830
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The rationale for one Bulgari minaudière project is generalized to mini bags overall and recast as carrying mood."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F008"
+            ],
+            "model_claim": "In 2026, large bags carry the load, while mini bags carry the mood."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Large bags are the luggage crew, carrying what we need.",
+            "span": [
+              1559,
+              1614
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The editorial report's return to substantial bags and mention of practical totes is generalized to large bags as a whole."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F009"
+            ],
+            "model_claim": "Large bags are the luggage crew, carrying what we need."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+            "span": [
+              1763,
+              1830
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The seasonal editorial observation is generalized to large bags as a whole and described as their universal role."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F009"
+            ],
+            "model_claim": "In 2026, large bags carry the load, while mini bags carry the mood."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Bags are no longer in a game where one size alone sits on the throne.",
+            "span": [
+              1489,
+              1558
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "A single-brand Coach runway observation is generalized into a claim about bags overall."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F018"
+            ],
+            "model_claim": "Bags are no longer in a game where one size alone sits on the throne."
+          },
+          {
+            "unit_id": "S6.6",
+            "unit_ids": [
+              "S6.6"
+            ],
+            "claim_text": "In 2026, the runway is proudly showing this division of labor.",
+            "span": [
+              1683,
+              1745
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "The single-brand Coach collection is generalized into a claim about the runway's division of labor overall."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F018"
+            ],
+            "model_claim": "In 2026, the runway is proudly showing this division of labor."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S1.1",
+        "S1.2",
+        "S2.3",
+        "S3.5",
+        "S6.3",
+        "S6.4",
+        "S6.5",
+        "S6.6"
+      ],
+      "r3_only": [
+        "S1.3",
+        "S2.1",
+        "S3.3",
+        "S3.4",
+        "S4.1",
+        "S5.1",
+        "S5.2",
+        "S6.1",
+        "S6.2",
+        "T"
+      ],
+      "r5_only": [
+        "S2.2",
+        "S2.4"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load",
+        "span": [
+          0,
+          71
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "一般的な2026年のバッグ全体について、大小のバッグが一律に異なる役割を担うと広げています。Ledgerが示すのは特定の編集・ランウェイ上の例です。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F007"
+        ],
+        "model_claims": [
+          "# Bags Split the Job: Mini Bags Draw the Eye, Large Bags Carry the Load"
+        ]
+      },
+      {
+        "claim_text": "Looking at fashion for 2026, mini bags are having a big moment.",
+        "span": [
+          73,
+          136
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "「2026年」の一年全体でミニバッグが大きな注目を集めているとの範囲は、Fall 2026のスタイリング報道や選定されたランウェイ例を超えています。",
+          "ELLE's Fall 2026 styling direction and selected examples are broadened to mini bags having a big moment across 2026 fashion generally."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F006"
+        ],
+        "model_claims": [
+          "Looking at fashion for 2026, mini bags are having a big moment."
+        ]
+      },
+      {
+        "claim_text": "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports.",
+        "span": [
+          137,
+          243
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "挙げた種類の一部は報道されていますが、「all over runways and fashion reports」は掲載範囲を一般化しすぎています。",
+          "The specific Vogue selection of petite pouches and oversized styles is broadened to bags being all over runways and fashion reports.",
+          "ELLE's selected runway examples are overstated as styles being all over runways and fashion reports."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F006",
+          "F004"
+        ],
+        "model_claims": [
+          "Palm-sized clutches, small pouches, and eye-catching minaudières are all over runways and fashion reports."
+        ]
+      },
+      {
+        "claim_text": "Some are so small that you might ask, “Can you really fit anything in that?”",
+        "span": [
+          244,
+          320
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "小さくて何も入らないかのような含意は、特定のBulgari製品についての記述や、必需品を入れるというELLEの説明を一般化しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F008"
+        ],
+        "model_claims": [
+          "Some are so small that you might ask, “Can you really fit anything in that?”"
+        ]
+      },
+      {
+        "claim_text": "But this is not a takeover, with mini bags pushing large bags out.",
+        "span": [
+          322,
+          388
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "同じ季節に大小両方が見られた事実はありますが、ファッション市場全体で大きなバッグが押し出されていないという範囲までは確認されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F003"
+        ],
+        "model_claims": [
+          "But this is not a takeover, with mini bags pushing large bags out."
+        ]
+      },
+      {
+        "claim_text": "One carries what we need.",
+        "span": [
+          441,
+          466
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "大きなバッグが一般に「必要なもの」を運ぶという広い主張です。Ledgerには日常用の容量やノートPCを入れられる例がありますが、この一般化は直接支えられていません。",
+          "The 2025 runway/editorial observation is generalized to a 2026 claim about large bags.",
+          "The laptop capacity of selected Fall 2026 shoulder bags is generalized to a broad claim about large bags carrying what is needed."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F005",
+          "F001"
+        ],
+        "model_claims": [
+          "One carries what we need."
+        ]
+      },
+      {
+        "claim_text": "They mainly hold the basics: a phone, wallet, keys, and lip products.",
+        "span": [
+          698,
+          767
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "ELLEは小さなバッグの魅力と、限られた必需品を持ち歩くことを結び付けていますが、これらのバッグが通常その品々を「主に入れている」とまでは述べていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F007"
+        ],
+        "model_claims": [
+          "They mainly hold the basics: a phone, wallet, keys, and lip products."
+        ]
+      },
+      {
+        "claim_text": "They do not challenge roomy bags on storage.",
+        "span": [
+          768,
+          812
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "小さなバッグの価値が収納力より視覚的効果にあるとの説明はありますが、roomy bagsとの収納力比較はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F007"
+        ],
+        "model_claims": [
+          "They do not challenge roomy bags on storage."
+        ]
+      },
+      {
+        "claim_text": "Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”",
+        "span": [
+          813,
+          896
+        ],
+        "unit_ids": [
+          "S3.5"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "ELLEの「visual impact」「adding occasion」という説明を超えて、「今日のムードを伝える」という具体的な効果を加えています。",
+          "The mood-signaling claim goes beyond ELLE's stated visual impact and occasion framing."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F007"
+        ],
+        "model_claims": [
+          "Their job is visual: adding a sense of occasion and saying, “This is today’s mood.”"
+        ]
+      },
+      {
+        "claim_text": "The season’s picture becomes clearer when we look at what appeared beside them.",
+        "span": [
+          898,
+          977
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "「隣にあったものを見ると季節像がより明確になる」という情報上の因果・関係は、Ledgerが述べていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F004"
+        ],
+        "model_claims": [
+          "The season’s picture becomes clearer when we look at what appeared beside them."
+        ]
+      },
+      {
+        "claim_text": "Vogue, also covering the 2026 season, showed not only small pouches from Prada and Loewe, but also Celine’s Ultra Maxi, Altuzarra’s large shoulder bag, and roomy totes from Toteme and other brands.",
+        "span": [
+          1011,
+          1208
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F004"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "This lineup matters: large bags had not vanished.",
+        "span": [
+          1209,
+          1258
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F004"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "What we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways.",
+        "span": [
+          1316,
+          1446
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "Ledgerは市場全体への広がりを調査しておらず、ミニバッグが市場全体には広がっていないという否定も、選定された報道・ランウェイ例以外の「return」も確認していません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F006"
+        ],
+        "model_claims": [
+          "What we see here is not mini bags spreading across the whole market, but their return in fashion coverage and on selected runways."
+        ]
+      },
+      {
+        "claim_text": "Even so, the way trends look has changed.",
+        "span": [
+          1447,
+          1488
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "トレンドの見え方が以前から変化したという時系列比較を示していますが、Ledgerはその変化を述べていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F003"
+        ],
+        "model_claims": [
+          "Even so, the way trends look has changed."
+        ]
+      },
+      {
+        "claim_text": "Bags are no longer in a game where one size alone sits on the throne.",
+        "span": [
+          1489,
+          1558
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "「no longer」は過去には単一サイズが優勢だったという時間的変化を主張します。Ledgerは同時に大小が見られた例を示しますが、この広い変化を確認していません。",
+          "The coexistence documented on selected 2025 runways is turned into a broader claim about bags in 2026 and a temporal shift.",
+          "Runway and editorial visibility in selected collections is generalized to a broader claim that no single bag size has dominance.",
+          "The selected Fall 2026 trend roundup is generalized into a broad claim that no bag size dominates.",
+          "A single-brand Coach runway observation is generalized into a claim about bags overall."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F003",
+          "F004",
+          "F005",
+          "F018"
+        ],
+        "model_claims": [
+          "Bags are no longer in a game where one size alone sits on the throne."
+        ]
+      },
+      {
+        "claim_text": "Large bags are the luggage crew, carrying what we need.",
+        "span": [
+          1559,
+          1614
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "特定の大型バッグがノートPCを収納できる例や日常用にroomyなバッグの報道はありますが、大型バッグ全般が必要なものを運ぶとの一般化は支えられていません。",
+          "The article applies the everyday-use observation about most bags shown in Fall/Winter 2025 to large bags generally in 2026.",
+          "The reported laptop capacity of selected shoulder bags is generalized to large bags as a category.",
+          "The editorial report's return to substantial bags and mention of practical totes is generalized to large bags as a whole."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F005",
+          "F001",
+          "F009"
+        ],
+        "model_claims": [
+          "Large bags are the luggage crew, carrying what we need."
+        ]
+      },
+      {
+        "claim_text": "Mini bags are the stage crew, drawing the eye and setting the mood.",
+        "span": [
+          1615,
+          1682
+        ],
+        "unit_ids": [
+          "S6.5"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "ELLEは特定のFall 2026ミニバッグについて視覚的効果や機会性を説明していますが、ミニバッグ全般の役割として「目を引き、ムードを作る」と断定する範囲は超えています。",
+          "ELLE's editorial interpretation is generalized to mini bags as a category and adds a mood-setting role.",
+          "The meaning-over-utility rationale for one Bulgari project is generalized to mini bags overall and recast as a mood-setting role."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F007",
+          "F008"
+        ],
+        "model_claims": [
+          "Mini bags are the stage crew, drawing the eye and setting the mood."
+        ]
+      },
+      {
+        "claim_text": "In 2026, the runway is proudly showing this division of labor.",
+        "span": [
+          1683,
+          1745
+        ],
+        "unit_ids": [
+          "S6.6"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "同時に大小のバッグが見られたことは支えられますが、ランウェイが「誇らしく」分業を示しているという意図・評価はLedgerにありません。",
+          "The selected trend roundup is generalized into a runway-wide division of labor between bag sizes.",
+          "The single-brand Coach collection is generalized into a claim about the runway's division of labor overall."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F004",
+          "F005",
+          "F018"
+        ],
+        "model_claims": [
+          "In 2026, the runway is proudly showing this division of labor."
+        ]
+      },
+      {
+        "claim_text": "In 2026, large bags carry the load, while mini bags carry the mood.",
+        "span": [
+          1763,
+          1830
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "2026年の大小のバッグ全般がそれぞれ荷物とムードを担うという要約は、限られた編集・ランウェイ上の例から範囲を広げています。",
+          "The article generalizes the 2025 runway observation to large bags generally in 2026.",
+          "The selected examples of functional larger forms are generalized to large bags as a category.",
+          "ELLE's interpretation of mini-bag appeal is generalized to mini bags as a category and recast as carrying mood.",
+          "The rationale for one Bulgari minaudière project is generalized to mini bags overall and recast as carrying mood.",
+          "The seasonal editorial observation is generalized to large bags as a whole and described as their universal role."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F007",
+          "F001",
+          "F005",
+          "F008",
+          "F009"
+        ],
+        "model_claims": [
+          "In 2026, large bags carry the load, while mini bags carry the mood."
+        ]
+      },
+      {
+        "claim_text": "In 2026, the two sizes seem to have different jobs.",
+        "span": [
+          389,
+          440
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "ELLE's interpretation of mini-bag appeal is generalized into a division of roles for both size categories."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F007"
+        ],
+        "model_claims": [
+          "In 2026, the two sizes seem to have different jobs."
+        ]
+      },
+      {
+        "claim_text": "The other helps create the look.",
+        "span": [
+          467,
+          499
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "ELLE's source-level interpretation of mini-bag appeal is generalized to mini bags as a whole.",
+          "The stated rationale for one Bulgari minaudière project is generalized to mini bags overall."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F007",
+          "F008"
+        ],
+        "model_claims": [
+          "The other helps create the look."
+        ]
+      }
+    ],
+    "n_union_candidates": 21,
+    "total_cost_jpy": 2.1223,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "neg6_smallbag_div_b1b_s2_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7267,
+      "usage": {
+        "input_tokens": 4899,
+        "cached_input_tokens": 0,
+        "output_tokens": 8284,
+        "reasoning_tokens": 4141
+      },
+      "elapsed_seconds": 74.081,
+      "prompt_sha256": "42cfd1c5ca4d4265ea7768e78a59a8ef3dcf44a574ed28adbb6a862b08611511"
+    },
+    {
+      "label": "neg6_smallbag_div_b1b_s2_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.3956,
+      "usage": {
+        "input_tokens": 4529,
+        "cached_input_tokens": 0,
+        "output_tokens": 16886,
+        "reasoning_tokens": 11852
+      },
+      "elapsed_seconds": 151.009,
+      "prompt_sha256": "c8e01013f1bc2a4a8467ca10b13f7e732fa562876a82f7a177365f61936837b7"
+    }
+  ],
+  "total_cost_jpy": 2.1223
+}

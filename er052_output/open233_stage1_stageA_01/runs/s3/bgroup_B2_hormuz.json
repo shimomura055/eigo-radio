@@ -1,0 +1,1501 @@
+{
+  "sample": 3,
+  "instance_id": "bgroup_B2_hormuz",
+  "group": "b_group",
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05"
+    },
+    "n_units": 39,
+    "n_judged_units": 28,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S10.2+S10.3"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S10.2+S10.3",
+          "S10.1",
+          "S10.2",
+          "S10.3",
+          "S3.1",
+          "S3.3",
+          "S6.1",
+          "S7.1",
+          "S8.1",
+          "S8.3",
+          "S8.4",
+          "S9.1",
+          "S9.2"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S7.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.2": "SUPPORTED",
+          "S8.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S9.1": "CANDIDATE",
+          "S9.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S10.1": "CANDIDATE",
+          "S10.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S10.3": "CANDIDATE",
+          "S10.4": "SUPPORTED",
+          "L1": "CANDIDATE",
+          "R:S10.2+S10.3": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.8644,
+            "usage": {
+              "input_tokens": 5198,
+              "cached_input_tokens": 0,
+              "output_tokens": 9980,
+              "reasoning_tokens": 5135
+            },
+            "elapsed_seconds": 83.493,
+            "prompt_sha256": "cb09748fcb56fc95b3d4f22d23c69700026753cfd26bbbf065779e887b128cd7",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+            "span": [
+              363,
+              452
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "提案の対象は通航するすべての貨物であり、船舶が通過するたびに料金が発生する制度だったとは確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "It looked like a very large fee would appear every time a ship passed through the strait."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "The fee was not actually being collected yet.",
+            "span": [
+              556,
+              601
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerは徴収方法などが示されなかったことと提案段階であることを確認しているが、実際に徴収されていなかったとは明記していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The fee was not actually being collected yet."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+            "span": [
+              930,
+              1016
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "提案は船舶への課金ではなく、ホルムズ海峡を通る貨物への償還料として記録されている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "A story about charging ships suddenly changed into a story about trade and investment."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "Now for the third act: crude oil prices appeared.",
+            "span": [
+              1104,
+              1153
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains.",
+            "span": [
+              1155,
+              1255
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "Before long, they returned to a high level close to where they had been before the announcement.",
+            "span": [
+              1289,
+              1385
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.4",
+            "unit_ids": [
+              "S8.4"
+            ],
+            "claim_text": "When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.",
+            "span": [
+              1386,
+              1478
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+            "span": [
+              1480,
+              1562
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "一時的な上げ幅縮小と回復は報じられているが、料金案の撤回が価格下落を引き起こさなかったという因果関係まではLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The disappearance of the fee plan did not lead to a large, lasting fall in prices."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.",
+            "span": [
+              1563,
+              1686
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S10.1",
+            "unit_ids": [
+              "S10.1"
+            ],
+            "claim_text": "Of course, this price movement alone cannot tell us that there was just one reason for the price.",
+            "span": [
+              1688,
+              1785
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "単一要因への断定を避けるLedgerの注意は7月13日の上昇についてであり、ここで述べる価格変動一般についての推論限界は直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Of course, this price movement alone cannot tell us that there was just one reason for the price."
+          },
+          {
+            "unit_id": "S10.2",
+            "unit_ids": [
+              "S10.2"
+            ],
+            "claim_text": "But even after the fee plan left the stage, other factors remained on that same stage.",
+            "span": [
+              1786,
+              1872
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S10.3",
+            "unit_ids": [
+              "S10.3"
+            ],
+            "claim_text": "So the price reacted once, then returned to a high level.",
+            "span": [
+              1873,
+              1930
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "価格が一時的に上げ幅を縮小し、その後回復した観測自体は記載されているが、直前の他要因がその値動きを生んだという「So」の因果関係は示されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So the price reacted once, then returned to a high level."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+            "span": [
+              2074,
+              2193
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "価格が高い水準にあったことと緊張・安全上の懸念が続いたことは記録されているが、それらが価格の高止まりをもたらしたという因果関係はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained."
+          },
+          {
+            "unit_id": "R:S10.2+S10.3",
+            "unit_ids": [
+              "R:S10.2+S10.3"
+            ],
+            "claim_text": "So the price reacted once, then returned to a high level.",
+            "span": [
+              1873,
+              1930
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「So」が、他要因の継続を価格の反応・回復の原因として結び付けているが、その因果関係はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "R:S10.2+S10.3",
+          "S10.3",
+          "S3.1",
+          "S6.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S5.1": "MATCH",
+          "S6.1": "DEVIATION",
+          "S8.1": "MATCH",
+          "S9.1": "MATCH",
+          "S10.2": "MATCH",
+          "L1": "MATCH",
+          "S4.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "R:S10.2+S10.3": "DEVIATION",
+          "S8.2": "MATCH",
+          "S8.3": "MATCH",
+          "S8.4": "MATCH",
+          "S9.2": "MATCH",
+          "S10.1": "MATCH",
+          "S10.3": "DEVIATION",
+          "S10.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S7.1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.1191,
+            "usage": {
+              "input_tokens": 4805,
+              "cached_input_tokens": 0,
+              "output_tokens": 13306,
+              "reasoning_tokens": 9500
+            },
+            "elapsed_seconds": 84.233,
+            "prompt_sha256": "abd24844f8ee29e94f0a7a0843d9c19018c8d50463c7251491284180f738098f",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+            "span": [
+              363,
+              452
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "貨物価値への率の適用方法が示されていないのに、船舶が通航するたびに料金が発生するかのように具体化している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "It looked like a very large fee would appear every time a ship passed through the strait."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+            "span": [
+              930,
+              1016
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「貨物」への償還料案を、船舶に料金を課す案として表現しており、Ledgerでは未提示の課金対象・支払主体を具体化している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "A story about charging ships suddenly changed into a story about trade and investment."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+            "span": [
+              363,
+              452
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "徴収方法が未提示だったというFactに対し、通航ごとに料金が発生する仕組みを示唆している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "It looked like a very large fee would appear every time a ship passed through the strait."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+            "span": [
+              930,
+              1016
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "支払義務者や徴収対象が示されていない案について、船舶に課金する仕組みであるかのように表現している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "A story about charging ships suddenly changed into a story about trade and investment."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+            "span": [
+              930,
+              1016
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "撤回・置換の要約で、貨物への償還料案を船舶に料金を課す案として表現している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "A story about charging ships suddenly changed into a story about trade and investment."
+          },
+          {
+            "unit_id": "R:S10.2+S10.3",
+            "unit_ids": [
+              "R:S10.2+S10.3"
+            ],
+            "claim_text": "So the price reacted once, then returned to a high level.",
+            "span": [
+              1873,
+              1930
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "手数料案の撤回後の価格反応・回復を撤回に結び付ける因果関係まで含むが、HF-007は撤回・置換を確認するFactであり、その因果関係は示していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level."
+          },
+          {
+            "unit_id": "S10.3",
+            "unit_ids": [
+              "S10.3"
+            ],
+            "claim_text": "So the price reacted once, then returned to a high level.",
+            "span": [
+              1873,
+              1930
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "他の要因が残ったことを、価格が反応して高水準に戻った原因として結び付けているが、Ledgerはそれらの要因がこの回復を引き起こしたとは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So the price reacted once, then returned to a high level."
+          },
+          {
+            "unit_id": "R:S10.2+S10.3",
+            "unit_ids": [
+              "R:S10.2+S10.3"
+            ],
+            "claim_text": "So the price reacted once, then returned to a high level.",
+            "span": [
+              1873,
+              1930
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "他の要因が残ったことと価格の反応・回復を因果的に結び付けているが、Ledgerはその因果関係を確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "R:S10.2+S10.3",
+        "S10.3",
+        "S3.1",
+        "S6.1"
+      ],
+      "r3_only": [
+        "L1",
+        "S10.1",
+        "S10.2",
+        "S3.3",
+        "S7.1",
+        "S8.1",
+        "S8.3",
+        "S8.4",
+        "S9.1",
+        "S9.2"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 6
+    },
+    "union_candidates": [
+      {
+        "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+        "span": [
+          363,
+          452
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "提案の対象は通航するすべての貨物であり、船舶が通過するたびに料金が発生する制度だったとは確認できない。",
+          "貨物価値への率の適用方法が示されていないのに、船舶が通航するたびに料金が発生するかのように具体化している。",
+          "徴収方法が未提示だったというFactに対し、通航ごとに料金が発生する仕組みを示唆している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "It looked like a very large fee would appear every time a ship passed through the strait."
+        ]
+      },
+      {
+        "claim_text": "The fee was not actually being collected yet.",
+        "span": [
+          556,
+          601
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "Ledgerは徴収方法などが示されなかったことと提案段階であることを確認しているが、実際に徴収されていなかったとは明記していない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": [
+          "The fee was not actually being collected yet."
+        ]
+      },
+      {
+        "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+        "span": [
+          930,
+          1016
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "提案は船舶への課金ではなく、ホルムズ海峡を通る貨物への償還料として記録されている。",
+          "「貨物」への償還料案を、船舶に料金を課す案として表現しており、Ledgerでは未提示の課金対象・支払主体を具体化している。",
+          "支払義務者や徴収対象が示されていない案について、船舶に課金する仕組みであるかのように表現している。",
+          "撤回・置換の要約で、貨物への償還料案を船舶に料金を課す案として表現している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-002",
+          "HF-003",
+          "HF-007"
+        ],
+        "model_claims": [
+          "A story about charging ships suddenly changed into a story about trade and investment."
+        ]
+      },
+      {
+        "claim_text": "Now for the third act: crude oil prices appeared.",
+        "span": [
+          1104,
+          1153
+        ],
+        "unit_ids": [
+          "S7.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "When the replacement of the fee plan was announced, Brent crude futures briefly reduced their gains.",
+        "span": [
+          1155,
+          1255
+        ],
+        "unit_ids": [
+          "S8.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Before long, they returned to a high level close to where they had been before the announcement.",
+        "span": [
+          1289,
+          1385
+        ],
+        "unit_ids": [
+          "S8.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "When the article appeared, they were up about 2.6 percent, at more than 85 dollars a barrel.",
+        "span": [
+          1386,
+          1478
+        ],
+        "unit_ids": [
+          "S8.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+        "span": [
+          1480,
+          1562
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "一時的な上げ幅縮小と回復は報じられているが、料金案の撤回が価格下落を引き起こさなかったという因果関係まではLedgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The disappearance of the fee plan did not lead to a large, lasting fall in prices."
+        ]
+      },
+      {
+        "claim_text": "Attacks between the United States and Iran continued, and concerns about a sea blockade and the safety of tankers remained.",
+        "span": [
+          1563,
+          1686
+        ],
+        "unit_ids": [
+          "S9.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Of course, this price movement alone cannot tell us that there was just one reason for the price.",
+        "span": [
+          1688,
+          1785
+        ],
+        "unit_ids": [
+          "S10.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "単一要因への断定を避けるLedgerの注意は7月13日の上昇についてであり、ここで述べる価格変動一般についての推論限界は直接確認できない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": [
+          "Of course, this price movement alone cannot tell us that there was just one reason for the price."
+        ]
+      },
+      {
+        "claim_text": "But even after the fee plan left the stage, other factors remained on that same stage.",
+        "span": [
+          1786,
+          1872
+        ],
+        "unit_ids": [
+          "S10.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So the price reacted once, then returned to a high level.",
+        "span": [
+          1873,
+          1930
+        ],
+        "unit_ids": [
+          "S10.3",
+          "R:S10.2+S10.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "価格が一時的に上げ幅を縮小し、その後回復した観測自体は記載されているが、直前の他要因がその値動きを生んだという「So」の因果関係は示されていない。",
+          "「So」が、他要因の継続を価格の反応・回復の原因として結び付けているが、その因果関係はLedgerに記載されていない。",
+          "手数料案の撤回後の価格反応・回復を撤回に結び付ける因果関係まで含むが、HF-007は撤回・置換を確認するFactであり、その因果関係は示していない。",
+          "他の要因が残ったことを、価格が反応して高水準に戻った原因として結び付けているが、Ledgerはそれらの要因がこの回復を引き起こしたとは確認していない。",
+          "他の要因が残ったことと価格の反応・回復を因果的に結び付けているが、Ledgerはその因果関係を確認していない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009",
+          "HF-007"
+        ],
+        "model_claims": [
+          "So the price reacted once, then returned to a high level.",
+          "But even after the fee plan left the stage, other factors remained on that same stage. So the price reacted once, then returned to a high level."
+        ]
+      },
+      {
+        "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+        "span": [
+          2074,
+          2193
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "issues": [
+          "価格が高い水準にあったことと緊張・安全上の懸念が続いたことは記録されているが、それらが価格の高止まりをもたらしたという因果関係はLedgerに明記されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained."
+        ]
+      }
+    ],
+    "n_union_candidates": 13,
+    "total_cost_jpy": 1.9835,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "bgroup_B2_hormuz_s3_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8644,
+      "usage": {
+        "input_tokens": 5198,
+        "cached_input_tokens": 0,
+        "output_tokens": 9980,
+        "reasoning_tokens": 5135
+      },
+      "elapsed_seconds": 83.493,
+      "prompt_sha256": "cb09748fcb56fc95b3d4f22d23c69700026753cfd26bbbf065779e887b128cd7"
+    },
+    {
+      "label": "bgroup_B2_hormuz_s3_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.1191,
+      "usage": {
+        "input_tokens": 4805,
+        "cached_input_tokens": 0,
+        "output_tokens": 13306,
+        "reasoning_tokens": 9500
+      },
+      "elapsed_seconds": 84.233,
+      "prompt_sha256": "abd24844f8ee29e94f0a7a0843d9c19018c8d50463c7251491284180f738098f"
+    }
+  ],
+  "total_cost_jpy": 1.9835
+}

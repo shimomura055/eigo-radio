@@ -36,12 +36,15 @@ PER_RUN_COST_STOP_JPY = 6.0
 CRITERIA = {"sc_union_detect_per_instance": "3/3", "holdout_new_miss_max": 0, "missing_id_residual_max": 0.05}
 
 
+NORMAL_N = 3  # 委任_07: --normal-n 2 でNORMAL 6 instanceをn=2に縮小(SC+watchはn=3のまま)
+
+
 def plan() -> list:
     """[(sample, instance_id)]。sample-major: sample1に全instance(hold-out含む)、sample2/3はn=3対象のみ。"""
     main_ids = SC_IDS + WATCH_IDS + NORMAL_IDS
     out = [(1, i) for i in main_ids + HOLDOUT_IDS]
     for s in range(2, N_MAIN + 1):
-        out += [(s, i) for i in main_ids]
+        out += [(s, i) for i in SC_IDS + WATCH_IDS + (NORMAL_IDS if s <= NORMAL_N else [])]
     return out
 
 
@@ -218,7 +221,10 @@ def main() -> None:
     ap.add_argument("--stage", choices=["estimate", "main", "agg"], default="estimate")
     ap.add_argument("--budget-jpy", type=float, default=65.0)
     ap.add_argument("--yes-run-paid", action="store_true", help="有料API実行の明示確認(mainで必須)")
+    ap.add_argument("--normal-n", type=int, default=3, help="NORMAL instanceのn(既定3、委任_07は2)")
     args = ap.parse_args()
+    global NORMAL_N
+    NORMAL_N = args.normal_n
     if args.stage == "agg":
         run_agg()
         return
