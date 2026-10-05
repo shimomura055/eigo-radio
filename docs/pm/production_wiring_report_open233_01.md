@@ -10,7 +10,12 @@
 
 ## 3. Stage 1 A構成fresh確認
 
-(委任_08の結果を後で転記。`docs/pm/rep30_stage1_provenance_01.md` §7。未確定=プレースホルダ)
+委任_08(2026-10-05、実費¥11.42、gpt-6-luna、n=2、A4はn=4、prompt sha 26/26一致=復元は正確)の結果: **事前固定受入条件(1)(2)(3)でFAIL**。
+- (1)SC: B3 2/2、B4-a 2/2、A2A3-0 2/2、A5-0 2/2、A4-0 2/4(3/4未満でFAIL)。neg5 B3-same 0/2(frozenは検出)。
+- (2)B群既知重大の見逃し: neg5 B3-same(0/2)、B2_hormuz HF-011(0/2)、B4の一部claim(0/2)。
+- (3)負例/NORMAL群MAJOR run率: fresh 58.3%(7/12) vs frozen 54.5%(6/11)=超過。
+- 復元差なし(prompt sha・model一致)=Stage 1 Checkerのrun間変動。frozenは単発サンプル。claim単位一致率平均0.658。
+- 影響分析(¥0): `er052_output/open233_kpi_recovery_02_offline_01/agg_stage1_variance_impact_01.md`。判断材料のみ、採用提案ではない。
 
 ## 4. 配線設計
 
@@ -63,3 +68,4 @@ Opus#15(`docs/pm/opus_l2_review_open233_production_wiring_15.md`)とGap文書§7
 - K4: 日本語側の誤りは残存する(english_only、全文再生成廃止)。
 - A2A3 HF-009: rep30では非検出。
 - 委任_05の費用¥20.10を記録(K14 Phase 1補完)。
+- 未解決(CORRECTION-02、2026-10-05): A構成fresh確認FAIL(SC 4/5・neg5 B3-same 0/2・A4-0 2/4、復元差なし=Stage 1非決定性)。rep30のVALIDATEDはStage 1出力を所与とした後段検証に限られ、Production初回pathのStage 1はrep30の忠実再現としては成立しない。USER_DECISION_REQUIRED候補: Production初回pathのStage 1をどう成立させるか。委任_08費用¥11.42(Guardrail超過、暴走ではない)。

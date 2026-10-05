@@ -19381,3 +19381,8 @@ APPROVED_FOR_PRODUCTION
 
 ### Fable判断
 ユーザー是正に従いUSER_DECISION_REQUIREDを撤回、APPROVED_FOR_PRODUCTION維持。A構成をfresh限定確認し、事前固定受入条件(委任_08)でPASSなら後段配線へ継続。委任_05費用¥20.10は管理不備として記録のみ。
+
+## 2026-10-05 Fable判断 CORRECTION-02 fresh確認FAIL→STOP(OPEN-233-SELF-RECOVERY-PRODUCTION-WIRING-01)
+
+A構成の復元は正確(sha 26/26)であり、FAILの主因は復元差ではなくStage 1 Checkerのrun間変動(非決定性)である。rep30のStage 1入力は「frozen V4A出力(単発サンプル)+Safety-critical見逃し時のV0差替え」で構成されており、同一構成のfresh実行では再現されない。したがってrep30のVALIDATEDはStage 1出力を所与とした後段の検証に限られ、Production初回pathのStage 1はrep30の忠実な再現としては成立しない。是正指示§6「それでも成立しない場合のみSTOPし報告」に該当。Fable/Claudeは新Checker仕様を新設・選定しない。ユーザー判断事項として、事実と影響(既存データからの¥0推定)を提示する。委任_08費用¥11.42(Guardrail¥10超過、暴走ではない)を記録。
+影響分析(¥0、判断材料であり採用提案ではない): `er052_output/open233_kpi_recovery_02_offline_01/agg_stage1_variance_impact_01.md`
