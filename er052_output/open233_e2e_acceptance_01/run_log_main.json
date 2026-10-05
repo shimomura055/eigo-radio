@@ -1,0 +1,74 @@
+{
+  "switches": {
+    "HANDOFF_MODE": "violation_span",
+    "VS_MATCH_EXT": true,
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "JA_MODE": "english_only",
+    "FLOOR_VERIFY_MODE": "time_only",
+    "STAGE2_NORMAL_TWO_OF_TWO": false,
+    "CAUSAL_FLOOR": true,
+    "CAUSAL_FLOOR_VOCAB": "known6",
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true,
+    "RECHECK_BEFORE_AFTER_PAIRS": false,
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "RECHECK_MODE": "coverage_union",
+    "MAX_CYCLES": 2,
+    "HARD_MAX_CYCLES": 3,
+    "MODEL": "gpt-6-luna",
+    "STAGE2_DOWNGRADE_VERIFY": false,
+    "TIER0_G_L_ENABLED": false,
+    "TOTAL_BUDGET_JPY": 86.0,
+    "enable_s1u": false
+  },
+  "stopped": true,
+  "stop_reason": "Waste: per_run_cost_gt_6.0 in s1/safety_A2A3",
+  "runs": [
+    {
+      "sample": 1,
+      "instance_id": "bgroup_B3",
+      "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+      "stage4_reason": null,
+      "cost": 4.5494,
+      "waste_flags": []
+    }
+  ],
+  "exceptions": [],
+  "runs_over_3jpy": [
+    {
+      "sample": 1,
+      "instance_id": "bgroup_B3",
+      "cost_jpy": 4.5494
+    }
+  ],
+  "waste_events": [
+    {
+      "sample": 1,
+      "instance_id": "safety_A2A3",
+      "flag": "per_run_cost_gt_6.0"
+    }
+  ],
+  "provenance_violations": [],
+  "cumulative_jpy": 10.7587,
+  "worst_run_jpy": 4.5494
+}
