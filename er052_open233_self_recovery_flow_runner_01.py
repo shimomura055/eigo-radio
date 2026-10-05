@@ -460,6 +460,11 @@ STAGE1_MODES = (STAGE1_MODE_LEGACY, STAGE1_MODE_COVERAGE_UNION)
 STAGE1_MODE = STAGE1_MODE_LEGACY      # coverage_union=文ID網羅3'-R+Ledger逆照合5-liteの2経路∪(`er052_open233_stage1_coverage_checker_01`)
 STAGE1_ROUTES = "both"                # coverage_unionの経路: both/r3_only/r5_only(段階Aの経路別測定用)
 F3_PRECHECK_ALWAYS = False            # F3: Stage 1が非検出(候補0)でもprecheck floorを実行(早期PASS returnの前に配線)
+# 委任_11(Opus#17後Fable評価、Trial専用・既定不変): r5-V・経路別reasoning effort・否定是正案a。
+STAGE1_R5_MODE = "full"               # full=5-lite(従来) / verify_supported=r5-V(r3がSUPPORTEDにした単位+関係単位のみ検証。routes=bothの順次実行)
+STAGE1_R3_REASONING = "high"          # r3の推論effort(high/medium/low)。既定high=従来(vfl01.REASONING_EFFORT)
+STAGE1_R5_REASONING = "high"          # r5/r5-Vの推論effort(high/medium/low)
+STAGE1_NEGATION_MODE = "legacy"       # legacy=従来の決定論否定検査 / a=是正案a(対比構文除外・なし追加・英語Ledger対応・not only除外)
 STAGE1_FAIL_CLOSED = False            # H1: Stage 1 API失敗はPASSへ抜けず、再実行1回→なお失敗なら許可リスト`api_failure`でSTOP
 
 
@@ -1749,18 +1754,28 @@ def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, l
     return parsed_trial
 
 
-def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture) -> dict:
+def stage1_effort_for_label(lbl: str) -> str:
+    """委任_11: Stage 1 coverage_unionの経路別reasoning effort。labelがr3系(r3/r3_rerun/..._retry)ならR3、r5系(r5/r5v)ならR5。
+    既定high=従来(vfl01.REASONING_EFFORT)。不正値はValueError(黙って既定へ戻さない)。"""
+    eff = STAGE1_R3_REASONING if lbl.startswith("r3") else STAGE1_R5_REASONING
+    if eff not in cov.REASONING_EFFORTS:
+        raise ValueError(f"unknown reasoning effort: {eff!r}")
+    return vfl01.REASONING_EFFORT if eff == "high" else eff
+
+
+def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture, r3_precomputed=None) -> dict:
     """委任_06: `STAGE1_MODE=coverage_union`のStage 1(文ID網羅3'-R+Ledger逆照合5-liteの2経路∪)。LLM呼び出しは本関数が
     `cov.run_stage1_coverage`へ注入する`call_fn`で行い、retry/cost計上(`check_budget`/`record_call`)は`stage1_fresh_with_enumeration`
     と同一パターン。経路のAPI失敗(module内で再実行1回後も失敗)は`_stage1_api_failure=True`で返す(H1: 呼び出し側でfail-closed)。"""
     def call_fn(lbl, developer_message, prompt, schema):
         check_budget(state)
         full_label = f"{label}_{lbl}"
+        effort = stage1_effort_for_label(lbl)
         last_err, response, t0 = None, None, time.time()
         for _ in range(1 + MAX_RETRIES_PER_CALL):
             try:
                 response = client.responses.create(
-                    model=MODEL, reasoning={"effort": vfl01.REASONING_EFFORT},
+                    model=MODEL, reasoning={"effort": effort},
                     text={"format": {"type": "json_schema", **schema}},
                     input=[{"role": "developer", "content": developer_message}, {"role": "user", "content": prompt}])
                 break
@@ -1775,16 +1790,18 @@ def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fi
         usage = s2p._extract_usage(response)
         cost = round(s2p.official_cost_jpy(usage), 4)
         call_log.append({"label": full_label, "recovery_stage": "stage1_initial", "cost_jpy": cost, "usage": usage,
-                          "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt)})
+                          "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt), "reasoning_effort": effort})
         record_call(state, consecutive_errors, full_label, cost, True, "stage1_initial", usage)
-        meta = {"cost_jpy": cost, "usage": usage, "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt)}
+        meta = {"cost_jpy": cost, "usage": usage, "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt),
+                "reasoning_effort": effort}
         try:
             return json.loads(response.output_text), meta
         except ValueError as e:
             return None, {**meta, "error": f"json_decode: {e}"}
 
     res = cov.run_stage1_coverage(fixture, call_fn, routes=STAGE1_ROUTES, segment_fn=vs_sentence_segments_l6,
-                                  initial_extra=CAUSAL_SENTENCE_INITIAL_EN)
+                                  initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE,
+                                  r5_mode=STAGE1_R5_MODE, r3_precomputed=r3_precomputed)
     return cov.to_stage1_parsed(res)
 
 
@@ -8226,7 +8243,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             cache_key = hashlib.sha256(
                 (fixture["ledger_text"] + "␟" + fixture["article_text"] + "␟"
                  + (fixture.get("source_article_text") or "")
-                 + (f"␟{STAGE1_MODE}:{STAGE1_ROUTES}" if STAGE1_MODE != STAGE1_MODE_LEGACY else "")).encode("utf-8")
+                 + (f"␟{STAGE1_MODE}:{STAGE1_ROUTES}" if STAGE1_MODE != STAGE1_MODE_LEGACY else "")
+                 + (f"␟{STAGE1_R5_MODE}:{STAGE1_R3_REASONING}:{STAGE1_R5_REASONING}:{STAGE1_NEGATION_MODE}"
+                    if (STAGE1_R5_MODE, STAGE1_R3_REASONING, STAGE1_R5_REASONING, STAGE1_NEGATION_MODE) != ("full", "high", "high", "legacy")
+                    else "")).encode("utf-8")
             ).hexdigest()
         if cache_key is not None and cache_key in stage1_cache:
             stage1_parsed = stage1_cache[cache_key]
@@ -9405,7 +9425,9 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         result["f3_precheck_always"] = {"precheck_floor_hits": f3_precheck_hits}
     if STAGE1_MODE != STAGE1_MODE_LEGACY or F3_PRECHECK_ALWAYS or STAGE1_FAIL_CLOSED:
         result["switches"] = {**result["switches"], "STAGE1_MODE": STAGE1_MODE, "STAGE1_ROUTES": STAGE1_ROUTES,
-                              "F3_PRECHECK_ALWAYS": F3_PRECHECK_ALWAYS, "STAGE1_FAIL_CLOSED": STAGE1_FAIL_CLOSED}
+                              "F3_PRECHECK_ALWAYS": F3_PRECHECK_ALWAYS, "STAGE1_FAIL_CLOSED": STAGE1_FAIL_CLOSED,
+                              "STAGE1_R5_MODE": STAGE1_R5_MODE, "STAGE1_R3_REASONING": STAGE1_R3_REASONING,
+                              "STAGE1_R5_REASONING": STAGE1_R5_REASONING, "STAGE1_NEGATION_MODE": STAGE1_NEGATION_MODE}
     _new_sw = {k: globals()[k] for k in ("STAGE4_ALLOWLIST", "LADDER_LOCATION_CARRY", "REWRITE_REVERT_GUARD",
                                           "SPAN_FALLBACK_CHAIN", "JUDGE_ONLY_CYCLE_AFTER_CAP", "LAST_RESORT_DELETE",
                                           "MATERIALITY_BLOCKING_PIN", "STAGE2_VERDICT_REUSE_NONBLOCKING",

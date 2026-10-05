@@ -1,0 +1,117 @@
+{
+ "usd_jpy": 160.0,
+ "confirmed_scope_er003_er019": {
+  "n_rows": 4,
+  "by_stage": {
+   "advanced_deviation": {
+    "n": 1,
+    "mean_own_model": 1.076,
+    "median_own_model": 1.076,
+    "mean_if_gpt6luna": 0.463
+   },
+   "deviation_check_after_a2": {
+    "n": 1,
+    "mean_own_model": 0.714,
+    "median_own_model": 0.714,
+    "mean_if_gpt6luna": 0.299
+   },
+   "deviation_check_after_b1b": {
+    "n": 1,
+    "mean_own_model": 0.614,
+    "median_own_model": 0.614,
+    "mean_if_gpt6luna": 0.257
+   },
+   "ledger": {
+    "n": 1,
+    "mean_own_model": 3.066,
+    "median_own_model": 3.066,
+    "mean_if_gpt6luna": 1.443
+   }
+  },
+  "rows": [
+   {
+    "file": "er019_output\\family_x_b3_production_wiring_01\\run_01\\raw_usage_log.jsonl",
+    "stage": "ledger",
+    "model_id": "gpt-5.6-luna",
+    "in": 62012,
+    "cached": 0,
+    "out": 5635,
+    "reasoning": 3734,
+    "jpy_own_model": 3.066304,
+    "jpy_if_gpt6luna": 1.4429920000000003,
+    "ts": "2026-09-26"
+   },
+   {
+    "file": "er019_output\\family_x_b3_production_wiring_01\\run_01\\audit\\section_contract_regression\\raw_usage_log.jsonl",
+    "stage": "advanced_deviation",
+    "model_id": "gpt-5.6-luna",
+    "in": 5509,
+    "cached": 0,
+    "out": 4684,
+    "reasoning": 4660,
+    "jpy_own_model": 1.0756160000000001,
+    "jpy_if_gpt6luna": 0.462864,
+    "ts": "2026-09-27"
+   },
+   {
+    "file": "er019_output\\family_x_section_segmentation_trial_01\\raw_usage_log.jsonl",
+    "stage": "deviation_check_after_b1b",
+    "model_id": "gpt-5.6-luna",
+    "in": 4401,
+    "cached": 4398,
+    "out": 3126,
+    "reasoning": 3106,
+    "jpy_own_model": 0.6143616,
+    "jpy_if_gpt6luna": 0.25716479999999997,
+    "ts": "2026-09-26"
+   },
+   {
+    "file": "er019_output\\family_x_section_segmentation_trial_01\\raw_usage_log.jsonl",
+    "stage": "deviation_check_after_a2",
+    "model_id": "gpt-5.6-luna",
+    "in": 4376,
+    "cached": 4373,
+    "out": 3644,
+    "reasoning": 3624,
+    "jpy_own_model": 0.7137376000000001,
+    "jpy_if_gpt6luna": 0.2985648,
+    "ts": "2026-09-26"
+   }
+  ]
+ },
+ "reference_only_er012_er013": {
+  "n_rows": 13,
+  "by_stage": {
+   "deviation_check_a2_cycle0": {
+    "n": 5,
+    "mean_own_model": 0.504,
+    "median_own_model": 0.514,
+    "mean_if_gpt6luna": 0.231
+   },
+   "deviation_check_a2_cycle1": {
+    "n": 1,
+    "mean_own_model": 1.968,
+    "median_own_model": 1.968,
+    "mean_if_gpt6luna": 0.843
+   },
+   "deviation_check_b1_cycle0": {
+    "n": 6,
+    "mean_own_model": 0.545,
+    "median_own_model": 0.353,
+    "mean_if_gpt6luna": 0.248
+   },
+   "safety_layer1_deviation_check": {
+    "n": 1,
+    "mean_own_model": 0.248,
+    "median_own_model": 0.248,
+    "mean_if_gpt6luna": 0.123
+   }
+  }
+ },
+ "verdict": "特定不能(Production 1記事分のStage 1実費として確定できない)",
+ "reasons": [
+  "er003_output配下にraw_usage_logなし",
+  "er019の該当stageはfamily_x_section_segmentation_trial/b3 regression(Trial/回帰)で、n=1〜2、Production全記事run(hormuz等)のlogには英語deviation stageなし(ja_*のみ)",
+  "Production英語生成+deviation checkのusageは別出力(er012/er013等)にstage名が異なって分散し、Production現行pathと一対一に対応づけられない"
+ ]
+}

@@ -298,12 +298,48 @@ R5_JSON_SCHEMA = {
     "strict": True,
 }
 
+# --- r5-V(委任_11、Trial専用: `STAGE1_R5_MODE=verify_supported`。既定はfull=5-lite、上記定数は不変) ---
+# 入力: 記事全文(文脈として。r3の引用・判定は一切渡さない)+Ledger全文+検証対象単位(r3がSUPPORTEDにした単位と関係単位のみ)。
+# 方向はfact->記事(5-liteと同じ)。schemaは5-liteと同形(R5_JSON_SCHEMAを共用)。
+R5V_DEVELOPER_MESSAGE = (
+    "あなたはLedger Fact Safetyの検証担当です。Verified Fact Ledgerの各factについて、【検証対象の単位】のうちどれがそのfactに言及しているかを挙げ、"
+    "各単位がそのfactと一致するか逸脱しているかを判定してください。重大度の判定は行いません。少しでも疑いがあれば逸脱(DEVIATION)にしてください。"
+)
+
+R5V_PROMPT_TEMPLATE = """Verified Fact Ledgerの各factについて、【検証対象の単位】のどれが当該factに言及しているかを挙げ、各単位がそのfactと一致するか逸脱しているかを判定してください(Ledgerから記事への逆照合)。【記事全文】は文脈を理解するための参考であり、判定の対象は【検証対象の単位】だけです。
+
+【Verified Fact Ledger】
+{ledger_text}
+
+【記事全文(文脈)】
+{article_text}
+
+【検証対象の単位(IDつき。これらのIDだけをmatchesに使う)】
+{units_block}
+
+【factID一覧(全{n_facts}件)】
+{fact_ids}
+
+【規則】
+1. factsへ、上記factID一覧の全factを1件ずつ出力する。
+2. matches: そのfactの内容に言及している(数値・主体・時期・主張が重なる)【検証対象の単位】のIDを全て列挙する。【検証対象の単位】に無いID(記事全文中の他の文)は列挙しない。関係単位(R:)も対象。言及する単位が無いfactはmatchesを空配列にしてよい。
+3. 各matchのverdict: MATCH=その単位の当該factに関する記述がLedgerと一致している / DEVIATION=数値・主体・時期・範囲・因果・確信度・否定・比較のいずれかがLedgerと違う、またはLedgerに無い主張・因果の結び付けがある。少しでも疑えばDEVIATION(迷えば逸脱)。特に否定の有無・極性(あった/なかった、増えた/増えていない等)をfactと照合する。重大度(MAJOR/MINOR)は判定しない。
+4. DEVIATIONでは、issue、claim_in_article(単位内の該当箇所の逐語引用)、flags(下記10種類)を埋める。MATCHでは、issueとclaim_in_articleは空文字、flagsは全てfalse。
+5. 文体・言い換え・平易化そのものは逸脱としない。意味(Factと関係)が変わるかだけを見る。
+
+{flag_descriptions}
+"""
+
+R5_MODES = ("full", "verify_supported")
+REASONING_EFFORTS = ("high", "medium", "low")
+
 PROMPT_SHA256 = {
     "R3_PROMPT_TEMPLATE": sha256_text(R3_PROMPT_TEMPLATE), "R3_DEVELOPER_MESSAGE": sha256_text(R3_DEVELOPER_MESSAGE),
     "R3_RERUN_NOTE": sha256_text(R3_RERUN_NOTE), "R5_PROMPT_TEMPLATE": sha256_text(R5_PROMPT_TEMPLATE),
     "R5_DEVELOPER_MESSAGE": sha256_text(R5_DEVELOPER_MESSAGE), "FLAG_DESCRIPTIONS": sha256_text(FLAG_DESCRIPTIONS),
     "R3_JSON_SCHEMA": sha256_text(json.dumps(R3_JSON_SCHEMA, sort_keys=True, ensure_ascii=False)),
     "R5_JSON_SCHEMA": sha256_text(json.dumps(R5_JSON_SCHEMA, sort_keys=True, ensure_ascii=False)),
+    "R5V_PROMPT_TEMPLATE": sha256_text(R5V_PROMPT_TEMPLATE), "R5V_DEVELOPER_MESSAGE": sha256_text(R5V_DEVELOPER_MESSAGE),
 }
 
 
@@ -341,6 +377,28 @@ def build_r5_prompt(ledger_text: str, units: list, fact_ids: list) -> str:
     return R5_PROMPT_TEMPLATE.format(
         ledger_text=ledger_text, units_block=render_units_block(units), n_facts=len(fact_ids),
         fact_ids=", ".join(fact_ids), flag_descriptions=FLAG_DESCRIPTIONS)
+
+
+def r5v_target_units(units: list, r3_status: dict) -> list:
+    """r5-Vの検証対象=r3の最終状態がSUPPORTEDの文・見出し・タイトル単位+関係単位(r3の状態は問わない)。r3の引用・判定は含めない。"""
+    out = []
+    for u in units:
+        if u["type"] == "paragraph":
+            continue
+        if u["type"] == "relation" or (u.get("judged") and (r3_status or {}).get(u["id"]) == "SUPPORTED"):
+            out.append(u)
+    return out
+
+
+def render_target_units_block(targets: list) -> str:
+    """検証対象単位の表示(IDと本文のみ。r3の判定・引用・issueは渡さない)。"""
+    return "\n".join(f"[{u['id']}] {u['text']}" for u in targets)
+
+
+def build_r5v_prompt(ledger_text: str, article_text: str, targets: list, fact_ids: list) -> str:
+    return R5V_PROMPT_TEMPLATE.format(
+        ledger_text=ledger_text, article_text=article_text, units_block=render_target_units_block(targets),
+        n_facts=len(fact_ids), fact_ids=", ".join(fact_ids), flag_descriptions=FLAG_DESCRIPTIONS)
 
 
 # ------------------------------------------------------------
@@ -425,7 +483,40 @@ def negation_mismatch(unit: dict, blocks: list) -> bool:
     return (u_neg and not any(f_negs)) or ((not u_neg) and all(f_negs))
 
 
-def verify_supported(unit: dict, item: dict, blocks_by_id: dict) -> list:
+# --- 否定是正案a(委任_11、Trial専用スイッチ。既定legacy=従来挙動不変) ---
+# fact側=claim行(1行目)のみ。対比構文(ほどなく/ではなく/でなく/意図せず等)は除外、「なし」を追加。英語Ledger行は英語否定語で判定。
+# 単位側の英語は'not only'のみ除外(「only」を広く除外語にしない=Opus#17条件)、dislike/lack/fail to/unableを追加。
+NEGATION_MODES = ("legacy", "a")
+BENIGN_JA_RE = re.compile(r"ほどなく|ではなく|でなく|意図せず|思いがけず|図らずも|知らず|にもかかわらず")
+_KANA_RE = re.compile(r"[ぁ-んァ-ヶ]")
+NEGATION_EXTRA_JA = ("なし",)
+UNIT_EN_EXTRA_RE = re.compile(r"(?<![\w'-])(?:dislik(?:e|es|ed)|lack(?:s|ed)?|fail(?:s|ed)\s+to|unable)(?![\w-])", re.I)
+NOT_ONLY_RE = re.compile(r"not\s+only\b", re.I)
+
+
+def _unit_neg_a(text: str) -> bool:
+    t = NOT_ONLY_RE.sub(" ", text or "")
+    return bool(NEGATION_EN_RE.search(t) or UNIT_EN_EXTRA_RE.search(t))
+
+
+def _fact_neg_a(block: str) -> bool:
+    line = block.split(chr(10))[0]
+    if not _KANA_RE.search(line[:80]):
+        return bool(NEGATION_EN_RE.search(line))
+    s = BENIGN_JA_RE.sub("", line)
+    return any(m in s for m in NEGATION_MARKERS_JA + NEGATION_EXTRA_JA)
+
+
+def negation_mismatch_a(unit: dict, blocks: list) -> bool:
+    """是正案aの(iii)。fact blockが無ければFalse。"""
+    if not blocks:
+        return False
+    u_neg = _unit_neg_a(unit_claim_text(unit))
+    f_negs = [_fact_neg_a(b) for b in blocks]
+    return (u_neg and not any(f_negs)) or ((not u_neg) and all(f_negs))
+
+
+def verify_supported(unit: dict, item: dict, blocks_by_id: dict, negation_mode: str = "legacy") -> list:
     """SUPPORTED 1単位の検査。戻り値=候補へ戻す理由(sub_reason)のlist。空ならSUPPORTEDのまま。"""
     reasons = []
     ids = [x for x in (item.get("support_fact_ids") or []) if isinstance(x, str) and x.strip()]
@@ -445,7 +536,8 @@ def verify_supported(unit: dict, item: dict, blocks_by_id: dict) -> list:
             reasons.append("number_not_in_fact")
         if unit_has_causal(unit) and not facts_have_causal(blocks):
             reasons.append("causal_not_in_fact")
-        if negation_mismatch(unit, blocks):
+        neg_fn = negation_mismatch_a if negation_mode == "a" else negation_mismatch
+        if neg_fn(unit, blocks):
             reasons.append("negation_polarity_mismatch")
     return reasons
 
@@ -458,12 +550,22 @@ def _flags_from(d: dict) -> dict:
     return {k: bool(f.get(k)) for k in FLAG_KEYS}
 
 
+def source_of(route: str, sub_reason: str) -> str:
+    """M/D区分(委任_11、Opus#17: Safety合格数にD検出を入れない)。model_r3/model_r5=モデル判定(M)、deterministic=決定論検査(D)、coverage_gap=欠落補填。"""
+    if sub_reason in ("model", "unknown_unit_id"):
+        return "model_" + route
+    if sub_reason == "coverage_gap":
+        return "coverage_gap"
+    return "deterministic"
+
+
 def _candidate(u: dict, units_by_id: dict, route: str, sub_reason: str, issue: str, flags: dict, related: str,
                model_claim: str = "") -> dict:
     target = units_by_id.get(u.get("cur_id")) if u.get("type") == "relation" else u
     target = target or u
     return {"unit_id": u["id"], "unit_ids": [u["id"]], "claim_text": unit_claim_text(u), "span": [target["start"], target["end"]],
-            "routes": [route], "sub_reasons": [sub_reason], "issues": [issue] if issue else [], "flags": dict(flags),
+            "routes": [route], "sub_reasons": [sub_reason], "sources": [source_of(route, sub_reason)],
+            "issues": [issue] if issue else [], "flags": dict(flags),
             "related_fact_ids": [related] if related else [], "model_claim": model_claim}
 
 
@@ -474,12 +576,14 @@ def _orphan_candidate(route: str, item: dict, article_text: str) -> dict | None:
         return None
     pos = article_text.find(claim)
     return {"unit_id": None, "unit_ids": [], "claim_text": claim, "span": [pos, pos + len(claim)] if pos >= 0 else None,
-            "routes": [route], "sub_reasons": ["unknown_unit_id"], "issues": [item.get("issue") or ""],
+            "routes": [route], "sub_reasons": ["unknown_unit_id"], "sources": [source_of(route, "unknown_unit_id")],
+            "issues": [item.get("issue") or ""],
             "flags": _flags_from(item), "related_fact_ids": [item.get("related_fact_id")] if item.get("related_fact_id") else [],
             "model_claim": claim}
 
 
-def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id: dict, article_text: str) -> dict:
+def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id: dict, article_text: str,
+                negation_mode: str = "legacy") -> dict:
     """3'-Rの出力itemsを検査し、単位ごとの状態・候補・欠落IDを返す(LLM非依存・決定論)。"""
     first: dict = {}
     conflicts, unknown = set(), []
@@ -502,12 +606,13 @@ def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id
             cands.append(_candidate(u, units_by_id, "r3", "model", it.get("issue") or "", _flags_from(it),
                                     it.get("related_fact_id") or "", it.get("claim_in_article") or ""))
         else:
-            reasons = verify_supported(u, it, blocks_by_id)
+            reasons = verify_supported(u, it, blocks_by_id, negation_mode)
             if reasons:
                 status[uid] = "SUPPORTED->CANDIDATE(" + ",".join(reasons) + ")"
                 cands.append(_candidate(u, units_by_id, "r3", reasons[0], "決定論検査で戻した: " + ",".join(reasons),
                                         _flags_from(it), (it.get("support_fact_ids") or [""])[0] if it.get("support_fact_ids") else ""))
                 cands[-1]["sub_reasons"] = list(reasons)
+                cands[-1]["sources"] = ["deterministic"]
             else:
                 status[uid] = "SUPPORTED"
     orphans = [c for c in (_orphan_candidate("r3", it, article_text) for it in unknown if it.get("verdict") == "CANDIDATE") if c]
@@ -531,7 +636,7 @@ def apply_group_consistency(status: dict, cands: list, groups: list, units_by_id
     return n
 
 
-def evaluate_r5(facts_out: list, units_by_id: dict, fact_ids: list, article_text: str) -> dict:
+def evaluate_r5(facts_out: list, units_by_id: dict, fact_ids: list, article_text: str, scope_ids=None) -> dict:
     """5-liteの出力を検査し、単位ごとの状態(DEVIATION/MATCH/UNMENTIONED)・候補を返す。fact未対応は許容。"""
     status, cands, returned, unknown = {}, [], set(), []
     for f in facts_out or []:
@@ -552,7 +657,7 @@ def evaluate_r5(facts_out: list, units_by_id: dict, fact_ids: list, article_text
                 status.setdefault(uid, "MATCH")
     orphans = [c for c in (_orphan_candidate("r5", m, article_text) for m in unknown if m.get("verdict") == "DEVIATION") if c]
     for u in units_by_id.values():
-        if u["judged"]:
+        if u["judged"] and (scope_ids is None or u["id"] in scope_ids):
             status.setdefault(u["id"], "UNMENTIONED")
     return {"status": status, "candidates": cands + orphans, "facts_missing": [i for i in fact_ids if i not in returned],
             "unknown_unit_ids": [m.get("unit_id") for m in unknown]}
@@ -565,11 +670,11 @@ def union_candidates(cands: list) -> list:
     for c in cands:
         key = norm_sentence(c["claim_text"]) or ("id:" + ",".join(c["unit_ids"]))
         if key not in merged:
-            merged[key] = {"claim_text": c["claim_text"], "span": c.get("span"), "unit_ids": [], "routes": [], "sub_reasons": [],
+            merged[key] = {"claim_text": c["claim_text"], "span": c.get("span"), "unit_ids": [], "routes": [], "sub_reasons": [], "sources": [],
                            "issues": [], "flags": {k: False for k in FLAG_KEYS}, "related_fact_ids": [], "model_claims": []}
             order.append(key)
         m = merged[key]
-        for fld in ("unit_ids", "routes", "sub_reasons", "related_fact_ids"):
+        for fld in ("unit_ids", "routes", "sub_reasons", "sources", "related_fact_ids"):
             for v in c.get(fld) or []:
                 if v and v not in m[fld]:
                     m[fld].append(v)
@@ -597,7 +702,7 @@ def _call_with_one_retry(call_fn, label: str, developer: str, prompt: str, schem
     return None
 
 
-def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict) -> dict:
+def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, negation_mode: str = "legacy") -> dict:
     required = list(split["judged_ids"])
     calls: list = []
     out = {"route": "r3", "calls": calls, "api_failure": False, "rerun_used": False}
@@ -607,7 +712,7 @@ def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
         out.update(api_failure=True, status={}, candidates=[], missing_first=required, missing_after_rerun=required)
         return out
     items = list(parsed.get("unit_verdicts") or [])
-    ev = evaluate_r3(items, units_by_id, required, blocks, fixture["article_text"])
+    ev = evaluate_r3(items, units_by_id, required, blocks, fixture["article_text"], negation_mode)
     out["missing_first"] = list(ev["missing"])
     if ev["missing"]:
         out["rerun_used"] = True
@@ -616,7 +721,7 @@ def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
         calls.append({"label": "r3_rerun", **(meta or {}), "ok": p2 is not None})
         if p2 is not None:
             items = items + list(p2.get("unit_verdicts") or [])
-            ev = evaluate_r3(items, units_by_id, required, blocks, fixture["article_text"])
+            ev = evaluate_r3(items, units_by_id, required, blocks, fixture["article_text"], negation_mode)
     out["missing_after_rerun"] = list(ev["missing"])
     for uid in ev["missing"]:  # なお欠落 -> 当該単位をCANDIDATE(coverage_gap)としてStage 2へ
         ev["status"][uid] = "MISSING->CANDIDATE(coverage_gap)"
@@ -628,47 +733,81 @@ def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
     return out
 
 
-def _run_r5(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict) -> dict:
+def _run_r5(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, r5_mode: str = "full",
+            r3_status: dict | None = None) -> dict:
+    """r5_mode=full: 5-lite(従来、全単位)。verify_supported: r5-V(r3がSUPPORTEDにした単位+関係単位のみ、記事全文は文脈)。"""
     calls: list = []
     fact_ids = list(blocks.keys())
-    out = {"route": "r5", "calls": calls, "api_failure": False, "rerun_used": False}
-    parsed = _call_with_one_retry(call_fn, "r5", R5_DEVELOPER_MESSAGE,
-                                  build_r5_prompt(fixture["ledger_text"], split["units"], fact_ids), R5_JSON_SCHEMA, calls)
+    out = {"route": "r5", "calls": calls, "api_failure": False, "rerun_used": False, "r5_mode": r5_mode}
+    scope = None
+    if r5_mode == "verify_supported":
+        targets = r5v_target_units(split["units"], r3_status or {})
+        scope = {u["id"] for u in targets}
+        out["r5v_target_ids"] = sorted(scope)
+        out["n_r5v_targets"] = len(targets)
+        if not targets:  # 検証対象なし(全単位がr3候補)=r5-Vは呼ばない(費用0)。
+            out.update(status={}, candidates=[], facts_missing=[], unknown_unit_ids=[], skipped_no_targets=True)
+            return out
+        label, dev, prompt = "r5v", R5V_DEVELOPER_MESSAGE, build_r5v_prompt(fixture["ledger_text"], fixture["article_text"], targets, fact_ids)
+    else:
+        label, dev, prompt = "r5", R5_DEVELOPER_MESSAGE, build_r5_prompt(fixture["ledger_text"], split["units"], fact_ids)
+    parsed = _call_with_one_retry(call_fn, label, dev, prompt, R5_JSON_SCHEMA, calls)
     if parsed is None:
         out.update(api_failure=True, status={}, candidates=[], facts_missing=fact_ids)
         return out
-    ev = evaluate_r5(parsed.get("facts") or [], units_by_id, fact_ids, fixture["article_text"])
+    ev = evaluate_r5(parsed.get("facts") or [], units_by_id, fact_ids, fixture["article_text"], scope)
     out.update(status=ev["status"], candidates=ev["candidates"], facts_missing=ev["facts_missing"],
                unknown_unit_ids=ev["unknown_unit_ids"])
     return out
 
 
-def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn=None, initial_extra=()) -> dict:
+def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn=None, initial_extra=(),
+                        negation_mode: str = "legacy", r5_mode: str = "full", r3_precomputed: dict | None = None) -> dict:
     """Stage 1(coverage_union)本体。`routes`=both/r3_only/r5_only。戻り値: candidates(∪、重複排除済み)・api_failure・failed_routes・audit。
     経路のAPI失敗(再実行1回後も失敗)は`api_failure=True`(呼び出し側がfail-closedでSTOP)。"""
     if routes not in ROUTES_ALL:
         raise ValueError(f"unknown routes: {routes!r}")
+    if negation_mode not in NEGATION_MODES:
+        raise ValueError(f"unknown negation_mode: {negation_mode!r}")
+    if r5_mode not in R5_MODES:
+        raise ValueError(f"unknown r5_mode: {r5_mode!r}")
+    if r5_mode == "verify_supported" and routes == "r5_only" and not r3_precomputed:
+        raise ValueError("r5_mode=verify_supported requires r3 result (routes=both or r3_precomputed)")
     article = fixture["article_text"]
     split = split_units(article, segment_fn, initial_extra)
     units_by_id = {u["id"]: u for u in split["units"]}
     blocks = ledger_fact_blocks(fixture["ledger_text"])
     res = {}
-    if routes in ("both", "r3_only"):
-        res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id)
+    if r3_precomputed:  # 保存済みr3出力の再利用(r3を再実行しない。費用0、r5-Vの見積・測定用)
+        pre = dict(r3_precomputed)
+        pre.setdefault("route", "r3")
+        pre.setdefault("status", pre.get("unit_status") or {})  # 保存audit(per_route)は`unit_status`キー
+        pre.setdefault("calls", [])
+        pre.setdefault("api_failure", False)
+        pre["candidates"] = [dict(c, sources=c.get("sources") or [source_of((c.get("routes") or ["r3"])[0], (c.get("sub_reasons") or [""])[0])])
+                             for c in pre.get("candidates") or []]
+        pre["reused_from_stored"] = True
+        res["r3"] = pre
+    elif routes in ("both", "r3_only"):
+        res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode)
     if routes in ("both", "r5_only"):
-        res["r5"] = _run_r5(call_fn, split, fixture, blocks, units_by_id)
+        res["r5"] = _run_r5(call_fn, split, fixture, blocks, units_by_id, r5_mode, (res.get("r3") or {}).get("status"))
     failed = [k for k, v in res.items() if v["api_failure"]]
     pre_union = [c for v in res.values() for c in v["candidates"]]
     merged = union_candidates(pre_union)
     ids = {k: {u for c in v["candidates"] for u in c["unit_ids"]} for k, v in res.items()}
     audit = {
         "module_version": MODULE_VERSION, "routes": routes, "prompt_sha256": PROMPT_SHA256,
+        "negation_mode": negation_mode, "r5_mode": r5_mode, "r3_reused": bool(r3_precomputed),
         "n_units": len(split["units"]), "n_judged_units": len(split["judged_ids"]), "n_relation_units": len(split["relation_ids"]),
         "relation_ids": split["relation_ids"], "same_sentence_groups": split["same_sentence_groups"], "n_facts": len(blocks),
         "per_route": {k: {"candidate_unit_ids": sorted(ids[k]), "unit_status": v.get("status", {}),
                           "calls": v["calls"], "api_failure": v["api_failure"], "rerun_used": v.get("rerun_used", False),
                           "missing_first": v.get("missing_first"), "missing_after_rerun": v.get("missing_after_rerun"),
                           "group_returned": v.get("group_returned", 0), "facts_missing": v.get("facts_missing"),
+                          "reused_from_stored": v.get("reused_from_stored", False), "r5_mode": v.get("r5_mode"),
+                          "r5v_target_ids": v.get("r5v_target_ids"), "n_r5v_targets": v.get("n_r5v_targets"),
+                          "skipped_no_targets": v.get("skipped_no_targets", False),
                           "unknown_unit_ids": v.get("unknown_unit_ids", []),
                           "candidates": v["candidates"]} for k, v in res.items()},
         "overlap": ({"both": sorted(ids["r3"] & ids["r5"]), "r3_only": sorted(ids["r3"] - ids["r5"]),
@@ -676,6 +815,9 @@ def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn
         "returned_by_check": {k: sum(1 for s in v.get("status", {}).values() if s.startswith("SUPPORTED->CANDIDATE"))
                               for k, v in res.items() if k == "r3"},
         "union_candidates": merged, "n_union_candidates": len(merged),
+        # M/D区分: Safety判定(gold検出の合否)はM(model_r3/model_r5)だけで数える。決定論(D)・coverage_gapのみの候補は別欄。
+        "n_model_candidates": sum(1 for c in merged if any(x.startswith("model_") for x in c.get("sources") or [])),
+        "n_deterministic_only_candidates": sum(1 for c in merged if not any(x.startswith("model_") for x in c.get("sources") or [])),
         "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) or 0.0 for v in res.values() for c in v["calls"]), 4),
         "n_calls": sum(len(v["calls"]) for v in res.values()),
     }

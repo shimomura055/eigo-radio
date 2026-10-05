@@ -583,5 +583,291 @@ class TestStageAScript(unittest.TestCase):
             rm.assert_not_called()
 
 
+class TestNegationCorrectionA(unittest.TestCase):
+    """委任_11: 否定是正案a(`negation_mode="a"`)。既定legacyは不変。合成陽性例(否定付加/否定除去/二重否定)と旧149件の再分類。"""
+    POS = "[VERIFIED] HF-001: 20％の償還料が7月13日に提案された。\n  scope: x"
+    NEG = "[VERIFIED] HF-002: 徴収方法は示されなかった。\n  scope: y"
+
+    def _u(self, text):
+        return {"type": "sentence", "text": text, "claim_text": text}
+
+    def test_synthetic_positive_negation_added_is_detected(self):
+        self.assertTrue(cov.negation_mismatch_a(self._u("The plan was not posted on July 13."), [self.POS]))
+
+    def test_synthetic_positive_negation_removed_is_detected(self):
+        self.assertTrue(cov.negation_mismatch_a(self._u("The post explained how to collect it."), [self.NEG]))
+
+    def test_synthetic_positive_double_negation_is_detected(self):
+        # 二重否定(単位側に否定語、factは肯定)=極性が反転しているので保守的に検出する
+        self.assertTrue(cov.negation_mismatch_a(self._u("It is not true that the plan was never posted."), [self.POS]))
+
+    def test_matching_polarity_is_not_flagged(self):
+        self.assertFalse(cov.negation_mismatch_a(self._u("The post did not say how to collect it."), [self.NEG]))
+        self.assertFalse(cov.negation_mismatch_a(self._u("The plan was posted on July 13."), [self.POS]))
+
+    def test_contrast_construction_and_not_only_are_excluded(self):
+        soon = "[VERIFIED] HF-003: 米国はほどなく案を撤回した。\n  scope: z"
+        u = self._u("The US withdrew the plan soon after.")
+        self.assertTrue(cov.negation_mismatch(u, [soon]))      # legacy=誤発火(ほどなく=「なく」)
+        self.assertFalse(cov.negation_mismatch_a(u, [soon]))   # 案a=対比構文を除外
+        not_only = self._u("The plan was not only posted on July 13.")
+        self.assertTrue(cov.negation_mismatch(not_only, [self.POS]))
+        self.assertFalse(cov.negation_mismatch_a(not_only, [self.POS]))
+
+    def test_only_is_not_broadly_excluded(self):
+        # Opus#17条件(3): 「only」を除外語に広く入れない(本物の範囲の変化を消さない)
+        self.assertEqual(cov._unit_neg_a("Only 3 firms joined."), bool(cov.NEGATION_EN_RE.search("Only 3 firms joined.")))
+        self.assertEqual(cov.NOT_ONLY_RE.sub(" ", "Only 3 firms joined."), "Only 3 firms joined.")
+        self.assertTrue(cov._unit_neg_a("The plan lacks any details."))  # lack/dislike/fail to/unableは追加
+
+    def test_nashi_and_english_ledger_line(self):
+        nashi = "[VERIFIED] HF-004: 合意は成立なし。\n  scope: w"
+        self.assertFalse(cov.negation_mismatch(self._u("A deal was reached."), [nashi]))  # legacyは「なし」を拾わない
+        self.assertTrue(cov.negation_mismatch_a(self._u("A deal was reached."), [nashi]))
+        en = "[VERIFIED] HF-9: The plan was not posted.\n  scope: v"
+        u = self._u("The plan was not posted.")
+        self.assertTrue(cov.negation_mismatch(u, [en]))       # legacy=英語Ledger行で誤発火
+        self.assertFalse(cov.negation_mismatch_a(u, [en]))
+
+    def test_mode_switch_default_legacy_and_verify_supported_wiring(self):
+        unit = {"type": "sentence", "text": "The US withdrew the plan soon after.", "claim_text": "The US withdrew the plan soon after."}
+        item = _item("S1.1", ids=("HF-003",), quotes=("米国はほどなく案を撤回した",))
+        bl = {"HF-003": "[VERIFIED] HF-003: 米国はほどなく案を撤回した。\n  scope: z"}
+        self.assertIn("negation_polarity_mismatch", cov.verify_supported(unit, item, bl))
+        self.assertIn("negation_polarity_mismatch", cov.verify_supported(unit, item, bl, "legacy"))
+        self.assertNotIn("negation_polarity_mismatch", cov.verify_supported(unit, item, bl, "a"))
+        with self.assertRaises(ValueError):
+            cov.run_stage1_coverage({"ledger_text": LEDGER, "article_text": ARTICLE}, FakeLLM(), negation_mode="bogus")
+
+    def test_old_149_firings_reclassified_to_9_unique_6(self):
+        import json
+        runs_dir = "er052_output/open233_stage1_stageA_01/runs"
+        if not os.path.isdir(runs_dir):
+            self.skipTest("stage A saved runs not present")
+        insts = {i["instance_id"]: i for i in runner.build_target_instances()}
+        blocks = {}
+        old = new = 0
+        uniq = set()
+        for p in sorted(glob.glob(runs_dir + "/s*/*.json")):
+            with open(p, encoding="utf-8") as fh:
+                r = json.load(fh)
+            iid = r["instance_id"]
+            blocks.setdefault(iid, cov.ledger_fact_blocks(insts[iid]["fixture"]["ledger_text"]))
+            for c in r["audit"]["union_candidates"]:
+                if "negation_polarity_mismatch" not in c["sub_reasons"]:
+                    continue
+                blk = blocks[iid].get((c.get("related_fact_ids") or [""])[0], "")
+                if not blk:
+                    continue
+                u = {"type": "sentence", "text": c["claim_text"], "claim_text": c["claim_text"]}
+                old += cov.negation_mismatch(u, [blk])
+                if cov.negation_mismatch_a(u, [blk]):
+                    new += 1
+                    uniq.add((iid, c["unit_ids"][0]))
+        self.assertEqual(old, 149)
+        self.assertEqual(new, 9)
+        self.assertEqual(len(uniq), 6)
+
+
+def _r3_support_some(label, ids):
+    """S1.1・L1(同文グループ)はHF-001、S2.1はHF-002の逐語引用つきSUPPORTED。他はCANDIDATE(issue=r3cand-<id>)。"""
+    def one(i):
+        if i in ("S1.1", "L1"):
+            return _item(i, "SUPPORTED")
+        if i == "S2.1":
+            return _item(i, "SUPPORTED", ids=("HF-002",), quotes=("徴収方法は示されなかった",))
+        return _item(i, "CANDIDATE", issue="r3cand-" + i)
+    return {"unit_verdicts": [one(i) for i in ids]}
+
+
+def _run2(llm, routes="both", article=ARTICLE, **kw):
+    fx = {"ledger_text": LEDGER, "article_text": article}
+    return cov.run_stage1_coverage(fx, llm, routes, runner.vs_sentence_segments_l6, runner.CAUSAL_SENTENCE_INITIAL_EN, **kw)
+
+
+class TestR5VerifySupported(unittest.TestCase):
+    def test_default_r5_mode_is_full_and_labels_unchanged(self):
+        llm = FakeLLM()
+        res = _run2(llm)
+        self.assertEqual(llm.labels, ["r3", "r5"])
+        self.assertEqual(res["audit"]["r5_mode"], "full")
+
+    def test_target_units_are_r3_supported_plus_relation_only(self):
+        sp = _split()
+        status = {"S1.1": "SUPPORTED", "S1.2": "CANDIDATE", "S2.1": "SUPPORTED", "S2.2": "SUPPORTED->CANDIDATE(quote_missing)", "T": "SUPPORTED"}
+        ids = [u["id"] for u in cov.r5v_target_units(sp["units"], status)]
+        self.assertEqual(sorted(i for i in ids if not i.startswith("R:")), ["S1.1", "S2.1", "T"])
+        self.assertEqual(sorted(i for i in ids if i.startswith("R:")), sorted(sp["relation_ids"]))
+        self.assertNotIn("S1.2", ids)
+        self.assertNotIn("P1", ids)
+
+    def test_prompt_has_full_article_and_no_r3_quotes_or_verdicts(self):
+        seen = {}
+
+        def r5(label, fids):
+            return {"facts": [{"fact_id": f, "matches": []} for f in fids]}
+
+        class Spy(FakeLLM):
+            def __call__(self, label, developer, prompt, schema):
+                seen[label] = (developer, prompt, schema)
+                return super().__call__(label, developer, prompt, schema)
+        res = _run2(Spy(r3_fn=_r3_support_some, r5_fn=r5), r5_mode="verify_supported")
+        dev, prompt, schema = seen["r5v"]
+        self.assertIs(schema, cov.R5_JSON_SCHEMA)  # 5-liteと同形(共用)
+        self.assertIn(ARTICLE.strip(), prompt)      # 記事全文は文脈として渡す
+        self.assertNotIn("r3cand-", prompt)         # r3のissue(判定)は渡さない
+        self.assertNotIn("20％の償還料が7月13日に提案された", prompt.split("【Verified Fact Ledger】")[1].split("【記事全文")[1])  # r3引用はLedger節の外に出さない
+        self.assertIn("[S1.1]", prompt.split("これらのIDだけをmatchesに使う)】")[1])
+        self.assertNotIn("[S1.2]", prompt.split("これらのIDだけをmatchesに使う)】")[1].split("【factID一覧")[0])
+        self.assertEqual(res["audit"]["r5_mode"], "verify_supported")
+        self.assertIn("R5V_PROMPT_TEMPLATE", res["audit"]["prompt_sha256"])
+        self.assertNotEqual(cov.PROMPT_SHA256["R5V_PROMPT_TEMPLATE"], cov.PROMPT_SHA256["R5_PROMPT_TEMPLATE"])
+
+    def test_r5v_deviation_becomes_model_r5_candidate_and_is_in_union(self):
+        def r5(label, fids):
+            return {"facts": [{"fact_id": "HF-001", "matches": [
+                {"unit_id": "S1.1", "verdict": "DEVIATION", "issue": "v", "claim_in_article": "", "flags": {**ZERO, "changed_time": True}}]}]}
+        res = _run2(FakeLLM(r3_fn=_r3_support_some, r5_fn=r5), r5_mode="verify_supported")
+        c = next(m for m in res["candidates"] if "S1.1" in m["unit_ids"])
+        self.assertIn("r5", c["routes"])  # 同文グループ(L1)のr3候補と文キーで統合される
+        self.assertIn("model_r5", c["sources"])
+        self.assertTrue(c["flags"]["changed_time"])
+
+    def test_no_targets_skips_r5v_call(self):
+        llm = FakeLLM()  # 全単位CANDIDATE -> 関係単位は常に対象なので、関係単位が無い記事で確認
+        art = "# T\n\nThe plan was posted on July 13. It said 20% would be charged.\n"
+        res = cov.run_stage1_coverage({"ledger_text": LEDGER, "article_text": art}, llm, "both", runner.vs_sentence_segments_l6,
+                                      runner.CAUSAL_SENTENCE_INITIAL_EN, r5_mode="verify_supported")
+        self.assertEqual(llm.labels, ["r3"])
+        self.assertTrue(res["audit"]["per_route"]["r5"]["calls"] == [])
+        self.assertFalse(res["api_failure"])
+
+    def test_r5v_requires_r3_result(self):
+        with self.assertRaises(ValueError):
+            _run2(FakeLLM(), "r5_only", r5_mode="verify_supported")
+        with self.assertRaises(ValueError):
+            _run2(FakeLLM(), "both", r5_mode="bogus")
+
+    def test_stored_r3_reuse_skips_r3_call(self):
+        first = _run2(FakeLLM(r3_fn=_r3_support_some))
+        stored = first["audit"]["per_route"]["r3"]  # 保存audit形(unit_status/candidatesあり)
+        llm = FakeLLM()
+        res = _run2(llm, "both", r5_mode="verify_supported", r3_precomputed=stored)
+        self.assertEqual(llm.labels, ["r5v"])
+        self.assertTrue(res["audit"]["r3_reused"])
+        self.assertTrue(res["audit"]["per_route"]["r3"]["reused_from_stored"])
+        self.assertTrue(all("sources" in c for c in res["candidates"]))
+
+
+class TestModelDeterministicSplit(unittest.TestCase):
+    def test_source_of(self):
+        self.assertEqual(cov.source_of("r3", "model"), "model_r3")
+        self.assertEqual(cov.source_of("r5", "model"), "model_r5")
+        self.assertEqual(cov.source_of("r3", "coverage_gap"), "coverage_gap")
+        self.assertEqual(cov.source_of("r3", "negation_polarity_mismatch"), "deterministic")
+        self.assertEqual(cov.source_of("r5", "unknown_unit_id"), "model_r5")
+
+    def test_fabricated_quote_is_deterministic_and_counted_separately(self):
+        def r3(label, ids):
+            return {"unit_verdicts": [_item(i, "SUPPORTED", quotes=("ありもしない引用です",)) if i == "S1.1"
+                                      else _item(i, "CANDIDATE", issue="x") for i in ids]}
+        art = "# T" + chr(10) * 2 + "The plan was posted on July 13. It said 20% would be charged." + chr(10)
+        res = _run2(FakeLLM(r3_fn=r3), "r3_only", art)
+        c = next(m for m in res["candidates"] if m["unit_ids"] == ["S1.1"])
+        self.assertEqual(c["sources"], ["deterministic"])
+        a = res["audit"]
+        self.assertEqual(a["n_model_candidates"] + a["n_deterministic_only_candidates"], a["n_union_candidates"])
+        self.assertGreaterEqual(a["n_deterministic_only_candidates"], 1)
+
+    def test_union_merges_sources_across_routes(self):
+        sp = _split()
+        by = {u["id"]: u for u in sp["units"]}
+        d = cov._candidate(by["S1.1"], by, "r3", "negation_polarity_mismatch", "d", ZERO, "HF-001")
+        m = cov._candidate(by["S1.1"], by, "r5", "model", "m", ZERO, "HF-001")
+        merged = cov.union_candidates([d, m])
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(sorted(merged[0]["sources"]), ["deterministic", "model_r5"])
+
+
+class TestRunnerEffortAndSwitches(unittest.TestCase):
+    def test_new_switch_defaults_unchanged(self):
+        self.assertEqual(runner.STAGE1_R5_MODE, "full")
+        self.assertEqual(runner.STAGE1_R3_REASONING, "high")
+        self.assertEqual(runner.STAGE1_R5_REASONING, "high")
+        self.assertEqual(runner.STAGE1_NEGATION_MODE, "legacy")
+        self.assertEqual(runner.vfl01.REASONING_EFFORT, "high")
+        for k in ("STAGE1_R5_MODE", "STAGE1_R3_REASONING", "STAGE1_R5_REASONING", "STAGE1_NEGATION_MODE"):
+            self.assertNotIn(k, runner.KPI_TRIAL_SWITCHES)
+
+    def test_effort_per_route_label(self):
+        self.assertEqual(runner.stage1_effort_for_label("r3"), "high")
+        with mock.patch.object(runner, "STAGE1_R3_REASONING", "medium"), mock.patch.object(runner, "STAGE1_R5_REASONING", "low"):
+            self.assertEqual(runner.stage1_effort_for_label("r3"), "medium")
+            self.assertEqual(runner.stage1_effort_for_label("r3_rerun"), "medium")
+            self.assertEqual(runner.stage1_effort_for_label("r3_retry"), "medium")
+            self.assertEqual(runner.stage1_effort_for_label("r5"), "low")
+            self.assertEqual(runner.stage1_effort_for_label("r5v"), "low")
+        with mock.patch.object(runner, "STAGE1_R5_REASONING", "bogus"), self.assertRaises(ValueError):
+            runner.stage1_effort_for_label("r5v")
+
+    def test_coverage_fresh_records_effort_and_passes_to_api(self):
+        import json
+        efforts = []
+
+        class Resp:
+            def __init__(self, t):
+                self.output_text = t
+
+        class Responses:
+            def create(self, **kw):
+                efforts.append((kw["text"]["format"]["name"], kw["reasoning"]["effort"]))
+                if "r3" in kw["text"]["format"]["name"]:
+                    ids = re.search(r"【判定必須の単位ID\(全\d+件\)】\n(.*)\n", kw["input"][1]["content"]).group(1).split(", ")
+                    return Resp(json.dumps({"unit_verdicts": [_item(i, "SUPPORTED") if i == "S1.1" else _item(i, "CANDIDATE", issue="x")
+                                                              for i in ids]}))
+                return Resp(json.dumps({"facts": []}))
+
+        class Client:
+            responses = Responses()
+
+        log = []
+        with mock.patch.object(runner.s2p, "_extract_usage", lambda r: {"input_tokens": 1}), \
+             mock.patch.object(runner.s2p, "official_cost_jpy", lambda u: 1.0), \
+             mock.patch.object(runner, "save_budget_state", lambda s: None), \
+             mock.patch.object(runner, "STAGE1_R3_REASONING", "medium"), \
+             mock.patch.object(runner, "STAGE1_R5_REASONING", "low"), \
+             mock.patch.object(runner, "STAGE1_R5_MODE", "verify_supported"):
+            parsed = runner.stage1_coverage_fresh(Client(), _state0(), [0], log, "t11", {"ledger_text": LEDGER, "article_text": ARTICLE})
+        self.assertEqual([e for _, e in efforts], ["medium", "low"])
+        self.assertEqual([c["reasoning_effort"] for c in log], ["medium", "low"])
+        self.assertEqual([c["label"] for c in log], ["t11_r3", "t11_r5v"])
+        calls = parsed["stage1_coverage_audit"]["per_route"]
+        self.assertEqual(calls["r3"]["calls"][0]["reasoning_effort"], "medium")
+        self.assertEqual(calls["r5"]["calls"][0]["reasoning_effort"], "low")
+
+
+class TestStageAScriptLoop2(unittest.TestCase):
+    def test_plan_g_arm_and_estimate_modes_and_defaults(self):
+        import er052_open233_stage1_stageA_01 as sa
+        p = sa.plan_g_arm()
+        self.assertEqual(len(p), 33)
+        self.assertEqual(sum(1 for s, i in p if i in sa.SC_IDS), 18)
+        self.assertEqual(sum(1 for s, i in p if i in sa.HOLDOUT_IDS), 9)
+        self.assertEqual(sum(1 for s, i in p if i in sa.NORMAL_IDS), 6)
+        insts = {i["instance_id"]: i for i in runner.build_target_instances()}
+        hi = sa.estimate_cost_v2(insts, p, "full", "high", "high", None)["total_jpy_low_mid_high"]
+        med = sa.estimate_cost_v2(insts, p, "verify_supported", "medium", "medium", None)["total_jpy_low_mid_high"]
+        low = sa.estimate_cost_v2(insts, p, "verify_supported", "medium", "low", None)["total_jpy_low_mid_high"]
+        self.assertTrue(med[1] < hi[1] and low[1] < med[1])
+        self.assertEqual(len(sa.estimate_cost_v2(insts, p, "full", "high", "high", None)["rows"]), 33)
+
+    def test_aggregate_has_model_vs_deterministic_and_worst_runs(self):
+        import er052_open233_stage1_stageA_01 as sa
+        agg = sa.aggregate([])
+        self.assertIn("model_vs_deterministic", agg)
+        self.assertIn("worst_runs", agg)
+        self.assertIn("sc_union_3of3_by_M_all", agg["criteria_result"])
+
+
 if __name__ == "__main__":
     unittest.main()

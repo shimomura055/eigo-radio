@@ -19639,3 +19639,23 @@ PM RCA文書: `docs/pm/pm_rca_open233_stage1_closeout_01.md`(委任_02)。Fable�
 - 条件B判定「根本設計の問題」を採用。ループ1はOpus修正案(3'-R+5-lite 2経路∪+F3配線+H1是正[Stage 1 API失敗のfail-open→再実行→なお失敗ならSTOP]+決定論検査)。案6はループ2で判断。
 - **gold=正式`SAFETY_CRITICAL_CLAIM_DEFS`のBLOCKING 6件に限定、HF-011は監視項目**(gold変更ではなく設計書の非公式「7 gold」を正式定義へ戻す是正)。HF-011をgoldに加えるかはユーザー判断事項としてCloseoutで開示、本Trialでは加えない。
 - 採用基準(段階A: 正式SC 6件∪で3/3、hold-out見逃しなし、欠落ID5%超でSTOP)・段階B(E2E約26〜30 run)・費用(ループ1約¥90〜110、枠内)は設計書§6。Production採用は人間ユーザーのみ(`APPROVED_FOR_PRODUCTION`ではない)。
+
+
+## OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01: ループ2 Opus#17後Fable評価(2026-10-05、委任_11)
+
+出典: docs/pm/design_open233_stage1_loop2_01.md L103-116
+
+## 9. Opus#17後Fable評価(2026-10-05、委任_11)
+
+Opus#17(必須レビュー条件A、回数上限外、`docs/pm/opus_l2_review_open233_stage1_loop2_17.md`)の結論「条件付き(推奨Fは順序と主軸を組み替え)」をFableは採用する。到達上限`VALIDATED`、`APPROVED_FOR_PRODUCTION`ではない。台帳: `OPUS_FINDINGS_LEDGER.md` OF-026〜037。
+
+1. **ループ2主構成=Opus別案1**: r3(網羅)+**r5-V**(r3がSUPPORTEDにした単位+関係単位のみをfact→記事方向で検証。記事全文は文脈として渡すが、r3の引用・判定は見せない)+(B)否定是正案a。根拠: ∪は`norm_sentence(claim_text)`キー統合のため、r5がr3-CANDIDATE単位に重なっても検出は増えない。よって検出集合は構造上維持される(残るのは範囲を絞ることによる文脈効果のリスクのみ)。
+2. **(A)2層化はループ2では不採用**(費用削減はNORMAL¥0.47のみ、UNSURE triageが第2のStage 1化、goldがUNSURE落ちするリスク)。採用するなら、Opus#17 §1の3条件(absence型の具体側定義: (1)記事が7種要素のいずれかを断定、(2)その要素を扱うfact_idを特定できる、(3)fact側に当該要素が「無い」と明示できる)+保存候補の分類proxy(約¥5〜8)を先に行う。見出し・hookはUNSURE対象外。OPEN_ITEMS進捗欄に「条件付き保留(採用条件明記)」として残す(消失防止)。
+3. **(G)reasoning effort引下げ=先行実験**(経路別: r3 medium、r5-V medium・low)。採否基準=各経路の**モデル判定(M)検出**がhigh時より減らない(∪・決定論(D)検出だけで判定しない)。n=18は「不合格を示す用途」に限る(同等性の証明にはならない)。
+4. **KPI基準点=(iii)で書面固定**(Trial前、`docs/pm/kpi_cost_baseline_open233_stage1_01.md`): 追加費用=「新フロー配線後Production」−「現行Production」の同記事種別差。差し引けるのは、配線計画上実際に取り除かれる部品=現行英語Stage 1(V4A Ledger逸脱check)の実費のみ。(ii)¥2.77はJA検査・gpt-5.6-luna・重複行(meta run_03、実質n=7)が混在するため使わない。基準点は実質KPI定義のため、ユーザー確認事項として最終報告に載せる(Fableは保守側(iii)で進める)。
+5. Safety合格数にD検出を入れない。経路別M/D区分を採用基準・STOP条件に明記する(A4-0のr3 s1/s2は否定検査の誤発火によるD検出のみ、が教訓)。
+6. **構造的両立不能の判定**=「(iii)基準で+¥2超、かつG・r5-Vを試し切った後」。worst run ¥3超は全件記録する(Opus#16の¥3と整合。本設計書§7項4・3の¥6/+3.0/rep24基準の記述は撤回し、本節が優先)。
+7. 否定是正案aの条件: 合成陽性例を複数(否定付加/否定除去/二重否定)単体テスト化、「only」を広く除外語に入れない、真の可能性あり2件は残す。
+8. **Opus別案2(Stage 2出力短縮)は本管理ID対象外**(Stage 2はユーザー承認済み構成)。ユーザー向け選択肢として記録のみ。
+9. 委任_09の30件ラベルは「Stage 2負荷推定用」に限定する。neg4 S2.1/S2.2のR判定は循環(S2.2は決定論のみ候補、§3の残りFP判定根拠に使っている)ため、Opus指摘どおり注記する。
+10. 費用順序: ¥0(基準点・V4A実費)→ r5-V(保存r3出力再利用、約¥15)+G arm(約¥20)→ 合格組合せのみ小規模fresh(約¥30)→ E2E。BLOCKING率0.10(n=2/20)と線形fit(候補0〜10)の13〜24件への外挿は推測であり、Human Review 0見込みの根拠にしない(OF-032/033)。
