@@ -4595,3 +4595,12 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - rep30(Stage 1凍結)後段との比較(同一instance): B3 後段0.83→3.05、A2A3 1.43→4.44(abort時)。増分の内訳はB3: 候補増約28%・追加cycle約10%・新Recheck約34%・出口全文約28%、A2A3: 候補増54%・追加cycle15%・Recheck31%(出口未到達)。
 - 20 run再予測(モデル、推測含む): low¥62.1/mid¥98.6/high¥122.8(元見積47.3/66.5/86.0)。残19 run mid¥94.0で残予算¥87.53を¥6.5超過。SC n=1の14 run案(残13 run)mid¥55.3、対+負例のみ8 run案mid¥21.1(SCなし=重大逸脱見逃しの測定不能)。閾値¥10化では構造的Wasteは捕捉されない(同一候補反復検査は完走後のみ)。純増参考: B3同額なら+¥8.27/セット(見込み+5.4/上振れ+6.7、SCは非代表)。
 - Status: `USER_DECISION_REQUIRED(E2E停止)`。再開・run数・閾値・予算追加はユーザー判断待ち。Production未変更、コード変更なし。
+
+## §74 OPEN-233 E2E-ACCEPTANCE-01 委任_21(2026-10-05): E2E再開、非SC 8 run完走後にWaste検知で停止(未完走、9/20 run)
+- provenance: fresh Stage 1 / E2E途中(frozen・reuse・代替なし、provenance違反0)。Status候補はFable/Opus照合待ち。VALIDATEDとは書かない(未完走のため不可)。Production未反映。
+- ユーザー判断(DECISION_LOG逐語): 20 run再開・枠¥273・1 run閾値¥20・独自停止条件禁止・報告5節固定。設定変更: 1 run閾値¥20(CLI --per-run-cap-jpy)、実行順=非SC(対4+負例4)→SC、abort時の部分call履歴保存、「累計が見積+30%超で停止」(独自条件)廃止、runs/_aborted/へ旧A2A3 abort証跡を退避。テスト7件PASS。
+- 完走9 run(B3含む、完走分費用¥43.91、E2E累計¥50.12=旧A2A3 abort¥6.21含む、本管理ID累計¥189.83/枠¥273、残¥83.17): hormuz対 adv¥3.44/std¥2.17、meta対 adv¥5.43/std¥5.16、neg1¥8.82、neg2¥3.79、neg3¥4.00、neg7¥6.55、B3¥4.55。¥3超7件。worst=neg1 ¥8.82。
+- 停止: neg7_meta_prodrunner_b1b(負例)がSTAGE4_ESCALATION(blocking_structural_after_ladder)で終了し、事後Waste検査`same_candidate_rewrite_gt_3`(claim_identity=fact単位でRewrite試行>3)に該当してスクリプトが自動停止。実態: 33 call・2 cycle・¥6.55・1 factで9試行(ladder段・箇所違い)で自然終了しており、「不自然な反復」か「ladder設計どおり」かは判定待ち。
+- 実測所見(8 run、推測なし): 負例/NORMAL相当6 runの全件でRewriteが発火(Rewrite率100%、見込み0.53と乖離)、うち1件が人間確認行き。cycle分布(1/2/3/4)=1/1/6/1。
+- Worker判断: 上記Waste判定を緩めて再開する案を試みたがPermission拒否(Security Weaken)のため再開せず停止。再開可否・判定基準はユーザー/Fable判断待ち。
+- Status: `USER_DECISION_REQUIRED(E2E停止、neg7 Waste検知)`。詳細: er052_output/open233_e2e_acceptance_01/(run_log_main_part1_stopped_neg7.json、e2e_aggregate.json、runs/)。

@@ -25,7 +25,7 @@ import er052_open233_stage1_coverage_checker_01 as cov
 import er052_open233_stage1_stageA_01 as stagea
 
 OUT_DIR = "er052_output/open233_e2e_acceptance_01"
-PER_RUN_COST_STOP_JPY = 6.0
+PER_RUN_COST_STOP_JPY = 20.0     # 委任_21: ユーザー承認値(2026-10-05)。CLI --per-run-cap-jpyで設定。これより厳しい独自閾値は設けない
 WORST_RUN_RECORD_JPY = 3.0
 MAX_CALLS_PER_RUN = 80          # Waste: 1 runのAPI call数の上限(通常は20前後)。超過=異常発火
 MAX_CYCLE_LABEL = 5             # Waste: cycle番号上限(HARD_MAX_CYCLES=3 + 判定だけのcycle + 出口再入)
@@ -45,9 +45,9 @@ ROLE = {**{i: "sc" for i in SC_IDS}, **{i: "pair" for i in PAIR_IDS}, **{i: "nor
 
 
 def plan() -> list:
-    """20 run(sample-major: sample 1に全14 instance、sample 2にSC 6。途中停止でもStandard/Advancedの対が先に揃う)。
+    """20 run(委任_21の実行順: 非SC[Standard/Advanced対4 + 負例4]を先に、次にSC sample 1、最後にSC sample 2)。
     内訳: SC 6 x n=2 (12) + Standard/Advanced対2組 x n=1 (4) + 負例/NORMAL 4 x n=1 (4)。"""
-    return [(1, i) for i in SC_IDS + PAIR_IDS + NORMAL_IDS] + [(2, i) for i in SC_IDS]
+    return [(1, i) for i in PAIR_IDS + NORMAL_IDS + SC_IDS] + [(2, i) for i in SC_IDS]
 
 
 def set_key(iid: str):
@@ -190,9 +190,10 @@ def prepare_instances() -> dict:
     return insts
 
 
-def _save_aborted(path: str, sample: int, iid: str, flags: list, cost: float, prov: dict, err: str) -> dict:
+def _save_aborted(path: str, sample: int, iid: str, flags: list, cost: float, prov: dict, err: str, partial_calls=None) -> dict:
     rec = {"sample": sample, "instance_id": iid, "role": ROLE.get(iid), "aborted": True, "waste_flags": flags,
-           "total_cost_jpy": round(cost, 4), "provenance": prov, "error": err, "final_state": "ABORTED_BY_GUARD"}
+           "total_cost_jpy": round(cost, 4), "provenance": prov, "error": err, "final_state": "ABORTED_BY_GUARD",
+           "partial_call_history": partial_calls or []}   # 委任_21: abort時の部分call履歴(runner state.history[run開始以降])を保存
     runner.save_json(path, rec)
     return rec
 
@@ -215,20 +216,23 @@ def run_main(budget_jpy: float, out_dir: str, est_total_mid: float | None = None
             print(f"[skip existing] s{sample}/{iid}")
             continue
         guard = RunGuard(state)
+        h0 = len(state.get("history") or [])
         runner.RUN_CALL_HOOK = guard
         t0 = time.time()
         try:
             r = runner.run_instance(client, state, ce, insts[iid], enable_s1u=False, stage1_cache=None,
                                     instances_subdir=f"runs/s{sample}")
         except RunWaste as e:
-            rec = _save_aborted(path, sample, iid, [e.flag], state["cumulative_jpy"] - guard.start_jpy, prov, repr(e))
+            rec = _save_aborted(path, sample, iid, [e.flag], state["cumulative_jpy"] - guard.start_jpy, prov, repr(e),
+                                list((state.get("history") or [])[h0:]))
             log["waste_events"].append({"sample": sample, "instance_id": iid, "flag": e.flag})
             log.update(stopped=True, stop_reason=f"Waste: {e.flag} in s{sample}/{iid}")
             break
         except runner.TrialAbort as e:
             cost = state["cumulative_jpy"] - guard.start_jpy
             if "API error" in str(e):
-                _save_aborted(path, sample, iid, ["api_error_consecutive"], cost, prov, repr(e))
+                _save_aborted(path, sample, iid, ["api_error_consecutive"], cost, prov, repr(e),
+                              list((state.get("history") or [])[h0:]))
                 log["waste_events"].append({"sample": sample, "instance_id": iid, "flag": "api_error_consecutive"})
             log.update(stopped=True, stop_reason=f"TrialAbort: {e}")
             break
@@ -268,10 +272,7 @@ def run_main(budget_jpy: float, out_dir: str, est_total_mid: float | None = None
         if n_api_fail_runs > 2:
             log.update(stopped=True, stop_reason="API failure in >2 runs")
             break
-        done = len(log["runs"])
-        if est_total_mid and done >= 6 and state["cumulative_jpy"] > 1.3 * est_total_mid * done / len(rows):
-            log.update(stopped=True, stop_reason=f"cumulative cost exceeds estimate+30% at run {done}")
-            break
+        # 委任_21: 旧「累計が見積+30%超で停止」は独自の厳しい停止条件のため廃止(ユーザー承認の総予算=runner TOTAL_BUDGET_JPYが上限)。
     runner.RUN_CALL_HOOK = None
     log["cumulative_jpy"] = round(state["cumulative_jpy"], 4)
     log["worst_run_jpy"] = max((x["cost"] for x in log["runs"]), default=None)
@@ -291,6 +292,8 @@ def load_runs(out_dir: str) -> list:
     out = []
     base = f"{out_dir}/runs"
     for s in sorted(os.listdir(base)) if os.path.isdir(base) else []:
+        if s.startswith("_"):   # runs/_aborted/ = 再実行前に退避した旧abort証跡(集計対象外。aborted_history欄で別掲)
+            continue
         for f in sorted(os.listdir(f"{base}/{s}")):
             with open(f"{base}/{s}/{f}", encoding="utf-8") as fh:
                 out.append(json.load(fh))
@@ -579,7 +582,8 @@ def run_agg(out_dir: str) -> dict:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--stage", choices=["estimate", "dryrun", "main", "agg"], default="estimate")
-    ap.add_argument("--budget-jpy", type=float, default=98.0, help="累計Guardrail(現管理ID残予算約JPY98.29)。E2E見込みは約JPY62")
+    ap.add_argument("--budget-jpy", type=float, default=98.0, help="E2E累計Guardrail(委任_21は120を指定。枠JPY273-使用済み150.47=残122.53)")
+    ap.add_argument("--per-run-cap-jpy", type=float, default=20.0, help="1 run停止閾値(ユーザー承認値JPY20)")
     ap.add_argument("--yes-run-paid", action="store_true", help="有料API実行の明示確認(mainで必須)")
     ap.add_argument("--out-dir", default=OUT_DIR)
     ap.add_argument("--estimate-out", default=None)
@@ -590,6 +594,8 @@ def main() -> None:
     if args.stage == "dryrun":
         run_dryrun(args.out_dir)
         return
+    global PER_RUN_COST_STOP_JPY
+    PER_RUN_COST_STOP_JPY = args.per_run_cap_jpy
     est = estimate()
     print(json.dumps({k: est[k] for k in ("n_runs", "total_jpy_low_mid_high", "per_set_jpy_low_mid_high(1記事平均x2)")},
                      ensure_ascii=True), flush=True)
@@ -601,7 +607,7 @@ def main() -> None:
         return
     if not args.yes_run_paid:
         raise SystemExit("--stage main は有料です。--yes-run-paid を付けて明示確認してください(未実行)。")
-    run_main(args.budget_jpy, args.out_dir, est_total_mid=est["total_jpy_low_mid_high"][1])
+    run_main(args.budget_jpy, args.out_dir)
 
 
 if __name__ == "__main__":

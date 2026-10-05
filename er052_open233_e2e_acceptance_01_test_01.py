@@ -21,6 +21,8 @@ class TestPlan(unittest.TestCase):
             self.assertIn(pair["advanced"], ids)
             self.assertIn(pair["standard"], ids)
         self.assertEqual(sum(1 for s, i in p if i in e2e.SC_IDS), 12)  # SC 6 x n=2
+        self.assertTrue(all(i not in e2e.SC_IDS for s, i in p[:8]))  # 委任_21: 非SC(対4+負例4)が先
+        self.assertEqual(e2e.PER_RUN_COST_STOP_JPY, 20.0)
 
     def test_instances_disable_substitution_and_reuse(self):
         insts = e2e.prepare_instances()
@@ -34,7 +36,7 @@ class TestWasteAndProvenance(unittest.TestCase):
     def test_guard_raises_on_cost_calls_errors_and_cycle(self):
         g = e2e.RunGuard(_state())
         g(_state(1.0, 5, 0))  # 正常
-        for st, flag in ((_state(7.0), "per_run_cost"), (_state(1, 81), "calls_gt"), (_state(1, 5, 4), "api_errors"),
+        for st, flag in ((_state(21.0), "per_run_cost"), (_state(1, 81), "calls_gt"), (_state(1, 5, 4), "api_errors"),
                          (_state(1, 5, 0, [{"label": "x_c6_recheck"}]), "cycle_gt")):
             with self.assertRaises(e2e.RunWaste) as cm:
                 g(st)
