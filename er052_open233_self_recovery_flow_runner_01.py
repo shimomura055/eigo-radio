@@ -73,6 +73,7 @@ import er010_ledger_local_rewrite_09 as er010
 import er050_gpt6_checker_comparison_trial_01 as g6
 import er051_open233_checker_trial_variant_01 as trial
 import er052_open233_self_recovery_phase1_step3_stage1_compare_01 as step3cmp
+import er052_open233_stage1_coverage_checker_01 as cov  # 委任_06: Stage 1再設計(Trial、既定legacy_v4a=不変)
 import er052_open233_self_recovery_precheck_01 as precheck
 import er052_open233_self_recovery_s1d_trial_01 as s1d
 import er052_open233_self_recovery_stage2_calibration_01 as s2c
@@ -450,6 +451,16 @@ KPI_TRIAL_SWITCHES = {
     "STAGE2_VERDICT_REUSE_NONBLOCKING": False,
     "STAGE2_SIBLING_LOCATIONS_CYCLE1": False,
 }
+
+
+# 委任_06(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01、Opus#16後のFable確定構成、Trial専用・Production未配線・
+# `APPROVED_FOR_PRODUCTION`ではない)。全て既定=legacy(rep30挙動不変)。`KPI_TRIAL_SWITCHES`へは含めない(段階Aスクリプトが明示設定)。
+STAGE1_MODE_LEGACY, STAGE1_MODE_COVERAGE_UNION = "legacy_v4a", "coverage_union"
+STAGE1_MODES = (STAGE1_MODE_LEGACY, STAGE1_MODE_COVERAGE_UNION)
+STAGE1_MODE = STAGE1_MODE_LEGACY      # coverage_union=文ID網羅3'-R+Ledger逆照合5-liteの2経路∪(`er052_open233_stage1_coverage_checker_01`)
+STAGE1_ROUTES = "both"                # coverage_unionの経路: both/r3_only/r5_only(段階Aの経路別測定用)
+F3_PRECHECK_ALWAYS = False            # F3: Stage 1が非検出(候補0)でもprecheck floorを実行(早期PASS returnの前に配線)
+STAGE1_FAIL_CLOSED = False            # H1: Stage 1 API失敗はPASSへ抜けず、再実行1回→なお失敗なら許可リスト`api_failure`でSTOP
 
 
 def apply_kpi_trial_switches() -> dict:
@@ -1736,6 +1747,59 @@ def stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, l
                       "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt)})
     record_call(state, consecutive_errors, label, cost, True, "stage1_initial", usage)
     return parsed_trial
+
+
+def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture) -> dict:
+    """委任_06: `STAGE1_MODE=coverage_union`のStage 1(文ID網羅3'-R+Ledger逆照合5-liteの2経路∪)。LLM呼び出しは本関数が
+    `cov.run_stage1_coverage`へ注入する`call_fn`で行い、retry/cost計上(`check_budget`/`record_call`)は`stage1_fresh_with_enumeration`
+    と同一パターン。経路のAPI失敗(module内で再実行1回後も失敗)は`_stage1_api_failure=True`で返す(H1: 呼び出し側でfail-closed)。"""
+    def call_fn(lbl, developer_message, prompt, schema):
+        check_budget(state)
+        full_label = f"{label}_{lbl}"
+        last_err, response, t0 = None, None, time.time()
+        for _ in range(1 + MAX_RETRIES_PER_CALL):
+            try:
+                response = client.responses.create(
+                    model=MODEL, reasoning={"effort": vfl01.REASONING_EFFORT},
+                    text={"format": {"type": "json_schema", **schema}},
+                    input=[{"role": "developer", "content": developer_message}, {"role": "user", "content": prompt}])
+                break
+            except Exception as e:  # noqa: BLE001
+                last_err = f"{type(e).__name__}: {e}"
+                time.sleep(1.0)
+        elapsed = round(time.time() - t0, 3)
+        if response is None:
+            call_log.append({"label": full_label, "recovery_stage": "stage1_initial", "error": last_err})
+            record_call(state, consecutive_errors, full_label, 0.0, False, "stage1_initial")
+            return None, {"error": last_err, "cost_jpy": 0.0}
+        usage = s2p._extract_usage(response)
+        cost = round(s2p.official_cost_jpy(usage), 4)
+        call_log.append({"label": full_label, "recovery_stage": "stage1_initial", "cost_jpy": cost, "usage": usage,
+                          "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt)})
+        record_call(state, consecutive_errors, full_label, cost, True, "stage1_initial", usage)
+        meta = {"cost_jpy": cost, "usage": usage, "elapsed_seconds": elapsed, "prompt_sha256": s2p.sha256_text(prompt)}
+        try:
+            return json.loads(response.output_text), meta
+        except ValueError as e:
+            return None, {**meta, "error": f"json_decode: {e}"}
+
+    res = cov.run_stage1_coverage(fixture, call_fn, routes=STAGE1_ROUTES, segment_fn=vs_sentence_segments_l6,
+                                  initial_extra=CAUSAL_SENTENCE_INITIAL_EN)
+    return cov.to_stage1_parsed(res)
+
+
+def stage1_fresh_dispatch(client, state, consecutive_errors, call_log, label, fixture, developer_message,
+                          use_enumeration_stage1: bool = True) -> dict:
+    """委任_06: Stage 1新規実行の分岐。`STAGE1_MODE`既定(legacy_v4a)では従来の2経路([`stage1_fresh_with_enumeration`]/[`stage1_fresh`])
+    を従来どおり呼ぶだけ(引数・戻り値とも不変)。`coverage_union`のときだけ`stage1_coverage_fresh`へ分岐する。"""
+    if STAGE1_MODE not in STAGE1_MODES:
+        raise ValueError(f"unknown STAGE1_MODE: {STAGE1_MODE!r}")
+    if STAGE1_MODE == STAGE1_MODE_COVERAGE_UNION:
+        return stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture)
+    if use_enumeration_stage1:
+        return stage1_fresh_with_enumeration(client, state, consecutive_errors, call_log, label, fixture,
+                                             developer_message=developer_message)
+    return stage1_fresh(client, state, consecutive_errors, call_log, label, fixture)
 
 
 def stage1_fresh(client, state, consecutive_errors, call_log, label, fixture) -> dict:
@@ -7993,6 +8057,40 @@ def stage4_allowlist_decision(reason: str, context: dict | None = None) -> dict:
     return {"allowed": True, "reason": reason, "action": "stage4", "violation": None}
 
 
+def h1_rerun_stage1(first_parsed: dict, rerun_fn) -> dict:
+    """委任_06 H1: Stage 1 API失敗の再実行1回。legacy_v4aは`rerun_fn`を1回呼ぶ(戻り値がなお失敗ならSTOPは呼び出し側)。
+    coverage_unionは各経路をmodule内で再実行1回済みのため追加で呼ばず、初回結果をそのまま返す。"""
+    if STAGE1_MODE == STAGE1_MODE_COVERAGE_UNION:
+        return first_parsed
+    return rerun_fn()
+
+
+def stage1_api_failure_stop_result(inst: dict, call_log: list, t0: float, raw_stage1_all: list, fixture: dict,
+                                   stage1_call_used: bool) -> dict:
+    """委任_06 H1: Stage 1のAPI失敗が(再実行後も)残った場合のfail-closed結果。PASSへ抜けず、既存許可リスト関数
+    (`stage4_allowlist_decision("api_failure")`=許可)でSTAGE4_ESCALATIONへ。後段(Stage 2〜)は実行しない。"""
+    d = stage4_allowlist_decision("api_failure", {})
+    iid = inst["instance_id"]
+    return {
+        "instance_id": iid, "group": inst["group"], "expected_group_label": inst["expected_group_label"],
+        "final_state": "STAGE4_ESCALATION", "stage4_reason": d["reason"], "cycles": [],
+        "stage1_call_used": stage1_call_used, "stage1_recall_miss_substituted": False,
+        "s1u_screen_used": False, "s1u_additional_blocking_count": 0, "s1u_additional_block": False,
+        "s1u_additional_block_label": None, "call_log": call_log,
+        "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) for c in call_log), 4), "total_calls": len(call_log),
+        "elapsed_seconds": round(time.time() - t0, 3),
+        "switches": {"JA_MODE": JA_MODE, "VS_MATCH_EXT": VS_MATCH_EXT, "HANDOFF_MODE": HANDOFF_MODE,
+                     "STAGE1_FAIL_CLOSED": True, "STAGE1_MODE": STAGE1_MODE},
+        "stage4_allowlist": {"decisions": [{"cycle": 0, "decision": d, "legacy_reason": None}],
+                              "n_rerouted_legacy_exits": 0, "final_reason_outside_allowlist": False},
+        "stage1_api_failure_stop": True,
+        "all_deviations_raw": {"stage1": raw_stage1_all, "rechecks": []},
+        "residual_at_pass": compute_residual_at_pass(iid, "STAGE4_ESCALATION", fixture["article_text"], [],
+                                                     raw_stage1_all, []),
+        "severity_wobble": [], "en_title_rewritten": False, "en_title_changes": [],
+    }
+
+
 def _revert_norm(s: str) -> str:
     return re.sub(r"\s+", " ", vs_quote_glyph_norm(s or "")).strip()
 
@@ -8099,7 +8197,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     call_log: list = []
     t0 = time.time()
 
-    if inst["stage1_mode"] == "reuse":
+    # 委任_06: coverage_unionはE2E評価(fresh Stage 1)のため、reuse fixtureでも保存済みV4A出力を使わず新規実行する(legacyでは従来どおり)。
+    if inst["stage1_mode"] == "reuse" and STAGE1_MODE != STAGE1_MODE_COVERAGE_UNION:
         stage1_parsed = stage1_reuse(inst["stage1_source"])
         stage1_call_used = False
         # 委任_23 A-2(b): reuse fixtureは`same_fact_id_locations`フィールド
@@ -8126,7 +8225,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if stage1_cache is not None:
             cache_key = hashlib.sha256(
                 (fixture["ledger_text"] + "␟" + fixture["article_text"] + "␟"
-                 + (fixture.get("source_article_text") or "")).encode("utf-8")
+                 + (fixture.get("source_article_text") or "")
+                 + (f"␟{STAGE1_MODE}:{STAGE1_ROUTES}" if STAGE1_MODE != STAGE1_MODE_LEGACY else "")).encode("utf-8")
             ).hexdigest()
         if cache_key is not None and cache_key in stage1_cache:
             stage1_parsed = stage1_cache[cache_key]
@@ -8142,15 +8242,19 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 if (use_enumeration_stage1 and use_misconception_principle)
                 else vfl01.DEVIATION_DEVELOPER_MESSAGE
             )
-            if use_enumeration_stage1:
-                stage1_parsed = stage1_fresh_with_enumeration(
-                    client, state, consecutive_errors, call_log, f"{instance_id}_stage1", fixture,
-                    developer_message=stage1_developer_message)
-            else:
-                stage1_parsed = stage1_fresh(client, state, consecutive_errors, call_log,
-                                              f"{instance_id}_stage1", fixture)
+            # 委任_06: 分岐は`stage1_fresh_dispatch`へ集約(既定legacy_v4aは従来の2経路をそのまま呼ぶ)。
+            stage1_parsed = stage1_fresh_dispatch(
+                client, state, consecutive_errors, call_log, f"{instance_id}_stage1", fixture,
+                stage1_developer_message, use_enumeration_stage1)
             stage1_call_used = True
-            if cache_key is not None:
+            # 委任_06 H1(fail-closed時): API失敗は再実行1回(coverage_unionは経路ごとにmodule内で再実行済み)。
+            if STAGE1_FAIL_CLOSED and stage1_parsed.get("_stage1_api_failure"):
+                stage1_parsed = h1_rerun_stage1(
+                    stage1_parsed, lambda: stage1_fresh_dispatch(
+                        client, state, consecutive_errors, call_log, f"{instance_id}_stage1_rerun", fixture,
+                        stage1_developer_message, use_enumeration_stage1))
+            # API失敗の結果は(fail-closed時)cacheへ入れない(同一入力の再利用でSTOPが握り潰されるのを避ける)。
+            if cache_key is not None and not (STAGE1_FAIL_CLOSED and stage1_parsed.get("_stage1_api_failure")):
                 stage1_cache[cache_key] = stage1_parsed
 
     # 委任_49 2-2(記録専用): Checker(Stage 1)が返した指摘の全件(MINORを含む)。後段へ渡すのは従来どおりMAJORのみ。
@@ -8159,6 +8263,16 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     severity_wobble_registry: dict = {}
     severity_wobble_records: list = []
     en_title_changes: list = []
+
+    # 委任_06 H1(fail-closed): Stage 1 API失敗(再実行後も)はPASSへ抜けない。許可リスト`api_failure`でSTAGE4へ(後段は実行しない)。
+    # 既定OFF(`STAGE1_FAIL_CLOSED`)では従来どおり(API失敗=deviations空のLEDGER_DEVIATIONが後段へ進む)。
+    stage1_audit = stage1_parsed.get("stage1_coverage_audit")  # coverage_union時のみ(経路別候補・欠落ID・再実行・費用等)
+    if STAGE1_FAIL_CLOSED and stage1_parsed.get("_stage1_api_failure"):
+        r_stop = stage1_api_failure_stop_result(inst, call_log, t0, raw_stage1_all, fixture, stage1_call_used)
+        if stage1_audit is not None:
+            r_stop["stage1_coverage"] = stage1_audit
+        save_json(f"{OUT_DIR}/{instances_subdir}/{instance_id}.json", r_stop)
+        return r_stop
 
     # S1-U variant(委任_10、§3-1): --s1u有効時、このinstanceがs1u_eligible
     # かつStage1(V4A)がACCEPTABLE(PASS)だった場合のみ、S1-D 1 callを追加して
@@ -8200,7 +8314,12 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         stage1_parsed = fixture["baseline_parsed"]
 
     overall_status = stage1_parsed.get("overall_status")
-    if overall_status != "LEDGER_DEVIATION":
+    # 委任_06 F3(`F3_PRECHECK_ALWAYS`、既定OFF): Stage 1が非検出(候補0)でも、決定論precheck floorの該当を確認してから早期PASS
+    # (ACCEPTABLE_STAGE1 return)へ進む。該当があれば早期returnせず、下の通常ループ(precheck floor→BLOCKING→Rewrite)へ入る。
+    f3_precheck_hits = None
+    if F3_PRECHECK_ALWAYS and overall_status != "LEDGER_DEVIATION":
+        f3_precheck_hits = len(build_precheck_floor_claims(fixture, set()))
+    if overall_status != "LEDGER_DEVIATION" and not f3_precheck_hits:
         elapsed = round(time.time() - t0, 3)
         result = {
             "instance_id": instance_id, "group": inst["group"], "expected_group_label": inst["expected_group_label"],
@@ -8231,6 +8350,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                                          [], raw_stage1_all, []),
             "severity_wobble": [], "en_title_rewritten": False, "en_title_changes": [],
         }
+        if stage1_audit is not None:  # 委任_06(記録専用)
+            result["stage1_coverage"] = stage1_audit
+        if f3_precheck_hits is not None:
+            result["f3_precheck_always"] = {"precheck_floor_hits": f3_precheck_hits}
         save_json(f"{OUT_DIR}/{instances_subdir}/{instance_id}.json", result)
         return result
 
@@ -9276,6 +9399,13 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         "severity_wobble": severity_wobble_records, "en_title_rewritten": bool(en_title_changes),
         "en_title_changes": en_title_changes,
     }
+    if stage1_audit is not None:  # 委任_06(記録専用)
+        result["stage1_coverage"] = stage1_audit
+    if f3_precheck_hits is not None:
+        result["f3_precheck_always"] = {"precheck_floor_hits": f3_precheck_hits}
+    if STAGE1_MODE != STAGE1_MODE_LEGACY or F3_PRECHECK_ALWAYS or STAGE1_FAIL_CLOSED:
+        result["switches"] = {**result["switches"], "STAGE1_MODE": STAGE1_MODE, "STAGE1_ROUTES": STAGE1_ROUTES,
+                              "F3_PRECHECK_ALWAYS": F3_PRECHECK_ALWAYS, "STAGE1_FAIL_CLOSED": STAGE1_FAIL_CLOSED}
     _new_sw = {k: globals()[k] for k in ("STAGE4_ALLOWLIST", "LADDER_LOCATION_CARRY", "REWRITE_REVERT_GUARD",
                                           "SPAN_FALLBACK_CHAIN", "JUDGE_ONLY_CYCLE_AFTER_CAP", "LAST_RESORT_DELETE",
                                           "MATERIALITY_BLOCKING_PIN", "STAGE2_VERDICT_REUSE_NONBLOCKING",
