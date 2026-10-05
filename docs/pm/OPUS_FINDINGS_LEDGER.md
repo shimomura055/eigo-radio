@@ -10,22 +10,22 @@
 |---|---|---|---|---|---|---|---|---|---|
 | OF-001 | 2026-10-04 | #10 | Safety hole | Stage 1 recallが支配的リスク(S1の外) | 採用(MANAGED_SEPARATELYとして別管理) | 同管理ID委任_01/02(RCA)、委任_03(再設計案) | `docs/pm/opus_l2_review_open233_self_recovery_10.md`論点8、`docs/pm/pm_rca_open233_stage1_closeout_01.md` | 未(rep30 Closeoutで脱落、RCA問3・問8) | OPEN(本管理IDで対応中) |
 | OF-002 | 2026-10-04 | #10 | Safety hole | 条件付きSafety値と代替なしE2E値の分離 | 採用(修正3点の1つ) | 本管理ID委任_04(24-1〜24-4)。runner出力側は未 | 同上§結論の修正3。PM_GOVERNANCE 24節 | 未(E2E値は未測定) | OPEN(本管理IDで対応中) |
-| OF-003 | 2026-10-04 | #9 | Safety hole | 穴A: アンカー外の語を捨てる縮小 | 未確認(設計書§要照合) | 未確認 | `docs/pm/opus_l2_review_open233_self_recovery_09.md`論点1 | 未 | UNVERIFIED_BACKFILL |
-| OF-004 | 2026-10-04 | #9 | Safety hole | 穴B: 先頭/末尾アンカーの間隔整合が未検査 | 未確認(設計書§要照合) | 未確認 | 同上論点1 | 未 | UNVERIFIED_BACKFILL |
-| OF-005 | 2026-10-04 | #11 | Safety hole | D*は穴を閉じない(別データ未検証等) | 未確認(設計書§要照合) | 未確認 | `docs/pm/opus_l2_review_open233_kpi_recovery_02_11.md`論点2 | 未 | UNVERIFIED_BACKFILL |
-| OF-006 | 2026-10-04 | #11 | MAJOR | Human Reviewへの逃げ経路が未測定(最大リスク) | 未確認(設計書§要照合) | 未確認 | 同上論点6 | 未 | UNVERIFIED_BACKFILL |
-| OF-007 | 2026-10-04 | #12 | Safety hole | 再確認の解消判定情報の喪失(穴の正体) | 未確認(設計書§要照合) | 未確認 | `docs/pm/opus_l2_review_open233_kpi_recovery_02_12.md`論点2 | 未 | UNVERIFIED_BACKFILL |
-| OF-008 | 2026-10-04 | #13 | Safety hole | 同義語表の同値クラスが粗く近接主体を誤許容 | 未確認(設計書§要照合) | 未確認 | `docs/pm/opus_l2_review_open233_kpi_recovery_02_13.md`リスクまとめ1 | 未 | UNVERIFIED_BACKFILL |
-| OF-009 | 2026-10-04 | #13 | Safety hole | 件数一致の実装穴3点(範囲外index等) | 未確認(設計書§要照合) | 未確認 | 同上論点4 | 未 | UNVERIFIED_BACKFILL |
-| OF-010 | 2026-10-05 | #14 | Safety hole | H-1(重大): BLOCKING確定箇所がRecheck1回でPASS | 未確認(設計書§要照合) | 未確認 | `docs/pm/opus_l2_review_open233_kpi_recovery_02_14.md` Safety hole節 | 未 | UNVERIFIED_BACKFILL |
-| OF-011 | 2026-10-05 | #14 | Safety hole | H-2: Stage 2単独降格・判定揺れ降格の禁止 | 未確認 | 未確認 | 同上 | 未 | UNVERIFIED_BACKFILL |
-| OF-012 | 2026-10-05 | #14 | MAJOR | H-3: 残るHuman Reviewは構造要素だけは誤り | 未確認 | 未確認 | 同上 | 未 | UNVERIFIED_BACKFILL |
-| OF-013 | 2026-10-05 | #14 | MAJOR | H-4(低): B′同一性は重なりで判定 | 未確認 | 未確認 | 同上 | 未 | UNVERIFIED_BACKFILL |
+| OF-003 | 2026-10-04 | #9 | Safety hole | 穴A: アンカー外の語を捨てる縮小 | 採用(設計書`design_open233_span_sentence_restore_01.md` §6-A L235〜、`_vs_l6_residual_check`) | 委任_66(runner `VS_SENTENCE_RESTORE`、Trial既定OFF)。共有module化は配線時課題 | opus_09論点1(L68〜)。設計書§7-A replay(誤復元0・cycle横断46件誤選択0)、REPORT §48、rep30でL6 2復元 | 済(REPORT §63 #9行) | CLOSEOUT_CONFIRMED |
+| OF-004 | 2026-10-04 | #9 | Safety hole | 穴B: 先頭/末尾アンカーの間隔整合が未検査 | 採用(同§6-A、α=3、`_vs_sentence_restore_core`) | 同上 | 同上(OF-003と同一実装・同一検証) | 済(§63 #9行) | CLOSEOUT_CONFIRMED |
+| OF-005 | 2026-10-04 | #11 | Safety hole | D*は穴を閉じない(別データ未検証等) | 修正採用(D*を主構造にせず三層構造へ。DECISION_LOG L19052 項1) | 委任_02〜04。確認役・G_Lは実測で不採用、Tier0因果floor(known6)+S1に置換(L19068〜、L19081) | opus_11論点2(L27〜)。設計書`design_open233_kpi_recovery_02.md` §9〜§11、rep30 Safety-critical 6件検出 | 済(§63 #11行。ただし条件付き値) | EVIDENCED(未観測の接続語型の残存リスクはL19082で開示、OF-021[#16 H3]で継続) |
+| OF-006 | 2026-10-04 | #11 | MAJOR | Human Reviewへの逃げ経路が未測定(最大リスク) | 採用(DECISION_LOG L19055 項3: API失敗/schema不一致はBLOCKING、hint合成)。指摘が現実化(rep27〜29でHR 3→3→3)し#14のI-2へ発展 | 委任_02(Tier2 hint)、委任_11(許可リスト4種) | opus_11論点6(L59〜)。REPORT §60〜§62、rep30 HR 0・許可外0 | 一部(§63「HR推移」行のみ。#11行は本件に言及なし) | EVIDENCED(rep30 HR 0は条件付き値、許可内4経路は発火0=未実行) |
+| OF-007 | 2026-10-04 | #12 | Safety hole | 再確認の解消判定情報の喪失(穴の正体) | 採用(N1′。DECISION_LOG L19090 項2・設計書§13-1 L413) | 委任_06(`RECHECK_MERGE_UNRESOLVED`、潜在ギャップも同時是正) | opus_12論点2(L47〜)。REPORT §56、rep30でN1′ merge 5・自己矛盾0 | 済(§63 #12行。N3′全対は縮小採用と明記) | CLOSEOUT_CONFIRMED |
+| OF-008 | 2026-10-04 | #13 | Safety hole | 同義語表の同値クラスが粗く近接主体を誤許容 | 採用(細粒度同値クラス+負例(a)〜(e)。DECISION_LOG L19108〜、設計書§15-1) | 委任_08(commit f513695c、`ACTOR_SYNONYM_CLASSES`23クラス)、related_fact空fallbackは委任_10 | opus_13リスクまとめ1(L131)。REPORT §58(単体712件・差分0確認[自明に近いと明記])、rep30 actor_guard却下0 | 済(§63 #13行) | CLOSEOUT_CONFIRMED |
+| OF-009 | 2026-10-04 | #13 | Safety hole | 件数一致の実装穴3点(範囲外index等) | 採用(式=全項目`is True`∧{0..n-1}⊆index。L19111、設計書§15-2) | 委任_08(`aggregate_prior_issues_resolved`)。Production er003 vfl01 L827との共有化は配線時(`OPEN-233-A1-PROD`) | opus_13論点4(L98〜)。REPORT §58、rep30件数一致diff 0 | 済(§63 #13行「件数一致3穴」) | CLOSEOUT_CONFIRMED(Production共有化は未) |
+| OF-010 | 2026-10-05 | #14 | Safety hole | H-1(重大): BLOCKING確定箇所がRecheck1回でPASS | 修正採用(carry list、空でない間PASS禁止。設計書§18 項7 L674、DECISION_LOG L19015〜) | 委任_11(`normalize_recheck_outcome`、carry list) | opus_14 Safety hole節L79。REPORT §61 fixture3本、rep30 未書換BLOCKING PASS 0(§62)。なおOpus推測の`rounding`経路は旧コードに無いと確認(§61) | 一部(§63 #14行はD修正採用を一括記載、H-1個別言及なし) | EVIDENCED(fixtureと実run 0件。rep30でcarry発火0) |
+| OF-011 | 2026-10-05 | #14 | Safety hole | H-2: Stage 2単独降格・判定揺れ降格の禁止 | 採用(G=判定だけのcycleでTier0+S1必須、BLOCKING固定。設計書§18 項8・10 L675/677) | 委任_11(`JUDGE_ONLY_CYCLE_AFTER_CAP`、`MATERIALITY_BLOCKING_PIN`) | opus_14 L80。REPORT §61 fixture、反実仮想replayで降格覆し0。rep30 G発火0 | 一部(§63 #14行にG記載、H-2個別なし) | IMPLEMENTED(fixture確認のみ、実LLM経路は未発火) |
+| OF-012 | 2026-10-05 | #14 | MAJOR | H-3: 残るHuman Reviewは構造要素だけは誤り | 採用(撤回し4経路を明記。設計書§18 項13 L680、§18-B L689) | 委任_11(許可リスト4種) | opus_14 L81。rep30で4経路とも発火0 | 一部(§63 #14行「許可リスト4理由」) | IMPLEMENTED(経路は実例0) |
+| OF-013 | 2026-10-05 | #14 | MAJOR | H-4(低): B′同一性は重なりで判定 | 採用(1文字以上の重なり。設計書§18 項4 L671) | 委任_11(`location_prior_levels`等) | opus_14 L82。REPORT §61単体テスト、rep30 B′ 1件発火(A4 c3) | 済(§63 #14行B′記載) | EVIDENCED |
 | OF-014 | 2026-10-05 | #15 | Safety hole | F1: B3/B2_hormuzのStage 1検出が未証明 | 採用(配線前実測必須。CORRECTION-01/02でSTOP) | CORRECTION-01(委任_07)/02(委任_08) | `docs/pm/opus_l2_review_open233_production_wiring_15.md`、CORRECTION-02のfresh確認FAIL(DECISION_LOG) | 未 | OPEN(Stage 1非決定性で未解決) |
-| OF-015 | 2026-10-05 | #15 | Safety hole | F2: 昇格ルールの誤配線(rep30と不一致) | 未確認 | 未確認 | 同上 | 未 | UNVERIFIED_BACKFILL |
-| OF-016 | 2026-10-05 | #15 | MAJOR | F3: Stage 1非検出だと決定論floorも走らない | 未確認 | 未確認 | 同上§4 | 未 | UNVERIFIED_BACKFILL |
-| OF-017 | 2026-10-05 | #15 | 採用項目 | F4: 凍結V4A出力の生成条件が未確認(推測) | 未確認 | 未確認 | 同上(未確認事項節) | 未 | UNVERIFIED_BACKFILL |
-| OF-018 | 2026-10-05 | #15 | Safety hole | 未検証経路: T使用済み時のsub_reason欠落 | 未確認 | 未確認 | 同上Safety hole節3 | 未 | UNVERIFIED_BACKFILL |
+| OF-015 | 2026-10-05 | #15 | Safety hole | F2: 昇格ルールの誤配線(rep30と不一致) | 採用(`production_wiring_gap_open233_01.md` §7 項6 L433「昇格ルール除く」) | K14 Phase 1候補は昇格除外で測定(委任_04c/05)。Production配線は未 | opus_15 Safety hole節L202。REPORT §64/§64-2。CORRECTION-01以降で本方針が維持されたかは未確認(記録未照合) | 未(§63は#15前の記録で対象外) | EVIDENCED(Phase 1 DEV実測のみ。配線は未、CORRECTION-01/02後の扱いは要Fable確認) |
+| OF-016 | 2026-10-05 | #15 | MAJOR | F3: Stage 1非検出だと決定論floorも走らない | #15時点の明示採否=記録なし(§7 項8は決定論floor配線のみ)。後にOpus#16 H4(OF-022)で採用 | 委任_06(commit fb4eb8ca、runner `F3_PRECHECK_ALWAYS`=Trial既定OFF)、fixture dry-runのみ | opus_15 L36。`design_open233_stage1_redesign_01.md`案7'。段階A(委任_07b)は実行中で未評価 | 未 | IMPLEMENTED(Trial、既定OFF、実測前。OF-022と同根) |
+| OF-017 | 2026-10-05 | #15 | 採用項目 | F4: 凍結V4A出力の生成条件が未確認(推測) | 採用(開示。§7 項7 L434「F1/F4を開示、rep30はStage 1出力を所与とした検証」) | 委任_04(`rep30_stage1_provenance_01.md`、PM_GOVERNANCE 24節) | opus_15 L38/L244。provenance L13〜14: prompt shaは列挙なしと一致25/34run、developer message(重大誤解原則の有無)は未記録で未確認のまま | 済(§63遡及注記) | EVIDENCED(原則の有無のみ未確認) |
+| OF-018 | 2026-10-05 | #15 | Safety hole | 未検証経路: T使用済み時のsub_reason欠落 | 採用(§7 項10 L437: funnel戻し撤回、sub_reason必須+4経路fixture)。DECISION_LOG L19150「未解決(配線時に扱う)」 | 未実装(Production module未着手。Trial runnerも委任_12時点で是正せず) | opus_15 Safety hole節3(L203)。REPORT §62「範囲外の観察」 | 一部(§63は「未解決」として記載) | OPEN(採否済み・未実装、Safety hole) |
 | OF-019 | 2026-10-05 | #16 | Safety hole(重大) | Stage 1 API失敗がPASSへ抜けるfail-open(`_stage1_api_failure`未参照)(Opus#16 H1) | 採用(バグ是正。再実行→なお失敗ならSTOP) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H1 | 未 | FABLE_DECIDED→委任_06で実装 |
 | OF-020 | 2026-10-05 | #16 | Safety hole | MINORが後段へ渡らず、重大をMINORに付けた時点で見逃し確定(Opus#16 H2) | 採用(判定方針を「迷えば候補」へ、重大度判定はStage 2)。ただしA構成freshではMINOR 0/32で主因ではない(委任_05確認) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H2、`er052_output/open233_kpi_recovery_02_offline_01/agg_fresh_minor_check_01.md` | 未 | FABLE_DECIDED→委任_06で実装 |
 | OF-021 | 2026-10-05 | #16 | Safety hole | 因果は決定論floor対象外(CAUSAL_FLOOR=False)、SC 6件中2件が因果型でStage 2判断のみ(Opus#16 H3) | 採用(決定論検査に因果語チェックを追加) | 委任_06で実装(予定) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` §4 H3 | 未 | FABLE_DECIDED→委任_06で実装 |
@@ -35,3 +35,12 @@
 | OF-025 | 2026-10-05 | #16 | 採用項目 | HF-011は正式`SAFETY_CRITICAL_CLAIM_DEFS`外で設計書の「gold 7」は不整合(Opus#16 1-c) | 採用(gold=正式BLOCKING 6件に限定、HF-011は監視項目。gold変更ではなく正式定義へ戻す是正。Closeoutでユーザーへ開示、HF-011のgold化はユーザー判断事項) | 設計書§6(委任_05) | `docs/pm/opus_l2_review_open233_stage1_redesign_16.md` 論点別判定、`docs/pm/design_open233_stage1_redesign_01.md` §6 | 未 | FABLE_DECIDED(gold 6限定・HF-011監視) |
 
 注記: OF-014〜OF-018のうちF1〜F4は、本委任の指示(Opus#15 F1〜F4をbackfill)に基づく。F3/F4の区分(MAJOR/採用項目)は台帳作成者による暫定分類で、Opus原文は番号付き所見のみ(重大度の明示なし)。OF-018はSafety hole節の項目3で、F番号とは別。
+
+## 照合メモ(委任_08、2026-10-05、¥0・read-only照合)
+
+照合対象: OF-003〜013・015〜018の15件(OF-014は既存行のため対象外)。Status分布: CLOSEOUT_CONFIRMED 5(003/004/007/008/009)、EVIDENCED 6(005/006/010/013/015/017)、IMPLEMENTED 3(011/012/016)、OPEN 1(018)、記録なし 0。OF-016のみ「#15時点の明示採否=記録なし」だが後続Opus#16 H4(OF-022)で採用済み。CLOSEOUT_CONFIRMEDは「REPORT §63のOpus#8〜#14対応表に当該Opus#の採用が記載」を基準とした(個別項目の言及ではなく#単位。#15は§63が先行しており対象外)。
+
+- OPEN: OF-018(T使用済み/無効/cap後T不可/T削除失敗で構造要素検証なしに`blocking_structural_after_ladder`を返す経路。Safety hole)。採否は済みだが未実装。既存OF-001/002/014と合わせ、Safety hole系のOPENは4件。
+- 条件付きEVIDENCED(Safety hole絡み): OF-005(未観測の接続語型は閉じない旨をFableが開示、OF-021で継続)、OF-010/011(fixtureのみ。rep30でcarry/G/T/BLOCKING固定は発火0、実LLM経路は未検証)、OF-015(Phase 1 DEV実測のみ)。rep30系の値は全て条件付き(Stage 1 frozen、PM_GOVERNANCE 24節)。
+- Fableへ判断を求める項目: (1)OF-018をどの委任で是正するか(Production module設計時のsub_reason必須化か、先にTrial runnerで是正か)。(2)OF-015: CORRECTION-01(rep30構成の忠実配線)後も「昇格ルール除く」を維持するか。本照合では維持されたかの記録を確認できていない。(3)OF-017: 凍結V4Aのdeveloper message(重大誤解原則)の有無は保存jsonに無く、未確認のまま。確定には再生成が必要で、実施要否の判断。(4)CLOSEOUT_CONFIRMED基準を#単位としたため、H-1等の個別項目をCloseoutで確認し直す必要があるか。
+- 照合の限界: Opusレビュー原文はGrepで見出し・行番号を特定し該当箇所のみRead。コード・テストの実行はしていない(REPORT/設計書の記録を転記)。DECISION_LOG L19147の「F1/F2」はTrial Closeout側の別概念(品質regen等)でOpus#15のF1/F2とは別。
