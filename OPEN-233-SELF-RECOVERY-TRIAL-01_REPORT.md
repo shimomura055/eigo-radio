@@ -4550,3 +4550,11 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - 参考: r3×r5(SC 18 run) hit/hit 17、r3のみ1、r5のみ0、両miss 0。NORMAL候補/記事 r3 23.5・r5 13.8・∪24.0。B2_hormuz(監視)∪平均13.33。決定論検査で戻した件数 negation_polarity_mismatch 149・quote_not_in_ledger 4。HF-011は集計に項目なし(未測定)。
 - 費用: 83 call、平均¥0.763/call、¥1.51/run、worst run ¥2.71(neg4_smallbag_div_a2)、run json合計¥63.35、budget state累計¥64.20。API失敗run 1(s3/neg5_hormuz_div_a2、r5失敗)。委任_07でr5 API失敗1件がaborted_07に退避。runtime: 約2h13分(委任_07〜07cの停止・再開を含む壁時計)。
 - 注意: 判定はStage 1検出のみ。E2E(Stage 2以降)・Production採用は未評価。段階B移行は別判断。
+
+## 68. Stage 1 ループ2限定Trial(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_12、2026-10-05、実費¥15.93)
+- provenance=fresh Stage 1限定(r3は段階A保存出力の再利用、r5-Vのみfresh)/E2Eではない。Trial(DEV)、Production未変更、コード変更なし。
+- 実施: r5-V(`--r5-mode verify_supported`、否定案a)on保存r3 42 runをlow・mediumで各実行。出力`er052_output/open233_stage1_loop2_r5v_01/`(low)、`..._r5v_medium_01/`、集計`loop2_trial_summary_01.md`。G arm(Step 2)は基準未達のため未実施(STOP)。
+- 結果: r5-V M検出 low 1/18・medium 0/18(基準17/18)、A4-0 r5-V M 0/3(必須3/3)、∪M 16/18(基準18/18)、hold-out 9/9(r3経由)、NORMAL候補∪ 23.83/23.75(基準24.0)。費用 low ¥5.74(¥0.137/run、worst ¥0.31)、medium ¥10.19(¥0.243/run、worst ¥0.52)、見積(script mid ¥16.6/¥23.9)を下回る、API失敗0、欠落ID 0%。
+- 原因(確認): A4-0 gold(S2.1)はs1/s2で保存r3がSUPPORTED→否定検査(D)で`SUPPORTED->CANDIDATE`に変更された単位。`r5v_target_units`は最終状態==SUPPORTEDのみ対象とするためr5-Vの検証対象から外れる。effortでは説明できない構造要因(low/mediumで同結果)。段階Aのr5(full)はS2.1を3/3でM検出していた。
+- 推測(未検証・未実装): D変更単位もr5-V対象に含める案。設計変更のためFable判断。
+- 累計: 本管理ID ¥80.13/枠¥238。(iii)見込みは更新不能(Step 2未実施)。
