@@ -4572,3 +4572,11 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - 判定規則: r5のみ未達→採用構成=r3 medium+r5 high+否定案a(混合構成のfresh測定は未実施、費用は合算推測 約¥1.23/run、-¥0.16/run)。r5 low追加は省略。
 - E2E計画書: `docs/pm/e2e_plan_open233_stage1_loop2_01.md`(rep30スイッチ突合=不一致0、ただしSTAGE2_VERDICT_REUSE/SIBLINGはモジュール既定Falseのため明示設定が必要。Rewrite後Recheckの新Stage 1仕様は未実装、実装見積約150〜200行。推奨20 run ≈¥62(48〜86)、最小18 run ≈¥56。shadow V4A費用測定を同一run内に設計)。
 - 詳細: `er052_output/open233_stage1_loop2_garm_01/loop2_trial_summary_03.md`。累計 本管理ID ¥139.71/枠¥238。
+
+## 71. Stage 1 ループ2 Fable判定STOP(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_15、2026-10-05、¥0、新規API実行なし)
+- Status=`USER_DECISION_REQUIRED`。Fableが事前固定した「構造的両立不能」条件(iii基準で+¥2超、G・r5-Vを試し切った後)に該当と判定。E2E(≈¥62)は起動せず。Trial(DEV)、Production未変更、`APPROVED_FOR_PRODUCTION`ではない。
+- provenance: Safety=fresh Stage 1限定(G arm 33 run、r3 medium+r5 medium+否定案a)、混合構成(r3 medium+r5 high)は段階A frozen(high)からの推測、Stage 2以降未通過=E2E値ではない(条件付きKPI)。Cost=Stage 1 fresh実測(medium/medium ¥0.843/run、high同mix ¥1.394/run)+混合合算推測¥1.23/run+Stage 2は線形fit(候補0〜10)外挿=推測。Human Review 0=未測定(E2E未実施)。
+- 判定根拠: Stage 1 ¥1.23+Stage 2 ¥0.83〜1.5(1件≈¥0.064+固定≈¥0.1、候補≈21.8)=¥2.06〜2.7で差し引き0でも+¥2超。差し引き上限¥0.55でも≈+¥2.1〜3.0(Fable判定値、Rewrite・Recheck・出口3'-R加算の内訳は未再計算、E2E実測で確定要)。ループ3は残予算¥98.29で収まらず未使用。
+- ユーザー判断事項: KPI基準点(iii)(shadow実測の可否)、Cost Cap +¥3との関係、Stage 2費用削減(承認済み構成の変更)、本管理IDの最終Status案(`TRIAL_RESULT: SAFETY_MET_COST_UNMET`等)。資料: `docs/pm/user_decision_open233_stage1_loop2_01.md`(§4選択肢A〜D、§6 Q1〜Q5、§7停止時点の自己確認)。
+- Opus台帳Closeout確認: `docs/pm/OPUS_FINDINGS_LEDGER.md` OF-001〜037を1件ずつ更新(対応済9・部分13・未対応2・対象外13、CLOSEOUT_CONFIRMED遷移0)。未達の自己確認: 項目27(Close不可)、項目29(OF-018・CURRENT_SPECプレースホルダに独立Open ID未設定)。
+- 累計 本管理ID ¥139.71/枠¥238(残¥98.29)。

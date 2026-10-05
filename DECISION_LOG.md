@@ -19659,3 +19659,18 @@ Opus#17(必須レビュー条件A、回数上限外、`docs/pm/opus_l2_review_op
 8. **Opus別案2(Stage 2出力短縮)は本管理ID対象外**(Stage 2はユーザー承認済み構成)。ユーザー向け選択肢として記録のみ。
 9. 委任_09の30件ラベルは「Stage 2負荷推定用」に限定する。neg4 S2.1/S2.2のR判定は循環(S2.2は決定論のみ候補、§3の残りFP判定根拠に使っている)ため、Opus指摘どおり注記する。
 10. 費用順序: ¥0(基準点・V4A実費)→ r5-V(保存r3出力再利用、約¥15)+G arm(約¥20)→ 合格組合せのみ小規模fresh(約¥30)→ E2E。BLOCKING率0.10(n=2/20)と線形fit(候補0〜10)の13〜24件への外挿は推測であり、Human Review 0見込みの根拠にしない(OF-032/033)。
+
+
+## 2026-10-05 Fable判定(STOP、OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_15、¥0)
+
+Status=USER_DECISION_REQUIRED(Trial、Production未変更、E2E未起動)。ユーザー判断資料: docs/pm/user_decision_open233_stage1_loop2_01.md。以下は委任文のFable判定を逐語転写。KPI provenance: Safety値はStage 1 fresh限定の条件付き値、Cost見込みは推測、Human Review 0は未測定(E2E値なし)。
+
+出典: docs/pm/delegation_log/2026-10-05_OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01_15.md L11-17
+
+委任_14(commit c7041702、累計¥139.71/枠¥238)の結果、Fableが事前に書面固定したSTOP条件「構造的両立不能=(iii)基準で+¥2超、かつG・r5-Vを試し切った後(Stage 1固定費の実測+最小のStage 2負荷>+¥2)」に該当すると判定し、ループ2で自律進行を停止、E2E(≈¥62)は起動せず、Status=USER_DECISION_REQUIREDとする。根拠:
+1. Safetyを満たす最安構成(r3 medium+r5 high+否定案a、混合はfresh未測定)でもStage 1実測合算≈¥1.23/run(high/high比-12%)。effort引下げ(G)はr5 mediumでA4-0 0/3・∪M 17/18のため採用不可。r5-Vは能力10〜12/18で不採用。(A)2層化はOpus#17で主軸不適。
+2. Stage 2費用は候補数比例(1件≈¥0.064+固定≈¥0.1)。候補≈21.8/記事で≈¥1.5、fit範囲内の10件でも≈¥0.83。Stage 1 ¥1.23+Stage 2 ¥0.83〜1.5=¥2.06〜2.7で、Rewrite・Recheck・出口3'-R全文を加える前に、(iii)差し引き0で+¥2超。差し引き上限¥0.55を適用しても≈+¥2.1〜3.0。
+3. Human Review 0はE2E未実施のため未測定。重大見逃し0はfresh Stage 1限定で達成(gold 6件・hold-out 9種、ただしA4-0はn=3で揺らぎあり)。
+4. ループ3は未使用だが、Opus#17の分析(費用に効くのはLLM呼び出し自体の低廉化のみ)と残予算¥98.29では、新構造の設計+Opus+Trial+E2Eを収める見込みがなく、ユーザー判断なしに着手しない。
+5. 「KPI基準点(iii)」「Cost Cap +¥3との関係」「Stage 2(ユーザー承認済み構成)側の費用削減の可否」はいずれも実質KPI定義・承認済み仕様に関わるため、Fableが決めずユーザーへ出す。
+
