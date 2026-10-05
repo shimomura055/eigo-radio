@@ -4558,3 +4558,10 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - 原因(確認): A4-0 gold(S2.1)はs1/s2で保存r3がSUPPORTED→否定検査(D)で`SUPPORTED->CANDIDATE`に変更された単位。`r5v_target_units`は最終状態==SUPPORTEDのみ対象とするためr5-Vの検証対象から外れる。effortでは説明できない構造要因(low/mediumで同結果)。段階Aのr5(full)はS2.1を3/3でM検出していた。
 - 推測(未検証・未実装): D変更単位もr5-V対象に含める案。設計変更のためFable判断。
 - 累計: 本管理ID ¥80.13/枠¥238。(iii)見込みは更新不能(Step 2未実施)。
+
+## 69. Stage 1 ループ2実装是正+再測定(OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 委任_13、2026-10-05、実費¥31.78)
+- provenance=fresh Stage 1限定(r3は段階A保存出力の再利用、r5-Vのみfresh)/E2Eではない。Trial(DEV)、Production未変更。G arm(Step 2)はStep 1b基準未達のため未実施(STOP)。
+- 是正(Trial専用コード、設計不変・ループ数2維持): r5-V対象=r3のモデル判定SUPPORTED(D適用前)+関係単位、保存r3へ否定案a再適用、角括弧付き単位IDの正規化とM集計の`source_of`整合(不具合修正)、能力テスト用`--plan cap`/`--r5v-force-targets gold`(測定用)。単体テスト75件PASS。
+- Step 1(保存r3 42 run): low ∪M 16/18・A4-0救済0/2、medium ∪M 18/18・A4-0救済2/2(1件は角括弧ID経由、厳密集計では17/18・1/2)、hold-out 9/9、neg5 3/3、NORMAL候補∪ 19.6/20.0(段階A 24.0)、r5-V費用 ¥0.164/¥0.285/run、worst ¥0.31/¥0.65、API失敗0、欠落ID 0%。
+- Step 1b(gold強制対象、SC 18): r5-V M low 10/18・medium 12/18(基準17/18=段階A r5 full high並み)未達。A4-0・neg5で不安定。費用 ¥4.94/¥8.01。
+- 詳細: `er052_output/open233_stage1_loop2_r5v_fix_01/loop2_trial_summary_02.md`、各dir`..._r5v_fix_medium_01`/`..._r5v_cap_01`/`..._r5v_cap_medium_01`。累計 本管理ID ¥111.91/枠¥238。(iii)見込みは更新不能(Step 2未実施)。

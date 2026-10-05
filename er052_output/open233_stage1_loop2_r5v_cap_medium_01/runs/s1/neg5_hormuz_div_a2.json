@@ -1,0 +1,719 @@
+{
+  "sample": 1,
+  "instance_id": "neg5_hormuz_div_a2",
+  "group": "negative",
+  "switches": {
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "MODEL": "gpt-6-luna",
+    "TOTAL_BUDGET_JPY": 12.0,
+    "STAGE1_R5_MODE": "verify_supported",
+    "STAGE1_R3_REASONING": "high",
+    "STAGE1_R5_REASONING": "medium",
+    "STAGE1_NEGATION_MODE": "a",
+    "REUSE_R3_DIR": "er052_output/open233_stage1_stageA_01"
+  },
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "verify_supported",
+    "r3_reused": true,
+    "n_units": 46,
+    "n_judged_units": 38,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:L1+L2"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "H1",
+          "L2",
+          "R:L1+L2",
+          "S1.3",
+          "S1.4",
+          "S6.4"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "H1": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S5.5": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "CANDIDATE",
+          "S6.5": "SUPPORTED",
+          "S6.6": "SUPPORTED",
+          "H2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "L1": "SUPPORTED",
+          "L2": "CANDIDATE",
+          "L3": "SUPPORTED",
+          "L4": "SUPPORTED",
+          "R:L1+L2": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.9634,
+            "usage": {
+              "input_tokens": 5313,
+              "cached_input_tokens": 0,
+              "output_tokens": 11220,
+              "reasoning_tokens": 4967
+            },
+            "elapsed_seconds": 75.444,
+            "prompt_sha256": "97252badded00138b4e0bf61f981ec85ca8a998794f380758614ec2bcd7479ca",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": true,
+        "r5_mode": null,
+        "model_verdict": null,
+        "negation_reapplied": {
+          "mode": "a",
+          "restored_to_supported": [
+            "H2",
+            "L3",
+            "S5.5",
+            "S7.1",
+            "S7.2",
+            "S7.3"
+          ],
+          "n_restored": 6
+        },
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Act Two brought a surprise.",
+            "span": [
+              126,
+              153
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "7月14日の置換発表は確認できるが、それが「surprise（驚き）」だったという評価はLedgerで裏付けられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Act Two brought a surprise.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "Act Three was an unexpected move in oil prices.",
+            "span": [
+              154,
+              201
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "原油価格の動きはLedgerにあるが、それが「unexpected（予想外）」だったという主張は裏付けられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Act Three was an unexpected move in oil prices.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "H1",
+            "unit_ids": [
+              "H1"
+            ],
+            "claim_text": "### The 20% plan changes overnight",
+            "span": [
+              752,
+              786
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "見出しの「overnight」は一夜のうちの変化を示す一方、Ledgerでは7月13日の提案から約24時間48分後に置換発表があったとされている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "### The 20% plan changes overnight",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "Reuters linked that rise to concern about a US sea blockade of Iran.",
+            "span": [
+              1266,
+              1334
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerは上昇を、翌日に予定された米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けている。記事は「封鎖への懸念」を上昇の理由としており、Reutersの説明の結び付けを変えている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Reuters linked that rise to concern about a US sea blockade of Iran.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "L2",
+            "unit_ids": [
+              "L2"
+            ],
+            "claim_text": "So the flashy 20% plan left the stage.",
+            "span": [
+              1904,
+              1942
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「So」が直前の懸念継続を、20％案が撤回・置換された理由として結び付けているが、Ledgerはその因果関係を述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "So the flashy 20% plan left the stage.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "R:L1+L2",
+            "unit_ids": [
+              "R:L1+L2"
+            ],
+            "claim_text": "So the flashy 20% plan left the stage.",
+            "span": [
+              1904,
+              1942
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「So」でL1の懸念継続とL2の20％案の退場を因果関係として結び付けているが、Ledgerは懸念が案の撤回・置換を引き起こしたとは述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage.",
+            "sources": [
+              "model_r3"
+            ]
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S4.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S6.3": "MATCH",
+          "S6.5": "MATCH",
+          "S6.6": "MATCH",
+          "T": "MATCH",
+          "S4.2": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "MATCH",
+          "L2": "MATCH",
+          "L4": "MATCH",
+          "R:L1+L2": "MATCH",
+          "S5.4": "MATCH",
+          "S5.5": "MATCH",
+          "H2": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "L3": "MATCH",
+          "S7.4": "MATCH",
+          "S1.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "L1": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5v",
+            "cost_jpy": 0.5469,
+            "usage": {
+              "input_tokens": 5304,
+              "cached_input_tokens": 0,
+              "output_tokens": 5911,
+              "reasoning_tokens": 3039
+            },
+            "elapsed_seconds": 43.819,
+            "prompt_sha256": "787019b28cc8ecfd1915d576caadeb46b5685495bf62e6837eb5d5bb2faf80ca",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "verify_supported",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": [
+          "H2",
+          "L1",
+          "L2",
+          "L3",
+          "L4",
+          "R:L1+L2",
+          "S1.1",
+          "S1.2",
+          "S2.1",
+          "S2.2",
+          "S2.3",
+          "S2.4",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S3.5",
+          "S4.1",
+          "S4.2",
+          "S5.1",
+          "S5.2",
+          "S5.3",
+          "S5.4",
+          "S5.5",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.5",
+          "S6.6",
+          "S7.1",
+          "S7.2",
+          "S7.3",
+          "S7.4",
+          "T"
+        ],
+        "n_r5v_targets": 34,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "H1",
+        "L2",
+        "R:L1+L2",
+        "S1.3",
+        "S1.4",
+        "S6.4"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 0
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Act Two brought a surprise.",
+        "span": [
+          126,
+          153
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "7月14日の置換発表は確認できるが、それが「surprise（驚き）」だったという評価はLedgerで裏付けられていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "Act Two brought a surprise."
+        ]
+      },
+      {
+        "claim_text": "Act Three was an unexpected move in oil prices.",
+        "span": [
+          154,
+          201
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "原油価格の動きはLedgerにあるが、それが「unexpected（予想外）」だったという主張は裏付けられていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Act Three was an unexpected move in oil prices."
+        ]
+      },
+      {
+        "claim_text": "### The 20% plan changes overnight",
+        "span": [
+          752,
+          786
+        ],
+        "unit_ids": [
+          "H1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "見出しの「overnight」は一夜のうちの変化を示す一方、Ledgerでは7月13日の提案から約24時間48分後に置換発表があったとされている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "### The 20% plan changes overnight"
+        ]
+      },
+      {
+        "claim_text": "Reuters linked that rise to concern about a US sea blockade of Iran.",
+        "span": [
+          1266,
+          1334
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerは上昇を、翌日に予定された米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けている。記事は「封鎖への懸念」を上昇の理由としており、Reutersの説明の結び付けを変えている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-006"
+        ],
+        "model_claims": [
+          "Reuters linked that rise to concern about a US sea blockade of Iran."
+        ]
+      },
+      {
+        "claim_text": "So the flashy 20% plan left the stage.",
+        "span": [
+          1904,
+          1942
+        ],
+        "unit_ids": [
+          "L2",
+          "R:L1+L2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「So」が直前の懸念継続を、20％案が撤回・置換された理由として結び付けているが、Ledgerはその因果関係を述べていない。",
+          "「So」でL1の懸念継続とL2の20％案の退場を因果関係として結び付けているが、Ledgerは懸念が案の撤回・置換を引き起こしたとは述べていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "So the flashy 20% plan left the stage.",
+          "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14. So the flashy 20% plan left the stage."
+        ]
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 5,
+    "n_deterministic_only_candidates": 0,
+    "total_cost_jpy": 1.5103,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "neg5_hormuz_div_a2_s1_stage1_r5v",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5469,
+      "usage": {
+        "input_tokens": 5304,
+        "cached_input_tokens": 0,
+        "output_tokens": 5911,
+        "reasoning_tokens": 3039
+      },
+      "elapsed_seconds": 43.819,
+      "prompt_sha256": "787019b28cc8ecfd1915d576caadeb46b5685495bf62e6837eb5d5bb2faf80ca",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 0.5469
+}

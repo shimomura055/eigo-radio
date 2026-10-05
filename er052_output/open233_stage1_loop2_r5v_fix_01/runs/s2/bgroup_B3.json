@@ -1,0 +1,715 @@
+{
+  "sample": 2,
+  "instance_id": "bgroup_B3",
+  "group": "b_group",
+  "switches": {
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "MODEL": "gpt-6-luna",
+    "TOTAL_BUDGET_JPY": 15.0,
+    "STAGE1_R5_MODE": "verify_supported",
+    "STAGE1_R3_REASONING": "high",
+    "STAGE1_R5_REASONING": "low",
+    "STAGE1_NEGATION_MODE": "a",
+    "REUSE_R3_DIR": "er052_output/open233_stage1_stageA_01"
+  },
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "verify_supported",
+    "r3_reused": true,
+    "n_units": 35,
+    "n_judged_units": 27,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "H1",
+          "L1",
+          "S1.3",
+          "S1.4",
+          "S3.3",
+          "S6.1"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "H1": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "H2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.7066,
+            "usage": {
+              "input_tokens": 5090,
+              "cached_input_tokens": 0,
+              "output_tokens": 7990,
+              "reasoning_tokens": 3601
+            },
+            "elapsed_seconds": 58.695,
+            "prompt_sha256": "73a48b1851fae55064848d7dd9eea9fab3ec4846f51e213e47ee60bc9010ba53",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": true,
+        "r5_mode": null,
+        "model_verdict": null,
+        "negation_reapplied": {
+          "mode": "a",
+          "restored_to_supported": [
+            "H2",
+            "S7.1",
+            "S7.2",
+            "S7.3"
+          ],
+          "n_restored": 4
+        },
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Act Two brought an unexpected turn.",
+            "span": [
+              124,
+              159
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "置換という転換は記録されているが、それが「unexpected（予想外）」だったという情報はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Act Two brought an unexpected turn.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "Act Three was an unexpected move in oil prices.",
+            "span": [
+              160,
+              207
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "原油価格の値動きは記録されているが、それが「unexpected（予想外）」だったという情報はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Act Three was an unexpected move in oil prices.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "For the moment, only a large number stood at center stage.",
+            "span": [
+              566,
+              624
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "",
+            "sources": [
+              "deterministic"
+            ]
+          },
+          {
+            "unit_id": "H1",
+            "unit_ids": [
+              "H1"
+            ],
+            "claim_text": "### The 20% plan changes overnight",
+            "span": [
+              712,
+              746
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "提案は7月13日午前、置換発表は7月14日午前で、約24時間48分後と記録されている。「overnight」はその間に一晩で変化したという時期を付加しており、記録された時刻と合致しない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "### The 20% plan changes overnight",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The change was sudden.",
+            "span": [
+              1020,
+              1042
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "置換が翌日に発表されたことは支えられるが、変化を「sudden」と評価する情報はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The change was sudden.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "span": [
+              1700,
+              1972
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「so」が、米・イラン間の攻撃、封鎖、タンカー安全への懸念が続いたことを、20％案が退場した原因として結び付けている。Ledgerは撤回・置換を中東指導者との協議に基づく決定と記録しており、この因果関係を支えていない。文中の価格の一時的な縮小・回復と同日性は記録されている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "sources": [
+              "model_r3"
+            ]
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "T": "MATCH",
+          "S4.1": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S7.4": "MATCH",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S3.3": "UNMENTIONED",
+          "S4.2": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "H2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5v",
+            "cost_jpy": 0.2226,
+            "usage": {
+              "input_tokens": 5080,
+              "cached_input_tokens": 0,
+              "output_tokens": 1822,
+              "reasoning_tokens": 429
+            },
+            "elapsed_seconds": 12.634,
+            "prompt_sha256": "806e8e7ed74c1ddab787df85335f3f169ff1e215dc90d5387c250d606cd70e6d",
+            "reasoning_effort": "low",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "verify_supported",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": [
+          "H2",
+          "S1.1",
+          "S1.2",
+          "S2.1",
+          "S2.2",
+          "S2.3",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S4.1",
+          "S4.2",
+          "S5.1",
+          "S5.2",
+          "S5.3",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S7.1",
+          "S7.2",
+          "S7.3",
+          "S7.4",
+          "T"
+        ],
+        "n_r5v_targets": 22,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "H1",
+        "L1",
+        "S1.3",
+        "S1.4",
+        "S3.3",
+        "S6.1"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Act Two brought an unexpected turn.",
+        "span": [
+          124,
+          159
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "置換という転換は記録されているが、それが「unexpected（予想外）」だったという情報はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "Act Two brought an unexpected turn."
+        ]
+      },
+      {
+        "claim_text": "Act Three was an unexpected move in oil prices.",
+        "span": [
+          160,
+          207
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "原油価格の値動きは記録されているが、それが「unexpected（予想外）」だったという情報はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Act Three was an unexpected move in oil prices."
+        ]
+      },
+      {
+        "claim_text": "For the moment, only a large number stood at center stage.",
+        "span": [
+          566,
+          624
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "### The 20% plan changes overnight",
+        "span": [
+          712,
+          746
+        ],
+        "unit_ids": [
+          "H1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "提案は7月13日午前、置換発表は7月14日午前で、約24時間48分後と記録されている。「overnight」はその間に一晩で変化したという時期を付加しており、記録された時刻と合致しない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "### The 20% plan changes overnight"
+        ]
+      },
+      {
+        "claim_text": "The change was sudden.",
+        "span": [
+          1020,
+          1042
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "置換が翌日に発表されたことは支えられるが、変化を「sudden」と評価する情報はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "The change was sudden."
+        ]
+      },
+      {
+        "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+        "span": [
+          1700,
+          1972
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「so」が、米・イラン間の攻撃、封鎖、タンカー安全への懸念が続いたことを、20％案が退場した原因として結び付けている。Ledgerは撤回・置換を中東指導者との協議に基づく決定と記録しており、この因果関係を支えていない。文中の価格の一時的な縮小・回復と同日性は記録されている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+        ]
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 5,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 0.9292,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "bgroup_B3_s2_stage1_r5v",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.2226,
+      "usage": {
+        "input_tokens": 5080,
+        "cached_input_tokens": 0,
+        "output_tokens": 1822,
+        "reasoning_tokens": 429
+      },
+      "elapsed_seconds": 12.634,
+      "prompt_sha256": "806e8e7ed74c1ddab787df85335f3f169ff1e215dc90d5387c250d606cd70e6d",
+      "reasoning_effort": "low"
+    }
+  ],
+  "total_cost_jpy": 0.2226
+}

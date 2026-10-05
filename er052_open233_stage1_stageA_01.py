@@ -56,7 +56,33 @@ def plan_g_arm() -> list:
     return out
 
 
-PLANS = {"stageA": plan, "g_arm": plan_g_arm}
+def plan_cap() -> list:
+    """委任_13 Step 1b(r5-V検出能力テスト用): SC 6x3 + hold-out 9x1 = 27 run(NORMALなし)。"""
+    out = [(1, i) for i in SC_IDS + HOLDOUT_IDS]
+    for smp in (2, 3):
+        out += [(smp, i) for i in SC_IDS]
+    return out
+
+
+PLANS = {"stageA": plan, "g_arm": plan_g_arm, "cap": plan_cap}
+
+# ---- 委任_13 Step 1b: Trial専用・測定用。r5-Vの検出「能力」を測るため、gold単位を強制的に検証対象へ加える ----
+# SC instance: Safety-critical定義(BLOCKING)に一致する単位を追加。hold-out(gold単位定義なし): 判定対象の全単位を追加。
+# 量産経路・通常のTrial経路では使わない(既定=無効、--r5v-force-targets goldを付けたときだけ有効)。
+CURRENT_IID = None
+
+
+def force_gold_targets(units: list, targets: list) -> list:
+    iid = CURRENT_IID
+    ids = {u["id"] for u in targets}
+    if iid in SC_IDS:
+        defs = runner._safety_critical_defs(iid)
+        for u in units:
+            if u["type"] != "paragraph" and u.get("judged") and any(claim_matches_def(d, cov.unit_claim_text(u)) for d in defs):
+                ids.add(u["id"])
+    elif iid in HOLDOUT_IDS:
+        ids |= {u["id"] for u in units if u["type"] != "paragraph" and u.get("judged")}
+    return [u for u in units if u["id"] in ids]
 
 
 # ---- 費用概算(¥0): 入力トークン=prompt文字数x0.66(rep30のV4A Stage 1実測 6,719token/10,188字から較正)、出力=推論+可視出力の仮定 ----
@@ -123,7 +149,10 @@ def estimate_cost_v2(instances: dict, plan_rows: list, r5_mode: str, r3_eff: str
             if r3st is None:  # 代理が無い場合は全単位を対象とする(上側見積)
                 targets = [u for u in sp["units"] if u["type"] != "paragraph"]
             else:
+                global CURRENT_IID
+                CURRENT_IID = iid
                 targets = cov.r5v_target_units(sp["units"], r3st.get("unit_status") or r3st.get("status") or {})
+                targets = cov._r5v_force_hook(sp["units"], targets)
             p5 = len(cov.build_r5v_prompt(fx["ledger_text"], fx["article_text"], targets, list(blocks)))
             vis5 = nf * 35 + int(len(targets) * 0.8 * 90)
             n_targets = len(targets)
@@ -187,6 +216,8 @@ def run_main(budget_jpy: float, out_dir: str | None = None, plan_name: str = "st
             print(f"[skip existing] s{sample}/{iid}")
             continue
         call_log: list = []
+        global CURRENT_IID
+        CURRENT_IID = iid
         try:
             pre = load_stored_r3(reuse_r3_dir, sample, iid) if reuse_r3_dir else None
             if reuse_r3_dir and pre is None:
@@ -246,6 +277,12 @@ def route_cands(run: dict, route: str) -> list:
     return (run["audit"]["per_route"].get(route) or {}).get("candidates", [])
 
 
+def is_model_cand(c: dict) -> bool:
+    """委任_13: M判定は`source_of`の定義(model_r3/model_r5=sub_reasonsが'model'または'unknown_unit_id')に合わせる。
+    従来の`"model" in sub_reasons`は、モデルが単位IDを`[S2.1]`のように角括弧付きで返した(unit_id不明=orphan候補)検出をMから落としていた。"""
+    return any(str(x).startswith("model_") for x in (c.get("sources") or [])) or "model" in (c.get("sub_reasons") or [])
+
+
 def aggregate(runs: list) -> dict:
     by_inst: dict = {}
     for r in runs:
@@ -257,10 +294,12 @@ def aggregate(runs: list) -> dict:
             rs = by_inst.get(iid, [])
             hit = {k: [any(claim_matches_def(d, c["claim_text"]) for c in route_cands(r, k)) for r in rs]
                    for k in ("r3", "r5", "union")}
-            genuine = [any(claim_matches_def(d, c["claim_text"]) and "model" in c["sub_reasons"]
+            genuine = [any(claim_matches_def(d, c["claim_text"]) and is_model_cand(c)
                            for c in route_cands(r, "union")) for r in rs]
+            m_idvalid = {k: [any(claim_matches_def(d, c["claim_text"]) and "model" in c["sub_reasons"]
+                                 for c in route_cands(r, k)) for r in rs] for k in ("r3", "r5")}
             # 委任_11 M/D区分: 経路別のモデル判定(M)検出。Safety合否・effort採否はMだけで数える(決定論Dを入れない)。
-            m_route = {k: [any(claim_matches_def(d, c["claim_text"]) and "model" in c["sub_reasons"]
+            m_route = {k: [any(claim_matches_def(d, c["claim_text"]) and is_model_cand(c)
                                for c in route_cands(r, k)) for r in rs] for k in ("r3", "r5")}
             for a, b in zip(hit["r3"], hit["r5"]):
                 corr[f"r3_{'hit' if a else 'miss'}_r5_{'hit' if b else 'miss'}"] += 1
@@ -268,7 +307,9 @@ def aggregate(runs: list) -> dict:
                          **{f"{k}_detected": f"{sum(v)}/{len(rs)}" for k, v in hit.items()},
                          "union_detected_by_model_judgement": f"{sum(genuine)}/{len(rs)}",
                          "r3_detected_M": f"{sum(m_route['r3'])}/{len(rs)}", "r5_detected_M": f"{sum(m_route['r5'])}/{len(rs)}",
-                         "union_detected_M": f"{sum(genuine)}/{len(rs)}"})
+                         "union_detected_M": f"{sum(genuine)}/{len(rs)}",
+                         "r3_detected_M_idvalid_only": f"{sum(m_idvalid['r3'])}/{len(rs)}",
+                         "r5_detected_M_idvalid_only": f"{sum(m_idvalid['r5'])}/{len(rs)}"})
     hold = {iid: [r["audit"]["n_union_candidates"] for r in by_inst.get(iid, [])] for iid in HOLDOUT_IDS}
     hold_miss = [i for i, v in hold.items() if v and min(v) == 0]
     def mean_cands(ids, k):
@@ -289,7 +330,7 @@ def aggregate(runs: list) -> dict:
     total = round(sum(r["total_cost_jpy"] for r in runs), 4)
     sc_ok = all(g["union_detected"].split("/")[0] == g["union_detected"].split("/")[1] == "3" for g in gold) if gold else False
     sc_m_ok = all(g["union_detected_M"].split("/")[0] == g["union_detected_M"].split("/")[1] == "3" for g in gold) if gold else False
-    hold_m = {iid: [sum(1 for c in r["audit"]["union_candidates"] if "model" in c["sub_reasons"]) for r in by_inst.get(iid, [])]
+    hold_m = {iid: [sum(1 for c in r["audit"]["union_candidates"] if is_model_cand(c)) for r in by_inst.get(iid, [])]
               for iid in HOLDOUT_IDS}
     hold_m_miss = [i for i, v in hold_m.items() if v and min(v) == 0]
     cost_runs = sorted(((r["total_cost_jpy"], r["sample"], r["instance_id"]) for r in runs), reverse=True)
@@ -341,10 +382,14 @@ def main() -> None:
     ap.add_argument("--plan", choices=list(PLANS), default="stageA", help="stageA(従来)/g_arm(SC 6x3+hold-out 9+NORMAL 6=33 run)")
     ap.add_argument("--out-dir", default=None, help="run/aggの出力先(既定は従来のOUT_DIR_A。新規置き場は作らず既存er052_output配下を指定)")
     ap.add_argument("--reuse-r3-from", default=None, help="保存済みr3出力(<dir>/runs/s*/<iid>.json)を再利用しr3を再実行しない(r5-V用)")
+    ap.add_argument("--r5v-force-targets", choices=["gold"], default=None,
+                    help="Trial専用・測定用(Step 1b): r5-Vの検出能力を測るためgold単位(SC=定義一致、hold-out=全判定単位)を強制的に検証対象へ加える")
     ap.add_argument("--estimate-out", default=None, help="estimateの出力json(未指定かつ従来設定ならOUT_DIR_A/cost_estimate.json)")
     args = ap.parse_args()
     global NORMAL_N
     NORMAL_N = args.normal_n
+    if args.r5v_force_targets == "gold":
+        cov.R5V_FORCE_TARGETS_FN = force_gold_targets
     if args.stage == "agg":
         run_agg(args.out_dir)
         return

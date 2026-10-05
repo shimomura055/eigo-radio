@@ -1,0 +1,1365 @@
+{
+  "sample": 1,
+  "instance_id": "neg2_meta_refresh_a2",
+  "group": "negative",
+  "switches": {
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "MODEL": "gpt-6-luna",
+    "TOTAL_BUDGET_JPY": 15.0,
+    "STAGE1_R5_MODE": "verify_supported",
+    "STAGE1_R3_REASONING": "high",
+    "STAGE1_R5_REASONING": "medium",
+    "STAGE1_NEGATION_MODE": "a",
+    "REUSE_R3_DIR": "er052_output/open233_stage1_stageA_01"
+  },
+  "api_failure": false,
+  "audit": {
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "verify_supported",
+    "r3_reused": true,
+    "n_units": 43,
+    "n_judged_units": 33,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S2.4",
+          "S4.1",
+          "S4.2",
+          "S5.1",
+          "S5.3",
+          "S5.4",
+          "S5.5",
+          "S7.2",
+          "S7.4",
+          "S9.1",
+          "S9.2",
+          "S9.3",
+          "S9.4"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "SUPPORTED",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S5.5": "CANDIDATE",
+          "S5.6": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S7.4": "CANDIDATE",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.8965,
+            "usage": {
+              "input_tokens": 5212,
+              "cached_input_tokens": 0,
+              "output_tokens": 10387,
+              "reasoning_tokens": 4980
+            },
+            "elapsed_seconds": 72.879,
+            "prompt_sha256": "59d7bc6acda73cd76b53759babcde34d3296dd153f885d00e2665309e668f34a",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": true,
+        "r5_mode": null,
+        "model_verdict": null,
+        "negation_reapplied": {
+          "mode": "a",
+          "restored_to_supported": [
+            "S1.4",
+            "S3.1",
+            "S3.2",
+            "S5.2",
+            "S6.1",
+            "S6.2",
+            "S6.3",
+            "S8.1"
+          ],
+          "n_restored": 8
+        },
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "There was a small twist.",
+            "span": [
+              52,
+              76
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "「small twist」という評価的な表現はLedgerで裏付けられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "There was a small twist.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S2.4",
+            "unit_ids": [
+              "S2.4"
+            ],
+            "claim_text": "If AI can handle difficult phone calls, it seems very useful.",
+            "span": [
+              391,
+              452
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "AIが「difficult phone calls」を扱えるという能力や、有用性の評価はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-004"
+            ],
+            "model_claim": "If AI can handle difficult phone calls, it seems very useful.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The problem was not that humans made the calls.",
+            "span": [
+              612,
+              659
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "人間が電話をかけたこと自体は問題ではなかった、という評価はLedgerに述べられていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "The problem was not that humans made the calls.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "The problem was how users were told who was speaking.",
+            "span": [
+              660,
+              713
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerは適切な開示がなかったことを記すが、誰に何を伝えるかという「users」への説明や、誰が話しているかの説明が問題だったとは特定していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The problem was how users were told who was speaking.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "People who asked Muse to make a call might think AI was doing it.",
+            "span": [
+              715,
+              780
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ユーザーがAIによる通話だと思った可能性や期待について、Ledgerは述べていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "People who asked Muse to make a call might think AI was doing it.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "If this was not explained clearly, users could not know if it was AI or a person.",
+            "span": [
+              826,
+              907
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "説明されなければユーザーがAIか人間かを知ることができなかった、という因果関係とユーザーの知識状態はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "If this was not explained clearly, users could not know if it was AI or a person.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "They enjoyed the ease of AI.",
+            "span": [
+              908,
+              936
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ユーザーがAIの手軽さを享受したという記述はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "They enjoyed the ease of AI.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S5.5",
+            "unit_ids": [
+              "S5.5"
+            ],
+            "claim_text": "But they did not know that a human was on the other end.",
+            "span": [
+              937,
+              993
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "ユーザーが人間が通話相手だと知らなかったという知識状態はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "But they did not know that a human was on the other end.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+            "span": [
+              1297,
+              1413
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Ledgerが述べるのは報道で紹介された個別の従業員報告1件だが、記事は「calls」と複数形にし、対象の契約スタッフを一般化している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-011"
+            ],
+            "model_claim": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "It would be wrong to say this about all contract workers.",
+            "span": [
+              1448,
+              1505
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "全契約スタッフについて一般化すべきでないという規範的結論はLedgerの検証済み事実本文に直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-011"
+            ],
+            "model_claim": "It would be wrong to say this about all contract workers.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "The real challenge for AI phone calls is not only how they speak.",
+            "span": [
+              1700,
+              1765
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "AI電話全般にとっての「real challenge」が話し方だけではないという評価はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The real challenge for AI phone calls is not only how they speak.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "It is also whether they can honestly tell people who is on the other end.",
+            "span": [
+              1766,
+              1839
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "AI電話が相手に通話相手の正体を正直に伝えられるかという能力・一般的課題は、Ledgerの開示不足という個別テストの記述を超える。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "It is also whether they can honestly tell people who is on the other end.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "The more useful a service is, the less it should hide the people working behind the scenes.",
+            "span": [
+              1840,
+              1931
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "サービスの有用性が高いほど裏方の人々を隠すべきでないという比較・規範関係はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The more useful a service is, the less it should hide the people working behind the scenes.",
+            "sources": [
+              "model_r3"
+            ]
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "The Muse case showed this simple but important point.",
+            "span": [
+              1932,
+              1985
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "issues": [
+              "Museの事例が記事の規範的な「simple but important point」を示したという評価は、Ledgerに直接記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "The Muse case showed this simple but important point.",
+            "sources": [
+              "model_r3"
+            ]
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S1.2": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "T": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S5.2": "MATCH",
+          "S5.6": "MATCH",
+          "L1": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "S7.1": "MATCH",
+          "S7.3": "MATCH",
+          "S8.1": "MATCH",
+          "S8.2": "MATCH"
+        },
+        "calls": [
+          {
+            "label": "r5v",
+            "cost_jpy": 0.4527,
+            "usage": {
+              "input_tokens": 5040,
+              "cached_input_tokens": 0,
+              "output_tokens": 4763,
+              "reasoning_tokens": 2985
+            },
+            "elapsed_seconds": 39.556,
+            "prompt_sha256": "cde2065169dfe8e2093604664f184bb2cc7438198af75539174e9da8285d4bad",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "verify_supported",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": [
+          "L1",
+          "S1.2",
+          "S1.3",
+          "S1.4",
+          "S2.1",
+          "S2.2",
+          "S2.3",
+          "S3.1",
+          "S3.2",
+          "S5.2",
+          "S5.6",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S7.1",
+          "S7.3",
+          "S8.1",
+          "S8.2",
+          "T"
+        ],
+        "n_r5v_targets": 19,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "S1.1",
+        "S2.4",
+        "S4.1",
+        "S4.2",
+        "S5.1",
+        "S5.3",
+        "S5.4",
+        "S5.5",
+        "S7.2",
+        "S7.4",
+        "S9.1",
+        "S9.2",
+        "S9.3",
+        "S9.4"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 0
+    },
+    "union_candidates": [
+      {
+        "claim_text": "There was a small twist.",
+        "span": [
+          52,
+          76
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「small twist」という評価的な表現はLedgerで裏付けられていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "There was a small twist."
+        ]
+      },
+      {
+        "claim_text": "If AI can handle difficult phone calls, it seems very useful.",
+        "span": [
+          391,
+          452
+        ],
+        "unit_ids": [
+          "S2.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "AIが「difficult phone calls」を扱えるという能力や、有用性の評価はLedgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-004"
+        ],
+        "model_claims": [
+          "If AI can handle difficult phone calls, it seems very useful."
+        ]
+      },
+      {
+        "claim_text": "The problem was not that humans made the calls.",
+        "span": [
+          612,
+          659
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "人間が電話をかけたこと自体は問題ではなかった、という評価はLedgerに述べられていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "The problem was not that humans made the calls."
+        ]
+      },
+      {
+        "claim_text": "The problem was how users were told who was speaking.",
+        "span": [
+          660,
+          713
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerは適切な開示がなかったことを記すが、誰に何を伝えるかという「users」への説明や、誰が話しているかの説明が問題だったとは特定していない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "The problem was how users were told who was speaking."
+        ]
+      },
+      {
+        "claim_text": "People who asked Muse to make a call might think AI was doing it.",
+        "span": [
+          715,
+          780
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "ユーザーがAIによる通話だと思った可能性や期待について、Ledgerは述べていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "People who asked Muse to make a call might think AI was doing it."
+        ]
+      },
+      {
+        "claim_text": "If this was not explained clearly, users could not know if it was AI or a person.",
+        "span": [
+          826,
+          907
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "説明されなければユーザーがAIか人間かを知ることができなかった、という因果関係とユーザーの知識状態はLedgerに明記されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "If this was not explained clearly, users could not know if it was AI or a person."
+        ]
+      },
+      {
+        "claim_text": "They enjoyed the ease of AI.",
+        "span": [
+          908,
+          936
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "ユーザーがAIの手軽さを享受したという記述はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [],
+        "model_claims": [
+          "They enjoyed the ease of AI."
+        ]
+      },
+      {
+        "claim_text": "But they did not know that a human was on the other end.",
+        "span": [
+          937,
+          993
+        ],
+        "unit_ids": [
+          "S5.5"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "ユーザーが人間が通話相手だと知らなかったという知識状態はLedgerに明記されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "But they did not know that a human was on the other end."
+        ]
+      },
+      {
+        "claim_text": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+        "span": [
+          1297,
+          1413
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerが述べるのは報道で紹介された個別の従業員報告1件だが、記事は「calls」と複数形にし、対象の契約スタッフを一般化している。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-011"
+        ],
+        "model_claims": [
+          "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees."
+        ]
+      },
+      {
+        "claim_text": "It would be wrong to say this about all contract workers.",
+        "span": [
+          1448,
+          1505
+        ],
+        "unit_ids": [
+          "S7.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "全契約スタッフについて一般化すべきでないという規範的結論はLedgerの検証済み事実本文に直接記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-011"
+        ],
+        "model_claims": [
+          "It would be wrong to say this about all contract workers."
+        ]
+      },
+      {
+        "claim_text": "The real challenge for AI phone calls is not only how they speak.",
+        "span": [
+          1700,
+          1765
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "AI電話全般にとっての「real challenge」が話し方だけではないという評価はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "The real challenge for AI phone calls is not only how they speak."
+        ]
+      },
+      {
+        "claim_text": "It is also whether they can honestly tell people who is on the other end.",
+        "span": [
+          1766,
+          1839
+        ],
+        "unit_ids": [
+          "S9.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "AI電話が相手に通話相手の正体を正直に伝えられるかという能力・一般的課題は、Ledgerの開示不足という個別テストの記述を超える。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "It is also whether they can honestly tell people who is on the other end."
+        ]
+      },
+      {
+        "claim_text": "The more useful a service is, the less it should hide the people working behind the scenes.",
+        "span": [
+          1840,
+          1931
+        ],
+        "unit_ids": [
+          "S9.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "サービスの有用性が高いほど裏方の人々を隠すべきでないという比較・規範関係はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "The more useful a service is, the less it should hide the people working behind the scenes."
+        ]
+      },
+      {
+        "claim_text": "The Muse case showed this simple but important point.",
+        "span": [
+          1932,
+          1985
+        ],
+        "unit_ids": [
+          "S9.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Museの事例が記事の規範的な「simple but important point」を示したという評価は、Ledgerに直接記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "The Muse case showed this simple but important point."
+        ]
+      }
+    ],
+    "n_union_candidates": 14,
+    "n_model_candidates": 14,
+    "n_deterministic_only_candidates": 0,
+    "total_cost_jpy": 1.3492,
+    "n_calls": 2
+  },
+  "call_log": [
+    {
+      "label": "neg2_meta_refresh_a2_s1_stage1_r5v",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4527,
+      "usage": {
+        "input_tokens": 5040,
+        "cached_input_tokens": 0,
+        "output_tokens": 4763,
+        "reasoning_tokens": 2985
+      },
+      "elapsed_seconds": 39.556,
+      "prompt_sha256": "cde2065169dfe8e2093604664f184bb2cc7438198af75539174e9da8285d4bad",
+      "reasoning_effort": "medium"
+    }
+  ],
+  "total_cost_jpy": 0.4527
+}

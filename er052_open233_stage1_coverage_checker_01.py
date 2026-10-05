@@ -379,13 +379,32 @@ def build_r5_prompt(ledger_text: str, units: list, fact_ids: list) -> str:
         fact_ids=", ".join(fact_ids), flag_descriptions=FLAG_DESCRIPTIONS)
 
 
-def r5v_target_units(units: list, r3_status: dict) -> list:
-    """r5-Vの検証対象=r3の最終状態がSUPPORTEDの文・見出し・タイトル単位+関係単位(r3の状態は問わない)。r3の引用・判定は含めない。"""
+def r3_model_supported(status_str) -> bool:
+    """r3の**モデル判定**(決定論検査D適用前)がSUPPORTEDだった単位か。status文字列から復元する(委任_13)。
+    SUPPORTED / SUPPORTED->CANDIDATE(D理由 or group_inconsistent)はモデルがSUPPORTEDと判定した単位。
+    duplicate_conflict(モデル判定が矛盾)・CANDIDATE・coverage_gap欠落は含めない。"""
+    s = status_str or ""
+    return s == "SUPPORTED" or (s.startswith("SUPPORTED->CANDIDATE(") and "duplicate_conflict" not in s)
+
+
+def r5v_target_units(units: list, r3_status: dict, model_verdict: dict | None = None) -> list:
+    """r5-Vの検証対象(委任_13是正、Opus#17設計意図)=r3の**モデル判定**がSUPPORTEDの文・見出し・タイトル単位(決定論検査D適用前)+関係単位。
+    Dで`SUPPORTED->CANDIDATE`に変えられた単位も含む。r3がCANDIDATEにした単位は含めない。r3の引用・判定は含めない。
+    model_verdict(uid->SUPPORTED/CANDIDATE/CONFLICT/MISSING)があればそれを優先し、無ければstatus文字列から復元する。"""
     out = []
     for u in units:
         if u["type"] == "paragraph":
             continue
-        if u["type"] == "relation" or (u.get("judged") and (r3_status or {}).get(u["id"]) == "SUPPORTED"):
+        if u["type"] == "relation":
+            out.append(u)
+            continue
+        if not u.get("judged"):
+            continue
+        if model_verdict and u["id"] in model_verdict:
+            ok = model_verdict[u["id"]] == "SUPPORTED"
+        else:
+            ok = r3_model_supported((r3_status or {}).get(u["id"]))
+        if ok:
             out.append(u)
     return out
 
@@ -582,22 +601,31 @@ def _orphan_candidate(route: str, item: dict, article_text: str) -> dict | None:
             "model_claim": claim}
 
 
+def _norm_uid(x):
+    """モデルが単位IDを`[S2.1]`のように角括弧付きで返すことがある(委任_13で実測)ため、前後の角括弧・空白を除いて照合する。"""
+    if not isinstance(x, str):
+        return x
+    t = x.strip()
+    return t[1:-1].strip() if len(t) >= 2 and t[0] == "[" and t[-1] == "]" else t
+
+
 def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id: dict, article_text: str,
                 negation_mode: str = "legacy") -> dict:
     """3'-Rの出力itemsを検査し、単位ごとの状態・候補・欠落IDを返す(LLM非依存・決定論)。"""
     first: dict = {}
     conflicts, unknown = set(), []
     for it in items or []:
-        uid = it.get("unit_id") if isinstance(it, dict) else None
+        uid = _norm_uid(it.get("unit_id")) if isinstance(it, dict) else None
         if uid in units_by_id:
             if uid in first and first[uid].get("verdict") != it.get("verdict"):
                 conflicts.add(uid)
             first.setdefault(uid, it)
         else:
             unknown.append(it)
-    status, cands = {}, []
+    status, cands, mverdict = {}, [], {}
     for uid, it in first.items():
         u = units_by_id[uid]
+        mverdict[uid] = "CONFLICT" if uid in conflicts else ("CANDIDATE" if it.get("verdict") == "CANDIDATE" else "SUPPORTED")
         if uid in conflicts:
             status[uid] = "SUPPORTED->CANDIDATE(duplicate_conflict)"
             cands.append(_candidate(u, units_by_id, "r3", "duplicate_conflict", "同一IDに矛盾する判定", _flags_from(it), ""))
@@ -616,7 +644,7 @@ def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id
             else:
                 status[uid] = "SUPPORTED"
     orphans = [c for c in (_orphan_candidate("r3", it, article_text) for it in unknown if it.get("verdict") == "CANDIDATE") if c]
-    return {"status": status, "candidates": cands + orphans,
+    return {"status": status, "candidates": cands + orphans, "model_verdict": mverdict,
             "missing": [i for i in required_ids if i not in first], "unknown_unit_ids": [it.get("unit_id") for it in unknown]}
 
 
@@ -636,6 +664,37 @@ def apply_group_consistency(status: dict, cands: list, groups: list, units_by_id
     return n
 
 
+def reapply_negation_a(pre: dict, units_by_id: dict, blocks_by_id: dict, groups: list) -> dict:
+    """保存済みr3出力に否定検査a案を再適用して最終状態を再計算する(委任_13、交絡除去。モデル判定は不変)。
+    再適用できるのは、D理由が`negation_polarity_mismatch`のみの単位(他のD理由が併存する単位は不変)。
+    近似(確認済み制約): 保存出力にはsupport_fact_idsの全件が無く、候補の`related_fact_ids`先頭1件のfact blockだけで再判定する。
+    group_inconsistentで戻された単位は一旦SUPPORTEDへ戻し、再適用後に`apply_group_consistency`をやり直す。"""
+    status = dict(pre.get("status") or {})
+    cands = [dict(c) for c in pre.get("candidates") or []]
+    drop_ids, changed = set(), []
+    for uid, s in list(status.items()):
+        u = units_by_id.get(uid)
+        if u is None or not s.startswith("SUPPORTED->CANDIDATE("):
+            continue
+        reasons = s[len("SUPPORTED->CANDIDATE("):-1].split(",")
+        if reasons == ["group_inconsistent"]:
+            status[uid] = "SUPPORTED"
+            drop_ids.add(uid)
+        elif reasons == ["negation_polarity_mismatch"]:
+            rel = next((c["related_fact_ids"][0] for c in cands if c.get("unit_id") == uid and c.get("related_fact_ids")), None)
+            blk = [blocks_by_id[rel]] if rel in blocks_by_id else []
+            if blk and not negation_mismatch_a(u, blk):
+                status[uid] = "SUPPORTED"
+                drop_ids.add(uid)
+                changed.append(uid)
+    cands = [c for c in cands if c.get("unit_id") not in drop_ids]
+    n_group = apply_group_consistency(status, cands, groups, units_by_id)
+    out = dict(pre)
+    out.update(status=status, candidates=cands, group_returned=n_group,
+               negation_reapplied={"mode": "a", "restored_to_supported": sorted(changed), "n_restored": len(changed)})
+    return out
+
+
 def evaluate_r5(facts_out: list, units_by_id: dict, fact_ids: list, article_text: str, scope_ids=None) -> dict:
     """5-liteの出力を検査し、単位ごとの状態(DEVIATION/MATCH/UNMENTIONED)・候補を返す。fact未対応は許容。"""
     status, cands, returned, unknown = {}, [], set(), []
@@ -645,7 +704,7 @@ def evaluate_r5(facts_out: list, units_by_id: dict, fact_ids: list, article_text
         fid = f.get("fact_id") or ""
         returned.add(fid)
         for m in f.get("matches") or []:
-            uid = m.get("unit_id")
+            uid = _norm_uid(m.get("unit_id"))
             if uid not in units_by_id:
                 unknown.append(m)
                 continue
@@ -724,24 +783,35 @@ def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
             ev = evaluate_r3(items, units_by_id, required, blocks, fixture["article_text"], negation_mode)
     out["missing_after_rerun"] = list(ev["missing"])
     for uid in ev["missing"]:  # なお欠落 -> 当該単位をCANDIDATE(coverage_gap)としてStage 2へ
+        ev["model_verdict"][uid] = "MISSING"
         ev["status"][uid] = "MISSING->CANDIDATE(coverage_gap)"
         ev["candidates"].append(_candidate(units_by_id[uid], units_by_id, "r3", "coverage_gap",
                                            "3'-Rが当該単位の判定を返さなかった(再実行後も欠落)", {k: False for k in FLAG_KEYS}, ""))
     returned_back = apply_group_consistency(ev["status"], ev["candidates"], split["same_sentence_groups"], units_by_id)
     out.update(status=ev["status"], candidates=ev["candidates"], unknown_unit_ids=ev["unknown_unit_ids"],
-               group_returned=returned_back)
+               group_returned=returned_back, model_verdict=ev["model_verdict"])
     return out
 
 
+# Trial専用・測定用(委任_13 Step 1b): r5-V検出能力テストで、対象に追加する単位を返す関数(units, targets)->targets。
+# 既定None=無効(通常の量産・Trial経路では使わない)。stageAスクリプトの`--r5v-force-targets`だけが設定する。
+R5V_FORCE_TARGETS_FN = None
+
+
+def _r5v_force_hook(units: list, targets: list) -> list:
+    return R5V_FORCE_TARGETS_FN(units, targets) if R5V_FORCE_TARGETS_FN else targets
+
+
 def _run_r5(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, r5_mode: str = "full",
-            r3_status: dict | None = None) -> dict:
+            r3_status: dict | None = None, r3_model_verdict: dict | None = None) -> dict:
     """r5_mode=full: 5-lite(従来、全単位)。verify_supported: r5-V(r3がSUPPORTEDにした単位+関係単位のみ、記事全文は文脈)。"""
     calls: list = []
     fact_ids = list(blocks.keys())
     out = {"route": "r5", "calls": calls, "api_failure": False, "rerun_used": False, "r5_mode": r5_mode}
     scope = None
     if r5_mode == "verify_supported":
-        targets = r5v_target_units(split["units"], r3_status or {})
+        targets = r5v_target_units(split["units"], r3_status or {}, r3_model_verdict)
+        targets = _r5v_force_hook(split["units"], targets)  # Trial専用の測定用フック(既定None=無効)
         scope = {u["id"] for u in targets}
         out["r5v_target_ids"] = sorted(scope)
         out["n_r5v_targets"] = len(targets)
@@ -787,11 +857,14 @@ def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn
         pre["candidates"] = [dict(c, sources=c.get("sources") or [source_of((c.get("routes") or ["r3"])[0], (c.get("sub_reasons") or [""])[0])])
                              for c in pre.get("candidates") or []]
         pre["reused_from_stored"] = True
+        if negation_mode == "a":  # 保存r3が旧否定検査で生成されていても、a案で最終状態を再計算(交絡除去)
+            pre = reapply_negation_a(pre, units_by_id, blocks, split["same_sentence_groups"])
         res["r3"] = pre
     elif routes in ("both", "r3_only"):
         res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode)
     if routes in ("both", "r5_only"):
-        res["r5"] = _run_r5(call_fn, split, fixture, blocks, units_by_id, r5_mode, (res.get("r3") or {}).get("status"))
+        res["r5"] = _run_r5(call_fn, split, fixture, blocks, units_by_id, r5_mode, (res.get("r3") or {}).get("status"),
+                              (res.get("r3") or {}).get("model_verdict"))
     failed = [k for k, v in res.items() if v["api_failure"]]
     pre_union = [c for v in res.values() for c in v["candidates"]]
     merged = union_candidates(pre_union)
@@ -806,6 +879,7 @@ def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn
                           "missing_first": v.get("missing_first"), "missing_after_rerun": v.get("missing_after_rerun"),
                           "group_returned": v.get("group_returned", 0), "facts_missing": v.get("facts_missing"),
                           "reused_from_stored": v.get("reused_from_stored", False), "r5_mode": v.get("r5_mode"),
+                          "model_verdict": v.get("model_verdict"), "negation_reapplied": v.get("negation_reapplied"),
                           "r5v_target_ids": v.get("r5v_target_ids"), "n_r5v_targets": v.get("n_r5v_targets"),
                           "skipped_no_targets": v.get("skipped_no_targets", False),
                           "unknown_unit_ids": v.get("unknown_unit_ids", []),

@@ -696,7 +696,7 @@ class TestR5VerifySupported(unittest.TestCase):
         sp = _split()
         status = {"S1.1": "SUPPORTED", "S1.2": "CANDIDATE", "S2.1": "SUPPORTED", "S2.2": "SUPPORTED->CANDIDATE(quote_missing)", "T": "SUPPORTED"}
         ids = [u["id"] for u in cov.r5v_target_units(sp["units"], status)]
-        self.assertEqual(sorted(i for i in ids if not i.startswith("R:")), ["S1.1", "S2.1", "T"])
+        self.assertEqual(sorted(i for i in ids if not i.startswith("R:")), ["S1.1", "S2.1", "S2.2", "T"])  # 委任_13: D(quote_missing)で戻された単位もモデル判定SUPPORTEDなので対象
         self.assertEqual(sorted(i for i in ids if i.startswith("R:")), sorted(sp["relation_ids"]))
         self.assertNotIn("S1.2", ids)
         self.assertNotIn("P1", ids)
@@ -757,6 +757,101 @@ class TestR5VerifySupported(unittest.TestCase):
         self.assertTrue(res["audit"]["r3_reused"])
         self.assertTrue(res["audit"]["per_route"]["r3"]["reused_from_stored"])
         self.assertTrue(all("sources" in c for c in res["candidates"]))
+
+
+class TestR5VTargetsByModelVerdict(unittest.TestCase):
+    """委任_13: r5-V対象=r3の**モデル判定**SUPPORTED(D適用前)+関係単位。"""
+
+    def test_d_changed_unit_is_target(self):
+        sp = _split()
+        status = {"S1.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)", "S1.2": "CANDIDATE",
+                  "S2.1": "SUPPORTED->CANDIDATE(number_not_in_fact,quote_missing)", "T": "SUPPORTED",
+                  "S2.2": "SUPPORTED->CANDIDATE(group_inconsistent)"}
+        ids = [u["id"] for u in cov.r5v_target_units(sp["units"], status)]
+        for i in ("S1.1", "S2.1", "T", "S2.2"):
+            self.assertIn(i, ids)
+        self.assertNotIn("S1.2", ids)
+
+    def test_relation_units_always_and_r3_candidate_conflict_gap_excluded(self):
+        sp = _split()
+        status = {"S1.1": "CANDIDATE", "S1.2": "SUPPORTED->CANDIDATE(duplicate_conflict)", "S2.1": "MISSING->CANDIDATE(coverage_gap)"}
+        ids = [u["id"] for u in cov.r5v_target_units(sp["units"], status)]
+        self.assertEqual(sorted(ids), sorted(sp["relation_ids"]))
+
+    def test_model_verdict_takes_priority_over_status(self):
+        sp = _split()
+        status = {"S1.1": "SUPPORTED", "S1.2": "CANDIDATE"}
+        mv = {"S1.1": "CANDIDATE", "S1.2": "SUPPORTED"}
+        ids = [u["id"] for u in cov.r5v_target_units(sp["units"], status, mv)]
+        self.assertIn("S1.2", ids)
+        self.assertNotIn("S1.1", ids)
+
+    def test_fresh_r3_records_model_verdict_and_d_changed_unit_reaches_r5v(self):
+        seen = {}
+
+        class Spy(FakeLLM):
+            def __call__(self, label, developer, prompt, schema):
+                seen[label] = prompt
+                return super().__call__(label, developer, prompt, schema)
+        # S2.1は引用不一致でD(quote_not_in_ledger)に戻されるが、モデル判定はSUPPORTED -> r5-V対象
+        def r3(label, ids):
+            return {"unit_verdicts": [_item(i, "SUPPORTED", ids=("HF-002",), quotes=("存在しない引用文です",)) if i == "S2.1"
+                                      else _item(i, "CANDIDATE", issue="x") for i in ids]}
+        res = _run2(Spy(r3_fn=r3), r5_mode="verify_supported")
+        r3r = res["audit"]["per_route"]["r3"]
+        self.assertTrue(r3r["unit_status"]["S2.1"].startswith("SUPPORTED->CANDIDATE("))
+        self.assertEqual(r3r["model_verdict"]["S2.1"], "SUPPORTED")
+        tail = seen["r5v"].split("これらのIDだけをmatchesに使う)】")[1].split("【factID一覧")[0]
+        self.assertIn("[S2.1]", tail)
+
+    def test_reapply_negation_a_restores_and_keeps_model_verdict(self):
+        u = {"id": "X", "type": "sentence", "text": "The plan was not posted.", "claim_text": "The plan was not posted.",
+             "start": 0, "end": 5, "para": "P1", "role": "", "judged": True}
+        u2 = dict(u, id="Y", text="Other.", claim_text="Other.")
+        en = "[VERIFIED] HF-9: The plan was not posted.\n  scope: v"
+        pre = {"status": {"X": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+                          "Y": "SUPPORTED->CANDIDATE(negation_polarity_mismatch,quote_missing)"},
+               "candidates": [{"unit_id": "X", "unit_ids": ["X"], "related_fact_ids": ["HF-9"], "sources": ["deterministic"]},
+                              {"unit_id": "Y", "unit_ids": ["Y"], "related_fact_ids": ["HF-9"], "sources": ["deterministic"]}]}
+        out = cov.reapply_negation_a(pre, {"X": u, "Y": u2}, {"HF-9": en}, [])
+        self.assertEqual(out["status"]["X"], "SUPPORTED")          # 否定案aで復帰
+        self.assertTrue(out["status"]["Y"].startswith("SUPPORTED->CANDIDATE("))  # 他のD理由併存は不変
+        self.assertEqual([c["unit_id"] for c in out["candidates"]], ["Y"])
+        self.assertEqual(out["negation_reapplied"]["restored_to_supported"], ["X"])
+        self.assertTrue(cov.r3_model_supported(out["status"]["Y"]))
+
+    def test_reapply_group_inconsistent_recomputed(self):
+        u = {"id": "A", "type": "sentence", "text": "a", "claim_text": "a", "start": 0, "end": 1, "para": "P1", "role": "", "judged": True}
+        ub = dict(u, id="B")
+        pre = {"status": {"A": "CANDIDATE", "B": "SUPPORTED->CANDIDATE(group_inconsistent)"},
+               "candidates": [{"unit_id": "A", "unit_ids": ["A"], "sources": ["model_r3"]},
+                              {"unit_id": "B", "unit_ids": ["B"], "sources": ["deterministic"]}]}
+        out = cov.reapply_negation_a(pre, {"A": u, "B": ub}, {}, [["A", "B"]])
+        self.assertTrue(out["status"]["B"].startswith("SUPPORTED->CANDIDATE(group_inconsistent"))  # 再適用で戻される
+        self.assertEqual(sorted(c["unit_id"] for c in out["candidates"]), ["A", "B"])
+
+
+class TestBracketedUnitIds(unittest.TestCase):
+    def test_norm_uid(self):
+        self.assertEqual(cov._norm_uid("[S2.1]"), "S2.1")
+        self.assertEqual(cov._norm_uid(" [R:S4.1+S4.2] "), "R:S4.1+S4.2")
+        self.assertEqual(cov._norm_uid("S2.1"), "S2.1")
+        self.assertIsNone(cov._norm_uid(None))
+
+    def test_r5_bracketed_id_is_valid_model_candidate_not_orphan(self):
+        def r5(label, fids):
+            return {"facts": [{"fact_id": "HF-001", "matches": [
+                {"unit_id": "[S1.1]", "verdict": "DEVIATION", "issue": "v", "claim_in_article": "", "flags": ZERO}]}]}
+        res = _run2(FakeLLM(r3_fn=_r3_support_some, r5_fn=r5), r5_mode="verify_supported")
+        r5r = res["audit"]["per_route"]["r5"]
+        self.assertEqual(r5r["unknown_unit_ids"], [])
+        self.assertTrue(any(c["unit_ids"] == ["S1.1"] and "model" in c["sub_reasons"] for c in r5r["candidates"]))
+
+    def test_is_model_cand_includes_orphan_unknown_unit_id(self):
+        import er052_open233_stage1_stageA_01 as A
+        self.assertTrue(A.is_model_cand({"sources": ["model_r5"], "sub_reasons": ["unknown_unit_id"]}))
+        self.assertFalse(A.is_model_cand({"sources": ["deterministic"], "sub_reasons": ["number_not_in_fact"]}))
+        self.assertFalse(A.is_model_cand({"sources": ["coverage_gap"], "sub_reasons": ["coverage_gap"]}))
 
 
 class TestModelDeterministicSplit(unittest.TestCase):

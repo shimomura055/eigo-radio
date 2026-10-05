@@ -27,5 +27,5 @@ T-0 check: .venv\Scripts\python.exe docs\pm\tools\check_delegation_prompt.py --f
 プロセス確認: Get-CimInstance Win32_Process | Where-Object CommandLine -like '*er052_open233_stage1_stageA_01.py*'
 Step 1 見積: python er052_open233_stage1_stageA_01.py --stage estimate --plan stageA --reuse-r3-from er052_output/open233_stage1_stageA_01 --r5-mode verify_supported --r5-reasoning low --negation-mode a --out-dir er052_output/open233_stage1_loop2_r5v_01 --estimate-out er052_output/open233_stage1_loop2_r5v_01/estimate.json
 Step 1 本番: Start-Process python -u er052_open233_stage1_stageA_01.py --stage main --yes-run-paid --plan stageA --reuse-r3-from er052_output/open233_stage1_stageA_01 --r5-mode verify_supported --r5-reasoning low --negation-mode a --out-dir er052_output/open233_stage1_loop2_r5v_01 --budget-jpy 25(stdout/stderr log付き)→ 集計: --stage agg(同引数)
-medium再実行: 同上 --r5-reasoning medium --out-dir er052_output/open233_stage1_loop2_r5v_medium_01(見積→main→agg)
+medium再実行: Step 1本番と同じ引数で --r5-reasoning medium --out-dir er052_output/open233_stage1_loop2_r5v_medium_01(見積→main→agg)
 結果: low M 1/18・medium 0/18・A4-0 0/3 → Step 2未実施(STOP)。費用¥5.741+¥10.187。stageA_01 dirのgit差分: 開始前・終了後とも空。コード変更なし。
