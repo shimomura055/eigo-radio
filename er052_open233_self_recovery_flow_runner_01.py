@@ -5984,6 +5984,60 @@ def structural_ladder_exhausted_verified(rewrite_records: list) -> dict:
     return {"verified": ok, "details": details}
 
 
+def select_last_resort_targets(blocking_claims: list, rewrite_records: list) -> dict:
+    """OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B(実装不具合是正、E2E neg7のRCA): T(最終手段の決定論削除)の対象は、
+    ladderが枯渇したclaim(record単位=index)だけにする。従来はclaim_identity(=fact_id単位)で選んでいたため、同じfact_idの
+    別claim(同cycleで既にRewrite成功済み/carry-forward済み)まで再対象化し、文が既に変わっていて位置特定不能(span_unverified)
+    →`_t_fail`→`blocking_structural_after_ladder`(構造要素でないのに)へ誤写像されていた。LLM callなし。
+    返値: {"indices": T対象のindex(rewrite_recordsとblocking_claimsは同順同数)、"skipped": 除外した同identityのrecord、
+    "aligned": 両listの長さが一致したか}。長さ不一致(想定外)ならidentityで選ぶ従来動作へ戻し`aligned=False`を記録する(fail-closed側)。"""
+    ex_idx = [i for i, r in enumerate(rewrite_records) if r.get("ladder_exhausted_without_full_rewrite")]
+    ex_ids = {rewrite_records[i]["claim_identity"] for i in ex_idx}
+    if len(blocking_claims) != len(rewrite_records):
+        idx = [i for i, c in enumerate(blocking_claims) if claim_identity(c["dev"]) in ex_ids]
+        return {"indices": idx, "skipped": [], "aligned": False}
+    skipped = []
+    for i, r in enumerate(rewrite_records):
+        if i in ex_idx or r.get("claim_identity") not in ex_ids:
+            continue
+        done = bool(r.get("guard_ok")) or str(r.get("method") or "").startswith("covered_by_earlier_rewrite")
+        skipped.append({"index": i, "claim_identity": r.get("claim_identity"), "method": r.get("method"),
+                        "t_skipped_reason": "already_rewritten_in_cycle" if done else "not_ladder_exhausted"})
+    return {"indices": ex_idx, "skipped": skipped, "aligned": True}
+
+
+def classify_last_resort_failures(t_claims: list, t_records: list, pre_t_records: list,
+                                  en_before: str, ja_before: str | None, en_now: str, ja_now: str | None) -> list:
+    """同委任_B: T(最終手段)で`guard_ok=False`だったrecordを、Human Reviewへ送る前に分類する(名前の洗い替え防止、LLM callなし)。
+    - `covered_by_earlier_rewrite`: 位置特定不能だが、cycle開始時点の本文では確定でき、その範囲が同cycleで成功した先行Rewriteの置換単位に
+      全て含まれる(=対象は既に書き換え済みで本文に無い)。解消扱い(解消の判定は従来どおり全文Recheck)。
+    - `unlocatable_not_covered`: 位置特定不能で、先行Rewriteにも含まれない(本文に残っている可能性がある=fail-closed)。非構造の位置特定失敗。
+    - `located_guard_failed`: 位置は特定できたがT削除のguardに失敗(本文に残る未解消claim=fail-closed、従来どおり)。
+    返値: failedなrecordだけのlist(t_recordsのindex・kind・構造検証付き)。"""
+    units = []
+    for r in pre_t_records or []:
+        units.extend(collect_replaced_units(r, r.get("claim_identity", "")))
+    out = []
+    for i, r in enumerate(t_records):
+        if r.get("guard_ok"):
+            continue
+        c = t_claims[i]
+        if r.get("target_not_locatable"):
+            kind = "unlocatable_not_covered"
+            if units:
+                cf = carry_forward_resolution(
+                    {"cycle_replaced_units": units, "cycle_start_en_text": en_before, "cycle_start_ja_text": ja_before,
+                     "cycle_claim_info": {}, "dev": c.get("dev") or {}},
+                    c["claim_text"], en_now, ja_now)
+                if cf is not None and cf["covered"] and not cf["remaining"]:
+                    kind = "covered_by_earlier_rewrite"
+        else:
+            kind = "located_guard_failed"
+        out.append({"index": i, "claim_identity": r.get("claim_identity"), "kind": kind,
+                    "structural_verification": structural_ladder_exhausted_verified([r])})
+    return out
+
+
 def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_prefix, fixture,
                            target_text_field, claim_rec: dict) -> dict:
     """委任_42 仕様(2)〜(6)(9): 確定範囲を対象にした最小修正優先ラダー。
@@ -9019,32 +9073,61 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 cycles_log.append(cycle_record)
                 break
             # T: 枯渇したclaimだけを構造要素以外の決定論削除へ(他のclaimの結果は保持)
-            t_claims = [c for c in blocking_claims if claim_identity(c["dev"]) in _ex_ids]
+            # 委任_B(OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01): 対象はrecord単位(index)で選ぶ。同fact_idで同cycleにRewrite成功済み/
+            # carry-forward済みのclaimは再対象化しない(`t_skipped_reason=already_rewritten_in_cycle`)。
+            _sel = select_last_resort_targets(blocking_claims, rewrite_records)
+            _t_idx = _sel["indices"]
+            t_claims = [blocking_claims[i_] for i_ in _t_idx]
+            cycle_record["t_target_selection"] = {"indices": _t_idx, "skipped": _sel["skipped"], "aligned": _sel["aligned"]}
             for c in t_claims:
                 c["last_resort_delete"] = True
+            _pre_t_records = list(rewrite_records)
             _t_en, _t_ja, t_records, t_pairs = _run_stage3_cycle(
                 t_claims, current_en_text, current_ja_text, base_constraint, label_suffix="_T")
-            _t_fail = [r_ for r_ in t_records if not r_.get("guard_ok")]
-            if _t_fail:
-                d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
-                final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+            # 委任_B: Human Reviewへ送る前に失敗の種類を確認する(本文に残る未解消 / 非構造の位置特定失敗 / 既に書き換え済み)。
+            _t_cls = classify_last_resort_failures(t_claims, t_records, _pre_t_records, en_text_before_rewrite,
+                                                   ja_text_before_rewrite, current_en_text, current_ja_text)
+            cycle_record["last_resort_failure_classification"] = _t_cls
+            _t_covered = {x_["index"] for x_ in _t_cls if x_["kind"] == "covered_by_earlier_rewrite"}
+            for i_ in _t_covered:  # 既に書き換え済み=解消扱い(failとして数えない)。記録は「先行Rewriteで被覆」へ
+                t_records[i_] = dict(t_records[i_], method="covered_by_earlier_rewrite_in_cycle(T)", target_not_locatable=False,
+                                     span_unverified=False, t_covered_by_earlier_rewrite=True)
+            _t_loc_fail = [x_ for x_ in _t_cls if x_["kind"] == "located_guard_failed"]
+            _t_unloc = [x_ for x_ in _t_cls if x_["kind"] == "unlocatable_not_covered"]
+            _t_carry = bool(_t_unloc) and not _t_loc_fail and _newroute and SPAN_FALLBACK_CHAIN
+            if _t_loc_fail or (_t_unloc and not _t_carry):
+                if _t_loc_fail:
+                    # 本文に残る未解消claimでT削除のguardも通らない=最終手段も尽きた(fail-closed、従来どおり)
+                    d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
+                    final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                else:
+                    # 非構造の位置特定失敗を「構造上修正不能」と呼ばない(既存の非構造ラベル。fail-closedのままHuman Reviewへ)
+                    _lbl = "violation_span_unverified" if any(
+                        t_records[x_["index"]].get("span_unverified") for x_ in _t_unloc) else "target_not_locatable"
+                    _allow(_lbl, {"funnel_passed": True}, legacy=_lbl)
+                    final_state, stage4_reason = "STAGE4_ESCALATION", _lbl
                 cycle_record["rewrite_records"] = rewrite_records + t_records
                 cycle_record["ladder_exhausted_claim_ids"] = sorted(_ex_ids)
                 cycle_record["last_resort_delete_failed"] = True
                 cycles_log.append(cycle_record)
                 break
+            if _t_carry:  # 既存のH-1 carry(位置の再取得は全文Recheck、上限後は許可リスト内の理由)へ。新遷移先ではない
+                for x_ in _t_unloc:
+                    carry_new.append({k_: v_ for k_, v_ in t_claims[x_["index"]].items() if k_ != "last_resort_delete"})
+                cycle_record["carry_blocking_unlocatable_ids"] = sorted(
+                    set(cycle_record.get("carry_blocking_unlocatable_ids") or []) | {x_["claim_identity"] for x_ in _t_unloc})
+                cycle_record["last_resort_unlocatable_carried"] = True
             # 削除を現行本文へ反映(_run_stage3_cycleは各claimの結果を連鎖させて返す)
             current_en_text, current_ja_text = _t_en, _t_ja
             t_used = True
             switch_fired["LAST_RESORT_DELETE"] = switch_fired.get("LAST_RESORT_DELETE", 0) + len(t_claims)
             cycle_record["last_resort_delete_applied"] = sorted(_ex_ids)
-            _rec_by = {r_["claim_identity"]: r_ for r_ in t_records}
-            _pair_by = {r_["claim_identity"]: p_ for r_, p_ in zip(t_records, t_pairs)}
+            _t_pos = {i_: k_ for k_, i_ in enumerate(_t_idx)}
             new_records, new_pairs = [], []
-            for r_, p_ in zip(rewrite_records, before_after_pairs):
-                if r_["claim_identity"] in _rec_by:
-                    new_records.append(_rec_by[r_["claim_identity"]])
-                    new_pairs.append(_pair_by[r_["claim_identity"]])
+            for i_, (r_, p_) in enumerate(zip(rewrite_records, before_after_pairs)):
+                if i_ in _t_pos:
+                    new_records.append(t_records[_t_pos[i_]])
+                    new_pairs.append(t_pairs[_t_pos[i_]])
                 else:
                     new_records.append(r_)
                     new_pairs.append(p_)

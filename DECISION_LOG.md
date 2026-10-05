@@ -19928,3 +19928,15 @@ Fable記録(Sonnet転記): 到達最大=VALIDATED。Cost例外は本管理ID限�
 ````
 
 Fable記録(Sonnet転記): 本管理ID枠は¥238+¥35=¥273、1 run停止閾値¥20(ユーザー承認値)。Fable/Workerが独自に過度に厳しい停止条件を追加しない。報告は固定5節順。
+
+## 2026-10-06 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B: T経路の再対象化不具合を並行修正(¥0、Trial runner、Production未反映)
+
+出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01_B.md`。
+
+ユーザー指示の要点: KPI不変、再分類Trial承認(委任_A)、実装不具合は並行修正(新Product判断ではないためユーザー判断待ちにしない)、到達上限VALIDATED、D1(SC)未再開。逐語引用:
+> 一度Rewrite済みの文を、同じ処理内で再び削除対象にしてしまい、既に文が変わっているため位置を見失い、誤ってHuman Reviewへ送る不具合。
+> これは新Product仕様の判断事項ではなく、明確な実装不具合なのでユーザー判断待ちにしない。
+> 同一cycleでRewrite成功済みの対象を、最終削除処理で再対象化しない / Human Reviewへ送る前に、本当に構造上修正不能なのかを確認する / 非構造的な位置特定失敗を「構造上修正不能」と誤分類しない / regression testを追加する / retry / fallback / regenerationでも同種不具合が起きないことを確認する
+> 実装不具合修正は既存仕様への整合修正なので、修正・test・必要な記録まで進めてよい。 / Safety基準をTrial都合で緩和しないこと。
+
+Fable判断: 委任_A(再分類Trial)と委任_B(バグ修正)を並列。Opus独立技術レビューGate(11-3)は非該当(原因が明確な実装不具合、処理構造・責務分担・データの流れ不変、新遷移先なし)。実施: T対象をrecord単位に変更、失敗種別の分類(既存ラベル内)、index差し戻し、regression test 13件(再現FAIL→修正PASS)、回帰857件PASS。到達上限=VALIDATED(Production未反映、`APPROVED_FOR_PRODUCTION`ではない)。Safety基準・Human Review基準は緩和していない。詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§76。
