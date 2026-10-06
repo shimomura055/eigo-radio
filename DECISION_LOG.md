@@ -19951,3 +19951,12 @@ Fable判断(Opus任意レビュー後、委任_B2/B3、2026-10-06): R5-(a)必須
 (2) 結果: NORMAL候補24.2→9.8件/記事、gold 5/6(A4-0 sample3消失=カウンターパート[電話の相手先=企業・店舗 vs 記事のMuseユーザー]取り違えの見逃し)、hold-out 9/9、K19 3/3、HF-011候補なし → **VALIDATED未達**、ユーザー指示(見込みが外れた場合はSTOP)によりSTOP。KPI不変・Checker本体不変・Production未変更。
 (3) Opus任意レビュー後のFable判断: R5-(a)/R2/R1/R5-(b)採用、R2は許可リスト内ラベル+sub_reason、R4観察(上記および REPORT §76-2)。
 (4) ユーザー判断事項(`USER_DECISION_REQUIRED`): 次Trialの可否(問いの精緻化案: 主体・相手先・範囲・限定語の一致確認を明示/1方向でもCANDIDATEなら残す等、再分類約¥10前後)、この設計方向を止めるか、E2E再開(SC 11 run)の可否(バグ修正済み・設計問題②未解決のまま)、STAGE4理由ラベル新設の要否(低優先)。詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md` §76-2/§77。
+
+## 2026-10-06 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02 委任_01: 4点一致確認promptの再分類Trial、見積¥12超でSTOP(実費¥0、Trial、Production未反映)
+
+出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02_01.md`、`docs/pm/reclassify_open233_checker_selectivity_02.md`、REPORT §78。
+
+(1) ユーザー指示要点(逐語引用): 「目的: ...A4-0型の『主体・相手先・対象範囲の取り違え』だけを狙って補強できるかを確認する。」「今回の変更範囲は、再分類用AIの問いの精緻化だけ。」「費用: 今回ユーザー承認済みの想定費用は ¥10〜12。¥12を超える見込みが出た時点でSTOPして報告すること。Claude/Fable判断で予算枠を拡大しない。」「受入条件: 1. A4-0が3/3残存 2. 正式gold 6種類をすべて維持 3. 既存の重大見逃し検証セットを悪化させない 4. 候補数削減効果が大きく失われていない。」「STOP条件: ...¥12超過見込み...」
+(2) 結果: prompt(4点一致)・schema・較正見積器を実装。01実測で較正した見積 mid¥13.8(low¥12.0/high¥16.1)が¥12超のため有料run未実行(実費¥0)。gold/A4-0/候補数は未測定。回帰863件PASS。
+(3) Fable分類待ち: REJECTED/VALIDATED/USER_DECISION_REQUIRED。ユーザー判断事項: 予算枠の扱い(承認済み¥12を超える実行を認めるか)。Production採用ではない。
+

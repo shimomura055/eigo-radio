@@ -4664,3 +4664,13 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - **落ち: A4-0 sample3【確認+Fable確認】** claim「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」をr3/r5ともSUPPORTED(Ledger一致)と判定。Sonnetは限定語"some"と推測したが、**Fable確認によりA4-0 goldの正式な違反内容は「やり取りの相手(カウンターパート)の取り違え」**: Ledger MUSE-HC-006は電話の相手先=企業・店舗、記事は"completed the exchanges with users"(Museのユーザー)。根拠: `er052_open233_self_recovery_stage2_calibration_01.py` L363-368(Ledgerのissue逐語)。新しい問いは主体の取り違えを「Ledger一致」と誤読して候補から外した=**Safety上の本物の見逃し**(主体/固有名のFactリスク)。A4-0は過去にもV2 false downgrade・r5-V 0/3と脆弱。
 - 所見【推測】候補は約6割減るが、主体・相手先の取り違えを含む文のSUPPORTED化はSafetyの穴になる。次Trialがあれば問いの精緻化(主体・相手先・範囲・限定語のLedger一致確認を明示/1方向でもCANDIDATEなら残す等)が検討余地。Checkerのprompt変更は本Trialのscope外で未実施、採否はユーザー判断。
 - Status: `Trial実行済み・VALIDATED未達でSTOP`(`USER_DECISION_REQUIRED`)。Production未変更。
+
+## §78 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02 委任_01(2026-10-06): 4点一致確認prompt Trial(見積¥12超でSTOP、実費¥0、Trial、Production未反映)
+
+- 【確認】`er052_output/open233_reclassify_02/reclassify_candidates_02.py`を01からコピーしprompt・schema(actor/counterpart/scope/qualifier_match追加)・見積較正のみ変更。モデルgpt-6-luna・effort=medium・入力構成は01と同一。
+- 【確認】較正: 01実測(42 call、入力206,966tok/出力91,916tok、reasoning 61,961tok=1,475/call、可視29,955tok=57/claim、入力0.417tok/字)。01見積器の入力0.66tok/字は過大(実0.417)だったため0.42へ修正。reasoningは実測1,475/callを基準。
+- 【確認】較正済み見積 low¥12.00/mid¥13.80/high¥16.08(02の増分仮定: reasoning x1.0/1.2/1.5、可視85/105/125tok/claim。増分は【推測】)。mid>¥12のため委任文のSTOP条件に従い有料runは実行せず(実費¥0)。
+- 【推測】出力にmatch 4項目が増える分、01並み(¥10.46)から+¥1.5〜3.3の増加見込み。reasoning増分が0でも約¥12.3。
+- 回帰確認(¥0): er052回帰863件PASS(runner不変)。gold/A4-0/候補数/hold-outは未測定。
+- Status: USER_DECISION_REQUIRED(予算枠[例¥14〜16]の承認、またはmatch項目の出力簡素化等は仕様変更に当たるためユーザー/Fable判断)。詳細: `docs/pm/reclassify_open233_checker_selectivity_02.md`。
+

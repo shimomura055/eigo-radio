@@ -165,3 +165,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B | T経路再対象化バグ修正+regression test 13件(¥0)、回帰857件PASS、Production未反映。REPORT §76。
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_A/A2 | 再分類Trial(¥10.46): NORMAL候補24.2→9.8、gold 5/6(A4-0 1 sample消失)、VALIDATED未達でSTOP。REPORT §77。
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B3 | Opus任意レビュー反映(R1/R2/R5-a/R5-b)、テスト+6件、回帰863件PASS、¥0。REPORT §76-2。
+- 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02 委任_01 | 問い精緻化(4点一致)再分類Trial: 較正済み見積mid¥13.8>上限¥12のため有料実行せずSTOP(実費¥0)。NORMAL候補・gold・hold-outは未測定。REPORT §78。
