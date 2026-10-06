@@ -19983,3 +19983,24 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 
 (3) Fable判断(2026-10-06、Opus条件Aレビュー後): Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、根本原因=floor側の重大性判定不在)とOpus(根本原因=Stage 1 `changed_*`フラグ生成側のabsence/contra混同、案1/5は正規表現による個別当て込みで過適合、案4は正当2件を失いうる、推奨=RECLASSIFY-02区分のfloor発火条件への流用>cite-to-fire>Stage 1 prompt補正)で重要な結論が対立。(2)Fable検証【確認】: hold-out(rep30、集計md L69)で案1はneg3 gold(時期floor・LLM非BLOCKING)を非強制=見逃し(案1 6/6維持はin-sample限定)/集計scriptの`assign_cause`(L207-215)に原因(iii)分岐がなく(iii)=0は構造的/doc §5のNo.21記述は表(No.23)と不一致。(3)案1〜5・cite-to-fireのいずれも承認済み線引きOPEN-233-A1-PROD(`APPROVED_FOR_PRODUCTION`・未配線、時期のみverify・比較/主体/数字/否定は決定論維持)の変更に当たりユーザー承認事項=ユーザー指定STOP条件「Production仕様変更が必要」に該当。(4)floor側のみの精緻化で正当6件を守りつつ半減する見込みは、in-sampleでは案1/5=14件だがhold-outで1件見逃しのため未確立。Fable評価: Opusの根本原因指摘(フラグ生成側)と順序を妥当と判断し、ユーザーへ提示。Production未変更、有料Trial未実施、gold不変。本エントリは決定ではなく記録(設計案の採否は未決定)。
 (4) ユーザー判断事項: U1 設計方向(Opus代替(1)RECLASSIFY-02区分流用/(2)cite-to-fire/(3)Stage 1 prompt補正/Sonnet案2+5/floor撤廃別設計)、U2 承認済み線引きA1-PROD変更の可否、U3 ¥0段階0(0a〜0d)の実施可否、U4 正当6件・判断不能5件のラベル確認。
+
+## 2026-10-06 OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01 委任_01〜03: ユーザー決定2点(Checker新仕様正式採用/後段機械判定は数字のみ)を APPROVED_FOR_PRODUCTION として記録(PRODUCTION_WIRED未)
+
+出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01_{01,02,03}.md`、計画doc `docs/pm/plan_open233_checker_floor_production_e2e_01.md`。
+(a) Status: **APPROVED_FOR_PRODUCTION(ユーザー決定2026-10-06、2点とも)・PRODUCTION_WIRED未**(E2E・runtime evidence・SSOT確認後にFable/ユーザーが判定。9/20 run時点ではPRODUCTION_WIRED扱いにしない)。決定2点: (1)OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02でVALIDATEDとなったChecker仕様の正式採用、(2)後段の機械判定(floor)を数字のみに縮小。これに伴い旧承認済み線引きOPEN-233-A1-PROD(時期のみverify・比較/主体/数字/否定は決定論維持)は**SUPERSEDED**。OPEN-233-FLOOR-SELECTIVITY-OPTIMIZATION-01のUSER_DECISION_REQUIRED(U1〜U4)は本決定で解消(U1=数字のみ残し他は廃止[案3相当、追加確認トリガーなし]、U2=線引きA1-PROD変更を承認、U3/U4は本E2Eの事後評価で代替)。RECLASSIFY-02のU1(次工程)も本決定で解消。
+
+(b) ユーザー指示原文(逐語):
+> 管理ID：OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01
+> 目的: ユーザー承認済みの以下2点をProduction正式経路へ反映し、新仕様で20 run E2Eをやり直す。
+> 1. 今回TrialでVALIDATEDになったChecker仕様を正式採用 - 「Ledgerに書いていない」だけでは候補にしない - Ledgerとの食い違い、具体的新事実の追加を候補とする - 主体・相手先/対象・範囲・限定条件も照合する
+> 2. 後段の機械判定を縮小 - 数字に関する機械判定のみ残す - 主体・否定・比較・時期・因果など、それ以外の「AI判定を強制的に重大へ上書きする機械判定」は廃止する
+> 両方ともユーザー承認済みのため APPROVED_FOR_PRODUCTION。ただし、E2E・runtime evidence・SSOT等まで確認するまでは PRODUCTION_WIRED としない。
+> まず作業開始前に報告すること: 実装・必要test・最初の9 run E2E完了までに必要な時間の見込みを先に報告する。可能なら、実装/test/9 run E2E/集計・報告の大まかな時間内訳も示すこと。その報告後、ユーザーの追加回答を待たず作業を継続してよい。
+> E2Eの進め方: 旧仕様で完了済みの9 runは、新仕様の正式Evidenceには使用しない。新仕様で20 runを最初からやり直す。今回はまず、新仕様 9/20 runまで実行 → 集計 → 報告で一旦区切る。残り11 runは、その9 run報告をユーザーが確認した後に進める。
+> 9 run中のSTOPルール: 品質問題・重大Fact見逃し・Human Reviewが発生しても、そこでSTOPしない。9 runは最後まで走らせ、結果をまとめて報告すること。重要：問題を見つけても、その場で勝手に仕様変更・Prompt変更・追加対策を実装しない/問題を記録したまま、同じ条件で9 runを最後まで完走する/Human Reviewが発生しても同様に完走する。ただし、API障害・実行不能・データ破損など、物理的に9 runを継続できない技術障害だけは例外として報告する。
+> 報告で必ず出す数値: A. Checker(AI判定: 候補にした件数/真に問題があった件数/不要に候補化した件数。機械判定: 同。AI＋機械の関係: AIのみ/機械のみ/両方重複/重複除外前の延べ/重複除外後のChecker総候補)。B. 後段判定(後段AI: 重大/軽微/問題なしの件数、事後評価: 真に重大/不要に重大判定/真に重大なのに軽微・問題なし。後段の機械判定[数字のみ]: 発火/AI判定との重複/真に重大/不要に重大化)。C. Rewrite(発生件数/発生run数/必要/不要/再修正要)。D. Human Review(目標0件、発生時は対象英文/Ledger Fact/Checker AI判定/Checker機械判定/後段AI判定/後段機械判定/Rewrite内容/Recheck結果/直接原因)。E. Safety・Cost(真の重大Fact見逃し/重大Fact検出/1 run費用/合計/平均/Rewrite関連・Checker関連・後段判定関連の費用分離)。
+> Production Wiring確認: 初回Production経路だけでなく、Rewrite後Recheck/retry/fallback/regeneration/最終出口確認でも矛盾がないことを確認する。旧仕様の「数字以外の機械的強制重大化」が後段経路に残っていないことも確認する。必要なRegression/integration testを実施し、runtime evidenceを残す。CURRENT_SPEC/DECISION_LOG/OPEN_ITEMS等は実態に合わせて更新する。ただし、9/20 run時点では全E2E未完了なので、PRODUCTION_WIRED完了扱いにはしない。
+> 9 run終了時: 9 runを最後まで完走したうえで報告する。その報告をもとに、Checker改善が実運用でも機能しているか/後段機械判定を数字だけにしたことでSafetyを損なっていないか/不要Rewriteが十分減ったか/Human Review 0を維持できているか/残り11 runへそのまま進めてよいか、をユーザーと総合レビューする。9 run終了後は残り11 runを勝手に開始せず、報告して待つこと。
+
+(c) Fable判断(2026-10-06、委任_01スコーピング後、ユーザーへ時間見込み報告済み、逐語): (a)`precheck_floor`の数字以外4種(date/actor/negation/comparison marker)はユーザー指示『数字以外の強制重大化は廃止』に含まれると解釈しnumber_mismatchのみ残す。(b)`DISCLOSURE_GAP_DISQUALIFYING_FLAGS`(AI重大判定の降格禁止)はAI判定を重大へ上書きする機構ではないため維持。(c)『Production初回経路』は従来どおりer052 runner(Production候補経路)、量産経路接続(SELF-RECOVERY-PRODUCTION-WIRING-01、配線STOP中)は含まない。(d)E2E停止は技術障害のみ。既承認の1 run上限¥20は暴走guardとして維持(超過runはabort記録して次runへ継続)。Human Review・品質問題・見逃しでは停止しない。(e)Checker新仕様の実装はVALIDATEDと同一処理(Stage 1候補の再分類post-filter)を初回・Recheck・出口の3経路へ配線、r3/r5 prompt不変。数字以外の`changed_*`フラグは生成維持・floor不使用、時期verifyはoff(コード休眠)。(f)9 run費用Guardrail `--budget-jpy 60`(見積low¥30/mid¥39/high¥50)。(g)時間見込み合計約4.5〜6.5時間(Opusレビュー30〜45/実装60〜90/test 40〜60/集計script 30〜40/9 run E2E 55〜75/集計・報告50〜70分)。(h)実装前にOpus条件Aレビュー(計画doc対象)を実施し、Fable照合後に実装へ進む。
+計画doc: `docs/pm/plan_open233_checker_floor_production_e2e_01.md`(変更箇所C1〜C6/F1〜F8、時間4.5〜6.5h、9 run費用¥30〜50)。本エントリは記録のみ(コード・Prompt・CURRENT_SPEC仕様本文は未変更、費用¥0)。

@@ -2370,6 +2370,8 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 **Production配線時の確認**: 本線引き・rubric V7・句読点差対策(`OPEN-233-A1-PROD`)は、Self-Recovery FlowのProduction配線時に`docs/pm/PM_GOVERNANCE.md` 11-3節の条件C(重要変更のProduction採用提案前のOpus独立技術レビュー)で併せて確認する。再較正の不合格(上記A4-1、委任_57で解消済み)が解消されるまで`PRODUCTION_WIRED`としない。古い日本語から英語を再生成するProduction経路(`er012_e_family_entertainment_two_level_runner_01.py`L361・365・403〜404、er019 entertainment runner L358〜397)は、再生成後のChecker(`run_deviation_check`)で必ず再検査されることを接続仕様に明記する(ユーザー決定2026-10-03、英語だけ修正する方針の維持)。
 
+【2026-10-06 ユーザー決定・配線中】floorは数字(changed_number)のみに縮小、Checker新仕様(Ledger食い違い/具体的新事実/4観点照合)を正式採用。APPROVED_FOR_PRODUCTION、PRODUCTION_WIRED未(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)。正式仕様文は配線完了後に更新。
+
 ### OPEN-233 時期の機械判定の追加確認による解放(案1を時期のみへ縮小、2026-10-04ユーザー正式判断[5回目=選択肢3]、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`ではない、委任_60・委任_61)
 
 **Status(委任_61更新)**: 追加確認による解放対象は**時期(`changed_time`)のみ**(2026-10-04ユーザー決定[5回目=選択肢3]、`APPROVED_FOR_PRODUCTION`、`DECISION_LOG.md`末尾エントリ)。**比較・方向(`changed_comparison`)・主体・数値・否定は決定論でBLOCKING維持**(1つでもtrueなら追加確認の対象外、理由コード`out_of_scope_flag:<flag名>`)。`prices began to fall`型の過剰Majorは受容(ユーザー決定)。委任_60の単体確認で方向反転S1が解放されたため、比較・方向は対象から除外した。自己修復機構本体がProduction未接続のため`PRODUCTION_WIRED`ではない。検証用runner(`er052_open233_self_recovery_flow_runner_01.py`)へ実装済み(スイッチ`FLOOR_VERIFY_MODE`既定`off`、CLI`--floor-verify-mode time_only`。旧`comparison_time`は廃止、指定すると`ValueError`)。単体安全確認PASS・V7b再較正PASS(下記)。少数flow確認・29件横断(1回)は次工程(委任_62)で、次Trial(10本)は禁止継続。
