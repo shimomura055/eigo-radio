@@ -5172,3 +5172,54 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §89-7 参照
 - `docs/pm/polysemy_note/A1_notes_delivery_facts.md`、`docs/pm/polysemy_note/A2_trial01_config_freeze.md`、`docs/pm/polysemy_note/A3_polysemy_candidates_and_rules.md`、`docs/pm/polysemy_note/A3_trial_eval_template.md`、`docs/pm/polysemy_note/B_design.md`、`docs/pm/polysemy_note/E_trial_plan.md`、`docs/pm/opus_l2_review_pn_design_01.md`、`er052_output/open233_ledger_polysemy_note_01/phase0/FREEZE_T01_CONFIG.json`。OPEN-237、OF-061。
+
+## §90 OPEN-233-LEDGER-POLYSEMY-NOTE-TRIAL-02/03(自動Note生成の要素評価、2026-10-06)
+
+### §90-1 TRIAL-02要約(OPEN-233-LEDGER-POLYSEMY-NOTE-TRIAL-02)
+- Phase 0完了: 追加3記事=space_weapons(完了/予定・主体)/sewer(対象・方向、誤読実記録あり)/ai_control(原因/結果・時系列)。N+B DEV runner test 9件PASS。固定台帳はControl=既存txtバイトコピー、N+B=notes行のみ追記で5テーマ差分0。
+- 自動notes生成gen1(過剰付与45件)/gen2(付与率20%以下だがhormuz 0件・対象捕捉2/15・HC-012の内容ずれ・字数却下)で承認条件「高確度のみ」不成立。Phase 1未実行。実費¥25.44/上限¥500。Status=USER_DECISION_REQUIRED(TRIAL-03の指示で置換)。
+
+### §90-2 TRIAL-03 Opus設計レビュー要点
+- 主因: 見ている場所が違う(英語原文の多義ではなく、日本語claimのB3圧縮後の逆読み)/判定基準が弱く件数目安に迎合/除外規則と80字制限が正解を消す。
+- 対象factの多くは既存notesが既に警告=真因はB3がnotesを運ばない可能性。推奨B(2段階)>A、Cは対照必須。
+
+### §90-3 3ループ比較表
+| ループ/パターン | 捕捉(of 14) | 付与率 | holdout(small_bag) | 捏造 | 内容一致 | 実費 |
+|---|---|---|---|---|---|---|
+| L1 A | 8 | 41% | 10件NG | 0 | - | L1合計¥75.42 |
+| L1 B | 6 | 22% | 0 | 0 | - | (同上) |
+| L1 C | 9 | 44% | 1 | 5 | - | (同上) |
+| L2 B2(hint) | 10 | 42% | - | 0 | 8/10 | L2合計¥50.70 |
+| L2 B2n | 6 | 39% | - | 0 | 5/6 | (同上) |
+| L3 B3 | 1 | 2.4% | - | - | - | ¥34.01 |
+- L2はH1接頭辞空白・H2自己検証緩和・H3逆命題2列挙・H4合成正例。L3=stage1×2和集合+圧縮判定役high通過+120字。judge閾値をhigh+mediumに緩めた机上試算で捕捉7/14・付与20%。
+- 実費累計¥160.13/上限¥500(TRIAL-02の¥25.44を除くTRIAL-03分。内訳はL1〜L3の合計)。
+
+### §90-4 基準照合とFable判定
+- 成立基準(捕捉9/14以上・付与率25%以下・holdout 1以下・捏造0・内容一致70%以上・迎合なし)を全て満たすパターンなし(B2が5/6で最良、付与率のみNG)。
+- STOP条件「3ループで成立せず」該当。5記事Trial未実施。Status=**USER_DECISION_REQUIRED**。
+- Production変更なし/Trial限定。Production file(er003/B3/JA writer/er019 runner/er052 runner/e2e_run_02)はgit上無変更。残11 run未再開。「良好でもVALIDATED止まり」。
+
+### §90-5 重大発見
+- (a) B2/B3のstage1 promptはL2作成時に新旧本文が連結された欠陥版(【出力】2か所、Fact一覧は末尾のみ)で、H3は実質未検証。L2のB2/B2n比較の結論にも影響しうる。
+- (b) stage1判定のゆらぎ(同一prompt2回のJaccard 0.29〜0.88)。
+- (c) 1.5判定役は弁別力あり(対象のmedium以上58% vs 非対象29%)だが閾値が厳しすぎた。
+- (d) 全ループ未捕捉: EVID-004・CONTROL-001(模擬と実在/時系列型)。
+- (e) 既存notes依存: Aのablationで捕捉8→6(meta/hormuzで消失)。
+
+### §90-6 5記事選定理由(各1行)
+- meta: 既存Trial-01台帳。HC-012「ロールバック」型(完了/予定・方向)の基準例。
+- hormuz: 既存Trial-01台帳。原油価格の途中/最終の取り違え型。
+- space_weapons: 「開発中・評価・発言」と「配備・実施」の差で記事の核が逆転するFactが複数(完了/予定・主体)。
+- sewer: F-011/F-010/F-016の方式転換を既存下水管の浄化槽切替と誤読した実記録あり(対象・方向)。
+- ai_control: 模擬/実在・誘導/自発・当時/現在・停止の一般保証化で逆転するFactが複数(原因/結果・時系列)。
+
+### §90-7 ユーザー判断事項(推奨付き)
+1. 4ループ目を許可するか(欠陥promptの修正+判定役閾値high+medium+圧縮文から限定語除去、約¥40)。
+2. B2(捕捉10/14・付与率42%)のまま5記事Trialへ進み、ノイズ影響込みで伝達・防止を測るか(約¥155)。
+3. **推奨**: 決定論的な「既存notes昇格」(「〜とは書かない/〜ではなく」型の既存禁止文に接頭辞を付けるだけ、LLMなし=捏造0・¥0)+B3転記で5記事Trialを行い、「伝達が真因か」を先に確定する(約¥155)。生成の高度化(1)(2)はその結果を見て判断。
+- いずれも未承認の新仕様候補。
+
+### §90-8 参照
+- `docs/pm/polysemy_trial_02/`、`docs/pm/polysemy_trial_03/`(F0_failure_analysis.md、L1/L2/L3_element_trial_result.md)、`docs/pm/opus_l2_review_pt03_design_01.md`
+- `er052_output/open233_polysemy_trial_02/ledgers/`、`er052_output/open233_polysemy_trial_03/patterns/`、`.../runs/`、`.../eval/`。OPEN-237、OF-062。

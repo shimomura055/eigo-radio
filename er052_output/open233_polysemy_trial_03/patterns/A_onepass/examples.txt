@@ -1,0 +1,14 @@
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"flipped_component":"polarity","compressed_claim":"X市は補助金新設を見送り","reverse_proposition":"X市は補助金制度を廃止した","contradicts_ledger_field":"claim","changes_conclusion":true,"ledger_quote":"補助金制度の新設を見送った","note":"注意(逆転): X市が補助金制度の新設を見送った。制度を廃止した、ではない。"}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"flipped_component":"stage","compressed_claim":"Y社が試作機の評価を開始","reverse_proposition":"Y社は量産機を現場へ配備した","contradicts_ledger_field":"scope","changes_conclusion":true,"ledger_quote":"社内試験場","note":"注意(逆転): Y社が試作機の評価を社内で始めた段階。量産機の配備ではない。"}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"flipped_component":"none","compressed_claim":"新製品は年内発売の可能性","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"flipped_component":"none","compressed_claim":"Z社は来期増収を見込む","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"flipped_component":"none","compressed_claim":"約3割が在宅勤務継続","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)

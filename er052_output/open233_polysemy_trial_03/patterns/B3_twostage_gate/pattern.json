@@ -1,0 +1,25 @@
+{
+ "pattern": "B3_twostage_gate",
+ "mode": "twostage_gate",
+ "max_chars": 120,
+ "self_check_policy": "derivable_only",
+ "stage2_existing_notes": true,
+ "prefix_file": "prefix.txt",
+ "prompt_files": [
+  "stage1_prompt.txt",
+  "stage1_5_prompt.txt",
+  "stage2_prompt.txt"
+ ],
+ "examples_file": "examples.txt",
+ "stage1_output_key": "judgments",
+ "stage2_output_key": "notes",
+ "pass_rule": "stage1をstage1_repeats(2)回実行し、各回でreversible && changes_conclusion=trueかつledger_quoteが台帳に部分一致する先頭Rを採用。reversible通過の和集合(各回のRを両方保持、同一Rは統合)をstage1.5へ。stage1.5は入力=fact_id+compressed_claim+Rのみ(claim全文・scope・notesなし)でlikelihood(high/medium/low)を返し、highのRのみ通過(複数highなら出現順の先頭、mediumはwarningsに記録して落とす、lowは落とす)。stage2: B2と同一(correct_statement_derivable_from_ledger=trueのみ採用、R_is_natural_reading=falseは警告)。接頭辞は空白正規化で比較。予算ガードはper-call(累計<=budget x call数)",
+ "hypothesis": "H5(付与率): 新stage1.5=圧縮判定役。入力はfact_idとcompressed_claim(約30字)と採用Rだけ(claim全文・scope・notesは渡さない=原資料を見ていない圧縮後の読者を模擬)。問い=この圧縮文だけを読んだ記事執筆者がRの意味で書いてしまう見込みは高いか(high/medium/low)と理由1行。通過=highのみ(mediumはwarning記録、lowは落とす)。1 call/台帳。 H6(ゆらぎ): stage1を2回実行しreversible=trueの和集合(Rは各回の採用Rを両方保持、1.5へは両方渡し、いずれかhighなら通過・highのRを採用)をstage1.5へ。 H7(字数): max_chars=120。 変更しないもの: 共通定義(i)〜(iv)、stage2(B2と同じ、既存notesヒントあり、self_check_policy=derivable_only)、テンプレート、examples(B2のもの)。",
+ "hypotheses": {
+  "H5": "付与率: stage1.5圧縮判定役(入力=fact_id+compressed_claim+Rのみ、high/medium/low、通過=highのみ)",
+  "H6": "ゆらぎ: stage1を2回実行しreversible=trueの和集合をstage1.5へ(いずれかhighなら通過)",
+  "H7": "字数: max_chars=120"
+ },
+ "diff_from_other": "B2との差: stage1.5新設、stage1を2回実行(和集合)、max_chars=120。stage1/stage2のprompt・examples・prefixはB2と同一(注記: B2のstage1_prompt.txtはL2時点で新旧2版が連結した状態であり、B3は同一ファイルを継承)",
+ "stage1_repeats": 2
+}

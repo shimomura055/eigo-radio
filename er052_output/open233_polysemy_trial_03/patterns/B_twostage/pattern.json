@@ -1,0 +1,4 @@
+{"pattern":"B_twostage","mode":"twostage","max_chars":100,
+ "prefix_file":"prefix.txt","prompt_files":["stage1_prompt.txt","stage2_prompt.txt"],"examples_file":"examples.txt","stage1_output_key":"judgments","stage1_compat_key":"candidates","stage2_output_key":"notes",
+ "pass_rule":"stage1: reversible && flipped_component != 'none' && contradicts_ledger_field != 'none' && changes_conclusion && ledger_quote が台帳に部分一致(ただしstage1は再現率重視=迷えばreversible=trueで残るため、コード側ではreversible && ledger_quoteが台帳に部分一致のものをstage2へ渡してよい)。stage2: self_check.R_is_natural_reading && self_check.correct_statement_derivable_from_ledger が共にtrueのnoteだけ採用",
+ "hypothesis":"拾いすぎ(判定)と内容ずれ・字数超過(note生成)は別の失敗なので段を分ける。stage1は再現率、stage2は自己検証で精度を担保"}

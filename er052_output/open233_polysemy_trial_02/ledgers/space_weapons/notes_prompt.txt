@@ -1,0 +1,174 @@
+あなたはFact台帳の注意書き(notes)作成担当です。下記のFact一覧について、Writerが原語の多義性を誤読すると事実の方向・状態・主体・対象・時系列・因果等が逆転または重大変質する、高確度のFactにだけ注意書きを1件付けてください。該当しないFactには何も付けず、該当なしなら空配列を返してください。
+
+【規則】
+1. 取り違えると事実が逆・反対になる表現(撤回/復元・状態変化・方向・因果・主体・対象・時系列・完了か予定か)に限り、1 factあたり1件まで付ける。該当しなければ付けない。
+2. 形式「注意(多義): 原語'<英語原表現>'=<原資料が示す意味(何が・何の状態へ)>。<逆の読み>ではない。」
+3. 原資料で確定できない場合は「原資料も曖昧。断定しない」とだけ書く。
+4. 80字以内・改行なし・他フィールドは変えない。
+5. 「高確度」とは、注意深い読者でも現実に採りうる逆の読みが存在し、その読みを採ると事実が逆転または重大変質する場合のみ。単に抽象的・要約的・多義な語があるだけでは対象外。数値の分母、程度、仮定、評価語、hedge表現(may/could/reportedly等)は対象外。
+6. 各候補には、逆の読みを1文で書いた reverse_reading と、重大度 severity(1=軽微〜3=事実が完全に逆転)を必ず付ける。
+7. 該当が無ければ空配列を返す。無理に見つけない。典型的な台帳では0〜3件程度であり、多数付けるのは過剰である。
+
+【検索の制限】
+Web検索は、各Factのsource_url(下記にあるもの)およびverification_notes内に現れるURLの原資料の確認に限定してください。それ以外の探索的検索はしないでください。
+
+【出力】
+JSONのみ。{"notes":[{"fact_id":..,"note":..,"source_quote":..,"source_url":..,"reverse_reading":..,"severity":1〜3の整数}]}。source_quoteは原資料の英語原表現(見つからなければ空文字。その場合noteは「注意(多義): 原資料も曖昧。断定しない。」の形にする)。
+
+【Fact一覧】
+[
+ {
+  "fact_id": "F-001",
+  "claim": "2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))",
+  "source_url": "https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/",
+  "notes_for_writer": "『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。",
+  "verification_notes": "米空軍省の公式記事は、Troy Meink長官が2026年9月14日に発言し、Space Forceが「on-orbit space control weapons」を配備したことを初めて認めたと明記している。兵器の名称・数量・軌道・使用実績などが不明という留保も妥当。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-002",
+  "claim": "米国防総省は、ロシアが2024年5月16日に低軌道へ衛星を打ち上げ、その衛星を米政府衛星と同じ軌道に配置したと説明し、他の低軌道衛星を攻撃できる可能性があるcounter-space weaponと評価した。米側評価では、2019年および2022年に配備されたcounterspace payloadsと類似する特徴がある。([defense.gov](https://www.defense.gov/News/Transcripts/Transcript/Article/3783786/pentagon-press-secretary-air-force-maj-gen-pat-ryder-holds-a-press-briefing/?utm_source=openai))",
+  "source_url": "https://www.defense.gov/News/Transcripts/Transcript/Article/3783786/pentagon-press-secretary-air-force-maj-gen-pat-ryder-holds-a-press-briefing/",
+  "notes_for_writer": "『米国がcounterspace weaponと評価』と、『実際に衛星を攻撃した』を区別する。",
+  "verification_notes": "2024年5月21日の米国防総省会見で、Pat Ryderは5月16日にロシアがLEOへ衛星を打ち上げ、米政府衛星と同じ軌道に配置し、他衛星を攻撃し得る「likely counter-space weapon」と評価したと述べている。2019年・2022年のpayloadとの類似にも言及しており、実際の攻撃を確認していないという留保も正確。([defense.gov](https://www.defense.gov/News/Transcripts/Transcript/Article/3783786/pentagon-press-secretary-air-force-maj-gen-pat-ryder-holds-a-press-briefing/))"
+ },
+ {
+  "fact_id": "F-003",
+  "claim": "ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。([spacecom.mil](https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/?utm_source=openai))",
+  "source_url": "https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/",
+  "notes_for_writer": "地上から発射したASATミサイルによる破壊試験であり、兵器を軌道上に恒久配備した事例とは区別する。",
+  "verification_notes": "米宇宙軍事司令部の公式発表は、ロシアが2021年11月15日（モスクワ時間）にCOSMOS 1408を直接上昇式ASATで破壊し、1,500個超の追跡可能デブリを生じさせたと記載している。([spacecom.mil](https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/))"
+ },
+ {
+  "fact_id": "F-004",
+  "claim": "中国は2007年1月11日、地上発射型ASATミサイルで低軌道の故障気象衛星を破壊し、3,000個超の追跡可能なデブリを発生させたと米宇宙軍が記録している。([media.defense.gov](https://media.defense.gov/2024/May/15/2003466237/-1/-1/1/240508_USSF%201%20PAGER.PDF))",
+  "source_url": "https://media.defense.gov/2024/May/15/2003466237/-1/-1/1/240508_USSF%201%20PAGER.PDF",
+  "notes_for_writer": "2007年の試験は、現在の『軌道上兵器の配備』とは別の、地上発射ASAT能力の実証として扱う。",
+  "verification_notes": "米宇宙軍のファクトシートは、2007年1月11日の中国の破壊的ASAT試験と、3,000個超の追跡可能なデブリ発生を記載している。低軌道の故障気象衛星を標的にしたという整理も資料内容と整合する。([media.defense.gov](https://media.defense.gov/2024/May/15/2003466237/-1/-1/1/240508_USSF%201%20PAGER.PDF))"
+ },
+ {
+  "fact_id": "F-005",
+  "claim": "インド政府は2019年3月27日、Mission Shaktiで地上からASATミサイルを発射し、約300kmの低軌道にあるインドの実衛星を撃破したと発表した。([pmindia.gov.in](https://www.pmindia.gov.in/en/news_updates/pms-address-to-the-nation/?utm_source=openai))",
+  "source_url": "https://www.pmindia.gov.in/en/news_updates/pms-address-to-the-nation/",
+  "notes_for_writer": "地上発射型ASATの試験として記述し、兵器が宇宙空間に配備された事例とは表現しない。",
+  "verification_notes": "インド首相府の公式発表は、2019年3月27日にMission Shaktiで、約300kmのLEOにある「live satellite」をASATミサイルで撃破したと明記している。標的の正式名称やデブリ量を断定していない点も適切。([pmindia.gov.in](https://www.pmindia.gov.in/en/news_updates/pms-address-to-the-nation/?comment=disable&utm_source=openai))"
+ },
+ {
+  "fact_id": "F-006",
+  "claim": "2022年2月24日、ViasatのKA-SAT衛星ネットワークを標的とするサイバー攻撃が発生し、ウクライナの公共機関・企業・利用者および複数のEU加盟国で通信障害が生じた。EUはこの攻撃をロシア連邦によるものと公式に非難した。([consilium.europa.eu](https://www.consilium.europa.eu/en/press/press-releases/2022/05/10/russian-cyber-operations-against-ukraine-declaration-by-the-high-representative-on-behalf-of-the-european-union/pdf))",
+  "source_url": "https://www.consilium.europa.eu/en/press/press-releases/2022/05/10/russian-cyber-operations-against-ukraine-declaration-by-the-high-representative-on-behalf-of-the-european-union/pdf",
+  "notes_for_writer": "衛星本体を破壊した事例ではなく、衛星通信ネットワークをサイバー手段で妨害したcounterspace関連事例として扱う。",
+  "verification_notes": "EU理事会の公式声明は、2022年2月24日、Viasat所有のKA-SATネットワークを標的とするサイバー攻撃が発生し、ウクライナの公共機関・企業・利用者および複数のEU加盟国で通信障害が生じ、ロシア連邦による活動として非難したと明記している。衛星本体の物理的破壊を主張していない点も正確。([consilium.europa.eu](https://www.consilium.europa.eu/en/press/press-releases/2022/05/10/russian-cyber-operations-against-ukraine-declaration-by-the-high-representative-on-behalf-of-the-european-union/pdf))"
+ },
+ {
+  "fact_id": "F-007",
+  "claim": "APは2025年12月、ロシアがStarlink衛星を複数同時に無力化するため、小型衛星からペレットを放出する兵器を開発しているとの非公開情報を報じた。APは情報の結論を独自検証できず、試験済みか、配備時期がいつかも不明と報じている。([apnews.com](https://apnews.com/article/c69c1fda5ffc93828712ab723e606a2c))",
+  "source_url": "https://apnews.com/article/russia-starlink-musk-ukraine-space-china-canada-c69c1fda5ffc93828712ab723e606a2c",
+  "notes_for_writer": "『報道された開発計画』または『非公開情報に基づく疑い』として分類し、実戦配備・試験済みとは書かない。",
+  "verification_notes": "APは、2つのNATO加盟国の情報機関が、ロシアによるStarlink軌道へのペレット散布型ASATの開発を疑っていると報じている。同記事は情報を独自検証できず、試験済みか、配備可能時期も不明としており、下書きの慎重な表現と一致する。なお、これは匿名情報に基づく報道であり、システムの実在・完成・配備を確認する資料ではない。([apnews.com](https://apnews.com/article/c69c1fda5ffc93828712ab723e606a2c))"
+ },
+ {
+  "fact_id": "F-008",
+  "claim": "米宇宙軍の2026年版Space Threat Fact Sheetは、2026年5月にロシアが4基の軍用衛星を軌道変更し、ウクライナの画像情報に使われる西側商用レーダー衛星に近づけたと記載している。近接の目的や攻撃実施は同資料では確認されていない。([spaceforce.mil](https://www.spaceforce.mil/About-Us/Fact-Sheets/Fact-Sheet-Display/Article/4297159/space-threat-fact-sheet/?utm_source=openai))",
+  "source_url": "https://www.spaceforce.mil/About-Us/Fact-Sheets/Fact-Sheet-Display/Article/4297159/space-threat-fact-sheet/",
+  "notes_for_writer": "軌道近接は観測・報告事実として扱い、攻撃・威嚇・標的化という意図を断定しない。",
+  "verification_notes": "米宇宙軍ファクトシートは、2026年5月にロシアがCosmos 2610〜2613の4基を、西側の商用レーダー衛星でウクライナの画像情報に使われる衛星の近くへ軌道変更したと記載している。目的、攻撃実施、兵器搭載を断定していない点も資料に沿う。([spaceforce.mil](https://www.spaceforce.mil/About-Us/Fact-Sheets/Fact-Sheet-Display/Article/4297159/space-threat-fact-sheet/?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-009",
+  "claim": "米国の2025年Annual Threat Assessmentは、ロシアが核兵器を搭載する新しい衛星をASAT能力として開発していると評価した。資料は開発中の能力として記述しており、核兵器を搭載した衛星が打ち上げ・配備・使用されたとは記載していない。([dni.gov](https://www.dni.gov/files/ODNI/documents/assessments/ATA-2025-Unclassified-Report.pdf))",
+  "source_url": "https://www.dni.gov/files/ODNI/documents/assessments/ATA-2025-Unclassified-Report.pdf",
+  "notes_for_writer": "『開発しているとの米情報評価』と『核兵器を宇宙に配備した』を厳密に分ける。",
+  "verification_notes": "2025年の米情報コミュニティAnnual Threat Assessmentは、ロシアが核兵器を搭載することを意図した新しい衛星をASAT能力として開発していると記載している。打上げ済み・配備済み・使用済みとは記載していないという整理も正確。([dni.gov](https://www.dni.gov/files/ODNI/documents/assessments/ATA-2025-Unclassified-Report.pdf))"
+ },
+ {
+  "fact_id": "F-010",
+  "claim": "米国防総省の2024年中国軍事力報告書は、中国が直接上昇式、共軌道、電子戦、指向性エネルギーを含むcounterspace能力を開発しており、低軌道衛星を標的とする運用可能なASATミサイルを保有していると評価している。([media.defense.gov](https://media.defense.gov/2024/Dec/18/2003615520/-1/-1/0/MILITARY-AND-SECURITY-DEVELOPMENTS-INVOLVING-THE-PEOPLES-REPUBLIC-OF-CHINA-2024.PDF?trk=public_post_comment-text))",
+  "source_url": "https://media.defense.gov/2024/Dec/18/2003615520/-1/-1/0/MILITARY-AND-SECURITY-DEVELOPMENTS-INVOLVING-THE-PEOPLES-REPUBLIC-OF-%20CHINA-2024.PDF",
+  "notes_for_writer": "『米国防総省の評価』として記述し、中国政府が各能力を兵器として公式認定したとは書かない。",
+  "verification_notes": "米国防総省の2024年中国軍事力報告書は、中国が直接上昇式ASAT、共軌道システム、電子戦、指向性エネルギーを含むcounterspace能力を開発していると記載し、LEO衛星を標的とする運用可能な地上発射ASATミサイルにも言及している。個別システムの名称や全能力の実戦使用まで主張していない点は妥当。([media.defense.gov](https://media.defense.gov/2024/Dec/18/2003615520/-1/-1/0/MILITARY-AND-SECURITY-DEVELOPMENTS-INVOLVING-THE-PEOPLES-REPUBLIC-OF-CHINA-2024.PDF?trk=public_post_comment-text))"
+ },
+ {
+  "fact_id": "F-011",
+  "claim": "米宇宙軍の2025年Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))",
+  "source_url": "https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf",
+  "notes_for_writer": "counterspaceは宇宙空間に置かれた兵器だけを意味せず、地上・通信リンク・サイバー・電子戦を含み得る。",
+  "verification_notes": "米宇宙軍の2025年frameworkは、counterspace operationsを攻撃・防御行動の総称として扱い、軌道・リンク・地上の3セグメントで実施されると明記している。国際的な唯一の標準定義ではないという留保も適切。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))"
+ },
+ {
+  "fact_id": "F-012",
+  "claim": "同frameworkは攻撃側のcounterspace行動として、軌道攻撃、space link interdiction、地上攻撃を挙げ、space link interdictionには電磁攻撃とサイバー攻撃を含めている。軌道攻撃は運動エネルギー型・非運動型、可逆・非可逆のいずれでも実施可能と説明されている。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))",
+  "source_url": "https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf",
+  "notes_for_writer": "ASATミサイルだけでなく、妨害、サイバー、地上施設への攻撃もcounterspaceに含める用語法がある。",
+  "verification_notes": "同frameworkは攻撃行動としてorbital strike、space link interdiction、terrestrial strikeを挙げ、space link interdictionに電磁攻撃とサイバー攻撃を含めている。また、orbital strikeについて運動・非運動、可逆・非可逆の手段を記載している。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))"
+ },
+ {
+  "fact_id": "F-013",
+  "claim": "同frameworkは防御行動を、友軍の宇宙能力を攻撃・干渉・偶発的危険から守る行動とし、active space defenseとpassive space defenseに分類している。passive defenseの例には脅威警告、硬化、分散、機能分離、機動性、冗長性が含まれる。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))",
+  "source_url": "https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf",
+  "notes_for_writer": "ミサイル警戒、追跡、硬化、冗長化、分散は、宇宙空間に攻撃兵器を配備することとは別の保護措置として整理する。ただしactive defenseには兵器が含まれ得る。",
+  "verification_notes": "frameworkは防御行動を攻撃・干渉・偶発的危険から友軍の宇宙能力を守る行動とし、active space defenseとpassive space defenseに分類している。脅威警告、硬化、分散、分離、機動性、冗長性などの例も本文に存在する。active defenseに兵器・センサーを含み得るという留保も正確。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))"
+ },
+ {
+  "fact_id": "F-014",
+  "claim": "米ミサイル防衛庁と宇宙開発庁は2024年、低軌道に配備するHypersonic and Ballistic Tracking Space Sensor（HBTSS）衛星と追跡衛星を、ミサイル警戒・追跡・防衛のためのセンサー実証として発表した。([defense.gov](https://www.defense.gov/News/Releases/Release/Article/3676902/mda-sda-announce-upcoming-launch-of-the-hypersonic-and-ballistic-tracking-space/?utm_source=openai))",
+  "source_url": "https://www.defense.gov/News/Releases/Release/Article/3676902/mda-sda-announce-upcoming-launch-of-the-hypersonic-and-ballistic-tracking-space/",
+  "notes_for_writer": "ミサイル警戒・追跡衛星を、軌道上攻撃兵器の配備と同一視しない。",
+  "verification_notes": "2024年2月14日のMDA・SDA公式発表は、LEOへ6基を打ち上げる計画として、HBTSS衛星2基とSDA追跡衛星4基を明記し、ミサイル警戒・追跡・防衛およびセンサー実証の目的を説明している。ただし、この発表自体は計画段階であり、当該6基の打上げ完了を確認する資料ではない。下書きは「発表した」としており、その範囲では正確。([defense.gov](https://www.defense.gov/News/Releases/Release/Article/3676902/mda-sda-announce-upcoming-launch-of-the-hypersonic-and-ballistic-tracking-space/))"
+ },
+ {
+  "fact_id": "F-015",
+  "claim": "米宇宙軍は、GPS機能、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスを継続的な任務・優先事項として説明している。これらは衛星を軍事・社会インフラとして運用・保護する活動であり、任務説明だけから攻撃兵器の軌道上配備を意味するとは確認できない。([spaceforce.mil](https://www.spaceforce.mil/News/Article-Display/Article/4130570/space-force-delivers-warfighting-effects-protects-homeland/?utm_source=openai))",
+  "source_url": "https://www.spaceforce.mil/News/Article-Display/Article/4130570/space-force-delivers-warfighting-effects-protects-homeland/",
+  "notes_for_writer": "監視、測位、通信、ミサイル警戒、宇宙状況把握は、長年存在する宇宙安全保障活動として、兵器配備とは分けて整理する。",
+  "verification_notes": "米宇宙軍の公式記事は、GPS提供、ミサイル追跡能力の開発、宇宙領域認識、レジリエントな衛星アーキテクチャを説明し、後二者を優先事項として挙げている。これらの任務説明だけから、攻撃兵器を軌道上に配備しているとは結論できないという整理も妥当。ただし「長年存在する」という歴史的評価は、引用記事そのものが直接立証する範囲をやや超える。([spaceforce.mil](https://www.spaceforce.mil/News/Article-Display/Article/4130570/space-force-delivers-warfighting-effects-protects-homeland/?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-016",
+  "claim": "Outer Space Treaty第4条は、地球周回軌道に核兵器その他の大量破壊兵器を搭載した物体を置くこと、月その他の天体にその兵器を設置すること、宇宙空間にその他の方法で配備することを禁止している。また、天体上での軍事基地、要塞、兵器の試験、軍事演習を禁止している。([unoosa.org](https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science&utm_source=openai))",
+  "source_url": "https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science",
+  "notes_for_writer": "『宇宙兵器を全面禁止する条約』とは書かない。大量破壊兵器の軌道上配備禁止と、天体の平和利用義務を区別する。",
+  "verification_notes": "Outer Space Treaty第4条は、核兵器その他の大量破壊兵器を搭載した物体の地球周回軌道への配置、天体上への設置、宇宙空間へのその他の方法での配備を禁止し、月その他の天体での軍事基地・要塞・兵器試験・軍事演習も禁止している。通常兵器やASAT全般を包括的に禁止する条文ではないという留保も正確。([unoosa.org](https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science&utm_source=openai))"
+ },
+ {
+  "fact_id": "F-017",
+  "claim": "Outer Space Treaty第3条は、宇宙空間および天体の探査・利用を、国連憲章を含む国際法に従って行うことを締約国に求めている。([unoosa.org](https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science&utm_source=openai))",
+  "source_url": "https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science",
+  "notes_for_writer": "条約の一般原則と、個別事案の違法性判断を分ける。",
+  "verification_notes": "Outer Space Treaty第3条は、宇宙空間および天体の探査・利用を、国際法および国連憲章に従って行うことを求めている。個別のASAT試験やサイバー攻撃の違法性は別途の事実認定・法解釈を要するという留保も適切。([unoosa.org](https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science&utm_source=openai))"
+ },
+ {
+  "fact_id": "F-018",
+  "claim": "国連安全保障理事会は2024年4月24日、Outer Space Treaty遵守と宇宙空間への大量破壊兵器配備禁止を確認する決議案を、ロシアの拒否権により採択できなかった。([press.un.org](https://press.un.org/en/2024/sc15678.doc.htm?utm_source=openai))",
+  "source_url": "https://press.un.org/en/2024/sc15678.doc.htm",
+  "notes_for_writer": "『国際的な議論が存在する』事実として扱い、国連が宇宙兵器禁止の新規則を採択したとは書かない。",
+  "verification_notes": "国連安保理の公式記録によれば、2024年4月24日、該当する決議案は13賛成、1反対（ロシア）、1棄権（中国）で、ロシアの拒否権により採択されなかった。別のロシア・中国提出修正案が7対7対1で否決された点とは区別する必要があるが、下書きの主張は決議案本体について正しい。([press.un.org](https://press.un.org/en/2024/sc15678.doc.htm?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-019",
+  "claim": "国連総会は2024年12月2日、宇宙空間に核兵器その他の大量破壊兵器を置かないというOuter Space Treaty上の義務を確認する決議を、167賛成、4反対、6棄権で採択した。([press.un.org](https://press.un.org/en/2024/ga12660.doc.htm?utm_source=openai))",
+  "source_url": "https://press.un.org/en/2024/ga12660.doc.htm",
+  "notes_for_writer": "既存条約の確認と、通常兵器を含む包括的な新条約の成立を区別する。",
+  "verification_notes": "国連総会の記録は、2024年12月2日にA/RES/79/18「Weapons of mass destruction in outer space」を167賛成、4反対、6棄権で採択したことを示している。同決議はOuter Space Treaty第4条上の義務を確認する内容であり、条約改正ではないという留保も正確。([press.un.org](https://press.un.org/en/2024/ga12660.doc.htm?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-020",
+  "claim": "国連総会は2025年12月1日、宇宙空間における軍備競争の防止に関する決議A/RES/80/19を177賛成、2反対、1棄権で採択した。また、さらなる実務的措置に関するA/RES/80/21を121賛成、50反対、7棄権で採択した。([digitallibrary.un.org](https://digitallibrary.un.org/record/4094661?utm_source=openai))",
+  "source_url": "https://digitallibrary.un.org/record/4094661",
+  "notes_for_writer": "投票結果と、法的拘束力を持つ新条約の成立を混同しない。",
+  "verification_notes": "国連デジタルライブラリーの記録は、A/RES/80/19が2025年12月1日に177賛成、2反対、1棄権で、A/RES/80/21が121賛成、50反対、7棄権で採択されたことを示している。決議は新たな法的拘束力ある条約の成立や個別兵器の配備確認を意味しないという留保も妥当。([digitallibrary.un.org](https://digitallibrary.un.org/record/4094661?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-021",
+  "claim": "米国防副長官は2022年4月、米国が破壊的な直接上昇式ASATミサイル試験を実施しないという新たなコミットメントを表明した。これは条約による全面禁止ではなく、米国の政策上のコミットメントとして発表された。([defense.gov](https://www.defense.gov/News/Speeches/Speech/Article/3003442/remarks-by-deputy-secretary-of-defense-dr-kathleen-h-hicks-on-the-new-us-commit/?utm_source=openai))",
+  "source_url": "https://www.defense.gov/News/Speeches/Speech/Article/3003442/remarks-by-deputy-secretary-of-defense-dr-kathleen-h-hicks-on-the-new-us-commit/",
+  "notes_for_writer": "『ASATの国際的全面禁止』ではなく、米国の破壊的直接上昇式試験に関する政策表明として記載する。",
+  "verification_notes": "米国防総省の2022年4月18日の公式演説は、米国が破壊的な直接上昇式ASATミサイル試験を実施しない新たなコミットメントを明記している。条約上の全面禁止ではなく、米国の政策・規範形成上のコミットメントとして扱う下書きの整理は正確。([defense.gov](https://www.defense.gov/News/Speeches/Speech/Article/3003442/remarks-by-deputy-secretary-of-defense-dr-kathleen-h-hicks-on-the-new-us-commit/?utm_source=openai))"
+ },
+ {
+  "fact_id": "F-024",
+  "claim": "APが報じたロシアの対Starlink兵器について、報道内の情報提供者は開発が進行中と説明した一方、試験済みか、いつ配備可能になるかは明らかにしていない。([apnews.com](https://apnews.com/article/c69c1fda5ffc93828712ab723e606a2c))",
+  "source_url": "https://apnews.com/article/russia-starlink-musk-ukraine-space-china-canada-c69c1fda5ffc93828712ab723e606a2c",
+  "notes_for_writer": "予測・専門家解釈・匿名情報として明示し、確認済みの現行配備能力の一覧に入れない。",
+  "verification_notes": "AP記事は、当該システムがactive development中とする匿名情報を紹介する一方、試験済みか、配備可能時期がいつかは明らかでないと記載している。したがって、「将来配備の可能性を示す報道」であり、完成・試験・現行配備を確認する事実ではないというFactの位置づけは正確。([apnews.com](https://apnews.com/article/c69c1fda5ffc93828712ab723e606a2c))"
+ }
+]

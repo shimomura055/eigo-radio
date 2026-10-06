@@ -1,0 +1,12 @@
+# notes以外差分0検査: PASS
+付与note数: 9
+
+- MUSE-HC-001: 注意(多義): 原語'rolling out in the US'＝米国で段階展開中。将来予定だけではない。
+- MUSE-HC-005: 注意(多義): 原語'in the days after its debut'＝デビュー後数日内に開始。数日間継続の意味ではない。
+- MUSE-HC-006: 注意(多義): 原語'a trained agent, who places the call'＝訓練済み人間が発信・対応。Muse自身の発信ではない。
+- MUSE-HC-007: 注意(多義): 原語'last week'＝9月22日報道時点の前週。現在も半数とは限らない。
+- MUSE-HC-008: 注意(多義): 原語'could get their success rate up to'＝95〜98%に達し得る。確定値ではない。
+- MUSE-HC-011: 注意(多義): 原語'said a transcript showed'＝従業員の報告。独立確認済みの事実ではない。
+- MUSE-HC-012: 注意(多義): 原語'rolled back this feature'＝当面機能を戻した。Muse全体の停止・恒久廃止ではない。
+- MUSE-HC-013: 注意(多義): 原語'overwhelmingly positive'＝広報担当者の評価。客観的測定値ではない。
+- MUSE-HC-014: 注意(多義): 原語'will only roll it out when it's ready'＝準備後の条件付き将来展開。既に公開済みではない。

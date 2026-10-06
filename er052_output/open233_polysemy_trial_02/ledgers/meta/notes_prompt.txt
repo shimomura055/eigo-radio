@@ -1,0 +1,125 @@
+あなたはFact台帳の注意書き(notes)作成担当です。下記のFact一覧について、Writerが原語の多義性を誤読すると事実の方向・状態・主体・対象・時系列・因果等が逆転または重大変質する、高確度のFactにだけ注意書きを1件付けてください。該当しないFactには何も付けず、該当なしなら空配列を返してください。
+
+【規則】
+1. 取り違えると事実が逆・反対になる表現(撤回/復元・状態変化・方向・因果・主体・対象・時系列・完了か予定か)に限り、1 factあたり1件まで付ける。該当しなければ付けない。
+2. 形式「注意(多義): 原語'<英語原表現>'=<原資料が示す意味(何が・何の状態へ)>。<逆の読み>ではない。」
+3. 原資料で確定できない場合は「原資料も曖昧。断定しない」とだけ書く。
+4. 80字以内・改行なし・他フィールドは変えない。
+5. 「高確度」とは、注意深い読者でも現実に採りうる逆の読みが存在し、その読みを採ると事実が逆転または重大変質する場合のみ。単に抽象的・要約的・多義な語があるだけでは対象外。数値の分母、程度、仮定、評価語、hedge表現(may/could/reportedly等)は対象外。
+6. 各候補には、逆の読みを1文で書いた reverse_reading と、重大度 severity(1=軽微〜3=事実が完全に逆転)を必ず付ける。
+7. 該当が無ければ空配列を返す。無理に見つけない。典型的な台帳では0〜3件程度であり、多数付けるのは過剰である。
+
+【検索の制限】
+Web検索は、各Factのsource_url(下記にあるもの)およびverification_notes内に現れるURLの原資料の確認に限定してください。それ以外の探索的検索はしないでください。
+
+【出力】
+JSONのみ。{"notes":[{"fact_id":..,"note":..,"source_quote":..,"source_url":..,"reverse_reading":..,"severity":1〜3の整数}]}。source_quoteは原資料の英語原表現(見つからなければ空文字。その場合noteは「注意(多義): 原資料も曖昧。断定しない。」の形にする)。
+
+【Fact一覧】
+[
+ {
+  "fact_id": "MUSE-HC-001",
+  "claim": "Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。",
+  "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+  "notes_for_writer": "Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": "Metaの2026年9月8日付発表が存在し、Museを個人向けAIエージェントとして紹介している。米国でiOS、Android、muse.aiに展開するとの記載も確認でき、AxiosやWIREDの独立報道とも整合する。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+ },
+ {
+  "fact_id": "MUSE-HC-002",
+  "claim": "Metaの説明では、Museは専用のクラウド仮想マシン「Muse Secure VM」上で動作し、ブラウザーを開く、フォームに入力する、ユーザーに代わって交渉するなどの作業を実行できる。",
+  "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+  "notes_for_writer": "機能の存在を示す事実。実際の性能や成功率を示す事実ではない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": "Meta公式説明は、Museが専用のクラウドVM上で動作し、ブラウザー操作、フォーム入力、ユーザーに代わる交渉を行えると明記している。外部報道も専用VMとブラウザー機能を確認している。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+ },
+ {
+  "fact_id": "MUSE-HC-003",
+  "claim": "Metaの公式説明では、Muse Secure VMではユーザーごとに専用のクラウドコンピューターが割り当てられ、接続サービスのデータや認証情報を保存する。Sentinelという別のエージェントが外部通信やコネクター操作の許可を管理する。",
+  "source_url": "https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse",
+  "notes_for_writer": "Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))",
+  "verification_notes": "Metaの技術説明は、ユーザーごとの専用クラウドコンピューター、接続サービスのデータ・認証情報の保存、Sentinelによるネットワーク通信・コネクター操作の許可管理を記載している。AxiosもSentinelの権限制御を独立に報じている。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))"
+ },
+ {
+  "fact_id": "MUSE-HC-004",
+  "claim": "Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "Reuters配信のCNA記事は、Museが米国企業へ電話をかけ、散髪予約、在庫確認、業者からの見積もり取得などを扱う機能を報じている。記事上の公開時期表現は「9月22日の報道時点で公開済み」であり、具体的な初回公開日は明記されていないが、機能の存在と対象範囲は確認できる。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-005",
+  "claim": "MetaはMuseの電話発信機能を、2026年8月から従業員にテストさせ、Museの一般公開後の数日間にユーザー向けへ段階的に展開したと、社内投稿に基づくReuters報道で伝えられた。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "2026年8月開始という時期は社内投稿に基づく報道。公式の製品発表日と混同しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "CNA掲載のReuters報道は、Metaが8月に従業員へ電話機能をテストさせ、Museのデビュー後数日間にユーザーへ段階的に展開したと記載している。対象人数や具体的日付を過剰に特定しておらず、Factの範囲は適切。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-006",
+  "claim": "MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "報道は、Muse経由の電話の一部を人間の契約スタッフが担当し、Museが依頼を訓練済みエージェントへ引き渡して、そのエージェントが発信・対応する仕組みを記載している。「一部」「テスト」とする限定も正しい。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-007",
+  "claim": "人間コンシェルジュ機能は、2026年9月22日のReuters報道時点で、Meta従業員の半数に有効化されていた。利用を望まない従業員向けにオプトアウト用のグループも設けられていた。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "50%を全Meta従業員の厳密な割合として断定しない。分母の不確定性を保持する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "Reuters報道は、人間コンシェルジュ／human agent callsをMeta従業員の半数に有効化し、参加を望まない従業員向けにオプトアウト用グループを設けたと記載している。社内テストの詳細な分母や対象者構成までは不明だが、記事の表現に基づくFactとしては確認できる。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-008",
+  "claim": "Metaの社内投稿では、人間が電話を担当した一部テストで、成功率が95〜98%に達する可能性が示された。一方、AIだけで電話をかけた場合の成功率は、それより低いとされたが、具体的な数値は示されていない。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "「人間の方が95〜98%で成功した」と一般化しない。「一部テストで95〜98%の範囲が示された」と書く。因果関係や統計的有意性は確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "報道は、社内テストの一部で人間が電話を担当した場合に成功率が95〜98％の範囲に達し得るとの記載を紹介し、AI電話はそれより低い割合と説明している。AI単独の具体値、サンプル数、成功の定義が不明という限定も適切。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-009",
+  "claim": "社内投稿では、MuseがAIだと認識した相手側から電話を切られる事例が報告された。報道では、保険会社がMuseのAI発信だと分かると繰り返し電話を切ったという従業員の報告が紹介された。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "「AI電話は一般に切られる」と拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "報道には、保険会社へ電話した従業員が、相手側がMuseをAIだと認識した後に繰り返し電話を切ったと報告した事例がある。個別の従業員報告として扱っており、一般的傾向へ拡張していないため適切。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-010",
+  "claim": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "CNA掲載のReuters報道は、従業員が、人間による電話対応で機微情報がコールセンター契約スタッフへ意図せず共有され得るとのプライバシー懸念を示したと記載している。実際の大規模漏えいとは断定しておらず、Factの限定は正しい。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-011",
+  "claim": "Museにインターネット・ケーブル料金の交渉を依頼した従業員は、電話の記録に人間の契約スタッフによる人種に関する不適切な発言があったと報告した。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "従業員の報告として記録する。契約スタッフ全体の行動や実験全体の性質へ一般化しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "報道は、インターネット・ケーブル料金の交渉を依頼した従業員が、通話記録上、人間の契約スタッフによる人種に関する不適切な発言があったと述べた事例を紹介している。個別の従業員報告として扱い、記録の真正性や一般化を留保している点も適切。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-012",
+  "claim": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "Reuters報道は、MetaのSuperintelligence Labsの副社長が、適切な開示なしに契約スタッフによる発信テストを始めたことを「ミス」と認め、機能を当面ロールバックしたと記載している。サービス全体の停止とはしておらず、Factの範囲は正確。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-013",
+  "claim": "Metaの広報担当者Daniel Robertsは、従業員の反応は「圧倒的に肯定的」だったと述べ、テストの目的を、安全・プライバシー保護を実装し、公開前に機能を改善するためのフィードバック収集だと説明した。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "Meta広報担当者の説明として記録する。客観的なユーザー満足度の測定値とは扱わない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "報道は、Meta広報担当者Daniel Robertsが従業員の反応を「圧倒的に肯定的」とし、目的を安全・プライバシー保護の実装と一般公開前の機能改善のためのフィードバック収集と説明したと記載している。客観的満足度の測定値とは扱っておらず適切。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-014",
+  "claim": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。",
+  "source_url": "https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946",
+  "notes_for_writer": "公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": "Meta広報担当者は、商業者と電話機能を改善し、準備が整い、適切な開示ができる場合にのみ公開展開すると説明している。具体的な開示内容や時期は示されていないという限定も、報道内容と整合する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-015",
+  "claim": "Metaは公式説明で、Museについて、ユーザーが接続アプリとアクセス権限を選択でき、メール送信や購入などの敏感な操作の前に確認を求め、操作履歴を表示すると説明している。",
+  "source_url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+  "notes_for_writer": "公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": "Meta公式説明は、接続アプリと権限をユーザーが選択できること、メール送信・購入などの敏感な操作前に確認を求めること、完全な監査履歴を表示することを記載している。これは通常の製品設計の説明であり、人間コンシェルジュ実験への適用まで断定していない点も適切。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+ }
+]

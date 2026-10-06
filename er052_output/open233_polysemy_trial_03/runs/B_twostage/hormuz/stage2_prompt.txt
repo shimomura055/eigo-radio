@@ -1,0 +1,219 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。既存notes_for_writerの言い回しに引きずられず、候補のreverse_readingを否定する。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+falseのものはコード側で破棄される。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"flipped_component":"polarity","compressed_claim":"X市は補助金新設を見送り","reverse_proposition":"X市は補助金制度を廃止した","contradicts_ledger_field":"claim","changes_conclusion":true,"ledger_quote":"補助金制度の新設を見送った","note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"flipped_component":"stage","compressed_claim":"Y社が試作機の評価を開始","reverse_proposition":"Y社は量産機を現場へ配備した","contradicts_ledger_field":"scope","changes_conclusion":true,"ledger_quote":"社内試験場","note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"flipped_component":"none","compressed_claim":"新製品は年内発売の可能性","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"flipped_component":"none","compressed_claim":"Z社は来期増収を見込む","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"flipped_component":"none","compressed_claim":"約3割が在宅勤務継続","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"flipped_component":"none","compressed_claim":"評論家が新型機を野心的と評価","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"flipped_component":"interim_final","compressed_claim":"W省が旧規則の運用を停止","reverse_proposition":"W省は新規則の運用を開始した","contradicts_ledger_field":"conditions","changes_conclusion":true,"ledger_quote":"新規則の施行日は別途","note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "HF-001",
+  "source_quote": "通航料・手数料を課されない状態を維持すべきだと再確認した",
+  "reverse_reading": "IMOは無課金通航を実際に維持している",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-002",
+  "source_quote": "20％の率で償還を求めると投稿した",
+  "reverse_reading": "米国は全貨物に20％償還料を実際に導入・徴収した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-003",
+  "source_quote": "具体的制度設計は示されなかった",
+  "reverse_reading": "米国は20％償還料の徴収制度を実施した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-004",
+  "source_quote": "20％を貨物価値に適用すると仮定した試算では",
+  "reverse_reading": "VLCCの20％通航料約3400万ドルが実際に確定した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-005",
+  "source_quote": "日中高値83.86ドル、日中安値77.28ドル、終値83.30ドル",
+  "reverse_reading": "7月13日のBrent終値は83.86ドルだった",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "HF-006",
+  "source_quote": "翌日に始まる予定とされた米国の対イラン海上封鎖",
+  "reverse_reading": "米国の対イラン海上封鎖は7月13日に始まっていた",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-007",
+  "source_quote": "20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した",
+  "reverse_reading": "20％償還料は湾岸諸国の案件に実際に置き換えられた",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-008",
+  "source_quote": "誰も料金を課すべきではないとの考えを示し",
+  "reverse_reading": "トランプ氏は海峡通航料の徴収禁止を実施した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "HF-009",
+  "source_quote": "ほどなく発表前に近い高い水準へ戻った",
+  "reverse_reading": "撤回後の最終的なBrentの動きは上げ幅縮小で、発表前水準へ戻らなかった",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "HF-010",
+  "source_quote": "日中高値87.55ドル、日中安値83.37ドル、終値84.73ドル",
+  "reverse_reading": "7月14日のBrent終値は87.55ドルだった",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "HF-012",
+  "source_quote": "米WTI原油先物の短時間の値動き",
+  "reverse_reading": "Brent原油先物も一時マイナス圏へ転じ、その後回復した",
+  "flipped_component": "subject_object"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "HF-001",
+  "claim": "国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。",
+  "scope": "国際航行に使用されるホルムズ海峡を通航する全船舶",
+  "conditions": "沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。",
+  "date_or_period": "2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表",
+  "source_url": null,
+  "notes_for_writer": "この決議と7月14日の発言撤回との因果関係は一次資料で確認できない。撤回の原因として記述しない。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-002",
+  "claim": "ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+  "scope": "ホルムズ海峡を通じて輸送される「すべての貨物」",
+  "conditions": "米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。",
+  "date_or_period": "2026-07-13 10:16 EDT",
+  "source_url": null,
+  "notes_for_writer": "7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-003",
+  "claim": "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+  "scope": "ホルムズ海峡の貨物通航に対する米国の償還料案",
+  "conditions": null,
+  "date_or_period": "2026-07-13",
+  "source_url": null,
+  "notes_for_writer": "「米国が20％通航料を導入した」と確定形で書かず、「提案した」「徴収方針を表明した」とする。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-004",
+  "claim": "20％を貨物価値に適用すると仮定した試算では、約200万バレルを積むVLCCの貨物価値はBrent約85ドル時点で約1億7000万ドルとなり、20％相当額は約3400万ドルとなる。別の専門家試算は約3200万ドルだった。",
+  "scope": "約200万バレルを満載した超大型原油タンカー（VLCC）1隻・1航海",
+  "conditions": "20％を積載原油の市場価値に掛けるとの仮定。Brent価格を1バレル約85ドルとして計算。",
+  "date_or_period": "2026-07-14時点の試算",
+  "source_url": null,
+  "notes_for_writer": "実額または確定通航料として扱わない。「貨物価値に適用した場合の試算」と明示する。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-005",
+  "claim": "Financial TimesのBrent先物ヒストリカル表は、7月13日の取引について始値78.00ドル、日中高値83.86ドル、日中安値77.28ドル、終値83.30ドルを記録している。",
+  "scope": "Financial Times掲載の期近Brent原油先物ヒストリカルデータ",
+  "conditions": "日次OHLCデータ。価格単位は1バレル当たり米ドル。",
+  "date_or_period": "2026-07-13取引日",
+  "source_url": null,
+  "notes_for_writer": "日中高値83.86ドルと終値83.30ドルを混同しない。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-006",
+  "claim": "Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。",
+  "scope": "Brent原油先物の当日清算値と前日比",
+  "conditions": "米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境",
+  "date_or_period": "2026-07-13清算時点",
+  "source_url": null,
+  "notes_for_writer": "7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-007",
+  "claim": "トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+  "scope": "7月13日に提案したホルムズ海峡通航貨物への20％償還料",
+  "conditions": "トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。",
+  "date_or_period": "2026-07-14 11:04 EDT",
+  "source_url": null,
+  "notes_for_writer": "この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-008",
+  "claim": "トランプ大統領は7月14日、記者団に対し、ホルムズ海峡を通航する船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないと述べた。",
+  "scope": "ホルムズ海峡を通航する船舶への料金一般",
+  "conditions": "米国が世界のために海峡を防護する負担は公平でないとの主張も併記された。",
+  "date_or_period": "2026-07-14（Truth Socialでの置換発表後）",
+  "source_url": null,
+  "notes_for_writer": "7月14日の撤回を確認する補強Fact。7月13日の提案と同日の発言として混同しない。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-009",
+  "claim": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+  "scope": "国際指標Brent原油先物の短時間の値動き",
+  "conditions": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+  "date_or_period": "2026-07-14、撤回発表後の取引時間中",
+  "source_url": null,
+  "notes_for_writer": "撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-010",
+  "claim": "Financial TimesのBrent先物ヒストリカル表は、7月14日の取引について始値84.00ドル、日中高値87.55ドル、日中安値83.37ドル、終値84.73ドルを記録している。",
+  "scope": "Financial Times掲載の期近Brent原油先物ヒストリカルデータ",
+  "conditions": "日次OHLCデータ。価格単位は1バレル当たり米ドル。",
+  "date_or_period": "2026-07-14取引日",
+  "source_url": null,
+  "notes_for_writer": "速報時点値と日次高値を区別する。87.55ドルを使用する場合は「FTのヒストリカル表による」と帰属を付ける。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-012",
+  "claim": "Reutersは7月14日、トランプ氏が海峡をイラン以外の船舶に開放すると述べた後、米WTI先物が一時マイナス圏へ転じ、その後、イランの巡航ミサイルがUAEの石油タンカー2隻を攻撃したとの報道を受けて価格が回復したと報じた。",
+  "scope": "Reutersが明示した米WTI原油先物の短時間の値動き。Brentに同一の反応があったとは明記されていない",
+  "conditions": "同日に複数の政策発言と軍事・海運ニュースが連続して発生した。",
+  "date_or_period": "2026-07-14取引時間中",
+  "source_url": null,
+  "notes_for_writer": "Brentの反応として転用しない。市場反応が同日中に複数回反転したことを示す補助Factとしてのみ使用する。",
+  "verification_notes": ""
+ }
+]

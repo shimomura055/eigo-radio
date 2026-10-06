@@ -1,0 +1,135 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。候補のreverse_readingを否定する。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}],"note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}],"note":null}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}],"note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","reverse_propositions":[],"note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","reverse_propositions":[],"note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","reverse_propositions":[],"note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","reverse_propositions":[],"note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}],"note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","R_used":"(noteで否定したR)","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "F-003",
+  "source_quote": "人口減少等による下水道使用料収入の減少と、施設老朽化に伴う改築更新費の増大が、下水道事業の経営環境を厳しくする要因になる",
+  "reverse_reading": "下水道事業の経営環境の厳しさが、使用料収入の減少と改築更新費の増大を引き起こす",
+  "flipped_component": "cause_effect"
+ },
+ {
+  "fact_id": "F-004",
+  "source_quote": "すべての下水道管路に一律適用される5年周期ではなく、腐食リスクの高い箇所が対象",
+  "reverse_reading": "すべての下水道管路に5年に1回以上の点検義務がある",
+  "flipped_component": "subject_object"
+ },
+ {
+  "fact_id": "F-007",
+  "source_quote": "住宅が分散する地域では個別処理の浄化槽、住宅が密集する地域では公共下水道等の集合処理が経済的に有利になり得る",
+  "reverse_reading": "住宅が分散する地域では集合処理、住宅が密集する地域では個別処理の方が経済的に有利である",
+  "flipped_component": "subject_object"
+ },
+ {
+  "fact_id": "F-008",
+  "source_quote": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "reverse_reading": "既設の単独処理浄化槽もすべて撤去された",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-010",
+  "source_quote": "市街化区域は原則として公共下水道、市街化調整区域は原則として合併処理浄化槽で汚水処理する方針とした",
+  "reverse_reading": "市街化区域は原則として合併処理浄化槽、市街化調整区域は原則として公共下水道で汚水処理する方針とした",
+  "flipped_component": "subject_object"
+ },
+ {
+  "fact_id": "F-011",
+  "source_quote": "2026年には、残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+  "reverse_reading": "残る未整備区域全てを合併処理浄化槽の推進区域に決定した",
+  "flipped_component": "stage"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "F-003",
+  "claim": "国土交通省は、人口減少等による下水道使用料収入の減少と、施設老朽化に伴う改築更新費の増大が、下水道事業の経営環境を厳しくする要因になると説明している。",
+  "scope": "日本の公共下水道、特定環境保全公共下水道、農業集落排水事業",
+  "conditions": "長期収支見通しの把握を目的とした国土交通省の説明",
+  "date_or_period": "現行の国土交通省説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-004",
+  "claim": "腐食のおそれが大きい下水道管路については、下水道法上、5年に1回以上の適切な頻度で点検することが義務づけられている。",
+  "scope": "腐食のおそれが大きい箇所の下水道管路",
+  "conditions": "すべての下水道管路に一律適用される5年周期ではなく、腐食リスクの高い箇所が対象",
+  "date_or_period": "平成27年の下水道法改正後の制度",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-007",
+  "claim": "環境省の汚水処理システムの説明では、住宅が分散する地域では個別処理の浄化槽、住宅が密集する地域では公共下水道等の集合処理が経済的に有利になり得るため、地域特性に応じた方式選択が必要とされている。",
+  "scope": "自治体が生活排水処理計画を策定する際の一般的な比較",
+  "conditions": "住宅密度、整備費、維持管理費、既存施設等を総合的に評価",
+  "date_or_period": "環境省マニュアルの説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-008",
+  "claim": "単独処理浄化槽はし尿のみを処理し、生活雑排水を処理対象としない。平成12年の浄化槽法改正により、単独処理浄化槽の新設は平成13年4月1日から原則禁止された。",
+  "scope": "日本国内の浄化槽新設制度",
+  "conditions": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "date_or_period": "平成13年4月1日以降",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-010",
+  "claim": "松山市は、下水道施設の老朽化、自然災害、人口減少による財政面の厳しさを踏まえ、公共下水道全体計画を見直し、市街化区域は原則として公共下水道、市街化調整区域は原則として合併処理浄化槽で汚水処理する方針とした。",
+  "scope": "松山市の全体計画区域",
+  "conditions": "市街化区域と市街化調整区域で方針を分ける。『原則』であり、区域内の個別事情を排除する記載ではない。",
+  "date_or_period": "2024年4月1日公表",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-011",
+  "claim": "焼津市は、公共下水道計画区域の未整備区域について、経済性、将来性、災害時の影響を踏まえて公共下水道と合併処理浄化槽を比較し、2024年度に一部区域を合併処理浄化槽の推進区域へ転換した。2026年には、残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+  "scope": "焼津市の公共下水道計画区域内の未整備区域",
+  "conditions": "既に整備済みの公共下水道区域を浄化槽へ切り替える内容ではなく、未整備区域の計画方式変更",
+  "date_or_period": "2024年度および2026年7月1日〜7月31日の意見募集",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

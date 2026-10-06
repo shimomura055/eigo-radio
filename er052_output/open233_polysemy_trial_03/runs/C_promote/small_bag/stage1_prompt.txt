@@ -1,0 +1,199 @@
+下記の【Fact一覧】は、既存のnotes_for_writerを持つfactだけです。各factについて、notes_for_writerの中に『〜とは書かない』『〜ではなく』型の禁止文(誤読を打ち消す文)があれば、**意味を変えずに**次のテンプレートへ書き換えてください。禁止文が無いfactはnoteをnullにします。
+
+【テンプレート】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。
+
+【書き換えの規則】
+- <R>は、元の禁止文が打ち消している誤読(反転命題)をそのまま入れる。別の誤読に差し替えない。
+- <正しい状態・段階>は、元のnotes_for_writer・claim・scope・conditionsに書かれている内容だけを使う。新しい事実・解釈を足さない。
+- 元の禁止文が、hedge・帰属・数値精度・評価語・用語定義・範囲の限定だけを述べている場合は、意味・方向・状態・主体・対象・時系列・因果・完了状態の逆転ではないので、noteはnullにする。
+- 「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。
+
+【出力】JSONのみ。fact一覧の全factについて1要素ずつ(省略しない)。
+{"promotions":[{"fact_id":"","source_prohibition":"(書き換え元の禁止文を逐語。無ければnull)","reverse_proposition":"(R。無ければnull)","note":null}]}
+
+【例(架空・別領域)】
+入力 fact EX-1: claim「自治体Xは補助金制度の新設を見送った」 / notes_for_writer「『補助金制度を廃止した』とは書かない」 →
+{"fact_id":"EX-1","source_prohibition":"『補助金制度を廃止した』とは書かない","reverse_proposition":"補助金制度を廃止した","note":"注意(逆転): X市が補助金制度の新設を見送った。制度を廃止した、ではない。"}
+入力 fact EX-2: claim「Y社は試作機の評価を開始した」 / notes_for_writer「量産機を配備したのではなく、試作機の評価段階」 →
+{"fact_id":"EX-2","source_prohibition":"量産機を配備したのではなく","reverse_proposition":"量産機を配備した","note":"注意(逆転): Y社が試作機の評価を始めた段階。量産機の配備ではない。"}
+入力 fact EX-3: claim「調査対象の約3割が在宅勤務を続けている」 / notes_for_writer「『約3割』は概数。正確な割合とは書かない」 →
+{"fact_id":"EX-3","source_prohibition":null,"reverse_proposition":null,"note":null}
+(理由: 数値の精度の注意であり、意味・方向・主体・段階の逆転ではない)
+入力 fact EX-4: claim「Z社によれば、来期は増収の見通し」 / notes_for_writer「Z社の見通しであり、確定した実績とは書かない」 →
+{"fact_id":"EX-4","source_prohibition":null,"reverse_proposition":null,"note":null}
+(理由: 帰属・確からしさの注意であり、逆転ではない)
+
+【Fact一覧】
+[
+ {
+  "fact_id": "F001",
+  "claim": "Vogue reported that most handbags shown in Fall/Winter 2025 were roomy enough for everyday use and explicitly contrasted this with micro bags; the roundup emphasized top-handle bags, classic crossbodies, day bags, and totes. ([vogue.com](https://www.vogue.com/article/fall-2025-handbag-trends))",
+  "scope": "Runway and editorial coverage of major fashion collections",
+  "conditions": "Editorial trend roundup; not a market-share or consumer-sales study",
+  "date_or_period": "September 8, 2025; Fall/Winter 2025 collections",
+  "source_url": null,
+  "notes_for_writer": "Use as counterevidence to a simple claim that micro bags broadly returned in 2025; do not state that micro bags disappeared.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F002",
+  "claim": "Vogue's Spring/Summer 2025 handbag roundup said scaled-down minis were being displaced by capacious totes and highlighted functional doctor-bag shapes at Miu Miu, Jil Sander, Hermès, and The Row. ([vogue.com](https://www.vogue.com/article/spring-2025-handbag-trends))",
+  "scope": "Runway trend coverage",
+  "conditions": "Vogue editorial assessment of the season's prominent handbag trends",
+  "date_or_period": "June 3, 2025; Spring/Summer 2025 collections",
+  "source_url": null,
+  "notes_for_writer": "Supports the limitation that recent mini-bag attention has not been a continuous, uninterrupted industry-wide shift.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F003",
+  "claim": "Vogue documented the simultaneous appearance of extremely oversized and extra-small handbags on the same runway season, citing large coin-purse clutches at Coach and tiny leather bags at Fendi. ([vogue.com](https://www.vogue.com/article/are-you-team-mini-or-maxi-bag))",
+  "scope": "Selected fashion-week runway collections",
+  "conditions": "The source frames the trend as a choice between mini and maxi proportions, not as one size replacing the other",
+  "date_or_period": "2025 runway season",
+  "source_url": null,
+  "notes_for_writer": "Useful evidence for a polarized-size interpretation; avoid converting runway coexistence into proof of equal consumer demand.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F004",
+  "claim": "Vogue's Summer 2026 handbag coverage identified petite pouches at Prada, Loewe, Miu Miu, and Valentino while also reporting ultra-maxi proportions at Celine, oversized shoulder bags at Altuzarra, and super-roomy totes at Toteme, Stella McCartney, and Kallmeyer. ([vogue.com](https://www.vogue.com/article/spring-2026-handbag-trends?utm_source=openai))",
+  "scope": "Major designer runway collections and Vogue shopping/editorial selection",
+  "conditions": "The source combines runway observations with retail recommendations",
+  "date_or_period": "June 10, 2026; Spring/Summer 2026 and Summer 2026 coverage",
+  "source_url": null,
+  "notes_for_writer": "Strong evidence that small and oversized bags were visible at the same time in 2026; supports polarization rather than a single-direction trend.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F005",
+  "claim": "For Fall 2026, Vogue highlighted both compact fashion-led forms—clutches, minaudières, and streamlined east-west bags—and enlarged everyday forms, including shoulder bags from Chanel, Miu Miu, and Bottega Veneta that could hold a laptop. ([vogue.com](https://www.vogue.com/article/fall-2026-handbag-trends))",
+  "scope": "Runway trend coverage across multiple luxury houses",
+  "conditions": "Vogue's selected seven-trend roundup",
+  "date_or_period": "August 12, 2026; Fall/Winter 2026 collections",
+  "source_url": null,
+  "notes_for_writer": "Supports simultaneous visibility of accessory-like small bags and highly functional larger bags.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F006",
+  "claim": "ELLE presented mini bags as a major Fall 2026 styling direction and cited palm-sized evening clutches at Khaite and novelty minaudières at Matthieu Blazy's Fall/Winter 2026 Chanel couture show. ([elle.com](https://www.elle.com/fashion/a73435817/mini-bag-trend-fall-2026/?utm_source=openai))",
+  "scope": "ELLE editorial coverage plus selected Chanel couture and Khaite runway examples",
+  "conditions": "Fashion/shopping feature; not a consumer adoption survey or sales analysis",
+  "date_or_period": "September 8, 2026; Fall/Winter 2026",
+  "source_url": null,
+  "notes_for_writer": "Use as evidence of renewed visibility in styling coverage and selected runway moments, not as proof that mini bags are dominant across the market.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F007",
+  "claim": "ELLE linked the appeal of very small bags to carrying only a limited set of essentials—such as a phone, wallet, keys, and lip product—and described the bag's value as adding occasion and visual impact rather than storage capacity. ([elle.com](https://www.elle.com/fashion/a73435817/mini-bag-trend-fall-2026/?utm_source=openai))",
+  "scope": "ELLE's editorial interpretation of Fall 2026 mini-bag appeal",
+  "conditions": "Source-level explanation; no independent consumer-behavior evidence is provided",
+  "date_or_period": "September 8, 2026",
+  "source_url": null,
+  "notes_for_writer": "Attribute the explanation to ELLE; do not generalize it into a proven mass-market behavioral driver.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F008",
+  "claim": "A January 2026 Vogue feature on Bulgari's Icons minaudières described the miniature scale as intentional, with utility being deliberately subordinated to meaning; the designs were presented as carrying a miniature book rather than accommodating a phone. ([vogue.com](https://www.vogue.com/article/small-bags-with-big-ambitions))",
+  "scope": "One Bulgari Icons minaudière project and its creative rationale",
+  "conditions": "Brand-specific product and design discussion",
+  "date_or_period": "January 23, 2026",
+  "source_url": null,
+  "notes_for_writer": "Useful for accessory-first framing; keep the scope confined to Bulgari's project and its stated creative intent.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F009",
+  "claim": "Marie Claire's Fall 2026 trend report contrasted tiny summer purses with autumn's return to more substantial bags, while still noting smaller clutches, top-handle bags, and intentional hand-held styling. ([marieclaire.com](https://www.marieclaire.com/fashion/fall-2026-handbag-trends/))",
+  "scope": "Runway-informed fashion editorial coverage",
+  "conditions": "Editorial trend interpretation; includes both practical totes and smaller fashion-led forms",
+  "date_or_period": "August 9, 2026; Fall 2026",
+  "source_url": null,
+  "notes_for_writer": "Counterbalances ELLE's September mini-bag emphasis and supports a seasonal, mixed-size reading.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F010",
+  "claim": "Harper's Bazaar's Fall/Winter 2026 roundup, informed by Shopbop and Mytheresa retail executives, emphasized top-handle bags, croc-embossed totes, flap bags, and embellished shoulder bags; Mytheresa described wearing evening bags during the day as an early-2000s-inspired direction. ([harpersbazaar.com](https://www.harpersbazaar.com/fashion/trends/a73445481/fall-winter-bag-trends-2026/))",
+  "scope": "Selected fashion collections plus Shopbop and Mytheresa commentary",
+  "conditions": "Retail-expert quotes and editorial trend selection; no category-level sales data",
+  "date_or_period": "August 19, 2026; Fall/Winter 2026",
+  "source_url": null,
+  "notes_for_writer": "Supports a broader accessory and throwback-bag interest, but not a specific claim that micro bags are driving the category.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F011",
+  "claim": "ELLE reported that Moda Operandi's handbag business had increased 44% over the previous year, according to the retailer's vice president of non-apparel, who connected current demand with expressive accessories, color, and distinctive points of interest. ([elle.com](https://www.elle.com/fashion/trend-reports/a71462900/little-luxury-accessory-trend-2026/))",
+  "scope": "Moda Operandi's handbag business",
+  "conditions": "Retailer statement quoted by ELLE; category definition and sales base are not specified",
+  "date_or_period": "June 10, 2026; previous-year comparison",
+  "source_url": null,
+  "notes_for_writer": "Use as evidence of stronger accessory engagement at one luxury retailer, not as proof of a general mini-bag sales surge.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F012",
+  "claim": "The same ELLE report said petite bowling bags were among the first Chanel accessories to sell out after Matthieu Blazy's debut collection reached boutiques. ([elle.com](https://www.elle.com/fashion/trend-reports/a71462900/little-luxury-accessory-trend-2026/?utm_source=openai))",
+  "scope": "Chanel accessories associated with one designer debut",
+  "conditions": "Report of a specific brand and collection moment",
+  "date_or_period": "March-June 2026; Chanel retail rollout after Blazy's debut",
+  "source_url": null,
+  "notes_for_writer": "Supports the possibility that renewed small-bag attention is concentrated in specific brands or high-profile designer debuts.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F013",
+  "claim": "Trendalytics reported that oversized bags had reclaimed runway and retail visibility in 2026 and stated that oversized clutches showed a 152% increase in retail-market adoption. ([trendalytics.co](https://trendalytics.co/insights/handbag-market-trends-2026-report))",
+  "scope": "Trendalytics proprietary trend and retail analysis",
+  "conditions": "Commercial trend-forecasting report; full dataset and methodology are gated",
+  "date_or_period": "2026 report",
+  "source_url": null,
+  "notes_for_writer": "Important counterweight to a tiny-bag-only narrative; qualify the figure as Trendalytics' proprietary estimate.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F015",
+  "claim": "Who What Wear reported that Fashionphile's resale-trend analysis found searches for 'micro bag' had doubled year over year and searches for top-handle bags had risen 68.2% year over year. ([whowhatwear.com](https://www.whowhatwear.com/fashion/shopping/fashionphile-resale-report-bag-trends))",
+  "scope": "Fashionphile search behavior within its resale ecosystem",
+  "conditions": "Reported by Who What Wear from a Fashionphile report; search activity, not confirmed purchases",
+  "date_or_period": "2024 report used for 2025 trend outlook",
+  "source_url": null,
+  "notes_for_writer": "Evidence of renewed interest within a resale/search platform; keep the platform-specific scope explicit.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F016",
+  "claim": "Vogue's Spring 2026 celebrity-bag coverage stated that a single paparazzi image can make a bag an 'It bag' and listed a revived Bottega Veneta style that also came in a mini size and Valentino's daintier DeVain bag carried by celebrities. ([vogue.com](https://www.vogue.com/article/celebrity-it-bags-spring-2026-trends))",
+  "scope": "Celebrity styling and selected designer bags",
+  "conditions": "Editorial celebrity-style analysis; no population-level adoption evidence",
+  "date_or_period": "February 17, 2026; Spring 2026 coverage",
+  "source_url": null,
+  "notes_for_writer": "Supports the possibility that some small-bag attention is celebrity-amplified; do not treat celebrity sightings as proof of a broad industry trend.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F017",
+  "claim": "Vogue documented a small group of celebrities—Rihanna, Gigi Hadid, and Sofia Richie Grainge—carrying tiny purses during several weeks in late 2024 and described the styling as an alternative to oversized purses. ([vogue.com](https://www.vogue.com/article/gigi-hadid-rihanna-sofia-richie-grainge-tiny-purse))",
+  "scope": "Three named celebrity examples",
+  "conditions": "Celebrity-style article; narrow, non-representative sample",
+  "date_or_period": "November 14, 2024; several preceding weeks",
+  "source_url": null,
+  "notes_for_writer": "Use only as illustration of celebrity styling, not as evidence that 'everyone' or the general public adopted tiny bags.",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F018",
+  "claim": "Marie Claire reported that Coach's Fall 2026 runway included both oversize leather messenger bags and mini east-west bags with coin-purse closures. ([marieclaire.com](https://www.marieclaire.com/fashion/fall-fashion/coach-fall-2026-fashion-show/?utm_source=openai))",
+  "scope": "Coach Fall 2026 collection",
+  "conditions": "Single-brand runway observation",
+  "date_or_period": "Fall 2026 runway season",
+  "source_url": null,
+  "notes_for_writer": "Useful brand-level example of size polarization; keep the conclusion limited to Coach's collection.",
+  "verification_notes": ""
+ }
+]

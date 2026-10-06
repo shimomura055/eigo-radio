@@ -1,0 +1,184 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。候補のreverse_readingを否定する。
+
+【既存notes_for_writer(手がかり)の扱い(独立判定の後に参照する)】
+候補のreverse_readingを先に独立して検討し、その後で、候補に付いたexisting_notes_hint(既存notes_for_writer)を「誤読リスクの手がかり」として参照する。existing_notes_hintが、候補のreverse_readingとは別の逆転(別の成分の反転)を指しており、そちらのほうが日本語claimだけを読んだ読者にとって自然な誤読だと判断できる場合に限り、その誤読を<R>に採用してよい(R_usedに採用したRを書く)。existing_notes_hintの文言はそのまま流用せず、正しい状態・段階は台帳のclaim/scope/conditionsから導けるものだけにする。existing_notes_hintが誤読の警告でない場合(補足・範囲の説明など)は無視してよい。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}],"note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}],"note":null}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}],"note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","reverse_propositions":[],"note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","reverse_propositions":[],"note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","reverse_propositions":[],"note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","reverse_propositions":[],"note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}],"note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","R_used":"(noteで否定したR)","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "MUSE-HC-001",
+  "source_quote": "米国でiOS、Android、muse.ai向けに展開すると説明している。",
+  "reverse_reading": "MetaはMuseを米国で提供開始した",
+  "flipped_component": "stage",
+  "existing_notes_hint": "Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+ },
+ {
+  "fact_id": "MUSE-HC-002",
+  "source_quote": "Museの公式製品設計・機能説明",
+  "reverse_reading": "Museは実際の利用環境でブラウザー操作やフォーム入力などを完了した",
+  "flipped_component": "stage",
+  "existing_notes_hint": "機能の存在を示す事実。実際の性能や成功率を示す事実ではない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+ },
+ {
+  "fact_id": "MUSE-HC-003",
+  "source_quote": "Museの公式セキュリティ設計",
+  "reverse_reading": "このセキュリティ構成が実際の運用環境で稼働している",
+  "flipped_component": "stage",
+  "existing_notes_hint": "Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))"
+ },
+ {
+  "fact_id": "MUSE-HC-006",
+  "source_quote": "Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件",
+  "reverse_reading": "人間の契約スタッフが実運用の電話を担当した",
+  "flipped_component": "stage",
+  "existing_notes_hint": "全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-007",
+  "source_quote": "Meta従業員の一部",
+  "reverse_reading": "人間コンシェルジュ機能が一般ユーザー向けに公開された",
+  "flipped_component": "stage",
+  "existing_notes_hint": "50%を全Meta従業員の厳密な割合として断定しない。分母の不確定性を保持する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-012",
+  "source_quote": "機能を当面ロールバックした",
+  "reverse_reading": "Metaは人間コンシェルジュ機能を恒久的に廃止した",
+  "flipped_component": "interim_final",
+  "existing_notes_hint": "「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-014",
+  "source_quote": "準備が整い、適切な開示ができる場合にのみ公開展開すると",
+  "reverse_reading": "Metaは電話機能をすでに公開展開した",
+  "flipped_component": "interim_final",
+  "existing_notes_hint": "公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))"
+ },
+ {
+  "fact_id": "MUSE-HC-015",
+  "source_quote": "Museの公式製品仕様",
+  "reverse_reading": "Museは実際の利用環境で敏感な操作前の確認と操作履歴表示を実施した",
+  "flipped_component": "stage",
+  "existing_notes_hint": "公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "MUSE-HC-001",
+  "claim": "Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。",
+  "scope": "米国のMuse提供地域・対象ユーザー",
+  "conditions": "Metaの発表時点の提供範囲",
+  "date_or_period": "2026年9月8日",
+  "source_url": null,
+  "notes_for_writer": "Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-002",
+  "claim": "Metaの説明では、Museは専用のクラウド仮想マシン「Muse Secure VM」上で動作し、ブラウザーを開く、フォームに入力する、ユーザーに代わって交渉するなどの作業を実行できる。",
+  "scope": "Museの公式製品設計・機能説明",
+  "conditions": "Museに必要な権限が付与され、対象サービスへ接続されている場合",
+  "date_or_period": "2026年9月8日時点",
+  "source_url": null,
+  "notes_for_writer": "機能の存在を示す事実。実際の性能や成功率を示す事実ではない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-003",
+  "claim": "Metaの公式説明では、Muse Secure VMではユーザーごとに専用のクラウドコンピューターが割り当てられ、接続サービスのデータや認証情報を保存する。Sentinelという別のエージェントが外部通信やコネクター操作の許可を管理する。",
+  "scope": "Museの公式セキュリティ設計",
+  "conditions": "Metaが公開した製品設計上の説明",
+  "date_or_period": "2026年9月8日時点",
+  "source_url": null,
+  "notes_for_writer": "Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-006",
+  "claim": "MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。",
+  "scope": "Muse経由で発信された電話の一部",
+  "conditions": "Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件",
+  "date_or_period": "2026年9月中旬",
+  "source_url": null,
+  "notes_for_writer": "全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-007",
+  "claim": "人間コンシェルジュ機能は、2026年9月22日のReuters報道時点で、Meta従業員の半数に有効化されていた。利用を望まない従業員向けにオプトアウト用のグループも設けられていた。",
+  "scope": "Meta従業員の一部",
+  "conditions": "Museの社内テスト参加者に対する機能有効化",
+  "date_or_period": "2026年9月中旬〜2026年9月22日",
+  "source_url": null,
+  "notes_for_writer": "50%を全Meta従業員の厳密な割合として断定しない。分母の不確定性を保持する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-012",
+  "claim": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+  "scope": "Meta社内テストの人間コンシェルジュ機能",
+  "conditions": "適切な開示なしで契約スタッフが電話を担当していたテスト",
+  "date_or_period": "2026年9月22日まで",
+  "source_url": null,
+  "notes_for_writer": "「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-014",
+  "claim": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。",
+  "scope": "Museの電話機能および人間コンシェルジュを含む可能性のある運用",
+  "conditions": "準備完了および適切な開示が整うこと",
+  "date_or_period": "2026年9月22日時点",
+  "source_url": null,
+  "notes_for_writer": "公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-015",
+  "claim": "Metaは公式説明で、Museについて、ユーザーが接続アプリとアクセス権限を選択でき、メール送信や購入などの敏感な操作の前に確認を求め、操作履歴を表示すると説明している。",
+  "scope": "Museの公式製品仕様",
+  "conditions": "Metaが公開した通常の製品設計",
+  "date_or_period": "2026年9月8日時点",
+  "source_url": null,
+  "notes_for_writer": "公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ }
+]

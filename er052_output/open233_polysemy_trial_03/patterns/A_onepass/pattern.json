@@ -1,0 +1,4 @@
+{"pattern":"A_onepass","mode":"onepass","max_chars":100,
+ "prefix_file":"prefix.txt","prompt_files":["stage1_prompt.txt"],"examples_file":"examples.txt","output_key":"judgments",
+ "pass_rule":"reversible && flipped_component != 'none' && contradicts_ledger_field != 'none' && changes_conclusion && ledger_quote が台帳のclaim/scope/conditionsのいずれかに部分一致(コード側で判定。通過したfactのnoteだけを採用、noteは接頭辞で始まり{max_chars}字以内・改行なし)",
+ "hypothesis":"F0の拾いすぎ/見落としは『判定基準が曖昧で既存notesに引きずられる』ため。全fact必須判定+操作的定義(成分1つ反転)+逐語ledger_quoteで、件数上限なしに精度を上げる"}

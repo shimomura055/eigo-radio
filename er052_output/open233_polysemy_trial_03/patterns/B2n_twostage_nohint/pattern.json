@@ -1,0 +1,24 @@
+{
+ "pattern": "B2n_twostage_nohint",
+ "mode": "twostage",
+ "max_chars": 100,
+ "self_check_policy": "derivable_only",
+ "stage2_existing_notes": false,
+ "prefix_file": "prefix.txt",
+ "prompt_files": [
+  "stage1_prompt.txt",
+  "stage2_prompt.txt"
+ ],
+ "examples_file": "examples.txt",
+ "stage1_output_key": "judgments",
+ "stage2_output_key": "notes",
+ "pass_rule": "stage1: reversible && reverse_propositionsのうちchanges_conclusion=trueかつledger_quoteが台帳(claim/scope/conditions)に部分一致する先頭を採用。stage2: correct_statement_derivable_from_ledger=trueのnoteだけ採用(R_is_natural_reading=falseは警告のみ)。接頭辞は空白正規化で比較",
+ "hypothesis": "ハーネス: 接頭辞比較を空白正規化(全角/半角空白・末尾空白を無視)に変更し接頭辞後の空白はコード側で正規化(L1のBは接頭辞直後の空白欠落でbad_prefix却下8件)。 stage2過剰却下: self_checkのR_is_natural_reading=falseは警告のみ(採用しwarningsに記録)。却下はcorrect_statement_derivable_from_ledger=falseの捏造ガードのみ。 内容ずれ: stage1で各factにつき逆命題Rを最大2つ列挙(reverse_propositions)、コード側でchanges_conclusion=trueのうち先頭を採用。B2はstage2に既存notes_for_writerを手がかりとして渡す(独立判定の後に参照)。B2nは渡さない(依存度測定)。 型の抜け: examples.txtに合成正例1件追加(模擬環境での検証結果→実環境で実際に発生の型。架空・固有名なし)。 変更しないもの: 共通定義(i)〜(iv)、テンプレート、100字、負例。",
+ "hypotheses": {
+  "H1": "ハーネス: 接頭辞比較を空白正規化(全角/半角空白・末尾空白を無視)に変更し接頭辞後の空白はコード側で正規化(L1のBは接頭辞直後の空白欠落でbad_prefix却下8件)。",
+  "H2": "stage2過剰却下: self_checkのR_is_natural_reading=falseは警告のみ(採用しwarningsに記録)。却下はcorrect_statement_derivable_from_ledger=falseの捏造ガードのみ。",
+  "H3": "内容ずれ: stage1で各factにつき逆命題Rを最大2つ列挙(reverse_propositions)、コード側でchanges_conclusion=trueのうち先頭を採用。B2はstage2に既存notes_for_writerを手がかりとして渡す(独立判定の後に参照)。B2nは渡さない(依存度測定)。",
+  "H4": "型の抜け: examples.txtに合成正例1件追加(模擬環境での検証結果→実環境で実際に発生の型。架空・固有名なし)。"
+ },
+ "diff_from_other": "B2とB2nの差はstage2への既存notes_for_writer受け渡し(hintパラグラフ+candidatesのexisting_notes_hint)のみ。B2nはstage2のFact一覧からもnotes_for_writerを除く"
+}

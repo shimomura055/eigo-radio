@@ -1,0 +1,116 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。候補のreverse_readingを否定する。
+
+【既存notes_for_writer(手がかり)の扱い(独立判定の後に参照する)】
+候補のreverse_readingを先に独立して検討し、その後で、候補に付いたexisting_notes_hint(既存notes_for_writer)を「誤読リスクの手がかり」として参照する。existing_notes_hintが、候補のreverse_readingとは別の逆転(別の成分の反転)を指しており、そちらのほうが日本語claimだけを読んだ読者にとって自然な誤読だと判断できる場合に限り、その誤読を<R>に採用してよい(R_usedに採用したRを書く)。existing_notes_hintの文言はそのまま流用せず、正しい状態・段階は台帳のclaim/scope/conditionsから導けるものだけにする。existing_notes_hintが誤読の警告でない場合(補足・範囲の説明など)は無視してよい。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}],"note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}],"note":null}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}],"note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","reverse_propositions":[],"note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","reverse_propositions":[],"note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","reverse_propositions":[],"note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","reverse_propositions":[],"note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}],"note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","R_used":"(noteで否定したR)","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "POL-02",
+  "source_quote": "初期設定として適用される保護であり、利用者による設定変更が可能とされている",
+  "reverse_reading": "16・17歳の夜間制限は利用者が変更できない強制設定として適用する方針だ",
+  "flipped_component": "polarity",
+  "existing_notes_hint": "「午前0時から6時までSNSが完全に利用不能になる」とは断定しない。対象は未成年全体ではなく16・17歳。"
+ },
+ {
+  "fact_id": "POL-03",
+  "source_quote": "16・17歳；対象SNSのアラートおよびプッシュ通知",
+  "reverse_reading": "0～6時は通知だけでなく対象SNSへのアクセス自体が遮断されるデフォルト設定だ",
+  "flipped_component": "subject_object",
+  "existing_notes_hint": "通知停止は夜間制限と同じ午前0時～6時に適用される。通知停止だけが夜間制度の全内容だとも、通知停止に加えて必ず完全アクセス遮断が行われるとも断定しない。"
+ },
+ {
+  "fact_id": "POL-04",
+  "source_quote": "デフォルト設定であり、利用者は設定を変更できる",
+  "reverse_reading": "autoplayおよびpersonalised feedsは利用者が変更できない恒久的なオフ設定になる",
+  "flipped_component": "polarity",
+  "existing_notes_hint": "autoplayとpersonalised feedsのdefault-offを夜間通知ミュートと混同しない。"
+ },
+ {
+  "fact_id": "PILOT-04",
+  "source_quote": "パイロットのnight-curfew群では、親または保護者が毎日午後9時から午前7時まで、対象SNSアプリへのアクセスを端末レベルのペアレンタルコントロールでブロックした。",
+  "reverse_reading": "curfew群には午後9時～午前7時のブロックが割り当てられただけで、親が実際にブロックしたとは限らない",
+  "flipped_component": "stage",
+  "existing_notes_hint": "この介入はアクセス禁止型だったが、政策案は午前0時～6時の「デフォルト夜間制限」で、技術方式の詳細は未確定。両者を同一制度として扱わない。"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "POL-02",
+  "claim": "英国政府は、16歳および17歳の利用者について、午前0時から午前6時までSNS利用にデフォルトの夜間制限を適用する方針を示している。",
+  "scope": "16・17歳；対象となるSNSサービス",
+  "conditions": "初期設定として適用される保護であり、利用者による設定変更が可能とされている",
+  "date_or_period": "2026年7月15日発表；対象時間は毎日午前0時～午前6時",
+  "source_url": "https://questions-statements.parliament.uk/written-statements/detail/2026-07-15/hlws259",
+  "notes_for_writer": "「午前0時から6時までSNSが完全に利用不能になる」とは断定しない。対象は未成年全体ではなく16・17歳。",
+  "verification_notes": "2026年7月15日の閣僚声明は、16・17歳に午前0時～午前6時のデフォルト夜間制限を適用すると明記している。変更可能な初期設定であることも政府資料および独立報道で一致する。技術的に完全遮断となるかは確定資料から明瞭でなく、Ledgerの留保は適切。([questions-statements.parliament.uk](https://questions-statements.parliament.uk/written-statements/detail/2026-07-15/hlws259))"
+ },
+ {
+  "fact_id": "POL-03",
+  "claim": "午前0時から午前6時までの夜間制限時間には、SNSのアラートおよびプッシュ通知がミュートされるデフォルト設定が含まれる。",
+  "scope": "16・17歳；対象SNSのアラートおよびプッシュ通知",
+  "conditions": "デフォルト設定として適用",
+  "date_or_period": "毎日午前0時～午前6時；2026年7月15日発表",
+  "source_url": "https://questions-statements.parliament.uk/written-statements/detail/2026-07-15/hlws259",
+  "notes_for_writer": "通知停止は夜間制限と同じ午前0時～6時に適用される。通知停止だけが夜間制度の全内容だとも、通知停止に加えて必ず完全アクセス遮断が行われるとも断定しない。",
+  "verification_notes": "閣僚声明は、午前0時～午前6時のcurfew期間中にalertsおよびpush notificationsをミュートすると直接記載している。6時間という算定と対象時間帯も正しい。([questions-statements.parliament.uk](https://questions-statements.parliament.uk/written-statements/detail/2026-07-15/hlws259))"
+ },
+ {
+  "fact_id": "POL-04",
+  "claim": "英国政府のFact sheetは、16・17歳について、autoplayとpersonalised feedsをデフォルトでオフにするとしている。",
+  "scope": "16・17歳；対象となるSNSアプリ",
+  "conditions": "デフォルト設定であり、利用者は設定を変更できる",
+  "date_or_period": "2026年7月17日更新のFact sheet",
+  "source_url": "https://www.gov.uk/government/publications/fact-sheet-new-rules-to-protect-children-online/fact-sheet-new-rules-to-protect-children-online",
+  "notes_for_writer": "autoplayとpersonalised feedsのdefault-offを夜間通知ミュートと混同しない。",
+  "verification_notes": "2026年7月17日更新のFact sheetは、16・17歳についてautoplayとpersonalised feedsをデフォルトでオフにし、本人が変更可能と明記している。([gov.uk](https://www.gov.uk/government/publications/fact-sheet-new-rules-to-protect-children-online/fact-sheet-new-rules-to-protect-children-online))"
+ },
+ {
+  "fact_id": "PILOT-04",
+  "claim": "パイロットのnight-curfew群では、親または保護者が毎日午後9時から午前7時まで、対象SNSアプリへのアクセスを端末レベルのペアレンタルコントロールでブロックした。",
+  "scope": "Intervention 2の81世帯",
+  "conditions": "iOSのScreen Time DowntimeまたはAndroidのDigital Wellbeing等を使用。親専用パスコードなどで設定",
+  "date_or_period": "2026年5月2日～5月31日；毎日午後9時～午前7時",
+  "source_url": "https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk",
+  "notes_for_writer": "この介入はアクセス禁止型だったが、政策案は午前0時～6時の「デフォルト夜間制限」で、技術方式の詳細は未確定。両者を同一制度として扱わない。",
+  "verification_notes": "午後9時～午前7時に対象SNSへのアクセスを端末設定でブロックすることはIntervention 2の所定プロトコルとして正しい。ただし81は同群のWave 1サンプル数であり、実際には完全遵守53、軽微な変更23、非遵守5だったため、「81世帯すべてで親が所定どおりブロックした」と読める表現は不正確になり得る。「割り当てられた介入内容」と明示する場合に限り支持される。([gov.uk](https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk))"
+ }
+]

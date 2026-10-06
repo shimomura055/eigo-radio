@@ -1,0 +1,908 @@
+[
+  {
+    "fact_id": "F-001",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F-001",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "米国が軌道上の宇宙管制兵器を配備",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-001",
+      "reversible": true,
+      "flipped_component": "polarity",
+      "compressed_claim": "米国が敵対者対処用の軌道上兵器を配備と空軍長官が発言",
+      "reverse_proposition": "米国は敵対者を攻撃する軌道上兵器を配備している",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "敵対的な相手の行動から統合軍を防護する用途と説明",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "米国は敵対者を攻撃する軌道上兵器を配備している",
+        "likelihood": "high",
+        "reason": "敵対者対処用の軌道上兵器という表現は、敵対者を攻撃する兵器と自然に取り違えられやすい"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-002",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_medium"
+    ],
+    "judgment": {
+      "fact_id": "F-002",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシアが衛星を打ち上げ攻撃可能兵器と米側評価",
+      "reverse_proposition": "ロシアは他の低軌道衛星を実際に攻撃した",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "米国防総省による評価。攻撃能力は『likely』『presumably』との評価で、実際の攻撃は確認されていない。",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-002",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシア衛星を米側が対衛星兵器と評価、実攻撃は不明",
+      "reverse_proposition": "ロシアはその衛星で他の低軌道衛星を実際に攻撃した",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "実際の攻撃は確認されていない。",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "ロシアは他の低軌道衛星を実際に攻撃した",
+        "likelihood": "medium",
+        "reason": "攻撃可能という能力評価は実際の攻撃を示さないが、実攻撃の有無が明記されず取り違えの余地がある"
+      },
+      {
+        "cid": "B",
+        "R": "ロシアはその衛星で他の低軌道衛星を実際に攻撃した",
+        "likelihood": "low",
+        "reason": "実攻撃は不明と明記され、他衛星を実際に攻撃したとは読めない"
+      }
+    ],
+    "warnings": [
+      "stage1_5_medium"
+    ]
+  },
+  {
+    "fact_id": "F-003",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-003",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシアがASATで衛星を破壊しデブリ発生",
+      "reverse_proposition": "ロシアはASAT兵器を軌道上に恒久配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-003",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシアが地上発射ASATで衛星を破壊しデブリ発生",
+      "reverse_proposition": "ロシアはASAT兵器を軌道上に恒久配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "地上発射型の直接上昇式ASATミサイル",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "ロシアはASAT兵器を軌道上に恒久配備した",
+        "likelihood": "low",
+        "reason": "ASATによる衛星破壊とデブリ発生は、兵器の軌道上への恒久配備を意味しない"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-004",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-004",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "中国がASATで低軌道衛星を破壊しデブリ発生",
+      "reverse_proposition": "中国はASAT兵器を軌道上に恒久配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "地上発射型ASATミサイルで低軌道の故障気象衛星を破壊し",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-004",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "中国が地上発射ASATで故障衛星を破壊しデブリ発生",
+      "reverse_proposition": "中国はASAT兵器を軌道上に恒久配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "地上発射型ASATミサイルで低軌道の故障気象衛星を破壊し",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "中国はASAT兵器を軌道上に恒久配備した",
+        "likelihood": "low",
+        "reason": "低軌道衛星の破壊実施は、ASAT兵器を軌道上に恒久配備したこととは別である"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-005",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_medium"
+    ],
+    "judgment": {
+      "fact_id": "F-005",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "インドがASATで低軌道衛星を撃破",
+      "reverse_proposition": "インドはASAT兵器を軌道上に配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "地上からASATミサイルを発射し、約300kmの低軌道にあるインドの実衛星を撃破した",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-005",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "インドが地上発射ASATで低軌道の実衛星を撃破",
+      "reverse_proposition": "インドはASAT兵器を軌道上に恒久配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "地上からASATミサイルを発射し",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "インドはASAT兵器を軌道上に配備した",
+        "likelihood": "medium",
+        "reason": "ASATで撃破したことは兵器使用を示すが、発射地点や軌道上配備の有無が明記されず誤読の余地がある"
+      },
+      {
+        "cid": "B",
+        "R": "インドはASAT兵器を軌道上に恒久配備した",
+        "likelihood": "low",
+        "reason": "地上発射と明記されており、ASAT兵器の軌道上恒久配備とは読めない"
+      }
+    ],
+    "warnings": [
+      "stage1_5_medium"
+    ]
+  },
+  {
+    "fact_id": "F-006",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-006",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "KA-SATへのサイバー攻撃で利用者に通信障害",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-006",
+      "reversible": true,
+      "flipped_component": "subject_object",
+      "compressed_claim": "KA-SATネットワークへのサイバー攻撃で各地に通信障害",
+      "reverse_proposition": "攻撃対象はKA-SAT衛星ネットワークではなく衛星本体だった",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "KA-SAT衛星ネットワークを標的とするサイバー攻撃",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "攻撃対象はKA-SAT衛星ネットワークではなく衛星本体だった",
+        "likelihood": "low",
+        "reason": "KA-SATネットワークへのサイバー攻撃と明記され、衛星本体への攻撃とは読めない"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-007",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-007",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシアがStarlink無力化兵器を開発中と報道",
+      "reverse_proposition": "ロシアは同兵器を実戦配備している",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "試験済みか、配備時期がいつかも不明と報じている。",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-007",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "APがロシアのStarlink無力化兵器開発計画を報道",
+      "reverse_proposition": "ロシアの対Starlinkペレット兵器はすでに試験または配備されている",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "試験済みか、配備時期がいつかも不明と報じている。",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "ロシアは同兵器を実戦配備している",
+        "likelihood": "low",
+        "reason": "開発中との報道は実戦配備を示さず、両者は明確に区別されている"
+      },
+      {
+        "cid": "B",
+        "R": "ロシアの対Starlinkペレット兵器はすでに試験または配備されている",
+        "likelihood": "low",
+        "reason": "開発計画の報道にとどまり、試験や配備の実施を示していない"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-008",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-008",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシアが軍用衛星4基を商用衛星に接近",
+      "reverse_proposition": "ロシアは西側商用レーダー衛星を攻撃した",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "近接の目的や攻撃実施は同資料では確認されていない。",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-008",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシア軍用衛星4基が西側レーダー衛星に接近、攻撃は未確認",
+      "reverse_proposition": "ロシア軍用衛星4基は西側商用レーダー衛星を実際に攻撃した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "近接の目的や攻撃実施は同資料では確認されていない。",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "ロシアは西側商用レーダー衛星を攻撃した",
+        "likelihood": "low",
+        "reason": "衛星への接近と攻撃は異なり、攻撃実施とは記されていない"
+      },
+      {
+        "cid": "B",
+        "R": "ロシア軍用衛星4基は西側商用レーダー衛星を実際に攻撃した",
+        "likelihood": "low",
+        "reason": "攻撃は未確認と明記され、実際に攻撃したとは読めない"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-009",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-009",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "米国はロシアの核搭載衛星ASAT開発を評価",
+      "reverse_proposition": "ロシアは核兵器搭載衛星を軌道上に配備した",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "開発中の能力として記述しており、核兵器を搭載した衛星が打ち上げ・配備・使用されたとは記載していない。",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-009",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "米情報機関がロシアの核搭載衛星ASAT能力を開発中と評価",
+      "reverse_proposition": "ロシアは核兵器搭載衛星を打ち上げ・配備した",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "核兵器を搭載した衛星が打ち上げ・配備・使用されたとは記載していない。",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "ロシアは核兵器搭載衛星を軌道上に配備した",
+        "likelihood": "low",
+        "reason": "核搭載衛星ASATの開発評価は、核兵器搭載衛星の軌道上配備を示さない"
+      },
+      {
+        "cid": "B",
+        "R": "ロシアは核兵器搭載衛星を打ち上げ・配備した",
+        "likelihood": "low",
+        "reason": "開発中の能力との評価であり、衛星の打ち上げや配備とは明確に異なる"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-010",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_medium"
+    ],
+    "judgment": {
+      "fact_id": "F-010",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "中国がcounterspace能力を開発しASATミサイル保有",
+      "reverse_proposition": "中国は開発中のcounterspace能力も運用配備している",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "能力の一部は開発・評価段階として記述。",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-010",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "中国は複数の対宇宙能力を開発し運用可能ASATミサイルを保有",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "中国は開発中のcounterspace能力も運用配備している",
+        "likelihood": "medium",
+        "reason": "ASATミサイルの保有は配備済みと受け取られる余地があるが、開発中能力の運用配備までは明記されない"
+      }
+    ],
+    "warnings": [
+      "stage1_5_medium"
+    ]
+  },
+  {
+    "fact_id": "F-011",
+    "passed": false,
+    "dropped_by": [
+      "stage1_not_reversible_in_any_run"
+    ],
+    "judgment": {
+      "fact_id": "F-011",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "counterspace operationsを攻防の総称と定義",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-011",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "米宇宙軍がcounterspace operationsを各セグメントの攻防行動と定義",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    }
+  },
+  {
+    "fact_id": "F-012",
+    "passed": false,
+    "dropped_by": [
+      "stage1_not_reversible_in_any_run"
+    ],
+    "judgment": {
+      "fact_id": "F-012",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "counterspace攻撃に軌道・リンク・地上攻撃を分類",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-012",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "米宇宙軍frameworkがcounterspace攻撃の類型と手段を列挙",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    }
+  },
+  {
+    "fact_id": "F-013",
+    "passed": false,
+    "dropped_by": [
+      "stage1_not_reversible_in_any_run"
+    ],
+    "judgment": {
+      "fact_id": "F-013",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "counterspace防御をactiveとpassiveに分類",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-013",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "米宇宙軍frameworkが防御行動をactiveとpassiveに分類",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    }
+  },
+  {
+    "fact_id": "F-014",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-014",
+      "reversible": true,
+      "flipped_component": "interim_final",
+      "compressed_claim": "米機関がHBTSS等をミサイル防衛用センサー実証発表",
+      "reverse_proposition": "HBTSS等6衛星はすでに低軌道へ配備済みである",
+      "contradicts_ledger_field": "scope",
+      "changes_conclusion": true,
+      "ledger_quote": "低軌道衛星6基の打上げ計画、そのうちHBTSS衛星2基と追跡衛星4基",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-014",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "米機関が低軌道ミサイル警戒・追跡用センサー衛星を実証計画",
+      "reverse_proposition": "HBTSS衛星と追跡衛星は軌道上攻撃兵器として配備された",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "ミサイル警戒・追跡・防衛用のセンサー実証",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "HBTSS等6衛星はすでに低軌道へ配備済みである",
+        "likelihood": "low",
+        "reason": "センサーの実証発表は、6衛星がすでに低軌道へ配備済みであることを示さない"
+      },
+      {
+        "cid": "B",
+        "R": "HBTSS衛星と追跡衛星は軌道上攻撃兵器として配備された",
+        "likelihood": "low",
+        "reason": "ミサイル警戒・追跡用センサーの実証計画であり、攻撃兵器の軌道上配備とは読めない"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-015",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-015",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "米宇宙軍がGPS等を継続任務・優先事項と説明",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-015",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "米宇宙軍がGPS・追跡・認識・レジリエンス任務を継続",
+      "reverse_proposition": "これらの任務は攻撃兵器の軌道上配備を意味する",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "任務説明だけから攻撃兵器の軌道上配備を意味するとは確認できない。",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "これらの任務は攻撃兵器の軌道上配備を意味する",
+        "likelihood": "low",
+        "reason": "GPS等の任務継続は攻撃兵器の軌道上配備を意味せず、任務と兵器配備が区別されている"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-016",
+    "passed": false,
+    "dropped_by": [
+      "stage1_not_reversible_in_any_run"
+    ],
+    "judgment": {
+      "fact_id": "F-016",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "条約が核・大量破壊兵器の宇宙配備等を禁止",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-016",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "宇宙条約が核兵器等の大量破壊兵器配備と天体軍事活動を禁止",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    }
+  },
+  {
+    "fact_id": "F-017",
+    "passed": false,
+    "dropped_by": [
+      "stage1_not_reversible_in_any_run"
+    ],
+    "judgment": {
+      "fact_id": "F-017",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "条約が宇宙活動を国際法に従うよう要求",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-017",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "宇宙活動を国際法と国連憲章に従わせる条約規定",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    }
+  },
+  {
+    "fact_id": "F-018",
+    "passed": false,
+    "dropped_by": [
+      "stage1_not_reversible_in_any_run"
+    ],
+    "judgment": {
+      "fact_id": "F-018",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "安保理が宇宙WMD禁止決議案を採択できず",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "judgment_r2": {
+      "fact_id": "F-018",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "安保理の宇宙条約遵守決議案はロシア拒否権で不採択",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    }
+  },
+  {
+    "fact_id": "F-019",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-019",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "総会が宇宙WMD配備禁止の条約義務確認決議を採択",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-019",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "国連総会が宇宙への大量破壊兵器不配備義務の確認決議を採択",
+      "reverse_proposition": "国連総会は宇宙空間への大量破壊兵器配備を禁じる新条約を成立させた",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "第一委員会関連決議の採択",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "国連総会は宇宙空間への大量破壊兵器配備を禁じる新条約を成立させた",
+        "likelihood": "low",
+        "reason": "既存の義務を確認する決議であり、新条約を成立させたとは明記されていない"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-020",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-020",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "総会が宇宙軍拡防止など二決議を採択",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-020",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "国連総会が宇宙軍備競争防止に関する二つの決議を採択",
+      "reverse_proposition": "国連総会は二つの法的拘束力ある宇宙軍備管理条約を成立させた",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "宇宙軍備競争防止に関する決議の採択",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "国連総会は二つの法的拘束力ある宇宙軍備管理条約を成立させた",
+        "likelihood": "low",
+        "reason": "二つの決議の採択と法的拘束力ある条約の成立は明確に異なる"
+      }
+    ]
+  },
+  {
+    "fact_id": "F-021",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_medium"
+    ],
+    "judgment": {
+      "fact_id": "F-021",
+      "reversible": false,
+      "flipped_component": "none",
+      "compressed_claim": "米国が破壊的直接上昇ASAT試験を行わないと表明",
+      "reverse_proposition": "",
+      "contradicts_ledger_field": "none",
+      "changes_conclusion": false,
+      "ledger_quote": "",
+      "note": null
+    },
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-021",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "米国が破壊的直接上昇ASAT試験をしない政策 commitmentを表明",
+      "reverse_proposition": "米国は破壊的直接上昇式ASAT試験を条約上禁止した",
+      "contradicts_ledger_field": "conditions",
+      "changes_conclusion": true,
+      "ledger_quote": "米国による一方的な政策コミットメント",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "米国は破壊的直接上昇式ASAT試験を条約上禁止した",
+        "likelihood": "medium",
+        "reason": "政策上のコミットメントは条約上の禁止ではないが、禁止を表明したと誤って強く解釈される余地がある"
+      }
+    ],
+    "warnings": [
+      "stage1_5_medium"
+    ]
+  },
+  {
+    "fact_id": "F-024",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "F-024",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "ロシアの対Starlink兵器は開発中と報道",
+      "reverse_proposition": "ロシアは同兵器を実戦配備している",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "試験済みか、いつ配備可能になるかは明らかにしていない。",
+      "note": null
+    },
+    "stage1_run_pass": [
+      true,
+      true
+    ],
+    "judgment_r2": {
+      "fact_id": "F-024",
+      "reversible": true,
+      "flipped_component": "stage",
+      "compressed_claim": "AP報道の情報提供者は対Starlink兵器開発継続を説明",
+      "reverse_proposition": "ロシアの対Starlinkペレット兵器は試験済みまたは配備可能な状態にある",
+      "contradicts_ledger_field": "claim",
+      "changes_conclusion": true,
+      "ledger_quote": "試験済みか、いつ配備可能になるかは明らかにしていない。",
+      "note": null
+    },
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "ロシアは同兵器を実戦配備している",
+        "likelihood": "low",
+        "reason": "対Starlink兵器は開発中と明記され、実戦配備とは読めない"
+      },
+      {
+        "cid": "B",
+        "R": "ロシアの対Starlinkペレット兵器は試験済みまたは配備可能な状態にある",
+        "likelihood": "low",
+        "reason": "開発継続の説明にとどまり、試験済みや配備可能な状態を示していない"
+      }
+    ]
+  }
+]

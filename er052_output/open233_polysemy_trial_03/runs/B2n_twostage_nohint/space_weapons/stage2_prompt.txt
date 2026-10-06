@@ -1,0 +1,255 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。候補のreverse_readingを否定する。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}],"note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}],"note":null}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}],"note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","reverse_propositions":[],"note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","reverse_propositions":[],"note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","reverse_propositions":[],"note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","reverse_propositions":[],"note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}],"note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","R_used":"(noteで否定したR)","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "F-001",
+  "source_quote": "敵対的な相手の行動から統合軍を防護する用途と説明",
+  "reverse_reading": "米国は敵対者を攻撃する軌道上兵器を配備している",
+  "flipped_component": "polarity"
+ },
+ {
+  "fact_id": "F-002",
+  "source_quote": "実際の攻撃は確認されていない。",
+  "reverse_reading": "ロシアの衛星は他の低軌道衛星を実際に攻撃した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-003",
+  "source_quote": "地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し",
+  "reverse_reading": "ロシアは軌道上配備兵器でCOSMOS 1408を破壊した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-004",
+  "source_quote": "地上発射型ASATミサイルで低軌道の故障気象衛星を破壊し",
+  "reverse_reading": "中国は軌道上配備兵器で故障気象衛星を破壊した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-005",
+  "source_quote": "地上からASATミサイルを発射し",
+  "reverse_reading": "インドは軌道上配備兵器で実衛星を撃破した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-007",
+  "source_quote": "試験済みか、配備時期がいつかも不明と報じている。",
+  "reverse_reading": "ロシアのペレット放出兵器は試験済みで、配備可能な段階にある",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-008",
+  "source_quote": "近接の目的や攻撃実施は同資料では確認されていない。",
+  "reverse_reading": "ロシア軍用衛星4基は商用レーダー衛星を攻撃した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-009",
+  "source_quote": "核兵器を搭載した衛星が打ち上げ・配備・使用されたとは記載していない。",
+  "reverse_reading": "ロシアは核兵器搭載衛星を打ち上げ、軌道上に配備・使用した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-014",
+  "source_quote": "低軌道衛星6基の打上げ計画、そのうちHBTSS衛星2基と追跡衛星4基",
+  "reverse_reading": "HBTSS衛星と追跡衛星はすでに低軌道に配備され、実運用された",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-015",
+  "source_quote": "任務説明だけから攻撃兵器の軌道上配備を意味するとは確認できない。",
+  "reverse_reading": "米宇宙軍は攻撃兵器を軌道上に配備している",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-019",
+  "source_quote": "Outer Space Treaty上の義務を確認する決議",
+  "reverse_reading": "国連総会は通常兵器も含む法的拘束力ある新条約を成立させた",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "F-020",
+  "source_quote": "宇宙空間における軍備競争の防止に関する決議A/RES/80/19を177賛成、2反対、1棄権で採択した。",
+  "reverse_reading": "国連総会は宇宙軍備競争を法的に禁止する新条約を採択した",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "F-021",
+  "source_quote": "米国による一方的な政策コミットメント",
+  "reverse_reading": "米国の破壊的直接上昇式ASAT試験禁止は国際条約による全面禁止である",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "F-024",
+  "source_quote": "試験済みか、いつ配備可能になるかは明らかにしていない。",
+  "reverse_reading": "ロシアのペレット型対Starlink兵器は試験済みで、配備可能な状態にある",
+  "flipped_component": "stage"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "F-001",
+  "claim": "2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))",
+  "scope": "米空軍・米宇宙軍",
+  "conditions": "敵対的な相手の行動から統合軍を防護する用途と説明",
+  "date_or_period": "2026年9月14日発言、2026年9月15日公式掲載",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-002",
+  "claim": "米国防総省は、ロシアが2024年5月16日に低軌道へ衛星を打ち上げ、その衛星を米政府衛星と同じ軌道に配置したと説明し、他の低軌道衛星を攻撃できる可能性があるcounter-space weaponと評価した。米側評価では、2019年および2022年に配備されたcounterspace payloadsと類似する特徴がある。([defense.gov](https://www.defense.gov/News/Transcripts/Transcript/Article/3783786/pentagon-press-secretary-air-force-maj-gen-pat-ryder-holds-a-press-briefing/?utm_source=openai))",
+  "scope": "ロシアの低軌道衛星、米政府衛星との軌道関係",
+  "conditions": "米国防総省による評価。攻撃能力は『likely』『presumably』との評価で、実際の攻撃は確認されていない。",
+  "date_or_period": "2024年5月16日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-003",
+  "claim": "ロシアは2021年11月15日、地上発射型の直接上昇式ASATミサイルでロシアの衛星COSMOS 1408を破壊し、1,500個超の追跡可能な軌道デブリを発生させた。([spacecom.mil](https://www.spacecom.mil/Newsroom/News/Article-Display/Article/2842957/russian-direct-ascent-anti-satellite-missile-test-creates-significant-long-last/?utm_source=openai))",
+  "scope": "低軌道、COSMOS 1408および発生デブリ",
+  "conditions": "米宇宙軍による公式発表",
+  "date_or_period": "2021年11月15日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-004",
+  "claim": "中国は2007年1月11日、地上発射型ASATミサイルで低軌道の故障気象衛星を破壊し、3,000個超の追跡可能なデブリを発生させたと米宇宙軍が記録している。([media.defense.gov](https://media.defense.gov/2024/May/15/2003466237/-1/-1/1/240508_USSF%201%20PAGER.PDF))",
+  "scope": "低軌道、故障気象衛星および発生デブリ",
+  "conditions": "米宇宙軍の公式資料による記録",
+  "date_or_period": "2007年1月11日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-005",
+  "claim": "インド政府は2019年3月27日、Mission Shaktiで地上からASATミサイルを発射し、約300kmの低軌道にあるインドの実衛星を撃破したと発表した。([pmindia.gov.in](https://www.pmindia.gov.in/en/news_updates/pms-address-to-the-nation/?utm_source=openai))",
+  "scope": "低軌道、インドの実衛星",
+  "conditions": "インド首相による公式発表",
+  "date_or_period": "2019年3月27日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-007",
+  "claim": "APは2025年12月、ロシアがStarlink衛星を複数同時に無力化するため、小型衛星からペレットを放出する兵器を開発しているとの非公開情報を報じた。APは情報の結論を独自検証できず、試験済みか、配備時期がいつかも不明と報じている。([apnews.com](https://apnews.com/article/c69c1fda5ffc93828712ab723e606a2c))",
+  "scope": "Starlinkを含む低軌道衛星、ロシアの開発計画とされるシステム",
+  "conditions": "匿名情報を基にしたAP報道。APによる独自検証なし。",
+  "date_or_period": "2025年12月報道",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-008",
+  "claim": "米宇宙軍の2026年版Space Threat Fact Sheetは、2026年5月にロシアが4基の軍用衛星を軌道変更し、ウクライナの画像情報に使われる西側商用レーダー衛星に近づけたと記載している。近接の目的や攻撃実施は同資料では確認されていない。([spaceforce.mil](https://www.spaceforce.mil/About-Us/Fact-Sheets/Fact-Sheet-Display/Article/4297159/space-threat-fact-sheet/?utm_source=openai))",
+  "scope": "ロシア軍用衛星4基、西側商用レーダー衛星1基",
+  "conditions": "米宇宙軍の公式ファクトシートによる記載",
+  "date_or_period": "2026年5月",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-009",
+  "claim": "米国の2025年Annual Threat Assessmentは、ロシアが核兵器を搭載する新しい衛星をASAT能力として開発していると評価した。資料は開発中の能力として記述しており、核兵器を搭載した衛星が打ち上げ・配備・使用されたとは記載していない。([dni.gov](https://www.dni.gov/files/ODNI/documents/assessments/ATA-2025-Unclassified-Report.pdf))",
+  "scope": "ロシアの衛星・ASAT開発計画",
+  "conditions": "米情報機関による評価",
+  "date_or_period": "2025年評価",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-014",
+  "claim": "米ミサイル防衛庁と宇宙開発庁は2024年、低軌道に配備するHypersonic and Ballistic Tracking Space Sensor（HBTSS）衛星と追跡衛星を、ミサイル警戒・追跡・防衛のためのセンサー実証として発表した。([defense.gov](https://www.defense.gov/News/Releases/Release/Article/3676902/mda-sda-announce-upcoming-launch-of-the-hypersonic-and-ballistic-tracking-space/?utm_source=openai))",
+  "scope": "低軌道衛星6基の打上げ計画、そのうちHBTSS衛星2基と追跡衛星4基",
+  "conditions": "ミサイル警戒・追跡・防衛用のセンサー実証",
+  "date_or_period": "2024年2月14日発表",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-015",
+  "claim": "米宇宙軍は、GPS機能、ミサイル追跡、宇宙領域認識、衛星アーキテクチャのレジリエンスを継続的な任務・優先事項として説明している。これらは衛星を軍事・社会インフラとして運用・保護する活動であり、任務説明だけから攻撃兵器の軌道上配備を意味するとは確認できない。([spaceforce.mil](https://www.spaceforce.mil/News/Article-Display/Article/4130570/space-force-delivers-warfighting-effects-protects-homeland/?utm_source=openai))",
+  "scope": "GPS、ミサイル追跡、宇宙領域認識、レジリエント衛星アーキテクチャ",
+  "conditions": "米宇宙軍の公式説明に基づく分類",
+  "date_or_period": "2025年3月時点の米宇宙軍説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-019",
+  "claim": "国連総会は2024年12月2日、宇宙空間に核兵器その他の大量破壊兵器を置かないというOuter Space Treaty上の義務を確認する決議を、167賛成、4反対、6棄権で採択した。([press.un.org](https://press.un.org/en/2024/ga12660.doc.htm?utm_source=openai))",
+  "scope": "国連総会加盟国",
+  "conditions": "第一委員会関連決議の採択",
+  "date_or_period": "2024年12月2日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-020",
+  "claim": "国連総会は2025年12月1日、宇宙空間における軍備競争の防止に関する決議A/RES/80/19を177賛成、2反対、1棄権で採択した。また、さらなる実務的措置に関するA/RES/80/21を121賛成、50反対、7棄権で採択した。([digitallibrary.un.org](https://digitallibrary.un.org/record/4094661?utm_source=openai))",
+  "scope": "国連総会加盟国",
+  "conditions": "宇宙軍備競争防止に関する決議の採択",
+  "date_or_period": "2025年12月1日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-021",
+  "claim": "米国防副長官は2022年4月、米国が破壊的な直接上昇式ASATミサイル試験を実施しないという新たなコミットメントを表明した。これは条約による全面禁止ではなく、米国の政策上のコミットメントとして発表された。([defense.gov](https://www.defense.gov/News/Speeches/Speech/Article/3003442/remarks-by-deputy-secretary-of-defense-dr-kathleen-h-hicks-on-the-new-us-commit/?utm_source=openai))",
+  "scope": "米国の破壊的な直接上昇式ASATミサイル試験",
+  "conditions": "米国による一方的な政策コミットメント",
+  "date_or_period": "2022年4月18日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-024",
+  "claim": "APが報じたロシアの対Starlink兵器について、報道内の情報提供者は開発が進行中と説明した一方、試験済みか、いつ配備可能になるかは明らかにしていない。([apnews.com](https://apnews.com/article/c69c1fda5ffc93828712ab723e606a2c))",
+  "scope": "報道されたロシアの小型衛星・ペレット型ASAT構想",
+  "conditions": "匿名情報とAP報道に基づく。独立検証なし。",
+  "date_or_period": "2025年12月時点の報道",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

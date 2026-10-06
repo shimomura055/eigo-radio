@@ -1,0 +1,123 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。既存notes_for_writerの言い回しに引きずられず、候補のreverse_readingを否定する。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+falseのものはコード側で破棄される。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"flipped_component":"polarity","compressed_claim":"X市は補助金新設を見送り","reverse_proposition":"X市は補助金制度を廃止した","contradicts_ledger_field":"claim","changes_conclusion":true,"ledger_quote":"補助金制度の新設を見送った","note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"flipped_component":"stage","compressed_claim":"Y社が試作機の評価を開始","reverse_proposition":"Y社は量産機を現場へ配備した","contradicts_ledger_field":"scope","changes_conclusion":true,"ledger_quote":"社内試験場","note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"flipped_component":"none","compressed_claim":"新製品は年内発売の可能性","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"flipped_component":"none","compressed_claim":"Z社は来期増収を見込む","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"flipped_component":"none","compressed_claim":"約3割が在宅勤務継続","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"flipped_component":"none","compressed_claim":"評論家が新型機を野心的と評価","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"flipped_component":"interim_final","compressed_claim":"W省が旧規則の運用を停止","reverse_proposition":"W省は新規則の運用を開始した","contradicts_ledger_field":"conditions","changes_conclusion":true,"ledger_quote":"新規則の施行日は別途","note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "F-008",
+  "source_quote": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "reverse_reading": "既設単独処理浄化槽も平成13年4月1日から直ちにすべて撤去された",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-010",
+  "source_quote": "公共下水道全体計画を見直し、市街化区域は原則として公共下水道、市街化調整区域は原則として合併処理浄化槽で汚水処理する方針とした。",
+  "reverse_reading": "松山市は区域別の汚水処理方式を実際に切り替え、整備を完了した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-011",
+  "source_quote": "2026年には、残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+  "reverse_reading": "焼津市は残る未整備区域全てを浄化槽推進区域に決定・実施した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-012",
+  "source_quote": "浄化槽設置費の上乗せ補助を実施するとした。",
+  "reverse_reading": "喜多方市は浄化槽設置費の上乗せ補助を既に実施した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "F-013",
+  "source_quote": "公共下水道区域を494haから395haへ縮小する計画を策定した。",
+  "reverse_reading": "嬉野市は公共下水道区域を494haから395haへ実際に縮小した",
+  "flipped_component": "stage"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "F-008",
+  "claim": "単独処理浄化槽はし尿のみを処理し、生活雑排水を処理対象としない。平成12年の浄化槽法改正により、単独処理浄化槽の新設は平成13年4月1日から原則禁止された。",
+  "scope": "日本国内の浄化槽新設制度",
+  "conditions": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "date_or_period": "平成13年4月1日以降",
+  "source_url": null,
+  "notes_for_writer": "単独処理浄化槽と合併処理浄化槽を区別する基礎事実。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-010",
+  "claim": "松山市は、下水道施設の老朽化、自然災害、人口減少による財政面の厳しさを踏まえ、公共下水道全体計画を見直し、市街化区域は原則として公共下水道、市街化調整区域は原則として合併処理浄化槽で汚水処理する方針とした。",
+  "scope": "松山市の全体計画区域",
+  "conditions": "市街化区域と市街化調整区域で方針を分ける。『原則』であり、区域内の個別事情を排除する記載ではない。",
+  "date_or_period": "2024年4月1日公表",
+  "source_url": null,
+  "notes_for_writer": "既設老朽管を撤去して浄化槽へ切り替えた事例ではなく、全体計画区域の方式見直し事例。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-011",
+  "claim": "焼津市は、公共下水道計画区域の未整備区域について、経済性、将来性、災害時の影響を踏まえて公共下水道と合併処理浄化槽を比較し、2024年度に一部区域を合併処理浄化槽の推進区域へ転換した。2026年には、残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+  "scope": "焼津市の公共下水道計画区域内の未整備区域",
+  "conditions": "既に整備済みの公共下水道区域を浄化槽へ切り替える内容ではなく、未整備区域の計画方式変更",
+  "date_or_period": "2024年度および2026年7月1日〜7月31日の意見募集",
+  "source_url": null,
+  "notes_for_writer": "『切り替えを決定した』ではなく、『未整備区域の計画方式を転換・検討した』と記述する。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-012",
+  "claim": "喜多方市は、施設老朽化に伴う更新等による維持管理費の増加と、人口減少に伴う使用料収入の減少を踏まえ、汚水処理構想を見直した。見直し後、集合処理区域以外を合併処理浄化槽による個別処理区域とし、浄化槽設置費の上乗せ補助を実施するとした。",
+  "scope": "喜多方市全域の汚水処理構想",
+  "conditions": "公共下水道、特定環境保全公共下水道、農業集落排水、小規模集合排水の区域を見直した後の区域設定",
+  "date_or_period": "2021年4月1日公表",
+  "source_url": null,
+  "notes_for_writer": "老朽化・人口減少を理由とする区域再編の自治体事例。",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-013",
+  "claim": "佐賀県嬉野市では、人口減少と最大震度6強の地震を想定し、汚水処理方式ごとの設置・維持管理コストを比較した結果、主に住宅散在地で公共下水道より浄化槽の方が低コストとなると整理し、公共下水道区域を494haから395haへ縮小する計画を策定した。",
+  "scope": "嬉野市の公共下水道計画区域および住宅散在地",
+  "conditions": "市のコスト比較結果に基づく計画上の判断",
+  "date_or_period": "平成29年度導入事例、計画上の区域見直し",
+  "source_url": null,
+  "notes_for_writer": "『全国的に浄化槽が低コスト』ではなく、『嬉野市の比較では住宅散在地で低コストと整理』と限定する。",
+  "verification_notes": ""
+ }
+]

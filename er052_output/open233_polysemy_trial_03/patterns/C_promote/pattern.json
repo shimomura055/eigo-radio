@@ -1,0 +1,6 @@
+{"pattern":"C_promote","mode":"promote","max_chars":100,
+ "prefix_file":"prefix.txt","prompt_files":["stage1_prompt.txt"],"examples_file":"examples.txt","output_key":"promotions",
+ "input_filter":"notes_for_writerが空でないfactのみ(コード側で絞る)",
+ "fallback":"A_onepass","fallback_for":"notes_for_writerが空のfact(Aを適用)",
+ "pass_rule":"noteが非null、接頭辞で始まり{max_chars}字以内・改行なし。note生成元(source_prohibition)がnotes_for_writer内に逐語で存在すること",
+ "hypothesis":"既存notesは誤読を既に把握している(F0表C)ので、新規判定より禁止文の昇格(書き換え)の方が見落としと内容ずれが小さい"}

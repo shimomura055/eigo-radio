@@ -20118,3 +20118,19 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (f)【Trial計画】Control/案N(案N+Bは承認時のみ別arm)、meta+hormuz、Phase 1×3 repeat+Phase 2(良条件のみ)。上限案2条件¥130/3条件¥200。未実行。
 - (g)【ユーザー判断事項5点】(1)Trial実施可否と上限 (2)案N/N+B/3条件 (3)確度高のみ既定 (4)offline固定台帳の可否 (5)対象テーマ。いずれも未承認の新仕様候補。
 - 残11 run待機、TRIAL-04未開始、S1等採否不変。出典: `docs/pm/polysemy_note/`、`docs/pm/delegation_log/2026-10-06_OPEN-233-LEDGER-POLYSEMY-NOTE-DESIGN-01_E.md`。
+
+## 2026-10-06 OPEN-233-LEDGER-POLYSEMY-NOTE-TRIAL-02(自動Note生成の初回評価、Phase 0完了・中間STOP、Trial限定)
+
+- Status: **USER_DECISION_REQUIRED**(Fable判定。TRIAL-03の指示で置換)。OPEN-237、REPORT §90-1。
+- (a)【決定】「Trial実施(ユーザー承認済み、上限¥500)」のみ。それ以外は決定ではない。
+- (b)【事実確認】Phase 0完了(追加3記事=space_weapons/sewer/ai_control、N+B DEV runner test 9件PASS、固定台帳はControl=既存txtバイトコピー・N+B=notes行のみ追記で5テーマ差分0)。自動notes生成gen1(過剰付与45件)/gen2(付与率20%以下だがhormuz 0件・対象捕捉2/15・HC-012の内容ずれ・字数却下)で承認条件「高確度のみ」不成立→Phase 1未実行。
+- (c) 実費¥25.44/上限¥500。Production変更なし、残11 run待機。
+
+## 2026-10-06 OPEN-233-LEDGER-POLYSEMY-NOTE-TRIAL-03(自動Note生成の要素評価3ループ、成立せず、Trial限定)
+
+- Status: **USER_DECISION_REQUIRED**(Fable判定。3ループで成立せず=STOP条件該当、5記事Trial未実施)。OPEN-237、REPORT §90、OF-062。
+- (a)【決定】「Trial実施(ユーザー承認済み、上限¥500)」のみ。それ以外は決定ではない。
+- (b)【事実確認】L1 A/B/C(捕捉8/6/9 of 14、付与率41/22/44%、holdout A=10件NG・B=0・C=1、捏造A0/B0/C5、実費¥75.42)/L2 B2・B2n(捕捉10/6、付与率42/39%、内容一致8/10・5/6、捏造0、実費¥50.70)/L3 B3(捕捉1/14、付与率2.4%、実費¥34.01。閾値をhigh+mediumに緩めた机上試算で捕捉7/14・付与20%)。成立基準を全て満たすパターンなし(B2が5/6で最良、付与率のみNG)。
+- (c)【重大発見】(a)B2/B3 stage1 promptは新旧本文連結の欠陥版でH3は実質未検証/(b)stage1判定ゆらぎ(Jaccard 0.29〜0.88)/(c)1.5判定役は弁別力あり(58% vs 29%)だが閾値が厳しすぎた/(d)全ループ未捕捉=EVID-004・CONTROL-001/(e)既存notes依存(Aのablationで8→6)。
+- (d)【ユーザー判断事項(推奨付き)】(1)4ループ目(欠陥prompt修正+閾値high+medium+限定語除去、約¥40) (2)B2のまま5記事Trial(約¥155) (3)推奨=決定論的「既存notes昇格」+B3転記で5記事Trial(約¥155、LLMなし=捏造0、伝達が真因かを先に確定)。いずれも未承認の新仕様候補。
+- Production変更なし/Trial限定(VALIDATED止まり)。実費累計¥160.13/上限¥500。残11 run待機。出典: `docs/pm/polysemy_trial_03/`。

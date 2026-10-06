@@ -1,0 +1,91 @@
+下記の【候補】は、一次スクリーニングを通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+「注意(逆転): <主体>が<対象>を<正しい状態・段階>。<R>ではない。」日本語本文(接頭辞を含む全体)は100字以内、英語の鍵語は3語以内、改行なし。<R>には候補のreverse_readingを自然な日本語にして入れる。正しい状態・段階は、下記Fact一覧のclaim/scope/conditionsから導けるものだけにし、新しい事実・解釈を足さない。「改める」「見直す」など向き・結果が曖昧な語を説明語に流用しない。既存notes_for_writerの言い回しに引きずられず、候補のreverse_readingを否定する。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた「正しい状態・段階」は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+falseのものはコード側で破棄される。noteが書けないfactはnoteをnullにしてよい。
+
+【例の見方】下の例はスクリーニング用のもので、判定の型の参考にだけ使う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のためnoteは出さず、迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"flipped_component":"polarity","compressed_claim":"X市は補助金新設を見送り","reverse_proposition":"X市は補助金制度を廃止した","contradicts_ledger_field":"claim","changes_conclusion":true,"ledger_quote":"補助金制度の新設を見送った","note":null}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"flipped_component":"stage","compressed_claim":"Y社が試作機の評価を開始","reverse_proposition":"Y社は量産機を現場へ配備した","contradicts_ledger_field":"scope","changes_conclusion":true,"ledger_quote":"社内試験場","note":null}
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"flipped_component":"none","compressed_claim":"新製品は年内発売の可能性","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"flipped_component":"none","compressed_claim":"Z社は来期増収を見込む","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"flipped_component":"none","compressed_claim":"約3割が在宅勤務継続","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"flipped_component":"none","compressed_claim":"評論家が新型機を野心的と評価","reverse_proposition":"","contradicts_ledger_field":"none","changes_conclusion":false,"ledger_quote":"","note":null}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"flipped_component":"interim_final","compressed_claim":"W省が旧規則の運用を停止","reverse_proposition":"W省は新規則の運用を開始した","contradicts_ledger_field":"conditions","changes_conclusion":true,"ledger_quote":"新規則の施行日は別途","note":null}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "MUSE-HC-001",
+  "source_quote": "米国でiOS、Android、muse.ai向けに展開すると説明している。",
+  "reverse_reading": "MetaはMuseを発表し、米国での提供を開始した",
+  "flipped_component": "stage"
+ },
+ {
+  "fact_id": "MUSE-HC-012",
+  "source_quote": "機能を当面ロールバックした",
+  "reverse_reading": "人間コンシェルジュ機能を恒久停止した",
+  "flipped_component": "interim_final"
+ },
+ {
+  "fact_id": "MUSE-HC-014",
+  "source_quote": "準備が整い、適切な開示ができる場合にのみ公開展開すると",
+  "reverse_reading": "Metaは電話機能をすでに公開展開した",
+  "flipped_component": "stage"
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "MUSE-HC-001",
+  "claim": "Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。",
+  "scope": "米国のMuse提供地域・対象ユーザー",
+  "conditions": "Metaの発表時点の提供範囲",
+  "date_or_period": "2026年9月8日",
+  "source_url": null,
+  "notes_for_writer": "Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-012",
+  "claim": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+  "scope": "Meta社内テストの人間コンシェルジュ機能",
+  "conditions": "適切な開示なしで契約スタッフが電話を担当していたテスト",
+  "date_or_period": "2026年9月22日まで",
+  "source_url": null,
+  "notes_for_writer": "「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-014",
+  "claim": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。",
+  "scope": "Museの電話機能および人間コンシェルジュを含む可能性のある運用",
+  "conditions": "準備完了および適切な開示が整うこと",
+  "date_or_period": "2026年9月22日時点",
+  "source_url": null,
+  "notes_for_writer": "公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ }
+]
