@@ -4690,3 +4690,37 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 
 
 Fable分類: **VALIDATED**(2026-10-06)。根拠: 受入条件4件すべて充足【確認】(A4-0 3/3[01は2/3]、正式gold 6/6、hold-out 9/9・neg5 3/3・K19 3/3で01比悪化なし、NORMAL候補24.17→10.75件/記事=Beforeの44%で削減効果維持[01比+0.92])。STOP条件6件いずれも非該当(実費¥14.38≤¥20、gold落ちなし、A4-0安定、旧過剰仕様への回帰なし[AI由来増分の約8割は元SUPPORTEDのscope/qualifier不一致化]、新Safety問題なし、追加仕様変更不要)。Production採用ではない(Production Checker・後段AI・機械Safety・E2E不変)。次工程はユーザー判断(Production Checkerへの反映設計はOpus条件A/C対象)。残観察: 『Ledger未記載のみ』境界例2→7件、NO_FACT_CLAIM→CANDIDATE 9件(将来予測・一般傾向・認識推測文)は過検出の可能性があり、次段階で問いの微調整候補(今回は変更しない)。
+
+## §79 OPEN-233-FLOOR-SELECTIVITY-OPTIMIZATION-01: 機械Safety(floor)誤爆35件の分析と設計案比較(委任_01〜02b、¥0)
+
+### §79-1 前提・provenance・35件内訳
+- 性質: ¥0の既存保存データ分析(`er052_output/open233_floor_selectivity_offline_01/floor_fire_analysis_01.{py,json,md}`)と設計比較のみ。コード/Prompt/gold/Production変更なし。設計doc `docs/pm/design_open233_floor_selectivity_01.md`、Opus `docs/pm/opus_l2_review_open233_floor_selectivity_01.md`。
+- ラベル(正当/不要/判断不能)はRCA由来の推測ラベルで、Fable/ユーザー未確認(U4)。
+- 35件内訳(延べ発火/正当/不要/判断不能): 主体6/2/2/2、数字4/3/1/0、否定5/0/5/0、比較14/0/13/1、因果1/0/1/0、時期8/1/6/1、その他(tier0:aux)1/0/0/1。正当6=数字3・主体2・時期1(LLM自身重大4、floorのみ重大化2[No.5,21→訂正後No.5,23])。
+- 不要24の原因【確認】: (i)Stage 1フラグ不整合17、(ii)重大性判定欠如6、(iv)Tier0語彙1、(iii)=0(集計script `assign_cause`に(iii)分岐がなく構造的に0、doc §10訂正)。
+
+### §79-2 誤爆主因と案別比較(強制重大件数/正当6件)
+- 主因【確認】: `apply_floor`(runner L2432)がLLM判定と無関係にBLOCKING上書きし、重大性判定もフラグ検証もない。比較+否定が最大誤爆源。floor単独起因31/35。
+- 案別(in-sample、現行35件): 案0=35/6強制、案1=14/6強制、案2=8/強制4+確認2、案3=0/確認6、案4=4/LLM自身4+S1 2、案5=14/6強制。
+- hold-out(rep30、集計md L69): 案1はneg3 gold(SC gold b1b、時期floor・LLM非BLOCKING)を非強制=見逃し。「案1 6/6維持」はin-sample限定(doc §10訂正)。
+- 半減見込み(in-sample): 案1〜5全て半分以下、1/3以下は案2/3/4。案1/5は14件で1/3未達。out-of-sample・追加確認精度は未測定。
+- 案2で追加確認へ回る正当はNo.5とNo.23(No.23はLLM BLOCKINGのためverify対象外で残り、実際に危険なのはNo.5のみ)。
+- 承認済み線引きOPEN-233-A1-PROD(時期のみverify・他は決定論維持)に対し、案2〜4は明確な変更、案1/5も発火範囲縮小で実質変更=ユーザー承認要。
+
+### §79-3 Opus条件Aレビュー要旨(`docs/pm/opus_l2_review_open233_floor_selectivity_01.md`、read-only、¥0)
+- 結論: floorだけを変える案1〜5は根本対策として不十分。不要24の中心は(i)17件でStage 1が`changed_*`を付けたこと自体が誤り(Ledgerに対応記述なし=absence)【確認】。R3 promptは「少しでも疑いがあればCANDIDATE」でabsence専用規則なし、Production checkerの`HOOK_CLAUSE`相当の緩和もない。
+- doc分析の弱点【確認】: `issue_type`はLLM日本語issue文の正規表現判定、`CONTRA_RE`が広すぎる、(i)(ii)振り分けも正規表現のみ、(iii)=0は構造的。
+- 案別評価: 案1/5=正規表現・固有名詞除外の個別当て込みでhold-outでgold見逃し(R2)。案2=verifyはStage 2と同モデルで誤りが相関、委任_61で方向反転がverifyで解放され比較を決定論へ戻した経緯があり、主体・比較へのverify拡張は塞いだ穴の再開(R3)。案4=S1は同rubric再サンプルで正当6件中2件を失いうる、Trial専用・既定OFF、非推奨。
+- 推奨代替(優先順): (1)RECLASSIFY-02区分(「Ledger食い違い」候補)のfloor発火条件流用(2)cite-to-fire(変更されたLedger記述の逐語引用を要求、実在を決定論検証。`apply_floor_cited`/`floor_cited_eligible`が¥0実装済み。ただし現行は英語4文字以上の語重なり判定でLedgerが日本語のため非数値はほぼ一致しない可能性【推測】、保存値replayで先に評価)(3)Stage 1 prompt補正(absenceは`changed_*`を付けず`unsupported_new_claim`、recall測定要、OF-001)。
+- 順序: RECLASSIFY-02評価→段階0(¥0: 0a 35件とRECLASSIFY-02保存出力の突合/0b `apply_floor_cited`反実仮想値を35件+SC gold全件で集計/0c SC gold・hold-outのgold取りこぼし0を最優先/0d 正当6+判断不能5のラベル確認)→設計確定→ユーザー承認→有料段階1。ユーザー承認要=floor発火条件変更すべて/Stage 1 prompt・schema変更/有料Trial。承認不要=時期の承認済みverify流用・¥0 replay。
+- 目標再確認: 誤BLOCKINGの害と誤解放の害は非対称。件数目標よりgold取りこぼし0を優先。「複数フラグ同時true」は不採用(複合4件は全て不要ラベル)。
+
+### §79-4 Fable判断(2026-10-06、Opus条件Aレビュー後)とユーザー判断事項
+Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、根本原因=floor側の重大性判定不在)とOpus(根本原因=Stage 1 `changed_*`フラグ生成側のabsence/contra混同、案1/5は過適合、案4は正当2件を失いうる、推奨=RECLASSIFY-02区分流用>cite-to-fire>Stage 1 prompt補正)で重要な結論が対立。(2)Fable検証【確認】: hold-out(rep30、集計md L69)で案1はneg3 gold(時期floor・LLM非BLOCKING)を非強制=見逃し(案1 6/6維持はin-sample限定)/集計scriptの`assign_cause`(L207-215)に原因(iii)分岐がなく(iii)=0は構造的/doc §5のNo.21記述は表(No.23)と不一致。(3)案1〜5・cite-to-fireのいずれも承認済み線引きOPEN-233-A1-PROD(`APPROVED_FOR_PRODUCTION`・未配線、時期のみverify・比較/主体/数字/否定は決定論維持)の変更に当たりユーザー承認事項=ユーザー指定STOP条件「Production仕様変更が必要」に該当。(4)floor側のみの精緻化で正当6件を守りつつ半減する見込みは、in-sampleでは案1/5=14件だがhold-outで1件見逃しのため未確立。Fable評価: Opusの根本原因指摘(フラグ生成側)と順序(RECLASSIFY-02評価→¥0段階0→設計確定→ユーザー承認→有料段階1)を妥当と判断し、ユーザーへ提示。Production未変更、有料Trial未実施、gold不変。
+
+ユーザー判断事項:
+- U1 設計方向: Opus代替(1)RECLASSIFY-02区分流用/(2)cite-to-fire/(3)Stage 1 prompt補正/Sonnet案2+5/floor撤廃別設計のいずれか。
+- U2 承認済み線引きOPEN-233-A1-PROD変更の可否。
+- U3 ¥0段階0(0a〜0d)の実施可否。
+- U4 正当6件・判断不能5件のラベル確認(RCA推測ラベル)。
+成果物: 上記doc 2件、`er052_output/open233_floor_selectivity_offline_01/floor_fire_analysis_01.{py,json,md}`。

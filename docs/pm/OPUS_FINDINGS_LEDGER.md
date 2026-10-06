@@ -50,6 +50,12 @@
 | OF-040 | 2026-10-06 | #18(委任_B任意レビュー) | 採用項目 | R1: covered判定に「範囲が現在の本文に存在しない」条件を追加(同文複数出現で片方のみ書換の抜け道) | 採用 | 委任_B3 | `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01_B2.md`、REPORT §76-2 | 未 | IMPLEMENTED |
 | OF-041 | 2026-10-06 | #18(委任_B任意レビュー) | 採用項目 | R5-(b): `blocking_structural_after_ladder`の全発生箇所で構造検証結果(structural_verified)を記録(記録のみ) | 採用 | 委任_B3 | `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01_B2.md`、REPORT §76-2 | 未 | IMPLEMENTED |
 | OF-042 | 2026-10-06 | #18(委任_B任意レビュー) | 観察 | R4: regen内で新たに起きた枯渇・位置特定不能は判定されずRecheckへ流れる(既存挙動、安全側。T対象はregen内で再実行される) | 観察のみ(未対応、REPORT §76-2で記述訂正) | 委任_B3(記述訂正のみ) | `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01_B2.md`、REPORT §76-2 | 未 | RAISED |
+| OF-043 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 根本原因はStage 1 `changed_*`フラグ生成側(absence/contra混同、`HOOK_CLAUSE`相当の緩和なし)。floor側は二次的 | 記録(ユーザー判断待ち。設計方向U1) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (1) | 未 | RAISED |
+| OF-044 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 案1/5は正規表現当て込み(LLM issue文・英語anchor・HC-011専用規則)で過適合。hold-out(rep30)でneg3 gold(時期)を見逃す | 不採用方向(Fable判断。採否はユーザー判断待ち) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (3) R2 | 未 | FABLE_DECIDED |
+| OF-045 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 案4(S1)は同rubric再サンプルに過ぎず正当6件中2件を失いうる。Trial専用・既定OFF | 非推奨(Fable判断。ユーザー判断待ち) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (3) | 未 | FABLE_DECIDED |
+| OF-046 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 推奨代替: (1)RECLASSIFY-02区分のfloor発火条件流用(2)cite-to-fire(`apply_floor_cited`反実仮想記録再利用)(3)Stage 1 prompt補正 | 提示(Fable判断: ユーザーへ提示、U1。いずれもA1-PROD線引き変更=承認要) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (5) | 未 | RAISED |
+| OF-047 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 順序: RECLASSIFY-02評価→¥0段階0(0a〜0d)→設計確定→ユーザー承認→有料段階1 | 妥当と判断(Fable判断。段階0はU3で実施可否をユーザー判断) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (6) | 未 | RAISED |
+| OF-048 | 2026-10-06 | FLOOR条件Aレビュー | 観察 | 集計scriptの`assign_cause`に原因(iii)分岐がなく(iii)=0は構造的/doc §5のNo.21はNo.23の誤り | 採用(doc §10で訂正済み) | 委任_02a(§10追記) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (1)(3) | 済(doc §10) | RAISED |
 
 注記: OF-014〜OF-018のうちF1〜F4は、本委任の指示(Opus#15 F1〜F4をbackfill)に基づく。F3/F4の区分(MAJOR/採用項目)は台帳作成者による暫定分類で、Opus原文は番号付き所見のみ(重大度の明示なし)。OF-018はSafety hole節の項目3で、F番号とは別。
 

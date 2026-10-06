@@ -167,3 +167,4 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B3 | Opus任意レビュー反映(R1/R2/R5-a/R5-b)、テスト+6件、回帰863件PASS、¥0。REPORT §76-2。
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02 委任_01 | 問い精緻化(4点一致)再分類Trial: 較正済み見積mid¥13.8>上限¥12のため有料実行せずSTOP(実費¥0)。NORMAL候補・gold・hold-outは未測定。REPORT §78。
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02 委任_02 | 4観点prompt本実行(¥14.38): NORMAL候補9.83→10.75(AI由来5.33→6.25)、gold 6/6(A4-0 3/3)、hold-out 9/9、和集合8.57。REPORT §78-2。 Fable分類=VALIDATED(Production採用ではない)。
+- 2026-10-06 | OPEN-233-FLOOR-SELECTIVITY-OPTIMIZATION-01 委任_01〜02b | floor誤爆35件分析+設計案0〜5比較(¥0)、Opus条件Aレビュー(根本原因=Stage 1フラグ生成側、案1はhold-outでgold見逃し、推奨=RECLASSIFY-02区分流用/cite-to-fire)、USER_DECISION_REQUIRED(線引きA1-PROD変更要承認)。REPORT §79。

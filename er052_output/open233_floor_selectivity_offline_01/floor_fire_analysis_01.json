@@ -1,0 +1,2537 @@
+{
+ "provenance": "frozen(E2E保存run json)+RCA label reuse(推測ラベル)。設計replayはin-sample(35件)+rep30 SC gold(旧Stage1由来、hold-out参考、未較正)",
+ "n": 35,
+ "label_counts": {
+  "不要": 24,
+  "正当": 6,
+  "判断不能": 5
+ },
+ "cause_counts_unneeded24": {
+  "(ii)種別妥当だが重大性判定欠如": 6,
+  "(i)フラグ不整合": 17,
+  "(iv)Tier0語彙": 1
+ },
+ "stage1_sub_reasons_all_model": true,
+ "unsupported_new_claim_also_true": 34,
+ "llm_dist_all35": {
+  "ACCEPTABLE": 25,
+  "QUALITY": 6,
+  "BLOCKING": 4
+ },
+ "category_table": {
+  "主体": {
+   "延べ発火": 6,
+   "正当": 2,
+   "不要": 2,
+   "判断不能": 2,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    1,
+    1,
+    4
+   ],
+   "単独flag": 6,
+   "複合": 0,
+   "例(逐語)": [
+    "At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+    "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+    "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement."
+   ]
+  },
+  "数字": {
+   "延べ発火": 4,
+   "正当": 3,
+   "不要": 1,
+   "判断不能": 0,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    2,
+    1,
+    1
+   ],
+   "単独flag": 4,
+   "複合": 0,
+   "例(逐語)": [
+    "It said human staff made inappropriate comments about race during calls.",
+    "These calls were about trying to lower internet or cable fees.",
+    "News reports also quoted a report from an employee."
+   ]
+  },
+  "否定": {
+   "延べ発火": 5,
+   "正当": 0,
+   "不要": 5,
+   "判断不能": 0,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    0,
+    1,
+    4
+   ],
+   "単独flag": 3,
+   "複合": 2,
+   "例(逐語)": [
+    "The issue was not that humans made the calls themselves.",
+    "The problem was not that humans made the calls.",
+    "The issue was not that humans handled calls."
+   ]
+  },
+  "比較": {
+   "延べ発火": 14,
+   "正当": 0,
+   "不要": 13,
+   "判断不能": 1,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    0,
+    1,
+    13
+   ],
+   "単独flag": 10,
+   "複合": 4,
+   "例(逐語)": [
+    "The real challenge for AI phone calls is not just how they talk.",
+    "The more useful a service is, the less it should hide the people working behind the scenes.",
+    "The problem was not that humans made the calls."
+   ]
+  },
+  "因果": {
+   "延べ発火": 1,
+   "正当": 0,
+   "不要": 1,
+   "判断不能": 0,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    0,
+    0,
+    1
+   ],
+   "単独flag": 1,
+   "複合": 0,
+   "例(逐語)": [
+    "So it sounds like a simple story: you make a request, and someone takes care of the call."
+   ]
+  },
+  "時期": {
+   "延べ発火": 8,
+   "正当": 1,
+   "不要": 6,
+   "判断不能": 1,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    1,
+    3,
+    4
+   ],
+   "単独flag": 6,
+   "複合": 2,
+   "例(逐語)": [
+    "But as the conversation went on, the voice was not AI at all.",
+    "But this was where the problem began.",
+    "As AI becomes able to make calls or reservations for us, this question will become more familiar."
+   ]
+  },
+  "その他(Tier0補助ベルト:issue文の主体語)": {
+   "延べ発火": 1,
+   "正当": 0,
+   "不要": 0,
+   "判断不能": 1,
+   "LLM判定分布(重大/軽微/問題なし)": [
+    0,
+    0,
+    1
+   ],
+   "単独flag": 1,
+   "複合": 0,
+   "例(逐語)": [
+    "Users might not know who was doing the work they had asked AI to do—and their personal information might reach that person."
+   ]
+  }
+ },
+ "design_table": {
+  "案0_現行": {
+   "強制重大(35件中)": 35,
+   "うちfloorのみ起因(LLM非BLOCKING)": 31,
+   "最終BLOCKING(強制∪LLM BLOCKING)": 35,
+   "追加確認へ": 0,
+   "追加確認へのうちLLM非BLOCKING": 0,
+   "非重大化": 0,
+   "ラベル別行き先": {
+    "正当": {
+     "強制重大": 6
+    },
+    "不要": {
+     "強制重大": 24
+    },
+    "判断不能": {
+     "強制重大": 5
+    }
+   }
+  },
+  "案1_条件精緻化": {
+   "強制重大(35件中)": 14,
+   "うちfloorのみ起因(LLM非BLOCKING)": 10,
+   "最終BLOCKING(強制∪LLM BLOCKING)": 14,
+   "追加確認へ": 0,
+   "追加確認へのうちLLM非BLOCKING": 0,
+   "非重大化": 21,
+   "ラベル別行き先": {
+    "正当": {
+     "強制重大": 6
+    },
+    "不要": {
+     "強制重大": 5,
+     "非重大化(Stage2判定へ戻る)": 19
+    },
+    "判断不能": {
+     "非重大化(Stage2判定へ戻る)": 2,
+     "強制重大": 3
+    }
+   }
+  },
+  "案2_確定のみ強制+他は追加確認": {
+   "強制重大(35件中)": 8,
+   "うちfloorのみ起因(LLM非BLOCKING)": 5,
+   "最終BLOCKING(強制∪LLM BLOCKING)": 9,
+   "追加確認へ": 27,
+   "追加確認へのうちLLM非BLOCKING": 26,
+   "非重大化": 0,
+   "ラベル別行き先": {
+    "正当": {
+     "追加確認へ": 2,
+     "強制重大": 4
+    },
+    "不要": {
+     "強制重大": 3,
+     "追加確認へ": 21
+    },
+    "判断不能": {
+     "追加確認へ": 4,
+     "強制重大": 1
+    }
+   }
+  },
+  "案3_トリガーのみ": {
+   "強制重大(35件中)": 0,
+   "うちfloorのみ起因(LLM非BLOCKING)": 0,
+   "最終BLOCKING(強制∪LLM BLOCKING)": 4,
+   "追加確認へ": 35,
+   "追加確認へのうちLLM非BLOCKING": 31,
+   "非重大化": 0,
+   "ラベル別行き先": {
+    "正当": {
+     "追加確認へ": 6
+    },
+    "不要": {
+     "追加確認へ": 24
+    },
+    "判断不能": {
+     "追加確認へ": 5
+    }
+   }
+  },
+  "案4_floor撤廃+既存S1": {
+   "強制重大(35件中)": 4,
+   "うちfloorのみ起因(LLM非BLOCKING)": 0,
+   "最終BLOCKING(強制∪LLM BLOCKING)": 4,
+   "追加確認へ": 31,
+   "追加確認へのうちLLM非BLOCKING": 31,
+   "非重大化": 0,
+   "ラベル別行き先": {
+    "正当": {
+     "追加確認へ(既存S1)": 2,
+     "強制重大(LLM自身がBLOCKING)": 4
+    },
+    "不要": {
+     "追加確認へ(既存S1)": 24
+    },
+    "判断不能": {
+     "追加確認へ(既存S1)": 5
+    }
+   }
+  },
+  "案5_段階化": {
+   "強制重大(35件中)": 14,
+   "うちfloorのみ起因(LLM非BLOCKING)": 10,
+   "最終BLOCKING(強制∪LLM BLOCKING)": 14,
+   "追加確認へ": 3,
+   "追加確認へのうちLLM非BLOCKING": 3,
+   "非重大化": 18,
+   "ラベル別行き先": {
+    "正当": {
+     "強制重大": 6
+    },
+    "不要": {
+     "強制重大": 5,
+     "非重大化(Stage2判定へ戻る)": 17,
+     "追加確認へ": 2
+    },
+    "判断不能": {
+     "非重大化(Stage2判定へ戻る)": 1,
+     "追加確認へ": 1,
+     "強制重大": 3
+    }
+   }
+  }
+ },
+ "sc_gold_holdout_summary": {
+  "list_floor_only_gold": [
+   [
+    "safety_A4",
+    "“Through Muse, trained human contract workers made some call",
+    [
+     "changed_actor"
+    ],
+    "unclear",
+    true,
+    true
+   ],
+   [
+    "neg3_hormuz_prodrunner_b1b",
+    "The fee plan left the stage, but the events driving oil pric",
+    [
+     "changed_time"
+    ],
+    "unclear",
+    false,
+    false
+   ]
+  ],
+  "n_unique_gold_floor_claims(非列挙複製、gold一致、全保存run重複排除)": 12,
+  "うちLLM非BLOCKING(floorだけが重大化)": 2,
+  "案1(floor-only gold)": {
+   "強制": 1,
+   "非強制": 1
+  },
+  "案2(floor-only gold)": {
+   "強制": 1,
+   "追加確認": 1
+  },
+  "案5(floor-only gold)": {
+   "強制": 1,
+   "追加確認": 1
+  },
+  "案4(floor-only gold)": {
+   "追加確認(S1)": 2
+  }
+ },
+ "cost": {
+  "8run_total_by_stage_jpy": {
+   "stage1_initial": 11.113,
+   "stage2_second_judge": 11.011,
+   "stage3_rewrite": 6.085,
+   "stage1_recheck": 6.89,
+   "stage1_exit_check": 3.454,
+   "floor_verify": 0.809
+  },
+  "8run_total_jpy": 39.363,
+  "S1_second_opinion_jpy_per_claim_mean": 0.0281,
+  "n_s1_claim_records": 161
+ },
+ "rows": [
+  {
+   "no": 1,
+   "run": "hormuz_run03_advanced",
+   "cycle": 1,
+   "claim": "At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+   "fact_id": "HF-009",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "reason_flags": [
+    "changed_actor"
+   ],
+   "categories": [
+    "主体"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerは米・イラン間の攻撃と記述していますが、記事は「by the United States and Iran」として米国とイラン双方が攻撃主体であるように記しています。主体の範囲が変わっています。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_actor",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_actor": {
+     "anchor": true,
+     "strict_confirmed": true,
+     "ledger_relevant": true,
+     "note": "proper_noun_not_in_ledger:United,States,Iran"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(ii)種別妥当だが重大性判定欠如",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 2,
+   "run": "meta_run03_advanced",
+   "cycle": 1,
+   "claim": "The issue was not that humans made the calls themselves.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_negation",
+   "reason_flags": [
+    "changed_negation"
+   ],
+   "categories": [
+    "否定"
+   ],
+   "stage1_flags_true": [
+    "changed_negation",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "人間が電話をかけること自体は問題ではなかった、という評価・問題設定はLedgerにありません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_negation",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_negation": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "polarity_agree(claim_neg&ledger_neg/forbid)"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 3,
+   "run": "meta_run03_advanced",
+   "cycle": 1,
+   "claim": "The real challenge for AI phone calls is not just how they talk.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_scope",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "AI電話の「本当の課題」が話し方だけではないという一般的な評価・結論はLedgerにありません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 4,
+   "run": "meta_run03_advanced",
+   "cycle": 1,
+   "claim": "The more useful a service is, the less it should hide the people working behind the scenes.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "サービスの有用性が高いほど舞台裏の人々を隠すべきでない、という規範的・比較的主張はLedgerにありません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_ledger_cmp_term"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 5,
+   "run": "meta_run03_advanced",
+   "cycle": 3,
+   "claim": "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+   "fact_id": "MUSE-HC-011",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "reason_flags": [
+    "changed_actor"
+   ],
+   "categories": [
+    "主体"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerが示すのは料金交渉の1件として報道された従業員報告です。記事の「human staff」「during calls」という表現は、複数のスタッフや通話に一般化して読めます。",
+   "llm_materiality": "QUALITY",
+   "llm_3way": "軽微",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_actor",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "正当",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_actor": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "no_new_proper_noun(role/generalization未確定)"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 6,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "The problem was not that humans made the calls.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_negation,changed_comparison",
+   "reason_flags": [
+    "changed_negation",
+    "changed_comparison"
+   ],
+   "categories": [
+    "否定",
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_causality",
+    "changed_negation",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "「人間が電話したことは問題ではなかった」という評価・対比はLedgerに示されていない。 / Ledgerは開示なしでテストを始めたことをミスとするが、人間が電話を担当すること自体は問題ではなかったという評価までは示していない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_negation",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_negation": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "polarity_agree(claim_neg&ledger_neg/forbid)"
+    },
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 7,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "The real challenge for AI calls is not only how they talk.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "AI電話全般の課題は話し方だけではないという一般論はLedgerに記載されていない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 8,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "The more useful a service is, the less it should hide workers behind the scenes.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "有用性と、裏側のスタッフを隠すべきかどうかを結び付ける一般的・規範的主張はLedgerにない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "unclear",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_ledger_cmp_term"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(ii)種別妥当だが重大性判定欠如",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "追加確認へ"
+   }
+  },
+  {
+   "no": 9,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "It said human staff made inappropriate comments about race during calls.",
+   "fact_id": "MUSE-HC-011",
+   "floor_reason": "deterministic_floor:changed_number",
+   "reason_flags": [
+    "changed_number"
+   ],
+   "categories": [
+    "数字"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_number",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerが記録するのは従業員が報告した個別の不適切発言だが、記事は複数の発言があったように表現している。",
+   "llm_materiality": "BLOCKING",
+   "llm_3way": "重大",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "llm_materiality_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "正当",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_number": {
+     "anchor": true,
+     "strict_confirmed": true,
+     "ledger_relevant": true,
+     "note": "ledger_single_case_vs_plural_claim"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "強制重大(LLM自身がBLOCKING)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 10,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "These calls were about trying to lower internet or cable fees.",
+   "fact_id": "MUSE-HC-011",
+   "floor_reason": "deterministic_floor:changed_number",
+   "reason_flags": [
+    "changed_number"
+   ],
+   "categories": [
+    "数字"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_number",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerの対象は料金交渉の個別事例だが、記事は複数の電話に一般化している。",
+   "llm_materiality": "BLOCKING",
+   "llm_3way": "重大",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "llm_materiality_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "正当",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_number": {
+     "anchor": true,
+     "strict_confirmed": true,
+     "ledger_relevant": true,
+     "note": "ledger_single_case_vs_plural_claim"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "強制重大(LLM自身がBLOCKING)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 11,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "But as the conversation went on, the voice was not AI at all.",
+   "fact_id": "MUSE-HC-006",
+   "floor_reason": "deterministic_floor:changed_time",
+   "reason_flags": [
+    "changed_time"
+   ],
+   "categories": [
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_certainty",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "会話が進むにつれて声がAIではないと分かったという個別の出来事はLedgerにありません。",
+   "llm_materiality": "QUALITY",
+   "llm_3way": "軽微",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": true,
+    "reason": "time_floor_only_llm_non_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "判断不能",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 12,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "A human can handle situations that AI alone finds difficult.",
+   "fact_id": "MUSE-HC-008",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "人間がAI単独では難しい状況に対処できるという一般的な能力比較は、限定されたテストについてのLedgerの記載を超えています。 / 一部テストで報告された成功率の比較を、AIが難しい状況を人間が扱えるという一般的な能力の主張に広げています。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "判断不能",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "追加確認へ"
+   }
+  },
+  {
+   "no": 13,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "But this was where the problem began.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_time",
+   "reason_flags": [
+    "changed_time"
+   ],
+   "categories": [
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_causality",
+    "changed_certainty",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "ここから問題が始まったという前文との関係・因果づけはLedgerにありません。 / 従業員が示したプライバシー上の懸念を、問題が実際に始まったかのように述べています。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": true,
+    "reason": "time_floor_only_llm_non_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 14,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "It is another when you know a person is listening.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "人が聞いていると知って話すこととの対比は、Ledgerに記載されていません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 15,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "As AI becomes able to make calls or reservations for us, this question will become more familiar.",
+   "fact_id": "MUSE-HC-004",
+   "floor_reason": "deterministic_floor:changed_time",
+   "reason_flags": [
+    "changed_time"
+   ],
+   "categories": [
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "この問いが今後より身近になるという予測はLedgerにありません。また、予約を含む将来の一般的な利用範囲も断定されていません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": true,
+    "reason": "time_floor_only_llm_non_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(ii)種別妥当だが重大性判定欠如",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 16,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "The more useful the feature, the more people will want to know who is on the other side.",
+   "fact_id": "",
+   "floor_reason": "deterministic_floor:changed_comparison,changed_time",
+   "reason_flags": [
+    "changed_comparison",
+    "changed_time"
+   ],
+   "categories": [
+    "比較",
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_comparison",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "機能が有用になるほど人々が相手を知りたくなるという予測的な比較・因果関係はLedgerにありません。",
+   "llm_materiality": "QUALITY",
+   "llm_3way": "軽微",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "no_fact_block"
+    },
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 17,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 1,
+   "claim": "They will want to know if it is AI or human.",
+   "fact_id": "",
+   "floor_reason": "deterministic_floor:changed_time",
+   "reason_flags": [
+    "changed_time"
+   ],
+   "categories": [
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "人々がAIか人間かを知りたがるという将来予測はLedgerにありません。",
+   "llm_materiality": "QUALITY",
+   "llm_3way": "軽微",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": true,
+    "reason": "time_floor_only_llm_non_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 18,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 2,
+   "claim": "And this was where the concern began.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_time",
+   "reason_flags": [
+    "changed_time"
+   ],
+   "categories": [
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "従業員がプライバシー上の懸念を示したことはLedgerにあるが、懸念がこの時点で始まったという時期・展開は示されていない。 / Ledgerは従業員がプライバシー上の懸念を示したことを記録しているが、その懸念がこの時点で始まったという時期・起点は示していない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": true,
+    "reason": "time_floor_only_llm_non_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 19,
+   "run": "neg1_meta_b3prod_a2",
+   "cycle": 2,
+   "claim": "People will want to know who is on the other side.",
+   "fact_id": "",
+   "floor_reason": "deterministic_floor:changed_comparison,changed_time",
+   "reason_flags": [
+    "changed_comparison",
+    "changed_time"
+   ],
+   "categories": [
+    "比較",
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_comparison",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "機能が有用になるほど人々が相手を知りたくなるという予測的な比較・因果関係はLedgerにありません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "no_claim_cmp_word"
+    },
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 20,
+   "run": "neg2_meta_refresh_a2",
+   "cycle": 1,
+   "claim": "News reports also quoted a report from an employee.",
+   "fact_id": "MUSE-HC-011",
+   "floor_reason": "deterministic_floor:changed_number",
+   "reason_flags": [
+    "changed_number"
+   ],
+   "categories": [
+    "数字"
+   ],
+   "stage1_flags_true": [
+    "changed_scope",
+    "changed_number",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerが示すのは個別事例を紹介した報道であり、「reports」と複数の報道が引用したという範囲は確認できない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_number",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_number": {
+     "anchor": true,
+     "strict_confirmed": true,
+     "ledger_relevant": true,
+     "note": "ledger_single_case_vs_plural_claim"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": "(ii)種別妥当だが重大性判定欠如",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 21,
+   "run": "neg2_meta_refresh_a2",
+   "cycle": 1,
+   "claim": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+   "fact_id": "MUSE-HC-011",
+   "floor_reason": "deterministic_floor:changed_number",
+   "reason_flags": [
+    "changed_number"
+   ],
+   "categories": [
+    "数字"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_number",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerの報道された1件の従業員報告を、複数の人間スタッフが複数の電話で発言したかのように範囲・件数を広げている。 / 個別事例の従業員報告を、複数の電話での出来事のように表現しており、報道された事例の範囲を広げています。",
+   "llm_materiality": "QUALITY",
+   "llm_3way": "軽微",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_number",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "正当",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_number": {
+     "anchor": true,
+     "strict_confirmed": true,
+     "ledger_relevant": true,
+     "note": "ledger_single_case_vs_plural_claim"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 22,
+   "run": "neg3_hormuz_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+   "fact_id": "HF-003",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "reason_flags": [
+    "changed_actor"
+   ],
+   "categories": [
+    "主体"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerでは徴収主体や支払義務者などの制度設計は示されていません。「貨物が提供すべき」とすると、貨物側に支払義務があるという未確認の具体化になります。",
+   "llm_materiality": "BLOCKING",
+   "llm_3way": "重大",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "llm_materiality_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "正当",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_actor": {
+     "anchor": true,
+     "strict_confirmed": true,
+     "ledger_relevant": true,
+     "note": "proper_noun_not_in_ledger:July,Trump,Strait"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "強制重大(LLM自身がBLOCKING)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 23,
+   "run": "neg3_hormuz_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "fact_id": "HF-009",
+   "floor_reason": "deterministic_floor:changed_time",
+   "reason_flags": [
+    "changed_time"
+   ],
+   "categories": [
+    "時期"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_time",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "「価格を動かしていた事象」が戻ったという因果的な断定はLedgerにありません。また、Ledgerでは事象は継続していたとされており、「戻った」とする時系列も異なります。 / 価格が戻ったことに加え、価格を動かす出来事自体も戻ったとし、それらが価格を動かしていたという因果を付けています。Ledgerでは関連する懸念は継続していたとされています。",
+   "llm_materiality": "BLOCKING",
+   "llm_3way": "重大",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "llm_materiality_blocking",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "正当",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_time": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "relational_time_only"
+    }
+   },
+   "rewrite_outcome_run_level": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "強制重大(LLM自身がBLOCKING)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 24,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "Imagine asking AI to book a haircut.",
+   "fact_id": "MUSE-HC-004",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "reason_flags": [
+    "changed_actor"
+   ],
+   "categories": [
+    "主体"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_actor"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "Ledgerが支えるのはMuseに散髪の予約電話を依頼できることです。AIに散髪の予約そのものをさせる表現は、電話をかける範囲を超えています。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_actor",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "判断不能",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_actor": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "no_new_proper_noun(role/generalization未確定)"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 25,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "So it sounds like a simple story: you make a request, and AI takes care of the call.",
+   "fact_id": "MUSE-HC-006",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "reason_flags": [
+    "changed_actor"
+   ],
+   "categories": [
+    "主体"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "「So」で直前の電話機能と結び、依頼後はAIが電話を処理するという説明にしていますが、一部の電話は人間の契約スタッフが担当したというLedgerの範囲・行為者と異なります。 / 「So」がMuseに電話機能があることからAIが電話を処理するという結論を導きますが、Ledgerでは一部の電話を人間の契約スタッフが担当したとされています。 / 電話を依頼できるという機能説明を、AIが電話そのものを処理すると読める形にしており、実際の担当者について範囲を広げています。 / 電話機能の説明に、AIが電話を担当するという、Ledgerにない行為者の含意が加わっています。 / 一部の電話を人間が担当したという事実に対し、単純化した筋書きではAIが電話を処理するとしています。 / 電話機能の説明に、AIが電話を担当するという含意が加わり、人間の契約スタッフが担当した一部の電話と行為者が異なります。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_actor",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_actor": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "no_new_proper_noun(role/generalization未確定)"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(ii)種別妥当だが重大性判定欠如",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 26,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "It was like an AI-led play with a hidden supporting actor.",
+   "fact_id": "MUSE-HC-006",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "人間の担当者を「隠れた脇役」とする比喩的な位置づけはLedgerに直接記載されておらず、事実としての対応を確認できません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 27,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "The issue was not that humans handled calls.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_negation,changed_comparison",
+   "reason_flags": [
+    "changed_negation",
+    "changed_comparison"
+   ],
+   "categories": [
+    "否定",
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_causality",
+    "changed_negation",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "従業員の懸念が人間による電話対応そのものではなかったという区別は、Ledgerに明記されていません。 / Ledgerにあるプライバシー上の懸念を踏まえず、「問題は人間が電話を担当したことではない」と問題の内容を限定しています。 / Ledgerは適切な開示なしでテストを始めたことをミスとしたと述べますが、「問題は人間が電話をしたことではない」という限定は記載していません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_negation",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_negation": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "polarity_agree(claim_neg&ledger_neg/forbid)"
+    },
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(ii)種別妥当だが重大性判定欠如",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "追加確認へ"
+   }
+  },
+  {
+   "no": 28,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "A service that seemed simple now looked like a mystery story.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "サービスが「ミステリー物語」のように見えたという評価はLedgerにありません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 29,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "No large information leak was confirmed.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_negation",
+   "reason_flags": [
+    "changed_negation"
+   ],
+   "categories": [
+    "否定"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_certainty",
+    "changed_negation",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "大規模な情報漏えいが確認されていないという否定的事実はLedgerに記載されていません。懸念が記録されていることだけでは、漏えいの有無を確定できません。 / 大規模な情報漏えいが確認されていないという状況はLedgerに記載されていません。",
+   "llm_materiality": "QUALITY",
+   "llm_3way": "軽微",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_negation",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_negation": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "polarity_agree(claim_neg&ledger_neg/forbid)"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 30,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "But users could not know who was really doing the work they had asked AI to do—and their personal information might reach that person.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "reason_flags": [
+    "changed_actor"
+   ],
+   "categories": [
+    "主体"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_scope",
+    "changed_certainty",
+    "changed_actor",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "情報が人間に届く可能性はLedgerにありますが、ユーザーが誰の作業か知り得なかったという断定は記載されていません。 / 従業員が懸念を示したという報告を、ユーザーが誰の作業か知り得なかったという断定的な説明に広げています。情報が人に届く可能性の主体・範囲も広げています。 / 適切な開示がなかったという事実を、ユーザーが誰が作業するか知り得なかったという、より強い範囲の主張にしています。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_actor",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "判断不能",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {
+    "changed_actor": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": true,
+     "note": "no_new_proper_noun(role/generalization未確定)"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 31,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "That uncertainty turned convenience into a mystery.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_causality",
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "不確実性が利便性をミステリーに変えたという因果・評価はLedgerに記載されていません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 32,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "The company did not stop Muse itself.",
+   "fact_id": "MUSE-HC-012",
+   "floor_reason": "deterministic_floor:changed_negation",
+   "reason_flags": [
+    "changed_negation"
+   ],
+   "categories": [
+    "否定"
+   ],
+   "stage1_flags_true": [
+    "changed_fact",
+    "changed_negation",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "人間コンシェルジュ機能をロールバックした事実はありますが、Muse自体を停止しなかったという明示的な事実はLedgerにありません。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_negation",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_negation": {
+     "anchor": true,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "polarity_agree(claim_neg&ledger_neg/forbid)"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 33,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 2,
+   "claim": "So it sounds like a simple story: you make a request, and someone takes care of the call.",
+   "fact_id": "MUSE-HC-004",
+   "floor_reason": "changed_causality_floor",
+   "reason_flags": [
+    "changed_causality_floor"
+   ],
+   "categories": [
+    "因果"
+   ],
+   "stage1_flags_true": [
+    "changed_causality",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "「So」で電話機能から「単純な話」という評価や、誰かが電話を引き受けるという見立てを導いているが、その関係・評価はLedgerにない。 / 電話機能があることから「単純な話」で「誰かが電話を引き受ける」という結論に至る因果・照応関係をLedgerは述べていない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": null,
+    "reason": null,
+    "released": null
+   },
+   "tier0": "checker_major_downgraded",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {},
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(iv)Tier0語彙",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  },
+  {
+   "no": 34,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 2,
+   "claim": "The issue was not just that humans handled calls.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "deterministic_floor:changed_comparison",
+   "reason_flags": [
+    "changed_comparison"
+   ],
+   "categories": [
+    "比較"
+   ],
+   "stage1_flags_true": [
+    "changed_comparison",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "問題は人間が電話を担当したことだけではなかった、という対比・評価をLedgerは述べていない。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": false,
+    "reason": "out_of_scope_flag:changed_comparison",
+    "released": false
+   },
+   "tier0": "final_blocking",
+   "label_RCA_suggested": "不要",
+   "issue_type": "absence_only",
+   "flag_feats": {
+    "changed_comparison": {
+     "anchor": false,
+     "strict_confirmed": false,
+     "ledger_relevant": false,
+     "note": "no_claim_cmp_word"
+    }
+   },
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": "(i)フラグ不整合",
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "非重大化(Stage2判定へ戻る)",
+    "案2_確定のみ強制+他は追加確認": "追加確認へ",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "非重大化(Stage2判定へ戻る)"
+   }
+  },
+  {
+   "no": 35,
+   "run": "neg7_meta_prodrunner_b1b",
+   "cycle": 2,
+   "claim": "Users might not know who was doing the work they had asked AI to do—and their personal information might reach that person.",
+   "fact_id": "MUSE-HC-010",
+   "floor_reason": "tier0:aux:issue_actor",
+   "reason_flags": [
+    "tier0:aux:issue_actor"
+   ],
+   "categories": [
+    "その他(Tier0補助ベルト:issue文の主体語)"
+   ],
+   "stage1_flags_true": [
+    "changed_scope",
+    "unsupported_new_claim"
+   ],
+   "stage1_routes": [
+    "r3",
+    "r5"
+   ],
+   "stage1_sub_reasons": [
+    "model"
+   ],
+   "stage1_issue": "契約スタッフへの情報共有の可能性に関する懸念は支えられるが、ユーザーが担当者を知らない可能性や個人情報がその人に届くという一連の主張は、記載された範囲を超える。 / 懸念の対象を、必要となる機微情報が契約スタッフへ意図せず共有される可能性から、ユーザーの個人情報全般がその担当者に届く可能性へ広げています。 / 社内テストで適切な開示がなかったというLedgerの範囲から、ユーザー一般が担当者を知らない可能性へ対象を広げています。",
+   "llm_materiality": "ACCEPTABLE",
+   "llm_3way": "問題なし",
+   "s1_second_opinion": "none(floor強制のためS1対象外)",
+   "floor_verify": {
+    "target": null,
+    "reason": null,
+    "released": null
+   },
+   "tier0": "checker_major_downgraded",
+   "label_RCA_suggested": "判断不能",
+   "issue_type": "contra_or_expansion",
+   "flag_feats": {},
+   "rewrite_outcome_run_level": "STAGE4_ESCALATION",
+   "cause_unneeded": null,
+   "design": {
+    "案0_現行": "強制重大",
+    "案1_条件精緻化": "強制重大",
+    "案2_確定のみ強制+他は追加確認": "強制重大",
+    "案3_トリガーのみ": "追加確認へ",
+    "案4_floor撤廃+既存S1": "追加確認へ(既存S1)",
+    "案5_段階化": "強制重大"
+   }
+  }
+ ],
+ "sc_rows": [
+  {
+   "inst": "neg3_hormuz_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "flags": [
+    "changed_time"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": false,
+   "ledger_available": true,
+   "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blocka",
+   "n_records": 36,
+   "案1": "非強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_A2A3",
+   "cycle": 1,
+   "claim": "“The idea was that those carrying the cargo would repay the money the United States spends to keep the strait ",
+   "flags": [],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": false,
+   "ledger_available": true,
+   "issue": "The article identifies cargo carriers as the payers, although the Ledger says the proposal did not specify who would be liable to pay.",
+   "n_records": 3,
+   "案1": "非強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_A2A3",
+   "cycle": 2,
+   "claim": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait s",
+   "flags": [
+    "changed_actor"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": true,
+   "c1": true,
+   "ledger_available": true,
+   "issue": "The article identifies cargo carriers as the payers, but the Ledger says the proposal did not specify who would be liable to pay.",
+   "n_records": 1,
+   "案1": "強制",
+   "案2": "強制",
+   "案5": "強制",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_A4",
+   "cycle": 1,
+   "claim": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+   "flags": [
+    "changed_actor"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": true,
+   "c1": true,
+   "ledger_available": true,
+   "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+   "n_records": 18,
+   "案1": "強制",
+   "案2": "強制",
+   "案5": "強制",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_er009_changed_actor",
+   "cycle": 1,
+   "claim": "A team at Harvard Business School studied more than 13 million credit card payments in New York City taxis, an",
+   "flags": [
+    "changed_actor"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": false,
+   "ledger_available": false,
+   "issue": "研究主体をHarvard Business Schoolのチームと特定していますが、Ledgerが示す研究者はKareem HaggagとGiovanni Paciで、Harvard Business Schoolとの関係は確認されていません。",
+   "n_records": 22,
+   "案1": "非強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_er009_changed_comparison",
+   "cycle": 1,
+   "claim": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, accord",
+   "flags": [
+    "changed_comparison"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "contra_or_expansion",
+   "strict": false,
+   "c1": true,
+   "ledger_available": false,
+   "issue": "記事は、より高い推奨チップ率を見た乗客のほうが実際に多くチップを残したというLedgerの結果と、比較の方向を逆転させています。",
+   "n_records": 15,
+   "案1": "強制",
+   "案2": "追加確認",
+   "案5": "強制",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_er009_changed_negation",
+   "cycle": 1,
+   "claim": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggeste",
+   "flags": [
+    "changed_negation",
+    "changed_comparison"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": true,
+   "ledger_available": false,
+   "issue": "研究が報告した「高い推奨チップ率を見た乗客は実際により多くチップを残した」という結果を否定し、推奨率の効果もなかったとしています。",
+   "n_records": 15,
+   "案1": "強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_er009_changed_number",
+   "cycle": 1,
+   "claim": "Researchers studied more than 30 million credit card payments in New York City taxis, and found that higher su",
+   "flags": [
+    "changed_number"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": true,
+   "c1": true,
+   "ledger_available": false,
+   "issue": "記事は対象取引数を「3,000万件超」としているが、Ledgerが確認しているのは「1,300万件超」であり、3,000万件超という数値は裏付けられていない。チップ額への効果の記述はLedgerと一致する。",
+   "n_records": 29,
+   "案1": "強制",
+   "案2": "強制",
+   "案5": "強制",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_er009_changed_time",
+   "cycle": 1,
+   "claim": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher",
+   "flags": [
+    "changed_time"
+   ],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": false,
+   "ledger_available": false,
+   "issue": "研究の発表年がLedgerの2014年と異なっています。",
+   "n_records": 15,
+   "案1": "非強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "bgroup_B3",
+   "cycle": 1,
+   "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% pl",
+   "flags": [],
+   "llm": "BLOCKING",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": false,
+   "ledger_available": true,
+   "issue": "",
+   "n_records": 1,
+   "案1": "非強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "強制(LLM自身)"
+  },
+  {
+   "inst": "safety_A4",
+   "cycle": 1,
+   "claim": "“Through Muse, trained human contract workers made some calls and completed the exchanges with users.”",
+   "flags": [
+    "changed_actor"
+   ],
+   "llm": "ACCEPTABLE",
+   "issue_type": "unclear",
+   "strict": true,
+   "c1": true,
+   "ledger_available": true,
+   "issue": "この記事では、契約スタッフがやり取りを完了した相手をMuseのユーザーとしていますが、Ledgerが示すのは電話の相手先（企業・店舗など）です。",
+   "n_records": 1,
+   "案1": "強制",
+   "案2": "強制",
+   "案5": "強制",
+   "案4": "追加確認(S1)"
+  },
+  {
+   "inst": "neg3_hormuz_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "flags": [
+    "changed_time"
+   ],
+   "llm": "QUALITY",
+   "issue_type": "unclear",
+   "strict": false,
+   "c1": false,
+   "ledger_available": true,
+   "issue": "The sentence describes the events as having quickly returned and as driving oil prices, whereas HF-009 reports that relevant attacks, blocka",
+   "n_records": 1,
+   "案1": "非強制",
+   "案2": "追加確認",
+   "案5": "追加確認",
+   "案4": "追加確認(S1)"
+  }
+ ]
+}

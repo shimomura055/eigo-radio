@@ -19970,3 +19970,16 @@ Fable判断(Opus任意レビュー後、委任_B2/B3、2026-10-06): R5-(a)必須
 (3) Fable分類待ち(REJECTED/VALIDATED/USER_DECISION_REQUIRED)。VALIDATEDでもProduction採用ではない。
 
 (4) Fable分類(2026-10-06): **VALIDATED**。根拠: 受入条件4件すべて充足【確認】(A4-0 3/3[01は2/3]、正式gold 6/6、hold-out 9/9・neg5 3/3・K19 3/3で01比悪化なし、NORMAL候補24.17→10.75件/記事=Beforeの44%で削減効果維持[01比+0.92])。STOP条件6件いずれも非該当(実費¥14.38≤¥20、gold落ちなし、A4-0安定、旧過剰仕様への回帰なし[AI由来増分の約8割は元SUPPORTEDのscope/qualifier不一致化]、新Safety問題なし、追加仕様変更不要)。Production採用ではない(Production Checker・後段AI・機械Safety・E2E不変)。次工程はユーザー判断(Production Checkerへの反映設計はOpus条件A/C対象)。残観察: 『Ledger未記載のみ』境界例2→7件、NO_FACT_CLAIM→CANDIDATE 9件(将来予測・一般傾向・認識推測文)は過検出の可能性があり、次段階で問いの微調整候補(今回は変更しない)。
+
+## 2026-10-06 OPEN-233-FLOOR-SELECTIVITY-OPTIMIZATION-01 委任_01〜02b: floor誤爆35件の¥0分析+設計案比較+Opus条件Aレビュー(決定ではなくユーザー判断待ち)
+
+出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-FLOOR-SELECTIVITY-OPTIMIZATION-01_{01,01b,01c,02a,02b}.md`、`docs/pm/design_open233_floor_selectivity_01.md`、`docs/pm/opus_l2_review_open233_floor_selectivity_01.md`、REPORT §79。
+
+(1) ユーザー指示要点: 目的=機械Safety(floor)の誤爆(不要なBLOCKING化)を、正当6件を守りながら半分以下へ減らす設計を検討する。やること=誤爆の内訳分析・設計案1〜4等の比較・判断基準の整理。禁止=Production変更/勝手な実装・Trial。到達可能Status=USER_DECISION_REQUIREDまたはDESIGN_READY_FOR_REVIEWまで。STOP条件(逐語): 「正当6件を守りながら半分以下へ減らす見込みが立たない／新しいSafety原則の追加が必要／gold定義変更が必要／有料Trialが必要／Production仕様変更が必要。勝手に実装・Trialへ進まないこと。」
+Closeout項目: 内訳・主因・案別比較・STOP判定・APPROVED未配線影響・Dangling Reference・unresolvedを報告(REPORT §79)。
+
+(2) 分析結果: 35件内訳=比較14/時期8/主体6/否定5/数字4/因果1/他1(正当6=数字3主体2時期1、不要24、判断不能5、RCA推測ラベル)。不要24の原因=Stage 1フラグ不整合17/重大性判定欠如6/Tier0語彙1((iii)は集計script構造上0)。案別in-sample強制重大: 案1 14/案2 8/案3 0/案4 4/案5 14(現行35)。Sonnet最有望=案2+案5(根本原因=floor側の重大性判定不在)。hold-out(rep30)で案1はneg3 gold(時期)を見逃し。
+Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成側(absence/contra混同、`HOOK_CLAUSE`相当の緩和なし)。案1/5は正規表現による個別当て込みで過適合、案4はS1再サンプルで正当2件を失いうる(非推奨)。推奨代替(優先順)=(1)RECLASSIFY-02区分のfloor発火条件流用(2)cite-to-fire(`apply_floor_cited`反実仮想記録再利用)(3)Stage 1 prompt補正(RCA案D、recall測定要)。順序=RECLASSIFY-02評価→¥0段階0→設計確定→ユーザー承認→有料段階1。
+
+(3) Fable判断(2026-10-06、Opus条件Aレビュー後): Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、根本原因=floor側の重大性判定不在)とOpus(根本原因=Stage 1 `changed_*`フラグ生成側のabsence/contra混同、案1/5は正規表現による個別当て込みで過適合、案4は正当2件を失いうる、推奨=RECLASSIFY-02区分のfloor発火条件への流用>cite-to-fire>Stage 1 prompt補正)で重要な結論が対立。(2)Fable検証【確認】: hold-out(rep30、集計md L69)で案1はneg3 gold(時期floor・LLM非BLOCKING)を非強制=見逃し(案1 6/6維持はin-sample限定)/集計scriptの`assign_cause`(L207-215)に原因(iii)分岐がなく(iii)=0は構造的/doc §5のNo.21記述は表(No.23)と不一致。(3)案1〜5・cite-to-fireのいずれも承認済み線引きOPEN-233-A1-PROD(`APPROVED_FOR_PRODUCTION`・未配線、時期のみverify・比較/主体/数字/否定は決定論維持)の変更に当たりユーザー承認事項=ユーザー指定STOP条件「Production仕様変更が必要」に該当。(4)floor側のみの精緻化で正当6件を守りつつ半減する見込みは、in-sampleでは案1/5=14件だがhold-outで1件見逃しのため未確立。Fable評価: Opusの根本原因指摘(フラグ生成側)と順序を妥当と判断し、ユーザーへ提示。Production未変更、有料Trial未実施、gold不変。本エントリは決定ではなく記録(設計案の採否は未決定)。
+(4) ユーザー判断事項: U1 設計方向(Opus代替(1)RECLASSIFY-02区分流用/(2)cite-to-fire/(3)Stage 1 prompt補正/Sonnet案2+5/floor撤廃別設計)、U2 承認済み線引きA1-PROD変更の可否、U3 ¥0段階0(0a〜0d)の実施可否、U4 正当6件・判断不能5件のラベル確認。
