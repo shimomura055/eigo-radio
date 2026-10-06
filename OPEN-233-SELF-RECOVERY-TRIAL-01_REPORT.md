@@ -4843,3 +4843,18 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 - E2Eは9/20 runで一旦停止。残り11 runは、ユーザーが再開を明示するまで待機(実行しない)。
 - 見逃し対策は`OPEN-233-DIRECTIONAL-MISREAD-SAFETY-DESIGN-01`で設計する(方向反転等、AIが特定種類の意味関係を系統的に読み違えるケースだけを狙う。Production変更・有料E2Eなし。全機械floor復活・一律厳格化・gold変更・KPI変更・Human Reviewへの安易な振替は禁止)。到達上限はDESIGN_READY_FOR_REVIEW / USER_DECISION_REQUIRED。
 - CHECKER-FLOOR-PRODUCTION-E2E-01はPRODUCTION_WIRED未のまま。
+
+## §82 系統的読み違い専用Safety設計(DIRECTIONAL-MISREAD-SAFETY-DESIGN-01、2026-10-06、USER_DECISION_REQUIRED)
+
+- Status: 設計完了・Opus条件A 2回済み・ユーザー判断待ち。VALIDATED/APPROVED/PRODUCTION_WIRED不可。LLM呼出0、¥0。残11 runは待機のまま。
+- A 原因: HC-012見逃しはAI3段階の同一誤読(「機能を当面ロールバックした」→「restored ... to the way it had been」、多義語)。決定論negation_polarity_mismatchは「適切な開示なしに」の「なし」への偶発反応で向き非識別(新9 runのnegation反応39件=問題なし38/重大1)。
+- A続き: A5-0・HC-012のgold感度も「なし」依存、HF-009は「ほどなく」でlegacyのみ。比較・方向専用センサーはchecker不在。number/causal反応は新9 runで0。
+- B 系統的読み癖: T1状態変化の向き反転/T2推移・比較反転/T3当事者取り違え/T4未指定役割充填/T5因果捏造/T6可能性の既成事実化。共通核=語彙はLedgerと重なるが事象の枠が1つ入れ替わる。
+- C 反実仮想(`trigger_replay_01.md`): 新9 run 123件中T-A/T-B 43件(重大1/問題なし42)、T-C 55件(重大1/軽微3/問題なし51)。HC-012は3案ともtriggerだがT-A/T-Bは偶然。旧floor誤爆24件のtrigger: T-A/T-B 0、T-C 8。
+- D 設計案A〜F: Sonnet推奨=案E(枠抽出+Python比較)、Opus修正版=案E'(Ledger側factごと事前抽出・enum固定値・2モデル一致/記事側blind抽出/Python比較/逆転=Stage 2・S1迂回BLOCKING/解消=Python再比較/失敗=1回retry→未解消記録+QUALITY/T3・T4は観察欄のみ)。起動=T-D'(状態変化factに紐づくStage 1全単位)。案D(A+C)は撤回候補。
+- E Opus Part 2: 条件付きで進める。必須修正3点(blind分離抽出/母集団訂正[123件はStage 1候補のみ]/§5と§8矛盾解消)は03aで反映。判断事項7点は DECISION_LOG(h)参照。
+- F Fable照合: Sonnet案とOpusは方向性一致。「既存決定論検査=センサー」の前提崩れ→センサー差し替え=新設計判断+有料Trial承認要→USER_DECISION_REQUIRED。
+- G 費用: 本管理ID全体¥0。Opus 2回(read-only)。
+- H 追加費用見込み【推測】: T-E全claim案で約¥0.27〜0.81/run(現行約¥3.5/runの8〜23%)。T-D'は母集団要集計で未確定。限定Trial約¥15以内(Opus)、¥0のT-D'母集団再集計を先行。
+- 数字floor穴(checker L554-555/L640-643、新9 run実害0)と`apply_stage2_two_of_two`潜在不具合(runner L4106-4122、現在OFF)は別管理ID。
+- 参照: `docs/pm/design_open233_directional_misread_safety_01.md` / `docs/pm/opus_l2_review_open233_directional_misread_safety_01.md` / `er052_output/open233_directional_misread_offline_01/trigger_replay_01.md`(.json等) / `er052_output/open233_directional_misread_offline_01/sensor_quality_01.md`(.json等)。

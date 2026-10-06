@@ -20045,3 +20045,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Fable訂正: 上記(f)(CHECKER-FLOOR-PRODUCTION-E2E-01エントリ、REPORT §81-6)参照。旧floor全ONでも不発火、直接原因はAI3段階の同一誤読+決定論信号の喪失。
 - 今後: 委任_02(設計+¥0反実仮想、`docs/pm/design_open233_directional_misread_safety_01.md`、別委任)→Opus条件A独立レビュー(新しい構造・処理フローの設計)→Fable照合→ユーザー判断。設計のSTOP=新Safety原則・gold変更・有料Trial・Production変更が必要な場合。
 
+- (h)【設計結果・記録(2026-10-06 委任_03b)。決定ではない】設計doc=`docs/pm/design_open233_directional_misread_safety_01.md`(§0〜§14)、Opus条件A 2回(Part 1事前スキャン/Part 2設計評価)、¥0。Fableが決めたのはStatus判定(USER_DECISION_REQUIRED)のみ。
+  - A 原因: HC-012見逃しはAI3段階(Stage 1 r3/Stage 2/S1)の同一誤読(「ロールバック」多義語)。決定論`negation_polarity_mismatch`は「適切な開示なしに」の「なし」への偶発反応で方向は見ていない(新9 runのnegation反応39件=問題なし38/重大1)。比較・方向専用センサーはchecker不在。
+  - B 系統的読み癖(T1状態変化の向き反転/T2推移・比較反転/T3当事者取り違え/T4未指定役割充填/T5因果捏造/T6可能性の既成事実化)。
+  - C 反実仮想(新9 run 123件): T-A/T-B 43件(重大1/問題なし42)、T-C 55件(重大1/軽微3/問題なし51)。旧floor誤爆24件のtrigger: T-A/T-B 0、T-C 8。
+  - D 設計案A〜F。Sonnet推奨=案E、Opus修正版=案E'(Ledger側fact事前抽出・2モデル一致/記事側blind抽出/Python比較/逆転=Stage 2・S1迂回BLOCKING)。起動=T-D'。
+  - E Opus Part 2=条件付きで進める(必須修正3点: blind分離抽出/母集団訂正/§5と§8矛盾解消、03aで反映)。
+  - F Fable照合: 方向性一致。ユーザー仮説「既存決定論検査=センサー」の前提が崩れ、センサー差し替え=新設計判断/有料Trial承認要→USER_DECISION_REQUIRED。残11 runは引き続き待機。
+  - ユーザー判断待ち7点: (1)センサー差し替え(T-D')採否 (2)別model方式(Ledger側2モデル一致、記事側はTrial比較) (3)失敗時=retry→QUALITY (4)逆転経路(Stage 2/S1迂回)・Rewrite上限到達時STOPかQUALITYか (5)T3/T4は観察のみ (6)数字floor穴(`number_not_in_fact`→`changed_number`未変換)と`apply_stage2_two_of_two`潜在不具合は別管理ID (7)限定Trial約¥15以内(【推測】、Opus)、¥0のT-D'母集団再集計を先行。

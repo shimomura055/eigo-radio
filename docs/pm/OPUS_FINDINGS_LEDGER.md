@@ -63,6 +63,8 @@
 | OF-053 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須修正M5 | 承認構成をrunner側名前付き定数+適用関数に(Trial専用化回避) | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(`OPEN233_APPROVED_FLOW_SWITCHES`) | 同 (2)M5 | E2E script_02でassert要(委任_05) | IMPLEMENTED |
 | OF-054 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須(E2E assert) | `STAGE2_DOWNGRADE_VERIFY=False`・`TIER0_G_L_ENABLED=False`をassertへ追加 | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(承認構成に含めassert関数で検証) | 同 (3)R2 | 済(test) | IMPLEMENTED |
 | OF-055 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 観察R3 | 数字検査3系統(a LLM changed_number/b 決定論number_not_in_fact/c precheck)の定義明記 | 採用(FABLE_DECIDED: (a)(c)残す・(b)現状維持) | 委任_04 IMPLEMENTED(`floor_reason`で(a)/(c)区別、test) | 同 (3)R3 | 済(test) | IMPLEMENTED |
+| OF-056 | 2026-10-06 | DIRECTIONAL-MISREAD条件A Part 1(事前スキャン) | 情報/Safety hole | 信号喪失箇所表・誤読型T1〜T6・抽出役案・数字floor穴(`number_not_in_fact`→`changed_number`未変換)・`apply_stage2_two_of_two`潜在不具合 | 採用(Fable照合: 方向性一致、修正反映(03a)、USER_DECISION_REQUIRED) | 設計doc(委任_02e/03a)。数字floor穴・two_of_twoは別管理ID | `docs/pm/design_open233_directional_misread_safety_01.md` | 未(ユーザー判断待ち) | USER_DECISION_REQUIRED |
+| OF-057 | 2026-10-06 | DIRECTIONAL-MISREAD条件A Part 2(設計評価) | 必須修正3点+判断事項7点 | 条件付きで進める。必須修正: blind分離抽出/母集団訂正(123件=Stage 1候補のみ)/§5と§8矛盾(失敗=BLOCKING)解消 | 採用(Fable照合: 方向性一致、修正反映(03a)、USER_DECISION_REQUIRED) | 委任_03a(設計doc/opus_l2_review)、03b(SSOT) | `docs/pm/opus_l2_review_open233_directional_misread_safety_01.md` | 未(ユーザー判断待ち) | USER_DECISION_REQUIRED |
 
 注記: OF-014〜OF-018のうちF1〜F4は、本委任の指示(Opus#15 F1〜F4をbackfill)に基づく。F3/F4の区分(MAJOR/採用項目)は台帳作成者による暫定分類で、Opus原文は番号付き所見のみ(重大度の明示なし)。OF-018はSafety hole節の項目3で、F番号とは別。
 
