@@ -4914,3 +4914,61 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 ### §83-7 参照ファイル
 - `er052_output/open233_directional_misread_trial_01/`(population_01.md / testset_01.md / Trial出力。委任_02が使用中)
 - `er052_open233_directional_trial_01.py` / `docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-01_*.md` / 設計: `docs/pm/design_open233_directional_misread_safety_01.md`(§82参照)
+
+## §84 限定Trial 2(事象選択修正): OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-02(2026-10-06)
+
+- Status: TRIAL-02=実行中(分類は結果後にFable)。Production変更なし。VALIDATEDでもProduction採用ではない。残11 E2Eは停止継続。
+
+### §84-1 目的・ユーザー承認・禁止事項
+- 目的: TRIAL-01で判明した、1つのFactに複数事象がある場合に記事側がどの事象について述べているか選ばず全事象と比較して正常文を誤って重大扱いする問題を修正し、方向反転専用チェックを再検証する。
+- ユーザー承認: 修正版限定Trial実施/費用上限¥10/残り11 E2Eは引き続き停止/Production変更はまだ行わない。
+- 禁止: Production変更/残り11 E2E再開/gold変更/KPI変更/floor復活/新しいSafety原則の追加/Trial結果を理由とする自動Production採用。
+- 報告フォーマット警告: 前回報告は★★★★報告ここから★★★★〜★★★★報告ここまで★★★★を守っていなかった。今回closeout時に必ず確認する。
+
+### §84-2 修正内容
+- same_blind構成を維持。記事側AIが「この文がLedger側のどの事象について述べているか」をまず選択。
+- 選択された事象だけについてLedger側状態と記事側状態を比較。複数事象すべてとの総当たり比較は禁止。
+
+### §84-3 合格基準(事前登録、ユーザー指定)
+1. HC-012 3/3検出
+2. A5-0 3/3検出
+3. 正常文の誤重大判定2%以下
+4. 不要Rewrite見込み: 現行0.67件/runの半分以下
+5. 前回誤爆3件解消
+6. 新しい重大見逃しを発生させない
+- 1つでも重要条件を満たさない場合、勝手に追加修正Trialへ進まない。
+
+### §84-4 Trial条件
+- 前回と同じ主要テスト群(HC-012/A5-0/D61・HF-009系/正常文43件相当/曖昧例/前回誤爆3件)。重要例は3回反復。費用上限¥10(超過見込みならSTOP)。
+
+### §84-5 並列化計画(Fable計画)
+- 所要見込み約65〜75分(直列なら約2時間超)、短縮見込み約60分。
+- Phase A(¥0、4本並列・約30分): script修正(事象選択・shard実行)/testset_02+正解データ複数事象対応/集計script+合格判定+regression+template/SSOT先行起票。
+- Phase B(≤¥10・約15分): 見積→Ledger側30 call→記事側3 process shard並列→merge。
+- Phase C(約20分、直列・前工程依存): 集計→Fable判定→SSOT→commit→Closeout正式報告。
+
+### §84-6 結果(委任_05実行、委任_06で記録、すべて【確認】)
+- R1 費用: 見積mid ¥2.0(low 1.3/high 3.5)≤上限¥10で実行、実費**¥2.08**(Ledger側¥0.70/30 call、shard1 ¥0.45・shard2 ¥0.68・shard3 ¥0.26、計104 call)。same_blind、gpt-6-luna、effort=medium。
+- R2 並列実時間: Ledger側14:58:07開始→shard3並列15:00:14開始(各1:06/1:54/2:35)→merge完了15:03:03、本実行全体約5分(直列見込み約8〜9分)。Phase A 4本並列約25分(直列見込み約75分)。
+- R3 合格基準(6行表):
+
+| # | 基準 | 結果 | 判定 |
+|---|---|---|---|
+| 1 | HC-012 3/3検出 | 3/3 | 充足 |
+| 2 | A5-0 3/3検出 | 3/3 | 充足 |
+| 3 | 正常文誤重大判定2%以下 | 0/43=0% | 充足 |
+| 4 | 不要Rewrite見込み0.335件/run以下 | 0/0/0件/run(3水準) | 充足 |
+| 5 | 前回誤爆3件解消 | F-09 SAME×3、F-10 SAME×3、F-19 SAME/SAME_FAMILY/SAME_FAMILY | 充足 |
+| 6 | 新しい重大見逃しなし | D61(G-03、HF-009系比較反転、真の反転ラベル)が前回2/3→今回0/3(3反復とも記事側の事象選択NONE→NOT_MENTIONED)。S-06(人工反転、Ledger事象リスト外=参考集計)も前回検出→今回「上げ幅」SAMEで見逃し | **未達** |
+
+- R4 その他: gold計6/9(前回8/9)。人工反転検出4/14(前回5/14)。UNCLEAR 6(前回14)。曖昧3件の最終REVERSED 0。追加¥/run low0.34/mid0.42/high0.89(前回0.37/0.43/0.76)。追加call/run≒Ledger13.67+記事側3.3/7.5/30.6単位。
+- 詳細: `er052_output/open233_directional_misread_trial_02/trial_summary_02.md`(repeat別のgold/誤爆3件表を含む)。
+
+### §84-7 Status・判断(Fable判定、委任_06で記録)
+- R5 Status: **USER_DECISION_REQUIRED**。重要条件5/6充足で誤爆問題(事象選択未実装)は解消。ただし第6条件未達(D61退行)。ユーザー指示により追加修正Trialへは進まない。原因所見【推測】: 事象ラベルが抽象的(「上げ幅」「水準」)で、記事文「Brent先物が下落」等との対応を記事側AIが「NONE」と判断。改善案=Ledger側eventのsubject_xに実体名を含める(例「Brent先物の水準」)+選択promptで「対象が部分一致すれば選ぶ」を明示。Production採否判断は不要(Trial未達)。残11 E2E再開はユーザー判断(Fable推奨=本件の判断後)。VALIDATEDでもProduction採用ではない。
+- R6 APPROVED_FOR_PRODUCTION未配線項目への影響: CHECKER-FLOOR-PRODUCTION-E2E-01(新Checker仕様+数字のみfloor)の承認内容・実装に変更なし。本Trialは別scriptで、Productionコード未変更。
+- R7 Dangling Reference: 委任_06で確認、§84-8参照ファイルは全件実在(結果はRESULT_PACKET)。
+- T-3: 実費¥2.08(委任_05)を領収記録。
+
+### §84-8 参照ファイル
+- 予定: `er052_open233_directional_trial_02.py`、`er052_output/open233_directional_misread_trial_02/`配下、`docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-02_*.md`

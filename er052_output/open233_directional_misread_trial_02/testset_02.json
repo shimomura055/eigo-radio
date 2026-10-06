@@ -1,0 +1,2289 @@
+{
+ "purpose": "OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-02 Trial対象セット(事前登録、委任_02、Trial専用・gold非変更)",
+ "enums": {
+  "result_state": [
+   "AVAILABLE",
+   "STOPPED",
+   "PAUSED",
+   "INCREASED",
+   "DECREASED",
+   "UNCHANGED",
+   "STARTED",
+   "ENDED",
+   "EXPANDED",
+   "NARROWED",
+   "NOT_MENTIONED",
+   "UNCLEAR"
+  ],
+  "direction_pairs": [
+   [
+    "AVAILABLE",
+    "STOPPED"
+   ],
+   [
+    "AVAILABLE",
+    "PAUSED"
+   ],
+   [
+    "INCREASED",
+    "DECREASED"
+   ],
+   [
+    "STARTED",
+    "ENDED"
+   ],
+   [
+    "EXPANDED",
+    "NARROWED"
+   ]
+  ],
+  "expected_compare": [
+   "SAME",
+   "REVERSED",
+   "NOT_MENTIONED",
+   "UNCLEAR"
+  ],
+  "note": "PAUSED vs STOPPEDは一時性の差で逆転扱いしない"
+ },
+ "fact_registry": {
+  "MUSE-HC-012": {
+   "ledger_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "basis_verbatim": "機能を当面ロールバックした",
+   "rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)"
+  },
+  "HF-009": {
+   "ledger_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容"
+  },
+  "HF-007": {
+   "ledger_text": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+   "expected_ledger_state": "ENDED",
+   "acceptable_ledger_states": [
+    "ENDED"
+   ],
+   "has_direction": true,
+   "basis_verbatim": "置き換えると投稿した",
+   "rationale": "20%案が投資案件へ置換=案の終了"
+  },
+  "HF-002": {
+   "ledger_text": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+   "expected_ledger_state": "STARTED",
+   "acceptable_ledger_states": [
+    "STARTED"
+   ],
+   "has_direction": true,
+   "basis_verbatim": "償還を求めると投稿した",
+   "rationale": "20%償還の提案が開始された(提案の出現)"
+  },
+  "HF-011": {
+   "ledger_text": "[VERIFIED] HF-011: Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。",
+   "expected_ledger_state": "INCREASED",
+   "acceptable_ledger_states": [
+    "INCREASED"
+   ],
+   "has_direction": true,
+   "basis_verbatim": "1.7％上昇し",
+   "rationale": "Brent先物の上昇"
+  },
+  "HF-003": {
+   "ledger_text": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "basis_verbatim": "具体的制度設計は示されなかった",
+   "rationale": "状態変化なし(未提示)。方向性なし"
+  },
+  "MUSE-HC-004": {
+   "ledger_text": "[VERIFIED] MUSE-HC-004: Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "basis_verbatim": "散髪の予約、在庫確認",
+   "rationale": "機能説明。方向性なし"
+  },
+  "MUSE-HC-006": {
+   "ledger_text": "[VERIFIED] MUSE-HC-006: MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "basis_verbatim": "テストを実施した",
+   "rationale": "テスト実施の記述。状態の増減反転ではない。方向性なし"
+  },
+  "MUSE-HC-010": {
+   "ledger_text": "[VERIFIED] MUSE-HC-010: Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "basis_verbatim": "懸念を示した",
+   "rationale": "懸念表明。方向性なし"
+  },
+  "MUSE-HC-013": {
+   "ledger_text": "[VERIFIED] MUSE-HC-013: Metaの広報担当者Daniel Robertsは、従業員の反応は「圧倒的に肯定的」だったと述べ、テストの目的を、安全・プライバシー保護を実装し、公開前に機能を改善するためのフィードバック収集だと説明した。",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "basis_verbatim": "圧倒的に肯定的",
+   "rationale": "反応の記述。方向性なし"
+  }
+ },
+ "summary": {
+  "items": 63,
+  "by_role": {
+   "faithful_state": 21,
+   "same_fact_not_mentioned": 17,
+   "gold_reversal": 3,
+   "ambiguous": 3,
+   "non_directional": 5,
+   "synthetic_reversal": 14
+  },
+  "total_calls_estimate": 81,
+  "repeat3_items": [
+   "G-01",
+   "G-02",
+   "G-03",
+   "F-09",
+   "F-10",
+   "F-19",
+   "G-04",
+   "G-05",
+   "G-06"
+  ]
+ },
+ "items": [
+  {
+   "id": "F-01",
+   "role": "faithful_state",
+   "source": "labels_merged.json#0",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "# The Fee Plan Leaves, But High Oil Prices Stay",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-02",
+   "role": "faithful_state",
+   "source": "labels_merged.json#8",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-03",
+   "role": "faithful_state",
+   "source": "labels_merged.json#55",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-04",
+   "role": "faithful_state",
+   "source": "labels_merged.json#56",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "上げ幅|水準",
+   "trial02_reason": "briefly moved then returned=上げ幅と水準の2事象を述べる"
+  },
+  {
+   "id": "F-05",
+   "role": "faithful_state",
+   "source": "labels_merged.json#54",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "上げ幅|水準",
+   "trial02_reason": "might fall then returned=上げ幅と水準の2事象を述べる"
+  },
+  {
+   "id": "F-06",
+   "role": "faithful_state",
+   "source": "labels_merged.json#111",
+   "fixture": "neg3_hormuz_prodrunner_b1b",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "The fee plan left the stage, but the prices themselves quickly returned.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-07",
+   "role": "faithful_state",
+   "source": "labels_merged.json#112",
+   "fixture": "neg3_hormuz_prodrunner_b1b",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "This time, the fee plan left the stage, but the price did not leave with it.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-08",
+   "role": "faithful_state",
+   "source": "labels_merged.json#14",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "But news about tensions around the strait stayed on stage.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED",
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "緊張報道の継続はHF-009の事象リストに無い"
+  },
+  {
+   "id": "F-09",
+   "role": "faithful_state",
+   "source": "labels_merged.json#9",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "After the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "DECREASED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME",
+    "SAME_FAMILY",
+    "UNCLEAR"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 3,
+   "note": "一時縮小を述べる文(Ledgerに'一時的に上げ幅を縮小'あり)。SAME/UNCLEARを許容",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME",
+    "UNCLEAR"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "上げ幅",
+   "trial02_reason": "前回誤爆。Brent lost gains=事象「上げ幅」DECREASEDに対応し、水準INCREASEDと比較しない"
+  },
+  {
+   "id": "F-10",
+   "role": "faithful_state",
+   "source": "labels_merged.json#59",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "DECREASED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME",
+    "SAME_FAMILY",
+    "UNCLEAR"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 3,
+   "note": "一時縮小を述べる文(Ledgerに'一時的に上げ幅を縮小'あり)。SAME/UNCLEARを許容",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME",
+    "UNCLEAR"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "上げ幅",
+   "trial02_reason": "前回誤爆。briefly gave up gains=事象「上げ幅」に対応しSAME"
+  },
+  {
+   "id": "F-11",
+   "role": "faithful_state",
+   "source": "labels_merged.json#80",
+   "fixture": "bgroup_B3",
+   "fact_id": "HF-007",
+   "ledger_fact_text": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+   "article_sentence": "The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US.",
+   "expected_ledger_state": "ENDED",
+   "acceptable_ledger_states": [
+    "ENDED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "置き換えると投稿した",
+   "ledger_rationale": "20%案が投資案件へ置換=案の終了",
+   "expected_article_state": "ENDED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還料案",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-12",
+   "role": "faithful_state",
+   "source": "labels_merged.json#12",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-007",
+   "ledger_fact_text": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+   "article_sentence": "Trump said he would drop the 20 percent fee plan.",
+   "expected_ledger_state": "ENDED",
+   "acceptable_ledger_states": [
+    "ENDED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "置き換えると投稿した",
+   "ledger_rationale": "20%案が投資案件へ置換=案の終了",
+   "expected_article_state": "ENDED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "labels上のfact_id=HF-003を本文内容に合わせHF-007へ補正",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還料案",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-13",
+   "role": "faithful_state",
+   "source": "labels_merged.json#13",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-007",
+   "ledger_fact_text": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+   "article_sentence": "The 20 percent plan left the stage about one day after it appeared.",
+   "expected_ledger_state": "ENDED",
+   "acceptable_ledger_states": [
+    "ENDED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "置き換えると投稿した",
+   "ledger_rationale": "20%案が投資案件へ置換=案の終了",
+   "expected_article_state": "ENDED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "labels上のfact_id=HF-003を本文内容に合わせHF-007へ補正",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還料案",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-14",
+   "role": "faithful_state",
+   "source": "labels_merged.json#60",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-002",
+   "ledger_fact_text": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+   "article_sentence": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+   "expected_ledger_state": "STARTED",
+   "acceptable_ledger_states": [
+    "STARTED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "償還を求めると投稿した",
+   "ledger_rationale": "20%償還の提案が開始された(提案の出現)",
+   "expected_article_state": "STARTED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "labels上のfact_id=HF-009を本文内容に合わせHF-002へ補正",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還要求",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-15",
+   "role": "faithful_state",
+   "source": "labels_merged.json#113",
+   "fixture": "neg3_hormuz_prodrunner_b1b",
+   "fact_id": "HF-002",
+   "ledger_fact_text": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+   "article_sentence": "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+   "expected_ledger_state": "STARTED",
+   "acceptable_ledger_states": [
+    "STARTED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "償還を求めると投稿した",
+   "ledger_rationale": "20%償還の提案が開始された(提案の出現)",
+   "expected_article_state": "STARTED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "labels上のfact_id=HF-003を本文内容に合わせHF-002へ補正",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還要求",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-16",
+   "role": "faithful_state",
+   "source": "labels_merged.json#3",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-003",
+   "ledger_fact_text": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+   "article_sentence": "In other words, no one had actually started collecting the fee.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "具体的制度設計は示されなかった",
+   "ledger_rationale": "状態変化なし(未提示)。方向性なし",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "制度設計",
+   "trial02_reason": "徴収開始の有無はHF-003に直接なく、制度設計未提示に近接。NOT_MENTIONEDも許容"
+  },
+  {
+   "id": "F-17",
+   "role": "faithful_state",
+   "source": "labels_merged.json#53",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-003",
+   "ledger_fact_text": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+   "article_sentence": "In other words, fee collection had not actually begun.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "具体的制度設計は示されなかった",
+   "ledger_rationale": "状態変化なし(未提示)。方向性なし",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "制度設計",
+   "trial02_reason": "同上"
+  },
+  {
+   "id": "F-18",
+   "role": "faithful_state",
+   "source": "labels_merged.json#1",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-003",
+   "ledger_fact_text": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+   "article_sentence": "But important details were still missing.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "具体的制度設計は示されなかった",
+   "ledger_rationale": "状態変化なし(未提示)。方向性なし",
+   "expected_article_state": "UNCHANGED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "制度設計",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "F-19",
+   "role": "faithful_state",
+   "source": "labels_merged.json#48",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "For now, Meta has pulled back the human concierge feature.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "STOPPED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME",
+    "SAME_FAMILY"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 3,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "前回誤爆。pulled back the feature=事象「機能」(PAUSED/STOPPED)に対応。「電話テスト」STARTEDと比較しない"
+  },
+  {
+   "id": "F-20",
+   "role": "faithful_state",
+   "source": "labels_merged.json#74",
+   "fixture": "neg7_meta_prodrunner_b1b",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "Meta then temporarily put the human-call feature back on hold.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "PAUSED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME",
+    "SAME_FAMILY"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "put on hold=事象「機能」に対応(複数事象前提でSAME_FAMILY許容)"
+  },
+  {
+   "id": "F-21",
+   "role": "faithful_state",
+   "source": "labels_merged.json#81",
+   "fixture": "bgroup_B3",
+   "fact_id": "HF-011",
+   "ledger_fact_text": "[VERIFIED] HF-011: Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。",
+   "article_sentence": "The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+   "expected_ledger_state": "INCREASED",
+   "acceptable_ledger_states": [
+    "INCREASED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "1.7％上昇し",
+   "ledger_rationale": "Brent先物の上昇",
+   "expected_article_state": "INCREASED",
+   "expected_compare": "SAME",
+   "acceptable_compare": [
+    "SAME"
+   ],
+   "label": "忠実",
+   "origin": "新9 run ラベル問題なし",
+   "repeat": 1,
+   "note": "labels上のfact_id=HF-007を本文内容に合わせHF-011へ補正",
+   "legacy_expected_compare": "SAME",
+   "legacy_acceptable_compare": [
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "Brent先物価格",
+   "trial02_reason": "対象事象を明示(判定基準は不変)"
+  },
+  {
+   "id": "N-01",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#16",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "The problem was not that humans made the calls.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-02",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#17",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "The problem was telling users who was speaking.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-03",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#18",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "People asking Muse to call might think AI was calling.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-04",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#19",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "If no one explained this clearly, users could not know.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-05",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#20",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "They could not tell if it was AI or a person.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-06",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#22",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "They did not realize it.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-07",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#25",
+   "fixture": "meta_run03_standard",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "That was a mistake.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-08",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#40",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "A user might think the exchange was with AI, even though a person was involved.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-09",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#46",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "### Meta admits a mistake",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-10",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#47",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "A Meta executive admitted the mistake.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-11",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#63",
+   "fixture": "meta_run03_advanced",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "People who asked Muse to make a call might think that AI was making it.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-12",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#64",
+   "fixture": "meta_run03_advanced",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "And if this was not properly explained, users had no way to know whether they were talking to AI or a person.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-13",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#69",
+   "fixture": "meta_run03_advanced",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "It is whether they can honestly tell people who is on the other end of the call.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-14",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#90",
+   "fixture": "neg2_meta_refresh_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "The problem was how users were told who was speaking.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-15",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#91",
+   "fixture": "neg2_meta_refresh_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "People who asked Muse to make a call might think AI was doing it.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-16",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#92",
+   "fixture": "neg2_meta_refresh_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "If this was not explained clearly, users could not know if it was AI or a person.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "N-17",
+   "role": "same_fact_not_mentioned",
+   "source": "labels_merged.json#94",
+   "fixture": "neg2_meta_refresh_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "But they did not know that a human was on the other end.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run HC-012紐づき(ラベル問題なし)",
+   "repeat": 1,
+   "note": "HC-012に紐づくが状態変化(撤回/復元)を述べない文",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "G-01",
+   "role": "gold_reversal",
+   "source": "labels_merged.json#66",
+   "fixture": "meta_run03_advanced",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "AVAILABLE",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "真の反転",
+   "origin": "HC-012今回実例(ラベル重大、新9 run meta_run03_advanced)",
+   "repeat": 3,
+   "note": "restored系。Ledgerはロールバック",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "gold。restored=事象「機能」PAUSED/STOPPEDの逆。基準不変"
+  },
+  {
+   "id": "G-02",
+   "role": "gold_reversal",
+   "source": "design_open233_self_recovery_flow_01.md:1707 / SAFETY_CRITICAL_CLAIM_DEFS safety_A5 A5-0",
+   "fixture": "safety_A5(meta)",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "They also temporarily put back the feature in which humans handled the calls.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "AVAILABLE",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "真の反転",
+   "origin": "gold A5-0(重大)",
+   "repeat": 3,
+   "note": "時期・経過の創作型(一度消えて戻った出来事にする)。方向(撤回→復活)としても反転",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "gold(A5-0)。humans handled calls put back=事象「機能」の逆。基準不変"
+  },
+  {
+   "id": "G-03",
+   "role": "gold_reversal",
+   "source": "委任_60 重大期待(合成、HF-009に比較を付けた例) / sensor_quality_01.md C表D61合成",
+   "fixture": "合成(委任_60)",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "After the plan was withdrawn, oil prices fell.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "DECREASED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "label": "真の反転",
+   "origin": "委任_60 重大期待の明確な方向反転(比較系)",
+   "repeat": 3,
+   "note": "Ledger=UNCHANGED(高水準へ復帰)に対しDECREASEDは固定ペア外。goldは重大扱い。機械比較がUNCLEAR(判断不能)でも許容として別計上",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "gold(D61)。prices fell=事象「水準」INCREASED(復帰)の逆。上げ幅縮小と読む余地はUNCLEARで許容"
+  },
+  {
+   "id": "G-04",
+   "role": "ambiguous",
+   "source": "labels_merged.json#108 / 委任_46 K16",
+   "fixture": "neg3_hormuz_prodrunner_b1b",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCLEAR",
+   "expected_compare": "UNCLEAR",
+   "acceptable_compare": [
+    "UNCLEAR",
+    "SAME"
+   ],
+   "label": "曖昧",
+   "origin": "K16(ラベル重大・時期型。方向反転でなく『継続中の出来事が一度消えて戻った』創作)",
+   "repeat": 3,
+   "note": "方向ペアに当たらない時期型。UNCLEAR(判断不能)が適切で、REVERSEDとして誤検出しないことも確認",
+   "legacy_expected_compare": "UNCLEAR",
+   "legacy_acceptable_compare": [
+    "UNCLEAR",
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "水準",
+   "trial02_reason": "曖昧。水準事象について判断不能/SAMEを許容"
+  },
+  {
+   "id": "G-05",
+   "role": "ambiguous",
+   "source": "委任_46_result K19 / 委任_60 例(QUALITY)",
+   "fixture": "hormuz(委任_46)",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "Just after the charge plan disappeared, prices began to fall. Soon, however, they returned to a high level.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "UNCLEAR",
+   "expected_compare": "UNCLEAR",
+   "acceptable_compare": [
+    "SAME",
+    "UNCLEAR"
+   ],
+   "label": "曖昧",
+   "origin": "K19(QUALITY、比較系の過剰判定例)",
+   "repeat": 3,
+   "note": "一時下落→復帰でLedgerの『一時縮小→復帰』と概ね整合。SAME/UNCLEARを許容(REVERSEDは誤検出)",
+   "legacy_expected_compare": "UNCLEAR",
+   "legacy_acceptable_compare": [
+    "SAME",
+    "UNCLEAR"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "上げ幅|水準",
+   "trial02_reason": "曖昧。fall→returnedは上げ幅縮小+水準復帰の2事象で、各SAME。全体はUNCLEAR/SAME許容"
+  },
+  {
+   "id": "G-06",
+   "role": "ambiguous",
+   "source": "labels_merged.json#96 (同文#103)",
+   "fixture": "neg2_meta_refresh_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "The company also changed the human concierge feature back to how it was before, at least for now.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "UNCLEAR",
+   "expected_compare": "UNCLEAR",
+   "acceptable_compare": [
+    "UNCLEAR",
+    "SAME"
+   ],
+   "label": "曖昧",
+   "origin": "ラベル問題なしだがG-01(restored)と近接した表現",
+   "repeat": 3,
+   "note": "『changed...back to how it was before』は撤回とも復活とも読める。AI揺れ確認用。SAME/UNCLEARを許容",
+   "legacy_expected_compare": "UNCLEAR",
+   "legacy_acceptable_compare": [
+    "UNCLEAR",
+    "SAME"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "曖昧。changed feature back…の意味が不定"
+  },
+  {
+   "id": "ND-01",
+   "role": "non_directional",
+   "source": "labels_merged.json#43",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-004",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-004: Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。",
+   "article_sentence": "As AI becomes able to make calls or reservations for us, this question will become more familiar.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "散髪の予約、在庫確認",
+   "ledger_rationale": "機能説明。方向性なし",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run(ラベル問題なし)",
+   "repeat": 1,
+   "note": "状態変化を含まないfactに紐づく文。方向性なし(has_direction=false)のため比較不要が期待",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "ND-02",
+   "role": "non_directional",
+   "source": "labels_merged.json#93",
+   "fixture": "neg2_meta_refresh_a2",
+   "fact_id": "MUSE-HC-013",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-013: Metaの広報担当者Daniel Robertsは、従業員の反応は「圧倒的に肯定的」だったと述べ、テストの目的を、安全・プライバシー保護を実装し、公開前に機能を改善するためのフィードバック収集だと説明した。",
+   "article_sentence": "They enjoyed the ease of AI.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "圧倒的に肯定的",
+   "ledger_rationale": "反応の記述。方向性なし",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run(ラベル問題なし)",
+   "repeat": 1,
+   "note": "状態変化を含まないfactに紐づく文。方向性なし(has_direction=false)のため比較不要が期待",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "ND-03",
+   "role": "non_directional",
+   "source": "labels_merged.json#44",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-010",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-010: Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+   "article_sentence": "The more useful the feature, the more people will want to know who is on the other side.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "懸念を示した",
+   "ledger_rationale": "懸念表明。方向性なし",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run(ラベル問題なし)",
+   "repeat": 1,
+   "note": "状態変化を含まないfactに紐づく文。方向性なし(has_direction=false)のため比較不要が期待",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "ND-04",
+   "role": "non_directional",
+   "source": "labels_merged.json#36",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-006",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-006: MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。",
+   "article_sentence": "A call seemed to come from an AI agent.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "テストを実施した",
+   "ledger_rationale": "テスト実施の記述。状態の増減反転ではない。方向性なし",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run(ラベル問題なし)",
+   "repeat": 1,
+   "note": "状態変化を含まないfactに紐づく文。方向性なし(has_direction=false)のため比較不要が期待",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "ND-05",
+   "role": "non_directional",
+   "source": "labels_merged.json#71",
+   "fixture": "neg7_meta_prodrunner_b1b",
+   "fact_id": "MUSE-HC-006",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-006: MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。",
+   "article_sentence": "Some calls through Muse were not made by AI at all.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "テストを実施した",
+   "ledger_rationale": "テスト実施の記述。状態の増減反転ではない。方向性なし",
+   "expected_article_state": "NOT_MENTIONED",
+   "expected_compare": "NOT_MENTIONED",
+   "acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "label": "忠実",
+   "origin": "新9 run(ラベル問題なし)",
+   "repeat": 1,
+   "note": "状態変化を含まないfactに紐づく文。方向性なし(has_direction=false)のため比較不要が期待",
+   "legacy_expected_compare": "NOT_MENTIONED",
+   "legacy_acceptable_compare": [
+    "NOT_MENTIONED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "NONE",
+   "trial02_reason": "Ledger事象を述べない文。事象無しなら比較しない"
+  },
+  {
+   "id": "S-01",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-01、置換『# The Fee Plan Leaves』→『# The Fee Plan Arrives』)",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "# The Fee Plan Arrives, But High Oil Prices Stay",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: # The Fee Plan Leaves, But High Oil Prices Stay / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-01",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "水準",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-02",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-02、置換『The fee plan vanished』→『The fee plan appeared』)",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "The fee plan appeared, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-02",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "水準",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-03",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-03、置換『was withdrawn』→『was reinstated』)",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "What we can see here is that oil prices did not fall across the board immediately after the plan was reinstated.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-03",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "水準",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-04",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-06、置換『left the stage』→『took the stage』)",
+   "fixture": "neg3_hormuz_prodrunner_b1b",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "The fee plan took the stage, but the prices themselves quickly returned.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: The fee plan left the stage, but the prices themselves quickly returned. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-06",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "水準",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-05",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-07、置換『left the stage』→『took the stage』)",
+   "fixture": "neg3_hormuz_prodrunner_b1b",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "This time, the fee plan took the stage, but the price did not leave with it.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: This time, the fee plan left the stage, but the price did not leave with it. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-07",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "水準",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-06",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-09、置換『was withdrawn』→『was reinstated』)",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "After the fee plan was reinstated and replaced, Brent crude oil futures briefly lost some of their gains.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: After the fee plan was withdrawn and replaced, Brent crude oil futures briefly lost some of their gains. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-09",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "上げ幅",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-07",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-10、置換『briefly gave up』→『briefly added』)",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-009",
+   "ledger_fact_text": "[VERIFIED] HF-009: Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+   "article_sentence": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly added some of their gains.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "ほどなく発表前に近い高い水準へ戻った",
+   "ledger_rationale": "一時縮小→高水準へ復帰=実質変化なし。一時縮小の記述は忠実文として許容",
+   "expected_article_state": "INCREASED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-10",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "上げ幅",
+   "trial02_reason": "briefly added gains=事象「上げ幅」DECREASEDの直接逆"
+  },
+  {
+   "id": "S-08",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-12、置換『would drop』→『would launch』)",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-007",
+   "ledger_fact_text": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+   "article_sentence": "Trump said he would launch the 20 percent fee plan.",
+   "expected_ledger_state": "ENDED",
+   "acceptable_ledger_states": [
+    "ENDED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "置き換えると投稿した",
+   "ledger_rationale": "20%案が投資案件へ置換=案の終了",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: Trump said he would drop the 20 percent fee plan. / Ledger stateと固定ペアを成す反転",
+   "original_item_id": "F-12",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還料案",
+   "trial02_reason": "launch=償還料案ENDEDの逆"
+  },
+  {
+   "id": "S-09",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-13、置換『left the stage』→『took the stage』)",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-007",
+   "ledger_fact_text": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+   "article_sentence": "The 20 percent plan took the stage about one day after it appeared.",
+   "expected_ledger_state": "ENDED",
+   "acceptable_ledger_states": [
+    "ENDED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "置き換えると投稿した",
+   "ledger_rationale": "20%案が投資案件へ置換=案の終了",
+   "expected_article_state": "STARTED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: The 20 percent plan left the stage about one day after it appeared. / Ledger stateと固定ペアを成す反転",
+   "original_item_id": "F-13",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還料案",
+   "trial02_reason": "took the stage=償還料案ENDEDの逆"
+  },
+  {
+   "id": "S-10",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-14、置換『suddenly appeared』→『suddenly disappeared』)",
+   "fixture": "hormuz_run03_advanced",
+   "fact_id": "HF-002",
+   "ledger_fact_text": "[VERIFIED] HF-002: ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+   "article_sentence": "On July 13, a plan suddenly disappeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+   "expected_ledger_state": "STARTED",
+   "acceptable_ledger_states": [
+    "STARTED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "償還を求めると投稿した",
+   "ledger_rationale": "20%償還の提案が開始された(提案の出現)",
+   "expected_article_state": "ENDED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz. / Ledger stateと固定ペアを成す反転",
+   "original_item_id": "F-14",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "償還要求",
+   "trial02_reason": "disappeared=償還要求STARTEDの逆"
+  },
+  {
+   "id": "S-11",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-16、置換『started』→『stopped』)",
+   "fixture": "hormuz_run03_standard",
+   "fact_id": "HF-003",
+   "ledger_fact_text": "[VERIFIED] HF-003: 7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+   "article_sentence": "In other words, no one had actually stopped collecting the fee.",
+   "expected_ledger_state": "UNCHANGED",
+   "acceptable_ledger_states": [
+    "UNCHANGED"
+   ],
+   "has_direction": false,
+   "ledger_basis_verbatim": "具体的制度設計は示されなかった",
+   "ledger_rationale": "状態変化なし(未提示)。方向性なし",
+   "expected_article_state": "ENDED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR",
+    "SAME",
+    "NOT_MENTIONED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: In other words, no one had actually started collecting the fee. / Ledger=UNCHANGED等で固定ペア外。REVERSED/UNCLEARを許容(UNCLEAR=判断不能として別計上)",
+   "original_item_id": "F-16",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED",
+    "UNCLEAR"
+   ],
+   "outside_event_list": true,
+   "expected_event_subject": "制度設計",
+   "trial02_reason": "置換語が事象リスト外。REVERSED期待維持、SAME/NOT_MENTIONED許容、outside_event_listで別集計"
+  },
+  {
+   "id": "S-12",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-19、置換『pulled back』→『restored』)",
+   "fixture": "neg1_meta_b3prod_a2",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "For now, Meta has restored the human concierge feature.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "AVAILABLE",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: For now, Meta has pulled back the human concierge feature. / Ledger stateと固定ペアを成す反転",
+   "original_item_id": "F-19",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "restored=機能PAUSED/STOPPEDの逆"
+  },
+  {
+   "id": "S-13",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-20、置換『put the human-call feature back on hold』→『put the human-call feature back in service』)",
+   "fixture": "neg7_meta_prodrunner_b1b",
+   "fact_id": "MUSE-HC-012",
+   "ledger_fact_text": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+   "article_sentence": "Meta then temporarily put the human-call feature back in service.",
+   "expected_ledger_state": "STOPPED",
+   "acceptable_ledger_states": [
+    "STOPPED",
+    "PAUSED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "機能を当面ロールバックした",
+   "ledger_rationale": "ロールバック=撤回→STOPPED。「当面」の一時性からPAUSEDも許容(PAUSED/STOPPEDは逆転扱いしない)",
+   "expected_article_state": "AVAILABLE",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: Meta then temporarily put the human-call feature back on hold. / Ledger stateと固定ペアを成す反転",
+   "original_item_id": "F-20",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "機能",
+   "trial02_reason": "back in service=機能の逆"
+  },
+  {
+   "id": "S-14",
+   "role": "synthetic_reversal",
+   "source": "synthetic_reversal_01.py(元=F-21、置換『The rise』→『The drop』)",
+   "fixture": "bgroup_B3",
+   "fact_id": "HF-011",
+   "ledger_fact_text": "[VERIFIED] HF-011: Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。",
+   "article_sentence": "The drop was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+   "expected_ledger_state": "INCREASED",
+   "acceptable_ledger_states": [
+    "INCREASED"
+   ],
+   "has_direction": true,
+   "ledger_basis_verbatim": "1.7％上昇し",
+   "ledger_rationale": "Brent先物の上昇",
+   "expected_article_state": "DECREASED",
+   "expected_compare": "REVERSED",
+   "acceptable_compare": [
+    "REVERSED"
+   ],
+   "label": "人工反転",
+   "origin": "決定論置換(LLM不使用、Trial専用)",
+   "repeat": 1,
+   "note": "元文: The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz. / Ledger stateと固定ペアを成す反転",
+   "original_item_id": "F-21",
+   "legacy_expected_compare": "REVERSED",
+   "legacy_acceptable_compare": [
+    "REVERSED"
+   ],
+   "outside_event_list": false,
+   "expected_event_subject": "Brent先物価格",
+   "trial02_reason": "drop=INCREASEDの逆"
+  }
+ ],
+ "repeat3_items": [
+  "G-01",
+  "G-02",
+  "G-03",
+  "F-09",
+  "F-10",
+  "F-19",
+  "G-04",
+  "G-05",
+  "G-06"
+ ]
+}

@@ -1,0 +1,400 @@
+{
+ "cost_jpy": 2.081872,
+ "n_calls": 104,
+ "items": {
+  "n_items": 63,
+  "rep0_distribution": {
+   "NOT_MENTIONED": 35,
+   "UNCLEAR": 6,
+   "SAME": 8,
+   "LEDGER_NO_DIRECTION": 7,
+   "SAME_FAMILY": 1,
+   "REVERSED": 6
+  },
+  "normal": {
+   "n": 43,
+   "false_reversal": 0,
+   "false_reversal_ids": [],
+   "rate_rep0": 0.0,
+   "rate_all_repeats": 0.0,
+   "unclear": 5,
+   "not_mentioned": 25
+  },
+  "unclear_total": 6,
+  "not_mentioned_total": 35,
+  "gold": {
+   "G-01": {
+    "name": "HC-012",
+    "rep0": "REVERSED",
+    "rep0_detected": true,
+    "compares": [
+     "REVERSED",
+     "REVERSED",
+     "REVERSED"
+    ],
+    "k": 3,
+    "n": 3
+   },
+   "G-02": {
+    "name": "A5-0",
+    "rep0": "REVERSED",
+    "rep0_detected": true,
+    "compares": [
+     "REVERSED",
+     "REVERSED",
+     "REVERSED"
+    ],
+    "k": 3,
+    "n": 3
+   },
+   "G-03": {
+    "name": "D61",
+    "rep0": "NOT_MENTIONED",
+    "rep0_detected": false,
+    "compares": [
+     "NOT_MENTIONED",
+     "NOT_MENTIONED",
+     "NOT_MENTIONED"
+    ],
+    "k": 0,
+    "n": 3
+   }
+  },
+  "prev_false_alarms": {
+   "F-09": {
+    "rep0": "SAME",
+    "compares": [
+     "SAME",
+     "SAME",
+     "SAME"
+    ],
+    "resolved": true
+   },
+   "F-10": {
+    "rep0": "SAME",
+    "compares": [
+     "SAME",
+     "SAME",
+     "SAME"
+    ],
+    "resolved": true
+   },
+   "F-19": {
+    "rep0": "SAME",
+    "compares": [
+     "SAME",
+     "SAME_FAMILY",
+     "SAME_FAMILY"
+    ],
+    "resolved": true
+   }
+  },
+  "synthetic": {
+   "n": 14,
+   "strict_n": 7,
+   "strict_detected": 4,
+   "tolerant_n": 7,
+   "tolerant_detected": 0,
+   "tolerant_ok_by_acceptable": 6,
+   "detected": 4,
+   "missed_ids": [
+    "S-01",
+    "S-02",
+    "S-03",
+    "S-04",
+    "S-05",
+    "S-06",
+    "S-08",
+    "S-09",
+    "S-11",
+    "S-14"
+   ]
+  },
+  "ambiguous": {
+   "G-04": {
+    "rep0": "NOT_MENTIONED",
+    "compares": [
+     "NOT_MENTIONED",
+     "UNCLEAR",
+     "UNCLEAR"
+    ],
+    "any_reversed": false
+   },
+   "G-05": {
+    "rep0": "SAME",
+    "compares": [
+     "SAME",
+     "NOT_MENTIONED",
+     "SAME"
+    ],
+    "any_reversed": false
+   },
+   "G-06": {
+    "rep0": "UNCLEAR",
+    "compares": [
+     "UNCLEAR",
+     "UNCLEAR",
+     "UNCLEAR"
+    ],
+    "any_reversed": false
+   }
+  },
+  "fluctuation": {
+   "n_multi_repeat_items": 9,
+   "all_agree": 6,
+   "agree_rate": 0.6667,
+   "disagree_ids": [
+    "F-19",
+    "G-04",
+    "G-05"
+   ]
+  }
+ },
+ "ledger_side": {
+  "n_facts": 10,
+  "n_ledger_reps": 30,
+  "has_direction_accuracy": 0.8667,
+  "event_match_rate": 0.6667,
+  "state_accuracy_given_match": 0.9615,
+  "state_accuracy_all_truth_events": 0.641,
+  "extra_events_per_rep": 0.033,
+  "repeat_agreement_facts": "6/10",
+  "repeat_agreement_rate": 0.6
+ },
+ "article_side": {
+  "selected_event_n": 81,
+  "selected_event_accuracy": 0.6914,
+  "article_state_n": 0,
+  "article_state_accuracy": null
+ },
+ "per_run": {
+  "jpy_per_call": 0.02002,
+  "levels": {
+   "low": {
+    "units_per_run": 3.33,
+    "added_calls": 17.0,
+    "added_jpy": 0.34,
+    "unneeded_rewrite_per_run": 0.0,
+    "vs_baseline_rewrite_0.67": 0.0,
+    "le_half_baseline_0.335": true
+   },
+   "mid": {
+    "units_per_run": 7.46,
+    "added_calls": 21.13,
+    "added_jpy": 0.423,
+    "unneeded_rewrite_per_run": 0.0,
+    "vs_baseline_rewrite_0.67": 0.0,
+    "le_half_baseline_0.335": true
+   },
+   "high": {
+    "units_per_run": 30.56,
+    "added_calls": 44.23,
+    "added_jpy": 0.885,
+    "unneeded_rewrite_per_run": 0.0,
+    "vs_baseline_rewrite_0.67": 0.0,
+    "le_half_baseline_0.335": true
+   }
+  }
+ },
+ "criteria": [
+  {
+   "criterion": "1 HC-012 3/3検出",
+   "result": "充足",
+   "evidence": "3/3 rep0=REVERSED"
+  },
+  {
+   "criterion": "2 A5-0 3/3検出",
+   "result": "充足",
+   "evidence": "3/3 rep0=REVERSED"
+  },
+  {
+   "criterion": "3 正常文の誤重大判定2%以下",
+   "result": "充足",
+   "evidence": "0/43=0.0 ids=[]"
+  },
+  {
+   "criterion": "4 不要Rewrite見込み0.335以下(全3水準)",
+   "result": "充足",
+   "evidence": {
+    "low": 0.0,
+    "mid": 0.0,
+    "high": 0.0
+   }
+  },
+  {
+   "criterion": "5 前回誤爆3件解消(3反復ともREVERSEDでない)",
+   "result": "充足",
+   "evidence": {
+    "F-09": [
+     "SAME",
+     "SAME",
+     "SAME"
+    ],
+    "F-10": [
+     "SAME",
+     "SAME",
+     "SAME"
+    ],
+    "F-19": [
+     "SAME",
+     "SAME_FAMILY",
+     "SAME_FAMILY"
+    ]
+   }
+  },
+  {
+   "criterion": "6 新しい重大見逃しなし(前回検出gold/人工反転の今回見逃し)",
+   "result": "未達",
+   "evidence": {
+    "new_misses": [
+     "S-06"
+    ]
+   }
+  }
+ ],
+ "regression": [
+  {
+   "item": "HC-012(G-01) k/n",
+   "trial01": "3/3",
+   "trial02": "3/3"
+  },
+  {
+   "item": "A5-0(G-02) k/n",
+   "trial01": "3/3",
+   "trial02": "3/3"
+  },
+  {
+   "item": "D61(G-03) k/n",
+   "trial01": "2/3",
+   "trial02": "0/3"
+  },
+  {
+   "item": "gold repeat計",
+   "trial01": "8/9",
+   "trial02": "6/9"
+  },
+  {
+   "item": "正常文誤重大 件(rate)",
+   "trial01": "3(0.0698)",
+   "trial02": "0(0.0)"
+  },
+  {
+   "item": "正常文誤重大 ids",
+   "trial01": [
+    "F-09",
+    "F-10",
+    "F-19"
+   ],
+   "trial02": []
+  },
+  {
+   "item": "UNCLEAR全体",
+   "trial01": 14,
+   "trial02": 6
+  },
+  {
+   "item": "人工反転 検出",
+   "trial01": "5/14",
+   "trial02": "4/14"
+  },
+  {
+   "item": "low 追加円/run",
+   "trial01": 0.369,
+   "trial02": 0.34
+  },
+  {
+   "item": "low 不要Rewrite/run",
+   "trial01": 0.232,
+   "trial02": 0.0
+  },
+  {
+   "item": "mid 追加円/run",
+   "trial01": 0.429,
+   "trial02": 0.423
+  },
+  {
+   "item": "mid 不要Rewrite/run",
+   "trial01": 0.521,
+   "trial02": 0.0
+  },
+  {
+   "item": "high 追加円/run",
+   "trial01": 0.76,
+   "trial02": 0.885
+  },
+  {
+   "item": "high 不要Rewrite/run",
+   "trial01": 2.133,
+   "trial02": 0.0
+  }
+ ],
+ "gold": {
+  "G-01": {
+   "name": "HC-012",
+   "rep0": "REVERSED",
+   "rep0_detected": true,
+   "compares": [
+    "REVERSED",
+    "REVERSED",
+    "REVERSED"
+   ],
+   "k": 3,
+   "n": 3
+  },
+  "G-02": {
+   "name": "A5-0",
+   "rep0": "REVERSED",
+   "rep0_detected": true,
+   "compares": [
+    "REVERSED",
+    "REVERSED",
+    "REVERSED"
+   ],
+   "k": 3,
+   "n": 3
+  },
+  "G-03": {
+   "name": "D61",
+   "rep0": "NOT_MENTIONED",
+   "rep0_detected": false,
+   "compares": [
+    "NOT_MENTIONED",
+    "NOT_MENTIONED",
+    "NOT_MENTIONED"
+   ],
+   "k": 0,
+   "n": 3
+  }
+ },
+ "normal": {
+  "n": 43,
+  "false_reversal": 0,
+  "false_reversal_ids": [],
+  "rate_rep0": 0.0,
+  "rate_all_repeats": 0.0,
+  "unclear": 5,
+  "not_mentioned": 25
+ },
+ "unclear_total": 6,
+ "synthetic": {
+  "n": 14,
+  "strict_n": 7,
+  "strict_detected": 4,
+  "tolerant_n": 7,
+  "tolerant_detected": 0,
+  "tolerant_ok_by_acceptable": 6,
+  "detected": 4,
+  "missed_ids": [
+   "S-01",
+   "S-02",
+   "S-03",
+   "S-04",
+   "S-05",
+   "S-06",
+   "S-08",
+   "S-09",
+   "S-11",
+   "S-14"
+  ]
+ }
+}

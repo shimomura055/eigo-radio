@@ -20067,3 +20067,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
   - 正常文43の誤反転: blind 3件(7.0%)、nonblind 0、split 2件(4.7%)。原因=複数事象factで記事側が事象を選ばず全事象と比較する規則(Opus U3未実装)。不要Rewrite見込み(same_blind)0.23/0.52/2.13件/run(現行0.67)、追加¥0.37/0.43/0.76/run。
   - Fable判定: **USER_DECISION_REQUIRED**(VALIDATED不可=誤反転7%・D61不安定、REJECTED不可=blind分離でHC-012/A5-0検出・原因は修正可能)。推奨=same_blind+事象選択修正のTRIAL-02(上限¥5、63項目×3)。Production採否判断は不要(Trial未達)。
   - ユーザー判断事項: (1)TRIAL-02実施可否、(2)残11 E2E再開可否(Fable推奨=TRIAL-02結果まで待機)。残11 E2Eはユーザーが明示承認するまで開始しない。
+
+## 2026-10-06 OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-02 委任_04: 修正版限定Trialの起票・合格基準の事前登録(Trial、Production未反映、結果は委任_06で追記)
+
+- Status: TRIAL-02=実行中(分類は結果後にFable)。Production変更・gold/KPI変更なし。SSOT記録は¥0。REPORT §84。出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-02_04.md`。
+- (a)【ユーザー指示要点】承認4点: 修正版限定Trial実施/費用上限¥10/残り11 E2E停止継続/Production変更なし。報告フォーマット警告: 正式報告は★★★★報告ここから★★★★〜★★★★報告ここまで★★★★で行う(前回違反、closeout時に確認)。修正内容: same_blind維持、記事側AIが先に対象事象を選択し、選択事象のみLedger側と比較(総当たり禁止)。Trial条件: 前回と同じ主要テスト群、重要例3回反復。合格基準(事前登録): HC-012 3/3検出/A5-0 3/3検出/正常文の誤重大判定2%以下/不要Rewrite見込み0.67件/runの半分以下/前回誤爆3件解消/新しい重大見逃しなし。1つでも未達なら勝手に追加修正Trialへ進まない。費用上限¥10(超過見込みならSTOP)。禁止: Production変更/残り11 E2E再開/gold・KPI変更/floor復活/新Safety原則追加/自動Production採用。終了時はVALIDATED/REJECTED/USER_DECISION_REQUIRED(VALIDATEDでもProduction採用ではない)。
+- (b)【Fable計画】所要約65〜75分、Phase A(¥0並列)→B(≤¥10、Ledger側30 call+記事側3 process shard並列)→C(集計・判定・SSOT・closeout)。短縮見込み約60分。
+- (c)【結果・Status】(委任_06で記録、Fable判定)Status=**USER_DECISION_REQUIRED**。決定したのはFableのStatus判定のみ(Production採否・追加Trial・残11再開は未決定)。R1 実費¥2.08/上限¥10(104 call、same_blind、gpt-6-luna、medium)。R3 基準5/6充足(HC-012 3/3、A5-0 3/3、正常文誤重大0/43=0%、不要Rewrite見込み0件/run、前回誤爆3件解消)、第6条件未達: D61が前回2/3→今回0/3(記事側の事象選択NONE)、S-06も見逃し。R5 原因所見【推測】=事象ラベルが抽象的。改善案(subject_xへ実体名、部分一致で選ぶ旨をprompt明示)は未実装。ユーザー判断事項: (1)TRIAL-02をVALIDATED扱いとするか/D61対応の追加Trial可否、(2)残11 E2E再開可否(Fable推奨=(1)の判断後)。Production変更・APPROVED_FOR_PRODUCTION未配線項目への影響なし。REPORT §84-6/§84-7。
