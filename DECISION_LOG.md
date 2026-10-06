@@ -20053,3 +20053,17 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
   - E Opus Part 2=条件付きで進める(必須修正3点: blind分離抽出/母集団訂正/§5と§8矛盾解消、03aで反映)。
   - F Fable照合: 方向性一致。ユーザー仮説「既存決定論検査=センサー」の前提が崩れ、センサー差し替え=新設計判断/有料Trial承認要→USER_DECISION_REQUIRED。残11 runは引き続き待機。
   - ユーザー判断待ち7点: (1)センサー差し替え(T-D')採否 (2)別model方式(Ledger側2モデル一致、記事側はTrial比較) (3)失敗時=retry→QUALITY (4)逆転経路(Stage 2/S1迂回)・Rewrite上限到達時STOPかQUALITYか (5)T3/T4は観察のみ (6)数字floor穴(`number_not_in_fact`→`changed_number`未変換)と`apply_stage2_two_of_two`潜在不具合は別管理ID (7)限定Trial約¥15以内(【推測】、Opus)、¥0のT-D'母集団再集計を先行。
+
+## 2026-10-06 OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-01 委任_03a: 限定Trialの設計承認・Phase 0結果・実行方針の記録(Trial、Production未反映、結果は03bで追記)
+
+- Status: TRIAL-01=実行中(分類は結果後にFable)。Production変更・gold/KPI変更なし。Phase 0とSSOT記録は¥0。REPORT §83。出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-01_03a.md`。
+- (a)【ユーザー指示要点】目的: ユーザー承認済みの設計案について、Production変更は行わず限定Trialで有効性を確認。残り11 E2Eは引き続き停止。Trial仕様: Ledger全FactをAIが確認(状態変化・方向性の有無、結果状態を固定分類で抽出)→方向性ありFactだけ記事側を別AI判定(Ledger側の答えを見せない)→機械比較(同方向=通過/逆方向=重大候補/抽出不能・曖昧=記録のみ)。同じAI・同じrubricの繰り返し構成にしない。まず¥0で母集団再集計。費用上限¥15(見積超過時のみSTOP)。比較: 同一model/Ledger側と記事側でmodel分離/blind分離あり・なし。禁止: Checker・後段AI・floor復活・残11 E2E・KPI・gold・Human Review振替・自動Production採用の変更。副産物2件は別管理ID。Status: VALIDATED/REJECTED/USER_DECISION_REQUIRED(VALIDATEDでもProduction採用ではない)。
+- (b)【Phase 0結果(記録、決定ではない)】A 母集団: Ledger全Fact 123件/9 run(Stage 1候補66件とは別物)、状態変化Fact(語彙近似)30件=24.4%、追加コスト合計¥0.19/0.25/1.64 per run(low/mid/high)、現行E2E約¥3.50/run。B 対象セット63項目(gold 3・曖昧3・忠実38・非該当5・人工反転14)、Ledger側正解10 fact事前登録、call見込み75/構成。C Trial script(Ledger側抽出→記事側blind抽出→Python比較、3構成same_blind/split_blind/same_nonblind、unit test 8件PASS、dry-run完走)。詳細REPORT §83-2〜4。
+- (c)【Fable実行方針】effort=medium、順序same_blind→same_nonblind→split_blind(記事側はsame_blind結果を再利用)、累計¥15で強制停止、見積mid>¥15ならSTOP。
+- (d)【副産物の別ID化】OPEN-235(数字floor配線漏れ)、OPEN-236(two_of_two潜在不具合)を別管理IDで起票済み(委任_01d)。
+- (e)【結果・Status(委任_03b、REPORT §83-5/§83-6)】決定したのはFableのStatus判定のみ、他はユーザー判断待ち。
+  - 費用(T-3領収): 実費¥10.35/上限¥15(same_blind ¥2.48、same_nonblind ¥4.54、split_blind ¥3.33)、effort=medium、予算停止・失敗callなし、Production変更・gold/KPI変更なし。
+  - gold: HC-012(G-01)・A5-0(G-02)はsame_blindで3/3検出。D61(G-03)は blind 2/3・nonblind 0/3・split 3/3。gold計 blind 8/9・nonblind 5/9・split 7/9。
+  - 正常文43の誤反転: blind 3件(7.0%)、nonblind 0、split 2件(4.7%)。原因=複数事象factで記事側が事象を選ばず全事象と比較する規則(Opus U3未実装)。不要Rewrite見込み(same_blind)0.23/0.52/2.13件/run(現行0.67)、追加¥0.37/0.43/0.76/run。
+  - Fable判定: **USER_DECISION_REQUIRED**(VALIDATED不可=誤反転7%・D61不安定、REJECTED不可=blind分離でHC-012/A5-0検出・原因は修正可能)。推奨=same_blind+事象選択修正のTRIAL-02(上限¥5、63項目×3)。Production採否判断は不要(Trial未達)。
+  - ユーザー判断事項: (1)TRIAL-02実施可否、(2)残11 E2E再開可否(Fable推奨=TRIAL-02結果まで待機)。残11 E2Eはユーザーが明示承認するまで開始しない。

@@ -1,0 +1,915 @@
+{
+ "configs": {
+  "same_blind": {
+   "config": "same_blind",
+   "n_rows": 63,
+   "calls": 154,
+   "cost_jpy": 2.484556,
+   "stopped_by_budget": false,
+   "n_failed_calls": 0,
+   "models": {
+    "ledger": "gpt-6-luna",
+    "article": "gpt-6-luna"
+   },
+   "reuse_hits": 0,
+   "reuse_miss": 0,
+   "jpy_per_call": 0.01613,
+   "compare_distribution": {
+    "UNCLEAR": 14,
+    "NOT_MENTIONED": 32,
+    "REVERSED": 10,
+    "LEDGER_NO_DIRECTION": 7
+   },
+   "gold": {
+    "n": 3,
+    "detected_rep0": 2,
+    "per_item": {
+     "G-01": [
+      "REVERSED",
+      "REVERSED",
+      "REVERSED"
+     ],
+     "G-02": [
+      "REVERSED",
+      "REVERSED",
+      "REVERSED"
+     ],
+     "G-03": [
+      "NOT_MENTIONED",
+      "REVERSED",
+      "REVERSED"
+     ]
+    },
+    "detected_repeats": 8,
+    "total_repeats": 9
+   },
+   "synthetic": {
+    "n": 14,
+    "strict_n": 6,
+    "strict_detected": 3,
+    "tolerant_n": 8,
+    "tolerant_detected": 2,
+    "tolerant_ok_by_acceptable": 5,
+    "all_detected": 5,
+    "missed_ids": [
+     "S-01",
+     "S-02",
+     "S-03",
+     "S-04",
+     "S-05",
+     "S-08",
+     "S-09",
+     "S-11",
+     "S-14"
+    ]
+   },
+   "reversal_total": {
+    "n": 17,
+    "detected": 7,
+    "missed": 10
+   },
+   "normal": {
+    "n": 43,
+    "false_reversal": 3,
+    "false_reversal_ids": [
+     "F-09",
+     "F-10",
+     "F-19"
+    ],
+    "rate": 0.0698,
+    "rate_all_repeats": 0.0698,
+    "unclear": 9
+   },
+   "unclear_total": 14,
+   "ambiguous": {
+    "G-04": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "UNCLEAR",
+      "NOT_MENTIONED",
+      "NOT_MENTIONED"
+     ]
+    },
+    "G-05": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "NOT_MENTIONED",
+      "REVERSED",
+      "NOT_MENTIONED"
+     ]
+    },
+    "G-06": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "UNCLEAR",
+      "UNCLEAR",
+      "UNCLEAR"
+     ]
+    }
+   },
+   "ledger_side": {
+    "n_facts": 10,
+    "has_direction_accuracy": 0.8667,
+    "state_accuracy_directional": 0.3333,
+    "state_accuracy_any_event": 0.5333,
+    "facts_with_repeat_fluctuation": 1,
+    "per_fact": {
+     "HF-009": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "DECREASED",
+       "DECREASED",
+       "DECREASED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "HF-007": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "STOPPED",
+       "STOPPED",
+       "STOPPED"
+      ],
+      "acceptable": [
+       "ENDED"
+      ]
+     },
+     "HF-002": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       false
+      ],
+      "states_repeats": [
+       "STARTED",
+       "STARTED",
+       null
+      ],
+      "acceptable": [
+       "STARTED"
+      ]
+     },
+     "HF-003": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       false,
+       false
+      ],
+      "states_repeats": [
+       null,
+       null,
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-012": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "STARTED",
+       "STARTED",
+       "STARTED"
+      ],
+      "acceptable": [
+       "STOPPED",
+       "PAUSED"
+      ]
+     },
+     "HF-011": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "INCREASED",
+       "INCREASED",
+       "INCREASED"
+      ],
+      "acceptable": [
+       "INCREASED"
+      ]
+     },
+     "MUSE-HC-004": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       false,
+       false
+      ],
+      "states_repeats": [
+       null,
+       null,
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-013": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       false,
+       false
+      ],
+      "states_repeats": [
+       null,
+       null,
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-010": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       false,
+       false
+      ],
+      "states_repeats": [
+       null,
+       null,
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-006": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "STARTED",
+       "STARTED",
+       "STARTED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     }
+    }
+   },
+   "article_state_accuracy": 0.5357,
+   "article_state_n": 56,
+   "unit_cost": {
+    "ledger_jpy_per_call": 0.02352,
+    "article_jpy_per_call": 0.01435,
+    "nonblind_jpy_per_call": null,
+    "n_ledger_calls": 30,
+    "n_article_calls": 124,
+    "n_nb_calls": 0
+   },
+   "per_run": {
+    "low": {
+     "units_per_run": 3.33,
+     "added_calls": 17.0,
+     "added_jpy": 0.369,
+     "unneeded_rewrite_per_run": 0.232,
+     "vs_baseline_rewrite_0.67": 0.35
+    },
+    "mid": {
+     "units_per_run": 7.46,
+     "added_calls": 21.13,
+     "added_jpy": 0.429,
+     "unneeded_rewrite_per_run": 0.521,
+     "vs_baseline_rewrite_0.67": 0.78
+    },
+    "high": {
+     "units_per_run": 30.56,
+     "added_calls": 44.23,
+     "added_jpy": 0.76,
+     "unneeded_rewrite_per_run": 2.133,
+     "vs_baseline_rewrite_0.67": 3.18
+    }
+   }
+  },
+  "same_nonblind": {
+   "config": "same_nonblind",
+   "n_rows": 63,
+   "calls": 75,
+   "cost_jpy": 4.543433,
+   "stopped_by_budget": false,
+   "n_failed_calls": 0,
+   "models": {
+    "ledger": "gpt-6-luna",
+    "article": "gpt-6-luna"
+   },
+   "reuse_hits": 0,
+   "reuse_miss": 0,
+   "jpy_per_call": 0.06058,
+   "compare_distribution": {
+    "UNCLEAR": 12,
+    "NOT_MENTIONED": 33,
+    "SAME": 5,
+    "LEDGER_NO_DIRECTION": 6,
+    "REVERSED": 7
+   },
+   "gold": {
+    "n": 3,
+    "detected_rep0": 2,
+    "per_item": {
+     "G-01": [
+      "REVERSED",
+      "NOT_MENTIONED",
+      "REVERSED"
+     ],
+     "G-02": [
+      "REVERSED",
+      "REVERSED",
+      "REVERSED"
+     ],
+     "G-03": [
+      "NOT_MENTIONED",
+      "NOT_MENTIONED",
+      "NOT_MENTIONED"
+     ]
+    },
+    "detected_repeats": 5,
+    "total_repeats": 9
+   },
+   "synthetic": {
+    "n": 14,
+    "strict_n": 6,
+    "strict_detected": 4,
+    "tolerant_n": 8,
+    "tolerant_detected": 1,
+    "tolerant_ok_by_acceptable": 5,
+    "all_detected": 5,
+    "missed_ids": [
+     "S-01",
+     "S-02",
+     "S-03",
+     "S-04",
+     "S-05",
+     "S-06",
+     "S-08",
+     "S-09",
+     "S-11"
+    ]
+   },
+   "reversal_total": {
+    "n": 17,
+    "detected": 7,
+    "missed": 10
+   },
+   "normal": {
+    "n": 43,
+    "false_reversal": 0,
+    "false_reversal_ids": [],
+    "rate": 0.0,
+    "rate_all_repeats": 0.0,
+    "unclear": 5
+   },
+   "unclear_total": 12,
+   "ambiguous": {
+    "G-04": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "NOT_MENTIONED",
+      "NOT_MENTIONED",
+      "NOT_MENTIONED"
+     ]
+    },
+    "G-05": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "UNCLEAR",
+      "SAME",
+      "SAME"
+     ]
+    },
+    "G-06": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "NOT_MENTIONED",
+      "NOT_MENTIONED",
+      "NOT_MENTIONED"
+     ]
+    }
+   },
+   "ledger_side": {
+    "n_facts": 10,
+    "has_direction_accuracy": 0.8,
+    "state_accuracy_directional": 0.4,
+    "state_accuracy_any_event": 0.6,
+    "facts_with_repeat_fluctuation": 0,
+    "per_fact": {
+     "HF-009": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "DECREASED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "HF-007": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "STOPPED"
+      ],
+      "acceptable": [
+       "ENDED"
+      ]
+     },
+     "HF-002": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "STARTED"
+      ],
+      "acceptable": [
+       "STARTED"
+      ]
+     },
+     "HF-003": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false
+      ],
+      "states_repeats": [
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-012": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "STARTED"
+      ],
+      "acceptable": [
+       "STOPPED",
+       "PAUSED"
+      ]
+     },
+     "HF-011": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "INCREASED"
+      ],
+      "acceptable": [
+       "INCREASED"
+      ]
+     },
+     "MUSE-HC-004": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false
+      ],
+      "states_repeats": [
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-013": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "INCREASED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-010": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false
+      ],
+      "states_repeats": [
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-006": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       true
+      ],
+      "states_repeats": [
+       "STARTED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     }
+    }
+   },
+   "article_state_accuracy": 0.5789,
+   "article_state_n": 57,
+   "unit_cost": {
+    "ledger_jpy_per_call": null,
+    "article_jpy_per_call": null,
+    "nonblind_jpy_per_call": 0.06058,
+    "n_ledger_calls": 0,
+    "n_article_calls": 0,
+    "n_nb_calls": 75
+   },
+   "per_run": {
+    "low": {
+     "units_per_run": 3.33,
+     "added_calls": 3.33,
+     "added_jpy": 0.202,
+     "unneeded_rewrite_per_run": 0.0,
+     "vs_baseline_rewrite_0.67": 0.0
+    },
+    "mid": {
+     "units_per_run": 7.46,
+     "added_calls": 7.46,
+     "added_jpy": 0.452,
+     "unneeded_rewrite_per_run": 0.0,
+     "vs_baseline_rewrite_0.67": 0.0
+    },
+    "high": {
+     "units_per_run": 30.56,
+     "added_calls": 30.56,
+     "added_jpy": 1.851,
+     "unneeded_rewrite_per_run": 0.0,
+     "vs_baseline_rewrite_0.67": 0.0
+    }
+   }
+  },
+  "split_blind": {
+   "config": "split_blind",
+   "n_rows": 63,
+   "calls": 149,
+   "cost_jpy": 3.326217,
+   "stopped_by_budget": false,
+   "n_failed_calls": 0,
+   "models": {
+    "ledger": "gpt-5.6-luna",
+    "article": "gpt-6-luna"
+   },
+   "reuse_hits": 29,
+   "reuse_miss": 119,
+   "jpy_per_call": 0.02232,
+   "compare_distribution": {
+    "UNCLEAR": 15,
+    "NOT_MENTIONED": 33,
+    "REVERSED": 8,
+    "SAME": 1,
+    "LEDGER_NO_DIRECTION": 6
+   },
+   "gold": {
+    "n": 3,
+    "detected_rep0": 2,
+    "per_item": {
+     "G-01": [
+      "NOT_MENTIONED",
+      "NOT_MENTIONED",
+      "REVERSED"
+     ],
+     "G-02": [
+      "REVERSED",
+      "REVERSED",
+      "REVERSED"
+     ],
+     "G-03": [
+      "REVERSED",
+      "REVERSED",
+      "REVERSED"
+     ]
+    },
+    "detected_repeats": 7,
+    "total_repeats": 9
+   },
+   "synthetic": {
+    "n": 14,
+    "strict_n": 6,
+    "strict_detected": 2,
+    "tolerant_n": 8,
+    "tolerant_detected": 2,
+    "tolerant_ok_by_acceptable": 7,
+    "all_detected": 4,
+    "missed_ids": [
+     "S-01",
+     "S-02",
+     "S-03",
+     "S-04",
+     "S-05",
+     "S-08",
+     "S-09",
+     "S-10",
+     "S-11",
+     "S-12"
+    ]
+   },
+   "reversal_total": {
+    "n": 17,
+    "detected": 6,
+    "missed": 11
+   },
+   "normal": {
+    "n": 43,
+    "false_reversal": 2,
+    "false_reversal_ids": [
+     "F-09",
+     "F-10"
+    ],
+    "rate": 0.0465,
+    "rate_all_repeats": 0.0465,
+    "unclear": 10
+   },
+   "unclear_total": 15,
+   "ambiguous": {
+    "G-04": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "NOT_MENTIONED",
+      "UNCLEAR",
+      "NOT_MENTIONED"
+     ]
+    },
+    "G-05": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "NOT_MENTIONED",
+      "NOT_MENTIONED",
+      "REVERSED"
+     ]
+    },
+    "G-06": {
+     "expected": "UNCLEAR",
+     "repeat_compares": [
+      "NOT_MENTIONED",
+      "UNCLEAR",
+      "UNCLEAR"
+     ]
+    }
+   },
+   "ledger_side": {
+    "n_facts": 10,
+    "has_direction_accuracy": 0.6667,
+    "state_accuracy_directional": 0.3333,
+    "state_accuracy_any_event": 0.5333,
+    "facts_with_repeat_fluctuation": 3,
+    "per_fact": {
+     "HF-009": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "DECREASED",
+       "DECREASED",
+       "DECREASED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "HF-007": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "STOPPED",
+       "ENDED",
+       "STOPPED"
+      ],
+      "acceptable": [
+       "ENDED"
+      ]
+     },
+     "HF-002": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       false,
+       true,
+       false
+      ],
+      "states_repeats": [
+       null,
+       "STARTED",
+       null
+      ],
+      "acceptable": [
+       "STARTED"
+      ]
+     },
+     "HF-003": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "NOT_MENTIONED",
+       "NOT_MENTIONED",
+       "NOT_MENTIONED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-012": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "STARTED",
+       "STARTED",
+       "STARTED"
+      ],
+      "acceptable": [
+       "STOPPED",
+       "PAUSED"
+      ]
+     },
+     "HF-011": {
+      "expected_has_direction": true,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "INCREASED",
+       "INCREASED",
+       "INCREASED"
+      ],
+      "acceptable": [
+       "INCREASED"
+      ]
+     },
+     "MUSE-HC-004": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       false,
+       false
+      ],
+      "states_repeats": [
+       null,
+       null,
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-013": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       true,
+       true
+      ],
+      "states_repeats": [
+       null,
+       "INCREASED",
+       "INCREASED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-010": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       false,
+       false,
+       false
+      ],
+      "states_repeats": [
+       null,
+       null,
+       null
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     },
+     "MUSE-HC-006": {
+      "expected_has_direction": false,
+      "has_direction_repeats": [
+       true,
+       true,
+       true
+      ],
+      "states_repeats": [
+       "STARTED",
+       "STARTED",
+       "STARTED"
+      ],
+      "acceptable": [
+       "UNCHANGED"
+      ]
+     }
+    }
+   },
+   "article_state_accuracy": 0.5088,
+   "article_state_n": 57,
+   "unit_cost": {
+    "ledger_jpy_per_call": 0.02567,
+    "article_jpy_per_call": 0.02148,
+    "nonblind_jpy_per_call": null,
+    "n_ledger_calls": 30,
+    "n_article_calls": 119,
+    "n_nb_calls": 0
+   },
+   "per_run": {
+    "low": {
+     "units_per_run": 3.33,
+     "added_calls": 17.0,
+     "added_jpy": 0.422,
+     "unneeded_rewrite_per_run": 0.155,
+     "vs_baseline_rewrite_0.67": 0.23
+    },
+    "mid": {
+     "units_per_run": 7.46,
+     "added_calls": 21.13,
+     "added_jpy": 0.511,
+     "unneeded_rewrite_per_run": 0.347,
+     "vs_baseline_rewrite_0.67": 0.52
+    },
+    "high": {
+     "units_per_run": 30.56,
+     "added_calls": 44.23,
+     "added_jpy": 1.007,
+     "unneeded_rewrite_per_run": 1.421,
+     "vs_baseline_rewrite_0.67": 2.12
+    }
+   }
+  }
+ },
+ "comparison": {
+  "ledger_same_vs_split": {
+   "pair_agreement": 0.7667,
+   "pairs": 30,
+   "facts_fully_agree": 6,
+   "facts": 10
+  },
+  "blind_vs_nonblind_gold": {
+   "same_blind": {
+    "rep0": 2,
+    "repeats": "8/9"
+   },
+   "same_nonblind": {
+    "rep0": 2,
+    "repeats": "5/9"
+   }
+  }
+ },
+ "baseline_rewrite_per_run": 0.67,
+ "total_cost_jpy": 10.3542
+}

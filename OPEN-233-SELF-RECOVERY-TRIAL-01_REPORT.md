@@ -4858,3 +4858,59 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 - H 追加費用見込み【推測】: T-E全claim案で約¥0.27〜0.81/run(現行約¥3.5/runの8〜23%)。T-D'は母集団要集計で未確定。限定Trial約¥15以内(Opus)、¥0のT-D'母集団再集計を先行。
 - 数字floor穴(checker L554-555/L640-643、新9 run実害0)と`apply_stage2_two_of_two`潜在不具合(runner L4106-4122、現在OFF)は別管理ID。
 - 参照: `docs/pm/design_open233_directional_misread_safety_01.md` / `docs/pm/opus_l2_review_open233_directional_misread_safety_01.md` / `er052_output/open233_directional_misread_offline_01/trigger_replay_01.md`(.json等) / `er052_output/open233_directional_misread_offline_01/sensor_quality_01.md`(.json等)。
+
+## §83 限定Trial: 系統的読み違い専用Safety(OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-01、2026-10-06)
+
+- Status: TRIAL-01=実行中(分類は結果後にFable)。Production変更なし。VALIDATEDでもProduction採用ではない。残11 E2Eは停止継続。
+
+### §83-1 目的・禁止事項
+- 目的: ユーザー承認済み設計案(案E')をProduction変更なしの限定Trialで有効性確認。
+- Trial仕様: (1)Ledger全FactをAIが確認(状態変化・方向性の有無、結果状態を固定分類で抽出)(2)方向性ありFactだけ記事側を別AI判定(Ledger側の答えを見せない)(3)機械比較(同方向→通過/逆方向→重大候補/抽出不能・曖昧→記録のみ)。同じAI・同じrubricの繰り返し構成にしない。
+- 比較: 同一model/Ledger側と記事側でmodel分離/blind分離あり・なし。まず¥0で母集団再集計。費用上限¥15(見積超過時のみSTOP)。
+- 禁止: Checker・後段AI・floor復活・残11 E2E・KPI・gold・Human Review振替・自動Production採用の変更。副産物2件は別管理ID。Status=VALIDATED/REJECTED/USER_DECISION_REQUIRED。
+
+### §83-2 母集団(委任_01a、`population_01.md`、¥0)
+- Ledger全Fact 123件/9 run(平均13.67。実体はLedger 2種: hormuz 12 fact×4 run、meta 15 fact×5 run)。前回の「Stage 1候補123件」とは別物の偶然の一致(Stage 1候補は66件=7.33/run)。
+- 状態変化Fact(語彙近似、精度未検証)30件=24.4%(3.33/run)。単位→fact対応はE2E出力に未保存(`support_fact_ids` 0件)。
+- 記事側確認件数/run: 下限3.33/近似7.46/上限30.56(判定単位全数、全単位40.44)。
+- 単価(gpt-6-luna effort=high、call_log 135件から逆算): 入力約¥10.7/1M、出力約¥81.7/1M。
+- 追加コスト/run(同一model): Ledger側¥0.155/0.166/0.512、記事側¥0.034/0.084/1.127、合計¥0.19/0.25/1.64(low/mid/high)。現行E2E約¥3.50/run。low/midは推論ほぼ無し前提、記事本文は修正前fixture本文で計数。
+
+### §83-3 対象セット(委任_01b、`testset_01.md`、¥0)
+- 63項目: 真の反転gold 3(HC-012 restored/A5-0/D61合成)+曖昧3(K16/K19/HC-012「changed back to how it was before」)+忠実(状態変化語あり)21+忠実(HC-012同fact・状態言及なし)17+非該当5+人工反転14(決定論置換、厳密6/許容8)。repeat=3はgold 3+曖昧3。call見込み75/構成。
+- Ledger側正解10 factを逐語根拠付きで事前登録(方向性あり: HC-012=STOPPED[PAUSED許容]、HF-009=UNCHANGED[一時縮小→復帰]、HF-007=ENDED、HF-002=STARTED、HF-011=INCREASED)。
+- enum=AVAILABLE/STOPPED/PAUSED/INCREASED/DECREASED/UNCHANGED/STARTED/ENDED/EXPANDED/NARROWED/NOT_MENTIONED/UNCLEAR。方向対4組、PAUSED vs STOPPEDは逆転扱いしない。
+- 未特定: 委任_61の個別文(D61合成で代替)。ホルムズ側Ledgerは`family_x_refresh_e2e_01/hormuz/run_03`を代表使用(新9 runの実Ledgerと同一かは未確認)。
+
+### §83-4 Trial構成(委任_01c・委任_02方針)
+- script `er052_open233_directional_trial_01.py`(¥0): Ledger側抽出(factごと1回・記事を見せない・キャッシュ)→記事側blind抽出(対象X+記事文+前後文のみ、Ledger本文・stateを渡さないことをunit testでassert)→Python比較。
+- 比較規則: REVERSEDは方向対該当かつ両側quote非空のみ。quote欠落・enum外・対応外はUNCLEARで重大化しない。
+- 3構成: same_blind/split_blind/same_nonblind(対照群: 1 callで両側)。`--budget-yen`で累計停止。unit test 8件PASS、dry-run 3構成完走。既定model gpt-6-luna。
+- Fable実行方針: effort=medium(再分類Trialと同じ、費用優先)。順序 same_blind(Ledger側10 fact×repeat 3+記事側75)→same_nonblind(75)→split_blind(記事側はsame_blind結果を再利用、Ledger側のみ別model)。累計¥15で強制停止、見積mid>¥15ならSTOP。
+- 副産物: OPEN-235(数字floor配線漏れ)、OPEN-236(two_of_two潜在不具合)は別管理IDで起票済み(委任_01d)。
+
+### §83-5 結果(委任_02一次集計+委任_02x抽出、すべて確認済み)
+- R1 費用: 見積mid ¥13.90(≤¥15のため実行)、実費¥10.35(same_blind ¥2.48/154 call、same_nonblind ¥4.54/75 call、split_blind ¥3.33/149 call)。effort=medium、gpt-6-luna。split側Ledger model=gpt-5.6-luna($0.2/$1.2、`DECISION_LOG_HISTORY.md:5893`。gpt-5.6-solは見積¥108で不可)。予算停止・失敗callなし。
+- R2 gold(真の反転3件、各3 repeat): G-01=HC-012今回実例「restored…」、G-02=A5-0「temporarily put back」(同fact HC-012)、G-03=D61合成(HF-009)。HC-012とA5-0はsame_blindで全repeat検出。split G-01の見逃しはLedger側別modelの対象X命名(「電話発信機能」)に記事側が一致せずNOT_MENTIONED。nonblind G-03は全repeat見逃し(Ledgerを見て辻褄合わせ=Opus U1予測どおり)。
+- R3 人工反転14件: 厳密6件の検出 blind 3/nonblind 4/split 2、許容8件 2/1/2。見逃しの大半は記事側が対象Xを同定できずNOT_MENTIONED。
+- R4 正常43文の誤反転: blind 3件(7.0%: F-09/F-10/F-19)、nonblind 0、split 2件(4.7%)。原因: 1 factに複数事象(HF-009=「上げ幅DECREASED」+「水準INCREASED」、HC-012=「テストSTARTED」+「機能PAUSED」)があり、記事側がどの事象を指すかを選ばず全事象と比較し、1つでもREVERSEDなら最終REVERSEDとする規則。F-09/F-10は「水準INCREASED」vs記事「fell」で誤逆転、F-19は「テスト」をENDEDと誤抽出。Opus Part 2 U3(Ledgerの枠を事象リストにし、記事側にどの事象かを引用付きで選ばせる)の未実装。
+- R5 曖昧3件(K16/K19/HC-012 changed back): 最終REVERSED 0/3(全構成)。repeat単位では27中2回REVERSED(揺れ)。
+- R6 UNCLEAR: 全体14/12/15(正常文内9/5/10)。Ledger側has_direction精度0.87/0.80/0.67、state精度0.33/0.40/0.33(事前登録が単一stateのため複数event抽出と不一致=測定上の問題)。同一model対別modelのLedger側一致率76.7%(30対)、10 fact中完全一致6。記事側state精度0.54/0.58/0.51。
+- R7 1 runあたり(母集団3水準: 記事側3.33/7.46/30.56単位+Ledger 13.67 fact): same_blind 追加call 17.0/21.1/44.2、追加¥0.37/0.43/0.76、不要Rewrite見込み0.23/0.52/2.13件/run(現行0.67の0.35/0.78/3.18倍)。split ¥0.42/0.51/1.01、0.16/0.35/1.42。nonblind ¥0.20/0.45/1.85、0/0/0(ただし見逃し最多)。
+
+表1 構成別(gold検出はrepeat単位、計9)
+| 構成 | G-01 | G-02 | G-03 | 計 | 人工(厳密6/許容8) | 正常文誤反転 | UNCLEAR | 実費 |
+|---|---|---|---|---|---|---|---|---|
+| same_blind | 3/3 | 3/3 | 2/3 | 8/9 | 3 / 2 | 3件(7.0%) | 14 | ¥2.48 |
+| same_nonblind | 2/3 | 3/3 | 0/3 | 5/9 | 4 / 1 | 0件 | 12 | ¥4.54 |
+| split_blind | 1/3 | 3/3 | 3/3 | 7/9 | 2 / 2 | 2件(4.7%) | 15 | ¥3.33 |
+
+### §83-6 Status・判断
+- R8 Fable判定: **USER_DECISION_REQUIRED**(決定したのはFableのStatus判定のみ。他はユーザー判断待ち)。理由: (a)VALIDATED不可=正常文誤反転7%で、母集団high水準では不要Rewriteが現行の3倍超。D61検出が構成間で不安定。(b)REJECTED不可=HC-012・A5-0をblind構成で全repeat検出、同一model相関はblind分離で実際に下がった(nonblindはgold見逃し最多)。誤反転の原因はOpusが事前指摘した比較規則(事象選択)の実装漏れで、限定的・修正可能。(c)推奨=same_blind構成(model分離は不要、blind分離が本質)+「記事側に事象を選ばせ、選んだ事象のみ比較」の修正で、TRIAL-02(上限¥5、same_blindのみ、同じ63項目×repeat 3)を再実行してから判断。(d)Production採否の判断は不要(Trial未達)。(e)残11 E2E再開はユーザー判断(Fable推奨=TRIAL-02結果まで待機)。
+- ユーザー判断事項: TRIAL-02実施可否(上限¥5)、残11 run再開可否。
+- R9 持ち越し論点: 単位→fact対応がE2E出力に未保存(Production配線時にStage 1 r3の`support_fact_ids`を全単位で保存する必要)。Ledger側正解の事前登録を単一stateでなく事象リストにする。
+- OPEN-235/236は別管理ID(未着手)。Production変更・gold/KPI変更なし。
+
+### §83-7 参照ファイル
+- `er052_output/open233_directional_misread_trial_01/`(population_01.md / testset_01.md / Trial出力。委任_02が使用中)
+- `er052_open233_directional_trial_01.py` / `docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-01_*.md` / 設計: `docs/pm/design_open233_directional_misread_safety_01.md`(§82参照)
