@@ -1,0 +1,305 @@
+{
+ "provenance": "frozen(保存run json、¥0)。旧仕様の保存結果の再集計であり新仕様のEvidenceではない。",
+ "n_e2e_gold_matches": 3,
+ "n_floor_only_gold_old_e2e": 0,
+ "n_floor_only_gold_lost_under_number_only": 0,
+ "watch_list_old_e2e_floor_only_gold": [],
+ "legit_floor_6_from_old_analysis": [
+  {
+   "no": 5,
+   "run": "meta_run03_advanced",
+   "cycle": 3,
+   "claim": "News reports also cited an employee’s report that human staff made inappropriate comments about race during calls to negotiate internet or cable fees.",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "llm_materiality": "QUALITY",
+   "legacy_flags_true": [
+    "changed_actor"
+   ],
+   "would_fire_under_number_only": false,
+   "label_RCA_suggested": "正当"
+  },
+  {
+   "no": 9,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "It said human staff made inappropriate comments about race during calls.",
+   "floor_reason": "deterministic_floor:changed_number",
+   "llm_materiality": "BLOCKING",
+   "legacy_flags_true": [
+    "changed_number"
+   ],
+   "would_fire_under_number_only": true,
+   "label_RCA_suggested": "正当"
+  },
+  {
+   "no": 10,
+   "run": "meta_run03_standard",
+   "cycle": 1,
+   "claim": "These calls were about trying to lower internet or cable fees.",
+   "floor_reason": "deterministic_floor:changed_number",
+   "llm_materiality": "BLOCKING",
+   "legacy_flags_true": [
+    "changed_number"
+   ],
+   "would_fire_under_number_only": true,
+   "label_RCA_suggested": "正当"
+  },
+  {
+   "no": 21,
+   "run": "neg2_meta_refresh_a2",
+   "cycle": 1,
+   "claim": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+   "floor_reason": "deterministic_floor:changed_number",
+   "llm_materiality": "QUALITY",
+   "legacy_flags_true": [
+    "changed_number"
+   ],
+   "would_fire_under_number_only": true,
+   "label_RCA_suggested": "正当"
+  },
+  {
+   "no": 22,
+   "run": "neg3_hormuz_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "On July 13, Trump posted that all cargo passing through the Strait of Hormuz should provide a 20 percent reimbursement.",
+   "floor_reason": "deterministic_floor:changed_actor",
+   "llm_materiality": "BLOCKING",
+   "legacy_flags_true": [
+    "changed_actor"
+   ],
+   "would_fire_under_number_only": false,
+   "label_RCA_suggested": "正当"
+  },
+  {
+   "no": 23,
+   "run": "neg3_hormuz_prodrunner_b1b",
+   "cycle": 1,
+   "claim": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "floor_reason": "deterministic_floor:changed_time",
+   "llm_materiality": "BLOCKING",
+   "legacy_flags_true": [
+    "changed_time"
+   ],
+   "would_fire_under_number_only": false,
+   "label_RCA_suggested": "正当"
+  }
+ ],
+ "n_legit_floor_6_lost_under_number_only": 3,
+ "analysis_floor_only_gold": [
+  [
+   "safety_A4",
+   "“Through Muse, trained human contract workers made some call",
+   [
+    "changed_actor"
+   ],
+   "unclear",
+   true,
+   true
+  ],
+  [
+   "neg3_hormuz_prodrunner_b1b",
+   "The fee plan left the stage, but the events driving oil pric",
+   [
+    "changed_time"
+   ],
+   "unclear",
+   false,
+   false
+  ]
+ ],
+ "e2e_gold_rows": [
+  {
+   "instance_id": "bgroup_B3",
+   "sample": 1,
+   "sub_id": "B3",
+   "cycle_index": 0,
+   "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back ",
+   "llm_materiality": "BLOCKING",
+   "final_materiality": "BLOCKING",
+   "floor_reason": null,
+   "legacy_flags_true": [],
+   "floor_only": false,
+   "would_fire_under_number_only": false,
+   "s1_second_opinion_blocking": false
+  },
+  {
+   "instance_id": "bgroup_B3",
+   "sample": 1,
+   "sub_id": "B3",
+   "cycle_index": 1,
+   "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back",
+   "llm_materiality": "ACCEPTABLE",
+   "final_materiality": "ACCEPTABLE",
+   "floor_reason": null,
+   "legacy_flags_true": [],
+   "floor_only": false,
+   "would_fire_under_number_only": false,
+   "s1_second_opinion_blocking": false
+  },
+  {
+   "instance_id": "bgroup_B3",
+   "sample": 1,
+   "sub_id": "B3",
+   "cycle_index": 2,
+   "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back",
+   "llm_materiality": "ACCEPTABLE",
+   "final_materiality": "ACCEPTABLE",
+   "floor_reason": null,
+   "legacy_flags_true": [],
+   "floor_only": false,
+   "would_fire_under_number_only": false,
+   "s1_second_opinion_blocking": false
+  }
+ ],
+ "stagea_gold_stage1_rows": [
+  {
+   "instance_id": "bgroup_B3",
+   "sample": 1,
+   "sub_id": "B3",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "bgroup_B4",
+   "sample": 1,
+   "sub_id": "B4-a",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "neg5_hormuz_div_a2",
+   "sample": 1,
+   "sub_id": "B3-same@neg5",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "safety_A2A3",
+   "sample": 1,
+   "sub_id": "A2A3-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_actor"
+   ]
+  },
+  {
+   "instance_id": "safety_A4",
+   "sample": 1,
+   "sub_id": "A4-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_actor"
+   ]
+  },
+  {
+   "instance_id": "safety_A5",
+   "sample": 1,
+   "sub_id": "A5-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_negation"
+   ]
+  },
+  {
+   "instance_id": "bgroup_B3",
+   "sample": 2,
+   "sub_id": "B3",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "bgroup_B4",
+   "sample": 2,
+   "sub_id": "B4-a",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "neg5_hormuz_div_a2",
+   "sample": 2,
+   "sub_id": "B3-same@neg5",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "safety_A2A3",
+   "sample": 2,
+   "sub_id": "A2A3-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_actor"
+   ]
+  },
+  {
+   "instance_id": "safety_A4",
+   "sample": 2,
+   "sub_id": "A4-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_actor"
+   ]
+  },
+  {
+   "instance_id": "safety_A5",
+   "sample": 2,
+   "sub_id": "A5-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_negation"
+   ]
+  },
+  {
+   "instance_id": "bgroup_B3",
+   "sample": 3,
+   "sub_id": "B3",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "bgroup_B4",
+   "sample": 3,
+   "sub_id": "B4-a",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "neg5_hormuz_div_a2",
+   "sample": 3,
+   "sub_id": "B3-same@neg5",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": []
+  },
+  {
+   "instance_id": "safety_A2A3",
+   "sample": 3,
+   "sub_id": "A2A3-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_actor"
+   ]
+  },
+  {
+   "instance_id": "safety_A4",
+   "sample": 3,
+   "sub_id": "A4-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_actor"
+   ]
+  },
+  {
+   "instance_id": "safety_A5",
+   "sample": 3,
+   "sub_id": "A5-0",
+   "stage1_candidate_found": true,
+   "legacy_flags_true": [
+    "changed_negation"
+   ]
+  }
+ ],
+ "stagea_gold_candidate_found_rate": {
+  "found": 18,
+  "total": 18
+ },
+ "note": "watch=旧仕様でfloorだけが重大化していたgoldで数字floorでは残らないもの。新E2Eは再分類+Stage 2+S1でこれらが拾われるかを個別追跡する。"
+}

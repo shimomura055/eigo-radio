@@ -74,6 +74,7 @@ import er050_gpt6_checker_comparison_trial_01 as g6
 import er051_open233_checker_trial_variant_01 as trial
 import er052_open233_self_recovery_phase1_step3_stage1_compare_01 as step3cmp
 import er052_open233_stage1_coverage_checker_01 as cov  # 委任_06: Stage 1再設計(Trial、既定legacy_v4a=不変)
+import er052_open233_stage1_reclassify_01 as reclf  # 委任_04(CHECKER-FLOOR-PRODUCTION-E2E-01): Checker再分類(4観点)。既定OFF
 import er052_open233_self_recovery_precheck_01 as precheck
 import er052_open233_self_recovery_s1d_trial_01 as s1d
 import er052_open233_self_recovery_stage2_calibration_01 as s2c
@@ -416,6 +417,9 @@ STAGE2_NORMAL_TWO_OF_TWO = False
 # `apply_kpi_trial_switches()`でこの構成を適用する(個別に4〜6個のglobalを書き換えない)。
 # 既定のglobal値は変更しない(`apply_kpi_trial_switches`を呼ぶまで旧既定のまま)。Trial専用、
 # Production未配線・`APPROVED_FOR_PRODUCTION`ではない。
+# SUPERSEDED by OPEN233_APPROVED_FLOW_SWITCHES(2026-10-06、OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01): 下記の
+# `FLOOR_VERIFY_MODE=time_only`・`CAUSAL_FLOOR=True`は旧仕様(数字以外の機械的強制重大化を含む)。新規E2E/配線は承認構成を使う。
+# 旧構成の再現(既存テスト・旧E2E script)のため値は変更せず残す。
 KPI_TRIAL_SWITCHES = {
     "HANDOFF_MODE": "violation_span",
     "VS_MATCH_EXT": True,
@@ -471,6 +475,7 @@ STAGE1_FAIL_CLOSED = False            # H1: Stage 1 API失敗はPASSへ抜けず
 RECHECK_MODE_LEGACY, RECHECK_MODE_COVERAGE_UNION = "legacy_v4a", "coverage_union"
 RECHECK_MODES = (RECHECK_MODE_LEGACY, RECHECK_MODE_COVERAGE_UNION)
 RECHECK_MODE = RECHECK_MODE_LEGACY
+STAGE1_RECLASSIFY = False             # 委任_04(CHECKER-FLOOR-PRODUCTION-E2E-01): Checker再分類(4観点)を合流前filterとして初回/Recheck/出口へ適用。既定OFF=従来
 RUN_CALL_HOOK = None                  # E2E Waste検知用(既定None=無効)。`check_budget`の冒頭で呼ばれる(call前、state渡し)
 
 
@@ -481,6 +486,62 @@ def apply_kpi_trial_switches() -> dict:
         g[k] = v
     g["FLOOR_VERIFY_MODE"] = validate_floor_verify_mode(KPI_TRIAL_SWITCHES["FLOOR_VERIFY_MODE"])
     return {k: g[k] for k in KPI_TRIAL_SWITCHES}
+
+
+# OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01 委任_04(2026-10-06、Opus M5): ユーザー承認済み2点(Checker再分類4観点の正式採用/後段機械判定は数字のみ)
+# を反映した「承認構成」。E2E scriptと将来のProduction配線が共用する(E2E scriptにだけ置くとTrial専用になるため定数化)。
+# `KPI_TRIAL_SWITCHES`(上、`FLOOR_VERIFY_MODE=time_only`・`CAUSAL_FLOOR=True`)は旧仕様でSUPERSEDED by OPEN233_APPROVED_FLOW_SWITCHES(2026-10-06)。
+# globalの既定値は旧挙動のまま(`apply_open233_approved_flow_switches()`を呼ぶまで不変)。PRODUCTION_WIRED未(E2E・runtime evidence後に判定)。
+# 旧E2E(`er052_open233_e2e_acceptance_01.apply_switches`)から引き継ぐ値=Stage 1 coverage_union/Recheck新仕様/S1ON等(Fable判断: S1はStage 2承認構成の一部として維持)。
+OPEN233_APPROVED_FLOW_SWITCHES = {
+    **{k: v for k, v in KPI_TRIAL_SWITCHES.items() if k not in ("FLOOR_VERIFY_MODE", "CAUSAL_FLOOR")},
+    # --- 本承認で変更(数字以外の機械的強制重大化の廃止) ---
+    "FLOOR_MODE": "number_only",            # apply_floor発火集合=changed_numberのみ
+    "FLOOR_VERIFY_MODE": "off",             # 時期verify廃止(時期floor自体が無い)
+    "CAUSAL_FLOOR": False,                  # Tier 0因果floor+補助ベルト(G_H/issue_actor)停止
+    "STAGE2_DOWNGRADE_VERIFY": False,       # 確認役(降格verify)OFF
+    "TIER0_G_L_ENABLED": False,
+    "PRECHECK_MODE": "number_only",         # precheckは数字(number_mismatch)のみStage 2スキップBLOCKING
+    "STAGE1_RECLASSIFY": True,              # Checker再分類(4観点)を合流前filterとして初回/Recheck/出口へ
+    # --- 旧E2Eから引き継ぎ(明示) ---
+    "STAGE2_SECOND_OPINION": True,          # S1維持
+    "RECHECK_BEFORE_AFTER_PAIRS": False,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": True,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": True,
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "F3_PRECHECK_ALWAYS": True,
+    "STAGE1_FAIL_CLOSED": True,
+    "RECHECK_MODE": "coverage_union",
+    "MAX_CYCLES": 2,
+    "HARD_MAX_CYCLES": 3,
+    "MODEL": "gpt-6-luna",
+}
+
+
+def apply_open233_approved_flow_switches() -> dict:
+    """承認構成をこのmoduleのglobalへ適用し、適用後の値(全キー)を返す。値の妥当性もここで検証する。"""
+    g = globals()
+    for k, v in OPEN233_APPROVED_FLOW_SWITCHES.items():
+        g[k] = v
+    validate_floor_verify_mode(g["FLOOR_VERIFY_MODE"])
+    floor_fire_flags()
+    filter_precheck_findings([])
+    assert_open233_approved_flow_switches()
+    return {k: g[k] for k in OPEN233_APPROVED_FLOW_SWITCHES}
+
+
+def assert_open233_approved_flow_switches() -> dict:
+    """現在のglobalが承認構成と一致することをassertする(E2E開始前・テスト用)。不一致はAssertionError(全不一致を列挙)。"""
+    g = globals()
+    bad = {k: (g.get(k), v) for k, v in OPEN233_APPROVED_FLOW_SWITCHES.items() if g.get(k) != v}
+    if bad:
+        raise AssertionError(f"not in OPEN233 approved flow switches (actual, expected): {bad}")
+    return {k: g[k] for k in OPEN233_APPROVED_FLOW_SWITCHES}
 
 
 def validate_floor_verify_mode(mode: str) -> str:
@@ -780,6 +841,23 @@ FLOOR_FLAGS = [
     "changed_actor", "changed_number", "changed_negation",
     "changed_comparison", "changed_time",
 ]
+
+# OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01 委任_04(2026-10-06、ユーザー決定[APPROVED_FOR_PRODUCTION]、PRODUCTION_WIRED未):
+# 後段の機械判定(deterministic floor)は数字(`changed_number`)のみ残す。`FLOOR_FLAGS`自体は不変
+# (フラグ持ち回り・降格禁止・反実仮想記録が依存)。`apply_floor`の「発火集合」だけを`FLOOR_MODE`で切り替える。
+# 既定=legacy_5flags(旧挙動、既存テスト維持)。承認構成は`OPEN233_APPROVED_FLOW_SWITCHES`で適用する。
+MECHANICAL_FLOOR_FLAGS = ("changed_number",)
+FLOOR_MODE_LEGACY, FLOOR_MODE_NUMBER_ONLY = "legacy_5flags", "number_only"
+FLOOR_MODES = (FLOOR_MODE_LEGACY, FLOOR_MODE_NUMBER_ONLY)
+FLOOR_MODE = FLOOR_MODE_LEGACY
+
+
+def floor_fire_flags() -> list:
+    """`apply_floor`が強制BLOCKINGの根拠にするフラグ集合(`FLOOR_MODE`依存)。"""
+    if FLOOR_MODE not in FLOOR_MODES:
+        raise ValueError(f"FLOOR_MODE must be one of {FLOOR_MODES}, got {FLOOR_MODE!r}")
+    return list(MECHANICAL_FLOOR_FLAGS) if FLOOR_MODE == FLOOR_MODE_NUMBER_ONLY else list(FLOOR_FLAGS)
+
 
 # 委任_11 作業B-5(§8測定是正、Opus L2 #2論点5/6): 群別Escalation率算出のため、
 # 「実run(現行Production記事に相当する6 instance)」を明示的に区別する
@@ -1771,13 +1849,18 @@ def stage1_effort_for_label(lbl: str) -> str:
     return vfl01.REASONING_EFFORT if eff == "high" else eff
 
 
-def make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage: str = "stage1_initial"):
+def make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage: str = "stage1_initial",
+                        effort_override: str | None = None):
     """委任_18: coverage module用の`call_fn`(retry/cost計上/budget check)を作る。委任_06の`stage1_coverage_fresh`内の実装を
     そのまま関数化しただけ(既定`recovery_stage="stage1_initial"`では従来と同一)。Recheck/出口3'-Rでは`recovery_stage`だけ変える。"""
     def call_fn(lbl, developer_message, prompt, schema):
         check_budget(state)
         full_label = f"{label}_{lbl}"
         effort = stage1_effort_for_label(lbl)
+        if effort_override is not None:  # 委任_04 M3: 再分類callはlabel依存にせずeffortを明示固定(Trial02と同一=medium)
+            if effort_override not in cov.REASONING_EFFORTS:
+                raise ValueError(f"unknown reasoning effort: {effort_override!r}")
+            effort = vfl01.REASONING_EFFORT if effort_override == "high" else effort_override
         last_err, response, t0 = None, None, time.time()
         for _ in range(1 + MAX_RETRIES_PER_CALL):
             try:
@@ -1809,6 +1892,25 @@ def make_stage1_call_fn(client, state, consecutive_errors, call_log, label, reco
     return call_fn
 
 
+def make_reclassify_filter(client, state, consecutive_errors, call_log, label, fixture, protected_claims=()):
+    """委任_04(Opus M1/M3): `STAGE1_RECLASSIFY`ON時のみ、coverage moduleの`candidate_filter`(合流前、1箇所)を作る。OFFならNone(従来と完全同一)。
+    call_fnはmodel=MODEL・effort=medium固定・recovery_stage=`stage1_reclassify`。初回/Recheck/出口の3関数が同じ関数を使う。"""
+    if not STAGE1_RECLASSIFY:
+        return None
+    call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage=reclf.RECOVERY_STAGE,
+                                  effort_override=reclf.EFFORT)
+    return reclf.make_candidate_filter(fixture, call_fn, protected_claims)
+
+
+def reclassify_summary(info) -> dict | None:
+    """run jsonへ残す再分類の要約(E2E集計用)。info=`candidate_filter`のaudit値(None=再分類OFF)。"""
+    if info is None:
+        return None
+    keys = ("status", "n_model_entries", "n_targets", "n_protected_keys", "n_excluded_claims", "n_excluded_entries",
+            "n_excluded_with_changed_number", "n_failclosed", "cost_jpy", "effort", "prompt_sha256")
+    return {"reclassify_status": info.get("status"), **{k: info.get(k) for k in keys if k != "status"}}
+
+
 def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fixture, r3_precomputed=None) -> dict:
     """委任_06: `STAGE1_MODE=coverage_union`のStage 1(文ID網羅3'-R+Ledger逆照合5-liteの2経路∪)。LLM呼び出しは
     `make_stage1_call_fn`(委任_18で関数化)の`call_fn`を`cov.run_stage1_coverage`へ注入して行う。経路のAPI失敗
@@ -1816,20 +1918,27 @@ def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fi
     call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label)
     res = cov.run_stage1_coverage(fixture, call_fn, routes=STAGE1_ROUTES, segment_fn=vs_sentence_segments_l6,
                                   initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE,
-                                  r5_mode=STAGE1_R5_MODE, r3_precomputed=r3_precomputed)
-    return cov.to_stage1_parsed(res)
+                                  r5_mode=STAGE1_R5_MODE, r3_precomputed=r3_precomputed,
+                                  candidate_filter=make_reclassify_filter(client, state, consecutive_errors, call_log, label, fixture))
+    parsed = cov.to_stage1_parsed(res)
+    if STAGE1_RECLASSIFY:  # OFFでは従来と完全同一(キーも足さない)
+        parsed["stage1_reclassify"] = reclassify_summary(res["audit"].get("candidate_filter"))
+    return parsed
 
 
 def run_recheck_coverage(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
-                         prior_issues: list, before_text: str) -> dict:
+                         prior_issues: list, before_text: str, protected_claims=()) -> dict:
     """委任_18(`RECHECK_MODE=coverage_union`): `run_recheck`と同形の戻り値(overall_status/deviations/prior_issues_resolved/
     all_prior_issues_resolved/prior_issues_resolved_by_index)を、変更単位+前後1単位の3'-R+5-lite(対象限定)で作る。
     API失敗(再実行1回後も)は`run_recheck`と同じくfail-closed(LEDGER_DEVIATION・未解消・`_recheck_api_failure`)。"""
     rf = dict(fixture)
     rf["article_text"] = article_text
     call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage="stage1_recheck")
+    # 委任_04 M2: 前回指摘と同文の候補は再分類の対象外(候補のまま残しStage 2が再判定)。prior_issues_resolvedは再分類後の候補で計算される。
+    _prot = [pi.get("claim_in_article") or "" for pi in prior_issues or []] + list(protected_claims or [])
     res = cov.run_recheck_scope(rf, call_fn, before_text, prior_issues, segment_fn=vs_sentence_segments_l6,
-                                initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE)
+                                initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE,
+                                candidate_filter=make_reclassify_filter(client, state, consecutive_errors, call_log, label, rf, _prot))
     if res["api_failure"]:
         return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "all_prior_issues_resolved": False,
                 "_recheck_api_failure": True, "recheck_coverage_audit": res["audit"]}
@@ -1838,16 +1947,19 @@ def run_recheck_coverage(client, state, consecutive_errors, call_log, label, fix
     return {"overall_status": "LEDGER_DEVIATION" if devs else "LEDGER_COMPLIANT", "deviations": devs,
             "prior_issues_resolved": res["prior_issues_resolved"], "all_prior_issues_resolved": all_res,
             "prior_issues_resolved_by_index": by_idx, "variant": "coverage_union_recheck",
-            "recheck_coverage_audit": res["audit"]}
+            "recheck_coverage_audit": res["audit"]}  # audit["candidate_filter"]に再分類info(OFFならNone)
 
 
-def run_exit_check_coverage(client, state, consecutive_errors, call_log, label, fixture, article_text: str) -> dict:
+def run_exit_check_coverage(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
+                            protected_claims=()) -> dict:
     """委任_18(`RECHECK_MODE=coverage_union`): Rewrite発生記事の最終出口前の3'-R全文1回。候補は`deviations`(Stage 2へ渡す形)で返す。"""
     rf = dict(fixture)
     rf["article_text"] = article_text
     call_fn = make_stage1_call_fn(client, state, consecutive_errors, call_log, label, recovery_stage="stage1_exit_check")
     res = cov.run_exit_full_r3(rf, call_fn, segment_fn=vs_sentence_segments_l6, initial_extra=CAUSAL_SENTENCE_INITIAL_EN,
-                               negation_mode=STAGE1_NEGATION_MODE)
+                               negation_mode=STAGE1_NEGATION_MODE,
+                               candidate_filter=make_reclassify_filter(client, state, consecutive_errors, call_log, label, rf,
+                                                                       protected_claims))
     return {"api_failure": res["api_failure"], "deviations": cov.candidates_to_deviations(res["candidates"]),
             "audit": res["audit"]}
 
@@ -2434,7 +2546,7 @@ def apply_floor(materiality: str, dev: dict, detected_by: str) -> tuple:
         return "BLOCKING", "precheck_floor"
     if dev.get("detected_by_enumeration"):
         return materiality, None
-    triggered = [k for k in FLOOR_FLAGS if bool(dev.get(k))]
+    triggered = [k for k in floor_fire_flags() if bool(dev.get(k))]
     if triggered:
         return "BLOCKING", "deterministic_floor:" + ",".join(triggered)
     return materiality, None
@@ -2706,7 +2818,10 @@ DISCLOSURE_GAP_NEGATION_RE = re.compile(
     r"didn't realize|did not realize|did not know|didn't know)\b",
     re.IGNORECASE,
 )
-DISCLOSURE_GAP_DISQUALIFYING_FLAGS = FLOOR_FLAGS + ["changed_scope"]
+# 委任_04(Opus R2): `FLOOR_FLAGS`参照から明示リストへ切り離し(挙動不変。降格禁止=AI BLOCKING維持であり上書きではない)。
+DISCLOSURE_GAP_DISQUALIFYING_FLAGS = [
+    "changed_actor", "changed_number", "changed_negation", "changed_comparison", "changed_time", "changed_scope",
+]
 
 
 def apply_disclosure_gap_downgrade(materiality: str, dev: dict, floor_reason, claim_text: str,
@@ -8024,8 +8139,27 @@ def _date_representations_safe(year: int, month: int, day: int) -> list:
 # precheck floor claim構築(§3-1/§4-3、findingが既存Stage1 MAJOR claimの
 # related_fact_idと重複しない場合のみ追加)
 # ------------------------------------------------------------
+#
+# 委任_04(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01、Opus M4、PRODUCTION_WIRED未): 承認構成では数字(number_mismatch)のみ残す。
+# date/actor/negation/comparison markerは「AIを強制的に重大へ上書きする機械判定」のため廃止(Stage 2をスキップしない)。
+# 絞り込みはこの1関数(`filter_precheck_findings`)のみ。`build_precheck_floor_claims`(初回・F3・次cycle)が共用する。
+# 既定=legacy_all(旧挙動、既存テスト維持)。
+PRECHECK_KINDS_NUMBER_ONLY = ("number_mismatch",)
+PRECHECK_MODE_LEGACY, PRECHECK_MODE_NUMBER_ONLY = "legacy_all", "number_only"
+PRECHECK_MODES = (PRECHECK_MODE_LEGACY, PRECHECK_MODE_NUMBER_ONLY)
+PRECHECK_MODE = PRECHECK_MODE_LEGACY
+
+
+def filter_precheck_findings(findings: list) -> list:
+    if PRECHECK_MODE not in PRECHECK_MODES:
+        raise ValueError(f"PRECHECK_MODE must be one of {PRECHECK_MODES}, got {PRECHECK_MODE!r}")
+    if PRECHECK_MODE == PRECHECK_MODE_LEGACY:
+        return list(findings)
+    return [f for f in findings if f.get("kind") in PRECHECK_KINDS_NUMBER_ONLY]
+
+
 def build_precheck_floor_claims(fixture: dict, existing_fact_ids: set) -> list:
-    findings = precheck.run_precheck(fixture["ledger_text"], fixture["article_text"])
+    findings = filter_precheck_findings(precheck.run_precheck(fixture["ledger_text"], fixture["article_text"]))
     out = []
     for f in findings:
         if f["field"] in existing_fact_ids:
@@ -8487,6 +8621,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         }
         if stage1_audit is not None:  # 委任_06(記録専用)
             result["stage1_coverage"] = stage1_audit
+        if stage1_parsed.get("stage1_reclassify") is not None:  # 委任_04(記録専用)
+            result["stage1_reclassify"] = stage1_parsed["stage1_reclassify"]
         if f3_precheck_hits is not None:
             result["f3_precheck_always"] = {"precheck_floor_hits": f3_precheck_hits}
         save_json(f"{OUT_DIR}/{instances_subdir}/{instance_id}.json", result)
@@ -8535,6 +8671,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     en_text_before_rewrite = current_en_text  # 委任_18: coverage Recheckのbefore(各cycleのRewrite直前で更新される)
     exit_check_done = False             # 委任_18: 出口3'-R全文は1記事1回
     exit_check_log: list = []
+    reclassify_protected: list = []     # 委任_04 M2: 過去cycleの指摘文(出口3'-Rの再分類で同文候補を対象外にする保護)
     article_state_history: list = []    # A2: 過去の本文(原文・前cycleまで)
     pinned_blocking: dict = {}          # S-4: キー(span集合,fact_id)->BLOCKING確定済みのStage 2結果
     nonblocking_registry: dict = {}     # S-4: 一致した2-of-2非BLOCKINGの結果(再利用スイッチ用)
@@ -8554,12 +8691,15 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if RECHECK_MODE != RECHECK_MODE_COVERAGE_UNION or exit_check_done or current_en_text == fixture["article_text"]:
             return None
         exit_check_done = True
-        r = run_exit_check_coverage(client, state, consecutive_errors, call_log, f"{instance_id}_exit", fixture, current_en_text)
+        r = run_exit_check_coverage(client, state, consecutive_errors, call_log, f"{instance_id}_exit", fixture, current_en_text,
+                                    protected_claims=list(reclassify_protected))
         devs = [d for d in r["deviations"] if d.get("severity") == "MAJOR"]
         a_ = r["audit"]
         entry = {"cycle": cycle, "n_candidates": len(devs), "api_failure": bool(r["api_failure"]), "n_calls": a_.get("n_calls"),
                  "n_judged_units": a_.get("n_judged_units"), "total_cost_jpy": a_.get("total_cost_jpy"),
                  "missing_after_rerun": a_.get("missing_after_rerun")}
+        if STAGE1_RECLASSIFY:
+            entry["reclassify"] = reclassify_summary(a_.get("candidate_filter"))
         exit_check_log.append(entry)
         cyc_rec["exit_check"] = entry
         if r["api_failure"]:
@@ -9379,6 +9519,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                  "issue": c["dev"].get("issue", ""),
                                  "explanation": c["dev"].get("explanation", "")})
         cycle_record["prior_issue_text_sources"] = prior_issue_text_sources
+        reclassify_protected.extend(pi_["claim_in_article"] for pi_ in prior_issues if pi_.get("claim_in_article"))
         recheck_fixture = dict(working_fixture)
         recheck_fixture["article_text"] = current_en_text
         if current_ja_text is not None:
@@ -9392,6 +9533,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 "scope_ids", "changed_ids", "n_scope", "n_judged_units", "n_union_candidates", "n_calls", "total_cost_jpy",
                 "n_prior_claim_hits", "missing_after_rerun")}
             cycle_record["recheck_coverage"]["api_failure"] = bool(recheck_parsed.get("_recheck_api_failure"))
+            if STAGE1_RECLASSIFY:
+                cycle_record["recheck_coverage"]["reclassify"] = reclassify_summary(_ra.get("candidate_filter"))
         else:
             recheck_parsed = run_recheck(client, state, consecutive_errors, call_log,
                                           f"{instance_id}_c{cycle}_recheck", recheck_fixture, current_en_text,
@@ -9625,6 +9768,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
     }
     if stage1_audit is not None:  # 委任_06(記録専用)
         result["stage1_coverage"] = stage1_audit
+    if stage1_parsed.get("stage1_reclassify") is not None:  # 委任_04(記録専用、E2E集計用)
+        result["stage1_reclassify"] = stage1_parsed["stage1_reclassify"]
     if f3_precheck_hits is not None:
         result["f3_precheck_always"] = {"precheck_floor_hits": f3_precheck_hits}
     if RECHECK_MODE != RECHECK_MODE_LEGACY:  # 委任_18(記録専用、legacyではキーを足さない)

@@ -4724,3 +4724,35 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 - U3 ¥0段階0(0a〜0d)の実施可否。
 - U4 正当6件・判断不能5件のラベル確認(RCA推測ラベル)。
 成果物: 上記doc 2件、`er052_output/open233_floor_selectivity_offline_01/floor_fire_analysis_01.{py,json,md}`。
+
+## §80 OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01: 実装(委任_04、¥0、PRODUCTION_WIRED未・E2E未)
+
+### §80-1 性質・Status
+ユーザー決定2点(2026-10-06、APPROVED_FOR_PRODUCTION)のer052 runner(Production候補経路)への配線実装+test+runtime evidence。Opus条件AレビューM1〜M5を反映(`docs/pm/opus_l2_review_open233_checker_floor_production_e2e_01.md`、台帳OF-049〜055)。有料API 0、E2E未開始、r3/r5 prompt・Stage 2 rubric・S1・gold・Safety-critical定義は不変。globalの既定は全て旧挙動(承認構成は`apply_open233_approved_flow_switches()`で適用)。Status=**実装完了・E2E未・PRODUCTION_WIRED未**。
+
+### §80-2 変更一覧(M1〜M5対応)
+| 項目 | 変更 |
+|---|---|
+| M1 合流前filter | `er052_open233_stage1_coverage_checker_01.py`: `apply_candidate_filter`新設、`run_stage1_coverage`/`run_recheck_scope`/`run_exit_full_r3`に任意引数`candidate_filter`(既定None=不変)、`union_candidates`直前で適用、audit`candidate_filter`へinfo。経路別生候補(`per_route`)は監査用に未加工で残す。API失敗経路はfilterしない。runner: `make_reclassify_filter`(1箇所生成)を3入口(`stage1_coverage_fresh`/`run_recheck_coverage`/`run_exit_check_coverage`)が同じ形で渡す。`STAGE1_RECLASSIFY`既定False |
+| M2 同文保護 | `er052_open233_stage1_reclassify_01.py`: `protected_claims`(`prior_issue_resolution`の`same_text`条件と同一)に一致するmodel候補は対象外=候補残存。Recheckはprior_issues、出口は過去cycleの指摘文(`reclassify_protected`)を保護。`prior_issues_resolved`はfilter後の候補で計算(自動的に満たされる)。`same_fact`規則(L1009)は未変更 |
+| M3 effort固定+逐語 | `make_stage1_call_fn(effort_override=)`新設、再分類callは`effort_override="medium"`・`recovery_stage="stage1_reclassify"`。module内`DEVELOPER_MESSAGE`/`PROMPT_TEMPLATE`/`SCHEMA`(v2)はTrial script(`reclassify_candidates_02.py`)とsha256一致(test) |
+| M4 precheck | runner `PRECHECK_MODE`(既定legacy_all)/`filter_precheck_findings`(1関数)。`build_precheck_floor_claims`が使い、F3記録(`build_precheck_floor_claims(fixture,set())`)も同関数経由。numberのみ残す |
+| M5 承認構成 | `OPEN233_APPROVED_FLOW_SWITCHES`/`apply_open233_approved_flow_switches()`/`assert_open233_approved_flow_switches()`。`KPI_TRIAL_SWITCHES`はSUPERSEDED注記のみ追加(値不変)。dump=`er052_output/open233_prod_e2e_01/approved_switches_dump.json` |
+| floor縮小 | `MECHANICAL_FLOOR_FLAGS=("changed_number",)`/`FLOOR_MODE`(既定legacy_5flags)/`floor_fire_flags()`、`apply_floor`のみ切替。`FLOOR_FLAGS`・`apply_floor_cited`(反実仮想記録)不変。`DISCLOSURE_GAP_DISQUALIFYING_FLAGS`は明示リストへ(挙動不変) |
+| 記録 | result直下`stage1_reclassify`(初回)、cycle`recheck_coverage.reclassify`、`exit_check.reclassify`(`reclassify_status`ok/no_target/failed、`n_excluded_claims`、`n_excluded_with_changed_number`、`n_failclosed`、cost)。floor理由=`deterministic_floor:changed_number`(a)/`precheck_floor`(c、`llm_materiality=None`)、S1由来BLOCKING=`s1_second_opinion_blocking`(既存フィールドで区別可、追加不要) |
+
+### §80-3 「数字以外の機械的強制重大化」残存確認(runner Grep全ヒットの分類)
+- 上書き(承認構成で数字のみ): `apply_floor`(`FLOOR_MODE`)、precheck Stage 2スキップ(`PRECHECK_MODE`)。休眠: `floor_verify`(`FLOOR_VERIFY_MODE=off`)、Tier 0因果floor+補助ベルトG_H/issue_actor(`CAUSAL_FLOOR=False`のゲート内)、`G_L`(`TIER0_G_L_ENABLED=False`)、`downgrade_verify`(`STAGE2_DOWNGRADE_VERIFY=False`)。
+- 記録のみ: `apply_floor_cited`(反実仮想)、`CHECKER_FLAG_NAMES`/`detect_rewrite_new_precheck_findings`(記録)、`classify_problem_kind`/`_LOGIC_FLOOR_FLAGS`(Rewrite水準選択)、`full_recheck_required`の`deterministic_floor_claim`(全文Recheckの要否、重大度は上書きしない)。
+- 降格禁止(AI重大の維持、上書きではない): `apply_hook_aware_downgrade`/`apply_disclosure_gap_downgrade`(`DISCLOSURE_GAP_DISQUALIFYING_FLAGS`)。
+- 非該当: S-4 `MATERIALITY_BLOCKING_PIN`(AI/S1がBLOCKING確定した結果の固定)、S1(AI第2意見)、旧S1D`stage1_union_screen`。
+- test根拠: `TestRunStage2IntegrationApproved`(主体/否定/比較/時期/因果フラグ+AI ACCEPTABLEがBLOCKINGにならない、tier0なし、追加callなし。数字フラグだけBLOCKING)、`TestFloorModes`、`TestPrecheckNumberOnly`、静的test(floor適用は1箇所、3入口は全て`candidate_filter`を渡す)。
+
+### §80-4 test・evidence
+新規`er052_open233_checker_floor_prod_wiring_test_01.py` 59件PASS(逐語sha256 5/合流前filter 6/fail-closed 6/Recheck 5/初回・出口 4/承認構成 7/floor 8/precheck 6/run_stage2 5/effort 3/入口配線 4)。回帰`run_project_regression.py --pattern "er052*_test_*.py"` 922件PASS(基準863+59、既存テスト変更0)。evidence=`er052_output/open233_prod_e2e_01/runtime_evidence_tests_01.txt`(単体-v+回帰)、`approved_switches_dump.json`。
+
+### §80-5 replay(¥0、frozen)
+`build_watchlist_floor_only_gold_01.py`→`watchlist_floor_only_gold.json`。段階A 42 runはStage 1のみ(SC gold 18/18定義でr3/r5候補あり、Stage 2判定なし)。旧E2E 9 runのSC gold一致はB3のみ3件(floor-only 0件、llm_materiality BLOCKING 1/ACCEPTABLE 2)。旧分析の「正当6件」のうち数字floor維持=3件(No.9/10/21)、非数字=3件(No.5 actor[LLM QUALITY=floorだけで重大化]、No.22 actor・No.23 time[LLM BLOCKINGで影響なし])。旧分析のfloor-only gold=safety_A4 `changed_actor`(LLM非BLOCKING)・neg3 `changed_time`。E2Eではこれらが再分類+Stage 2+S1で拾われるかを個別追跡する(watch list)。
+
+### §80-6 残存リスク
+(1)`same_fact`規則(別文でも同fact_idの候補は未解消)は未変更、(2)S1対象増(旧floor強制BLOCKINGだった主体・比較候補が非BLOCKINGになりS1対象へ)、(3)時期gold(neg3、n=1)は再分類・Stage 2・S1依存、(4)再分類のRecheck/出口適用はTrial未検証でE2Eが初証拠、(5)再分類の4観点mismatchは(Trialと同じく)モデルのverdictのみを採用し、SUPPORTED+mismatchの機械上書きはしない、(6)9 runだけでは重大見逃し0のSafety KPIは主張不可(SC=B3のみ)。

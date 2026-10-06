@@ -56,6 +56,13 @@
 | OF-046 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 推奨代替: (1)RECLASSIFY-02区分のfloor発火条件流用(2)cite-to-fire(`apply_floor_cited`反実仮想記録再利用)(3)Stage 1 prompt補正 | 提示(Fable判断: ユーザーへ提示、U1。いずれもA1-PROD線引き変更=承認要) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (5) | 未 | RAISED |
 | OF-047 | 2026-10-06 | FLOOR条件Aレビュー | 採用項目 | 順序: RECLASSIFY-02評価→¥0段階0(0a〜0d)→設計確定→ユーザー承認→有料段階1 | 妥当と判断(Fable判断。段階0はU3で実施可否をユーザー判断) | 委任_02a/02b(記録のみ) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (6) | 未 | RAISED |
 | OF-048 | 2026-10-06 | FLOOR条件Aレビュー | 観察 | 集計scriptの`assign_cause`に原因(iii)分岐がなく(iii)=0は構造的/doc §5のNo.21はNo.23の誤り | 採用(doc §10で訂正済み) | 委任_02a(§10追記) | `docs/pm/opus_l2_review_open233_floor_selectivity_01.md` (1)(3) | 済(doc §10) | RAISED |
+| OF-049 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須修正M1 | 再分類は`union_candidates`合流前に経路別entryで1箇所適用(混在候補でchanged_number漏れ防止) | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(coverage `candidate_filter`+reclassify module、test) | `docs/pm/opus_l2_review_open233_checker_floor_production_e2e_01.md` (2)M1 | E2E未(Recheck/出口の初検証) | IMPLEMENTED |
+| OF-050 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須修正M2 | Recheckの前回指摘と同文候補は再分類対象外、解消判定は再分類後の候補 | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(`protected_claims`、出口も同保護) | 同 (2)M2 | same_fact規則は残存リスク | IMPLEMENTED |
+| OF-051 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須修正M3 | 再分類callのeffort固定(medium)+DEVELOPER_MESSAGE/prompt/schema逐語一致test | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(`effort_override`、sha256 test) | 同 (2)M3 | 済(test) | IMPLEMENTED |
+| OF-052 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須修正M4 | precheck数字以外4種を同時廃止(1関数共用) | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(`PRECHECK_MODE=number_only`) | 同 (2)M4 | 済(test) | IMPLEMENTED |
+| OF-053 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須修正M5 | 承認構成をrunner側名前付き定数+適用関数に(Trial専用化回避) | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(`OPEN233_APPROVED_FLOW_SWITCHES`) | 同 (2)M5 | E2E script_02でassert要(委任_05) | IMPLEMENTED |
+| OF-054 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 必須(E2E assert) | `STAGE2_DOWNGRADE_VERIFY=False`・`TIER0_G_L_ENABLED=False`をassertへ追加 | 採用(FABLE_DECIDED) | 委任_04 IMPLEMENTED(承認構成に含めassert関数で検証) | 同 (3)R2 | 済(test) | IMPLEMENTED |
+| OF-055 | 2026-10-06 | CHECKER-FLOOR-PROD条件Aレビュー | 観察R3 | 数字検査3系統(a LLM changed_number/b 決定論number_not_in_fact/c precheck)の定義明記 | 採用(FABLE_DECIDED: (a)(c)残す・(b)現状維持) | 委任_04 IMPLEMENTED(`floor_reason`で(a)/(c)区別、test) | 同 (3)R3 | 済(test) | IMPLEMENTED |
 
 注記: OF-014〜OF-018のうちF1〜F4は、本委任の指示(Opus#15 F1〜F4をbackfill)に基づく。F3/F4の区分(MAJOR/採用項目)は台帳作成者による暫定分類で、Opus原文は番号付き所見のみ(重大度の明示なし)。OF-018はSafety hole節の項目3で、F番号とは別。
 

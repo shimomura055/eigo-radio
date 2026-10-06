@@ -722,6 +722,15 @@ def evaluate_r5(facts_out: list, units_by_id: dict, fact_ids: list, article_text
             "unknown_unit_ids": [m.get("unit_id") for m in unknown]}
 
 
+def apply_candidate_filter(candidate_filter, cands: list) -> tuple:
+    """委任_04(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01、Opus M1): 経路別候補を`union_candidates`で合流する**前**に1箇所で適用する任意filter。
+    `candidate_filter(cands) -> (kept_cands, info_dict)`。None(既定)なら恒等(挙動不変、infoもNone)。"""
+    if candidate_filter is None:
+        return cands, None
+    kept, info = candidate_filter(cands)
+    return kept, info
+
+
 def union_candidates(cands: list) -> list:
     """∪: 正規化した箇所の本文(=同文グループ・関係単位と後続文の重複を含む)をキーに重複排除して合流する。"""
     merged: dict = {}
@@ -833,8 +842,9 @@ def _run_r5(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
 
 
 def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn=None, initial_extra=(),
-                        negation_mode: str = "legacy", r5_mode: str = "full", r3_precomputed: dict | None = None) -> dict:
-    """Stage 1(coverage_union)本体。`routes`=both/r3_only/r5_only。戻り値: candidates(∪、重複排除済み)・api_failure・failed_routes・audit。
+                        negation_mode: str = "legacy", r5_mode: str = "full", r3_precomputed: dict | None = None,
+                        candidate_filter=None) -> dict:
+    """Stage 1(coverage_union)本体。`candidate_filter`(任意、既定None=不変)は経路別候補の合流前に適用(委任_04 M1)。`routes`=both/r3_only/r5_only。戻り値: candidates(∪、重複排除済み)・api_failure・failed_routes・audit。
     経路のAPI失敗(再実行1回後も失敗)は`api_failure=True`(呼び出し側がfail-closedでSTOP)。"""
     if routes not in ROUTES_ALL:
         raise ValueError(f"unknown routes: {routes!r}")
@@ -868,9 +878,11 @@ def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn
                               (res.get("r3") or {}).get("model_verdict"))
     failed = [k for k, v in res.items() if v["api_failure"]]
     pre_union = [c for v in res.values() for c in v["candidates"]]
-    merged = union_candidates(pre_union)
     ids = {k: {u for c in v["candidates"] for u in c["unit_ids"]} for k, v in res.items()}
+    pre_union, filter_info = apply_candidate_filter(None if failed else candidate_filter, pre_union)
+    merged = union_candidates(pre_union)
     audit = {
+        "candidate_filter": filter_info,
         "module_version": MODULE_VERSION, "routes": routes, "prompt_sha256": PROMPT_SHA256,
         "negation_mode": negation_mode, "r5_mode": r5_mode, "r3_reused": bool(r3_precomputed),
         "n_units": len(split["units"]), "n_judged_units": len(split["judged_ids"]), "n_relation_units": len(split["relation_ids"]),
@@ -1018,8 +1030,8 @@ def prior_issue_resolution(prior_issues: list, cands: list, units_by_id: dict) -
 
 
 def run_recheck_scope(fixture: dict, call_fn, before_text: str, prior_issues: list, segment_fn=None, initial_extra=(),
-                      negation_mode: str = "legacy") -> dict:
-    """Rewrite後Recheck(新仕様)。fixture["article_text"]=Rewrite後本文。scope=変更単位+前後1単位を3'-R(欠落ID再実行・決定論検査込み)と
+                      negation_mode: str = "legacy", candidate_filter=None) -> dict:
+    """Rewrite後Recheck(新仕様)。`candidate_filter`は合流前に適用され、`prior_issues_resolved`は再分類後の候補で計算される(委任_04 M1/M2)。fixture["article_text"]=Rewrite後本文。scope=変更単位+前後1単位を3'-R(欠落ID再実行・決定論検査込み)と
     5-lite(対象限定)で判定し、∪を返す。API失敗(再実行1回後も)は`api_failure=True`(呼び出し側がfail-closed)。"""
     sc = coverage_changed_scope(before_text, fixture["article_text"], segment_fn, initial_extra,
                                 [pi.get("claim_in_article") or "" for pi in prior_issues or []])
@@ -1031,11 +1043,14 @@ def run_recheck_scope(fixture: dict, call_fn, before_text: str, prior_issues: li
         res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode, required_ids=sc["scope_ids"])
         res["r5"] = _run_r5_scope(call_fn, split, fixture, blocks, units_by_id, sc["scope_ids"])
     failed = [k for k, v in res.items() if v["api_failure"]]
-    merged = union_candidates([c for v in res.values() for c in v["candidates"]])
+    pre_union, filter_info = apply_candidate_filter(None if failed else candidate_filter,
+                                                     [c for v in res.values() for c in v["candidates"]])
+    merged = union_candidates(pre_union)
     calls = [c for v in res.values() for c in v["calls"]]
     return {"candidates": merged, "api_failure": bool(failed), "failed_routes": failed,
             "prior_issues_resolved": prior_issue_resolution(prior_issues, merged, units_by_id),
-            "audit": {"module_version": MODULE_VERSION, "kind": "recheck_scope", "scope_ids": sc["scope_ids"],
+            "audit": {"candidate_filter": filter_info,
+                      "module_version": MODULE_VERSION, "kind": "recheck_scope", "scope_ids": sc["scope_ids"],
                       "changed_ids": sc["changed_ids"], "n_prior_claim_hits": sc["n_prior_claim_hits"],
                       "n_scope": len(sc["scope_ids"]), "n_judged_units": len(split["judged_ids"]),
                       "n_union_candidates": len(merged), "n_calls": len(calls),
@@ -1043,15 +1058,17 @@ def run_recheck_scope(fixture: dict, call_fn, before_text: str, prior_issues: li
                       "missing_after_rerun": (res.get("r3") or {}).get("missing_after_rerun"), "calls": calls}}
 
 
-def run_exit_full_r3(fixture: dict, call_fn, segment_fn=None, initial_extra=(), negation_mode: str = "legacy") -> dict:
+def run_exit_full_r3(fixture: dict, call_fn, segment_fn=None, initial_extra=(), negation_mode: str = "legacy",
+                     candidate_filter=None) -> dict:
     """Rewrite発生記事の最終出口前に、現行本文の全判定単位へ3'-Rを1回(欠落ID再実行・決定論検査・同文グループ一貫性は初回Stage 1と同じ)。"""
     split = split_units(fixture["article_text"], segment_fn, initial_extra)
     units_by_id = {u["id"]: u for u in split["units"]}
     blocks = ledger_fact_blocks(fixture["ledger_text"])
     r3 = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode)
-    merged = union_candidates(r3["candidates"])
+    pre_union, filter_info = apply_candidate_filter(None if r3["api_failure"] else candidate_filter, r3["candidates"])
+    merged = union_candidates(pre_union)
     return {"candidates": merged, "api_failure": bool(r3["api_failure"]),
-            "audit": {"module_version": MODULE_VERSION, "kind": "exit_full_r3", "n_judged_units": len(split["judged_ids"]),
+            "audit": {"candidate_filter": filter_info, "module_version": MODULE_VERSION, "kind": "exit_full_r3", "n_judged_units": len(split["judged_ids"]),
                       "n_union_candidates": len(merged), "n_calls": len(r3["calls"]),
                       "missing_first": r3.get("missing_first"), "missing_after_rerun": r3.get("missing_after_rerun"),
                       "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) or 0.0 for c in r3["calls"]), 4), "calls": r3["calls"]}}
