@@ -4756,3 +4756,83 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 
 ### §80-6 残存リスク
 (1)`same_fact`規則(別文でも同fact_idの候補は未解消)は未変更、(2)S1対象増(旧floor強制BLOCKINGだった主体・比較候補が非BLOCKINGになりS1対象へ)、(3)時期gold(neg3、n=1)は再分類・Stage 2・S1依存、(4)再分類のRecheck/出口適用はTrial未検証でE2Eが初証拠、(5)再分類の4観点mismatchは(Trialと同じく)モデルのverdictのみを採用し、SUPPORTED+mismatchの機械上書きはしない、(6)9 runだけでは重大見逃し0のSafety KPIは主張不可(SC=B3のみ)。
+
+
+---
+
+## §81 OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01: 新仕様9/20 run E2E結果(委任_05b〜07、2026-10-06、PRODUCTION_WIRED未)
+
+### §81-1 provenance・構成・実行
+- 全KPI=fresh(新仕様9 run、Production初回path含むE2E=Yes)。証跡: `er052_output/open233_prod_e2e_02/`(runs/、report/=ラベル前一次集計、report_final/=正式集計・`critical_trace.md`、labels/=3 worker label+`labels_merged.json`+`merge_labels_01.py`、approved_switches_dump_worker{1,2,3}.json=承認構成)。
+- 実行: 3並列(W1/W2/W3)、9 run全てdone、failed/aborted/skipped各0、retry・429無し。合計¥31.519(平均¥3.502)。残り11 runは**未実行・ユーザー確認待ち**。
+- ラベルprovenance: 事後評価ラベル123件=Sonnet推測(3 worker、label_source付き)+Fable突合判定(`confirmed_by=fable_2026-10-06`: 判定1 meta_adv HC-012=重大/Y/Y、判定2 meta_std HC-011維持、判定3 neg3 HF-002=問題なし、判定4 neg7 Hook=軽微/Y/N、判定5 neg2=問題なし、判定6 neg1 HC-008=UNDECIDABLE維持)。**ユーザー未確認**。rewrite_neededは実Rewrite対象6件のみで確定(判定7)。旧9 run値=frozen・比較用のみ。
+- 件数: severity分布=問題なし110/軽微8/重大4/判断不能1、true_critical=Y 4件/N 118/UNDECIDABLE 1。
+
+### §81-2 A. Checker(初回候補、claim単位)
+| 項目 | 新9 run | 旧9 run(frozen) |
+|---|---|---|
+| AI判定の候補(延べ) | 46 | 130 |
+| 　うち真に問題(Y)/不要候補(N)/判断不能 | 9 / 36 / 1 | 未ラベル130 |
+| 機械判定の候補 | 20 | 21 |
+| 　うち真に問題(Y)/不要候補(N) | 1 / 19 | 未ラベル21 |
+| AIのみ/機械のみ/両方重複 | 46 / 20 / 0 | - |
+| 延べ/重複除外後の総候補(後段へ) | 66 / 66 | 151 / 151 |
+- 再分類で初回に除外されたclaim計84(changed_number付き除外3: meta_adv 2/meta_std 1)。**除外84件は後段に渡らずラベル未付与のため、再分類の誤除外(真に問題なのに除外)は未検証**(残存リスク)。
+- 機械候補の内訳: negation_polarity_mismatch 18、quote_not_in_ledger 1(決定論全20)。機械候補はreclassifyのモデル対象外で後段へ直行する(meta_adv HC-012がその例、§81-6)。
+- run別 後段へ渡した件数 新(旧): B3 2(8)、hormuz_adv 8(9)、hormuz_std 9(10)、meta_adv 5(16)、meta_std 11(23)、neg1 14(32)、neg2 7(16)、neg3 5(13)、neg7 5(24)。
+
+### §81-3 B. 後段判定(全cycle 123判定、cycle1は89判定)
+| 項目 | 新9 run | 旧9 run(frozen、326判定) |
+|---|---|---|
+| 後段AI 重大/軽微/問題なし | 4 / 14 / 105 | 5 / 31 / 290 |
+| 事後評価: 真に重大(AI重大&Y) | 3 | 4(UNLABELED 1) |
+| 事後評価: 不要に重大(AI重大&N) | 1(meta_std「These calls were about trying to lower internet or cable fees.」軽微) | 0 |
+| 事後評価: 真に重大なのに軽微/問題なし | 1(meta_adv HC-012、§81-6) | 2 |
+| 後段機械判定[数字のみ、changed_number] 発火 | 3(meta_std 2、neg2 1) | 4(旧37はchanged_time 10/actor 7/negation 5/comparison 14等を含む全floor) |
+| 　AI判定との重複(AIもBLOCKING) | 2(meta_std) | 4 |
+| 　機械のみで重大化 | 1(neg2) | 33(全floor) |
+| 　真に重大(Y)/不要に重大化(N) | 1(meta_std HC-011)/2(meta_std「These calls...」、neg2) | 6/24(全floor、判断不能5、未ラベル2) |
+| precheck(c)(数字以外廃止) | 0 | - |
+| S1(second opinion)BLOCKING化 | 1(neg3 cycle2 HF-002、Ledger一致=問題なし、N) | - |
+- 数字floor(changed_number)3件のうち、AI判定と重複しない機械のみ重大化はneg2「It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.」(Ledger一致=問題なし、不要Rewrite)。
+- 旧仕様の数字以外のfloor(changed_time/actor/negation/comparison等)は9 runで0件(承認構成どおり)。`floor_reason`の種別は`deterministic_floor:changed_number`と`s1_second_opinion_blocking`のみ。
+
+### §81-4 C. Rewrite / D. Human Review
+| 項目 | 新9 run | 旧9 run(frozen) |
+|---|---|---|
+| Rewrite発生件数/発生run数 | 6 / 4(B3 1、meta_std 2、neg2 1、neg3 2) | 40 / 8 |
+| 必要だった | 4(B3 HF-007、meta_std HC-011、meta_std「These calls...」軽微、neg3 HF-009) | 未ラベル |
+| 不要だった | 2(neg2 changed_number floorのみ、neg3 cycle3 S1 BLOCKING化) | 未ラベル |
+| 再修正が必要(同factが次cycleもBLOCKING) | 0 | 8 |
+| guard_ok | 6/6 | - |
+| **Human Review** | **0件**(到達run無し、出口BLOCKING 0) | 1 run(neg7、出口BLOCKING 3件) |
+
+### §81-5 E. Safety・Cost
+- **真の重大Fact見逃し(最終本文に未修正で残存)=1件**(meta_adv HC-012「The company also restored the human concierge feature to the way it had been before, at least for now.」)。**重大Fact検出(最終本文までに修正)=3件**(B3 HF-007、meta_std HC-011、neg3 HF-009)。true_critical=Y計4件。※集計scriptのSafety欄(`critical_miss_at_exit`=0)はgold行のみで算出され本件を含まないため、本節の値(`report_final/critical_trace.md`)を正とする。分母はn=9 run・4件でありSafety KPI(重大見逃し0)の主張はできない。
+- 費用(合計¥31.519、平均¥3.502/run): Checker関連(初回+再分類)¥19.137、後段判定関連(Stage 2+S1+floor_verify)¥7.293、Rewrite関連(Rewrite+regen+Recheck+出口)¥5.089、分離不能0。旧9 run合計¥43.912(平均¥4.879、Checker ¥12.608/後段 ¥12.996/Rewrite ¥18.308)。
+- run別費用 新(旧): B3 3.96(4.55)、hormuz_adv 1.97(3.44)、hormuz_std 2.64(2.17)、meta_adv 2.41(5.43)、meta_std 4.73(5.16)、neg1 3.07(8.82)、neg2 4.58(3.79)、neg3 5.66(4.00)、neg7 2.51(6.55)。Checker費用は再分類callが増えたため旧¥12.6→新¥19.1に増加、後段とRewriteが減った(合計は¥12.39減)。n=1/runのため揺らぎあり。
+
+### §81-6 critical_trace(true_critical=Yの4件、`report_final/critical_trace.md`)
+| run | claim要旨 | Stage1/再分類 | Stage 2 | Rewrite・最終 | 区分 |
+|---|---|---|---|---|---|
+| bgroup_B3 | HF-007「so + flashy 20% plan」因果(gold B3) | AI候補、再分類CANDIDATE | llm BLOCKING(unsupported_relationship) | Rewrite(so→and)、cycle2 ACCEPTABLE、最終RESOLVED_REWRITE_THEN_DOWNGRADE | 検出 |
+| meta_std | HC-011 複数化(comments/calls) | AI候補、再分類CANDIDATE | llm BLOCKING+floor changed_number | Rewrite(単数化)、Recheck通過 | 検出 |
+| neg3 | HF-009「events driving oil prices ... returned」 | AI候補、再分類CANDIDATE | llm BLOCKING(ledger_conditions)、floor非関与 | Rewrite(events削除)、cycle2以降ACCEPTABLE | 検出 |
+| meta_adv | HC-012 ロールバックを「restored」と記述(方向反転、A5-0同型) | 機械候補(negation_polarity_mismatch、r3)。reclassifyのモデル対象外で後段直行 | llm ACCEPTABLE、S1 second ACCEPTABLE(confirmed_downgrade) | Rewriteなし、1cycleでS2_DOWNGRADE、**最終本文に残存** | **見逃し** |
+- meta_adv見逃しの含意: 旧仕様では`changed_negation`等のfloorが機械的にBLOCKINGにした可能性があるが、新仕様(数字のみ)ではStage 2 LLM+S1の判断のみ。同文はStage 1で正しく候補化されたがStage 2/S1の双方が誤降格(ACCEPTABLE)。**ユーザー総合レビュー事項**(数字のみfloorのSafety妥当性)。
+- 他: 旧仕様のNo.5(meta_adv changed_actor floor)は本runで重大化されず、HC-012見逃しと合わせてn=1の観測。
+
+### §81-7 watch list(`report/watchlist_trace.md`)
+- neg3 time gold(HF-009「prices themselves quickly returned」型): floor無しでStage 2 LLM BLOCKING→Rewrite後cycle1 ACCEPTABLE(拾えた)。safety_A4 actorは9 runに含まれず未観測。旧「正当6件」のうち本runで観測: meta_std HC-011系2件(数字floor維持+llm BLOCKING)、neg2 1件(floorのみ、不要だった)。
+
+### §81-8 UNDECIDABLE 1件(neg1 HC-008)の材料
+- claim: 「A human can handle situations that AI alone finds difficult.」(neg1 cycle1、Stage 2=QUALITY/unsupported_relationship、最終S2_DOWNGRADE)。直前文「Having a person take over is not always a bad thing.」。
+- Ledger MUSE-HC-008: 「人間が電話を担当した一部テストで成功率95〜98%の可能性が示された。AIだけの場合はそれより低いとされたが具体的数値なし」(条件: 定義・サンプル数・比較対象・測定方法は非公開、notes: 「人間の方が95〜98%で成功した」と一般化しない)。
+- Ledger MUSE-HC-002: 「MuseはクラウドVM上で動作しブラウザ操作・フォーム入力・ユーザーに代わった交渉等を実行できる」(機能の存在のみ)。MUSE-HC-006: 「一部の電話は訓練を受けた人間の契約スタッフがかけるテスト」。
+- gold B4-a「A person can take over when AI alone has trouble」=BLOCKING(設計書§2-補: HC-006は一部電話を人間が担当したテストのみ、記事は『AIが困難な時に人間が引き継ぐ』フォールバック機構を新規に述べ製品の仕組みの誤伝達)。
+- 論点: (同型寄り)Ledgerに「AIが難しい場面を人間が担当する」趣旨の記述はなく、一般的能力主張に広げている点はB4-aと同じ。(非同型寄り)HC-008自体が「AIのみは人間担当より成功率が低い」比較を含み、記事文は仕組み(引継ぎ)ではなく能力の比較で、直前に「take overはbad thingではない」と評価文脈。暫定=UNDECIDABLE維持(集計は判断不能枠)。ユーザー/Fable確認待ち。
+
+### §81-9 Production Wiring確認・残存リスク・次
+- Production Wiring: §80-3(数字以外の機械的強制重大化の残存分類)を参照。9 runでの実動作: 初回で再分類(全run `reclassify_status=ok`・failclosed 0)、Recheck・出口でも再分類が実行された(例 B3 recheck cycle2 n_targets 5/除外3、neg3 cycle2 n_targets 9/除外4)、floor_reasonは`deterministic_floor:changed_number`と`s1_second_opinion_blocking`のみ=旧仕様の数字以外floorは後段経路に出現せず。S1 BLOCKING化1件(neg3 cycle2 HF-002、Ledger一致)はcap_terminal_last_resort→cycle3でjudge_only後に終端(RESOLVED_REWRITE_THEN_DOWNGRADE、Human Review無し)。retry/fallback/regenerationの上限・安全装置は回避していない。
+- 残存リスク: (1)真の重大見逃し1件(meta_adv HC-012、機械候補はreclassify対象外で、Stage 2/S1が誤降格)、(2)再分類の誤除外84件が未ラベル(Safety未検証)、(3)n=1×9 runで有意差・Safety KPI主張不可、(4)ラベルはSonnet推測+Fable突合でユーザー未確認、(5)UNDECIDABLE 1件、(6)Checker費用は増加(再分類call)。
+- 次: **残り11 runは開始しない(ユーザー総合レビュー待ち)**。レビュー事項: Checker改善の実効(候補151→66)、数字のみfloorのSafety(HC-012見逃し)、不要Rewrite減(40→6件)、Human Review 0、残11 run可否。PRODUCTION_WIRED未。
