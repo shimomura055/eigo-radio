@@ -20028,4 +20028,4 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 反映先: PM_GOVERNANCE.md 8-X(見出し改訂+8-X-7〜8-X-12追加。旧8-X-1〜6は旧[2026-09-27]として維持)/22節 Trial開始前チェック項目4/9-0 結論節/2-2/11 D-2追記、DELEGATION_STANDARD_TEMPLATE.md(性質欄記述要件+自己チェック1項目、固定見出し不変)、CLAUDE.md(PM層節に1項目)、PM_BRIEF.md(並列実行原則段落更新)、REPORT_LEDGER.md。
 - 既存ルールとの統合: 2026-09-27並列実行原則(8-X)を拡張。重複文書の新設なし。11節の委任上限(初回+修正3回)は不変、並列初回委任は各管理IDで初回1回と数える運用注記(8-X-11)。8節並列起動条件・8-X-3直列化条件は8-X-9と対応。2節PM Gate・11-3 Opus Gate・7-6予算Capは上書きしない(8-X-10)。重大矛盾なし。
 - Dangling Reference確認: 新ルール名は8-Xに定義済み、CLAUDE.md/PM_BRIEF/テンプレートから8-Xへ参照可、check_delegation_prompt.pyの必須セクション不変(既存委任文でPASS維持を確認)。
-- Fable判断: (未記入)
+- Fable判断(2026-10-06): PRODUCTION_WIRED。根拠: 受入条件9項目充足(正式ルール記録=PM_GOVERNANCE 8-X-7〜8-X-12/開始時の時間見積・並列化検討必須=8-X-7・22節項目4・D-2・テンプレート性質欄/独立作業の原則並列化=8-X-8/直列化理由の明示=8-X-9/Quality・Safety・PM Gate不緩和=8-X-10/Decision Log更新済み/commit 103e80f4 push済み/Dangling Referenceなし[4項目OK]/CLAUDE.md・PM_BRIEF・テンプレートから8-Xへ到達可能)。既存2026-09-27並列実行原則を拡張統合、重複文書なし、重大矛盾なし。8-X-8〜10は要旨、逐語原文は本エントリ。

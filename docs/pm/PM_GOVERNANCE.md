@@ -914,6 +914,7 @@ check_delegation_prompt.py`へ、旧文言(「超えそうなら実行前STOP」
   ことを両タスクが個別に確認済み、`DECISION_LOG.md`該当エントリ参照)。
 
 **8-X. 開発時間最小化・並列実行原則(2026-09-27ユーザー決定、2026-10-06拡張: PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01、再発防止ルール)**:
+Status: PRODUCTION_WIRED(2026-10-06、Fable判定、DECISION_LOG同管理ID参照)
 
 2026-10-06拡張: ユーザーは「開発時間最小化・並列実行原則」を正式な
 Project運用ルール(`APPROVED_FOR_PRODUCTION`)として採用した。開発時間は
