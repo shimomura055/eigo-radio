@@ -9197,7 +9197,8 @@ class TestLastResortDeleteDoesNotRetargetRewrittenClaims(unittest.TestCase):
 
     def test_c_integration_unlocatable_nonstructural_uses_nonstructural_label_not_structural(self):
         """AのT削除は成功するが、枯渇した別claim Cが本文に無い(先行Rewriteにも含まれない)=非構造の位置特定失敗。
-        `blocking_structural_after_ladder`と呼ばず、既存の非構造ラベル(violation_span_unverified)でfail-closed(Human Review維持)。"""
+        `blocking_structural_after_ladder`と呼ばず、許可リスト内の`blocking_confirmed_unlocatable_after_cap`+sub_reasonでfail-closed(Human Review維持)。
+        (委任_B3でR2により旧ラベル`violation_span_unverified`[許可リスト外]から変更)"""
         c_text = "The firm said gamma shifted a lot."
 
         def stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
@@ -9217,8 +9218,115 @@ class TestLastResortDeleteDoesNotRetargetRewrittenClaims(unittest.TestCase):
         res, _ = _run_kpi11([_dev49(c_text, fid="FC")], lambda c, t, f: "BLOCKING", lambda l, p: None,
                             lambda c, p, a: _rr11(True), stage3_fn=stage3, overrides={"SPAN_FALLBACK_CHAIN": False})
         self.assertEqual(res["final_state"], "STAGE4_ESCALATION")                  # fail-closed維持(Human Reviewへ)
-        self.assertEqual(res["stage4_reason"], "violation_span_unverified")        # 構造上修正不能と誤分類しない
+        self.assertEqual(res["stage4_reason"], "blocking_confirmed_unlocatable_after_cap")   # 構造上修正不能と誤分類しない・許可リスト内
         self.assertEqual(res["cycles"][0]["last_resort_failure_classification"][0]["kind"], "unlocatable_not_covered")
+
+    # ---------- (e) 委任_B3: Opus任意レビュー指摘の反映(R5-a/R2/R1/R5-b) ----------
+    def _two_exhausted_same_sentence_stage3(self):
+        """同じ文を指す枯渇claim 2件(fact FA/FB)。Tでは1件目が決定論削除し、2件目は実機どおり
+        `covered_by_earlier_rewrite_in_cycle`(guard_ok=False, target_not_locatable=False)のcarry-forward recordになる。"""
+        log = []
+
+        def stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
+            ct = claim_rec["claim_text"]
+            log.append((label, ct))
+            base = {"mechanism": "single_text_local(E-2/delete-generic)", "ja_text": ja}
+            if label.endswith("_T"):
+                if _TB_A in en:
+                    new = en.replace(_TB_A + " ", "").replace(_TB_A, "")
+                    return {**base, "en_text": new, "method": "deterministic_delete(violation_span(EN,L0))", "guard_ok": True,
+                            "before_fragment": _TB_A, "after_fragment": "", "ladder_level_used": "0_delete",
+                            "target_not_locatable": False, "span_unverified": False,
+                            "ladder_exhausted_without_full_rewrite": False,
+                            "handoff": {"level_attempts": [{"result": "success", "targets": [_TB_A], "revised": [""]}],
+                                        "text_lang": "EN"}}
+                return {**base, "en_text": en, "method": "covered_by_earlier_rewrite_in_cycle", "guard_ok": False,
+                        "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
+                        "target_not_locatable": False, "span_unverified": False,
+                        "ladder_exhausted_without_full_rewrite": False,
+                        "handoff": {"level_attempts": [], "skipped_covered_by_earlier_rewrite": True}}
+            return {**base, "en_text": en, "method": "+ladder6_disabled", "guard_ok": False, "before_fragment": None,
+                    "after_fragment": None, "ladder_level_used": None, "target_not_locatable": False,
+                    "span_unverified": False, "ladder_exhausted_without_full_rewrite": True,
+                    "handoff": {"level_attempts": [{"result": "guard_failed"}], "levels_planned": ["3_sentence"],
+                                "levels_attempted": ["3_sentence"]}}
+        return stage3, log
+
+    def test_e_classify_treats_carry_forward_covered_record_as_covered(self):
+        """R5-(a): classifyはselectと同じく`covered_by_earlier_rewrite*`のmethodを解消済み扱いにする(located_guard_failedにしない)。"""
+        rec = {"claim_identity": "fact:X", "guard_ok": False, "target_not_locatable": False, "span_unverified": False,
+               "method": "covered_by_earlier_rewrite_in_cycle", "handoff": {"level_attempts": []}}
+        out = runner.classify_last_resort_failures([{"claim_text": "q", "dev": {}}], [rec], [], "a", None, "a", None)
+        self.assertEqual(out[0]["kind"], "covered_by_earlier_rewrite")
+
+    def test_e_integration_two_exhausted_claims_same_sentence_does_not_go_to_stage4(self):
+        st3, log = self._two_exhausted_same_sentence_stage3()
+        devs = [_dev49(_TB_A, fid="FA"), _dev49(_TB_A, fid="FB")]
+        res, _ = _run_kpi11(devs, lambda c, t, f: "BLOCKING" if c == 1 else "ACCEPTABLE", lambda l, p: None,
+                            lambda c, p, a: _rr11(True), stage3_fn=st3)
+        self.assertNotEqual(res["stage4_reason"], "blocking_structural_after_ladder")
+        self.assertNotEqual(res["final_state"], "STAGE4_ESCALATION")
+        c1 = res["cycles"][0]
+        self.assertNotIn("last_resort_delete_failed", c1)
+        self.assertEqual([x["kind"] for x in c1["last_resort_failure_classification"]], ["covered_by_earlier_rewrite"])
+
+    def _unloc_stage3(self, c_text):
+        def stage3(client, state, ce, call_log, label, fixture, en, ja, claim_rec):
+            ct = claim_rec["claim_text"]
+            base = {"mechanism": "single_text_local(E-2/delete-generic)", "ja_text": ja}
+            if label.endswith("_T") and ct == c_text:
+                return {**base, "en_text": en, "method": "violation_span_unverified", "guard_ok": False,
+                        "before_fragment": None, "after_fragment": None, "ladder_level_used": None,
+                        "target_not_locatable": True, "span_unverified": True,
+                        "ladder_exhausted_without_full_rewrite": False,
+                        "handoff": {"level_attempts": [], "span_unverified": True, "span_unverified_reason": "mismatch"}}
+            return {**base, "en_text": en, "method": "+ladder6_disabled", "guard_ok": False, "before_fragment": None,
+                    "after_fragment": None, "ladder_level_used": None, "target_not_locatable": False,
+                    "span_unverified": False, "ladder_exhausted_without_full_rewrite": True,
+                    "handoff": {"level_attempts": [{"result": "guard_failed"}], "levels_planned": ["3_sentence"],
+                                "levels_attempted": ["3_sentence"]}}
+        return stage3
+
+    def _check_r2(self, span_fallback):
+        c_text = "The firm said gamma shifted a lot."
+        res, _ = _run_kpi11([_dev49(c_text, fid="FC")], lambda c, t, f: "BLOCKING", lambda l, p: None,
+                            lambda c, p, a: _rr11(True), stage3_fn=self._unloc_stage3(c_text),
+                            overrides={"SPAN_FALLBACK_CHAIN": span_fallback})
+        self.assertEqual(res["final_state"], "STAGE4_ESCALATION")
+        self.assertEqual(res["stage4_reason"], "blocking_confirmed_unlocatable_after_cap")
+        self.assertIn(res["stage4_reason"], runner.STAGE4_ALLOWED_REASONS)
+        self.assertTrue(runner.stage4_allowlist_decision(res["stage4_reason"], {"funnel_passed": True})["allowed"])
+        c1 = res["cycles"][0]
+        self.assertEqual(c1["stage4_sub_reason"], "t_target_unlocatable_nonstructural")
+        self.assertIs(c1["structural_verified"]["verified"], False)
+        self.assertEqual(c1["last_resort_failure_classification"][0]["kind"], "unlocatable_not_covered")
+        self.assertNotIn("last_resort_unlocatable_carried", c1)   # carryしない
+        self.assertEqual(len(res["cycles"]), 1)
+
+    def test_e_r2_unlocatable_not_covered_fails_closed_with_allowlisted_label_span_fallback_on(self):
+        self._check_r2(True)
+
+    def test_e_r2_unlocatable_not_covered_fails_closed_with_allowlisted_label_span_fallback_off(self):
+        self._check_r2(False)
+
+    def test_e_r1_same_sentence_twice_only_one_rewritten_is_not_covered(self):
+        """R1: 範囲が現在の本文にまだ存在するなら、先行Rewriteの置換単位に含まれていてもcoveredにしない(同文2回出現・片方のみ書換)。"""
+        prior = [{"claim_identity": "fact:X", "guard_ok": True,
+                  "handoff": {"level_attempts": [{"result": "success", "targets": ["The firm said beta fell hard."],
+                                                  "revised": ["Staff said beta fell."]}], "text_lang": "EN"}}]
+        before = "Intro. The firm said beta fell hard."
+        now = "Intro. Staff said beta fell. The firm said beta fell hard."   # 先行Rewrite後も同じ文が本文に残っている
+        out = self._classify(self._T_UNLOC, prior, before, now, "The firm said beta fell hard.")
+        self.assertEqual(out[0]["kind"], "unlocatable_not_covered")
+
+    def test_e_r5b_structural_verified_recorded_on_located_guard_failed(self):
+        st3, log = _tb_stage3(_TB_A, _TB_B, "Staff said beta fell.", delete_a_guard_ok=False)
+        res, _ = _run_kpi11([_dev49(_TB_A, fid="FA"), _dev49(_TB_B, fid="FA")], lambda c, t, f: "BLOCKING",
+                            lambda l, p: None, lambda c, p, a: _rr11(True), stage3_fn=st3)
+        c1 = res["cycles"][0]
+        self.assertEqual(res["stage4_reason"], "blocking_structural_after_ladder")
+        self.assertIn("verified", c1["structural_verified"])
+        self.assertIn("reason", c1["structural_verified"])
 
     # ---------- (d) retry/fallback/regeneration/次cycleがRewrite後テキストを参照する ----------
     def test_d_t_wiring_source_uses_index_selection_and_index_merge(self):

@@ -1,0 +1,179 @@
+{
+ "sample": 1,
+ "instance_id": "neg5_hormuz_div_a2",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought a surprise.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S6.4",
+   "claim_text": "Reuters linked that rise to concern about a US sea blockade of Iran.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-006"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "R:L1+L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "S5.4",
+   "claim_text": "He also said no one should charge ships in the Strait.",
+   "routes": [
+    "r5"
+   ],
+   "related": [
+    "HF-008"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "S5.5",
+   "claim_text": "He said he disliked fees.",
+   "routes": [
+    "r5"
+   ],
+   "related": [
+    "HF-008"
+   ],
+   "cid": "C8"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「驚き」とする導入上の評価で、具体的な出来事を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "原油価格の動きを予想外と評する修辞的な導入で、動きの方向や規模などの具体的事実は示していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "date"
+   ],
+   "reason": "7月13日の提案が翌7月14日に置き換えられたことを、「overnight」と平易に表現している。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "proper_noun",
+    "causality"
+   ],
+   "reason": "Reutersが7月13日の上昇を、米国の対イラン海上封鎖への懸念に関連付けたというLedgerの記述と一致する。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "「So」が懸念の継続を20％案の撤回・置換の理由として示唆するが、Ledgerは置換を中東指導者との協議に基づくとし、この因果関係を裏付けていない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "「So」が懸念の継続を20％案の撤回・置換の理由として示唆するが、Ledgerは置換を中東指導者との協議に基づくとし、この因果関係を裏付けていない。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "negation"
+   ],
+   "reason": "7月14日に、海峡を通航する船舶に誰も料金を課すべきではないとの考えを示したというLedgerの記述と一致する。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "料金という考え方自体を好まないと述べたというLedgerの記述の言い換えである。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4590,
+    "cached_input_tokens": 0,
+    "output_tokens": 1536,
+    "reasoning_tokens": 1006
+   },
+   "cost_jpy": 0.1925,
+   "elapsed": 13.3
+  }
+ ],
+ "cost_jpy": 0.1925,
+ "failclosed_cids": []
+}

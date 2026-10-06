@@ -1,0 +1,45 @@
+{
+ "sample": 1,
+ "instance_id": "safety_er009_changed_negation",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "F-004"
+   ],
+   "cid": "C1"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "negation",
+    "comparison"
+   ],
+   "reason": "F-004は高い推奨率を見た乗客が実際により多くチップを残したとするため、「より多く残さなかった」「効果がなかった」という否定はLedgerの記述と食い違います。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4800,
+    "cached_input_tokens": 0,
+    "output_tokens": 183,
+    "reasoning_tokens": 73
+   },
+   "cost_jpy": 0.0897,
+   "elapsed": 3.3
+  }
+ ],
+ "cost_jpy": 0.0897,
+ "failclosed_cids": []
+}

@@ -1,0 +1,122 @@
+{
+ "sample": 2,
+ "instance_id": "neg5_hormuz_div_a2",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought a surprise.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "R:L1+L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C5"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「第二幕の驚き」は具体的な出来事を特定しない導入上の修辞です。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "reason": "原油価格の動きが「予想外」だったという評価は、Ledgerで裏付けられていません。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "reason": "20％案が翌日の7月14日に置き換えられたことはHF-007と一致します。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "20％案の置き換え自体は裏付けられますが、「So」は直前の懸念継続が置き換えの原因だったと示し、Ledgerでは確認できません。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "20％案の置き換え自体は裏付けられますが、「So」は直前の懸念継続が置き換えの原因だったと示し、Ledgerでは確認できません。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4475,
+    "cached_input_tokens": 0,
+    "output_tokens": 889,
+    "reasoning_tokens": 573
+   },
+   "cost_jpy": 0.1399,
+   "elapsed": 8.1
+  }
+ ],
+ "cost_jpy": 0.1399,
+ "failclosed_cids": []
+}

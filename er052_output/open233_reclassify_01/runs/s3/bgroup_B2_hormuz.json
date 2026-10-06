@@ -1,0 +1,193 @@
+{
+ "sample": 3,
+ "instance_id": "bgroup_B2_hormuz",
+ "items": [
+  {
+   "key": "S3.1",
+   "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "The fee was not actually being collected yet.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-003"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-002",
+    "HF-003",
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S9.1",
+   "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S10.1",
+   "claim_text": "Of course, this price movement alone cannot tell us that there was just one reason for the price.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-006"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "R:S10.2+S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009",
+    "HF-007"
+   ],
+   "cid": "C8"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "comparison"
+   ],
+   "reason": "Ledgerは全貨物への20％案を確認する一方、船舶ごとに通過時に料金が発生する仕組みは示していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "negation"
+   ],
+   "reason": "Ledgerは20％案が提案段階で、具体的な徴収制度は示されていなかったことを確認している。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "船舶への料金案が湾岸諸国との貿易・投資案件に置き換わったという要約はLedgerと一致する。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "causality",
+    "negation",
+    "comparison"
+   ],
+   "reason": "発表後に上げ幅は一時縮小したものの回復しており、大幅で持続的な下落がなかったという記述はLedgerに沿う。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "Ledgerは価格上昇に複数の要因が関わる市場環境を示し、単一要因だけに帰さないよう注意している。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "causality",
+    "comparison"
+   ],
+   "reason": "発表後に価格が一時反応し、ほどなく発表前に近い高い水準へ戻ったという経過はHF-009と一致する。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "reason": "提案の撤回・置換後もBrentが高水準を保ち、海上封鎖やタンカー安全上の懸念が続いたという内容はLedgerに沿う。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "causality",
+    "comparison"
+   ],
+   "reason": "発表後に価格が一時反応し、ほどなく発表前に近い高い水準へ戻ったという経過はHF-009と一致する。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4642,
+    "cached_input_tokens": 0,
+    "output_tokens": 1961,
+    "reasoning_tokens": 1444
+   },
+   "cost_jpy": 0.2266,
+   "elapsed": 16.3
+  }
+ ],
+ "cost_jpy": 0.2266,
+ "failclosed_cids": []
+}

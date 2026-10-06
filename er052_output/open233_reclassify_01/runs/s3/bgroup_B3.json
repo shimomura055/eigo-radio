@@ -1,0 +1,85 @@
+{
+ "sample": 3,
+ "instance_id": "bgroup_B3",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought an unexpected turn.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「Act Two」の展開を示す修辞的なつなぎで、具体的な事実を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "原油価格の動きはHF-009に記載された一時的な上げ幅縮小と回復を指す表現で、「unexpected」は修辞的な評価にとどまる。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "reason": "7月14日の価格の一時的な縮小と回復、計画の置換は裏付けられるが、「so」が継続する懸念を計画置換の原因として結び付けており、Ledgerはその因果関係を確認していない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4407,
+    "cached_input_tokens": 0,
+    "output_tokens": 1254,
+    "reasoning_tokens": 1013
+   },
+   "cost_jpy": 0.1675,
+   "elapsed": 11.5
+  }
+ ],
+ "cost_jpy": 0.1675,
+ "failclosed_cids": []
+}

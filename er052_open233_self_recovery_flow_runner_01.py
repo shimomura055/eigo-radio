@@ -5984,6 +5984,14 @@ def structural_ladder_exhausted_verified(rewrite_records: list) -> dict:
     return {"verified": ok, "details": details}
 
 
+def structural_verified_record(rewrite_records: list, note: str = "") -> dict:
+    """OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B3(Opus R5-b、記録のみ): `blocking_structural_after_ladder`でSTAGE4へ進む箇所で
+    「構造要素∧ladder実試行済み」を実際に検証できたかを`cycle_record["structural_verified"]`へ残す。挙動・ラベルは変えない。LLM callなし。"""
+    v = structural_ladder_exhausted_verified(rewrite_records)
+    reason = "structural_element_and_ladder_done" if v["verified"] else "structural_element_ladder_exhaustion_not_verified"
+    return {"verified": bool(v["verified"]), "reason": reason + (":" + note if note else ""), "details": v["details"]}
+
+
 def select_last_resort_targets(blocking_claims: list, rewrite_records: list) -> dict:
     """OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B(実装不具合是正、E2E neg7のRCA): T(最終手段の決定論削除)の対象は、
     ladderが枯渇したclaim(record単位=index)だけにする。従来はclaim_identity(=fact_id単位)で選んでいたため、同じfact_idの
@@ -6022,7 +6030,10 @@ def classify_last_resort_failures(t_claims: list, t_records: list, pre_t_records
         if r.get("guard_ok"):
             continue
         c = t_claims[i]
-        if r.get("target_not_locatable"):
+        if str(r.get("method") or "").startswith("covered_by_earlier_rewrite"):
+            # 委任_B3(Opus R5-a): T内のcarry-forwardで解消済み扱いのrecord。`select_last_resort_targets`と判定を揃える
+            kind = "covered_by_earlier_rewrite"
+        elif r.get("target_not_locatable"):
             kind = "unlocatable_not_covered"
             if units:
                 cf = carry_forward_resolution(
@@ -7004,9 +7015,12 @@ def carry_forward_resolution(claim_rec: dict, claim_text: str, en_now: str | Non
         return None
     covered, remaining = [], []
     for r in res0["ranges"]:
-        cov = next((u for u in units if u["lang"] == lang0 and any(r in b for b in u["before_units"])), None)
+        # 委任_B3(Opus R1): 範囲rが現在(置換後)の本文にまだ存在するなら「書き換え済み」とは言えない(同文複数出現で片方だけ書換の抜け道を塞ぐ、安全側)
+        _r_still_present = r in now_text
+        cov = None if _r_still_present else next(
+            (u for u in units if u["lang"] == lang0 and any(r in b for b in u["before_units"])), None)
         partial = False
-        if cov is None:
+        if cov is None and not _r_still_present:
             # 委任_04(rep26 A2A3で判明した照合漏れの是正): 先行Rewriteの置換単位(`before_unit`)が、この範囲の一部(部分文字列)
             # だけを書き換えた場合(例: 先行claimがL1語レベルで文末の節だけを置換し、後続claimの範囲は文全体)。範囲は現在の本文から
             # 消えており(置換済み)、従来は確定不能(STAGE4)になった。先行指摘と後続指摘が「同じ指摘」(issue文字列・related_fact_id・
@@ -8868,6 +8882,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 if not LAST_RESORT_DELETE or t_used:
                     d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
                     final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                    cycle_record["structural_verified"] = structural_verified_record(
+                        [], "cap_terminal_no_rewrite_this_cycle_T_already_used_or_disabled")
                     cycles_log.append(cycle_record)
                     break
                 cap_terminal_T = True
@@ -9064,6 +9080,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             elif _already_T or _struct or t_used or not LAST_RESORT_DELETE:
                 d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
                 _stop = d_["reason"]
+                cycle_record["structural_verified"] = structural_verified_record(
+                    ladder_exhausted_records, "ladder_exhausted_already_T_or_struct_or_T_disabled")
             else:
                 _stop = None
             if _stop:
@@ -9094,29 +9112,27 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                                      span_unverified=False, t_covered_by_earlier_rewrite=True)
             _t_loc_fail = [x_ for x_ in _t_cls if x_["kind"] == "located_guard_failed"]
             _t_unloc = [x_ for x_ in _t_cls if x_["kind"] == "unlocatable_not_covered"]
-            _t_carry = bool(_t_unloc) and not _t_loc_fail and _newroute and SPAN_FALLBACK_CHAIN
-            if _t_loc_fail or (_t_unloc and not _t_carry):
+            if _t_loc_fail or _t_unloc:
                 if _t_loc_fail:
                     # 本文に残る未解消claimでT削除のguardも通らない=最終手段も尽きた(fail-closed、従来どおり)
                     d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
                     final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                    cycle_record["structural_verified"] = structural_verified_record(rewrite_records + t_records, "T_located_guard_failed")
                 else:
-                    # 非構造の位置特定失敗を「構造上修正不能」と呼ばない(既存の非構造ラベル。fail-closedのままHuman Reviewへ)
-                    _lbl = "violation_span_unverified" if any(
-                        t_records[x_["index"]].get("span_unverified") for x_ in _t_unloc) else "target_not_locatable"
-                    _allow(_lbl, {"funnel_passed": True}, legacy=_lbl)
-                    final_state, stage4_reason = "STAGE4_ESCALATION", _lbl
+                    # 委任_B3(Fable判断、Opus R2): 非構造の位置特定失敗(先行Rewriteにも含まれず本文に残る可能性がある)を「構造上修正不能」と
+                    # 呼ばない。H-1 carryは次cycleでBLOCKING注入→post_T_new_blocking STAGE4に必ず落ちるだけで費用増のためcarryせず、
+                    # SPAN_FALLBACK_CHAINの有効/無効にかかわらずその場でfail-closed(許可リスト内`blocking_confirmed_unlocatable_after_cap`、
+                    # 許可リスト・Human Review基準は不変)。区別は記録のみ(sub_reason / structural_verified=False)。
+                    d_ = _allow("blocking_confirmed_unlocatable_after_cap", {"funnel_passed": True})
+                    final_state, stage4_reason = "STAGE4_ESCALATION", d_["reason"]
+                    cycle_record["stage4_sub_reason"] = "t_target_unlocatable_nonstructural"
+                    cycle_record["structural_verified"] = {"verified": False, "reason": "t_target_unlocatable_nonstructural",
+                                                           "details": []}
                 cycle_record["rewrite_records"] = rewrite_records + t_records
                 cycle_record["ladder_exhausted_claim_ids"] = sorted(_ex_ids)
                 cycle_record["last_resort_delete_failed"] = True
                 cycles_log.append(cycle_record)
                 break
-            if _t_carry:  # 既存のH-1 carry(位置の再取得は全文Recheck、上限後は許可リスト内の理由)へ。新遷移先ではない
-                for x_ in _t_unloc:
-                    carry_new.append({k_: v_ for k_, v_ in t_claims[x_["index"]].items() if k_ != "last_resort_delete"})
-                cycle_record["carry_blocking_unlocatable_ids"] = sorted(
-                    set(cycle_record.get("carry_blocking_unlocatable_ids") or []) | {x_["claim_identity"] for x_ in _t_unloc})
-                cycle_record["last_resort_unlocatable_carried"] = True
             # 削除を現行本文へ反映(_run_stage3_cycleは各claimの結果を連鎖させて返す)
             current_en_text, current_ja_text = _t_en, _t_ja
             t_used = True
@@ -9243,6 +9259,7 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
                 _ver = structural_ladder_exhausted_verified(rewrite_records)
                 cycle_record["degenerate_structural_verification"] = _ver
                 if _ver["verified"]:
+                    cycle_record["structural_verified"] = structural_verified_record(rewrite_records, "degenerate_rewrite")
                     d_ = _allow("blocking_structural_after_ladder", {"funnel_passed": True})
                 else:
                     d_ = _allow("degenerate_rewrite_output", {"funnel_passed": True}, legacy="degenerate_rewrite_output")

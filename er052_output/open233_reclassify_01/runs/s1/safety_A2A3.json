@@ -1,0 +1,263 @@
+{
+ "sample": 1,
+ "instance_id": "safety_A2A3",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "In the oil market, the lead role changed in a single day.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-006"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S2.1",
+   "claim_text": "But the market reacted differently.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S2.2",
+   "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S2.4",
+   "claim_text": "It was as if the market were saying, “The talk about the charge is over, but the story of the strait is not.”",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S2.6",
+   "claim_text": "To understand the turn, we need to look at what the charge was meant to do.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### A fee meant to protect the strait",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "S3.2",
+   "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C8"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-006"
+   ],
+   "cid": "C9"
+  },
+  {
+   "key": "S4.1",
+   "claim_text": "The stage was ready for a quick change, but the market still had another question.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C10"
+  },
+  {
+   "key": "S5.1",
+   "claim_text": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C11"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C12"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "reason": "「single day」は期間を特定する表現ですが、Ledgerでは提案から置換発表まで約24時間48分後とされています。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "通常なら価格に安心感が出たかもしれないという仮定的な一般論で、具体的な事実を追加していません。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "comparison"
+   ],
+   "reason": "発表後に上げ幅が一時縮小し、その後戻ったという市場反応を受けた要約です。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "reason": "Ledgerが確認するのは上げ幅の一時的縮小であり、価格そのものが下落し始めたとは確認できません。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "市場の声を想像した比喩的な表現で、新たな具体的事実を述べていません。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "説明を導くためのつなぎで、具体的な事実を追加していません。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "causality"
+   ],
+   "reason": "償還料案が海峡の安全確保費用に関するものだったという目的の要約はLedgerと一致します。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "proper_noun",
+    "causality"
+   ],
+   "reason": "Ledgerは支払義務者を示していないため、貨物を運ぶ者が支払うと特定するのは未確認の制度設計です。"
+  },
+  "C9": {
+   "cid": "C9",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "causality"
+   ],
+   "reason": "海峡を通るエネルギー輸送への懸念と原油価格上昇との関連は、Ledgerの記述に沿っています。"
+  },
+  "C10": {
+   "cid": "C10",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "舞台の比喩によるつなぎで、具体的な事実を追加していません。"
+  },
+  "C11": {
+   "cid": "C11",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun"
+   ],
+   "reason": "7月14日の20％案の置換は一致しますが、湾岸諸国が案件を「進めていた」とする状況はLedgerで確認できません。"
+  },
+  "C12": {
+   "cid": "C12",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "reason": "価格スナップショットと一時的な上げ幅縮小は一致しますが、タンカー通航の不確実性やガソリン価格・輸送費への波及、危険が主因だとする結び付けはLedgerの裏付けを超えています。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4930,
+    "cached_input_tokens": 0,
+    "output_tokens": 2855,
+    "reasoning_tokens": 2135
+   },
+   "cost_jpy": 0.3013,
+   "elapsed": 23.5
+  }
+ ],
+ "cost_jpy": 0.3013,
+ "failclosed_cids": []
+}

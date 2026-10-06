@@ -1,0 +1,125 @@
+{
+ "sample": 2,
+ "instance_id": "bgroup_B3",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought an unexpected turn.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "The change was sudden.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007",
+    "HF-009"
+   ],
+   "cid": "C5"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「Act Two」の転換という比喩的なつなぎで、具体的な事実を追加していません。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "原油価格の動きを予告する導入上の修辞で、方向や規模などの具体的な事実は述べていません。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "reason": "「overnight」は夜間に変化したとの時間的含意がありますが、Ledgerが示すのは7月13日の投稿から約24時間48分後の7月14日の置換発表です。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「sudden」は変化への主観的な評価で、具体的な時刻や新たな時間事実を追加していません。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "reason": "7月14日の継続懸念や一時的な下落後の回復、同日性はLedgerと整合しますが、「so」が懸念を20％案の置換理由として結び付けており、Ledgerの説明する置換理由と一致しません。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4483,
+    "cached_input_tokens": 0,
+    "output_tokens": 1432,
+    "reasoning_tokens": 1072
+   },
+   "cost_jpy": 0.1827,
+   "elapsed": 13.4
+  }
+ ],
+ "cost_jpy": 0.1827,
+ "failclosed_cids": []
+}

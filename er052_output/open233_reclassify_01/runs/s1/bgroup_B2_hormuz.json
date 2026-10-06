@@ -1,0 +1,168 @@
+{
+ "sample": 1,
+ "instance_id": "bgroup_B2_hormuz",
+ "items": [
+  {
+   "key": "S3.1",
+   "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "The fee was not actually being collected yet.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-003"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S3.4",
+   "claim_text": "It was still only at the stage of announcing the policy.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "R:S10.2+S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C7"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number"
+   ],
+   "reason": "Ledgerは全貨物への20％償還案を示す一方、船舶が通過するたびに料金が発生する仕組みまでは確認していません。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "negation"
+   ],
+   "reason": "Ledgerは徴収方法が未提示だったことを示しますが、実際に徴収がなかったという否定までは明記していません。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "negation"
+   ],
+   "reason": "Ledgerでは提案と同時に手続き・体制づくりを直ちに開始するとされており、「発表段階だけ」とする記述は一致しません。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "7月13日の償還料案が7月14日に湾岸諸国との貿易・投資案件へ置き換えられたことの要約です。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality",
+    "comparison"
+   ],
+   "reason": "価格が一時的に上げ幅を縮小して高い水準へ戻った点は一致しますが、「So」はその動きへの因果的な結論を加えています。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "reason": "提案が翌日に置き換えられ、撤回発表後にBrentが一時上げ幅を縮小して高水準へ戻り、懸念が続いたというLedgerの記述に沿っています。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality",
+    "comparison"
+   ],
+   "reason": "価格が一時的に上げ幅を縮小して高い水準へ戻った点は一致しますが、「So」はその動きへの因果的な結論を加えています。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4575,
+    "cached_input_tokens": 0,
+    "output_tokens": 2908,
+    "reasoning_tokens": 2415
+   },
+   "cost_jpy": 0.2999,
+   "elapsed": 26.2
+  }
+ ],
+ "cost_jpy": 0.2999,
+ "failclosed_cids": []
+}

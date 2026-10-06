@@ -163,3 +163,5 @@ Fableが★★★★報告★★★★を作る前に「初回報告 vs 再掲�
 - 2026-10-05 | OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 E2E-ACCEPTANCE-01 委任_22 | neg7 Human Review(STAGE4)のRCA(¥0): Human Review KPI FAIL確定(1/9)。分類=①実装不具合(T経路が同cycle Rewrite済claimを再削除対象にしSTAGE4へ誤写像、直接)+②設計問題(Stage 1 r3候補過剰×deterministic_floor強制BLOCKING、非SC Rewrite 7/8 run)。非SC BLOCKING35件【推測】誤24/判断不能5/正当6。是正案A〜G列挙のみ、SC 11 run未再開。provenance=fresh/E2E途中、VALIDATED不可。REPORT §75、docs/pm/rca_open233_e2e_neg7_human_review_01.md。
 - 2026-10-06 | OPEN-233-STAGE1-CHECKER-RECOVERY-AND-PM-RCA-01 E2E-ACCEPTANCE-01 委任_23 | 再起動前引継ぎ(¥0): ACTIVE_TASK更新(未add)、設計メモdesign_open233_stage1_loop3_prep_01.md(Checkerの問い転換・3択化・¥5〜8再分類確認案、未決定)。判断待ち=D1/D2/再分類確認可否/統計基準KPI。provenance=記録のみ、VALIDATED不可
 - 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B | T経路再対象化バグ修正+regression test 13件(¥0)、回帰857件PASS、Production未反映。REPORT §76。
+- 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_A/A2 | 再分類Trial(¥10.46): NORMAL候補24.2→9.8、gold 5/6(A4-0 1 sample消失)、VALIDATED未達でSTOP。REPORT §77。
+- 2026-10-06 | OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B3 | Opus任意レビュー反映(R1/R2/R5-a/R5-b)、テスト+6件、回帰863件PASS、¥0。REPORT §76-2。

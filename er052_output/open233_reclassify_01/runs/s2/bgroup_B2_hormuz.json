@@ -1,0 +1,149 @@
+{
+ "sample": 2,
+ "instance_id": "bgroup_B2_hormuz",
+ "items": [
+  {
+   "key": "S3.1",
+   "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "The fee was not actually being collected yet.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-003"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "R:S10.2+S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+   "routes": [
+    "r5"
+   ],
+   "related": [
+    "HF-002",
+    "HF-003",
+    "HF-007"
+   ],
+   "cid": "C6"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "proper_noun",
+    "comparison"
+   ],
+   "reason": "Ledgerは全貨物への20％償還料案を確認する一方、船が通るたびに料金が発生する仕組みまでは示していません。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "negation"
+   ],
+   "reason": "Ledgerでは制度設計が示されず、徴収は提案段階だったと確認されています。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "reason": "一時的な上げ幅縮小後に高水準へ戻った動きは確認できますが、「So」はその動きの原因まで結び付けています。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "proper_noun",
+    "date",
+    "causality",
+    "negation",
+    "comparison"
+   ],
+   "reason": "7月14日の置換発表後もBrentは一時的な上げ幅縮小から回復し、記事掲載時点で高水準だったというLedgerの記述に沿っています。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "reason": "一時的な上げ幅縮小後に高水準へ戻った動きは確認できますが、「So」はその動きの原因まで結び付けています。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "提案から貿易・投資案件への置換は確認できますが、誰が支払うかはLedgerで示されておらず、「船に課金する」とは確定できません。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4525,
+    "cached_input_tokens": 0,
+    "output_tokens": 2477,
+    "reasoning_tokens": 2070
+   },
+   "cost_jpy": 0.2653,
+   "elapsed": 20.7
+  }
+ ],
+ "cost_jpy": 0.2653,
+ "failclosed_cids": []
+}

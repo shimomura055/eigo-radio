@@ -4619,9 +4619,48 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 ## §76 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_B(2026-10-06): T経路の再対象化不具合を修正(¥0、Trial runner、Production未反映)
 - 問題【確認】: E2E neg7のcycle2で、同fact_id(`fact:MUSE-HC-010`)の2 claimのうち(ii)=ladder枯渇、(iii)=同cycleで3_sentence置換に成功済み。T(最終手段の決定論削除)は枯渇claimをclaim_identity(=fact_id)で選んでいたため(iii)まで再対象化し、文が既に変わっていて`span_unverified(mismatch)`→`_t_fail`→構造要素でないのに`blocking_structural_after_ladder`(Human Review)へ。凍結run json(`er052_output/open233_e2e_acceptance_01/runs/s1/neg7_meta_prodrunner_b1b.json` cycles[1])で、修正前のidentity選択がindex[1,2]を返すことを再確認。
 - 原因行(修正前): runner L9019-9031付近(`t_claims = [c ... claim_identity in _ex_ids]`、`_t_fail`→`_allow("blocking_structural_after_ladder")`、`_rec_by`のidentityでのrecord上書き)。
-- 修正【確認】(`er052_open233_self_recovery_flow_runner_01.py`): (1)新`select_last_resort_targets`(record単位=index選択。同identityの成功済み/carry-forward済みは`t_skipped_reason=already_rewritten_in_cycle`で除外し`cycle_record["t_target_selection"]`へ記録)。(2)新`classify_last_resort_failures`(T失敗を`covered_by_earlier_rewrite`/`unlocatable_not_covered`/`located_guard_failed`に分類、各々`structural_ladder_exhausted_verified`の結果を併記し`cycle_record["last_resort_failure_classification"]`へ)。(3)T後のrecord差し戻しをidentityではなくindexで行い、同identityの別claimの成功recordが失敗recordで上書きされないようにした(Recheckの`prior_issues`が置換後の文を参照できる)。(4)失敗種別の写像: 本文に残る未解消でT削除guardも通らない(`located_guard_failed`)=従来どおり`blocking_structural_after_ladder`(fail-closed)。位置特定不能で先行Rewriteにも含まれない(`unlocatable_not_covered`)=「構造上修正不能」とは呼ばず、SPAN_FALLBACK_CHAIN有なら既存のH-1 carry(全文Recheckで再取得、上限後は許可リスト内`blocking_confirmed_unlocatable_after_cap`)、無なら既存の非構造ラベル`violation_span_unverified`/`target_not_locatable`でfail-closed(Human Review維持)。対象が先行Rewriteで置換済み(`covered_by_earlier_rewrite`)のみ解消扱い(最終的な解消判定は従来どおり全文Recheck)。新遷移先・新Statusは作っていない。
+- 修正【確認】(`er052_open233_self_recovery_flow_runner_01.py`): (1)新`select_last_resort_targets`(record単位=index選択。同identityの成功済み/carry-forward済みは`t_skipped_reason=already_rewritten_in_cycle`で除外し`cycle_record["t_target_selection"]`へ記録)。(2)新`classify_last_resort_failures`(T失敗を`covered_by_earlier_rewrite`/`unlocatable_not_covered`/`located_guard_failed`に分類、各々`structural_ladder_exhausted_verified`の結果を併記し`cycle_record["last_resort_failure_classification"]`へ)。(3)T後のrecord差し戻しをidentityではなくindexで行い、同identityの別claimの成功recordが失敗recordで上書きされないようにした(Recheckの`prior_issues`が置換後の文を参照できる)。(4)失敗種別の写像: 本文に残る未解消でT削除guardも通らない(`located_guard_failed`)=従来どおり`blocking_structural_after_ladder`(fail-closed)。位置特定不能で先行Rewriteにも含まれない(`unlocatable_not_covered`)=「構造上修正不能」とは呼ばず、SPAN_FALLBACK_CHAIN有なら既存のH-1 carry(全文Recheckで再取得、上限後は許可リスト内`blocking_confirmed_unlocatable_after_cap`)、無なら既存の非構造ラベル`violation_span_unverified`/`target_not_locatable`でfail-closed(Human Review維持)。【訂正(§76-2, 委任_B3): この分岐(carry/許可リスト外ラベル)は廃止。§76-2参照】対象が先行Rewriteで置換済み(`covered_by_earlier_rewrite`)のみ解消扱い(最終的な解消判定は従来どおり全文Recheck)。新遷移先・新Statusは作っていない。
 - テスト【確認】: 追加13件(`TestLastResortDeleteDoesNotRetargetRewrittenClaims`、テストファイル末尾)。修正前: 13件中FAIL 3+ERROR 8(未実装helper参照等)、特にrun_instance統合テストは挙動FAIL(`['…alpha…','…beta…']`≠`['…alpha…']`=TがBを再対象化)で再現。修正後: 13/13 PASS。回帰`run_project_regression.py --pattern "er052*_test_*.py"`: 857件 passed=857 failed=0 errors=0(修正前の既存分844件+新規13件。REPORT_LEDGER L117の598件は別時点の別スコープ)。
-- retry/fallback/regeneration等の同種確認表【確認】: (1)品質劣化regen(L9080): 全claimをRewrite前の本文から連鎖実行し、`cycle_replaced_units`で先行置換をcarry-forward=同種不具合なし(ただしregenはTを再実行しない=下記残課題)。(2)cap_terminal_T: 全claimを通常Rewrite連鎖で処理しcarry-forwardが効く=なし。(3)次cycle: Stage 2は新しい本文のclaimを新規に取得、位置は`rewritten_regions`/`location_prior_levels`経由=旧テキストで探す経路なし。(4)Recheck: `resolve_prior_issue_text`は置換後の文を現行本文から引く(テスト追加)=なし。(5)SPAN_FALLBACK_CHAIN carry: `target_not_locatable`を次の全文Recheckで再取得=なし。(6)T経路自体は本修正で是正。
-- 残課題【確認+推測】: (a)【推測】品質劣化regenが発火するとTによる削除はRewrite前の本文から再実行されるが、regenはTを再実行しないため、regen後に新たなladder枯渇が出ても同cycleではTが走らない(次cycleでStage 2が再判定)=別論点として観察のみ、未修正。(b)設計問題②(Stage 1 r3の候補過剰・floor強制BLOCKING・Recheckのfact_id粒度・ladder location_carry)は本修正の範囲外で未着手、ユーザー承認事項。(c)Opus 11-3: 非該当(構造不変)。
+- retry/fallback/regeneration等の同種確認表【確認】: (1)品質劣化regen(L9080): 全claimをRewrite前の本文から連鎖実行し、`cycle_replaced_units`で先行置換をcarry-forward=同種不具合なし(ただしregenはTを再実行しない=下記残課題)【訂正(§76-2, 委任_B3): 「regenはTを再実行しない」はT対象については不正確。T対象はL9083の`last_resort_delete=True`によりregen内(L6123)で再実行される。正しくは「regen内で新たに起きた枯渇・位置特定不能は判定されずRecheckへ流れる(安全側)」】。(2)cap_terminal_T: 全claimを通常Rewrite連鎖で処理しcarry-forwardが効く=なし。(3)次cycle: Stage 2は新しい本文のclaimを新規に取得、位置は`rewritten_regions`/`location_prior_levels`経由=旧テキストで探す経路なし。(4)Recheck: `resolve_prior_issue_text`は置換後の文を現行本文から引く(テスト追加)=なし。(5)SPAN_FALLBACK_CHAIN carry: `target_not_locatable`を次の全文Recheckで再取得=なし。(6)T経路自体は本修正で是正。
+- 残課題【確認+推測】: (a)【推測】品質劣化regenが発火するとTによる削除はRewrite前の本文から再実行されるが、regenはTを再実行しないため、regen後に新たなladder枯渇が出ても同cycleではTが走らない(次cycleでStage 2が再判定)=別論点として観察のみ、未修正。【訂正(§76-2): 「regenはTを再実行しない」は誤り。T対象はregen内で再実行される。regen内で新たに起きた枯渇・位置特定不能が判定されない点のみが観察事項(安全側)】(b)設計問題②(Stage 1 r3の候補過剰・floor強制BLOCKING・Recheckのfact_id粒度・ladder location_carry)は本修正の範囲外で未着手、ユーザー承認事項。(c)Opus 11-3: 非該当(構造不変)。
 - Safety/Human Review基準: 緩和なし。本文に残る未解消BLOCKINGは全て従来同様fail-closed(STAGE4または次のRecheck)。減るのは「既に書き換え済みの文を再度探して失敗する誤STAGE4」のみ。
 - Status: `VALIDATED(Trial runnerの実装不具合修正のみ、Production未反映)`。
+
+### §76-2 Opus任意レビュー指摘の反映(委任_B3、2026-10-06、¥0、Trial runner、Production未反映)
+委任_B(`dea81a92`)のT経路修正に対するOpus独立技術レビュー(任意レビュー本日1回目)の指摘を、Fable判断(委任_B2はR2の行き先[許可リスト外ラベル問題]でSTOP・未実装、委任_B3で再開)に従って反映した。
+- R5-(a)【必須・確認】`classify_last_resort_failures`が`method`が`covered_by_earlier_rewrite`で始まるT record(T内carry-forward済み、`guard_ok=False`/`target_not_locatable=False`)を`located_guard_failed`扱いし`blocking_structural_after_ladder`へ送っていた。`select_last_resort_targets`(解消済み扱い)と判定を揃え`covered_by_earlier_rewrite`とした。再現: 統合テスト「同じ文を指す枯渇claim 2件を同時にT」は修正前`blocking_structural_after_ladder`でFAIL、修正後PASS。
+- R2【確認】`unlocatable_not_covered`は、SPAN_FALLBACK_CHAINの有効/無効にかかわらずH-1 carryせず、その場で`stage4_reason="blocking_confirmed_unlocatable_after_cap"`(許可リスト`STAGE4_ALLOWED_REASONS`内、`stage4_allowlist_decision`でallowed=True)でfail-closed停止(STAGE4)。`cycle_record["stage4_sub_reason"]="t_target_unlocatable_nonstructural"`・`structural_verified={"verified":False,...}`・`last_resort_failure_classification`を記録(記録のみ)。旧: carryは次cycleでStage 2を通さずBLOCKING注入→`post_T_new_blocking`に必ず落ち、1 cycle分の費用増と理由名不一致のみでHuman Reviewは減らさなかった。許可リスト外ラベル`violation_span_unverified`/`target_not_locatable`でのSTAGE4停止は廃止。許可リスト・Human Review基準は不変。
+- R1【確認】`carry_forward_resolution`のcovered判定を「範囲が現在(置換後)の本文に存在しない」場合に限定(`r in now_text`なら先行Rewrite被覆とみなさない。同文複数出現で片方だけ書換の抜け道を塞ぐ、安全側)。
+- R5-(b)【確認】`blocking_structural_after_ladder`の全発生箇所(cap terminal、ladder枯渇→STAGE4、T後located_guard_failed、degenerate)で`cycle_record["structural_verified"]`(verified bool+reason+details、新`structural_verified_record`)を記録(記録のみ、挙動・ラベル不変)。
+- R4【訂正】§76の「regenはTを再実行しない」は不正確。T対象は`last_resort_delete=True`によりregen内で再実行される。正しくは「regen内で新たに起きた枯渇・位置特定不能は判定されずRecheckへ流れる(安全側)」。観察のみ・未対応。
+- テスト【確認】追加6件(`TestLastResortDeleteDoesNotRetargetRewrittenClaims`の(e)群): classify covered判定、統合(同文枯渇2件→STAGE4へ行かない)、R2×SPAN_FALLBACK_CHAIN=True/False、R1、R5-(b)記録。既存1件(`test_c_integration_...`)の期待ラベルを許可リスト内ラベルへ更新。修正前: R5-(a)2件・R2 2件FAIL、R5-(b) ERROR(KeyError)。R1は修正条件を一時的に外すとFAILすることを確認。修正後: 19/19 PASS。回帰`run_project_regression.py --pattern "er052*_test_*.py"`: 863件 passed=863 failed=0(基準857+6)。
+- Safety/Human Review基準【確認】緩和なし。本文に残る未解消BLOCKINGは従来どおりfail-closed。許可リスト・Stage 1/2・prompt・gold・floor語彙は不変。Productionへ配線なし。
+- Status: `VALIDATED(Trial runnerの実装不具合修正のみ、Production未反映)`。
+
+## §77 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_A/A2(2026-10-06): Checker選択性再分類Trial(¥10.46、Trial、Production未反映)
+性質: Trial(`APPROVED_FOR_PRODUCTION`ではない)。到達上限VALIDATED。**判定: gold残存100%未達(A4-0 sample3が全経路で消失)=VALIDATED未達【確認】、ユーザー指示によりSTOP。** 詳細記録=`docs/pm/reclassify_open233_checker_selectivity_01.md`、集計=`er052_output/open233_reclassify_01/reclassify_aggregate.json`、script/run=`er052_output/open233_reclassify_01/`。
+- 方法【確認】Before=reuse(段階A 42 run保存候補、`er052_output/open233_stage1_stageA_01/`)、After=fresh(新しい問い[Ledger食い違い/Ledger外の具体的新事実]による分類call 42回、gpt-6-luna medium、既存r3構成のまま)。Checker本体再実行なし・Checker本体不変・KPI不変。委任_AはscriptとコストSTOP(見積low¥11.5/mid¥13.7/high¥16.5、Cap¥10超)。Fable判断: T-3継続条件充足で既存r3構成のまま上限¥17で実行。
+- 候補数 Before→After(件/run、和集合all):
+| 群 | run数 | Before→After(all) | llm分 |
+|---|---|---|---|
+| SC | 18 | 18.17→10.11 | 14.28→5.94 |
+| B2_hormuz(WATCH) | 3 | 14.33→10.67 | 7.00→3.33 |
+| NORMAL | 12 | **24.17→9.83**(約59%減) | 19.92→5.33 |
+| hold-out | 9 | 1.0→1.0 | 1.0→1.0 |
+| ALL | 42 | 15.93→8.12 | 12.52→4.52 |
+- 2方向【確認】r3 15.62→8.05、r5 5.55→3.19、和集合15.93→8.12。決定論・coverage_gap分(NORMAL約4.25件)は不変。
+- gold 6件×3 sample【確認】:
+| gold | Before | After(any) | r3 | r5 |
+|---|---|---|---|---|
+| B3 | 3 | 3 | 3 | 3 |
+| B4-a | 3 | 3 | 3 | 3 |
+| B3-same@neg5 | 3 | 3 | 3 | 2(Beforeも2) |
+| A2A3-0 | 3 | 3 | 3 | 3 |
+| **A4-0** | 3 | **2** | 2 | 1 |
+| A5-0 | 3 | 3 | 3 | 3 |
+- 監視項目【確認】hold-out 9/9残存、neg5(B3-same)3/3、K19 3/3(ユーザー決定で軽微扱い)、HF-011はBefore/Afterとも候補なし(SAFETY_CRITICAL外の監視項目)。
+- 実費【確認】42 call、入206,966/出91,916 tok、**¥10.46**(見積midより−¥3.3、上限¥17内)、欠損0・retry0・fail-closed0。分類内訳(526 claim): CANDIDATE 190 / NO_FACT_CLAIM 177 / SUPPORTED 159。
+- 例【確認】NO_FACT_CLAIM化10例は比喩・つなぎ・規範・効果音・修辞的問いで妥当に見える("Ring, ring."等)。SUPPORTED化5例にnegation/comparison含む文あり("The test had begun without clearly telling users."等)=重大Factを落とさないか注視。境界CANDIDATE維持3例中2例は「Ledger未記載のみ」で候補化(新方針と緊張)。
+- **落ち: A4-0 sample3【確認+Fable確認】** claim「Through Muse, trained human contract workers made some calls and completed the exchanges with users.」をr3/r5ともSUPPORTED(Ledger一致)と判定。Sonnetは限定語"some"と推測したが、**Fable確認によりA4-0 goldの正式な違反内容は「やり取りの相手(カウンターパート)の取り違え」**: Ledger MUSE-HC-006は電話の相手先=企業・店舗、記事は"completed the exchanges with users"(Museのユーザー)。根拠: `er052_open233_self_recovery_stage2_calibration_01.py` L363-368(Ledgerのissue逐語)。新しい問いは主体の取り違えを「Ledger一致」と誤読して候補から外した=**Safety上の本物の見逃し**(主体/固有名のFactリスク)。A4-0は過去にもV2 false downgrade・r5-V 0/3と脆弱。
+- 所見【推測】候補は約6割減るが、主体・相手先の取り違えを含む文のSUPPORTED化はSafetyの穴になる。次Trialがあれば問いの精緻化(主体・相手先・範囲・限定語のLedger一致確認を明示/1方向でもCANDIDATEなら残す等)が検討余地。Checkerのprompt変更は本Trialのscope外で未実施、採否はユーザー判断。
+- Status: `Trial実行済み・VALIDATED未達でSTOP`(`USER_DECISION_REQUIRED`)。Production未変更。

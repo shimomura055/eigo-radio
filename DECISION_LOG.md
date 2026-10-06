@@ -19940,3 +19940,14 @@ Fable記録(Sonnet転記): 本管理ID枠は¥238+¥35=¥273、1 run停止閾値
 > 実装不具合修正は既存仕様への整合修正なので、修正・test・必要な記録まで進めてよい。 / Safety基準をTrial都合で緩和しないこと。
 
 Fable判断: 委任_A(再分類Trial)と委任_B(バグ修正)を並列。Opus独立技術レビューGate(11-3)は非該当(原因が明確な実装不具合、処理構造・責務分担・データの流れ不変、新遷移先なし)。実施: T対象をrecord単位に変更、失敗種別の分類(既存ラベル内)、index差し戻し、regression test 13件(再現FAIL→修正PASS)、回帰857件PASS。到達上限=VALIDATED(Production未反映、`APPROVED_FOR_PRODUCTION`ではない)。Safety基準・Human Review基準は緩和していない。詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md`§76。
+
+Fable判断(Opus任意レビュー後、委任_B2/B3、2026-10-06): R5-(a)必須修正採用(classify/select判定統一)/R2は当初のOpus代替案[既存非構造ラベルで即fail-closed]が許可リスト外ラベルになるため委任_B2でSTOP→Fable判断で許可リスト内`blocking_confirmed_unlocatable_after_cap`+`stage4_sub_reason=t_target_unlocatable_nonstructural`で即fail-closed(carry廃止、許可リスト不変)/R1(covered条件に現本文不在を追加)・R5-(b)(構造検証結果の記録のみ)採用/R4観察のみ(REPORT §76記述訂正)/条件A境界は解消。委任_B3で実装(テスト+6件、回帰863件PASS、¥0)。詳細: REPORT §76-2。
+
+## 2026-10-06 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01 委任_A/A2/B3: Checker選択性再分類Trialの結果記録(¥10.46、Trial、Production未反映)
+
+出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-01_A.md`/`_A2.md`/`_B3.md`、`docs/pm/reclassify_open233_checker_selectivity_01.md`。
+
+(1) Fable判断: 再分類のCap¥10超(見積mid¥13.7)に対し、T-3継続条件充足で既存r3構成のまま上限¥17で実行(実費¥10.46)。
+(2) 結果: NORMAL候補24.2→9.8件/記事、gold 5/6(A4-0 sample3消失=カウンターパート[電話の相手先=企業・店舗 vs 記事のMuseユーザー]取り違えの見逃し)、hold-out 9/9、K19 3/3、HF-011候補なし → **VALIDATED未達**、ユーザー指示(見込みが外れた場合はSTOP)によりSTOP。KPI不変・Checker本体不変・Production未変更。
+(3) Opus任意レビュー後のFable判断: R5-(a)/R2/R1/R5-(b)採用、R2は許可リスト内ラベル+sub_reason、R4観察(上記および REPORT §76-2)。
+(4) ユーザー判断事項(`USER_DECISION_REQUIRED`): 次Trialの可否(問いの精緻化案: 主体・相手先・範囲・限定語の一致確認を明示/1方向でもCANDIDATEなら残す等、再分類約¥10前後)、この設計方向を止めるか、E2E再開(SC 11 run)の可否(バグ修正済み・設計問題②未解決のまま)、STAGE4理由ラベル新設の要否(低優先)。詳細: `OPEN-233-SELF-RECOVERY-TRIAL-01_REPORT.md` §76-2/§77。

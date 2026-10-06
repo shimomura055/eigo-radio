@@ -1,0 +1,159 @@
+{
+ "sample": 3,
+ "instance_id": "neg5_hormuz_div_a2",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought a surprise.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S3.5",
+   "claim_text": "For the moment, only a large number stood at center stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "The change was sudden.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "R:L1+L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C7"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「Act Two brought a surprise」は出来事を導入する比喩的なつなぎで、具体的な事実を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "reason": "「unexpected move」は記事の構成上の導入表現で、価格の方向や規模など具体的な事実を追加していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number"
+   ],
+   "reason": "20％の率は示された一方、徴収主体や方法、法的根拠などの制度設計は示されなかったというLedgerの記述に沿う。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "reason": "見出しの「overnight」は一晩のうちに変更されたとの時間的含意があるが、Ledgerでは7月13日午前10時16分の提案から7月14日午前11時4分の置換まで約24時間48分とされる。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "reason": "「sudden」は変更の速さを評価する表現だが、Ledgerが示すのは約24時間48分後の置換であり、その評価を裏付ける記述はない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "「So」は直前の懸念が20％案の撤回をもたらしたという因果を示すが、Ledgerは置換の理由を中東指導者との協議としており、その因果関係を裏付けていない。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "reason": "C6と同じ文で、直前の懸念が20％案の撤回をもたらしたという因果はLedgerで確認できない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4546,
+    "cached_input_tokens": 0,
+    "output_tokens": 1990,
+    "reasoning_tokens": 1489
+   },
+   "cost_jpy": 0.2274,
+   "elapsed": 16.9
+  }
+ ],
+ "cost_jpy": 0.2274,
+ "failclosed_cids": []
+}

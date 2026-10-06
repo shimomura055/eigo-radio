@@ -1,0 +1,47 @@
+{
+ "sample": 1,
+ "instance_id": "safety_er009_changed_time",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "In 2019, researchers published a study in the American Economic Journal: Applied Economics showing that higher suggested tip rates led New York City taxi passengers to leave more money.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "F-001",
+    "F-004"
+   ],
+   "cid": "C1"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "reason": "Ledgerでは研究の発表年は2014年とされており、記事の2019年という日付が食い違います。チップ率が高いほど乗客が多く残したという因果・比較の内容はLedgerに裏付けられています。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4813,
+    "cached_input_tokens": 0,
+    "output_tokens": 199,
+    "reasoning_tokens": 82
+   },
+   "cost_jpy": 0.0911,
+   "elapsed": 2.9
+  }
+ ],
+ "cost_jpy": 0.0911,
+ "failclosed_cids": []
+}
