@@ -1,0 +1,30 @@
+STOP: Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 271, in run_shard
+    f.write(json.dumps(rn.process_row(row), ensure_ascii=False) + "\n")
+                       ~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 207, in process_row
+    rec, c, fbc = self.process_rep(row, i, rc[f"rep{i}"])
+                  ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 177, in process_rep
+    a, c = self.article_select(row, labels)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 142, in article_select
+    return self.call(self.model_ledger, article_prompt(labels, sent, ctx), ARTICLE_SCHEMA, dummy, FAIL_ARTICLE)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_01.py", line 174, in call
+    raise BudgetExceeded(f"ó›åv\xa5{self.cost:.4f} > è„å¿\xa5{self.budget}")
+er052_open233_directional_trial_01.BudgetExceeded: ó›åv\xa51.2108 > è„å¿\xa51.2
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 318, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 313, in main
+    (run_ledger_only if a.ledger_only else run_shard)(a, rows, client)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_directional_trial_03.py", line 274, in run_shard
+    print("STOP:", e)
+    ~~~~~^^^^^^^^^^^^
+UnicodeEncodeError: 'cp932' codec can't encode character '\xa5' in position 2: illegal multibyte sequence

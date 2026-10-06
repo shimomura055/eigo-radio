@@ -5004,3 +5004,46 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 ### §85-5 Fable照合・Status・判断
 - F1 Fable照合: Opus判定はEvidenceと整合。Fable/Sonnetの仮説(ラベルが抽象的)は誤診(ラベルは既に具体的)。Opus推奨は既承認設計(案E')の骨格を維持しつつ新次元(phase)を追加するもので、D61型のカテゴリ再定義(gold/KPI定義に関わる)を含むため、PM_GOVERNANCE 11-3節STOP条件(新しい仕様採用・gold定義の扱い)該当 → Status=**USER_DECISION_REQUIRED**。ユーザー指示によりTRIAL-03は未開始。残11 run待機。Production変更なし。本管理ID費用¥0。決定したのはFableのStatus判定のみ。
 - F2 ユーザー判断事項(Opus提示7点、Fable推奨付き): (1)現修正案を採らない=推奨採らない (2)TRIAL-03の修正内容を構成X/Yへ差し替え=推奨差し替え (3)予算上限¥8=推奨 (4)held-out固定=推奨固定 (5)D61型を「時間範囲誤り」として別カテゴリ=推奨明示(gold/KPI定義変更のためユーザー判断) (6)「限定語なしの方向主張は結末の主張とみなす」方針=推奨受け入れ(held-out faithfulで誤爆測定) (7)上位語別名・前後文は別Trial=推奨別Trial。追加(8)残11 E2E再開=Fable推奨はTRIAL-03結果まで待機。
+
+## §86 限定Trial 3(時間的位置の区別+NONE限定フォールバック): OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-03(2026-10-06)
+
+### §86-1 ユーザー決定・訂正事項
+- 決定: Opus修正設計でTRIAL-03実施/残11 E2EはTRIAL-03終了まで停止継続/Trial予算上限¥8(見込み約¥6)/Production変更なし。
+- **訂正事項**: D61/HF-009型は新しい重大基準・Product仕様ではなく、既存基準で重大Fact誤りとして扱う対象。「限定語なしの方向表現を最終結果として読む」はProduct基準として採用せず、既存の重大Fact誤りを検出するTrial上の判定方法として検証するのみ。CURRENT_SPEC等に新カテゴリ・新原則を追加しない。「途中と最終の取り違え」の新Productカテゴリ・gold/KPIの新重大性基準は作らない。内部分析上「D61型」と呼ぶのは可。
+
+### §86-2 修正内容
+- 修正1: 時間的位置の区別(Ledger側INTERIM/FINAL/SINGLE、記事側INTERIM/FINAL/UNSPECIFIED、同じ時間的位置に属する事象同士だけ方向比較)。
+- 修正2: NONE時の限定フォールバック(factとの対応が既知の記事文で通常の事象選択がNONEのときのみ各事象を個別確認。無条件の全事象総当たりには戻さない)。
+- 不採用: 前回案(事象名をさらに具体化/意味上の部分一致を拡大)。
+
+### §86-3 合格基準(実行前固定、事前登録)
+(1)HC-012 3/3維持 (2)A5-0 3/3維持 (3)D61 2/3以上 (4)held-out重大例 平均2/3以上かつ全例最低1/3以上 (5)正常43件+held-out正常例 不要な重大判定0 (6)不要Rewrite見込み0件/run (7)新たな重大見逃し0 (8)前回解消した誤爆3件を再発させない。未達でも自動でTRIAL-04へ進まない。
+
+### §86-4 Trial構成
+- 構成X=NONEフォールバック中心/構成Y=時間的位置の区別+NONEフォールバック。held-out検証セット(HC-012/A5-0/D61・HF-009/正常文43件/前回誤爆3件/held-out重大例/held-out正常例)を実行前に固定(sha256凍結)、実行後にtestset・正解を変更しない。費用上限¥8、超過見込み時のみSTOP。
+
+### §86-5 並列化計画
+Phase A(¥0、約25分、4本並列): script_03/held-out固定+testset_03+正解+凍結/集計/SSOT先行起票。Phase B(≤¥8、約10分): 見積→Ledger側phase付き再抽出(固定キャッシュ)→記事側X/Y×3 shard=6 process同時→merge→集計。Phase C(約12分、直列): Fable判定→SSOT→commit→Closeout→STOP。
+
+### §86-6 結果
+【確認】費用・時間: 見積mid ¥5.0(上限¥8で実行)、実費**¥7.41**(Ledger側¥0.80、X ¥3.08+追加¥0.75、Y ¥2.59+追加¥0.19。フォールバックX 120 call ¥1.71/Y 64 call ¥0.82)。見積超過要因=NONEフォールバック発動率が想定10%を大幅超過。初回6 process並列の均等配分予算でshard2がX/Yとも途中停止→resume機能(完了id skip、判定ロジック不変)を追加し残分を直列実行、累計¥8内で全73項目完走。sha256凍結一致(testset/正解は未変更)。
+合格基準(X / Y):
+| # | 基準 | X | Y |
+|---|---|---|---|
+| 1 | HC-012 3/3 | 1/3 未達 | 0/3 未達 |
+| 2 | A5-0 3/3 | 1/3 未達 | 0/3 未達 |
+| 3 | D61 2/3以上 | 2/3 充足 | 2/3 充足 |
+| 4 | held-out重大 平均2/3以上かつ全例1/3以上 | 充足(H-G1 2/H-G2 2/H-G3 3/H-G4 1、平均0.667) | 未達(3/3/3/0、H-G4=HC-012系) |
+| 5 | 正常43+held-out正常6=49件の誤重大0 | 1件(H-F2 "briefly dipped") 未達 | 1件(H-F1 "fell but recovered") 未達 |
+| 6 | 不要Rewrite見込み0件/run | mid 0.152件/run 未達 | 未達 |
+| 7 | 新規重大見逃し0 | G-01/G-02/S-07/S-12 未達 | G-01/G-02/S-12/S-13 未達 |
+| 8 | 前回誤爆F-09/F-10/F-19再発なし | 充足 | 充足 |
+(TRIAL-02はHC-012 3/3、A5-0 3/3、D61 0/3。)
+退行trace(`trace_hc012_regression_03.md`): HC-012のLedger側eventsはphase付き再抽出で「機能」系ラベルが反復間で揺れ(電話発信機能/機能/電話機能。TRIAL-02は3反復「機能」一致)、「機能」eventのphaseは全repFINAL、テストeventはINTERIM。G-01/G-02は記事側phaseがINTERIMまたは不定、選択がNONEのrepはフォールバックでNOT_MENTIONED/UNCLEAR、REVERSEDはX r2(sel=機能)のみ。Y G-02はledger_state=None。誤重大: X H-F2はphase無しでFINAL event(INCREASED)と比較しREVERSED(Opusが予測したX構成の限界)、Y H-F1は複合文でINTERIM照合がREVERSED。D61/H-G1〜G3(Y)はphase照合またはフォールバックでREVERSED。
+
+### §86-7 Status・判断
+**Fable判定: REJECTED**(今回Trialした実装(修正1+2)のままでは採用不可)。理由: 事前登録基準の1・2・5・6・7がX/Yとも未達、特に最重要のHC-012/A5-0が3/3→0〜1/3へ退行。一方、phase区別はD61型(G-03、H-G1〜G3)には有効(Y)で概念自体の否定ではない。退行要因は実装上の2点(Ledger側ラベルの反復揺れ/記事側phase判定の誤り)と見られる【推測】。TRIAL-04へは自動移行しない。次の修正はHC-012に対する3回目のパッチに当たるためPM_GOVERNANCE 11-3節条件BによりOpus独立レビュー必須。Production採否判断は不要。残11 E2E再開はユーザー判断(Fable推奨=本件の方針決定まで待機)。D61型の新カテゴリ・新原則はCURRENT_SPECへ追加していない。
+未解決: (a)Ledger側ラベル揺れの固定(正規化・1回抽出固定、Opus論点6-4)未実装 (b)記事側phase判定の妥当性("restored"をINTERIMと誤判定) (c)複合文(INTERIM+FINAL)の扱い (d)フォールバック発動率が高く費用が倍増(発動条件の見直し) (e)OPEN-235/236未着手 (f)APPROVED_FOR_PRODUCTION未配線項目(CHECKER-FLOOR-PRODUCTION-E2E-01)への影響なし。
+
+### §86-8 参照
+`er052_open233_directional_trial_03.py`(予定)、`er052_output/open233_directional_misread_trial_03/`、`docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-03_04.md`。

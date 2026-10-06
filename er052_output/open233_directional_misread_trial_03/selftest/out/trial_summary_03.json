@@ -1,0 +1,545 @@
+{
+ "configs": {
+  "X": {
+   "name": "X",
+   "cost_jpy": 1.38545,
+   "n_calls": 111,
+   "n_article_repeats": 81,
+   "items": {
+    "n_items": 63,
+    "rep0_distribution": {
+     "NOT_MENTIONED": 35,
+     "UNCLEAR": 6,
+     "SAME": 8,
+     "LEDGER_NO_DIRECTION": 7,
+     "SAME_FAMILY": 1,
+     "REVERSED": 6
+    },
+    "gold": {
+     "G-01": {
+      "name": "HC-012",
+      "rep0": "REVERSED",
+      "compares": [
+       "REVERSED",
+       "REVERSED",
+       "REVERSED"
+      ],
+      "k": 3,
+      "n": 3
+     },
+     "G-02": {
+      "name": "A5-0",
+      "rep0": "REVERSED",
+      "compares": [
+       "REVERSED",
+       "REVERSED",
+       "REVERSED"
+      ],
+      "k": 3,
+      "n": 3
+     },
+     "G-03": {
+      "name": "D61",
+      "rep0": "NOT_MENTIONED",
+      "compares": [
+       "NOT_MENTIONED",
+       "NOT_MENTIONED",
+       "NOT_MENTIONED"
+      ],
+      "k": 0,
+      "n": 3
+     }
+    },
+    "held_gold": {
+     "items": {},
+     "mean_k_rate": null,
+     "min_k_rate": null
+    },
+    "normal_pool": {
+     "n": 43,
+     "n_held_normal": 0,
+     "false_reversal": 0,
+     "false_reversal_ids": [],
+     "rate_rep0": 0.0,
+     "rate_all_repeats": 0.0,
+     "false_reversal_any_repeat_ids": []
+    },
+    "prev_false_alarms": {
+     "F-09": {
+      "rep0": "SAME",
+      "compares": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "k": 0,
+      "n": 3,
+      "recurred": false
+     },
+     "F-10": {
+      "rep0": "SAME",
+      "compares": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "k": 0,
+      "n": 3,
+      "recurred": false
+     },
+     "F-19": {
+      "rep0": "SAME",
+      "compares": [
+       "SAME",
+       "SAME_FAMILY",
+       "SAME_FAMILY"
+      ],
+      "k": 0,
+      "n": 3,
+      "recurred": false
+     }
+    },
+    "new_misses": [],
+    "new_misses_outside_event_list_ref": [],
+    "fluctuation": {
+     "n_multi": 9,
+     "all_agree": 6,
+     "agree_rate": 0.6667,
+     "disagree_ids": [
+      "F-19",
+      "G-04",
+      "G-05"
+     ]
+    },
+    "fallback": {
+     "items_with_fallback": 0,
+     "repeats_with_fallback": 0,
+     "repeat_fallback_rate": 0.0,
+     "fallback_calls": 0,
+     "fallback_ids": [],
+     "summary_fallback_calls": null,
+     "fallback_cost_jpy": null
+    },
+    "phase": {
+     "article_phase_distribution": {
+      "None": 81
+     },
+     "expected_phase_n": 0,
+     "expected_phase_match": null,
+     "phase_repeat_items": 0,
+     "phase_repeat_agree_rate": null
+    }
+   },
+   "ledger_side": {
+    "n_ledger_reps": 30,
+    "has_direction_accuracy": 0.8667,
+    "event_match_rate": 0.6667,
+    "state_accuracy_given_match": 0.9615,
+    "ledger_phase_n": 0,
+    "ledger_phase_accuracy": null
+   },
+   "per_run": {
+    "jpy_per_call": 0.01248,
+    "fallback_calls_per_repeat": 0.0,
+    "levels": {
+     "low": {
+      "units_per_run": 3.33,
+      "added_calls": 17.0,
+      "added_jpy": 0.212,
+      "unneeded_rewrite_per_run": 0.0
+     },
+     "mid": {
+      "units_per_run": 7.46,
+      "added_calls": 21.13,
+      "added_jpy": 0.264,
+      "unneeded_rewrite_per_run": 0.0
+     },
+     "high": {
+      "units_per_run": 30.56,
+      "added_calls": 44.23,
+      "added_jpy": 0.552,
+      "unneeded_rewrite_per_run": 0.0
+     }
+    }
+   },
+   "criteria": [
+    {
+     "criterion": "1 HC-012 3/3維持",
+     "result": "充足",
+     "evidence": "3/3 rep0=REVERSED"
+    },
+    {
+     "criterion": "2 A5-0 3/3維持",
+     "result": "充足",
+     "evidence": "3/3 rep0=REVERSED"
+    },
+    {
+     "criterion": "3 D61 2/3以上",
+     "result": "未達",
+     "evidence": "0/3 rep0=NOT_MENTIONED"
+    },
+    {
+     "criterion": "4 held-out重大例 平均2/3以上かつ全例1/3以上",
+     "result": "判定不能",
+     "evidence": "held-out重大例なし"
+    },
+    {
+     "criterion": "5 正常文+held-out正常例 不要な重大判定0",
+     "result": "充足",
+     "evidence": "0/43 ids=[] (全repeat[])"
+    },
+    {
+     "criterion": "6 不要Rewrite見込み0件/run",
+     "result": "充足",
+     "evidence": {
+      "low": 0.0,
+      "mid": 0.0,
+      "high": 0.0
+     }
+    },
+    {
+     "criterion": "7 新たな重大見逃し0(前回REVERSED→今回非REVERSED)",
+     "result": "充足",
+     "evidence": {
+      "new_misses": [],
+      "outside_event_list_ref": []
+     }
+    },
+    {
+     "criterion": "8 前回誤爆3件(F-09/F-10/F-19)再発なし",
+     "result": "充足",
+     "evidence": {
+      "F-09": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "F-10": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "F-19": [
+       "SAME",
+       "SAME_FAMILY",
+       "SAME_FAMILY"
+      ]
+     }
+    }
+   ],
+   "regression_vs_trial02": {
+    "gold": {
+     "G-01": {
+      "prev_k": 3,
+      "cur_k": 3,
+      "n": 3
+     },
+     "G-02": {
+      "prev_k": 3,
+      "cur_k": 3,
+      "n": 3
+     },
+     "G-03": {
+      "prev_k": 0,
+      "cur_k": 0,
+      "n": 3
+     }
+    },
+    "false_reversal": {
+     "prev": 0,
+     "cur": 0,
+     "prev_ids": [],
+     "cur_ids": []
+    },
+    "unclear_total": {
+     "prev": 6,
+     "cur": 6
+    },
+    "cost_jpy": {
+     "prev": 2.081872,
+     "cur": 1.38545,
+     "diff": -0.6964
+    },
+    "n_items": {
+     "prev": 63,
+     "cur": 63,
+     "new_ids_not_in_prev": []
+    },
+    "changed_rep0": {},
+    "to_REVERSED": [],
+    "from_REVERSED": []
+   }
+  },
+  "Y": {
+   "name": "Y",
+   "cost_jpy": 1.38545,
+   "n_calls": 111,
+   "n_article_repeats": 81,
+   "items": {
+    "n_items": 63,
+    "rep0_distribution": {
+     "NOT_MENTIONED": 35,
+     "UNCLEAR": 6,
+     "SAME": 8,
+     "LEDGER_NO_DIRECTION": 7,
+     "SAME_FAMILY": 1,
+     "REVERSED": 6
+    },
+    "gold": {
+     "G-01": {
+      "name": "HC-012",
+      "rep0": "REVERSED",
+      "compares": [
+       "REVERSED",
+       "REVERSED",
+       "REVERSED"
+      ],
+      "k": 3,
+      "n": 3
+     },
+     "G-02": {
+      "name": "A5-0",
+      "rep0": "REVERSED",
+      "compares": [
+       "REVERSED",
+       "REVERSED",
+       "REVERSED"
+      ],
+      "k": 3,
+      "n": 3
+     },
+     "G-03": {
+      "name": "D61",
+      "rep0": "NOT_MENTIONED",
+      "compares": [
+       "NOT_MENTIONED",
+       "NOT_MENTIONED",
+       "NOT_MENTIONED"
+      ],
+      "k": 0,
+      "n": 3
+     }
+    },
+    "held_gold": {
+     "items": {},
+     "mean_k_rate": null,
+     "min_k_rate": null
+    },
+    "normal_pool": {
+     "n": 43,
+     "n_held_normal": 0,
+     "false_reversal": 0,
+     "false_reversal_ids": [],
+     "rate_rep0": 0.0,
+     "rate_all_repeats": 0.0,
+     "false_reversal_any_repeat_ids": []
+    },
+    "prev_false_alarms": {
+     "F-09": {
+      "rep0": "SAME",
+      "compares": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "k": 0,
+      "n": 3,
+      "recurred": false
+     },
+     "F-10": {
+      "rep0": "SAME",
+      "compares": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "k": 0,
+      "n": 3,
+      "recurred": false
+     },
+     "F-19": {
+      "rep0": "SAME",
+      "compares": [
+       "SAME",
+       "SAME_FAMILY",
+       "SAME_FAMILY"
+      ],
+      "k": 0,
+      "n": 3,
+      "recurred": false
+     }
+    },
+    "new_misses": [],
+    "new_misses_outside_event_list_ref": [],
+    "fluctuation": {
+     "n_multi": 9,
+     "all_agree": 6,
+     "agree_rate": 0.6667,
+     "disagree_ids": [
+      "F-19",
+      "G-04",
+      "G-05"
+     ]
+    },
+    "fallback": {
+     "items_with_fallback": 0,
+     "repeats_with_fallback": 0,
+     "repeat_fallback_rate": 0.0,
+     "fallback_calls": 0,
+     "fallback_ids": [],
+     "summary_fallback_calls": null,
+     "fallback_cost_jpy": null
+    },
+    "phase": {
+     "article_phase_distribution": {
+      "None": 81
+     },
+     "expected_phase_n": 0,
+     "expected_phase_match": null,
+     "phase_repeat_items": 0,
+     "phase_repeat_agree_rate": null
+    }
+   },
+   "ledger_side": {
+    "n_ledger_reps": 30,
+    "has_direction_accuracy": 0.8667,
+    "event_match_rate": 0.6667,
+    "state_accuracy_given_match": 0.9615,
+    "ledger_phase_n": 0,
+    "ledger_phase_accuracy": null
+   },
+   "per_run": {
+    "jpy_per_call": 0.01248,
+    "fallback_calls_per_repeat": 0.0,
+    "levels": {
+     "low": {
+      "units_per_run": 3.33,
+      "added_calls": 17.0,
+      "added_jpy": 0.212,
+      "unneeded_rewrite_per_run": 0.0
+     },
+     "mid": {
+      "units_per_run": 7.46,
+      "added_calls": 21.13,
+      "added_jpy": 0.264,
+      "unneeded_rewrite_per_run": 0.0
+     },
+     "high": {
+      "units_per_run": 30.56,
+      "added_calls": 44.23,
+      "added_jpy": 0.552,
+      "unneeded_rewrite_per_run": 0.0
+     }
+    }
+   },
+   "criteria": [
+    {
+     "criterion": "1 HC-012 3/3維持",
+     "result": "充足",
+     "evidence": "3/3 rep0=REVERSED"
+    },
+    {
+     "criterion": "2 A5-0 3/3維持",
+     "result": "充足",
+     "evidence": "3/3 rep0=REVERSED"
+    },
+    {
+     "criterion": "3 D61 2/3以上",
+     "result": "未達",
+     "evidence": "0/3 rep0=NOT_MENTIONED"
+    },
+    {
+     "criterion": "4 held-out重大例 平均2/3以上かつ全例1/3以上",
+     "result": "判定不能",
+     "evidence": "held-out重大例なし"
+    },
+    {
+     "criterion": "5 正常文+held-out正常例 不要な重大判定0",
+     "result": "充足",
+     "evidence": "0/43 ids=[] (全repeat[])"
+    },
+    {
+     "criterion": "6 不要Rewrite見込み0件/run",
+     "result": "充足",
+     "evidence": {
+      "low": 0.0,
+      "mid": 0.0,
+      "high": 0.0
+     }
+    },
+    {
+     "criterion": "7 新たな重大見逃し0(前回REVERSED→今回非REVERSED)",
+     "result": "充足",
+     "evidence": {
+      "new_misses": [],
+      "outside_event_list_ref": []
+     }
+    },
+    {
+     "criterion": "8 前回誤爆3件(F-09/F-10/F-19)再発なし",
+     "result": "充足",
+     "evidence": {
+      "F-09": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "F-10": [
+       "SAME",
+       "SAME",
+       "SAME"
+      ],
+      "F-19": [
+       "SAME",
+       "SAME_FAMILY",
+       "SAME_FAMILY"
+      ]
+     }
+    }
+   ],
+   "regression_vs_trial02": {
+    "gold": {
+     "G-01": {
+      "prev_k": 3,
+      "cur_k": 3,
+      "n": 3
+     },
+     "G-02": {
+      "prev_k": 3,
+      "cur_k": 3,
+      "n": 3
+     },
+     "G-03": {
+      "prev_k": 0,
+      "cur_k": 0,
+      "n": 3
+     }
+    },
+    "false_reversal": {
+     "prev": 0,
+     "cur": 0,
+     "prev_ids": [],
+     "cur_ids": []
+    },
+    "unclear_total": {
+     "prev": 6,
+     "cur": 6
+    },
+    "cost_jpy": {
+     "prev": 2.081872,
+     "cur": 1.38545,
+     "diff": -0.6964
+    },
+    "n_items": {
+     "prev": 63,
+     "cur": 63,
+     "new_ids_not_in_prev": []
+    },
+    "changed_rep0": {},
+    "to_REVERSED": [],
+    "from_REVERSED": []
+   }
+  }
+ },
+ "prev_cost_jpy": 2.081872
+}
