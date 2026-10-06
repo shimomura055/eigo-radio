@@ -1,0 +1,2572 @@
+{
+  "instance_id": "hormuz_run03_advanced",
+  "group": "hormuz",
+  "expected_group_label": "Normal群(§7-5)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# The Fee Plan Leaves, High Oil Prices Stay",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "# The Fee Plan Leaves, High Oil Prices Stay",
+            "issue": "Brent以外も含む一般的な「oil prices」が高値にとどまったと読めますが、Ledgerが確認するのはBrent先物です。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Leaves, High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "# The Fee Plan Leaves, High Oil Prices Stay",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.3"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee was meant to recover the cost of the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.\n\nIn other words, fee collection had not actually begun. What appeared on stage was not a finished fee system, but a proposal that put forward the number 20 percent.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "In other words, fee collection had not actually begun.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "In other words, fee collection had not actually begun.",
+            "issue": "制度設計が示されず提案段階だったことは支えられますが、実際に徴収が始まっていなかったという明示的な事実まではLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Trump said the fee was meant to recover the cost of the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.\n\nIn other words, fee collection had not actually begun. What appeared on stage was not a finished fee system, but a proposal that put forward the number 20 percent.\n\nThen, the next day, the story suddenly changed. Trump announced that he would drop the 20 percent fee plan and replace it with trade and investment deals between Gulf countries and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "In other words, fee collection had not actually begun.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+            "issue": "Brent先物が一時的に上げ幅を縮小し、その後発表前に近い高い水準へ戻ったことは支えられますが、「価格が下がり始めるように見えた」という市場の見通し・解釈はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now, let us turn the camera toward the oil market. The next scene begins.\n\nAfter the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+            "issue": "Ledgerが記録するのはBrent先物の一時的な上げ幅縮小と回復です。「oil prices」と一般化し、原油価格全般についての主張に広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+            "issue": "Brent先物の一時的な変動と回復は支えられますが、「political statements changed greatly」はLedgerに明記されておらず、価格もBrentから原油価格一般へ広げています。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+            "issue": "単一の見出しだけでは市場の結末を決められなかったという因果的・解釈的主張は、Ledgerにありません。 / 単一の見出しが市場の結末を決められなかったという因果的・解釈的主張は、Ledgerで確認された事実として示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+            "issue": "料金案の置換と緊張の継続は支えられますが、「oil prices」はLedgerが確認するBrent先物を超えた一般化です。また「as」は緊張継続と価格の高止まりを結び付ける因果関係とも読めます。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains.",
+            "issue": "Brent以外も含む一般的な「oil prices」が高値にとどまったと読めますが、Ledgerが確認するのはBrent先物です。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# The Fee Plan Leaves, High Oil Prices Stay"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Now, let us turn the camera toward the oil market. The next scene begins.\n\nAfter the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains. Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement. At the time of reporting, they were up about 2.6 percent, above 85 dollars a barrel.\n\nWhat we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+            "issue": "料金案の置換と緊張の継続は支えられますが、「oil prices」はLedgerが確認するBrent先物を超えた一般化です。また「as」は緊張継続と価格の高止まりを結び付ける因果関係とも読めます。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Fee Plan Leaves, High Oil Prices Stay\n\nOn July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.\n\nTrump said the fee was meant to recover the cost of the United States keeping the strait safe. It would cover all cargo passing through the strait. But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "But news about tensions around the strait remained on stage.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But news about tensions around the strait remained on stage.",
+            "issue": "料金案の置換と緊張の継続は支えられますが、「oil prices」はLedgerが確認するBrent先物を超えた一般化です。また「as」は緊張継続と価格の高止まりを結び付ける因果関係とも読めます。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn. At the same time, attacks by the United States and Iran, a sea blockade, and concerns about tanker safety continued.\n\nThe fee plan disappeared. But news about tensions around the strait remained on stage. Even though political statements changed greatly, oil prices moved briefly and then returned to a high level. What is interesting this time is that it seemed one headline alone could not decide how the story would end.\n\n## In one line\nThe fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "hormuz_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But news about tensions around the strait remained on stage.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+              "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+            ],
+            "batch_cost_jpy": 0.1969,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 11,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "# The Fee Plan Leaves, High Oil Prices Stay",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "In other words, fee collection had not actually begun.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "After the withdrawal and replacement of the fee plan were announced, Brent crude oil futures briefly gave up some of their gains.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "hormuz_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But news about tensions around the strait remained on stage.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc",
+            "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+          ],
+          "batch_cost_jpy": 0.1969,
+          "batch_n_claims": 11
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "hormuz_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.4834,
+      "usage": {
+        "input_tokens": 5074,
+        "cached_input_tokens": 0,
+        "output_tokens": 5148,
+        "reasoning_tokens": 1502
+      },
+      "elapsed_seconds": 45.759,
+      "prompt_sha256": "dd86a613d013a06cc4955fa6c62f727fecc09cace593fa7c5447c8623fe9f09a",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "hormuz_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5638,
+      "usage": {
+        "input_tokens": 4707,
+        "cached_input_tokens": 0,
+        "output_tokens": 6246,
+        "reasoning_tokens": 3927
+      },
+      "elapsed_seconds": 61.748,
+      "prompt_sha256": "3b59b6814513b25d32278c1352b0549ff937b558e461dad69367cbab53275781",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "hormuz_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3713,
+      "usage": {
+        "input_tokens": 5096,
+        "cached_input_tokens": 0,
+        "output_tokens": 3714,
+        "reasoning_tokens": 2857
+      },
+      "elapsed_seconds": 45.369,
+      "prompt_sha256": "5e291659587c2f70cc137b387db127e31ad3ecc33c70969e58151e4dfbc3d2a6",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2356,
+      "usage": {
+        "input_tokens": 10087,
+        "cached_input_tokens": 0,
+        "output_tokens": 986,
+        "reasoning_tokens": 727
+      },
+      "elapsed_seconds": 12.719,
+      "prompt_sha256": "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.12,
+      "usage": {
+        "input_tokens": 5795,
+        "cached_input_tokens": 0,
+        "output_tokens": 371,
+        "reasoning_tokens": 294
+      },
+      "elapsed_seconds": 5.996,
+      "prompt_sha256": "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1548,
+      "usage": {
+        "input_tokens": 10087,
+        "cached_input_tokens": 10084,
+        "output_tokens": 1771,
+        "reasoning_tokens": 1507
+      },
+      "elapsed_seconds": 20.842,
+      "prompt_sha256": "fd0fae908bd1608466a27a0ed47879a17104ede77774ff6437d7fe1bf261b8bc"
+    },
+    {
+      "label": "hormuz_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0421,
+      "usage": {
+        "input_tokens": 5795,
+        "cached_input_tokens": 5792,
+        "output_tokens": 420,
+        "reasoning_tokens": 343
+      },
+      "elapsed_seconds": 5.398,
+      "prompt_sha256": "0882db4a4944cf8b54b90e4a96a57184e53775fd79f707b9786719dcfcb37885"
+    }
+  ],
+  "total_cost_jpy": 1.971,
+  "total_calls": 7,
+  "elapsed_seconds": 197.871,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# The Fee Plan Leaves, High Oil Prices Stay",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Brent以外も含む一般的な「oil prices」が高値にとどまったと読めますが、Ledgerが確認するのはBrent先物です。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, fee collection had not actually begun.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "制度設計が示されず提案段階だったことは支えられますが、実際に徴収が始まっていなかったという明示的な事実まではLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Brent先物が一時的に上げ幅を縮小し、その後発表前に近い高い水準へ戻ったことは支えられますが、「価格が下がり始めるように見えた」という市場の見通し・解釈はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Ledgerが記録するのはBrent先物の一時的な上げ幅縮小と回復です。「oil prices」と一般化し、原油価格全般についての主張に広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "Brent先物の一時的な変動と回復は支えられますが、「political statements changed greatly」はLedgerに明記されておらず、価格もBrentから原油価格一般へ広げています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "単一の見出しだけでは市場の結末を決められなかったという因果的・解釈的主張は、Ledgerにありません。 / 単一の見出しが市場の結末を決められなかったという因果的・解釈的主張は、Ledgerで確認された事実として示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "料金案の置換と緊張の継続は支えられますが、「oil prices」はLedgerが確認するBrent先物を超えた一般化です。また「as」は緊張継続と価格の高止まりを結び付ける因果関係とも読めます。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 11,
+      "n_model_entries": 10,
+      "n_targets": 9,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 2,
+      "n_excluded_entries": 2,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3713,
+          "usage": {
+            "input_tokens": 5096,
+            "cached_input_tokens": 0,
+            "output_tokens": 3714,
+            "reasoning_tokens": 2857
+          },
+          "elapsed_seconds": 45.369,
+          "prompt_sha256": "5e291659587c2f70cc137b387db127e31ad3ecc33c70969e58151e4dfbc3d2a6",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3713,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# The Fee Plan Leaves, High Oil Prices Stay",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "料金案の撤回は裏付けられるが、「oil prices」はLedgerが確認するBrent先物より広い範囲を指している。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "7月13日にホルムズ海峡を通る貨物への20％償還料が提案されたという要旨はHF-002と一致する。",
+          "fact_tags": [
+            "number",
+            "date",
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S3.1",
+          "claim": "In other words, fee collection had not actually begun.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "徴収制度の具体的設計が未提示だったことは裏付けられるが、徴収が実際に始まっていなかったという否定はLedgerに明示されていない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S4.1",
+          "claim": "Then, the next day, the story suddenly changed.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "7月13日の提案の翌日に、撤回・置換が発表されたという時系列を平易に述べている。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S7.2",
+          "claim": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "発表後にBrent先物が一時上げ幅を縮小して発表前に近い高水準へ戻った点は裏付けられるが、下落が始まりそうに見えたという見立てはLedgerにない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S8.1",
+          "claim": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "全面的な下落は確認されていないという趣旨は支持されるが、「oil prices」はLedgerの対象であるBrent先物より範囲が広い。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S9.3",
+          "claim": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "短時間の上げ幅縮小後に高水準へ戻った動きはBrent先物について裏付けられるが、記事は「oil prices」全般へ範囲を広げている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S9.4",
+          "claim": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "一つの見出しだけでは価格の展開を決められなかったという因果的な解釈は、Ledgerの観測事実からは確認できない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "L1",
+          "claim": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "料金案の撤回と緊張の継続は裏付けられるが、「oil prices」はBrent先物より範囲が広く、緊張の継続を価格が高止まりした理由とする因果関係もLedgerでは確認されていない。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "5e291659587c2f70cc137b387db127e31ad3ecc33c70969e58151e4dfbc3d2a6"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 34,
+    "n_judged_units": 24,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S2.3",
+          "S3.1",
+          "S4.1",
+          "S7.2",
+          "S8.1",
+          "S9.3",
+          "S9.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.4834,
+            "usage": {
+              "input_tokens": 5074,
+              "cached_input_tokens": 0,
+              "output_tokens": 5148,
+              "reasoning_tokens": 1502
+            },
+            "elapsed_seconds": 45.759,
+            "prompt_sha256": "dd86a613d013a06cc4955fa6c62f727fecc09cace593fa7c5447c8623fe9f09a",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The Fee Plan Leaves, High Oil Prices Stay",
+            "span": [
+              0,
+              43
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Brent以外も含む一般的な「oil prices」が高値にとどまったと読めますが、Ledgerが確認するのはBrent先物です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "# The Fee Plan Leaves, High Oil Prices Stay"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz.",
+            "span": [
+              45,
+              155
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20％案と7月13日の日付は支えられていますが、「suddenly appeared」という急な出現の評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "On July 13, a plan suddenly appeared to charge a 20 percent fee on cargo passing through the Strait of Hormuz."
+          },
+          {
+            "unit_id": "S2.3",
+            "unit_ids": [
+              "S2.3"
+            ],
+            "claim_text": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+            "span": [
+              305,
+              428
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "In other words, fee collection had not actually begun.",
+            "span": [
+              430,
+              484
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "制度設計が示されず提案段階だったことは支えられますが、実際に徴収が始まっていなかったという明示的な事実まではLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "In other words, fee collection had not actually begun."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "Then, the next day, the story suddenly changed.",
+            "span": [
+              595,
+              642
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "翌日に内容が変わったことは支えられますが、「suddenly」という急な変化の評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Then, the next day, the story suddenly changed."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+            "span": [
+              1318,
+              1459
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Brent先物が一時的に上げ幅を縮小し、その後発表前に近い高い水準へ戻ったことは支えられますが、「価格が下がり始めるように見えた」という市場の見通し・解釈はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+            "span": [
+              1546,
+              1657
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerが記録するのはBrent先物の一時的な上げ幅縮小と回復です。「oil prices」と一般化し、原油価格全般についての主張に広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+            "span": [
+              1863,
+              1972
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Brent先物の一時的な変動と回復は支えられますが、「political statements changed greatly」はLedgerに明記されておらず、価格もBrentから原油価格一般へ広げています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level."
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+            "span": [
+              1973,
+              2081
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "単一の見出しだけでは市場の結末を決められなかったという因果的・解釈的主張は、Ledgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "What is interesting this time is that it seemed one headline alone could not decide how the story would end."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+            "span": [
+              2098,
+              2198
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案の置換と緊張の継続は支えられますが、「oil prices」はLedgerが確認するBrent先物を超えた一般化です。また「as」は緊張継続と価格の高止まりを結び付ける因果関係とも読めます。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S9.4"
+        ],
+        "unit_status": {
+          "S1.1": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S3.2": "MATCH",
+          "S4.2": "MATCH",
+          "S5.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "MATCH",
+          "S4.1": "MATCH",
+          "S4.3": "MATCH",
+          "S9.1": "MATCH",
+          "S9.3": "MATCH",
+          "L1": "MATCH",
+          "S5.1": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S8.1": "MATCH",
+          "S8.2": "MATCH",
+          "S9.2": "MATCH",
+          "S9.4": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.5638,
+            "usage": {
+              "input_tokens": 4707,
+              "cached_input_tokens": 0,
+              "output_tokens": 6246,
+              "reasoning_tokens": 3927
+            },
+            "elapsed_seconds": 61.748,
+            "prompt_sha256": "3b59b6814513b25d32278c1352b0549ff937b558e461dad69367cbab53275781",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+            "span": [
+              1973,
+              2081
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "単一の見出しが市場の結末を決められなかったという因果的・解釈的主張は、Ledgerで確認された事実として示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "What is interesting this time is that it seemed one headline alone could not decide how the story would end."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S9.4"
+      ],
+      "r3_only": [
+        "L1",
+        "S1.1",
+        "S2.3",
+        "S3.1",
+        "S4.1",
+        "S7.2",
+        "S8.1",
+        "S9.3",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# The Fee Plan Leaves, High Oil Prices Stay",
+        "span": [
+          0,
+          43
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Brent以外も含む一般的な「oil prices」が高値にとどまったと読めますが、Ledgerが確認するのはBrent先物です。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "# The Fee Plan Leaves, High Oil Prices Stay"
+        ]
+      },
+      {
+        "claim_text": "But important details—such as who would collect the fee, who would pay it, and how it would be calculated—were still blank.",
+        "span": [
+          305,
+          428
+        ],
+        "unit_ids": [
+          "S2.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In other words, fee collection had not actually begun.",
+        "span": [
+          430,
+          484
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "制度設計が示されず提案段階だったことは支えられますが、実際に徴収が始まっていなかったという明示的な事実まではLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": [
+          "In other words, fee collection had not actually begun."
+        ]
+      },
+      {
+        "claim_text": "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement.",
+        "span": [
+          1318,
+          1459
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Brent先物が一時的に上げ幅を縮小し、その後発表前に近い高い水準へ戻ったことは支えられますが、「価格が下がり始めるように見えた」という市場の見通し・解釈はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Just when it seemed that prices might start to fall, they soon returned to a high level close to where they had been before the announcement."
+        ]
+      },
+      {
+        "claim_text": "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn.",
+        "span": [
+          1546,
+          1657
+        ],
+        "unit_ids": [
+          "S8.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerが記録するのはBrent先物の一時的な上げ幅縮小と回復です。「oil prices」と一般化し、原油価格全般についての主張に広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "What we can see here is that oil prices did not fall across the board immediately after the plan was withdrawn."
+        ]
+      },
+      {
+        "claim_text": "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level.",
+        "span": [
+          1863,
+          1972
+        ],
+        "unit_ids": [
+          "S9.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Brent先物の一時的な変動と回復は支えられますが、「political statements changed greatly」はLedgerに明記されておらず、価格もBrentから原油価格一般へ広げています。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Even though political statements changed greatly, oil prices moved briefly and then returned to a high level."
+        ]
+      },
+      {
+        "claim_text": "What is interesting this time is that it seemed one headline alone could not decide how the story would end.",
+        "span": [
+          1973,
+          2081
+        ],
+        "unit_ids": [
+          "S9.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "単一の見出しだけでは市場の結末を決められなかったという因果的・解釈的主張は、Ledgerにありません。",
+          "単一の見出しが市場の結末を決められなかったという因果的・解釈的主張は、Ledgerで確認された事実として示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "What is interesting this time is that it seemed one headline alone could not decide how the story would end."
+        ]
+      },
+      {
+        "claim_text": "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued.",
+        "span": [
+          2098,
+          2198
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "料金案の置換と緊張の継続は支えられますが、「oil prices」はLedgerが確認するBrent先物を超えた一般化です。また「as」は緊張継続と価格の高止まりを結び付ける因果関係とも読めます。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "The fee plan vanished, but oil prices stayed high as tensions around the Strait of Hormuz continued."
+        ]
+      }
+    ],
+    "n_union_candidates": 8,
+    "n_model_candidates": 7,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.0472,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 10,
+    "n_targets": 9,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 2,
+    "n_excluded_entries": 2,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3713,
+    "effort": "medium",
+    "prompt_sha256": "5e291659587c2f70cc137b387db127e31ad3ecc33c70969e58151e4dfbc3d2a6"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

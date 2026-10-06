@@ -1,0 +1,2811 @@
+{
+  "instance_id": "bgroup_B3",
+  "group": "b_group",
+  "expected_group_label": "claim単位混在(§7-0)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "issue": "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "引用: “Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage” — 継続していた懸念を20％案の撤回理由として結び付けないでください。懸念の継続と撤回を別々の事実として述べ、撤回・置換の理由はトランプ氏が説明した中東指導者との協議に基づくものとして記述してください。参照: HF-007。",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+        },
+        {
+          "claim_text": "Act One was “20%.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Act One was “20%.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Act One was “20%.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "But “20%” was not a finished system.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "But “20%” was not a finished system.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "But “20%” was not a finished system.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+            "issue": "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        },
+        {
+          "claim_text": "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains.",
+            "issue": "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          }
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Act One was “20%.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "But “20%” was not a finished system.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "On July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+            "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+          ],
+          "batch_cost_jpy": 0.221,
+          "batch_n_claims": 7
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-007",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "in_one_line",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+              ],
+              "raw_spans": [
+                [
+                  1700,
+                  1972
+                ]
+              ],
+              "spans": [
+                [
+                  1700,
+                  1972
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+                    "after": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "causality",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 14.91,
+          "difficult_word_ratio": 0.1108,
+          "word_count": 343
+        },
+        "stats_after": {
+          "avg_sentence_len": 14.91,
+          "difficult_word_ratio": 0.1108,
+          "word_count": 343
+        },
+        "sentence_len_increase": 0.0,
+        "difficulty_ratio_increase": 0.0,
+        "fragment_stats_before": {
+          "avg_sentence_len": 47.0,
+          "difficult_word_ratio": 0.1702,
+          "word_count": 47
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 47.0,
+          "difficult_word_ratio": 0.1702,
+          "word_count": 47
+        },
+        "fragment_sentence_len_increase": 0.0,
+        "fragment_difficulty_ratio_increase": 0.0,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 28,
+        "hook_word_count_after": 28,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 9,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 23,
+        "sentence_count_after": 23,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 0,
+        "hedge_word_count_after": 0,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 12,
+        "paragraph_count_after": 12,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+      "en_text_after_rewrite": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.\n\nThe change was sudden. But to read the oil move, the dates must be kept separate. On July 13, Brent rose about 10% and settled at about $83 a barrel. The rise was linked to concern about a US sea blockade of Iran, planned for the next day, and energy shipments through the Strait of Hormuz.\n\n### The chart refuses to stay down\n\nOn July 14, after the withdrawal and replacement announcement, Brent crude futures briefly gave back some of their gains. Soon, they returned close to the high level before the announcement. At the time of reporting, Brent was up about 3%, above $85 a barrel. Its final settlement price was about $85, up about 2% from the day before.\n\n## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "short_section_no_window(title_hook_in_one_line)"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_coverage": {
+        "scope_ids": [
+          "S7.4",
+          "L1"
+        ],
+        "changed_ids": [
+          "L1"
+        ],
+        "n_scope": 2,
+        "n_judged_units": 27,
+        "n_union_candidates": 1,
+        "n_calls": 2,
+        "total_cost_jpy": 0.3992,
+        "n_prior_claim_hits": 1,
+        "missing_after_rerun": [],
+        "api_failure": false,
+        "reclassify": {
+          "reclassify_status": "no_target",
+          "n_model_entries": 0,
+          "n_targets": 0,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 0,
+          "n_excluded_entries": 0,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.0,
+          "effort": "medium",
+          "prompt_sha256": null
+        }
+      },
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": false,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": false,
+          "explanation": "coverage scope recheck: candidate remains (negation_polarity_mismatch)",
+          "remaining_sentence": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": false
+      },
+      "recheck_prior_issues_sent_count": 1,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major",
+          "normal_gap"
+        ],
+        "n_merged": 2,
+        "n_dedup_dropped": 0,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "HF-011",
+            "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "label": "recheck_major"
+          },
+          {
+            "fact_id": "HF-007",
+            "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "label": "normal_gap"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "origin": null,
+          "related_fact_id": "HF-011",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-011",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 2,
+            "route": "body",
+            "claim_identity": "fact:HF-011",
+            "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy t",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+            ],
+            "batch_cost_jpy": 0.0469,
+            "batch_n_claims": 2
+          }
+        },
+        {
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "issue": "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 2,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy t",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+            ],
+            "batch_cost_jpy": 0.0469,
+            "batch_n_claims": 2
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 2,
+          "route": "body",
+          "claim_identity": "fact:HF-011",
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy t",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+          ],
+          "batch_cost_jpy": 0.0469,
+          "batch_n_claims": 2
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 2,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy t",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+          ],
+          "batch_cost_jpy": 0.0469,
+          "batch_n_claims": 2
+        }
+      ],
+      "exit_check": {
+        "cycle": 2,
+        "n_candidates": 5,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 27,
+        "total_cost_jpy": 0.6092,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 5,
+          "n_targets": 5,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 3,
+          "n_excluded_entries": 3,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2309,
+          "effort": "medium",
+          "prompt_sha256": "d0c79db21490190dc5f2f270759b55cd25fa674c9126605a23804b5bab9f6023"
+        }
+      }
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "claim_text": "Act Three was an unexpected move in oil prices.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Act Three was an unexpected move in oil prices.",
+            "issue": "原油価格の動きは報じられているが、それが「unexpected」だったとの評価はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.\n\nThe curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 3,
+            "route": "hook",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Act Three was an unexpected move in oil prices.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91",
+              "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+            ],
+            "batch_cost_jpy": 0.0948,
+            "batch_n_claims": 3
+          }
+        },
+        {
+          "claim_text": "For the moment, only a large number stood at center stage.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "For the moment, only a large number stood at center stage.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The curtain rose on July 13. Trump posted that the United States would seek a 20% charge on all cargo passing through the Strait of Hormuz. The aim was to recover the cost of US efforts to keep the strait safe.\n\nBut “20%” was not a finished system. The post did not say who would pay, how the money would be collected, or what legal basis would support it. For the moment, only a large number stood at center stage.\n\nThe number stayed at center stage for about a day. Then the story took a sharp turn.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 3,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "For the moment, only a large number stood at center stage.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91",
+              "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+            ],
+            "batch_cost_jpy": 0.0948,
+            "batch_n_claims": 3
+          }
+        },
+        {
+          "claim_text": "### The 20% plan changes overnight",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "### The 20% plan changes overnight",
+            "issue": "「Overnight」は一晩のうちの変化を示唆するが、Ledgerの時刻では提案から置換発表まで約24時間48分であり、時間幅が異なる。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=H1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "H1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The number stayed at center stage for about a day. Then the story took a sharp turn.\n\n### The 20% plan changes overnight\n\nThe next day, Trump said the 20% plan would be replaced by trade and investment projects between Gulf states and the US. He cited “very productive discussions” with Middle Eastern leaders. He also said no one should charge ships in the strait, and that he disliked fees.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 3,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "### The 20% plan changes overnight",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91",
+              "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+            ],
+            "batch_cost_jpy": 0.0948,
+            "batch_n_claims": 3
+          }
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet\n\nThis news feels like a short play in three acts. Act One was “20%.” Act Two brought an unexpected turn. Act Three was an unexpected move in oil prices.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4",
+              "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+            ],
+            "batch_cost_jpy": 0.221,
+            "batch_n_claims": 7
+          },
+          "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+          "dev": {
+            "claim_in_article": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "## In one line\n\nConcerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "bgroup_B3",
+            "cycle": 2,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy t",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+            ],
+            "batch_cost_jpy": 0.0469,
+            "batch_n_claims": 2
+          },
+          "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "dev": {
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 5,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 3,
+          "route": "hook",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Act Three was an unexpected move in oil prices.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91",
+            "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+          ],
+          "batch_cost_jpy": 0.0948,
+          "batch_n_claims": 3
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 3,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "For the moment, only a large number stood at center stage.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91",
+            "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+          ],
+          "batch_cost_jpy": 0.0948,
+          "batch_n_claims": 3
+        },
+        {
+          "instance_id": "bgroup_B3",
+          "cycle": 3,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "### The 20% plan changes overnight",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91",
+            "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+          ],
+          "batch_cost_jpy": 0.0948,
+          "batch_n_claims": 3
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "bgroup_B3_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6161,
+      "usage": {
+        "input_tokens": 5090,
+        "cached_input_tokens": 0,
+        "output_tokens": 6837,
+        "reasoning_tokens": 1828
+      },
+      "elapsed_seconds": 55.496,
+      "prompt_sha256": "73a48b1851fae55064848d7dd9eea9fab3ec4846f51e213e47ee60bc9010ba53",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "bgroup_B3_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5672,
+      "usage": {
+        "input_tokens": 4712,
+        "cached_input_tokens": 0,
+        "output_tokens": 6288,
+        "reasoning_tokens": 4111
+      },
+      "elapsed_seconds": 60.755,
+      "prompt_sha256": "8f7656dcc28b387086bce3126f235760219915848e3a513a1350daf7922a727e",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "bgroup_B3_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2839,
+      "usage": {
+        "input_tokens": 4895,
+        "cached_input_tokens": 0,
+        "output_tokens": 2640,
+        "reasoning_tokens": 2163
+      },
+      "elapsed_seconds": 28.13,
+      "prompt_sha256": "692eb716ef50c257bebf74eb44f83bcf4e1fdd1508a2256310727d5b085cdbca",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "bgroup_B3_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2628,
+      "usage": {
+        "input_tokens": 9269,
+        "cached_input_tokens": 0,
+        "output_tokens": 1497,
+        "reasoning_tokens": 1194
+      },
+      "elapsed_seconds": 18.098,
+      "prompt_sha256": "8d64949ca6bd7ad5ffab42e6fc9a509408d9054346beda0c19e2e2c1d4a769a6"
+    },
+    {
+      "label": "bgroup_B3_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1114,
+      "usage": {
+        "input_tokens": 5639,
+        "cached_input_tokens": 0,
+        "output_tokens": 292,
+        "reasoning_tokens": 215
+      },
+      "elapsed_seconds": 4.373,
+      "prompt_sha256": "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+    },
+    {
+      "label": "bgroup_B3_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1787,
+      "usage": {
+        "input_tokens": 9094,
+        "cached_input_tokens": 0,
+        "output_tokens": 460,
+        "reasoning_tokens": 305
+      },
+      "elapsed_seconds": 6.175,
+      "prompt_sha256": "0bec694d262a3468e097887d9d5a29bfcb8972f028843ed6f7fe78cb85550fa4"
+    },
+    {
+      "label": "bgroup_B3_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0423,
+      "usage": {
+        "input_tokens": 5639,
+        "cached_input_tokens": 5636,
+        "output_tokens": 426,
+        "reasoning_tokens": 349
+      },
+      "elapsed_seconds": 7.329,
+      "prompt_sha256": "c13f86d8ce5c59c3bb0ec4399bbd6a70ea836684e480f83db6d93f025d79e82d"
+    },
+    {
+      "label": "bgroup_B3_c1_fact:HF-007_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0848,
+      "usage": {
+        "input_tokens": 3878,
+        "cached_input_tokens": 0,
+        "output_tokens": 306,
+        "reasoning_tokens": 231
+      },
+      "elapsed_seconds": 6.239,
+      "prompt_sha256": "4ab7266215c24fca1bc916ccde4080da61dfaeb7f670c6dc434afdaa16fbfce9"
+    },
+    {
+      "label": "bgroup_B3_c1_recheck_r3",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.1596,
+      "usage": {
+        "input_tokens": 4972,
+        "cached_input_tokens": 0,
+        "output_tokens": 1040,
+        "reasoning_tokens": 567
+      },
+      "elapsed_seconds": 10.573,
+      "prompt_sha256": "9e0465067e583f11f1260184506f2078424e89893d8ceeaafcf32a0628ee50cb",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "bgroup_B3_c1_recheck_r5v",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2396,
+      "usage": {
+        "input_tokens": 4711,
+        "cached_input_tokens": 0,
+        "output_tokens": 2113,
+        "reasoning_tokens": 1657
+      },
+      "elapsed_seconds": 21.291,
+      "prompt_sha256": "24ebe674d186ba8d12aba14817e37af87c9fdc0ed350c10c6a9d5aaccbd5092f",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "bgroup_B3_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1625,
+      "usage": {
+        "input_tokens": 8496,
+        "cached_input_tokens": 0,
+        "output_tokens": 373,
+        "reasoning_tokens": 296
+      },
+      "elapsed_seconds": 5.272,
+      "prompt_sha256": "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+    },
+    {
+      "label": "bgroup_B3_c2_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0469,
+      "usage": {
+        "input_tokens": 8496,
+        "cached_input_tokens": 8493,
+        "output_tokens": 427,
+        "reasoning_tokens": 348
+      },
+      "elapsed_seconds": 5.759,
+      "prompt_sha256": "12df539067b2a7437a2b4473b60c30b0e8a0d1cadd22d9d753483e82802797d0"
+    },
+    {
+      "label": "bgroup_B3_exit_r3",
+      "recovery_stage": "stage1_exit_check",
+      "cost_jpy": 0.6092,
+      "usage": {
+        "input_tokens": 5090,
+        "cached_input_tokens": 0,
+        "output_tokens": 6749,
+        "reasoning_tokens": 2052
+      },
+      "elapsed_seconds": 55.409,
+      "prompt_sha256": "158d5d9d3f21ff2bf78a901ffd9e7eefd3637f7f5c2e48b30ed9e0cf4fd516d5",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "bgroup_B3_exit_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2309,
+      "usage": {
+        "input_tokens": 4842,
+        "cached_input_tokens": 0,
+        "output_tokens": 1975,
+        "reasoning_tokens": 1527
+      },
+      "elapsed_seconds": 22.353,
+      "prompt_sha256": "d0c79db21490190dc5f2f270759b55cd25fa674c9126605a23804b5bab9f6023",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "bgroup_B3_c3_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1624,
+      "usage": {
+        "input_tokens": 8461,
+        "cached_input_tokens": 0,
+        "output_tokens": 378,
+        "reasoning_tokens": 300
+      },
+      "elapsed_seconds": 5.254,
+      "prompt_sha256": "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91"
+    },
+    {
+      "label": "bgroup_B3_c3_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1087,
+      "usage": {
+        "input_tokens": 5606,
+        "cached_input_tokens": 0,
+        "output_tokens": 265,
+        "reasoning_tokens": 215
+      },
+      "elapsed_seconds": 4.586,
+      "prompt_sha256": "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+    },
+    {
+      "label": "bgroup_B3_c3_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0581,
+      "usage": {
+        "input_tokens": 8461,
+        "cached_input_tokens": 8458,
+        "output_tokens": 571,
+        "reasoning_tokens": 492
+      },
+      "elapsed_seconds": 7.877,
+      "prompt_sha256": "9ea41b951a99b180bf8eea4771f7005dd118431b7bd45b0ae56569d294593f91"
+    },
+    {
+      "label": "bgroup_B3_c3_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0367,
+      "usage": {
+        "input_tokens": 5606,
+        "cached_input_tokens": 5603,
+        "output_tokens": 355,
+        "reasoning_tokens": 305
+      },
+      "elapsed_seconds": 6.388,
+      "prompt_sha256": "6c5abc1b2c0faa9846467fa0877f9708353e8e6dc0095db9db36d07c105dd418"
+    }
+  ],
+  "total_cost_jpy": 3.9618,
+  "total_calls": 18,
+  "elapsed_seconds": 331.477,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, and the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "related_fact_id": "HF-011",
+            "origin": null,
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=L1); severity is decided by Stage 2",
+            "true_flags": [],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": null,
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 1,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": [
+      {
+        "sub_id": "B3",
+        "related_fact_id": "HF-007",
+        "text_substring": "flashy 20% plan",
+        "remains_in_final_en": true,
+        "remains_in_final_en_pattern": false,
+        "ever_blocking_flagged": true,
+        "ever_blocking_flagged_same_fact_id": true,
+        "ever_flagged_but_never_blocking": false,
+        "in_checker_raw_deviations_any_severity": [
+          {
+            "source": "stage1",
+            "severity": "MAJOR",
+            "related_fact_id": "HF-007"
+          },
+          {
+            "source": "recheck_c1",
+            "severity": "MAJOR",
+            "related_fact_id": "HF-011"
+          }
+        ],
+        "pass_with_residual_unflagged": false,
+        "pass_with_residual_unflagged_pattern": false
+      }
+    ]
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 6,
+      "n_model_entries": 5,
+      "n_targets": 5,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 4,
+      "n_excluded_entries": 4,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.2839,
+          "usage": {
+            "input_tokens": 4895,
+            "cached_input_tokens": 0,
+            "output_tokens": 2640,
+            "reasoning_tokens": 2163
+          },
+          "elapsed_seconds": 28.13,
+          "prompt_sha256": "692eb716ef50c257bebf74eb44f83bcf4e1fdd1508a2256310727d5b085cdbca",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.2839,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "This news feels like a short play in three acts.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "三幕劇になぞらえた導入の比喩で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.3",
+          "claim": "Act Two brought an unexpected turn.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「予想外の展開」は比喩的なつなぎ表現で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.4",
+          "claim": "Act Three was an unexpected move in oil prices.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「第三幕」と「予想外の動き」は記事の展開を彩る比喩的表現で、具体的な価格情報を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S6.1",
+          "claim": "The change was sudden.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％案の置換は提案から約24時間48分後に行われており、「突然の変更」はその短い時間間隔の要約として整合する。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "L1",
+          "claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "7月14日の一時的な下落と回復、および20％案の置換はLedgerと整合するが、「so」は継続する懸念が置換を引き起こしたと結び付けており、その因果関係は裏付けられていない。",
+          "fact_tags": [
+            "number",
+            "date",
+            "proper_noun",
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "692eb716ef50c257bebf74eb44f83bcf4e1fdd1508a2256310727d5b085cdbca"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 35,
+    "n_judged_units": 27,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.3",
+          "S1.4",
+          "S6.1",
+          "T"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "H1": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "H2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6161,
+            "usage": {
+              "input_tokens": 5090,
+              "cached_input_tokens": 0,
+              "output_tokens": 6837,
+              "reasoning_tokens": 1828
+            },
+            "elapsed_seconds": 55.496,
+            "prompt_sha256": "73a48b1851fae55064848d7dd9eea9fab3ec4846f51e213e47ee60bc9010ba53",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "H1": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "H2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+            "span": [
+              0,
+              54
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "This news feels like a short play in three acts.",
+            "span": [
+              56,
+              104
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ニュースを三幕構成の短い劇にたとえる表現は、Ledgerに記載された事実ではありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "This news feels like a short play in three acts."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Act Two brought an unexpected turn.",
+            "span": [
+              124,
+              159
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「unexpected（予想外）」という評価はLedgerで確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Act Two brought an unexpected turn."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "Act Three was an unexpected move in oil prices.",
+            "span": [
+              160,
+              207
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "原油価格の動きが「予想外」だったという評価はLedgerで確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-006"
+            ],
+            "model_claim": "Act Three was an unexpected move in oil prices."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The change was sudden.",
+            "span": [
+              1020,
+              1042
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「sudden（突然）」という評価は、Ledgerの事実から直接確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The change was sudden."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+            "span": [
+              1700,
+              1972
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "S1.3": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S7.1": "MATCH",
+          "L1": "MATCH",
+          "S5.3": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S7.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.4": "UNMENTIONED",
+          "H1": "UNMENTIONED",
+          "H2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.5672,
+            "usage": {
+              "input_tokens": 4712,
+              "cached_input_tokens": 0,
+              "output_tokens": 6288,
+              "reasoning_tokens": 4111
+            },
+            "elapsed_seconds": 60.755,
+            "prompt_sha256": "8f7656dcc28b387086bce3126f235760219915848e3a513a1350daf7922a727e",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": []
+      }
+    },
+    "overlap": {
+      "both": [],
+      "r3_only": [
+        "L1",
+        "S1.1",
+        "S1.3",
+        "S1.4",
+        "S6.1",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# 20% Withdrawn—but the Oil Chart Was Not Finished Yet",
+        "span": [
+          0,
+          54
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+        "span": [
+          1700,
+          1972
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「Concerns ... continued ... so the ... plan left the stage」は、懸念の継続が計画の撤回を引き起こしたという因果関係を示していますが、Ledgerは撤回理由を中東指導者との協議と記載しており、この因果関係を支えていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day."
+        ]
+      }
+    ],
+    "n_union_candidates": 2,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.1833,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 5,
+    "n_targets": 5,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 4,
+    "n_excluded_entries": 4,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.2839,
+    "effort": "medium",
+    "prompt_sha256": "692eb716ef50c257bebf74eb44f83bcf4e1fdd1508a2256310727d5b085cdbca"
+  },
+  "recheck_exit_check": {
+    "done": true,
+    "log": [
+      {
+        "cycle": 2,
+        "n_candidates": 5,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 27,
+        "total_cost_jpy": 0.6092,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 5,
+          "n_targets": 5,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 3,
+          "n_excluded_entries": 3,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2309,
+          "effort": "medium",
+          "prompt_sha256": "d0c79db21490190dc5f2f270759b55cd25fa674c9126605a23804b5bab9f6023"
+        }
+      }
+    ]
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 6,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": 2
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}
