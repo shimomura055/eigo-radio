@@ -4972,3 +4972,35 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 
 ### §84-8 参照ファイル
 - 予定: `er052_open233_directional_trial_02.py`、`er052_output/open233_directional_misread_trial_02/`配下、`docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-02_*.md`
+
+## §85 Opus独立レビュー: D61見逃しの原因分析と修正方針(OPEN-233-DIRECTIONAL-MISREAD-OPUS-REVIEW-03、2026-10-06)
+
+### §85-1 目的・禁止事項
+- 目的: TRIAL-02で残ったD61見逃し(前回2/3→0/3)の原因分析と修正方針を、TRIAL-03へ進む前にOpus独立レビューで確認する(ユーザー指示)。到達上限=DESIGN_READY_FOR_REVIEW/USER_DECISION_REQUIRED。
+- 禁止: TRIAL-03実行/有料LLM Trial/Production変更/残11 E2E再開/Prompt修正の本実装/gold・KPI変更/新Safety仕様採用/自動VALIDATED・APPROVED_FOR_PRODUCTION。Opusが良いと言っても自動採用しない。
+
+### §85-2 レビュー論点(ユーザー指示逐語要点)
+1. D61見逃しの原因分析は正しいか(仮説: Ledger側の事象名が「上げ幅」「水準」のように抽象的すぎたため、記事側AIが対象文と対応付けられずNONE/NOT_MENTIONEDと判断した)。
+2. 現在の修正案(Ledger側事象へ対象の実体名を含める/記事側の事象選択で意味上の部分一致を許容)で本当に改善する見込みがあるか(D61を拾える可能性/HC-012・A5-0を壊さないか/前回解消した正常文誤爆3件を再発させないか/事象名を具体化しすぎて別表現を拾えなくならないか)。
+3. 別の見逃し・誤爆を増やさないか(同義表現/主語省略/比較表現/方向表現/一つのFactに複数事象/記事側の言い換え)。
+4. TRIAL-03へ進む価値があるか(そのままTRIAL-03へ/設計修正後にTrial/現方式を見直すべき、のいずれかを明確に判定)。
+5. 追加: 今回の修正は根本原因に対する修正か、D61だけを通すための過学習的patchか。
+6. 追加: 「Ledger側の事象抽出→記事側blind事象選択→機械比較」という全体構造自体に直すべき問題がないか。
+
+### §85-3 Evidence packet一覧(予定、並列委任_01a/01b/01cが作成)
+- `docs/pm/evidence_opus_review_03/01_d61_trace.md`
+- `docs/pm/evidence_opus_review_03/02_hc012_a5_fp3.md`
+- `docs/pm/evidence_opus_review_03/03_trial01_02_diff.md`
+
+### §85-4 Opusレビュー結果
+(委任_03aで記録。Opus逐語は`docs/pm/opus_l2_review_or03_d61_root_cause.md`)
+- E1 Evidence(¥0、3 packet、【確認】): D61(G-03)記事文 "After the plan was withdrawn, oil prices fell."(Brent・上げ幅語なし)。現行Ledger側ラベルは既に「Brent先物の上げ幅/水準/価格水準/価格」と実体名入り(実体名が欠けるのは「機能」のみ)。同系ラベルはG-04等で選択できた。TRIAL-01の事象ごと個別判定ではG-03 rep2/3検出、TRIAL-02の単一選択で0/3(3回ともNONE、quoteは記事文を引用)。前後文(article_context)は未投入。Ledger側サンプル揺れあり(HF-009 rep間で2〜3 event)。01→02で変化したid 17件、01検出→02見逃し=G-03・S-06、01誤爆→02解消=F-09/F-10/F-19。
+- O1 Opus最終判定: (B)設計修正後にTrial。ただし修正内容は現修正案(実体名付与+意味上の部分一致)ではなく別のもの。現修正案=局所patch(しかもD61に効く根拠のない誤診に基づく)。
+- O2 主因: 1 factに逆向き2事象(暫定: 上げ幅DECREASED/最終: 水準INCREASED)がある状況で、NONE付き単一選択方式が暫定と最終を区別できない。副因: 上位語("oil prices")の対応付けが弱い/前後文未投入/Ledger側ラベルの重複・揺れ。D61の性質=「暫定の下落を結末として述べ高値復帰を落とした時間範囲誤り」で、現enumにこの次元がないためF-09型(暫定の下落を正しく述べた文)と原理的に区別不能。
+- O3 現修正案の見込み: (a)D61を拾う可能性低(部分一致はSAMEになる「上げ幅」へ吸い寄せ、見逃し→黙って通過に変わるだけ) (b)HC-012/A5-0は壊さないが「機能」具体化はG-02の手掛かりを減らす (c)F-19で「テスト」選択→REVERSED再発経路あり (d)上位語・主語省略(S-01〜05/S-14/N-02)の見逃しが固定。6観点すべてで盲点が残るか悪化。
+- O4 推奨修正: 修正1(主)=事象に時間位置phase∈{INTERIM,FINAL,SINGLE}を付与、記事側も{INTERIM,FINAL,UNSPECIFIED}を返し、Pythonで「FINAL/UNSPECIFIED↔FINAL/SINGLE」「INTERIM↔INTERIM」で照合。修正2(副)=fact対応付け済み文で単一選択がNONEのとき、TRIAL-01方式の事象ごと個別判定へフォールバック(phase照合併用)。構造上直すべき点: 時間位置次元の欠如/NONE=通過の安全側設計欠如/SAME優先ルール(compare_selected L62)/Ledger側揺れの固定+ラベル正規化/上位語の別名付与(別Trial)/前後文投入(別Trial)/D61型を「時間範囲誤り」として別カテゴリ明示(gold/KPI定義=ユーザー判断)。
+- O5 TRIAL-03案(Opus): Ledger側phase付き再抽出1回固定(約30 call、¥0.5)、記事側2構成並列(X=修正2のみ/Y=修正1+2)×(63+held-out約10項目)約220 call ¥4.5、フォールバック約50 call ¥1、合計約¥6・上限案¥8、shard並列約10分。held-out約10項目(gold反転4・faithful 6)を実行前に固定(D61過学習防止)。合格基準案7項目: HC-012・A5-0 3/3維持/D61>=2/3/held-out gold平均>=2/3かつ全件>=1/3/faithful誤重大0件/UNCLEAR<=10/不要Rewrite見込み0/新たな重大見逃し0。
+
+### §85-5 Fable照合・Status・判断
+- F1 Fable照合: Opus判定はEvidenceと整合。Fable/Sonnetの仮説(ラベルが抽象的)は誤診(ラベルは既に具体的)。Opus推奨は既承認設計(案E')の骨格を維持しつつ新次元(phase)を追加するもので、D61型のカテゴリ再定義(gold/KPI定義に関わる)を含むため、PM_GOVERNANCE 11-3節STOP条件(新しい仕様採用・gold定義の扱い)該当 → Status=**USER_DECISION_REQUIRED**。ユーザー指示によりTRIAL-03は未開始。残11 run待機。Production変更なし。本管理ID費用¥0。決定したのはFableのStatus判定のみ。
+- F2 ユーザー判断事項(Opus提示7点、Fable推奨付き): (1)現修正案を採らない=推奨採らない (2)TRIAL-03の修正内容を構成X/Yへ差し替え=推奨差し替え (3)予算上限¥8=推奨 (4)held-out固定=推奨固定 (5)D61型を「時間範囲誤り」として別カテゴリ=推奨明示(gold/KPI定義変更のためユーザー判断) (6)「限定語なしの方向主張は結末の主張とみなす」方針=推奨受け入れ(held-out faithfulで誤爆測定) (7)上位語別名・前後文は別Trial=推奨別Trial。追加(8)残11 E2E再開=Fable推奨はTRIAL-03結果まで待機。
