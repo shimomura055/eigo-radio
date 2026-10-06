@@ -19968,3 +19968,5 @@ Fable判断(Opus任意レビュー後、委任_B2/B3、2026-10-06): R5-(a)必須
 (1) ユーザー判断(逐語): 「今回Trialの実行上限を ¥20 まで承認する。したがって、前回準備済みの現行設計のまま本実行へ進めてよい。」実行条件: 4観点(主体/相手先・対象/範囲/限定条件)を個別確認する現行Prompt維持、出力簡素化不要、同じ42 run、Production Checker/KPI/gold/後段AI/機械Safetyルール不変、E2E残11 run再開なし。
 (2) 結果: 実費¥14.38(見積mid¥13.8比+¥0.58)。NORMAL候補 01の9.83→10.75件/記事(AI由来5.33→6.25)、全体8.12→8.57、gold 6/6(A4-0 3/3)、hold-out 9/9、neg5 3/3、K19 3/3、HF-011候補なし、和集合8.57。欠損run0。
 (3) Fable分類待ち(REJECTED/VALIDATED/USER_DECISION_REQUIRED)。VALIDATEDでもProduction採用ではない。
+
+(4) Fable分類(2026-10-06): **VALIDATED**。根拠: 受入条件4件すべて充足【確認】(A4-0 3/3[01は2/3]、正式gold 6/6、hold-out 9/9・neg5 3/3・K19 3/3で01比悪化なし、NORMAL候補24.17→10.75件/記事=Beforeの44%で削減効果維持[01比+0.92])。STOP条件6件いずれも非該当(実費¥14.38≤¥20、gold落ちなし、A4-0安定、旧過剰仕様への回帰なし[AI由来増分の約8割は元SUPPORTEDのscope/qualifier不一致化]、新Safety問題なし、追加仕様変更不要)。Production採用ではない(Production Checker・後段AI・機械Safety・E2E不変)。次工程はユーザー判断(Production Checkerへの反映設計はOpus条件A/C対象)。残観察: 『Ledger未記載のみ』境界例2→7件、NO_FACT_CLAIM→CANDIDATE 9件(将来予測・一般傾向・認識推測文)は過検出の可能性があり、次段階で問いの微調整候補(今回は変更しない)。

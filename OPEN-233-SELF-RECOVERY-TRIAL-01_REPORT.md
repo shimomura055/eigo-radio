@@ -4688,3 +4688,5 @@ DEV/Trial専用、Production非接続。`er052_open233_stage1_phase1_recall_chec
 - 【推測】NORMALは01比+0.92件/記事で、Before 24.17の約44%。旧「何でも候補」水準への回帰ではないが、AI由来は+0.92(5.33→6.25)で増加。増加分の約8割は元SUPPORTED(scope/qualifier mismatch)由来。Safety上の過検出か有益な追加かの判定はFable。
 - Status: Fable分類待ち(REJECTED/VALIDATED/USER_DECISION_REQUIRED)。VALIDATEDでもProduction採用ではない。詳細: `docs/pm/reclassify_open233_checker_selectivity_02.md`(結果節)、`er052_output/open233_reclassify_02/reclassify_aggregate.json`。
 
+
+Fable分類: **VALIDATED**(2026-10-06)。根拠: 受入条件4件すべて充足【確認】(A4-0 3/3[01は2/3]、正式gold 6/6、hold-out 9/9・neg5 3/3・K19 3/3で01比悪化なし、NORMAL候補24.17→10.75件/記事=Beforeの44%で削減効果維持[01比+0.92])。STOP条件6件いずれも非該当(実費¥14.38≤¥20、gold落ちなし、A4-0安定、旧過剰仕様への回帰なし[AI由来増分の約8割は元SUPPORTEDのscope/qualifier不一致化]、新Safety問題なし、追加仕様変更不要)。Production採用ではない(Production Checker・後段AI・機械Safety・E2E不変)。次工程はユーザー判断(Production Checkerへの反映設計はOpus条件A/C対象)。残観察: 『Ledger未記載のみ』境界例2→7件、NO_FACT_CLAIM→CANDIDATE 9件(将来予測・一般傾向・認識推測文)は過検出の可能性があり、次段階で問いの微調整候補(今回は変更しない)。
