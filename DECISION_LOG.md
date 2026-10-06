@@ -20009,6 +20009,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 
 (e) 【委任_07追記(2026-10-06、正式集計、¥0)】9/20 run正式集計: Checker候補66(旧151、AI46/機械20/重複0)、後段AI重大4(Y3/N1)・真に重大なのに非重大1、数字floor発火3(Y1/N2)+S1 BLOCKING化1(N)、Rewrite 6件/4 run(必要4/不要2/再修正要0)、Human Review 0、真の重大Fact見逃し1(meta_adv HC-012 restored、機械候補=reclassify対象外、Stage 2/S1が誤降格)/重大検出3、¥31.52(旧¥43.91)。Fable突合判定1〜6: (1)meta_adv HC-012=重大/Y/Y(方向反転、A5-0同型)、(2)meta_std HC-011=重大維持、(3)neg3 HF-002=問題なし、(4)neg7 Hook=軽微/Y/N、(5)neg2 ease of AI=問題なし、(6)neg1 HC-008=UNDECIDABLE維持(材料はREPORT §81-8)。ラベルはSonnet推測+Fable突合でユーザー未確認。ユーザー総合レビュー事項: Checker改善の実効/数字のみfloorのSafety(HC-012見逃し)/不要Rewrite減/Human Review 0/残11 run可否。PRODUCTION_WIRED未、残11 runはユーザー確認待ち。REPORT §81、`er052_output/open233_prod_e2e_02/report_final/`。
 
+(f) 【Fable訂正(2026-10-06、委任_01 of DIRECTIONAL-MISREAD、(e)のHC-012記述を訂正。旧記述は保存)】「Fable訂正(2026-10-06): 9/20 run報告(REPORT §81、DECISION_LOG同日エントリ)で『HC-012見逃しは旧仕様なら否定floorが強制BLOCKINGにした可能性がある型/数字のみ縮小の代償として現れた最初の実例』と記述したが、run出力(`er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json` L331-L400)の実測で訂正する。当該claimのStage 1フラグは`changed_number/actor/negation/comparison/time/causality`すべてfalse、候補化は決定論検査`negation_polarity_mismatch`(routes=r3、Stage 1 AIはSUPPORTED判定)による。旧floorは`changed_*`フラグtrueでのみ発火するため、旧仕様全ONでも`floor_reason=None`=発火しない(`floor_cited_materiality`もACCEPTABLE)。したがって見逃しの直接原因は『数字以外floorの廃止』ではなく、Stage 1 AI・Stage 2・S1の3段階が同じ読み(restored…to the way it had been before=ロールバックと同義)をしたこと(系統的な読み癖+同rubric再サンプルの相関)と、決定論検査の信号を後段AIが消す構造。同型は正式gold A5-0(HC-012)として既知。」REPORT §81-6に併記。
+
+(g) 【ユーザー決定(2026-10-06)】E2Eは9/20 runで一旦停止。残り11 runは、ユーザーが再開を明示するまで待機。見逃し対策は`OPEN-233-DIRECTIONAL-MISREAD-SAFETY-DESIGN-01`で設計(下記エントリ)。CHECKER-FLOOR-PRODUCTION-E2E-01はPRODUCTION_WIRED未のまま。REPORT §81-10。
+
 
 ## 2026-10-06 PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01 委任_01: 「開発時間最小化・並列実行原則」をProject運用ルールとして正式採用(APPROVED_FOR_PRODUCTION、本委任でSSOT反映)
 
@@ -20032,3 +20036,12 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - 既存ルールとの統合: 2026-09-27並列実行原則(8-X)を拡張。重複文書の新設なし。11節の委任上限(初回+修正3回)は不変、並列初回委任は各管理IDで初回1回と数える運用注記(8-X-11)。8節並列起動条件・8-X-3直列化条件は8-X-9と対応。2節PM Gate・11-3 Opus Gate・7-6予算Capは上書きしない(8-X-10)。重大矛盾なし。
 - Dangling Reference確認: 新ルール名は8-Xに定義済み、CLAUDE.md/PM_BRIEF/テンプレートから8-Xへ参照可、check_delegation_prompt.pyの必須セクション不変(既存委任文でPASS維持を確認)。
 - Fable判断(2026-10-06): PRODUCTION_WIRED。根拠: 受入条件9項目充足(正式ルール記録=PM_GOVERNANCE 8-X-7〜8-X-12/開始時の時間見積・並列化検討必須=8-X-7・22節項目4・D-2・テンプレート性質欄/独立作業の原則並列化=8-X-8/直列化理由の明示=8-X-9/Quality・Safety・PM Gate不緩和=8-X-10/Decision Log更新済み/commit 103e80f4 push済み/Dangling Referenceなし[4項目OK]/CLAUDE.md・PM_BRIEF・テンプレートから8-Xへ到達可能)。既存2026-09-27並列実行原則を拡張統合、重複文書なし、重大矛盾なし。8-X-8〜10は要旨、逐語原文は本エントリ。
+
+
+## 2026-10-06 OPEN-233-DIRECTIONAL-MISREAD-SAFETY-DESIGN-01 委任_01: 系統的な意味読み違い(方向反転等)専用Safetyの設計起票・ユーザー決定記録(設計段階、PRODUCTION_WIRED/VALIDATEDへ進まない)
+
+- Status: 設計段階。到達上限=DESIGN_READY_FOR_REVIEW / USER_DECISION_REQUIRED。Production変更・有料E2E・コード/prompt変更なし、¥0。出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-DESIGN-01_01.md`。
+- ユーザー指示要点(逐語): 「目的: E2Eは 9/20で一旦停止する。残り11 runは実行しない。今回発見した重大見逃しについて、全体を一律に厳しくするのではなく、AIが特定種類の意味関係を系統的に読み違えるケースだけを狙って補強するSafety設計を行う。Production変更・有料E2Eはまだ行わない。」「重要: Checkerの決定論検査は negation_polarity_mismatch として正しく候補化した/Stage 1 AIはSUPPORTEDと誤読/後段AIもACCEPTABLE/第2意見もACCEPTABLE/旧floorを全部ONにしても、changed_* flagが全falseだったため防げなかった/したがって、今回の見逃しは「数字以外floorを廃止したこと」が直接原因ではない/同型は過去gold A5-0等でも既知。この訂正を既存REPORT / Decision Log等へ反映すること。」「今回やらないこと: 残り11 E2E/Production変更/全機械floor復活/一律にCheckerを厳格化/goldの変更/KPI変更/Human Reviewへの安易な振替、は禁止。」「Status: 今回到達してよいのは DESIGN_READY_FOR_REVIEW / USER_DECISION_REQUIRED まで。まだVALIDATEDにもPRODUCTION_WIREDにも進めない。」「E2E残11 runは、ユーザーが再開を明示するまで待機。」対象例: 「The company also restored the human concierge feature to the way it had been before, at least for now.」(Ledger=当面rollback/撤回、記事=restore、撤回→復元の方向反転)。
+- Fable訂正: 上記(f)(CHECKER-FLOOR-PRODUCTION-E2E-01エントリ、REPORT §81-6)参照。旧floor全ONでも不発火、直接原因はAI3段階の同一誤読+決定論信号の喪失。
+- 今後: 委任_02(設計+¥0反実仮想、`docs/pm/design_open233_directional_misread_safety_01.md`、別委任)→Opus条件A独立レビュー(新しい構造・処理フローの設計)→Fable照合→ユーザー判断。設計のSTOP=新Safety原則・gold変更・有料Trial・Production変更が必要な場合。
+

@@ -4820,6 +4820,7 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 | neg3 | HF-009「events driving oil prices ... returned」 | AI候補、再分類CANDIDATE | llm BLOCKING(ledger_conditions)、floor非関与 | Rewrite(events削除)、cycle2以降ACCEPTABLE | 検出 |
 | meta_adv | HC-012 ロールバックを「restored」と記述(方向反転、A5-0同型) | 機械候補(negation_polarity_mismatch、r3)。reclassifyのモデル対象外で後段直行 | llm ACCEPTABLE、S1 second ACCEPTABLE(confirmed_downgrade) | Rewriteなし、1cycleでS2_DOWNGRADE、**最終本文に残存** | **見逃し** |
 - meta_adv見逃しの含意: 旧仕様では`changed_negation`等のfloorが機械的にBLOCKINGにした可能性があるが、新仕様(数字のみ)ではStage 2 LLM+S1の判断のみ。同文はStage 1で正しく候補化されたがStage 2/S1の双方が誤降格(ACCEPTABLE)。**ユーザー総合レビュー事項**(数字のみfloorのSafety妥当性)。
+- **訂正(2026-10-06、委任_01 of DIRECTIONAL-MISREAD)**: 「Fable訂正(2026-10-06): 9/20 run報告(REPORT §81、DECISION_LOG同日エントリ)で『HC-012見逃しは旧仕様なら否定floorが強制BLOCKINGにした可能性がある型/数字のみ縮小の代償として現れた最初の実例』と記述したが、run出力(`er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json` L331-L400)の実測で訂正する。当該claimのStage 1フラグは`changed_number/actor/negation/comparison/time/causality`すべてfalse、候補化は決定論検査`negation_polarity_mismatch`(routes=r3、Stage 1 AIはSUPPORTED判定)による。旧floorは`changed_*`フラグtrueでのみ発火するため、旧仕様全ONでも`floor_reason=None`=発火しない(`floor_cited_materiality`もACCEPTABLE)。したがって見逃しの直接原因は『数字以外floorの廃止』ではなく、Stage 1 AI・Stage 2・S1の3段階が同じ読み(restored…to the way it had been before=ロールバックと同義)をしたこと(系統的な読み癖+同rubric再サンプルの相関)と、決定論検査の信号を後段AIが消す構造。同型は正式gold A5-0(HC-012)として既知。」上記の「旧仕様では…floorが機械的にBLOCKINGにした可能性」は誤り(旧記述は保存)。対象例: 「The company also restored the human concierge feature to the way it had been before, at least for now.」(Ledger=当面rollback/撤回、記事=restore、方向反転)。
 - 他: 旧仕様のNo.5(meta_adv changed_actor floor)は本runで重大化されず、HC-012見逃しと合わせてn=1の観測。
 
 ### §81-7 watch list(`report/watchlist_trace.md`)
@@ -4836,3 +4837,9 @@ Status=**USER_DECISION_REQUIRED**。根拠: (1)Sonnet案(最有望=案2+案5、�
 - Production Wiring: §80-3(数字以外の機械的強制重大化の残存分類)を参照。9 runでの実動作: 初回で再分類(全run `reclassify_status=ok`・failclosed 0)、Recheck・出口でも再分類が実行された(例 B3 recheck cycle2 n_targets 5/除外3、neg3 cycle2 n_targets 9/除外4)、floor_reasonは`deterministic_floor:changed_number`と`s1_second_opinion_blocking`のみ=旧仕様の数字以外floorは後段経路に出現せず。S1 BLOCKING化1件(neg3 cycle2 HF-002、Ledger一致)はcap_terminal_last_resort→cycle3でjudge_only後に終端(RESOLVED_REWRITE_THEN_DOWNGRADE、Human Review無し)。retry/fallback/regenerationの上限・安全装置は回避していない。
 - 残存リスク: (1)真の重大見逃し1件(meta_adv HC-012、機械候補はreclassify対象外で、Stage 2/S1が誤降格)、(2)再分類の誤除外84件が未ラベル(Safety未検証)、(3)n=1×9 runで有意差・Safety KPI主張不可、(4)ラベルはSonnet推測+Fable突合でユーザー未確認、(5)UNDECIDABLE 1件、(6)Checker費用は増加(再分類call)。
 - 次: **残り11 runは開始しない(ユーザー総合レビュー待ち)**。レビュー事項: Checker改善の実効(候補151→66)、数字のみfloorのSafety(HC-012見逃し)、不要Rewrite減(40→6件)、Human Review 0、残11 run可否。PRODUCTION_WIRED未。
+- 訂正注記(2026-10-06): 上記「数字のみfloorのSafety(HC-012見逃し)」は§81-6の訂正のとおり、floor廃止が直接原因ではない(旧floor全ONでも不発火)。
+
+### §81-10 ユーザー決定(2026-10-06)
+- E2Eは9/20 runで一旦停止。残り11 runは、ユーザーが再開を明示するまで待機(実行しない)。
+- 見逃し対策は`OPEN-233-DIRECTIONAL-MISREAD-SAFETY-DESIGN-01`で設計する(方向反転等、AIが特定種類の意味関係を系統的に読み違えるケースだけを狙う。Production変更・有料E2Eなし。全機械floor復活・一律厳格化・gold変更・KPI変更・Human Reviewへの安易な振替は禁止)。到達上限はDESIGN_READY_FOR_REVIEW / USER_DECISION_REQUIRED。
+- CHECKER-FLOOR-PRODUCTION-E2E-01はPRODUCTION_WIRED未のまま。
