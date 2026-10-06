@@ -5047,3 +5047,53 @@ Phase A(¥0、約25分、4本並列): script_03/held-out固定+testset_03+正解
 
 ### §86-8 参照
 `er052_open233_directional_trial_03.py`(予定)、`er052_output/open233_directional_misread_trial_03/`、`docs/pm/delegation_log/2026-10-06_OPEN-233-DIRECTIONAL-MISREAD-SAFETY-TRIAL-03_04.md`。
+
+## §87 Fact台帳の明確化(上流対策)設計: OPEN-233-LEDGER-CLARITY-DESIGN-01(2026-10-06)
+
+Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQUIRED)。未承認の新仕様でありProduction採用扱いではない。Trial未実行・Production未変更。OPEN-237。
+
+### §87-1 目的・方針・必須条件
+目的: Writerが台帳の意味を誤解して重大Fact誤りを生む問題を、台帳自体の明確化で上流予防する。方針A(明確に記述: 何が起きたか/誰が何を/何がどう変化/どの時点/因果確認の有無)、方針B(複雑なFactは意味一致を確認して分割)、方針C(Writerに不要な推測をさせないが表現・構成は過度に拘束しない)。必須条件: ①事実追加・改変なし ②Fact間関係維持 ③記事Quality維持 ④量産可能な自動処理(人間編集運用は不採用)。
+
+### §87-2 既存仕様(委任_01a【確認】)
+- 台帳生成=Researcher(gpt-5.6-luna、web_search)→独立AI Verification(VERIFIED/AMBIGUOUS/REJECTED)→決定論`build_verified_ledger_text`でtxt化(`er003_v1_en_direct_vfl_01_generate.py` L275)。
+- 原資料=Web検索結果。source quote欄なし。台帳生成費≈¥28.7/run(総額¥44.66の64%)。
+- 既存ルール=Researcher promptに4観点(scope/適用条件/数値内訳/因果区別)。時系列・主体・多義語のルールはなし。
+- fail-safe位置=Verification直後〜txt化。ID参照=HC-012だけで23ファイル65箇所(ID不変が必須)。
+
+### §87-3 事例・Before-After(委任_01b【確認】)
+- HC-012「機能を当面ロールバックした」=テスト中機能の取り下げ(原文照合未了)。HF-009=途中「上げ幅縮小」+最終「高水準へ戻る」。
+- 曖昧度: 高3(HC-012/HF-009/HF-012)・中14・低10。held-out候補8。
+- 対象台帳3種: meta 15 / hormuz 12 / small_bag 17 fact。
+- Before-After案の詳細は`docs/pm/ledger_clarity/`(委任_03a修正版)を参照。
+
+### §87-4 設計案(委任_02、Opus反映後=委任_03a)
+- 案P'=Researcherスキーマ・prompt拡張+Verification観点追加(追加callなし、<¥1)。案C+V=Verification後に台帳全体1回の明確化call+意味一致検証(ID不変・events構造・2段fail-safe、+¥2)。案C+V+B=多義語factにWeb再Verification(+¥14)。案S=子ID分割(不採用)。
+- Opus反映後の推奨=本番はP'、案Cは既存台帳のoffline適用(Trial用)。
+- 必須の決定論検査: fact_id集合・数値・日付・固有名・否定語・因果語の集合一致。
+- txt書式制約: claim行に否定語・因果語・番号・括弧を入れない。否定ガイドはnotes_for_writerへ、phaseは英字タグ行。phase定義は台帳側に一本化。
+- いずれも未承認の新仕様(Production採用扱いではない)。
+
+### §87-5 Opus独立レビュー(条件A、OF-059)
+- 総合=条件付きで進める(M1〜M6、設計へ反映済み)。
+- HF-009の「Writer誤読例」は合成文で本番Writerは正しかった(HF-009はChecker側課題)。HC-012はJA R0で発生し、WriterはB3 briefを読む(台帳を直接読まない)。
+- Verificationは多義語の確定正誤を原理上判定できない→原資料参照工程(P')で確定。
+- 明確化文の否定語・因果語・番号が既存Checker決定論検査を誤爆させる。Quality面では括弧・番号の逐語コピー経路に注意。
+- Checker改善とは両立(台帳=予防、Checker=検出)。台帳eventsをCheckerの基準に凍結共有すればChecker側Ledger抽出を廃止可。
+- 逐語は`opus_l2_review_lc_*`(委任_03b〜d)。
+
+### §87-6 Trial計画(品質①Writer重大Fact誤認/②Checker精度/③記事Quality、費用上限案・所要時間)
+- 承認待ちの案(委任_03a)。Phase 0=¥0(基準発生率集計)/Phase 1=¥3〜6(3台帳へ案C offline適用+決定論diff+offline照合)。
+- Phase 2=上限¥60(B3+JA R0〜R2+ENのみ、台帳A/B×3テーマ×8 seed。HC-012型曖昧訳 A≥6/8 vs B≤1/8、held-out悪化なし、Quality基準)。
+- Phase 3=任意・上限¥30(承認済みChecker構成でA/B各2 run)。合計上限¥100。
+- 過学習防止=固有名をpromptに入れない、基準・held-out事前固定。要DEV経路(台帳パス差替え、Production既定は従来)。
+- 所要時間・詳細は委任_03a成果物(`docs/pm/ledger_clarity/`)参照。Trial未実行。
+
+### §87-7 Status・ユーザー判断事項
+- Status=**USER_DECISION_REQUIRED**(Fable判定。Opus判定はSonnet案の訂正・精緻化で対立ではない)。設計・Trial計画はユーザー承認待ちの未承認新仕様。Production採用扱いではない。費用¥0。
+- 判断事項: (1)Trial実施可否 (2)予算上限¥100 (3)本番経路P' vs C+V (4)2段Trial(Phase構成) (5)F1方針。
+- PM Gate: Production未変更/Trial未実行/残11 E2E停止/TRIAL-04未開始/S1等採否不変(S1-FACT-CHECK-01はUSER_DECISION_REQUIRED)/CURRENT_SPEC未更新/Dangling Reference確認済み(委任_03a)。
+- 未配線の承認済み仕様=CHECKER-FLOOR-PRODUCTION-E2E-01(9/20停止・PRODUCTION_WIRED未)。Open Items=OPEN-235/236/237。
+
+### §87-8 参照
+`docs/pm/ledger_clarity/`、`docs/pm/delegation_log/2026-10-06_OPEN-233-LEDGER-CLARITY-DESIGN-01_01d.md`。
