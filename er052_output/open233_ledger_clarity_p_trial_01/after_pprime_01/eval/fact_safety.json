@@ -1,0 +1,646 @@
+{
+  "tool": "fact_safety_p01",
+  "judgement": "none(照合材料のみ。合否はFable/ユーザー)",
+  "regex_source": "duplicated(checker L428-446 equivalent)",
+  "grounding_note": "接地源=同factのdraft(numeric_value/numeric_scope/date_or_period/subject/source_title/source_url)+verification_notes。URL/リンクは検査対象から除外。",
+  "inputs": {
+    "after_txt": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01/research_ledger/verified_fact_ledger.txt",
+    "after_draft": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01/research_ledger/fact_ledger_draft.json",
+    "after_verif": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01/research_ledger/fact_ledger_verification.json",
+    "before_txt": "er019_output/meta/run_03/ledger/verified_fact_ledger.txt"
+  },
+  "summary": {
+    "n_facts_after": 15,
+    "n_facts_before": 15,
+    "ungrounded_token_total": 4,
+    "facts_with_ungrounded": [
+      "MMHC-001",
+      "MMHC-012",
+      "MMHC-013"
+    ],
+    "negation_delta_total": -4,
+    "causal_delta_total": 0,
+    "newlines_total_draft": 0,
+    "newlines_total_verif": 0,
+    "claim_chars_mean_after": 77.2,
+    "claim_chars_mean_before": 92,
+    "claim_chars_ratio_after_over_before": 0.839,
+    "notes_chars_mean_after": 51.6,
+    "notes_chars_mean_before": 172.2,
+    "m4_flagged_facts": [
+      "MMHC-005",
+      "MMHC-015"
+    ],
+    "notes_with_arbitrary_prefix": {
+      "MMHC-001": "語義",
+      "MMHC-004": "語義",
+      "MMHC-007": "語義",
+      "MMHC-009": "語義",
+      "MMHC-011": "順序"
+    },
+    "format_issue_count_after": 0,
+    "format_issue_count_before": 0,
+    "draft_fact_ids_missing_in_txt": [],
+    "txt_fact_ids_missing_in_draft": [],
+    "txt_fact_ids_missing_in_verif": []
+  },
+  "format_issues": {
+    "after": [],
+    "before": []
+  },
+  "per_fact": {
+    "MMHC-001": {
+      "claim": "Metaは、パーソナルAIアシスタント「Muse」を通じて発信される電話の一部を、人間の請負業者が処理する「human concierge」を試験していた。",
+      "ungrounded_tokens": {
+        "claim": {
+          "proper": [
+            "アシスタント",
+            "パーソナル"
+          ]
+        }
+      },
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-006",
+        "jaccard": 0.148
+      },
+      "negation_count": {
+        "after": 0,
+        "before_similar": 2,
+        "delta": -2
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          4,
+          4
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 78,
+      "notes_chars": 53,
+      "notes_arbitrary_prefix": "語義"
+    },
+    "MMHC-002": {
+      "claim": "Museの電話機能では、利用者が米国の事業者の電話番号に発信し、相手と話して、ヘアカットの予約、店舗在庫の確認、請負業者からの見積もり取得などを処理するよう指示できる。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-004",
+        "jaccard": 0.264
+      },
+      "negation_count": {
+        "after": 0,
+        "before_similar": 1,
+        "delta": -1
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 84,
+      "notes_chars": 41,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-003": {
+      "claim": "Metaは、human concierge機能を2026年9月中旬に従業員の半数へ有効化した。対象に入りたくない従業員向けにオプトアウトグループが設けられた。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-007",
+        "jaccard": 0.327
+      },
+      "negation_count": {
+        "after": 3,
+        "before_similar": 2,
+        "delta": 1
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 79,
+      "notes_chars": 47,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-004": {
+      "claim": "社内告知では、Museが依頼を訓練を受けたエージェントに引き渡し、そのエージェントが電話をかけて対応を進める仕組みと説明された。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-006",
+        "jaccard": 0.088
+      },
+      "negation_count": {
+        "after": 0,
+        "before_similar": 2,
+        "delta": -2
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          4,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 64,
+      "notes_chars": 63,
+      "notes_arbitrary_prefix": "語義"
+    },
+    "MMHC-005": {
+      "claim": "社内投稿では、一部の従業員が、人間が電話を処理すると、機微情報がコールセンターの請負業者に意図せず共有される可能性があると懸念を示した。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-009",
+        "jaccard": 0.136
+      },
+      "negation_count": {
+        "after": 3,
+        "before_similar": 1,
+        "delta": 2
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [
+          "せず"
+        ],
+        "new_causal": [],
+        "flag": true
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 68,
+      "notes_chars": 56,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-006": {
+      "claim": "あるMeta従業員は、Museにインターネット・ケーブル事業者との料金交渉を依頼した後、通話記録に人間の請負業者による人種差別的な言及が含まれていたと述べた。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-011",
+        "jaccard": 0.214
+      },
+      "negation_count": {
+        "after": 1,
+        "before_similar": 1,
+        "delta": 0
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 79,
+      "notes_chars": 41,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-007": {
+      "claim": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに請負業者が電話をかけるテストを始めたことを「miss」と認め、human concierge機能を当面ロールバックしたと社内投稿で述べた。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-012",
+        "jaccard": 0.511
+      },
+      "negation_count": {
+        "after": 0,
+        "before_similar": 1,
+        "delta": -1
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          2,
+          2
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 112,
+      "notes_chars": 65,
+      "notes_arbitrary_prefix": "語義"
+    },
+    "MMHC-008": {
+      "claim": "Metaの副社長の投稿によると、一部のテストでは、人間が電話をかけた場合の成功率が95%から98%に達し、AIによる発信はそれより低い割合だった。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-008",
+        "jaccard": 0.309
+      },
+      "negation_count": {
+        "after": 0,
+        "before_similar": 4,
+        "delta": -4
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 1,
+        "delta": -1
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 73,
+      "notes_chars": 65,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-009": {
+      "claim": "Metaの広報担当者Daniel Robertsは、従業員の反応は「overwhelmingly positive」だったと述べ、テストの目的を、公開前に安全性・プライバシー保護を実装し機能を改善するためのフィードバック収集だと説明した。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-013",
+        "jaccard": 0.878
+      },
+      "negation_count": {
+        "after": 1,
+        "before_similar": 1,
+        "delta": 0
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          2,
+          2
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 119,
+      "notes_chars": 49,
+      "notes_arbitrary_prefix": "語義"
+    },
+    "MMHC-010": {
+      "claim": "Robertsは、Metaは事業者とともに電話機能を改善しており、準備が整い、適切な開示を伴う場合にのみ一般公開すると述べた。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-014",
+        "jaccard": 0.152
+      },
+      "negation_count": {
+        "after": 2,
+        "before_similar": 0,
+        "delta": 2
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 63,
+      "notes_chars": 52,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-011": {
+      "claim": "社内投稿によると、MetaはMuseの電話機能を2026年8月に従業員で試し、Museアプリの公開後数日以内に利用者へ段階的に展開し始めた。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-005",
+        "jaccard": 0.208
+      },
+      "negation_count": {
+        "after": 0,
+        "before_similar": 1,
+        "delta": -1
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 70,
+      "notes_chars": 46,
+      "notes_arbitrary_prefix": "順序"
+    },
+    "MMHC-012": {
+      "claim": "あるMeta従業員は、保険会社に電話するようMuseへ依頼したところ、相手がAIだと分かるとMuseとの通話を繰り返し切ったと報告した。",
+      "ungrounded_tokens": {
+        "notes_for_writer": {
+          "numbers": [
+            "1"
+          ]
+        }
+      },
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-009",
+        "jaccard": 0.167
+      },
+      "negation_count": {
+        "after": 1,
+        "before_similar": 1,
+        "delta": 0
+      },
+      "causal_count": {
+        "after": 1,
+        "before_similar": 0,
+        "delta": 1
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 68,
+      "notes_chars": 44,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-013": {
+      "claim": "Metaは2026年9月8日、Museを発表し、Muse Secure VM上で動作する、エージェントと利用者のデータを収容する専用の仮想マシンだと説明した。",
+      "ungrounded_tokens": {
+        "notes_for_writer": {
+          "proper": [
+            "テスト"
+          ]
+        }
+      },
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-001",
+        "jaccard": 0.238
+      },
+      "negation_count": {
+        "after": 2,
+        "before_similar": 1,
+        "delta": 1
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          2,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 79,
+      "notes_chars": 48,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-014": {
+      "claim": "Metaは、Museについて、利用者が接続するアプリとアクセス範囲を選べ、アクセス権の変更やサービスとの接続解除をいつでも行えると説明した。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-014",
+        "jaccard": 0.118
+      },
+      "negation_count": {
+        "after": 2,
+        "before_similar": 0,
+        "delta": 2
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          0,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [],
+        "new_causal": [],
+        "flag": false
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 70,
+      "notes_chars": 52,
+      "notes_arbitrary_prefix": null
+    },
+    "MMHC-015": {
+      "claim": "Metaは、Museの利用者の会話や仮想マシン内のデータをMetaの広告システムと共有しないと説明した。",
+      "ungrounded_tokens": {},
+      "has_draft": true,
+      "has_verif": true,
+      "before_match": {
+        "fact_id": "MUSE-HC-002",
+        "jaccard": 0.08
+      },
+      "negation_count": {
+        "after": 1,
+        "before_similar": 2,
+        "delta": -1
+      },
+      "causal_count": {
+        "after": 0,
+        "before_similar": 0,
+        "delta": 0
+      },
+      "m4_claim": {
+        "bracket_before_after": [
+          2,
+          0
+        ],
+        "numbermark_before_after": [
+          0,
+          0
+        ],
+        "new_negation": [
+          "ない"
+        ],
+        "new_causal": [],
+        "flag": true
+      },
+      "newlines_draft": 0,
+      "newlines_verif": 0,
+      "claim_chars": 52,
+      "notes_chars": 52,
+      "notes_arbitrary_prefix": null
+    }
+  }
+}

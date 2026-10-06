@@ -20096,3 +20096,13 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【ユーザー指示要点】WriterがFact台帳の意味を誤解して重大な事実誤りを生む問題に対し、記事生成後の検査を複雑化するだけでなくFact台帳そのものを改善する上流対策を検討する。方針A=Factを明確に記述(何が起きたか/誰が何を/何がどう変化/どの時点/因果確認の有無、複数解釈を避ける)。方針B=複雑なFactは適切に分割(例: HC-012「ロールバック」→「人間コンシェルジュ機能を当面取り下げた」、原資料との意味一致を確認/ホルムズ原油価格の途中の上昇幅縮小と最終高水準を必要なら2文に分割)。方針C=Writerに不要な推測をさせない(表現・構成まで過度に拘束しない)。必須条件: ①事実を追加・改変しない ②Fact同士の関係維持 ③記事Quality維持 ④量産可能な自動処理(人間が毎回編集する運用は不採用)。今回は既存仕様確認/設計案/Opus独立レビュー/Trial計画・費用・時間見積りまで。Trial実行・Production実装は禁止。PM Gate: 残11 E2E停止継続・TRIAL-04開始なし・S1等の採否変更なし・CURRENT_SPEC正式部分の更新なし・良好でも自動配線しない。
 - (b)【Fable計画】所要約90〜100分(¥0)。Phase A(4本並列、約25分)→B設計案(約25分)→C Opus条件Aレビュー(約15分)→D設計修正+Trial計画確定+Dangling Reference Check+SSOT+commit→報告→STOP(約20分)。
 - (c)【設計・Opusレビュー・Trial計画・Status】決定したのはFableのStatus判定(USER_DECISION_REQUIRED)のみ。設計・Trial計画はユーザー承認待ち(未承認の新仕様、Production採用扱いではない)。設計=案P'(Researcher/Verification拡張、<¥1)/案C+V(+¥2)/案C+V+B(+¥14)/案S不採用。Opus条件A=条件付きで進める(M1〜M6反映、OF-059)、推奨=本番P'・案Cはoffline Trial用、決定論検査と書式制約を必須化。Trial計画=Phase0〜3、合計上限¥100(Phase2上限¥60)。判断事項=Trial実施可否・予算¥100・本番経路P'/C+V・2段Trial・F1方針。Trial未実行・Production/CURRENT_SPEC未変更・残11 E2E停止・TRIAL-04未開始・S1等採否不変。費用¥0。REPORT §87-2〜§87-7。
+
+## 2026-10-06 OPEN-233-LEDGER-CLARITY-P-TRIAL-01(P'方式Fact台帳明確化Trial、Trial、Production未反映)
+
+- Status: **USER_DECISION_REQUIRED**(Fable判定。VALIDATEDでもREJECTEDでもない)。Production変更なし・CURRENT_SPEC未更新・Production採用扱いではない。実費¥34.85(上限¥100)。OPEN-237、REPORT §88、OF-060。
+- (a)【決定(ユーザー承認済み)】「Trial実施(上限¥100)」のみ。それ以外は決定ではない。
+- (b)【Opus条件A】判定(B)・必須修正M-a〜M-e全件反映(OF-060、`docs/pm/opus_l2_review_pt_design_01.md`)。
+- (c)【結果】HC-012 Rollback型はAfter全段で復元型0(Before 5 runで3/5)、真の重大NG0件。ただしMMHC-008で断定強化1件(原資料"some tests indicated … up to 95-98%"→「95%から98%に達し」)=STOP条件「意味一致の疑義1件」該当(保守的適用)、判定保留2件(MMHC-010/015)。Writer向け注意書きがnotes短縮(172.2→51.6字)でtxtに出ない(R1)。JA R2台帳逐語率0.0843→0.2486(+16.4pt、基準+5pt NG)。Checker副作用: final_state/Rewrite0/human_review0不変、Stage1候補8 vs 5、不要候補7 vs 4(全降格)。n=1テーマ・1 seed。
+- (d)【費用】台帳¥17.89+B3 1.53+JA 6.67+EN 3.10(連鎖¥29.20)+Checker 2.54+pairwise 3.11(上限¥3を¥0.11超過)=¥34.85。初回連鎖590秒timeoutで1回再開、初回EN部分課金未記録の可能性(数円以内)。
+- (e)【ユーザー判断事項5点】(1)P'規則の本番prompt採用 (2)ambiguity/不確実点のtxt出力(R1、台帳生成処理の仕様変更) (3)断定強化・留保欠落を防ぐVerification観点強化/決定論検査 (4)JA R2段の逐語化の扱い (5)n拡大の要否。いずれも未承認の新仕様候補。
+- 残11 run待機、TRIAL-04未開始、S1等採否不変。出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-LEDGER-CLARITY-P-TRIAL-01_S2.md`。

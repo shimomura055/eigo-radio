@@ -5097,3 +5097,43 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §87-8 参照
 `docs/pm/ledger_clarity/`、`docs/pm/delegation_log/2026-10-06_OPEN-233-LEDGER-CLARITY-DESIGN-01_01d.md`。
+
+## §88 OPEN-233-LEDGER-CLARITY-P-TRIAL-01(P'方式Fact台帳明確化Trial、2026-10-06)
+
+### §88-1 目的・範囲
+- §87で設計した本番推奨経路P'(Researcher/Verification promptの拡張、追加callなし)をTrialで検証。比較ベースはユーザー確認済みChecker構成。Trial実施・上限¥100はユーザー承認済み。Production採用ではない(APPROVED_FOR_PRODUCTIONなし)。
+- 到達可能Status=REJECTED/VALIDATED/USER_DECISION_REQUIRED のみ。n=1テーマ・1 seed。
+
+### §88-2 ベース構成とP'の変更内容
+- ベースChecker構成=OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01(DECISION_LOG L19987-19996、2026-10-06承認逐語)、E2E_02の9 runスイッチ固定(switches equal、dump shaの差はbudget/instances/run_capのメタ情報のみ)。固定箇所=`docs/pm/ledger_clarity_p_trial/00a_base_checker_config.md`。S1等3スイッチ・precheck4種除外の個別承認未確認は別件のまま。
+- P'変更=Researcher prompt末尾に一般規則9項目(主体・動作・対象・時点明示/同一主体・同一指標の時系列のみ途中→最終/多義動詞を原資料の具体動作に置換/原資料にない主体・因果・時系列を足さない/不確実点をambiguity_noteとnotes_for_writerに残す/断定を強めない/原資料にない否定・因果・括弧・番号をclaimに入れない/改行禁止/notes固定書き出し)、Verification promptに3観点追加。
+- 無変更=Research方法・検索・schema・enum・`build_verified_ledger_text`(決定論)。DEV専用`er052_open233_ledger_clarity_pprime_dev_01.py`(env `OPEN233_RESEARCHER_VARIANT=pprime`、プロセス内差替・終了時復元)。
+
+### §88-3 実行記録(費用・再開・provenance)
+- 台帳¥17.89(Researcher 7.50+Verification 10.40)+B3 1.53+JA 6.67+EN 3.10=連鎖¥29.20、Checker ¥2.54、pairwise ¥3.11(上限¥3を¥0.11超過、事後判明)→合計¥34.85(上限¥100)。
+- 初回連鎖がツール側590秒timeoutでEN段中に停止→同引数で1回のみ再開(EN+deviation checkのみ再実行)。初回EN部分課金が未記録の可能性(数円以内)。
+- provenance・unit test 8件PASS・Production file 5本git無変更。残11 run未再開。
+
+### §88-4 結果
+- ③重大NG・HC-012型: HC-012 Rollback型=After全段(台帳/B3/R0/R2/EN)で復元型0(Before 5 runで復元型3/5・重大Y 1/5)。EN "temporarily rolled back the human concierge feature"=原語維持・台帳整合。台帳側claimは片仮名「ロールバック」のまま(規則3は原資料自体が具体動作を述べておらず置換不能、notesに「語義: 原語=rolled back this feature/当面」)=「誤訳を誘発しなかった」止まりで「意味確定による予防」とは言えない。真の重大NG=0件(軽微5件、gold相当A4-0/B4-a/Meta-1・2/A5-0/A4-1不出現)。
+- ④Fact安全性: 断定強化1件(MMHC-008: 原資料"some tests indicated … could get … up to 95-98%"→台帳claim「95%から98%に達し」)=STOP条件「意味一致の疑義1件」に該当(保守的に適用)。判定保留2件(MMHC-010 "roll it out"→「一般公開」・"potential"欠落/MMHC-015 広告影響の留保欠落)。追加Fact0・否定反転0・数値日付固有名相違0。
+- Before/After差分: fact数15/15、ID体系別(MUSE-HC-*/MMHC-*)、意味的対応でBefore側のみ3件(HC-001/002/003)・After側のみ2件(MMHC-004/015)、検索回数7→3(方法不変、結果の時間ずれ)。claim平均92→77字、改行0、M4フラグ2件は原資料の否定の訳で反転なし。
+- ②Entertainment: Writer向け注意書き(有意性不明・成功率定義不明・全電話人間担当と書かない等)がnotes_for_writer短縮(172.2→51.6字)で消え、draft ambiguity欄には残るがtxtに出ない(R1課題=txt生成変更が必要=新仕様候補)。JA R2段の台帳逐語率 0.0843→0.2486(+16.4pt、基準+5pt NG)。R0段は+3.3pt OK。EN側は文長・TTR±1%以内、pairwise(gpt-5.6-sol、順序入替2 call)でAfter 2/2優位。
+- ①Checker副作用(主KPIではない): final_state/Rewrite0/human_review0/floor_reason null/費用¥2.54 vs ¥2.41は不変。Stage1候補8 vs 5、Stage2対象12 vs 8、不要候補7 vs 4(全件降格、実害なし、MMHC-007無関係文の誤紐付け・changed_actor誤指摘、n=1要注視)。本Checker結果をS1・precheck4種除外等の承認根拠に流用しない。
+
+### §88-5 Fable判定と根拠
+- Trial Status=**USER_DECISION_REQUIRED**(VALIDATEDでもREJECTEDでもない)。決定したのはFableのStatus判定のみ。
+- 根拠: (a)④の断定強化1件(STOP条件「意味一致の疑義1件」)と判定保留2件 (b)Writer向け注意書きのtxt欠落(R1課題、新仕様候補) (c)JA R2段の逐語率+16.4pt(基準NG) (d)n=1テーマ・1 seed。
+- 良い点: HC-012型の復元型0・真の重大NG0件・Checker最終結果不変・EN側pairwise優位。
+
+### §88-6 新仕様候補とユーザー判断事項(いずれも未承認)
+1. P'規則をResearcher本番promptへ入れるか。
+2. ambiguity/不確実点をVERIFIED factでもtxtへ出す(R1、txt生成変更=台帳生成処理の仕様変更)。
+3. 断定強化・留保欠落を防ぐVerification観点の強化/決定論検査(Opus M-dの決定論検査は断定強化を直接検出できず、原資料照合で判明)。
+4. JA R2段の逐語化(must_fix・deviation checkが台帳文へ寄せる)の扱い。
+5. n拡大(別テーマ・seed)の要否。
+- Production変更なし・CURRENT_SPEC未更新・残11 run待機・TRIAL-04未開始。
+
+### §88-7 参照
+- 評価: `er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01/eval/`(E1_fact_safety_review.md/E2_critical_ng_checker.md/E3_entertainment.md/cost_summary_02.json)。
+- FREEZE・設計: `docs/pm/ledger_clarity_p_trial/`(00a〜00d・01a)。DEVスクリプト: `er052_open233_ledger_clarity_pprime_dev_01.py`。Opusレビュー(条件A、判定(B)、M-a〜M-e): `docs/pm/opus_l2_review_pt_design_01.md`(並行委任S1作成)。OPUS_FINDINGS_LEDGER OF-060、OPEN-237。

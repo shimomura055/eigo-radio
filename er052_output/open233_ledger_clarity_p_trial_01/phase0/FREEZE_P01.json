@@ -1,0 +1,384 @@
+{
+ "freeze_id": "FREEZE_P01",
+ "management_id": "OPEN-233-LEDGER-CLARITY-P-TRIAL-01",
+ "phase": "Phase 0 (00c)",
+ "created_at": "2026-10-06T18:32:34+09:00",
+ "scope": "meta theme only (single). hormuz/small_bag = held-out candidates, NOT in scope of this freeze.",
+ "before_ledger": {
+  "path": "er019_output/meta/run_03/ledger/verified_fact_ledger.txt",
+  "n_facts": 15,
+  "fact_ids": [
+   "MUSE-HC-001",
+   "MUSE-HC-002",
+   "MUSE-HC-003",
+   "MUSE-HC-004",
+   "MUSE-HC-005",
+   "MUSE-HC-006",
+   "MUSE-HC-007",
+   "MUSE-HC-008",
+   "MUSE-HC-009",
+   "MUSE-HC-010",
+   "MUSE-HC-011",
+   "MUSE-HC-012",
+   "MUSE-HC-013",
+   "MUSE-HC-014",
+   "MUSE-HC-015"
+  ],
+  "hc012_claim_verbatim": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+  "hc012_notes_for_writer": "「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。"
+ },
+ "before_checker_config": "e2e_02 approved switches (er052_output/open233_prod_e2e_02/approved_switches_dump_worker*.json); runner er052_open233_self_recovery_flow_runner_01.py (sha256 recorded)",
+ "before_runs_e2e_02": [
+  {
+   "run": "meta_run03_advanced",
+   "article_origin": "er019 b1b/article.md",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite_records": 0,
+   "human_review": 0,
+   "cost_jpy": 2.4103
+  },
+  {
+   "run": "meta_run03_standard",
+   "article_origin": "er019 a2/article.md",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cycles": 2,
+   "rewrite_records": 2,
+   "human_review": 0,
+   "cost_jpy": 4.7278
+  },
+  {
+   "run": "neg1_meta_b3prod_a2",
+   "article_origin": "b3prod a2 (fresh)",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite_records": 0,
+   "human_review": 0,
+   "cost_jpy": 3.07
+  },
+  {
+   "run": "neg2_meta_refresh_a2",
+   "article_origin": "meta refresh a2",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cycles": 2,
+   "rewrite_records": 1,
+   "human_review": 0,
+   "cost_jpy": 4.579
+  },
+  {
+   "run": "neg7_meta_prodrunner_b1b",
+   "article_origin": "prodrunner b1b",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite_records": 0,
+   "human_review": 0,
+   "cost_jpy": 2.5062
+  }
+ ],
+ "hc012_rollback_type_table_e2e_02": [
+  {
+   "source": "e2e_02",
+   "run": "meta_run03_advanced",
+   "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+   "restore_type": true,
+   "checker_detected": "yes (machine negation_polarity_mismatch; Stage1 LLM ACCEPTABLE; S1 second opinion ACCEPTABLE, downgrade confirmed)",
+   "final_materiality": "ACCEPTABLE (RESOLVED_STAGE2_DOWNGRADE)",
+   "rewrite": 0,
+   "true_critical_label": "Y (sonnet_w2+fable, A5-0 type)",
+   "human_review": "not reached (0)",
+   "outcome": "MISSED_AT_EXIT (true critical downgraded to ACCEPTABLE)"
+  },
+  {
+   "source": "e2e_02",
+   "run": "meta_run03_standard",
+   "sentence": "The company also restored its human help feature to its earlier form, at least for now.",
+   "restore_type": true,
+   "checker_detected": "no (not in stage2_results; not a Checker candidate in e2e_02)",
+   "final_materiality": "not judged",
+   "rewrite": 2,
+   "true_critical_label": "UNLABELED (no label row)",
+   "human_review": "not reached (0)",
+   "outcome": "NOT_CAUGHT_UNLABELED (sentence still in final text)"
+  },
+  {
+   "source": "e2e_02",
+   "run": "neg2_meta_refresh_a2",
+   "sentence": "The company also changed the human concierge feature back to how it was before, at least for now.",
+   "restore_type": true,
+   "checker_detected": "yes (machine negation_polarity_mismatch; LLM ACCEPTABLE)",
+   "final_materiality": "ACCEPTABLE (cycle1, cycle2)",
+   "rewrite": 1,
+   "true_critical_label": "N (sonnet_w3; testset G-06 ambiguous type)",
+   "human_review": "not reached (0)",
+   "outcome": "labeled N (not critical)"
+  },
+  {
+   "source": "e2e_02",
+   "run": "neg1_meta_b3prod_a2",
+   "sentence": "For now, Meta has pulled back the human concierge feature.",
+   "restore_type": false,
+   "checker_detected": "Stage1 LLM BLOCKING then downgraded",
+   "final_materiality": "ACCEPTABLE (RESOLVED_STAGE2_DOWNGRADE)",
+   "rewrite": 0,
+   "true_critical_label": "faithful (testset F-19 STOPPED)",
+   "human_review": "0",
+   "outcome": "faithful sentence, no restore type"
+  },
+  {
+   "source": "e2e_02",
+   "run": "neg7_meta_prodrunner_b1b",
+   "sentence": "Meta then temporarily put the human-call feature back on hold.",
+   "restore_type": false,
+   "checker_detected": "Stage1 LLM BLOCKING then downgraded",
+   "final_materiality": "ACCEPTABLE (RESOLVED_STAGE2_DOWNGRADE)",
+   "rewrite": 0,
+   "true_critical_label": "faithful (testset F-20 PAUSED)",
+   "human_review": "0",
+   "outcome": "faithful sentence, no restore type"
+  }
+ ],
+ "hc012_rollback_type_table_e2e_01_old_spec": [
+  {
+   "source": "e2e_01 baseline_old9 (old spec, frozen)",
+   "run": "meta_run03_advanced",
+   "cycles": "1,2,3",
+   "sentence": "The company also restored the human concierge feature to the way it had been before, at least for now.",
+   "checker": "machine True / AI False",
+   "final": "ACCEPTABLE",
+   "label": "UNLABELED"
+  },
+  {
+   "source": "e2e_01 baseline_old9",
+   "run": "meta_run03_standard",
+   "cycles": "1,2,3",
+   "sentence": "The company also restored its human help feature to its earlier form, at least for now.",
+   "checker": "machine True / AI False",
+   "final": "ACCEPTABLE",
+   "label": "UNLABELED"
+  },
+  {
+   "source": "e2e_01 baseline_old9",
+   "run": "neg2_meta_refresh_a2",
+   "cycles": "1,3",
+   "sentence": "The company also changed the human concierge feature back to how it was before, at least for now.",
+   "checker": "machine True / AI False",
+   "final": "ACCEPTABLE",
+   "label": "UNLABELED"
+  }
+ ],
+ "hc012_summary": {
+  "meta_runs": 5,
+  "restore_type_sentence_runs_e2e_02": 3,
+  "checker_candidate_e2e_02": 2,
+  "downgraded_to_acceptable_e2e_02": 2,
+  "true_critical_Y_e2e_02": 1,
+  "restore_type_runs_e2e_01": 3,
+  "checker_machine_detected_e2e_01": 3,
+  "source_of_misread": "JA writer original.md already says 以前の状態に戻しました (R0 stage); selected_brief.md keeps ロールバック (ambiguous katakana)"
+ },
+ "gold_ids_meta_related": [
+  {
+   "instance": "safety_A5",
+   "sub_id": "A5-0",
+   "related_fact_id": "MUSE-HC-012",
+   "text_substring": "temporarily put back the feature",
+   "expected": "BLOCKING"
+  },
+  {
+   "instance": "safety_A4",
+   "sub_id": "A4-0",
+   "related_fact_id": "MUSE-HC-006",
+   "text_substring": "completed the exchanges with users",
+   "expected": "BLOCKING"
+  },
+  {
+   "instance": "safety_A4",
+   "sub_id": "A4-1",
+   "related_fact_id": "MUSE-HC-012",
+   "text_substring": "actually speaking with human staff",
+   "expected": "ACCEPTABLE (monitor, relabeled delegation_57)"
+  },
+  {
+   "instance": "bgroup_B4",
+   "sub_id": "B4-a",
+   "related_fact_id": "MUSE-HC-002",
+   "text_substring": "take over when AI alone has trouble",
+   "expected": "BLOCKING"
+  },
+  {
+   "instance": "meta_run03_standard",
+   "sub_id": "Meta-1",
+   "related_fact_id": "MUSE-HC-010",
+   "text_substring": "needed user information to continue",
+   "expected": "QUALITY (over-quality monitor, delegation_55)"
+  },
+  {
+   "instance": "meta_run03_standard",
+   "sub_id": "Meta-2",
+   "related_fact_id": "MUSE-HC-012",
+   "text_substring": "needed user information to continue",
+   "expected": "QUALITY (over-quality monitor, delegation_55)"
+  }
+ ],
+ "gold_non_meta_excluded": [
+  "bgroup_B3 (HF-007)",
+  "safety_A2A3 A2A3-0 (HF-003)",
+  "neg5_hormuz_div_a2 B3-same@neg5 (HF-007)"
+ ],
+ "entertainment_before": {
+  "er019_b1b_article": {
+   "path": "er019_output/meta/run_03/b1b/article.md",
+   "n_sentences": 26,
+   "n_words": 362,
+   "mean_sentence_len_words": 13.92,
+   "sd_sentence_len": 5.78,
+   "type_token_ratio": 0.4917,
+   "ledger_verbatim_copy_rate_8gram_words": 0.0
+  },
+  "er019_a2_article": {
+   "path": "er019_output/meta/run_03/a2/article.md",
+   "n_sentences": 31,
+   "n_words": 349,
+   "mean_sentence_len_words": 11.26,
+   "sd_sentence_len": 4.04,
+   "type_token_ratio": 0.49,
+   "ledger_verbatim_copy_rate_8gram_words": 0.0
+  },
+  "e2e02_final_meta_run03_standard": {
+   "path": "er052_output/open233_prod_e2e_02/runs\\meta_run03_standard.json::cycle1.en_text_after_rewrite",
+   "n_sentences": 35,
+   "n_words": 335,
+   "mean_sentence_len_words": 9.57,
+   "sd_sentence_len": 2.81,
+   "type_token_ratio": 0.5134,
+   "ledger_verbatim_copy_rate_8gram_words": 0.0
+  },
+  "e2e02_final_neg2_meta_refresh_a2": {
+   "path": "er052_output/open233_prod_e2e_02/runs\\neg2_meta_refresh_a2.json::cycle1.en_text_after_rewrite",
+   "n_sentences": 31,
+   "n_words": 351,
+   "mean_sentence_len_words": 11.32,
+   "sd_sentence_len": 4.18,
+   "type_token_ratio": 0.4872,
+   "ledger_verbatim_copy_rate_8gram_words": 0.0
+  },
+  "ja_original_vs_ledger_char12gram": {
+   "path": "er019_output/meta/run_03/ja_writer/original.md",
+   "n_chars": 731,
+   "ledger_verbatim_copy_rate_char12gram": 0.1518
+  }
+ },
+ "entertainment_notes": [
+  "EN verbatim copy rate (8-word contiguous vs JA ledger) is structurally 0.0 because ledger is Japanese and article English; meaningful verbatim metric = JA writer char 12-gram coverage (ja_original_vs_ledger_char12gram).",
+  "e2e_02 final EN articles for advanced/neg1/neg7 are not stored in full in run JSON (1 cycle, no rewrite); advanced = er019 b1b/article.md (same origin); neg1/neg7 excluded from metrics.",
+  "sentence split on . ! ? and newlines; headings and '## In one line' excluded; words = [A-Za-z0-9'] tokens lowercased."
+ ],
+ "files_sha256": [
+  {
+   "sha256": "ea0ce587e605beeac8f02315ae4520899156393bbba2e059d99f45988b7c5f56",
+   "path": "er019_output/meta/run_03/ledger/verified_fact_ledger.txt"
+  },
+  {
+   "sha256": "2c0c5746caadd7fc885c505626991021611b4a98e446851129c497d325888b83",
+   "path": "er019_output/meta/run_03/ledger/reuse_source.json"
+  },
+  {
+   "sha256": "ea0ce587e605beeac8f02315ae4520899156393bbba2e059d99f45988b7c5f56",
+   "path": "er019_output/meta/run_03/research_ledger/verified_fact_ledger.txt"
+  },
+  {
+   "sha256": "18a4d2b12224b79939faed305e75c532b1af7eb95aded6d3e0fa3f434a8c90ec",
+   "path": "er019_output/meta/run_03/research_ledger/fact_ledger_draft.json"
+  },
+  {
+   "sha256": "ed70fa4638542581d1749ab7a14ef99b479d0a66dfa8f9fe6f470c6862e4cfd4",
+   "path": "er019_output/meta/run_03/research_ledger/fact_ledger_verification.json"
+  },
+  {
+   "sha256": "b8c33b28f36dce20c2308ddd2c4843a47b4cfc0ebe488dfa77c51f9952a7620e",
+   "path": "er019_output/meta/run_03/research_ledger/verdict_counts.json"
+  },
+  {
+   "sha256": "a9b79724e1b7985a0d074f135ff24853458234dfe3e4b1062e6cfcc5de27a3f2",
+   "path": "er019_output/meta/run_03/storyline_b3/selected_brief.md"
+  },
+  {
+   "sha256": "e81ff57847d47cfbef44ce3a934e45bccdcc2e52b4c61eebbd2f7bb8fb4bec98",
+   "path": "er019_output/meta/run_03/storyline_b3/full_ledger.json"
+  },
+  {
+   "sha256": "ff7873820e22f2d757728193ce97f671c7a192d83afd5f8d59e5053a7858c0a4",
+   "path": "er019_output/meta/run_03/storyline_b3/fact_selection_evidence.json"
+  },
+  {
+   "sha256": "ae511bd8e918fa87044e6b51d5803db3e28f47cf3f6fcf28a320fa3dc7243fec",
+   "path": "er019_output/meta/run_03/ja_writer/original.md"
+  },
+  {
+   "sha256": "5f4465a28c12e1cb4965e7860a08f2996d28371f20592c0f7b496ce8d7d1a8cd",
+   "path": "er019_output/meta/run_03/ja_writer/revision1.md"
+  },
+  {
+   "sha256": "8287231cdb1081b4b96b834769d7f45d23553dbc074197d91eb85249847c8645",
+   "path": "er019_output/meta/run_03/ja_writer/revision2.md"
+  },
+  {
+   "sha256": "cab7f5f3a147b3944558b738fdcb8888f5c754267d47cf177a9438f3d400b327",
+   "path": "er019_output/meta/run_03/b1b/article.md"
+  },
+  {
+   "sha256": "9dd9bb6d0ee587dabf8ec10b4d46e0a852b9616784a98fa7428f87f4aeb94949",
+   "path": "er019_output/meta/run_03/a2/article.md"
+  },
+  {
+   "sha256": "b2b15bb4b585cbcab1cb9d8f89abe79e1acb3e589103009ba4f358b36702a3c9",
+   "path": "er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json"
+  },
+  {
+   "sha256": "9326bfc2ef392e1cf26329dd10a847f27e268e1d76ad4a6ba12dc7f3b203be2e",
+   "path": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json"
+  },
+  {
+   "sha256": "58e0390ab634cfde177e17860571843e73c97361199ff7f74aafe930f8c7d529",
+   "path": "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json"
+  },
+  {
+   "sha256": "85aa8bb3a6da06d80250a6ef883164ef017f5a787301c0618e837e95743d95b8",
+   "path": "er052_output/open233_prod_e2e_02/runs/neg2_meta_refresh_a2.json"
+  },
+  {
+   "sha256": "88066f308777b9ecdd6bf3f0b5696de3df8880c684e3598b5cd04f9f24c6d637",
+   "path": "er052_output/open233_prod_e2e_02/runs/neg7_meta_prodrunner_b1b.json"
+  },
+  {
+   "sha256": "ec2e5ad9111d86039d989fba830a4373ca7e55a2fed7ef16b98134a8d986f8e7",
+   "path": "er052_output/open233_prod_e2e_02/report_final/label_sheet.csv"
+  },
+  {
+   "sha256": "0c7cf82b5de7aec7908f3b5959c8d739644908dcb6564aacc1a928d4c536bb99",
+   "path": "er052_output/open233_prod_e2e_02/report_final/report_abcde.md"
+  },
+  {
+   "sha256": "7d69540ce4eeb68d73e14ead773075640068c7f669f365472bcbe18a403ff7f1",
+   "path": "er052_output/open233_prod_e2e_02/report_final/critical_trace.md"
+  },
+  {
+   "sha256": "2dfd8a4edc28e58ec3e736dd2bcc6b582cf6799696a509e532dc3a9c338e3f3b",
+   "path": "er052_output/open233_prod_e2e_02/labels/labels_merged.json"
+  },
+  {
+   "sha256": "a15edf31d9f18b9a6c995ab819c50ac1cc3d862f6967825f611f6bce9dd36d15",
+   "path": "er052_output/open233_prod_e2e_01/baseline_old9/label_sheet.csv"
+  },
+  {
+   "sha256": "e47c3157f3cccfb08134f232f419d837b0a16fde0fe28e674365986a72683776",
+   "path": "er052_output/open233_prod_e2e_01/baseline_old9/report_abcde.md"
+  },
+  {
+   "sha256": "55bbc89567aa58b90e0d0bd3691102a428b52e5c56c6a2e0cf0d5a572c99f24c",
+   "path": "er052_open233_self_recovery_flow_runner_01.py"
+  }
+ ],
+ "files_sha256_count": 26,
+ "scratchpad_script": "ent_metrics_before.py (scratchpad, not in repo)"
+}

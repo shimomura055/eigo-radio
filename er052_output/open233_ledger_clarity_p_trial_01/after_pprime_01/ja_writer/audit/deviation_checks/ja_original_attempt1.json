@@ -1,0 +1,73 @@
+{
+  "prompt": "以下の記事本文が、Verified Fact Ledgerが保証する「意味上のFact」の\n範囲内に収まっているかを、Fact Safetyの観点のみで確認してください。\n\n【Verified Fact Ledger】\n[VERIFIED] MMHC-001: Metaは、パーソナルAIアシスタント「Muse」を通じて発信される電話の一部を、人間の請負業者が処理する「human concierge」を試験していた。\n  scope: Meta社内の従業員向けテスト\n  conditions: Muse経由で発信される電話の一部が対象。\n  date_or_period: 2026年9月22日報道時点。Metaによる従業員への通知はその前週。\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 語義: 原語=human concierge。原資料は人間の請負業者が一部の電話を処理したと記述している。\n\n[VERIFIED] MMHC-002: Museの電話機能では、利用者が米国の事業者の電話番号に発信し、相手と話して、ヘアカットの予約、店舗在庫の確認、請負業者からの見積もり取得などを処理するよう指示できる。\n  scope: 米国の事業者への電話\n  conditions: 利用者がMuseに電話発信と用件処理を指示した場合。\n  date_or_period: 2026年9月時点\n  notes_for_writer: 原資料が挙げた具体例は、ヘアカット予約、店舗在庫確認、請負業者からの見積もり取得。\n\n[VERIFIED] MMHC-003: Metaは、human concierge機能を2026年9月中旬に従業員の半数へ有効化した。対象に入りたくない従業員向けにオプトアウトグループが設けられた。\n  scope: Metaの従業員\n  conditions: オプトアウトを希望する従業員は別のグループに参加できた。\n  numeric_value: 従業員の50% (numeric_scope: human concierge機能を有効化されたMeta従業員の割合)\n  date_or_period: 2026年9月中旬。Reuters報道の前週。\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 数字の範囲: 50%は機能を有効化された従業員の割合であり、Meta従業員全体の人数ではない。\n\n[VERIFIED] MMHC-004: 社内告知では、Museが依頼を訓練を受けたエージェントに引き渡し、そのエージェントが電話をかけて対応を進める仕組みと説明された。\n  scope: human concierge機能の対象となったMeta従業員\n  conditions: Museが電話依頼を訓練を受けた人間のエージェントへ引き渡した場合。\n  date_or_period: 2026年9月中旬\n  notes_for_writer: 語義: 原語=human agent calls。原資料は、訓練を受けたエージェントが電話をかけて処理を進めると説明している。\n\n[VERIFIED] MMHC-005: 社内投稿では、一部の従業員が、人間が電話を処理すると、機微情報がコールセンターの請負業者に意図せず共有される可能性があると懸念を示した。\n  scope: human concierge機能をめぐるMeta社内の反応\n  conditions: 人間の請負業者がMuseの電話を処理する場合。\n  date_or_period: 2026年9月中旬\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: Sourceが示しているのは従業員の懸念であり、機微情報の漏えいが一般的に発生したとの確定事実ではない。\n\n[VERIFIED] MMHC-006: あるMeta従業員は、Museにインターネット・ケーブル事業者との料金交渉を依頼した後、通話記録に人間の請負業者による人種差別的な言及が含まれていたと述べた。\n  scope: Meta従業員がMuseに依頼したインターネット・ケーブル事業者との料金交渉の通話\n  conditions: 人間の請負業者が通話を処理した事例。\n  date_or_period: 2026年9月中旬の社内テスト期間\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: Sourceは従業員の報告として記述している。具体的な発言内容を補わない。\n\n[VERIFIED] MMHC-007: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに請負業者が電話をかけるテストを始めたことを「miss」と認め、human concierge機能を当面ロールバックしたと社内投稿で述べた。\n  scope: human concierge機能の社内テスト\n  conditions: 請負業者が電話をかけるテストを、適切な開示なしに開始した状況。\n  date_or_period: 2026年9月22日報道時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 語義: 原語=rolled back this feature。原資料は「当面」または「for now」のロールバックとしている。\n\n[VERIFIED] MMHC-008: Metaの副社長の投稿によると、一部のテストでは、人間が電話をかけた場合の成功率が95%から98%に達し、AIによる発信はそれより低い割合だった。\n  scope: human conciergeとAIによる電話発信の比較テスト\n  conditions: 人間が電話をかけた場合とAIが電話をかけた場合の比較。\n  numeric_value: 95%〜98% (numeric_scope: 人間が電話をかけた場合の成功率)\n  date_or_period: 2026年9月中旬の一部テスト\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 数字の範囲: 95%〜98%は人間が発信した場合の一部テストにおける成功率。AI発信の数値は「より低い割合」とのみ報じられている。\n\n[VERIFIED] MMHC-009: Metaの広報担当者Daniel Robertsは、従業員の反応は「overwhelmingly positive」だったと述べ、テストの目的を、公開前に安全性・プライバシー保護を実装し機能を改善するためのフィードバック収集だと説明した。\n  scope: Meta従業員を対象としたhuman conciergeテスト\n  conditions: Museの電話機能を一般公開する前のテスト。\n  date_or_period: 2026年9月22日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 語義: 原語=overwhelmingly positive。評価の定量的な内訳は示されていない。\n\n[VERIFIED] MMHC-010: Robertsは、Metaは事業者とともに電話機能を改善しており、準備が整い、適切な開示を伴う場合にのみ一般公開すると述べた。\n  scope: Muse電話機能の将来の一般公開\n  conditions: 機能が準備でき、適切な開示が行われること。\n  date_or_period: 2026年9月22日時点のMeta説明\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 注意: これはMeta広報担当者が述べた公開方針であり、一般公開が実施済みであることを示す事実ではない。\n\n[VERIFIED] MMHC-011: 社内投稿によると、MetaはMuseの電話機能を2026年8月に従業員で試し、Museアプリの公開後数日以内に利用者へ段階的に展開し始めた。\n  scope: Meta従業員およびMuse利用者\n  conditions: 従業員テスト後、アプリ公開後に利用者向け展開を段階的に開始。\n  date_or_period: 順序: 2026年8月の従業員テスト→Museアプリ公開後数日以内の利用者向け段階展開\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 順序: 途中=2026年8月の従業員テスト→最終=アプリ公開後数日以内の利用者向け段階展開。\n\n[VERIFIED] MMHC-012: あるMeta従業員は、保険会社に電話するようMuseへ依頼したところ、相手がAIだと分かるとMuseとの通話を繰り返し切ったと報告した。\n  scope: Meta従業員が保険会社へかけたMuseの通話\n  conditions: 通話相手が発信者をAIだと認識した場合。\n  date_or_period: 2026年9月の社内テスト期間\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: これは1人の従業員による報告であり、全ての通話で同じ結果になったことを示さない。\n\n[VERIFIED] MMHC-013: Metaは2026年9月8日、Museを発表し、Muse Secure VM上で動作する、エージェントと利用者のデータを収容する専用の仮想マシンだと説明した。\n  scope: Metaが発表したMuseの製品設計\n  conditions: Museが動作する環境としてMuse Secure VMを使用。\n  date_or_period: 2026年9月8日発表\n  notes_for_writer: 公式発表上の製品説明。human conciergeテストの運用実態を直接説明する資料ではない。\n\n[VERIFIED] MMHC-014: Metaは、Museについて、利用者が接続するアプリとアクセス範囲を選べ、アクセス権の変更やサービスとの接続解除をいつでも行えると説明した。\n  scope: Muse利用者が接続するアプリとサービス\n  conditions: 利用者がMuseに接続権限を付与または変更する場合。\n  date_or_period: 2026年9月8日発表時点\n  notes_for_writer: 公式発表の仕様説明。human concierge機能で人間の請負業者が扱う情報範囲を示すものではない。\n\n[VERIFIED] MMHC-015: Metaは、Museの利用者の会話や仮想マシン内のデータをMetaの広告システムと共有しないと説明した。\n  scope: Muse利用者の会話および仮想マシン内データ\n  conditions: Metaが公式発表で示したMuseのデータ方針。\n  date_or_period: 2026年9月8日発表時点\n  notes_for_writer: 注意: Meta広告システムとの共有方針と、外部請負業者による通話処理時の情報取扱いは別論点として扱う。\n\n\n【検証対象の記事】\nAIの電話の向こうに、人間がいた\n\nこれ、ちょっと面白くない？  \nAIが電話をかけていると思ったら、その一部では人間が手伝っていた。Metaが社内で試していたのは、Museを通じた電話を、人間の請負業者が処理する仕組みだ。名前は「human concierge」。日本語なら、人間の案内係といったところだろう。\n\nAIに任せれば、電話はすべて機械が進めてくれる。そんな印象を持ちやすい。でも実際には、うまく対応しにくい電話を人間に回す仕組みが、裏側に用意されていた。つまり、AIの自動化は、人間を消すというより、人間を見えない場所に移すこともある。\n\nここで問題になったのが、電話の内容だ。従業員からは、人間が処理することで、機微な情報がコールセンターの請負業者に、意図せず共有される可能性があるのではないかという懸念が出た。大きな情報漏えいが起きたと確認されたわけではない。けれど、誰が電話を聞き、どこまで内容を扱うのかが分かりにくいままでは、不安になるのも無理はない。\n\nしかもMetaの副社長は、請負業者が電話をかけるテストを、適切な開示なしに始めたことが問題だったと認めた。そこで、この人間の案内係の機能は、当面ロールバックされた。いったん元に戻した、という意味だ。\n\nこの話の面白さは、AIの賢さよりも、AIの裏側が人間くさいところにある。便利な仕組みに見えても、実は誰かが内容を確認し、判断しているかもしれない。普段使うAIサービスでも、機械だけで動いているとは限らない。だから新しい機能ほど、何が自動で、どこから人間なのかを、先にきちんと知らせる必要がある。\n\n【判定対象は次の10種類の意味変化のみです】\n- changed_fact: Ledgerに存在しない、またはLedgerと矛盾する具体的事実を主張している\n- changed_scope: Ledgerが確認した対象(誰が・どこで・いつ・どの集団か)を超えて一般化・拡張している\n- changed_causality: 相関を因果に変えている、または因果の方向を変えている\n- changed_certainty: Ledgerでは仮説・自己申告・専門家の解釈にすぎないものを、断定的な事実であるかのように強めている\n- changed_number: 数値・割合・件数をLedgerと異なる値に変えている(単位の違いだけの言い換えは含まない)\n- changed_actor: 発言主体・調査主体をLedgerと異なる人物・組織にすり替えている\n- changed_negation: 肯定・否定を反転させている\n- changed_comparison: 比較の方向(より多い/少ない、より高い/低い等)を反転・変更している\n- changed_time: 時期・年代をLedgerと異なるものに変えている\n- unsupported_new_claim: Ledgerに全く存在しない新しい具体的主張を追加している\n\n【deviationとして報告しないもの(許容範囲)】\n- 自然なparaphrase、A2/B1向けの平易な言い換え、語順変更、同義語への置換\n- 出典名を一般的な言い方(a report, a studyなど)に置き換えること自体\n- 意味を変えない軽いbridge sentence(異なるEvidence間をつなぐだけの文)\n- 明確な新規Factを伴わない一般的な情景描写(例: 支払い画面はレストランやカフェにもある、\n  という一般常識レベルの前置き)\n- Ledgerの特定の一文と一字一句一致しないが、同じ意味を保っている表現\n\n【判定ルール】\n- 上記10種類のいずれかが明確にtrueである場合のみ、severityをMAJORにしてください。\n- 10種類すべてがfalseなのにMAJORにすることは禁止です。\n- 意味はおおむね保っているが言い回しがやや粗い場合(出典に勝手な肩書きを補う、\n  自己申告の調査結果を断定的な行動として書く等)はMINORとして記録してください。\n- 判断に迷う場合は、「記事の主張がLedgerの主張とほぼ同じ意味を保っているか」を\n  最優先の基準にしてください。厳密な文言一致は求めません。\n- 各deviationについて、上記10種類のフラグ全てにtrue/falseを明示し、\n  explanationでどのフラグに基づいてその判定になったかを一言で説明してください。\n\n該当するdeviationがなければ、deviationsを空配列にしてください。\n\n【追加指示: 関連Fact ID】\n各deviationについて、最も関連するVerified/Full Ledger内のfact_id(Ledger中の`[VERIFIED] <fact_id>:`等の行のfact_id部分、例: F1)をrelated_fact_idとして記録してください。特定できない場合は空文字列にしてください。",
+  "raw_text": "{\"deviations\":[{\"claim_in_article\":\"うまく対応しにくい電話を人間に回す仕組みが、裏側に用意されていた。\",\"issue\":\"LedgerはMuse経由の一部の電話を人間の請負業者が処理したことは保証しているが、人間に回される電話が「うまく対応しにくい」ものだったという選別条件までは示していない。\",\"severity\":\"MAJOR\",\"changed_fact\":true,\"changed_scope\":false,\"changed_causality\":false,\"changed_certainty\":false,\"changed_number\":false,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":true,\"explanation\":\"人間処理の対象を、Ledgerにない「対応しにくい電話」に限定する新たな具体的主張を加えている。\",\"related_fact_id\":\"MMHC-001\"},{\"claim_in_article\":\"しかもMetaの副社長は、請負業者が電話をかけるテストを、適切な開示なしに始めたことが問題だったと認めた。そこで、この人間の案内係の機能は、当面ロールバックされた。\",\"issue\":\"「そこで」により、適切な開示なしにテストを始めたことがロールバックの直接の原因だったと因果関係を示している。Ledgerは副社長の問題認識と当面のロールバックを報じているが、両者の明示的な因果関係までは保証していない。\",\"severity\":\"MAJOR\",\"changed_fact\":false,\"changed_scope\":false,\"changed_causality\":true,\"changed_certainty\":false,\"changed_number\":false,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":false,\"explanation\":\"報告された事実の並列・時系列を、ロールバックの理由という明示的な因果に強めている。\",\"related_fact_id\":\"MMHC-007\"},{\"claim_in_article\":\"普段使うAIサービスでも、機械だけで動いているとは限らない。\",\"issue\":\"Ledgerが確認しているのはMetaのMuseにおける社内テストであり、普段使うAIサービス一般について人間が関与する可能性までは保証していない。\",\"severity\":\"MAJOR\",\"changed_fact\":false,\"changed_scope\":true,\"changed_causality\":false,\"changed_certainty\":false,\"changed_number\":false,\"changed_actor\":false,\"changed_negation\":false,\"changed_comparison\":false,\"changed_time\":false,\"unsupported_new_claim\":false,\"explanation\":\"Museの特定事例から、AIサービス一般へ対象範囲を拡張している。\",\"related_fact_id\":\"MMHC-001\"}]}",
+  "parsed": {
+    "deviations": [
+      {
+        "claim_in_article": "うまく対応しにくい電話を人間に回す仕組みが、裏側に用意されていた。",
+        "issue": "LedgerはMuse経由の一部の電話を人間の請負業者が処理したことは保証しているが、人間に回される電話が「うまく対応しにくい」ものだったという選別条件までは示していない。",
+        "severity": "MAJOR",
+        "changed_fact": true,
+        "changed_scope": false,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": true,
+        "explanation": "人間処理の対象を、Ledgerにない「対応しにくい電話」に限定する新たな具体的主張を加えている。",
+        "related_fact_id": "MMHC-001",
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "しかもMetaの副社長は、請負業者が電話をかけるテストを、適切な開示なしに始めたことが問題だったと認めた。そこで、この人間の案内係の機能は、当面ロールバックされた。",
+        "issue": "「そこで」により、適切な開示なしにテストを始めたことがロールバックの直接の原因だったと因果関係を示している。Ledgerは副社長の問題認識と当面のロールバックを報じているが、両者の明示的な因果関係までは保証していない。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": false,
+        "changed_causality": true,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "報告された事実の並列・時系列を、ロールバックの理由という明示的な因果に強めている。",
+        "related_fact_id": "MMHC-007",
+        "auto_downgraded": false
+      },
+      {
+        "claim_in_article": "普段使うAIサービスでも、機械だけで動いているとは限らない。",
+        "issue": "Ledgerが確認しているのはMetaのMuseにおける社内テストであり、普段使うAIサービス一般について人間が関与する可能性までは保証していない。",
+        "severity": "MAJOR",
+        "changed_fact": false,
+        "changed_scope": true,
+        "changed_causality": false,
+        "changed_certainty": false,
+        "changed_number": false,
+        "changed_actor": false,
+        "changed_negation": false,
+        "changed_comparison": false,
+        "changed_time": false,
+        "unsupported_new_claim": false,
+        "explanation": "Museの特定事例から、AIサービス一般へ対象範囲を拡張している。",
+        "related_fact_id": "MMHC-001",
+        "auto_downgraded": false
+      }
+    ],
+    "overall_status": "LEDGER_DEVIATION"
+  },
+  "response_id": "resp_05d339d27d489f7c006ac4c4f0785487d09e44dd60360d8a84",
+  "model": "gpt-5.6-luna",
+  "usage": {
+    "input_tokens": 4238,
+    "cached_input_tokens": 0,
+    "output_tokens": 5285,
+    "reasoning_tokens": 4634
+  },
+  "elapsed_seconds": 47.332,
+  "hook_aware": false
+}
