@@ -1,0 +1,507 @@
+[
+  {
+    "fact_id": "HF-001",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-001",
+      "reversible": true,
+      "compressed_claim": "IMO理事会が全船舶の無料通航維持を再確認",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": [
+        {
+          "R": "IMO理事会は全船舶の通航料免除を実施した",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "維持すべきだと再確認した",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "無料通航の実施済みか、実施を求める再確認にとどまるかで政策の現状が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "IMO理事会は全船舶の通航料免除を実施した",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "IMO理事会は全船舶の通航料免除を実施した",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "再確認",
+        "blocking_word_missing": false,
+        "reason": "再確認は既存の無料通航を確認する語であり、実施したと読むにはこの語を無視する必要がある",
+        "compressed_claim": "IMO理事会が全船舶の無料通航維持を再確認"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "決議と発言撤回の因果関係に関する注意であり、全船舶の通航料免除の実施を禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "IMO理事会は全船舶の通航料免除を実施した",
+      "correct_state": "IMO理事会が全船舶に通航料・手数料を課さない状態を維持すべきだと再確認した",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "HF-002",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-002",
+      "reversible": true,
+      "compressed_claim": "トランプ大統領が全貨物に20％償還を求めると投稿",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": [
+        {
+          "R": "米国は全貨物から20％の償還料を徴収した",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "20％の率で償還を求めると投稿した",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "料金の提案・表明か、実際の徴収開始かで制度の実施状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "米国は全貨物から20％の償還料を徴収した",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "米国は全貨物から20％の償還料を徴収した",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "求める",
+        "blocking_word_missing": false,
+        "reason": "求めるは要求を示す語であり、実際に徴収したと読むにはこの語を無視する必要がある",
+        "compressed_claim": "トランプ大統領が全貨物に20％償還を求めると投稿"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "出来事の時系列と因果関係に関する注意であり、全貨物から20％を徴収したとの誤読を禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "米国は全貨物から20％の償還料を徴収した",
+      "correct_state": "トランプ大統領が全貨物への20％償還を投稿で求めた段階で、実施は始まっていない",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "HF-003",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-003",
+      "reversible": false,
+      "compressed_claim": "20％償還料案は具体的制度設計を示さず",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-004",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-004",
+      "reversible": true,
+      "compressed_claim": "VLCC貨物価値約1.7億ドル、20％相当約3400万ドル",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": [
+        {
+          "R": "1航海の償還料は約3400万ドルになった",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "20％を積載原油の市場価値に掛けるとの仮定",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "仮定に基づく試算か、実際に確定した償還料かで金銭負担の結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "1航海の償還料は約3400万ドルになった",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "1航海の償還料は約3400万ドルになった",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "貨物価値",
+        "blocking_word_missing": false,
+        "reason": "約3400万ドルは貨物価値の20％相当として示されており、償還料と読むにはこの語を無視する必要がある",
+        "compressed_claim": "VLCC貨物価値約1.7億ドル、20％相当約3400万ドル"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "実額や確定通航料として扱わず、貨物価値に適用した場合の試算と明示するよう明確に禁じている。",
+      "dup_of_existing": true
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "1航海の償還料は約3400万ドルになった",
+      "correct_state": "試算が1航海の20％相当額を約3400万ドル（別試算約3200万ドル）としたもので、確定額ではない",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "HF-005",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-005",
+      "reversible": false,
+      "compressed_claim": "FTのBrent表が7月13日のOHLCを記録",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-006",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-006",
+      "reversible": false,
+      "compressed_claim": "Brent先物が7月13日に上昇し83.30ドルで清算",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-007",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-007",
+      "reversible": true,
+      "compressed_claim": "トランプ大統領が20％料を湾岸案件に置き換えると投稿",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": [
+        {
+          "R": "米国は湾岸案件を実施し、20％償還料が無い状態になった",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "置換方針の投稿か、実際の政策移行完了かで発表の実効性に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "米国は湾岸案件を実施し、20％償還料が無い状態になった",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "米国は湾岸案件を実施し、20％償還料が無い状態になった",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "投稿",
+        "blocking_word_missing": false,
+        "reason": "投稿は置き換えを表明しただけで実施を示さず、実施済みと読むにはこの語を無視する必要がある",
+        "compressed_claim": "トランプ大統領が20％料を湾岸案件に置き換えると投稿"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "7月13日の提案と投稿の時系列に関する注意であり、湾岸案件の実施や20％償還料がない状態を禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "米国は湾岸案件を実施し、20％償還料が無い状態になった",
+      "correct_state": "トランプ大統領が20％償還料について、湾岸諸国による対米貿易・投資案件を用いる方針を投稿で示した段階で、実施は完了していない",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "HF-008",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-008",
+      "reversible": false,
+      "compressed_claim": "トランプ大統領が船舶への料金を否定する考えを示した",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-009",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "HF-009",
+      "reversible": true,
+      "compressed_claim": "撤回後Brentは上げ幅を縮め高水準に戻った",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": [
+        {
+          "R": "Brent先物は撤回後、発表前に近い高水準にならず低い水準になった",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "ほどなく発表前に近い高い水準へ戻った",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "一時的な反応後に価格が戻ったのか、低下が続いたのかで撤回発表の市場影響が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "Brent先物は撤回後、発表前に近い高水準にならず低い水準になった",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "Brent先物は撤回後、発表前に近い高水準にならず低い水準になった",
+        "likelihood": "low",
+        "likelihood_raw": "low",
+        "promoted_low_to_medium": false,
+        "blocking_word": "高水準",
+        "blocking_word_missing": false,
+        "reason": "高水準に戻ったという語が、発表前に近い高水準にならず低いままだったというRと明示的に矛盾する",
+        "compressed_claim": "撤回後Brentは上げ幅を縮め高水準に戻った"
+      }
+    ]
+  },
+  {
+    "fact_id": "HF-010",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-010",
+      "reversible": false,
+      "compressed_claim": "FTのBrent表が7月14日のOHLCを記録",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-011",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-011",
+      "reversible": false,
+      "compressed_claim": "Brent先物が7月14日に上昇し84.73ドルで清算",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-012",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_low"
+    ],
+    "judgment": {
+      "fact_id": "HF-012",
+      "reversible": true,
+      "compressed_claim": "米WTI先物が一時マイナス後に価格を回復",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "paraphrase_readings": [],
+      "reverse_propositions": [
+        {
+          "R": "米WTI先物はミサイル攻撃報道後も低い水準になった",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "その後、イランの巡航ミサイルがUAEの石油タンカー2隻を攻撃したとの報道を受けて価格が回復した",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "軍事報道後に価格が回復したのか、低迷が続いたのかで市場反応の結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "米WTI先物はミサイル攻撃報道後も低い水準になった",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "米WTI先物はミサイル攻撃報道後も低い水準になった",
+        "likelihood": "low",
+        "likelihood_raw": "low",
+        "promoted_low_to_medium": false,
+        "blocking_word": "回復",
+        "blocking_word_missing": false,
+        "reason": "価格を回復という語が、攻撃報道後も低い水準だったというRと明示的に矛盾する",
+        "compressed_claim": "米WTI先物が一時マイナス後に価格を回復"
+      }
+    ]
+  }
+]

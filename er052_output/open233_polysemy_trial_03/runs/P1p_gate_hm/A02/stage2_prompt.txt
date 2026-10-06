@@ -1,0 +1,136 @@
+下記の【候補】は、一次スクリーニングと判定役を通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason・claim中の曖昧表記ambiguous_expression・既に禁じ済みの一覧already_prohibited)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+ambiguous_expressionが空でないとき: 「注意(逆転): 台帳の表記'<ambiguous_expression>'は、<変化後の状態>の意味。<R>ではない。」
+ambiguous_expressionが空のとき: 「注意(逆転): <主体>が<対象>を<変化後の状態>。<R>ではない。」
+- 日本語本文(接頭辞を含む全体)は120字以内、改行なし。
+- <変化後の状態>は、変化後に何が有り何が無いかを、台帳のclaim/scope/conditionsから導ける平易な語だけで書く(correct_stateにも同じ文言を書く)。新しい事実・解釈を足さない。
+- <変化後の状態>とR(r_echo)には、「戻す」「元に戻した」「復元」「変更」「見直し」「改める」「調整」のように向き・結果が曖昧な語(カタカナ語の操作名を含む)、およびambiguous_expressionの語を使わない(引用符で囲んだ表記'...'の中だけは、台帳の表記をそのまま書いてよい)。
+- 英語は、台帳(claim・scope・conditions・notes)に実在する語だけを、3語以内で併記してよい。台帳に無い英語は書かない。
+- <R>の部分は、候補のreverse_readingの主語・述語・目的語をそのまま残して書く(r_echoにreverse_readingを一字一句そのまま書き写す)。Rを言い換えたり別の逆転に差し替えたりしない。
+- Rを否定するときに、<変化後の状態>として正しい読みまで打ち消さない(「Rではない」と書くことで、正しい読みの一部を禁じてはならない)。
+
+【already_prohibitedの扱い】
+already_prohibitedは、その台帳factについて既に禁じ済みの内容であり、「繰り返さない一覧」である。ここに書かれた内容は、noteで繰り返さず、reverse_readingについてだけ書く。already_prohibitedの文言を写したり、肯定的な根拠として使ったりしない。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた<変化後の状態>は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例(架空・別領域。形式の参考だけに使う)】
+候補: claim「Z庁は新制度の適用を当面差し戻した」 ambiguous_expression「差し戻した」 reverse_reading「Z庁は新制度を恒久的に廃止した」 →
+{"fact_id":"EX-9","r_echo":"Z庁は新制度を恒久的に廃止した","correct_state":"新制度の適用が当面行われない状態","note":"注意(逆転): 台帳の表記'差し戻した'は、新制度の適用が当面行われない状態の意味。Z庁は新制度を恒久的に廃止したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+候補: claim「Y社は試作機の評価を開始した」 ambiguous_expressionが空 reverse_reading「Y社は量産機を現場へ配備した」 →
+{"fact_id":"EX-2","r_echo":"Y社は量産機を現場へ配備した","correct_state":"試作機を試験場で評価している段階","note":"注意(逆転): Y社が試作機を試験場で評価している段階。Y社は量産機を現場へ配備したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","r_echo":"","correct_state":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "POL-02",
+  "source_quote": "利用者による設定変更が可能とされている",
+  "reverse_reading": "16・17歳は夜間制限を自分で解除できず、設定は固定される。",
+  "flipped_component": "polarity",
+  "conclusion_change_reason": "変更可能な初期設定か、解除不能な強制制限かで制度の性質が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "「午前0時から6時までSNSが完全に利用不能になる」とは断定しない。対象は未成年全体ではなく16・17歳。"
+  ]
+ },
+ {
+  "fact_id": "POL-04",
+  "source_quote": "利用者は設定を変更できる",
+  "reverse_reading": "16・17歳はautoplayとpersonalised feedsを自分でオンにできず、設定は固定される。",
+  "flipped_component": "polarity",
+  "conclusion_change_reason": "変更可能なデフォルト設定か、固定された強制設定かで保護措置の性質が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "autoplayとpersonalised feedsのdefault-offを夜間通知ミュートと混同しない。"
+  ]
+ },
+ {
+  "fact_id": "PILOT-04",
+  "source_quote": "親または保護者が毎日午後9時から午前7時まで、対象SNSアプリへのアクセスを端末レベルのペアレンタルコントロールでブロックした",
+  "reverse_reading": "対象SNSアプリが、親の操作なしに端末アクセスを自動でブロックした。",
+  "flipped_component": "subject_object",
+  "conclusion_change_reason": "家庭の親が実施した介入か、サービス側が自動実施した制限かで介入の仕組みが変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "この介入はアクセス禁止型だったが、政策案は午前0時～6時の「デフォルト夜間制限」で、技術方式の詳細は未確定。両者を同一制度として扱わない。"
+  ]
+ },
+ {
+  "fact_id": "PILOT-05",
+  "source_quote": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsは介入対象外だった",
+  "reverse_reading": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsも介入対象だった。",
+  "flipped_component": "subject_object",
+  "conclusion_change_reason": "制限対象が中核6サービスだけか、通信・教育サービスまで含むかで介入の範囲が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "パイロット対象アプリを、2027年に予定される規制の最終対象リストとみなさない。"
+  ]
+ },
+ {
+  "fact_id": "OUT-05",
+  "source_quote": "night-curfewへの適応として",
+  "reverse_reading": "SNSの前倒し利用や早朝利用が、night-curfewの導入を引き起こした。",
+  "flipped_component": "cause_effect",
+  "conclusion_change_reason": "curfewが利用行動を変えたのか、利用行動がcurfewの導入を招いたのかで因果関係が逆転する",
+  "ambiguous_expression": "反動",
+  "already_prohibited": [
+   "利用削減がそのまま総スクリーン時間削減になったとは書かない。これらは参加者が報告した適応パターンで、頻度の定量値はない。"
+  ]
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "POL-02",
+  "claim": "英国政府は、16歳および17歳の利用者について、午前0時から午前6時までSNS利用にデフォルトの夜間制限を適用する方針を示している。",
+  "scope": "16・17歳；対象となるSNSサービス",
+  "conditions": "初期設定として適用される保護であり、利用者による設定変更が可能とされている",
+  "date_or_period": "2026年7月15日発表；対象時間は毎日午前0時～午前6時",
+  "source_url": "https://questions-statements.parliament.uk/written-statements/detail/2026-07-15/hlws259",
+  "verification_notes": "2026年7月15日の閣僚声明は、16・17歳に午前0時～午前6時のデフォルト夜間制限を適用すると明記している。変更可能な初期設定であることも政府資料および独立報道で一致する。技術的に完全遮断となるかは確定資料から明瞭でなく、Ledgerの留保は適切。([questions-statements.parliament.uk](https://questions-statements.parliament.uk/written-statements/detail/2026-07-15/hlws259))"
+ },
+ {
+  "fact_id": "POL-04",
+  "claim": "英国政府のFact sheetは、16・17歳について、autoplayとpersonalised feedsをデフォルトでオフにするとしている。",
+  "scope": "16・17歳；対象となるSNSアプリ",
+  "conditions": "デフォルト設定であり、利用者は設定を変更できる",
+  "date_or_period": "2026年7月17日更新のFact sheet",
+  "source_url": "https://www.gov.uk/government/publications/fact-sheet-new-rules-to-protect-children-online/fact-sheet-new-rules-to-protect-children-online",
+  "verification_notes": "2026年7月17日更新のFact sheetは、16・17歳についてautoplayとpersonalised feedsをデフォルトでオフにし、本人が変更可能と明記している。([gov.uk](https://www.gov.uk/government/publications/fact-sheet-new-rules-to-protect-children-online/fact-sheet-new-rules-to-protect-children-online))"
+ },
+ {
+  "fact_id": "PILOT-04",
+  "claim": "パイロットのnight-curfew群では、親または保護者が毎日午後9時から午前7時まで、対象SNSアプリへのアクセスを端末レベルのペアレンタルコントロールでブロックした。",
+  "scope": "Intervention 2の81世帯",
+  "conditions": "iOSのScreen Time DowntimeまたはAndroidのDigital Wellbeing等を使用。親専用パスコードなどで設定",
+  "date_or_period": "2026年5月2日～5月31日；毎日午後9時～午前7時",
+  "source_url": "https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk",
+  "verification_notes": "午後9時～午前7時に対象SNSへのアクセスを端末設定でブロックすることはIntervention 2の所定プロトコルとして正しい。ただし81は同群のWave 1サンプル数であり、実際には完全遵守53、軽微な変更23、非遵守5だったため、「81世帯すべてで親が所定どおりブロックした」と読める表現は不正確になり得る。「割り当てられた介入内容」と明示する場合に限り支持される。([gov.uk](https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk))"
+ },
+ {
+  "fact_id": "PILOT-05",
+  "claim": "3介入で共通して制限対象となった中核アプリはSnapchat、TikTok、Instagram、Facebook、X、Redditの6サービスだった。WhatsApp、YouTube、iMessage、Google Classroom、Teamsは介入対象外だった。",
+  "scope": "3つの介入群に共通する対象アプリ",
+  "conditions": "Twitch、Kick、Discordなどは各家庭の判断で任意追加可能",
+  "date_or_period": "2026年5月2日～5月31日",
+  "source_url": "https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk",
+  "verification_notes": "全3介入で共通の中核対象はSnapchat、TikTok、Instagram、Facebook、X、Redditの6サービスである。WhatsApp、YouTube、iMessage、Google Classroom、Teamsは介入対象外で、Twitch、Kick、Discordなどは家庭判断による任意追加だった。([gov.uk](https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk))"
+ },
+ {
+  "fact_id": "OUT-05",
+  "claim": "night-curfewへの適応として、制限開始前にSNS利用を集中させるfront-loading、午前7時以降の早朝利用の反動、制限後にテレビやゲームへ移る代替行動が報告された。",
+  "scope": "Intervention 2参加者の自己申告",
+  "conditions": "午後9時～午前7時の対象SNSアクセス禁止。テレビ、ゲーム、対象外サービス等は必ずしも制限されなかった",
+  "date_or_period": "2026年5月の介入期間",
+  "source_url": "https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk",
+  "verification_notes": "報告書には、午後9時前へのfront-loading、解除後の早朝チェック・反動利用、curfew後のテレビやゲームへの代替が記載されている。これらの頻度や該当人数は定量化されておらず、報告された適応パターンとして限定する必要がある。([gov.uk](https://www.gov.uk/government/publications/social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk/social-media-intervention-research-2026-social-media-restriction-pilots-qualitative-research-with-13-to-17-year-olds-in-the-uk))"
+ }
+]

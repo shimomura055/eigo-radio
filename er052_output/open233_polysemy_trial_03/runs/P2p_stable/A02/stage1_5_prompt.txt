@@ -1,0 +1,172 @@
+あなたは、記事執筆者の立場で「圧縮された1文だけを読んだ読者」を模擬する判定役です。原資料も、元の台帳本文も、補足説明も見ていません。見られるのは、各factを約30字に圧縮した文(compressed_claim)と、誤読の候補となる反転命題Rだけです。
+
+【問い】
+各候補Rについて、「この圧縮文だけを読んだ記事執筆者が、うっかりRの意味で書いてしまう見込みは高いか」を、次の固定基準で判定してください。
+- high: 圧縮文とRが両立し、Rで反転されている部分の読みが、圧縮文中の曖昧な語か、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部・将来 など)だけで決まる。
+- medium: 圧縮文とRは両立するが、両立させるには圧縮文の中の限定語でも曖昧語でもない語(非限定語)を無視する必要がある。
+- low: 圧縮文の中の非限定語が、Rと明示的に矛盾する。
+判定は圧縮文の文言だけを根拠にし、あなたの外部知識や台帳にありそうな補足を想像で足さないでください。五分五分のときはmediumにしてください。
+
+【blocking_word】各候補について必ず書く。Rと両立することを妨げている、圧縮文中の語を1つ逐語で書く(mediumとlowでは必須。非限定語を優先し、限定語しか妨げていないときはその限定語を書く。highでは妨げる語が無いので空文字)。reasonには、その語がなぜRを妨げるか(または妨げないか)を1行で書く。
+
+【例(架空・別領域。判定の型を示すだけ)】
+圧縮文「X市が補助金新設を見送り」 / R「X市は補助金制度を廃止した」 → {"likelihood":"high","blocking_word":"","reason":"見送りは新設の延期にも既存制度の廃止にも読め、圧縮文にRを妨げる非限定語がない"}
+圧縮文「Y社の試作機が試験場で評価開始」 / R「Y社は量産機を現場へ配備した」 → {"likelihood":"low","blocking_word":"試作機","reason":"試作機は非限定語で、量産機の配備とは明示的に矛盾する"}
+圧縮文「Z庁が旧規則の運用を停止」 / R「Z庁は新規則の運用を開始した」 → {"likelihood":"medium","blocking_word":"停止","reason":"両立はするが、停止という非限定語を無視して開始と読む必要がある"}
+
+【出力】JSONのみ。入力の全候補(fact_idとcidの組)について1要素ずつ(省略しない)返す。reasonは1行。
+{"verdicts":[{"fact_id":"","cid":"","likelihood":"high|medium|low","blocking_word":"","reason":""}]}
+
+【入力】
+[
+ {
+  "fact_id": "POL-01",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "英国政府は16・17歳向け夜間SNS設定を導入",
+    "R": "英国政府は16・17歳向け夜間SNS設定をすでに施行した"
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "英国政府は16・17歳向け夜間SNS設定を導入する",
+    "R": "英国政府は16・17歳向け夜間SNS設定をすでに施行している"
+   }
+  ]
+ },
+ {
+  "fact_id": "POL-06",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "追加保護設定が自動的にオンになる",
+    "R": "追加保護設定は本人が解除できない強制設定だ"
+   }
+  ]
+ },
+ {
+  "fact_id": "POL-07",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "追加設定は16歳未満向けと同じSNSに適用",
+    "R": "英国政府は追加設定の対象サービスを最終決定済みだ"
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "追加設定を同じSNSに適用する",
+    "R": "対象サービスの最終的な詳細がすでに確定している"
+   }
+  ]
+ },
+ {
+  "fact_id": "PILOT-01",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "パイロットは309世帯でインタビューを実施",
+    "R": "309件のインタビューはnight-curfew群だけを対象にした"
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "Wave 1で309世帯に309件のインタビューを実施",
+    "R": "パイロットの309はnight-curfew群だけの参加世帯を指す"
+   }
+  ]
+ },
+ {
+  "fact_id": "PILOT-05",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "3介入共通の中核アプリは6サービス",
+    "R": "WhatsApp等5サービスも3介入の共通制限対象だった"
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "3介入共通の中核対象は6サービス",
+    "R": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsも介入対象だった"
+   }
+  ]
+ },
+ {
+  "fact_id": "PILOT-06",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "パイロットは自己申告中心の質的研究",
+    "R": "このパイロットは介入が結果を生んだと因果的に確立した"
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "パイロットは自己申告中心の質的研究",
+    "R": "研究者はデジタル利用状況を直接監視した"
+   }
+  ]
+ },
+ {
+  "fact_id": "OUT-04",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "night-curfewはSNS利用を別時間帯へ移す",
+    "R": "night-curfewはSNSの1日総利用量を主に減らした"
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "night-curfewはSNS利用を夜間から別時間帯へ移した",
+    "R": "night-curfewはSNSの1日全体の利用量を大きく減らした"
+   }
+  ]
+ },
+ {
+  "fact_id": "POL-02",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "政府は16・17歳に夜間SNS制限を適用する",
+    "R": "政府は16・17歳に夜間SNS制限を解除不能な形で強制している"
+   }
+  ]
+ },
+ {
+  "fact_id": "POL-04",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "英国政府はautoplayとpersonalised feedsをオフにする",
+    "R": "16・17歳はautoplayとpersonalised feedsをオンに戻せず、強制的にオフにされる"
+   }
+  ]
+ },
+ {
+  "fact_id": "PILOT-02",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "参加世帯を4群に配分し3介入を実施",
+    "R": "参加世帯は希望ではなく無作為に4グループへ割り付けられた"
+   }
+  ]
+ },
+ {
+  "fact_id": "PILOT-07",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "curfew群81世帯の遵守は53、23、5に分かれた",
+    "R": "研究者は遠隔監視により完全遵守を独立検証した"
+   }
+  ]
+ },
+ {
+  "fact_id": "OUT-05",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "curfew群で前倒し・早朝反動・代替行動が報告された",
+    "R": "対象SNSは午後9時から午前7時にも利用できた"
+   }
+  ]
+ }
+]

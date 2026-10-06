@@ -1,0 +1,3840 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+          "origin": null,
+          "related_fact_id": "F-010",
+          "dev": {
+            "claim_in_article": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+            "issue": "見出しは日本の下水道全体が長い管路から各戸浄化槽へ移る動きとして読めますが、Ledgerが示すのは地域や自治体ごとの計画・事例です。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+            "related_fact_id": "F-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "F-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home\n\nA move is being planned for Japan’s sewer systems. What is moving is not people, but the system that treats wastewater. Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-010",
+            "claim_text": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "A move is being planned for Japan’s sewer systems.",
+          "origin": null,
+          "related_fact_id": "F-010",
+          "dev": {
+            "claim_in_article": "A move is being planned for Japan’s sewer systems.",
+            "issue": "日本の下水道システム全体で移行が計画されているという範囲の広い主張はLedgerにありません。 / 喜多方市の個別事例を、全国の下水道システムで移行が計画されているという広い主張の根拠として扱っています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "F-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "F-010",
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home\n\nA move is being planned for Japan’s sewer systems. What is moving is not people, but the system that treats wastewater. Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.\n\nThe reason is that the pipes working underground are growing old.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-010",
+            "claim_text": "A move is being planned for Japan’s sewer systems.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+            "issue": "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。 / 地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。 / 喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F-007",
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home\n\nA move is being planned for Japan’s sewer systems. What is moving is not people, but the system that treats wastewater. Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.\n\nThe reason is that the pipes working underground are growing old.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-007",
+            "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The reason is that the pipes working underground are growing old.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "The reason is that the pipes working underground are growing old.",
+            "issue": "管路の老朽化は一部自治体の見直し理由として示されていますが、日本の下水道システムで移行が進む理由として一般化されています。 / 管路の老朽化が処理方式を移行する理由だと因果関係を付加しています。Ledgerは管路の老朽化状況を示しますが、方式移行の理由とは結び付けていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "F-012",
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A move is being planned for Japan’s sewer systems. What is moving is not people, but the system that treats wastewater. Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.\n\nThe reason is that the pipes working underground are growing old.\n\nJapan’s sewer pipes total about 500,000 kilometers. Of these, about 7 percent have already passed their standard service life of 50 years. This is expected to rise to about 22 percent in ten years and about 45 percent in 20 years.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-012",
+            "claim_text": "The reason is that the pipes working underground are growing old.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "However, passing 50 years does not mean that the pipes become unusable right away.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "However, passing 50 years does not mean that the pipes become unusable right away.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Japan’s sewer pipes total about 500,000 kilometers. Of these, about 7 percent have already passed their standard service life of 50 years. This is expected to rise to about 22 percent in ten years and about 45 percent in 20 years.\n\nHowever, passing 50 years does not mean that the pipes become unusable right away. Even so, maintaining, rebuilding, and replacing old facilities will require more money. The Ministry of Land, Infrastructure, Transport and Tourism estimates that the cost of maintaining and replacing sewer facilities will rise from about 0.8 trillion yen in fiscal 2018 to about 1.3 trillion yen in fiscal 2048.\n\nAt the same time, the population is declining. When the population falls, income from sewer fees also falls. Income goes down, while the cost of rebuilding and replacing old facilities goes up. This is quite a difficult puzzle for sewer system finances.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "However, passing 50 years does not mean that the pipes become unusable right away.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+            "issue": "公共下水道等の集合処理はLedgerにありますが、地下管路で汚水を送り処理するという説明は直接記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "At the same time, the population is declining. When the population falls, income from sewer fees also falls. Income goes down, while the cost of rebuilding and replacing old facilities goes up. This is quite a difficult puzzle for sewer system finances.\n\nFor this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment. In areas with shared treatment, wastewater is sent through underground pipes and treated together. Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra subsidies for the cost of installing septic tanks.\n\nThe Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out. In other words, the treatment method is chosen to match how homes are arranged in each area.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "They use the work of microorganisms, but installing one is not the end of the process.",
+          "origin": null,
+          "related_fact_id": "F-006",
+          "dev": {
+            "claim_in_article": "They use the work of microorganisms, but installing one is not the end of the process.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "F-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "F-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out. In other words, the treatment method is chosen to match how homes are arranged in each area.\n\nCombined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.\n\nIn other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-006",
+            "claim_text": "They use the work of microorganisms, but installing one is not the end of the process.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "In other words, this is not a plan to get rid of sewers.",
+          "origin": null,
+          "related_fact_id": "F-011",
+          "dev": {
+            "claim_in_article": "In other words, this is not a plan to get rid of sewers.",
+            "issue": "一部の計画が既設の公共下水道区域を浄化槽へ切り替えるものではないことは示されていますが、「これは下水道をなくす計画ではない」という広い否定はLedgerに直接ありません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "F-011",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "F-011"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.\n\nIn other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.\n\n## In one line\nAs Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-011",
+            "claim_text": "In other words, this is not a plan to get rid of sewers.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+          "origin": null,
+          "related_fact_id": "F-010",
+          "dev": {
+            "claim_in_article": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+            "issue": "個別自治体の計画見直し事例を、老朽管に直面する地域一般が地域に適合するシステムへ移行しているという広い動向にしています。 / 地域特性に応じた方式選択の必要性を、老朽管への対応として地域が実際に方式変更しているという主張に結び付けています。 / 喜多方市の区域見直しを、複数の地域が老朽管対応として方式変更しているという一般的な動向に広げ、方式変更と老朽化を結び付けています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.3); severity is decided by Stage 2",
+            "related_fact_id": "F-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.3"
+              ],
+              "related_fact_ids": [
+                "F-010",
+                "F-007",
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.\n\nIn other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.\n\n## In one line\nAs Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-010",
+            "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+            "issue": "個別の計画事例はありますが、管路の老朽化に伴い共有処理から各戸浄化槽へ移る地域があるという関係を、地域一般について述べています。 / 喜多方市の構想見直しを日本の複数地域に広げ、人口減少や更新費用ではなく管路の老朽化を主なきっかけとして示しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.\n\n## In one line\nAs Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "The Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "The Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out.",
+            "issue": "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。 / 地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。 / 喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F-007",
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment. In areas with shared treatment, wastewater is sent through underground pipes and treated together. Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra subsidies for the cost of installing septic tanks.\n\nThe Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out. In other words, the treatment method is chosen to match how homes are arranged in each area.\n\nCombined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "The Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic t",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing.",
+            "issue": "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。 / 地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。 / 喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F-007",
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out. In other words, the treatment method is chosen to match how homes are arranged in each area.\n\nCombined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.\n\nIn other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "It is a plan to use shared treatment underground and individual treatment at each home in different ways.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "It is a plan to use shared treatment underground and individual treatment at each home in different ways.",
+            "issue": "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。 / 地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。 / 喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.3"
+              ],
+              "related_fact_ids": [
+                "F-007",
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.\n\nIn other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.\n\n## In one line\nAs Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "It is a plan to use shared treatment underground and individual treatment at each home in different ways.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Of these, about 7 percent have already passed their standard service life of 50 years.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "Of these, about 7 percent have already passed their standard service life of 50 years.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "However, passing 50 years does not mean that the pipes become unusable right away."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The reason is that the pipes working underground are growing old.\n\nJapan’s sewer pipes total about 500,000 kilometers. Of these, about 7 percent have already passed their standard service life of 50 years. This is expected to rise to about 22 percent in ten years and about 45 percent in 20 years.\n\nHowever, passing 50 years does not mean that the pipes become unusable right away. Even so, maintaining, rebuilding, and replacing old facilities will require more money. The Ministry of Land, Infrastructure, Transport and Tourism estimates that the cost of maintaining and replacing sewer facilities will rise from about 0.8 trillion yen in fiscal 2018 to about 1.3 trillion yen in fiscal 2048.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "Of these, about 7 percent have already passed their standard service life of 50 years.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Japan’s sewer pipes total about 500,000 kilometers.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "Japan’s sewer pipes total about 500,000 kilometers.",
+            "issue": "個別の計画事例はありますが、管路の老朽化に伴い共有処理から各戸浄化槽へ移る地域があるという関係を、地域一般について述べています。 / 喜多方市の構想見直しを日本の複数地域に広げ、人口減少や更新費用ではなく管路の老朽化を主なきっかけとして示しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The reason is that the pipes working underground are growing old.\n\nJapan’s sewer pipes total about 500,000 kilometers. Of these, about 7 percent have already passed their standard service life of 50 years. This is expected to rise to about 22 percent in ten years and about 45 percent in 20 years.\n\nHowever, passing 50 years does not mean that the pipes become unusable right away. Even so, maintaining, rebuilding, and replacing old facilities will require more money. The Ministry of Land, Infrastructure, Transport and Tourism estimates that the cost of maintaining and replacing sewer facilities will rise from about 0.8 trillion yen in fiscal 2018 to about 1.3 trillion yen in fiscal 2048.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "Japan’s sewer pipes total about 500,000 kilometers.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        },
+        {
+          "claim_text": "Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks.",
+            "issue": "個別の計画事例はありますが、管路の老朽化に伴い共有処理から各戸浄化槽へ移る地域があるという関係を、地域一般について述べています。 / 喜多方市の構想見直しを日本の複数地域に広げ、人口減少や更新費用ではなく管路の老朽化を主なきっかけとして示しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "At the same time, the population is declining. When the population falls, income from sewer fees also falls. Income goes down, while the cost of rebuilding and replacing old facilities goes up. This is quite a difficult puzzle for sewer system finances.\n\nFor this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment. In areas with shared treatment, wastewater is sent through underground pipes and treated together. Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra subsidies for the cost of installing septic tanks.\n\nThe Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out. In other words, the treatment method is chosen to match how homes are arranged in each area.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+              "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+            ],
+            "batch_cost_jpy": 0.4033,
+            "batch_n_claims": 16
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 16,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-010",
+          "claim_text": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-010",
+          "claim_text": "A move is being planned for Japan’s sewer systems.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-007",
+          "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-012",
+          "claim_text": "The reason is that the pipes working underground are growing old.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "However, passing 50 years does not mean that the pipes become unusable right away.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-006",
+          "claim_text": "They use the work of microorganisms, but installing one is not the end of the process.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-011",
+          "claim_text": "In other words, this is not a plan to get rid of sewers.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-010",
+          "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "The Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic t",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "Combined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "It is a plan to use shared treatment underground and individual treatment at each home in different ways.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "Of these, about 7 percent have already passed their standard service life of 50 years.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "Japan’s sewer pipes total about 500,000 kilometers.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25",
+            "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+          ],
+          "batch_cost_jpy": 0.4033,
+          "batch_n_claims": 16
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6236,
+      "usage": {
+        "input_tokens": 6772,
+        "cached_input_tokens": 0,
+        "output_tokens": 6596,
+        "reasoning_tokens": 1698
+      },
+      "elapsed_seconds": 42.529,
+      "prompt_sha256": "b3eddf14c9bed18471a440fc69ad3984d6ac37c7246dff5f67e6811bb2551e7c",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.0616,
+      "usage": {
+        "input_tokens": 6401,
+        "cached_input_tokens": 0,
+        "output_tokens": 12254,
+        "reasoning_tokens": 8896
+      },
+      "elapsed_seconds": 90.478,
+      "prompt_sha256": "509ee14887bddcf522a14529e3a73ab2c538c44f17e5e26c3bb09123808a1738",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4666,
+      "usage": {
+        "input_tokens": 6904,
+        "cached_input_tokens": 0,
+        "output_tokens": 4568,
+        "reasoning_tokens": 3189
+      },
+      "elapsed_seconds": 43.25,
+      "prompt_sha256": "18cfd115079f0a4d51f2ed4c20be8ff021ecabbfe7612787532f1584ec699035",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4667,
+      "usage": {
+        "input_tokens": 12608,
+        "cached_input_tokens": 0,
+        "output_tokens": 3428,
+        "reasoning_tokens": 3079
+      },
+      "elapsed_seconds": 37.544,
+      "prompt_sha256": "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.2161,
+      "usage": {
+        "input_tokens": 7478,
+        "cached_input_tokens": 0,
+        "output_tokens": 1260,
+        "reasoning_tokens": 1135
+      },
+      "elapsed_seconds": 13.028,
+      "prompt_sha256": "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2244,
+      "usage": {
+        "input_tokens": 12608,
+        "cached_input_tokens": 12605,
+        "output_tokens": 2608,
+        "reasoning_tokens": 2271
+      },
+      "elapsed_seconds": 27.35,
+      "prompt_sha256": "96c3a5c59686d732a70e191031edc24c670591ba00c5dc488c9559876a3d3e25"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1789,
+      "usage": {
+        "input_tokens": 7478,
+        "cached_input_tokens": 7475,
+        "output_tokens": 2131,
+        "reasoning_tokens": 2000
+      },
+      "elapsed_seconds": 22.141,
+      "prompt_sha256": "e83a3a38013f015e1aea93f58f7651e716da0f1a9f7964c75f020eb78ba50409"
+    }
+  ],
+  "total_cost_jpy": 3.2379,
+  "total_calls": 7,
+  "elapsed_seconds": 276.361,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+        "related_fact_id": "F-010",
+        "origin": null,
+        "issue": "見出しは日本の下水道全体が長い管路から各戸浄化槽へ移る動きとして読めますが、Ledgerが示すのは地域や自治体ごとの計画・事例です。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=T); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A move is being planned for Japan’s sewer systems.",
+        "related_fact_id": "F-010",
+        "origin": null,
+        "issue": "日本の下水道システム全体で移行が計画されているという範囲の広い主張はLedgerにありません。 / 喜多方市の個別事例を、全国の下水道システムで移行が計画されているという広い主張の根拠として扱っています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。 / 地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。 / 喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The reason is that the pipes working underground are growing old.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "管路の老朽化は一部自治体の見直し理由として示されていますが、日本の下水道システムで移行が進む理由として一般化されています。 / 管路の老朽化が処理方式を移行する理由だと因果関係を付加しています。Ledgerは管路の老朽化状況を示しますが、方式移行の理由とは結び付けていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S2.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "However, passing 50 years does not mean that the pipes become unusable right away.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "公共下水道等の集合処理はLedgerにありますが、地下管路で汚水を送り処理するという説明は直接記載されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They use the work of microorganisms, but installing one is not the end of the process.",
+        "related_fact_id": "F-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, this is not a plan to get rid of sewers.",
+        "related_fact_id": "F-011",
+        "origin": null,
+        "issue": "一部の計画が既設の公共下水道区域を浄化槽へ切り替えるものではないことは示されていますが、「これは下水道をなくす計画ではない」という広い否定はLedgerに直接ありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_negation",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+        "related_fact_id": "F-010",
+        "origin": null,
+        "issue": "個別自治体の計画見直し事例を、老朽管に直面する地域一般が地域に適合するシステムへ移行しているという広い動向にしています。 / 地域特性に応じた方式選択の必要性を、老朽管への対応として地域が実際に方式変更しているという主張に結び付けています。 / 喜多方市の区域見直しを、複数の地域が老朽管対応として方式変更しているという一般的な動向に広げ、方式変更と老朽化を結び付けています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "個別の計画事例はありますが、管路の老朽化に伴い共有処理から各戸浄化槽へ移る地域があるという関係を、地域一般について述べています。 / 喜多方市の構想見直しを日本の複数地域に広げ、人口減少や更新費用ではなく管路の老朽化を主なきっかけとして示しています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 23,
+      "n_model_entries": 21,
+      "n_targets": 14,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 6,
+      "n_excluded_entries": 6,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4666,
+          "usage": {
+            "input_tokens": 6904,
+            "cached_input_tokens": 0,
+            "output_tokens": 4568,
+            "reasoning_tokens": 3189
+          },
+          "elapsed_seconds": 43.25,
+          "prompt_sha256": "18cfd115079f0a4d51f2ed4c20be8ff021ecabbfe7612787532f1584ec699035",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4666,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「管から各戸の浄化槽へ」という移行を日本の下水道全体の動きとして示していますが、Ledgerが裏付けるのは特定自治体の区域見直しや地域特性に応じた方式選択です。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "A move is being planned for Japan’s sewer systems.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "日本の下水道システムで移行が計画されているという広い主張で、Ledgerが示すのは個別自治体の計画です。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "What is moving is not people, but the system that treats wastewater.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人ではなく汚水処理システムが動くという導入上の比喩で、独立した具体的事実を追加していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.3",
+          "claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "地域ごとの方式選択は裏付けられていますが、集合処理から各戸浄化槽へ主役を移す計画を一般的な動きとして述べており、Ledgerの自治体事例の範囲を広げています。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S2.1",
+          "claim": "The reason is that the pipes working underground are growing old.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "管路の老朽化を移行の理由とする因果を広く述べていますが、Ledgerの因果関係は特定自治体の計画に関するもので、喜多方市については人口減少など他の要因も挙げられています。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S6.1",
+          "claim": "For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "喜多方市が汚水処理構想を見直したというF-012の内容を、区域を示す「map」と平易に言い換えています。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S6.2",
+          "claim": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "集合処理の説明に「地下の管を通して汚水を送る」という具体的な仕組みを加えていますが、照合対象のLedgerはその仕組みを明示していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S7.2",
+          "claim": "In other words, the treatment method is chosen to match how homes are arranged in each area.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "住宅の密集度など地域特性に応じて処理方式を選ぶというF-007の説明の言い換えです。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S9.1",
+          "claim": "In other words, this is not a plan to get rid of sewers.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「下水道をなくす計画ではない」という否定を日本全体の方針のように述べていますが、Ledgerが裏付けるのは自治体ごとの区域・方式の計画です。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "S9.3",
+          "claim": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "管路の老朽化を受けて地域に合う方式へ変更していると一般化していますが、Ledgerの因果関係と計画は個別自治体に限られ、全国の自治体が変更しているとは示されていません。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C11",
+          "key": "S9.4",
+          "claim": "The future of sewers may, surprisingly, be decided on a map.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「地図で決まるかもしれない」は締めの修辞で、Ledgerにない具体的な事実を主張していません。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "L1",
+          "claim": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "日本の管路老朽化と各戸浄化槽への移行を結び付け、集合処理からの転換を示していますが、Ledgerの事例は主に未整備区域などの計画変更で、既存の集合処理区域からの転換とは限らず、自治体事例を全国的に一般化しています。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C13",
+          "key": "S4.2",
+          "claim": "Even so, maintaining, rebuilding, and replacing old facilities will require more money.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "維持管理・更新に必要な費用が増えるというF-002の推計内容に沿っており、直後の文でも推計として示されています。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C14",
+          "key": "R:S5.4+S6.1",
+          "claim": "For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "喜多方市の見直しを、人口減少による使用料収入減と老朽化に伴う費用増を踏まえたものとするF-012の因果関係に沿っています。",
+          "fact_tags": [
+            "proper_noun",
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "18cfd115079f0a4d51f2ed4c20be8ff021ecabbfe7612787532f1584ec699035"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 40,
+    "n_judged_units": 30,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S5.4+S6.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 20,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S2.1",
+          "S4.1",
+          "S6.1",
+          "S6.2",
+          "S7.2",
+          "S8.2",
+          "S9.1",
+          "S9.3",
+          "S9.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.3": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "SUPPORTED",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S5.4+S6.1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6236,
+            "usage": {
+              "input_tokens": 6772,
+              "cached_input_tokens": 0,
+              "output_tokens": 6596,
+              "reasoning_tokens": 1698
+            },
+            "elapsed_seconds": 42.529,
+            "prompt_sha256": "b3eddf14c9bed18471a440fc69ad3984d6ac37c7246dff5f67e6811bb2551e7c",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S2.1": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S8.3": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "SUPPORTED",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S5.4+S6.1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+            "span": [
+              0,
+              68
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "見出しは日本の下水道全体が長い管路から各戸浄化槽へ移る動きとして読めますが、Ledgerが示すのは地域や自治体ごとの計画・事例です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-010"
+            ],
+            "model_claim": "A Sewer System Move: From Long Pipes to Septic Tanks for Each Home"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "A move is being planned for Japan’s sewer systems.",
+            "span": [
+              70,
+              120
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "日本の下水道システム全体で移行が計画されているという範囲の広い主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-010"
+            ],
+            "model_claim": "A move is being planned for Japan’s sewer systems."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "What is moving is not people, but the system that treats wastewater.",
+            "span": [
+              121,
+              189
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "直前の「日本の下水道システムで移行が計画されている」という未裏付けの主張を、移行対象が汚水処理システムだと特定しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-010"
+            ],
+            "model_claim": "What is moving is not people, but the system that treats wastewater."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+            "span": [
+              190,
+              357
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "The reason is that the pipes working underground are growing old.",
+            "span": [
+              359,
+              424
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "管路の老朽化は一部自治体の見直し理由として示されていますが、日本の下水道システムで移行が進む理由として一般化されています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "The reason is that the pipes working underground are growing old."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "However, passing 50 years does not mean that the pipes become unusable right away.",
+            "span": [
+              658,
+              740
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment.",
+            "span": [
+              1310,
+              1406
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "喜多方市の見直しは支持されていますが、記事にある「Fukushima Prefecture」という所在地はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+            "span": [
+              1407,
+              1505
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "公共下水道等の集合処理はLedgerにありますが、地下管路で汚水を送り処理するという説明は直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "In areas with shared treatment, wastewater is sent through underground pipes and treated together."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "In other words, the treatment method is chosen to match how homes are arranged in each area.",
+            "span": [
+              1959,
+              2051
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは住宅密度を含む地域特性に応じた選択を述べていますが、記事は住宅の配置に合わせて方式が選ばれると、それだけを決定要因としてまとめています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "In other words, the treatment method is chosen to match how homes are arranged in each area."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "They use the work of microorganisms, but installing one is not the end of the process.",
+            "span": [
+              2191,
+              2277
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "In other words, this is not a plan to get rid of sewers.",
+            "span": [
+              2352,
+              2408
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "一部の計画が既設の公共下水道区域を浄化槽へ切り替えるものではないことは示されていますが、「これは下水道をなくす計画ではない」という広い否定はLedgerに直接ありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-011"
+            ],
+            "model_claim": "In other words, this is not a plan to get rid of sewers."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+            "span": [
+              2515,
+              2603
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "個別自治体の計画見直し事例を、老朽管に直面する地域一般が地域に適合するシステムへ移行しているという広い動向にしています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-010"
+            ],
+            "model_claim": "As communities deal with aging pipes, they are changing to systems that fit their areas."
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "The future of sewers may, surprisingly, be decided on a map.",
+            "span": [
+              2604,
+              2664
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "将来の下水道のあり方が地図によって決まるという比喩的な予測・主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "The future of sewers may, surprisingly, be decided on a map."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+            "span": [
+              2681,
+              2788
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "個別の計画事例はありますが、管路の老朽化に伴い共有処理から各戸浄化槽へ移る地域があるという関係を、地域一般について述べています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S5.4+S6.1",
+          "S1.1",
+          "S1.3",
+          "S2.1",
+          "S4.2",
+          "S9.3"
+        ],
+        "unit_status": {
+          "S2.1": "DEVIATION",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "DEVIATION",
+          "S4.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "R:S5.4+S6.1": "DEVIATION",
+          "S8.1": "MATCH",
+          "S8.2": "MATCH",
+          "S1.3": "DEVIATION",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S9.2": "MATCH",
+          "S9.3": "DEVIATION",
+          "S1.1": "DEVIATION",
+          "S6.1": "MATCH",
+          "S6.3": "MATCH",
+          "S6.4": "MATCH",
+          "L1": "DEVIATION",
+          "S8.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S9.1": "UNMENTIONED",
+          "S9.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.0616,
+            "usage": {
+              "input_tokens": 6401,
+              "cached_input_tokens": 0,
+              "output_tokens": 12254,
+              "reasoning_tokens": 8896
+            },
+            "elapsed_seconds": 90.478,
+            "prompt_sha256": "509ee14887bddcf522a14529e3a73ab2c538c44f17e5e26c3bb09123808a1738",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "The reason is that the pipes working underground are growing old.",
+            "span": [
+              359,
+              424
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "管路の老朽化が処理方式を移行する理由だと因果関係を付加しています。Ledgerは管路の老朽化状況を示しますが、方式移行の理由とは結び付けていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "The reason is that the pipes working underground are growing old."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Even so, maintaining, rebuilding, and replacing old facilities will require more money.",
+            "span": [
+              741,
+              828
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "将推計上の費用増加を、確定した将来の必要額のように「will require」と断定しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-002"
+            ],
+            "model_claim": "Even so, maintaining, rebuilding, and replacing old facilities will require more money."
+          },
+          {
+            "unit_id": "R:S5.4+S6.1",
+            "unit_ids": [
+              "R:S5.4+S6.1"
+            ],
+            "claim_text": "For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment.",
+            "span": [
+              1310,
+              1406
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "全国的な経営環境を厳しくする要因を、喜多方市が構想を見直した具体的な理由へ結び付けています。この市への因果関係はF-003の範囲では確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "This is quite a difficult puzzle for sewer system finances. For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+            "span": [
+              190,
+              357
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+            "span": [
+              2515,
+              2603
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "地域特性に応じた方式選択の必要性を、老朽管への対応として地域が実際に方式変更しているという主張に結び付けています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "As communities deal with aging pipes, they are changing to systems that fit their areas."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "A move is being planned for Japan’s sewer systems.",
+            "span": [
+              70,
+              120
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "喜多方市の個別事例を、全国の下水道システムで移行が計画されているという広い主張の根拠として扱っています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "A move is being planned for Japan’s sewer systems."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+            "span": [
+              190,
+              357
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+            "span": [
+              2515,
+              2603
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "喜多方市の区域見直しを、複数の地域が老朽管対応として方式変更しているという一般的な動向に広げ、方式変更と老朽化を結び付けています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "As communities deal with aging pipes, they are changing to systems that fit their areas."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+            "span": [
+              2681,
+              2788
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "喜多方市の構想見直しを日本の複数地域に広げ、人口減少や更新費用ではなく管路の老朽化を主なきっかけとして示しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S1.1",
+        "S1.3",
+        "S2.1",
+        "S9.3"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S4.1",
+        "S6.1",
+        "S6.2",
+        "S7.2",
+        "S8.2",
+        "S9.1",
+        "S9.4",
+        "T"
+      ],
+      "r5_only": [
+        "R:S5.4+S6.1",
+        "S4.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+        "span": [
+          0,
+          68
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "見出しは日本の下水道全体が長い管路から各戸浄化槽へ移る動きとして読めますが、Ledgerが示すのは地域や自治体ごとの計画・事例です。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-010"
+        ],
+        "model_claims": [
+          "A Sewer System Move: From Long Pipes to Septic Tanks for Each Home"
+        ]
+      },
+      {
+        "claim_text": "A move is being planned for Japan’s sewer systems.",
+        "span": [
+          70,
+          120
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "日本の下水道システム全体で移行が計画されているという範囲の広い主張はLedgerにありません。",
+          "喜多方市の個別事例を、全国の下水道システムで移行が計画されているという広い主張の根拠として扱っています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-010",
+          "F-012"
+        ],
+        "model_claims": [
+          "A move is being planned for Japan’s sewer systems."
+        ]
+      },
+      {
+        "claim_text": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+        "span": [
+          190,
+          357
+        ],
+        "unit_ids": [
+          "S1.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "地域に応じた方式選択は支持されますが、下水処理の主役が長い地下管路から各戸浄化槽へ移るという転換を一般化しています。",
+          "地域ごとの方式選択が必要という説明を、全国で集合処理から各戸浄化槽へ主役を移す計画があるという主張に広げています。",
+          "喜多方市の構想見直しを、全国の地域で集合処理から各戸浄化槽へ主役を移す計画として一般化しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007",
+          "F-012"
+        ],
+        "model_claims": [
+          "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home."
+        ]
+      },
+      {
+        "claim_text": "The reason is that the pipes working underground are growing old.",
+        "span": [
+          359,
+          424
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "管路の老朽化は一部自治体の見直し理由として示されていますが、日本の下水道システムで移行が進む理由として一般化されています。",
+          "管路の老朽化が処理方式を移行する理由だと因果関係を付加しています。Ledgerは管路の老朽化状況を示しますが、方式移行の理由とは結び付けていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-012",
+          "F-001"
+        ],
+        "model_claims": [
+          "The reason is that the pipes working underground are growing old."
+        ]
+      },
+      {
+        "claim_text": "However, passing 50 years does not mean that the pipes become unusable right away.",
+        "span": [
+          658,
+          740
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In areas with shared treatment, wastewater is sent through underground pipes and treated together.",
+        "span": [
+          1407,
+          1505
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "公共下水道等の集合処理はLedgerにありますが、地下管路で汚水を送り処理するという説明は直接記載されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "In areas with shared treatment, wastewater is sent through underground pipes and treated together."
+        ]
+      },
+      {
+        "claim_text": "They use the work of microorganisms, but installing one is not the end of the process.",
+        "span": [
+          2191,
+          2277
+        ],
+        "unit_ids": [
+          "S8.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In other words, this is not a plan to get rid of sewers.",
+        "span": [
+          2352,
+          2408
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "一部の計画が既設の公共下水道区域を浄化槽へ切り替えるものではないことは示されていますが、「これは下水道をなくす計画ではない」という広い否定はLedgerに直接ありません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-011"
+        ],
+        "model_claims": [
+          "In other words, this is not a plan to get rid of sewers."
+        ]
+      },
+      {
+        "claim_text": "As communities deal with aging pipes, they are changing to systems that fit their areas.",
+        "span": [
+          2515,
+          2603
+        ],
+        "unit_ids": [
+          "S9.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "個別自治体の計画見直し事例を、老朽管に直面する地域一般が地域に適合するシステムへ移行しているという広い動向にしています。",
+          "地域特性に応じた方式選択の必要性を、老朽管への対応として地域が実際に方式変更しているという主張に結び付けています。",
+          "喜多方市の区域見直しを、複数の地域が老朽管対応として方式変更しているという一般的な動向に広げ、方式変更と老朽化を結び付けています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-010",
+          "F-007",
+          "F-012"
+        ],
+        "model_claims": [
+          "As communities deal with aging pipes, they are changing to systems that fit their areas."
+        ]
+      },
+      {
+        "claim_text": "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+        "span": [
+          2681,
+          2788
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "個別の計画事例はありますが、管路の老朽化に伴い共有処理から各戸浄化槽へ移る地域があるという関係を、地域一般について述べています。",
+          "喜多方市の構想見直しを日本の複数地域に広げ、人口減少や更新費用ではなく管路の老朽化を主なきっかけとして示しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-012"
+        ],
+        "model_claims": [
+          "As Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes."
+        ]
+      }
+    ],
+    "n_union_candidates": 10,
+    "n_model_candidates": 8,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.6852,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 21,
+    "n_targets": 14,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 6,
+    "n_excluded_entries": 6,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4666,
+    "effort": "medium",
+    "prompt_sha256": "18cfd115079f0a4d51f2ed4c20be8ff021ecabbfe7612787532f1584ec699035"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 6
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 3.2379,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-07T06:42:48",
+    "ledger_sha256": "8bc01c127c38a7f50266f6ea8f5f5c92de07eee6da1b92ea82f379bc9f22a338",
+    "article_sha256": "3d2070ad567117e0296e19f2a5e41fc81ecc3339af5dbab8df051ffa281f5a8b",
+    "source_article_sha256": "9f4fe000bd570986da0c2d2acec8497c166a36b080f9639b1ca790a6cdaa7e15",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1/checker",
+      "ledger_path": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1/b1b/article.md",
+      "source_path": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

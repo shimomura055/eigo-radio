@@ -26,7 +26,13 @@ VARIANTS = ("control", "nb")
 SEP = "\n\n"
 FREEZE_PATH = "er052_output/open233_ledger_polysemy_note_01/phase0/FREEZE_T01_CONFIG.json"
 CHECKER_TOOL = "er052_output/open233_ledger_clarity_p_trial_01/tools/run_checker_after_p01.py"
-RUNS_ROOT = "er052_output/open233_polysemy_trial_02/runs"
+DEFAULT_RUNS_ROOT = "er052_output/open233_polysemy_trial_02/runs"
+RUNS_ROOT_ENV = "OPEN233_RUNS_ROOT"
+RUNS_ROOT = DEFAULT_RUNS_ROOT  # 後方互換(既定値)。実際の検証は get_runs_root() を使う
+
+
+def get_runs_root() -> str:
+    return (os.environ.get(RUNS_ROOT_ENV) or DEFAULT_RUNS_ROOT).replace("\\", "/").rstrip("/")
 PHASE_DEFAULT_BUDGET = {"phase1": 12.0, "phase2": 10.0}
 
 PREFIX_ENV = "OPEN233_NOTE_PREFIX"
@@ -164,8 +170,9 @@ def main(argv=None) -> int:
     if not os.path.exists(args.ledger_txt):
         raise SystemExit(f"--ledger-txt が無い: {args.ledger_txt}")
     norm = args.out_dir.replace("\\", "/")
-    if not norm.startswith(RUNS_ROOT + "/") or f"/{variant}/" not in norm + "/":
-        raise SystemExit(f"out_dirは {RUNS_ROOT}/<slug>/{variant}/rep<k> 規約で、variantと一致させる: {args.out_dir}")
+    runs_root = get_runs_root()
+    if not norm.startswith(runs_root + "/") or f"/{variant}/" not in norm + "/":
+        raise SystemExit(f"out_dirは {runs_root}/<slug>/{variant}/rep<k> 規約で、variantと一致させる: {args.out_dir}")
     assert_fresh_out_dir(args.out_dir, args.phase)
 
     prov = {

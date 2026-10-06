@@ -1,10 +1,11 @@
 {
- "_comment": "過学習チェック用holdout(5テーマ以外)。A02/small_bagは参考。slug指定でrun_patterns_p03.pyから実行可。",
+ "_comment": "過学習チェック用holdout(5テーマ以外)。A02/small_bag/A01。slug指定でrun_patterns_p03.pyから実行可。expected_max=対象定義に照らした期待付与数の上限(Sonnet事前見積もり、人手確定ではない)。targetsは評価参考のみ。",
  "themes": {
   "A02": {
    "txt": "er003_output/en_direct_vfl_01/A02/verified_fact_ledger.txt",
    "draft": "er003_output/en_direct_vfl_01/A02/fact_ledger_draft.json",
    "verif": "er003_output/en_direct_vfl_01/A02/fact_ledger_verification.json",
+   "expected_max": 2,
    "targets": {
     "POL-01": {
      "type": "完了/予定",
@@ -18,8 +19,17 @@
   },
   "small_bag": {
    "txt": "er019_output/family_x_b3_diversity_trial_01/small_bag/run_01/research_ledger/verified_fact_ledger.txt",
+   "expected_max": 1,
    "targets": {},
    "_note": "期待0〜1件(正解表なし。付与数・内容のみ観察)"
+  },
+  "A01": {
+   "txt": "er003_output/en_direct_vfl_02/A01/verified_fact_ledger.txt",
+   "draft": "er003_output/en_direct_vfl_02/A01/fact_ledger_draft.json",
+   "verif": "er003_output/en_direct_vfl_02/A01/fact_ledger_verification.json",
+   "expected_max": 2,
+   "targets": {},
+   "_note": "P0a棚卸しの未使用テーマ(スポーツ試合記録、5テーマ・A02以外)。期待0〜2件。Sonnetの事前見積もり(対象定義に照らす。人手確定ではない): 勝者/敗者の進出先(決勝と3位決定戦)の取り違えを招く1件が最有力、次点で得点者とクロス提供者の主体取り違えを扱う1件。それ以外(記録・数値・所属)は対象外のはず。この2件を超える付与は誤付与候補。"
   }
  }
 }

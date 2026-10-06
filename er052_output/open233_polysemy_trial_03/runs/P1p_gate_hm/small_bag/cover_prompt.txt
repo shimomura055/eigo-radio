@@ -1,0 +1,71 @@
+下記の各項目は、「fact_id」「R(誤読の候補となる反転命題)」「existing_notes(その台帳factに既に付いている執筆者向け注意書き)」の組です。各項目について、existing_notesがRを(同じ意味の逆転として)明示的に禁じているかだけを判定してください。
+- true: existing_notesの禁止の文言が、Rと同じ意味の逆転を明示的に禁じている。
+- false: existing_notesが触れていない、または別の逆転(別の成分・別の対象の誤読)だけを扱っている、あるいは補足・範囲の説明にとどまる。
+判定はexisting_notesとRの文言だけを根拠にし、推測で補わないでください。迷うときはfalseにしてください。
+
+【出力】JSONのみ。入力の全項目について1要素ずつ(省略しない)返す。reasonは1行。
+{"covers":[{"fact_id":"","existing_note_covers":false,"reason":""}]}
+
+【入力】
+[
+ {
+  "fact_id": "F001",
+  "R": "消費者が購入するFW25バッグの多くも日常使いできる大きさだった",
+  "existing_notes": "Use as counterevidence to a simple claim that micro bags broadly returned in 2025; do not state that micro bags disappeared."
+ },
+ {
+  "fact_id": "F002",
+  "R": "消費者の購入では小型ミニが大容量トートに取って代わられた",
+  "existing_notes": "Supports the limitation that recent mini-bag attention has not been a continuous, uninterrupted industry-wide shift."
+ },
+ {
+  "fact_id": "F003",
+  "R": "消費者市場でも特大と極小のバッグが同時に選ばれた",
+  "existing_notes": "Useful evidence for a polarized-size interpretation; avoid converting runway coexistence into proof of equal consumer demand."
+ },
+ {
+  "fact_id": "F004",
+  "R": "消費者の購入でも小型バッグと超大型バッグが広がった",
+  "existing_notes": "Strong evidence that small and oversized bags were visible at the same time in 2026; supports polarization rather than a single-direction trend."
+ },
+ {
+  "fact_id": "F005",
+  "R": "消費者の日常使用でも小型と大型のバッグが使われた",
+  "existing_notes": "Supports simultaneous visibility of accessory-like small bags and highly functional larger bags."
+ },
+ {
+  "fact_id": "F006",
+  "R": "消費者がミニバッグを実際に広く使った",
+  "existing_notes": "Use as evidence of renewed visibility in styling coverage and selected runway moments, not as proof that mini bags are dominant across the market."
+ },
+ {
+  "fact_id": "F007",
+  "R": "消費者は小型バッグを必需品と演出のために実際に選んだ",
+  "existing_notes": "Attribute the explanation to ELLE; do not generalize it into a proven mass-market behavioral driver."
+ },
+ {
+  "fact_id": "F008",
+  "R": "購入者はこのミナウディエールを実用より意味のために選んだ",
+  "existing_notes": "Useful for accessory-first framing; keep the scope confined to Bulgari's project and its stated creative intent."
+ },
+ {
+  "fact_id": "F009",
+  "R": "消費者の秋の購入も小型から大きめバッグへ戻った",
+  "existing_notes": "Counterbalances ELLE's September mini-bag emphasis and supports a seasonal, mixed-size reading."
+ },
+ {
+  "fact_id": "F010",
+  "R": "市場全体の販売でもトップハンドルやトートが増えた",
+  "existing_notes": "Supports a broader accessory and throwback-bag interest, but not a specific claim that micro bags are driving the category."
+ },
+ {
+  "fact_id": "F015",
+  "R": "実際の購入でもミニバッグとトップハンドルバッグが増えた",
+  "existing_notes": "Evidence of renewed interest within a resale/search platform; keep the platform-specific scope explicit."
+ },
+ {
+  "fact_id": "F018",
+  "R": "Coachの消費者購入でも大型メッセンジャーとミニバッグが選ばれた",
+  "existing_notes": "Useful brand-level example of size polarization; keep the conclusion limited to Coach's collection."
+ }
+]

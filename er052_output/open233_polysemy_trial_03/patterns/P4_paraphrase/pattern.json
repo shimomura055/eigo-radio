@@ -1,0 +1,36 @@
+{
+ "max_chars": 120,
+ "self_check_policy": "derivable_only",
+ "stage2_existing_notes": true,
+ "prefix_file": "prefix.txt",
+ "examples_file": "examples.txt",
+ "stage1_output_key": "judgments",
+ "stage2_output_key": "notes",
+ "compress_source": "stage1",
+ "pattern": "P4_paraphrase",
+ "mode": "p04_gate",
+ "stage1_repeats": 1,
+ "judge_pass": [
+  "high",
+  "medium"
+ ],
+ "medium_requires_stable": false,
+ "prompt_files": [
+  "stage1_prompt.txt",
+  "stage1_5_prompt.txt",
+  "cover_prompt.txt",
+  "stage2_prompt.txt"
+ ],
+ "hypothesis": "P4(最終要素ループ): P1'ベース。H11: 方向が明示されない表現(predicate_direction_explicit=false)については、その表記を平易な日本語に言い換えた候補を2つ以上挙げ、各言い換えの両方向の読み(変化後に対象が有る/無い)をRとして必ず列挙し、極性型Rを最優先で採用する(一般規則)。H12: stage1で既存notesを戻す。ただしRの列挙は既存notesに依存せず、既存notesが禁じている読みと別の読みも必ず検討する。coverがtrueのRは除外せず、既存notesと同趣旨でも生成noteを出してよい(重複は評価で副指標)。H13: ハーネス欠陥修正 (a)r_echo照合の末尾句読点正規化 (b)R lintの語内一致誤検出(両側が漢字に挟まれた語内一致は除外) (c)「<R>のではない」(Rを〜した名詞句化) (d)台帳外英語照合は略記・大文字略語を許可 (e)判定役verdict欠落は1回再問合せ(コード)。",
+ "pass_rule": "stage1: reversibleかつ採用R成立(R lint合格)。素通り(pred false+polarity)または判定役high/medium(blocking_word限定語はlow->medium)。cover=falseのみstage2。stage2: derivable=true・r_echo一致・noteのR部分一致・lint・英語が台帳実在のものだけ採用。",
+ "hypotheses": {
+  "H11": "方向不明示の表現は平易な言い換え2つ以上×有る/無い両方向をR列挙(極性型最優先)",
+  "H12": "stage1に既存notesを戻す(列挙は既存notes非依存、別の読みも検討、cover=trueでも除外しない)",
+  "H13": "ハーネス欠陥修正(a)〜(e)"
+ },
+ "diff_from_other": "P1'との差: stage1(言い換え列挙・既存notes復帰)・stage2テンプレート(表記'X'=状態。Rのではない)・examples(方向不明示の合成正例追加)・cover record-only(stage2へ送らない除外をしない)。",
+ "stage1_existing_notes": true,
+ "cover_record_only": true,
+ "stage2_already_prohibited": false,
+ "common_stage1": "stage1_prompt_p4.txt"
+}

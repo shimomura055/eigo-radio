@@ -1,0 +1,79 @@
+# t04 段別ファネル(対象fact+rollback gate_fact。機械出力)
+
+- **P4_paraphrase/meta MUSE-HC-012**
+  - stage1: run1: reversible=True pred_explicit=False amb='ロールバックした' 極性型R含む=True 言い換え=['人間コンシェルジュ機能を一時的に止めた|有:人間コンシェルジュ機能は残り、後で再開できる|無:人間コンシェルジュ機能自体がなくなる', '以前の状態に戻した|有:人間コンシェルジュ機能が使える状態に戻る|無:人間コンシェルジュ機能が使えない状態に戻る'] R=['Metaは人間コンシェルジュ機能を完全に廃止した[polarity]']
+  - R採用: Metaは人間コンシェルジュ機能を完全に廃止した [polarity] route=bypass run_pass=[True]
+  - 判定役: 素通り(pred=false+polarity)
+  - cover: 既存notesあり=True covers_R=False dup_of_existing=None (機能の完全廃止という逆転を明示的に禁じておらず、サービス全体と人間コンシェルジュ機能の範囲を区別しているだけ。)
+  - stage2: result=ok r_echo一致=True R被覆=1.0 lint=[] 台帳外英語=[]
+  - 最終: 付与: 注意(逆転): 表記'ロールバックした'=Metaの人間コンシェルジュ機能は当面提供されていない。Metaは人間コンシェルジュ機能を完全に廃止したのではない。
+- **P4_paraphrase/meta MUSE-HC-014**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['Metaは準備や開示を整えず電話機能を公開した[stage]']
+  - R採用: Metaは準備や開示を整えず電話機能を公開した [stage] route=judge run_pass=[True]
+  - 判定役 A: medium blocking_word='説明した' reason=「説明した」は実際の公開ではなく発言を示すため、Rと両立させるにはこの語を無視して公開したと読む必要がある
+  - cover: 既存notesあり=True covers_R=False dup_of_existing=None (準備や開示を整えず公開したという逆転には触れず、一般機能と実験の区別のみを示している。)
+  - stage2: result=ok r_echo一致=True R被覆=1.0 lint=[] 台帳外英語=[]
+  - 最終: 付与: 注意(逆転): Metaが電話機能を、準備が整い適切な開示ができる場合にのみ公開展開する。Metaは準備や開示を整えず電話機能を公開したのではない。
+- **P4_paraphrase/hormuz HF-009**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['Brent先物は撤回後、発表前に近い高水準にならず低い水準になった[interim_final]']
+  - R採用: Brent先物は撤回後、発表前に近い高水準にならず低い水準になった [interim_final] route=judge run_pass=[True]
+  - 判定役 A: low blocking_word='高水準' reason=高水準に戻ったという語が、発表前に近い高水準にならず低いままだったというRと明示的に矛盾する
+  - 最終: 付与なし dropped_by=['stage1_5_low']
+- **P4_paraphrase/hormuz HF-007**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['米国は湾岸案件を実施し、20％償還料が無い状態になった[stage]']
+  - R採用: 米国は湾岸案件を実施し、20％償還料が無い状態になった [stage] route=judge run_pass=[True]
+  - 判定役 A: medium blocking_word='投稿' reason=投稿は置き換えを表明しただけで実施を示さず、実施済みと読むにはこの語を無視する必要がある
+  - cover: 既存notesあり=True covers_R=False dup_of_existing=None (7月13日の提案と投稿の時系列に関する注意であり、湾岸案件の実施や20％償還料がない状態を禁じていない。)
+  - stage2: result=ok r_echo一致=True R被覆=1.0 lint=[] 台帳外英語=[]
+  - 最終: 付与: 注意(逆転): トランプ大統領が20％償還料について、湾岸諸国による対米貿易・投資案件を用いる方針を投稿で示した段階で、実施は完了していない。米国は湾岸案件を実施し、20％償還料が無い状態になったのではない。
+- **P4_paraphrase/space_weapons F-009**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['ロシアは核兵器を搭載した衛星を軌道上に配備した[stage]']
+  - R採用: ロシアは核兵器を搭載した衛星を軌道上に配備した [stage] route=judge run_pass=[True]
+  - 判定役 A: low blocking_word='開発' reason=開発という状態は衛星を軌道上に配備したというRと明示的に矛盾する
+  - 最終: 付与なし dropped_by=['stage1_5_low']
+- **P4_paraphrase/space_weapons F-001**
+  - stage1: run1: reversible=False pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=-
+  - R採用: None [None] route=drop run_pass=[False]
+  - 最終: 付与なし dropped_by=['reversible=false']
+- **P4_paraphrase/space_weapons F-002**
+  - stage1: run1: reversible=False pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=-
+  - R採用: None [None] route=drop run_pass=[False]
+  - 最終: 付与なし dropped_by=['reversible=false']
+- **P4_paraphrase/space_weapons F-007**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['ロシアは小型衛星からペレットを放出する兵器を実戦配備した[stage]']
+  - R採用: ロシアは小型衛星からペレットを放出する兵器を実戦配備した [stage] route=judge run_pass=[True]
+  - 判定役 A: low blocking_word='開発中' reason=開発中は兵器が完成して実戦配備されたというRの状態と明示的に矛盾する
+  - 最終: 付与なし dropped_by=['stage1_5_low']
+- **P4_paraphrase/sewer F-011**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['焼津市は残る未整備区域すべてを浄化槽推進区域と決定した[interim_final]']
+  - R採用: 焼津市は残る未整備区域すべてを浄化槽推進区域と決定した [interim_final] route=judge run_pass=[True]
+  - 判定役 A: high blocking_word='' reason=未整備区域の転換は残る区域すべての浄化槽推進区域決定とも両立し、範囲や決定を妨げる語がない
+  - cover: 既存notesあり=True covers_R=True dup_of_existing=True (既存注記は『決定した』と断定せず、計画方式を転換・検討したと記述するよう明示しており、Rの決定済みという逆転を禁じている。)
+  - stage2: result=ok r_echo一致=True R被覆=1.0 lint=[] 台帳外英語=[]
+  - 最終: 付与: 注意(逆転): 焼津市が残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った段階。焼津市は残る未整備区域すべてを浄化槽推進区域と決定したのではない。
+- **P4_paraphrase/sewer F-010**
+  - stage1: run1: reversible=False pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=-
+  - R採用: None [None] route=drop run_pass=[False]
+  - 最終: 付与なし dropped_by=['reversible=false']
+- **P4_paraphrase/sewer F-016**
+  - stage1: run1: reversible=False pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=-
+  - R採用: None [None] route=drop run_pass=[False]
+  - 最終: 付与なし dropped_by=['reversible=false']
+- **P4_paraphrase/ai_control EVID-006**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['Claude Opus 4は実在の技術者を脅迫した[stage]']
+  - R採用: Claude Opus 4は実在の技術者を脅迫した [stage] route=judge run_pass=[True]
+  - 判定役 A: medium blocking_word='試みた' reason=試みたは脅迫の実行を試したことにとどまり、実際に脅迫を完遂したと読むにはこの語を無視する必要がある
+  - cover: 既存notesあり=True covers_R=True dup_of_existing=True (実在の技術者を脅迫したとは述べないよう明示的に禁じている。)
+  - stage2: result=ok r_echo一致=True R被覆=1.0 lint=[] 台帳外英語=[]
+  - 最終: 付与: 注意(逆転): Claude Opus 4が実在しない会社の架空シナリオで技術者の情報を使う脅迫を試みた。Claude Opus 4は実在の技術者を脅迫したのではない。
+- **P4_paraphrase/ai_control EVID-004**
+  - stage1: run1: reversible=True pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=['一部モデルは促されずに評価で意図的に性能を落とした[cause_effect]']
+  - R採用: 一部モデルは促されずに評価で意図的に性能を落とした [cause_effect] route=judge run_pass=[True]
+  - 判定役 A: high blocking_word='' reason=意図的に性能を落としたという表現は、促されたか否かを限定しておらず、圧縮文とRは両立する
+  - cover: 既存notesあり=True covers_R=True dup_of_existing=True (促されない自発的なサンドバッギングは検出されなかったと明示している。)
+  - stage2: result=ok r_echo一致=True R被覆=1.0 lint=[] 台帳外英語=[]
+  - 最終: 付与: 注意(逆転): 一部モデルが、促されると管理された評価で戦略的に性能を落とせた。一部モデルは促されずに評価で意図的に性能を落としたのではない。
+- **P4_paraphrase/ai_control CONTROL-001**
+  - stage1: run1: reversible=False pred_explicit=True amb='' 極性型R含む=False 言い換え=- R=-
+  - R採用: None [None] route=drop run_pass=[False]
+  - 最終: 付与なし dropped_by=['reversible=false']

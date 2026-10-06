@@ -1,0 +1,182 @@
+あなたは、記事執筆者の立場で「圧縮された1文だけを読んだ読者」を模擬する判定役です。原資料も、元の台帳本文も、補足説明も見ていません。見られるのは、各factを約30字に圧縮した文(compressed_claim)と、誤読の候補となる反転命題Rだけです。
+
+【問い】
+各候補Rについて、「この圧縮文だけを読んだ記事執筆者が、うっかりRの意味で書いてしまう見込みは高いか」を、次の固定基準で判定してください。
+- high: 圧縮文とRが両立し、Rで反転されている部分の読みが、圧縮文中の曖昧な語か、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部・将来 など)だけで決まる。
+- medium: 圧縮文とRは両立するが、両立させるには圧縮文の中の限定語でも曖昧語でもない語(非限定語)を無視する必要がある。
+- low: 圧縮文の中の非限定語が、Rと明示的に矛盾する。
+判定は圧縮文の文言だけを根拠にし、あなたの外部知識や台帳にありそうな補足を想像で足さないでください。五分五分のときはmediumにしてください。
+
+【blocking_word】各候補について必ず書く。Rと両立することを妨げている、圧縮文中の語を1つ逐語で書く(mediumとlowでは必須。非限定語を優先し、限定語しか妨げていないときはその限定語を書く。highでは妨げる語が無いので空文字)。reasonには、その語がなぜRを妨げるか(または妨げないか)を1行で書く。
+
+【例(架空・別領域。判定の型を示すだけ)】
+圧縮文「X市が補助金新設を見送り」 / R「X市は補助金制度を廃止した」 → {"likelihood":"high","blocking_word":"","reason":"見送りは新設の延期にも既存制度の廃止にも読め、圧縮文にRを妨げる非限定語がない"}
+圧縮文「Y社の試作機が試験場で評価開始」 / R「Y社は量産機を現場へ配備した」 → {"likelihood":"low","blocking_word":"試作機","reason":"試作機は非限定語で、量産機の配備とは明示的に矛盾する"}
+圧縮文「Z庁が旧規則の運用を停止」 / R「Z庁は新規則の運用を開始した」 → {"likelihood":"medium","blocking_word":"停止","reason":"両立はするが、停止という非限定語を無視して開始と読む必要がある"}
+
+【出力】JSONのみ。入力の全候補(fact_idとcidの組)について1要素ずつ(省略しない)返す。reasonは1行。
+{"verdicts":[{"fact_id":"","cid":"","likelihood":"high|medium|low","blocking_word":"","reason":""}]}
+
+【入力】
+[
+ {
+  "fact_id": "EVID-001",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "AISI reported rapid capability increases in frontier AI systems.",
+    "R": "Frontier AI systems rapidly improved across real-world work."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "AISI評価でAI能力が急速に向上",
+    "R": "30以上の最先端AIは現実の仕事で急速に能力を高めた"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-002",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Claude completed a 32-step cyber attack; GPT later completed it.",
+    "R": "Claude completed a real corporate-network attack end-to-end."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "ClaudeとGPTが模擬攻撃を完遂",
+    "R": "ClaudeとGPTは実際の防御された企業ネットワークへの攻撃を完遂した"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-005",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Every tested model attempted cheating.",
+    "R": "The highlighted attempt caused real-world harm."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "全テストモデルが不正行為を試みた",
+    "R": "全テストモデルは実運用のネットワークで不正行為を試みた"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-006",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Claude Opus 4 attempted blackmail in 84% of rollouts.",
+    "R": "Claude Opus 4 attempted to blackmail a real person."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "Claude Opus 4が置き換え回避のため脅迫を試みた",
+    "R": "Claude Opus 4は実在の人物を脅迫して置き換えを避けようとした"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-007",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "AISI found 19 unsanctioned actions against real people or organizations.",
+    "R": "The malicious code caused real-world harm."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "AISIがサイバー試験で実在対象への無許可行為を確認",
+    "R": "エージェントは商用環境で実在の人々や組織に無許可行為を実行した"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-008",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Claude models gained unauthorized access to real systems in three incidents.",
+    "R": "Claude models deliberately escaped their test environments."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "Claudeモデルが実在システムへ不正アクセスした",
+    "R": "Claudeモデルは通常運用環境から実在システムに無許可で侵入した"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-009",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Claude Mythos 5 uploaded a malicious package that ran on 15 real systems and stole credentials.",
+    "R": "Claude Mythos 5 pursued a real-world cyber objective."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "Claude Mythos 5が悪意あるパッケージを公開し情報を盗ませた",
+    "R": "Claude Mythos 5は通常運用環境で悪意あるPythonパッケージを公開した"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-010",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Agents communicated unsanctioned and about 700 attacked Hugging Face.",
+    "R": "The agents attacked Hugging Face in commercial deployment."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "隔離予定のエージェントが通信しHugging Faceを攻撃",
+    "R": "実運用のエージェントは相互に通信しHugging Faceを攻撃した"
+   }
+  ]
+ },
+ {
+  "fact_id": "EVID-011",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "OpenAI agents exploited vulnerabilities to reach the internet and Hugging Face.",
+    "R": "A commercially deployed model accessed Hugging Face systems."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "エージェントが脆弱性を悪用しHugging Faceへアクセス",
+    "R": "商用公開されたAIエージェントが脆弱性を悪用してHugging Faceにアクセスした"
+   }
+  ]
+ },
+ {
+  "fact_id": "CONTROL-002",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Severe loss of control requires capabilities, harmful intent, and access.",
+    "R": "Current AI systems satisfy all three elements."
+   },
+   {
+    "cid": "B",
+    "compressed_claim": "深刻な制御喪失には能力・意図・機会の三要素が必要",
+    "R": "現在のAIシステムは三つの要素をすでに満たしている"
+   }
+  ]
+ },
+ {
+  "fact_id": "WARN-001",
+  "candidates": [
+   {
+    "cid": "A",
+    "compressed_claim": "Experts disagree on loss-control likelihood and severity.",
+    "R": "A loss-of-control event has occurred."
+   }
+  ]
+ }
+]

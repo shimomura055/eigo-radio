@@ -1,0 +1,30 @@
+{
+ "max_chars": 120,
+ "self_check_policy": "derivable_only",
+ "stage2_existing_notes": true,
+ "prefix_file": "prefix.txt",
+ "examples_file": "examples.txt",
+ "stage1_output_key": "judgments",
+ "stage2_output_key": "notes",
+ "compress_source": "stage1",
+ "pattern": "P2p_stable",
+ "mode": "p04_stable",
+ "stage1_repeats": 2,
+ "judge_pass": [
+  "high",
+  "medium"
+ ],
+ "medium_requires_stable": true,
+ "prompt_files": [
+  "stage1_prompt.txt",
+  "stage1_5_prompt.txt",
+  "cover_prompt.txt",
+  "stage2_prompt.txt"
+ ],
+ "hypothesis": "P2'(stage1安定化+Opus必須修正1〜9): stage1を2回実行(既存notes伏せ)。判定役は常に通し(P2旧直行規則は廃止)、highは通過、mediumはstage1が2回とも通過したfactのみ通過、lowは落とす。素通り(pred false+polarity)・cover・stage2はP1'と同一。",
+ "pass_rule": "stage1を2回。判定役: high=通過、medium=2回とも通過のfactのみ通過、low=落とす(blocking_wordが限定語ならlow->medium)。以降P1'と同一。",
+ "hypotheses": {
+  "H11": "TRIAL-04 Opus必須修正(P1'/P2'/P3共通): (1)stage1は既存notes_for_writerを伏せ、predicate_direction_explicit(変化後の有/無を述語の語抜きで特定できるか)とambiguous_expressionを出力。false かつ採用Rがpolarityなら判定役を素通りしstage2へ。Rの列挙は述語の極性反転を最初に検討。(2)R・変化後の状態からvague語(戻す/元に戻した/復元/変更/見直し/改める/調整・当該factの曖昧表記)をコードlintで排除、違反はlint_rejected.json。(4)existing_note_coversはR採用後の別の小さなcall(cover_prompt)で判定、coversならstage2へ送らず、stage2には『既に禁じ済み=繰り返さない一覧』としてだけ渡す。(5)判定役は固定基準(high/medium/low)+blocking_word必須、blocking_wordが限定語ならlow→mediumへコード昇格。(6)Noteは「表記'<曖昧表記>'」形式、英語は台帳に実在する語のみ。(7)stage2はr_echoでRを再掲し、一致・noteのR部分一致をコード照合。"
+ },
+ "diff_from_other": "stage1/stage2/cover/judge/examples/prefixは3patternで同一内容。差は判定役の通過規則(P2'のmedium条件)・stage1の回数・判定役へ渡す圧縮文の作り方のみ。"
+}

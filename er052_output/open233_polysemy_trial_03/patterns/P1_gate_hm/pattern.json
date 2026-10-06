@@ -1,0 +1,30 @@
+{
+ "pattern": "P1_gate_hm",
+ "max_chars": 120,
+ "self_check_policy": "derivable_only",
+ "stage2_existing_notes": true,
+ "prefix_file": "prefix.txt",
+ "examples_file": "examples.txt",
+ "stage1_output_key": "judgments",
+ "stage2_output_key": "notes",
+ "mode": "p04_gate",
+ "stage1_repeats": 1,
+ "judge_pass": [
+  "high",
+  "medium"
+ ],
+ "compress_source": "stage1",
+ "prompt_files": [
+  "stage1_prompt.txt",
+  "stage1_5_prompt.txt",
+  "stage2_prompt.txt"
+ ],
+ "hypothesis": "P1(判定閾値): stage1(共通・1回)の後、判定役(入力=fact_id+compressed_claim+採用Rのみ、high/medium/low)を通すが、通過をhigh+mediumに広げlowだけを落とす(B3はhighのみ通過で捕捉1/14)。判定役へ渡すcompressed_claimは限定語まで落とした主語+述語の文。stage2はB2と同一(既存notesヒントあり、derivable_only、120字)。",
+ "pass_rule": "stage1: reversibleかつpick_reverse_p04で採用Rが決まる。判定役: high/mediumを通しlowと欠落を落とす。stage2: correct_statement_derivable_from_ledger=trueのみ採用。",
+ "hypotheses": {
+  "H8": "stage1 prompt単一仕様化: B2/B3のstage1は旧版と新版が連結した状態(【出力】2か所・Fact一覧が末尾のみ)だったため、新形式のみの単一仕様(patterns/_common/stage1_prompt.txt、各patternへ同一内容を配置)に統一。各factにつきR最大2つ+compressed_claim(scope/conditions/notes/限定語を落とした主語+述語)+existing_note_covers(既存notesが既にそのRを禁じているか)を出力。",
+  "H9": "R採用規則(コード側pick_reverse_p04): changes_conclusion=trueかつledger_quoteが台帳(claim/scope/conditions)に部分一致するRのうち、existing_note_covers=falseを優先、同点ならflipped_componentの優先順(polarity>stage>subject_object>interim_final>cause_effect)、さらに同点は出現順。既存notesが禁じていない逆読みを選ぶ一般規則(特定factを個別に扱わない)。",
+  "H10": "P1(判定閾値): stage1(共通・1回)の後、判定役(入力=fact_id+compressed_claim+採用Rのみ、high/medium/low)を通すが、通過をhigh+mediumに広げlowだけを落とす(B3はhighのみ通過で捕捉1/14)。判定役へ渡すcompressed_claimは限定語まで落とした主語+述語の文。stage2はB2と同一(既存notesヒントあり、derivable_only、120字)。"
+ },
+ "diff_from_other": "stage1/stage2/examples/prefixは3patternで同一内容。差は判定役の通過閾値・stage1の回数・判定役へ渡す圧縮文の作り方のみ。"
+}

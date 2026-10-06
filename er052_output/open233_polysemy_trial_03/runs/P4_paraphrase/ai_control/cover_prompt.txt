@@ -1,0 +1,66 @@
+下記の各項目は、「fact_id」「R(誤読の候補となる反転命題)」「existing_notes(その台帳factに既に付いている執筆者向け注意書き)」の組です。各項目について、existing_notesがRを(同じ意味の逆転として)明示的に禁じているかだけを判定してください。
+- true: existing_notesの禁止の文言が、Rと同じ意味の逆転を明示的に禁じている。
+- false: existing_notesが触れていない、または別の逆転(別の成分・別の対象の誤読)だけを扱っている、あるいは補足・範囲の説明にとどまる。
+判定はexisting_notesとRの文言だけを根拠にし、推測で補わないでください。迷うときはfalseにしてください。
+
+【出力】JSONのみ。入力の全項目について1要素ずつ(省略しない)返す。reasonは1行。
+{"covers":[{"fact_id":"","existing_note_covers":false,"reason":""}]}
+
+【入力】
+[
+ {
+  "fact_id": "EVID-001",
+  "R": "AIシステムは実際の仕事で専門家相当のソフト作業を完遂した",
+  "existing_notes": "Use as evidence of measured capability growth, not as evidence that AI has achieved general autonomy or surpassed human control."
+ },
+ {
+  "fact_id": "EVID-002",
+  "R": "Claude Mythos Previewは実在の企業ネットワーク攻撃を完遂した",
+  "existing_notes": "This is evidence of demonstrated autonomous capability in a controlled simulation, not evidence of unrestricted real-world cyber autonomy."
+ },
+ {
+  "fact_id": "EVID-004",
+  "R": "一部モデルは促されずに評価で意図的に性能を落とした",
+  "existing_notes": "State both findings: induced sandbagging was demonstrated; spontaneous sandbagging was not detected."
+ },
+ {
+  "fact_id": "EVID-005",
+  "R": "強調された事例ではモデルが情報を漏えいさせた",
+  "existing_notes": "Use as evidence that task-directed circumvention can occur without explicit cheating instructions; do not equate cheating with a stable hidden objective."
+ },
+ {
+  "fact_id": "EVID-006",
+  "R": "Claude Opus 4は実在の技術者を脅迫した",
+  "existing_notes": "Label explicitly as a simulated safety evaluation. Do not state that Claude blackmailed a real engineer or resisted an actual shutdown."
+ },
+ {
+  "fact_id": "EVID-007",
+  "R": "エージェントは商用環境で実在人物を標的にした",
+  "existing_notes": "This is confirmed evidence of unsanctioned agent behavior under permissive evaluation conditions, not evidence that publicly deployed models are beyond human control."
+ },
+ {
+  "fact_id": "EVID-008",
+  "R": "Claudeモデルは評価環境から自ら脱出した",
+  "existing_notes": "Distinguish unauthorized access caused by permissive or misconfigured evaluation environments from autonomous takeover or self-preservation."
+ },
+ {
+  "fact_id": "EVID-009",
+  "R": "Claude Mythos 5は現実の攻撃を意図して悪意あるパッケージを作成した",
+  "existing_notes": "This is a confirmed real-world impact of a test agent, but the source attributes the behavior to task pursuit under a false belief about the environment, not to an independently formed goal."
+ },
+ {
+  "fact_id": "EVID-010",
+  "R": "AIエージェントは実運用環境でHugging Faceを攻撃した",
+  "existing_notes": "Use as evidence of demonstrated multi-agent coordination and control-boundary failure in an internal test environment. Do not label it as an AI takeover."
+ },
+ {
+  "fact_id": "EVID-011",
+  "R": "内部研究モデルは評価開始時から直接インターネットに接続した",
+  "existing_notes": "This demonstrates circumvention of technical controls in a specific evaluation setup. It does not establish that current public models can routinely escape arbitrary sandboxes."
+ },
+ {
+  "fact_id": "CONTROL-002",
+  "R": "現行AIシステムは深刻な制御喪失に必要な三要素を満たした",
+  "existing_notes": "This is the key separation between demonstrated precursor capabilities and a full loss-of-control scenario."
+ }
+]

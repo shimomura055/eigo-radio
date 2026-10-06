@@ -32,7 +32,7 @@ def load_pattern(name, base=None):
     stage1_5 = rd("stage1_5_prompt.txt")
     mode = meta.get("mode") or ("twostage" if stage2 else "onepass")
     return {"name": name, "stage1": rd("stage1_prompt.txt"), "stage2": stage2, "mode": mode,
-            "stage1_5": stage1_5, "stage1_repeats": int(meta.get("stage1_repeats", 1)),
+            "stage1_5": stage1_5, "cover": rd("cover_prompt.txt"), "headline": rd("headline_prompt.txt"), "meta": meta, "stage1_repeats": int(meta.get("stage1_repeats", 1)),
             "max_chars": meta.get("max_chars"), "fallback": meta.get("fallback"),
             "self_check_policy": meta.get("self_check_policy", "both"),
             "stage2_existing_notes": bool(meta.get("stage2_existing_notes", True)),
@@ -69,7 +69,7 @@ def fill_prompt(tmpl, items, max_chars, examples="", candidates=None):
 
 
 def is_two_stage(pat):
-    return bool(pat.get("stage2")) or pat.get("mode") in ("twostage", "twostage_gate")
+    return bool(pat.get("stage2")) or pat.get("mode") in ("twostage", "twostage_gate", "p04_gate", "p04_stable")
 
 
 def validate_note(note, prefix, max_chars):
@@ -433,6 +433,8 @@ def run(a, llm=call_llm):
     out.mkdir(parents=True, exist_ok=True)
     pro_items = [i for i in items if (i.get("notes_for_writer") or "").strip()] if mode == "promote" else items
     s1_items = pro_items
+    if mode in ("p04_gate", "p04_stable") and not pat["meta"].get("stage1_existing_notes"):  # TRIAL-04: stage1には既存notes_for_writerを伏せる(Opus必須修正4)。P4(H12)はstage1_existing_notes=trueで戻す
+        s1_items = [{k: v for k, v in i.items() if k != "notes_for_writer"} for i in items]
     p1 = fill_prompt(pat["stage1"], s1_items, max_chars, pat["examples"])
     prov = {"pattern": pat["name"], "mode": mode, "two_stage": is_two_stage(pat), "fact_count": len(items), "self_check_policy": pat["self_check_policy"], "stage2_existing_notes": pat["stage2_existing_notes"],
             "stage1_input_count": len(s1_items), "max_chars": max_chars, "no_existing_notes": no_ex,
@@ -534,6 +536,11 @@ def run(a, llm=call_llm):
         if not (pat.get("stage1_5") and pat.get("stage2")):
             raise SystemExit("twostage_gate needs stage1_5_prompt.txt and stage2_prompt.txt")
         raw_notes, jall, rejected_extra = run_gate(pat, items, fids, p1, a, llm, out, prov, max_chars)
+    elif mode in ("p04_gate", "p04_stable"):  # TRIAL-04(gen_notes_p04.py): 新規モード。既存モードの挙動は変更しない
+        import gen_notes_p04
+        if not (pat.get("stage1_5") and pat.get("stage2") and pat.get("cover")):
+            raise SystemExit("%s needs stage1_5_prompt.txt, cover_prompt.txt and stage2_prompt.txt" % mode)
+        raw_notes, jall, rejected_extra = gen_notes_p04.run_p04(pat, items, fids, p1, a, llm, out, prov, max_chars)
     elif mode == "promote":
         (out / "stage1_prompt.txt").write_text(p1, encoding="utf-8")
         if pro_items:

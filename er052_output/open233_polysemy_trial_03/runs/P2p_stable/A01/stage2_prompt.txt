@@ -1,0 +1,136 @@
+下記の【候補】は、一次スクリーニングと判定役を通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason・claim中の曖昧表記ambiguous_expression・既に禁じ済みの一覧already_prohibited)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+ambiguous_expressionが空でないとき: 「注意(逆転): 台帳の表記'<ambiguous_expression>'は、<変化後の状態>の意味。<R>ではない。」
+ambiguous_expressionが空のとき: 「注意(逆転): <主体>が<対象>を<変化後の状態>。<R>ではない。」
+- 日本語本文(接頭辞を含む全体)は120字以内、改行なし。
+- <変化後の状態>は、変化後に何が有り何が無いかを、台帳のclaim/scope/conditionsから導ける平易な語だけで書く(correct_stateにも同じ文言を書く)。新しい事実・解釈を足さない。
+- <変化後の状態>とR(r_echo)には、「戻す」「元に戻した」「復元」「変更」「見直し」「改める」「調整」のように向き・結果が曖昧な語(カタカナ語の操作名を含む)、およびambiguous_expressionの語を使わない(引用符で囲んだ表記'...'の中だけは、台帳の表記をそのまま書いてよい)。
+- 英語は、台帳(claim・scope・conditions・notes)に実在する語だけを、3語以内で併記してよい。台帳に無い英語は書かない。
+- <R>の部分は、候補のreverse_readingの主語・述語・目的語をそのまま残して書く(r_echoにreverse_readingを一字一句そのまま書き写す)。Rを言い換えたり別の逆転に差し替えたりしない。
+- Rを否定するときに、<変化後の状態>として正しい読みまで打ち消さない(「Rではない」と書くことで、正しい読みの一部を禁じてはならない)。
+
+【already_prohibitedの扱い】
+already_prohibitedは、その台帳factについて既に禁じ済みの内容であり、「繰り返さない一覧」である。ここに書かれた内容は、noteで繰り返さず、reverse_readingについてだけ書く。already_prohibitedの文言を写したり、肯定的な根拠として使ったりしない。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた<変化後の状態>は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例(架空・別領域。形式の参考だけに使う)】
+候補: claim「Z庁は新制度の適用を当面差し戻した」 ambiguous_expression「差し戻した」 reverse_reading「Z庁は新制度を恒久的に廃止した」 →
+{"fact_id":"EX-9","r_echo":"Z庁は新制度を恒久的に廃止した","correct_state":"新制度の適用が当面行われない状態","note":"注意(逆転): 台帳の表記'差し戻した'は、新制度の適用が当面行われない状態の意味。Z庁は新制度を恒久的に廃止したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+候補: claim「Y社は試作機の評価を開始した」 ambiguous_expressionが空 reverse_reading「Y社は量産機を現場へ配備した」 →
+{"fact_id":"EX-2","r_echo":"Y社は量産機を現場へ配備した","correct_state":"試作機を試験場で評価している段階","note":"注意(逆転): Y社が試作機を試験場で評価している段階。Y社は量産機を現場へ配備したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","r_echo":"","correct_state":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "F003",
+  "source_quote": "前半45分および前半アディショナルタイム終了時",
+  "reverse_reading": "試合終了時のスコアは0-0だった。",
+  "flipped_component": "interim_final",
+  "conclusion_change_reason": "ハーフタイムの途中経過か試合終了時の結果かで、最終的な試合の結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "得点時系列は後半の3得点のみ。"
+  ]
+ },
+ {
+  "fact_id": "F004",
+  "source_quote": "後半、試合最初の得点",
+  "reverse_reading": "試合終了時、イングランドは1-0で勝っていた。",
+  "flipped_component": "interim_final",
+  "conclusion_change_reason": "試合最初の得点の時点か試合終了時の勝敗かで、試合結果の結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "得点者はゴードン。最終クロスを送ったのはロジャーズ。ハリー・ケインのロングボールは攻撃の起点だが、最終クロスまたは公式本文で明記されたアシスト役ではない。"
+  ]
+ },
+ {
+  "fact_id": "F005",
+  "source_quote": "アルゼンチンの同点得点",
+  "reverse_reading": "試合終了時、アルゼンチンは1-1で引き分けた。",
+  "flipped_component": "interim_final",
+  "conclusion_change_reason": "途中の同点得点か試合終了時の引き分けかで、試合の最終結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "得点者はエンソ・フェルナンデス。アシストはメッシ。ショートコーナーからの流れで、シュート地点はエリア外。"
+  ]
+ },
+ {
+  "fact_id": "F006",
+  "source_quote": "決勝点",
+  "reverse_reading": "アルゼンチンは2-1にしたが、試合終了時は1-1で引き分けた。",
+  "flipped_component": "interim_final",
+  "conclusion_change_reason": "決勝点による勝利か、その後に同点で終わった途中経過かで勝敗の結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "「92分」と通常分へ置き換えるより「90+2分」と表記し、後半アディショナルタイムの得点であることを保持する。"
+  ]
+ },
+ {
+  "fact_id": "F027",
+  "source_quote": "この勝利により決勝へ進み",
+  "reverse_reading": "アルゼンチンは決勝進出を受けて準決勝に勝利し、英は3位決定戦へ進んだ",
+  "flipped_component": "cause_effect",
+  "conclusion_change_reason": "勝利が決勝進出の原因なのか、決勝進出が勝利の原因なのかで大会結果の因果関係が逆転する",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "アルゼンチンの決勝相手はスペイン、イングランドの3位決定戦相手はフランス。"
+  ]
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "F003",
+  "claim": "前半は両チーム無得点で終了し、ハーフタイムのスコアは0-0だった。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "前半45分および前半アディショナルタイム終了時",
+  "date_or_period": "2026-07-15・前半終了時",
+  "source_url": "https://www.englandfootball.com/england/mens-senior-team/fixtures-results/2025-26/World-Cup/england-argentina-fifa-world-cup-quarter-final-wednesday-15-july-2026-match-centre",
+  "verification_notes": "イングランド協会のマッチセンターはHTを0-0と記録しており、得点記録も後半の55分、85分、終了間際のみである。([englandfootball.com](https://www.englandfootball.com/england/mens-senior-team/fixtures-results/2025-26/World-Cup/england-argentina-fifa-world-cup-quarter-final-wednesday-15-july-2026-match-centre))"
+ },
+ {
+  "fact_id": "F004",
+  "claim": "55分、アンソニー・ゴードンがモーガン・ロジャーズの右サイドからの低いクロスをファーサイドで合わせ、イングランドが1-0と先制した。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "後半、試合最初の得点",
+  "date_or_period": "2026-07-15・55分",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFAの試合記事は、ロジャーズが右から低いクロスを送り、ゴードンがバックポストで合わせたと記述し、得点時刻を55分としている。イングランド協会もロジャーズのクロスからゴードンが決めたとしている。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F005",
+  "claim": "85分、ショートコーナーの流れからリオネル・メッシが横に送ったボールをエンソ・フェルナンデスがペナルティーエリア外から右足で決め、アルゼンチンが1-1に追いついた。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "アルゼンチンの同点得点",
+  "date_or_period": "2026-07-15・85分",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事はショートコーナー後にメッシがフェルナンデスへ横パスし、フェルナンデスがエリア外から決めたと記載する。85分という時刻、右足のシュート、1-1への同点も独立報道・公式クラブ記事で確認できる。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F006",
+  "claim": "後半アディショナルタイムの90+2分、リオネル・メッシの右足クロスを途中出場のラウタロ・マルティネスがファーサイドで頭で合わせ、アルゼンチンが2-1と逆転した。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "後半アディショナルタイム、決勝点",
+  "date_or_period": "2026-07-15・90+2分",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA公式PMSRとFIFA試合記事はラウタロ・マルティネスの得点を90+2分と記録し、メッシの右足クロスを途中出場のマルティネスがファーポストで決めたとしている。イングランド協会には92分、90+3分、アディショナルタイム3分目という表記揺れがあるが、FIFA公式記録を基準とするclaimは妥当である。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F027",
+  "claim": "アルゼンチンはこの勝利により決勝へ進み、イングランドは3位決定戦へ回った。",
+  "scope": "FIFAワールドカップ2026ノックアウトステージ",
+  "conditions": "準決勝の勝敗に基づく",
+  "date_or_period": "2026-07-15以後",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事とAPは、アルゼンチンが勝者としてスペインとの決勝へ進み、敗者イングランドがフランスとの3位決定戦へ回ったことを明記している。準決勝結果による進出先という因果関係も大会方式どおりである。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ }
+]

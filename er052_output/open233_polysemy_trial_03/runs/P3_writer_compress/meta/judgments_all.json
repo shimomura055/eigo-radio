@@ -1,0 +1,591 @@
+[
+  {
+    "fact_id": "MUSE-HC-001",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-001",
+      "reversible": true,
+      "compressed_claim": "MetaはMuseを発表し米国で展開",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "MetaはMuseを米国の一般利用者に提供し始めた。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "米国でiOS、Android、muse.ai向けに展開すると説明している。",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "米国展開の発表・予定か、実際の提供開始かで製品の公開状態に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "MetaはMuseを米国の一般利用者に提供し始めた。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "MetaはMuseを米国の一般利用者に提供し始めた。",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "発表",
+        "blocking_word_missing": false,
+        "reason": "発表は提供開始を意味しないため、Rと両立させるにはこの非限定語を無視して提供開始と読む必要がある",
+        "compressed_claim": "Meta、個人向けAIエージェント「Muse」を発表"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium",
+      "R_is_natural_reading=false"
+    ],
+    "headline": "Meta、個人向けAIエージェント「Muse」を発表",
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "既存注記は情報源と検証範囲を示すだけで、Metaが米国の一般利用者に提供開始したという逆転を禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "MetaはMuseを米国の一般利用者に提供し始めた。",
+      "correct_state": "米国でiOS、Android、muse.ai向けに提供する方針を説明した発表段階",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "MUSE-HC-002",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-002",
+      "reversible": false,
+      "compressed_claim": "Museは専用VMで動作し作業を実行できる",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-003",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-003",
+      "reversible": false,
+      "compressed_claim": "専用VMがデータを保存しSentinelが許可管理",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-004",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-004",
+      "reversible": false,
+      "compressed_claim": "ユーザーはMuseに企業への電話依頼を指示できる",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-005",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-005",
+      "reversible": true,
+      "compressed_claim": "Metaは電話機能を従業員テスト後ユーザーに展開",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "MetaはMuseの一般公開前に電話機能をユーザーへ提供した。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "Museの一般公開後の数日間にユーザー向けへ段階的に展開した",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "ユーザー向け提供が一般公開の前か後かで、機能展開の時系列と公開段階に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "MetaはMuseの一般公開前に電話機能をユーザーへ提供した。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "MetaはMuseの一般公開前に電話機能をユーザーへ提供した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "段階展開は一般公開前の限定的なユーザー提供も含み得るため、Rを妨げる語がない",
+        "compressed_claim": "Museの電話発信、従業員テスト後に段階展開"
+      }
+    ],
+    "headline": "Museの電話発信、従業員テスト後に段階展開",
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "既存注記は開始時期と公式発表日の混同を禁じるが、一般公開前に提供したという命題自体は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "MetaはMuseの一般公開前に電話機能をユーザーへ提供した。",
+      "correct_state": "Museの一般公開後の数日間にユーザー向けに段階的に提供した状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-006",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-006",
+      "reversible": true,
+      "compressed_claim": "人間スタッフがMuse経由の電話を担当し完了",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "人間の契約スタッフが本番の電話対応を担当し、相手とのやり取りを終えた。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "人間スタッフによる対応が試験中のものか実運用のものかで、機能の実用化状況に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "人間の契約スタッフが本番の電話対応を担当し、相手とのやり取りを終えた。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "人間の契約スタッフが本番の電話対応を担当し、相手とのやり取りを終えた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "一部通話という限定は本番の一部対応を妨げず、対応もやり取りの完了を含み得るため、Rを妨げる語がない",
+        "compressed_claim": "Museの一部通話、人間の契約スタッフが対応"
+      }
+    ],
+    "headline": "Museの一部通話、人間の契約スタッフが対応",
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "既存注記は全ての電話を人間が担当したとの断定を禁じるが、本番の電話対応とやり取りの終了という命題全体を明示的には禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "人間の契約スタッフが本番の電話対応を担当し、相手とのやり取りを終えた。",
+      "correct_state": "訓練を受けた人間の契約スタッフが相手とのやり取りを完了させるテストを実施した状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-007",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-007",
+      "reversible": true,
+      "compressed_claim": "人間コンシェルジュ機能がMeta従業員に有効化",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "人間コンシェルジュ機能は一般利用者向けに提供されていた。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "Museの社内テスト参加者に対する機能有効化",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "社内テスト参加者への提供か一般利用者への公開かで、機能の公開段階に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "人間コンシェルジュ機能は一般利用者向けに提供されていた。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "人間コンシェルジュ機能は一般利用者向けに提供されていた。",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "従業員",
+        "blocking_word_missing": false,
+        "reason": "従業員向けの有効化と明記されており、一般利用者向け提供と読むにはこの非限定語を無視する必要がある",
+        "compressed_claim": "Meta従業員の半数に人間コンシェルジュを有効化"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium",
+      "R_is_natural_reading=false"
+    ],
+    "headline": "Meta従業員の半数に人間コンシェルジュを有効化",
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "既存注記は従業員に占める割合の断定を避ける注意であり、一般利用者向け提供の有無には触れていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "人間コンシェルジュ機能は一般利用者向けに提供されていた。",
+      "correct_state": "社内テスト参加者であるMeta従業員の一部に有効化した状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "MUSE-HC-008",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-008",
+      "reversible": false,
+      "compressed_claim": "人間担当テストは高成功率でAIのみは低い",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-009",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-009",
+      "reversible": false,
+      "compressed_claim": "相手はMuseがAIと知ると電話を切った",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-010",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-010",
+      "reversible": false,
+      "compressed_claim": "人間担当でユーザーの機微情報がスタッフに共有",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-011",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-011",
+      "reversible": false,
+      "compressed_claim": "人間スタッフが交渉電話で人種発言",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-012",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-012",
+      "reversible": true,
+      "compressed_claim": "Metaは人間コンシェルジュ機能をロールバック",
+      "predicate_direction_explicit": false,
+      "ambiguous_expression": "ロールバックした",
+      "reverse_propositions": [
+        {
+          "R": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+          "flipped_component": "polarity",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "機能を当面ロールバックした",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "当面の機能停止・巻き戻しか恒久的な廃止かで、機能の存続に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "bypass",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+    "adopted_flipped_component": "polarity",
+    "predicate_direction_explicit": false,
+    "ambiguous_expression": "ロールバックした",
+    "bypass_judge": true,
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "既存注記はサービス全体の停止と機能のロールバックを区別するが、人間コンシェルジュ機能の恒久的廃止という逆転を明示的には禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+      "correct_state": "人間コンシェルジュ機能が当面停止している状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "MUSE-HC-013",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-013",
+      "reversible": false,
+      "compressed_claim": "Metaはテスト反応を肯定的とし改善目的と説明",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-014",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-014",
+      "reversible": true,
+      "compressed_claim": "Metaは電話機能を公開展開すると説明",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "Metaは準備や適切な開示が整う前に電話機能を利用可能にした。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "準備完了および適切な開示が整うこと",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "条件が整った場合の将来展開方針か、条件前の実際の公開かで、機能の公開状態に関する結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "Metaは準備や適切な開示が整う前に電話機能を利用可能にした。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "Metaは準備や適切な開示が整う前に電話機能を利用可能にした。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "整えばという条件付き表現は準備前の利用可能化を明示的には妨げず、Rと両立し得る",
+        "compressed_claim": "Meta、準備と適切な開示が整えば電話機能を公開"
+      }
+    ],
+    "headline": "Meta、準備と適切な開示が整えば電話機能を公開",
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "既存注記は一般機能と人間コンシェルジュ実験の区別を求めるだけで、準備や開示前の利用可能化という時期の逆転を禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "Metaは準備や適切な開示が整う前に電話機能を利用可能にした。",
+      "correct_state": "準備が整い、適切な開示ができる場合にのみ公開展開する方針を説明した状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-015",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-015",
+      "reversible": false,
+      "compressed_claim": "Museはアプリ選択と操作前確認を求め履歴表示",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  }
+]

@@ -1,0 +1,28 @@
+下記の【Fact一覧】の**全てのfact**について、誤読で意味が逆転・重大変質する可能性を一次スクリーニングしてください(noteは書かない)。このスクリーニングは再現率重視です。(i)〜(iv)のいずれかが判断しづらい場合は、reversible=trueで残してください(最終の絞り込みは後段が行う)。ただし、明らかに対象外の型(hedge・帰属・数値精度・評価語・用語定義・範囲限定だけの違い)は残さないでください。件数で絞らず、定義を満たすかどうかだけで判断します。
+
+【対象の定義(誤読すると意味が逆転・重大変質するFactだけを対象にする)】
+対象は、Factの意味・方向・状態・主体・対象・時系列・因果・完了状態などが、誤読により逆転または重大に変質する表現である(例: 撤回と復活、上昇と下落、状態AからB、主体と対象、完了と予定、原因と結果、時系列の逆転)。難語・軽微なニュアンスの違い・表現の好みは対象外。
+
+【操作的定義】
+対象は次の(i)〜(iv)を全て満たす場合のみ。(i)claimの成分を**1つだけ**反転した命題Rを作れる(反転できる成分: 述語の極性・変化の向き(増↔減、付与↔撤回、開始↔停止)/主体↔対象、対象集合/事象の段階(完了↔予定、開発・評価↔配備・実施、模擬↔実在)/途中↔最終/原因↔結果)。(ii)Rが、日本語claimを約30字に圧縮した文(scope・conditions・notesを落とし原資料も見ない状態)と矛盾しない。(iii)Rが台帳のclaim/scope/conditionsのいずれかと矛盾する。(iv)Rを採ると記事の主題レベルの結論が変わる。情報の確からしさ・出所の違い(報道↔確認済み)、hedge・推量、帰属(〜と述べた)、数値の精度・分母、評価語、用語の定義、範囲の限定だけの違いは対象外。各factの本文(claim/scope/conditions等)だけを根拠に判定する。
+
+【判定の手順(各factについて必ず)】
+1. claimを約30字に圧縮する(compressed_claim)。この時点ではscope・conditions・原資料を見ない。scope・conditionsに加えて、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部 など)も落とし、主語+述語だけの文にする。
+2. factごとに次の2項目を決める。(a) predicate_direction_explicit: claim/scope/conditionsから、変化後に何が有り何が無いかを、claimの述語の語そのものを使わず平易な日本語で特定できるか(特定できるならtrue、述語の語に頼らないと言えない・特定できないならfalse)。(b) ambiguous_expression: claim中に、変化の向き・結果が曖昧な述語の表記があれば、claimに現れる形のまま逐語で1つ書く(無ければ空文字)。
+3. predicate_direction_explicit=falseのfactは、ambiguous_expressionの表記を平易な日本語に言い換えた候補を**2つ以上**挙げ(paraphrase_readings)、各言い換えについて、変化後に対象が「有る」読みと「無い」読みの**両方向**を書く。この両方向の読みのうち、台帳のclaim/scope/conditionsと矛盾する側を、必ずRとして列挙する(両方の読みが台帳と矛盾しないなら、それぞれRにしてよい)。読者は曖昧な表記を平易な言い換えに置き換えて読むので、言い換えの仕方によって読みが逆向きになる点を重視する。predicate_direction_explicit=trueのfactでは、paraphrase_readingsは空の配列でよい。
+4. Rを列挙する。**述語の極性反転(polarity)を必ず最初に検討し**、作れるときは最初のRにする。反転できる成分は、polarity / subject_object / stage / interim_final / cause_effect。Rは、predicate_direction_explicit=trueのとき最大2つ、falseのとき最大4つまで(異なる反転の別のR。作れなければ空の配列)。Rは60字以内の1文で、文末は「〜した」または「〜になった」の形にし、変化後に何が有る・何が無いかが分かる平易な語だけで書く。「戻す・元に戻した・復元・変更・見直し・改める・調整」のように変化の向き・結果が読み取れない語(外来語の操作名を含む)は、Rに使わない。claimに出てくる向き・結果が曖昧な表記そのものも、Rの文言に使わない。
+5. Rの列挙は、notes_for_writer(既存の注意書き。付いているfactだけ)の内容に依存しない。notes_for_writerが禁じている読みについても、それと**別の読み**(別の成分・別の方向の反転)が作れないかを必ず検討する。notes_for_writerと同じ趣旨のRも、除外せず出してよい。
+6. Rごとに、圧縮文と矛盾しないか(ii)を確かめ、Rが台帳のclaim/scope/conditionsのどれと矛盾するか(contradicts_ledger_field: claim / scope / conditions / none)を決め、矛盾の根拠になる台帳の語句をledger_quoteへ**逐語**で書き写す(claim/scope/conditionsからのみ)。
+7. そのRを採ると記事の主題レベルの結論が変わるか(changes_conclusion)を決め、その理由を1文でconclusion_change_reasonに書く。
+8. (i)〜(iv)を全て満たすRが1つでもあるときだけreversible=trueとする。
+(noteはこの段階では書かない。)
+
+【例の見方】下の例はスクリーニング用の型の参考である。例の出力にはnoteの欄はない。実際の出力では必ずpredicate_direction_explicit・ambiguous_expression・paraphrase_readingsを付ける。出力形式は末尾の指定に従う。
+
+{EXAMPLES}
+
+【出力】JSONのみ。fact一覧の全factについて1要素ずつ(省略しない)返す。
+{"judgments":[{"fact_id":"","reversible":false,"compressed_claim":"","predicate_direction_explicit":false,"ambiguous_expression":"","paraphrase_readings":[{"paraphrase":"","reading_exists":"","reading_none":""}],"reverse_propositions":[{"R":"","flipped_component":"polarity|subject_object|stage|interim_final|cause_effect","contradicts_ledger_field":"claim|scope|conditions|none","ledger_quote":"","changes_conclusion":false,"conclusion_change_reason":""}]}]}
+
+【Fact一覧】
+{LEDGER_FACTS}

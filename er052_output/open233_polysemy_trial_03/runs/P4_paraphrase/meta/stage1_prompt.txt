@@ -1,0 +1,206 @@
+下記の【Fact一覧】の**全てのfact**について、誤読で意味が逆転・重大変質する可能性を一次スクリーニングしてください(noteは書かない)。このスクリーニングは再現率重視です。(i)〜(iv)のいずれかが判断しづらい場合は、reversible=trueで残してください(最終の絞り込みは後段が行う)。ただし、明らかに対象外の型(hedge・帰属・数値精度・評価語・用語定義・範囲限定だけの違い)は残さないでください。件数で絞らず、定義を満たすかどうかだけで判断します。
+
+【対象の定義(誤読すると意味が逆転・重大変質するFactだけを対象にする)】
+対象は、Factの意味・方向・状態・主体・対象・時系列・因果・完了状態などが、誤読により逆転または重大に変質する表現である(例: 撤回と復活、上昇と下落、状態AからB、主体と対象、完了と予定、原因と結果、時系列の逆転)。難語・軽微なニュアンスの違い・表現の好みは対象外。
+
+【操作的定義】
+対象は次の(i)〜(iv)を全て満たす場合のみ。(i)claimの成分を**1つだけ**反転した命題Rを作れる(反転できる成分: 述語の極性・変化の向き(増↔減、付与↔撤回、開始↔停止)/主体↔対象、対象集合/事象の段階(完了↔予定、開発・評価↔配備・実施、模擬↔実在)/途中↔最終/原因↔結果)。(ii)Rが、日本語claimを約30字に圧縮した文(scope・conditions・notesを落とし原資料も見ない状態)と矛盾しない。(iii)Rが台帳のclaim/scope/conditionsのいずれかと矛盾する。(iv)Rを採ると記事の主題レベルの結論が変わる。情報の確からしさ・出所の違い(報道↔確認済み)、hedge・推量、帰属(〜と述べた)、数値の精度・分母、評価語、用語の定義、範囲の限定だけの違いは対象外。各factの本文(claim/scope/conditions等)だけを根拠に判定する。
+
+【判定の手順(各factについて必ず)】
+1. claimを約30字に圧縮する(compressed_claim)。この時点ではscope・conditions・原資料を見ない。scope・conditionsに加えて、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部 など)も落とし、主語+述語だけの文にする。
+2. factごとに次の2項目を決める。(a) predicate_direction_explicit: claim/scope/conditionsから、変化後に何が有り何が無いかを、claimの述語の語そのものを使わず平易な日本語で特定できるか(特定できるならtrue、述語の語に頼らないと言えない・特定できないならfalse)。(b) ambiguous_expression: claim中に、変化の向き・結果が曖昧な述語の表記があれば、claimに現れる形のまま逐語で1つ書く(無ければ空文字)。
+3. predicate_direction_explicit=falseのfactは、ambiguous_expressionの表記を平易な日本語に言い換えた候補を**2つ以上**挙げ(paraphrase_readings)、各言い換えについて、変化後に対象が「有る」読みと「無い」読みの**両方向**を書く。この両方向の読みのうち、台帳のclaim/scope/conditionsと矛盾する側を、必ずRとして列挙する(両方の読みが台帳と矛盾しないなら、それぞれRにしてよい)。読者は曖昧な表記を平易な言い換えに置き換えて読むので、言い換えの仕方によって読みが逆向きになる点を重視する。predicate_direction_explicit=trueのfactでは、paraphrase_readingsは空の配列でよい。
+4. Rを列挙する。**述語の極性反転(polarity)を必ず最初に検討し**、作れるときは最初のRにする。反転できる成分は、polarity / subject_object / stage / interim_final / cause_effect。Rは、predicate_direction_explicit=trueのとき最大2つ、falseのとき最大4つまで(異なる反転の別のR。作れなければ空の配列)。Rは60字以内の1文で、文末は「〜した」または「〜になった」の形にし、変化後に何が有る・何が無いかが分かる平易な語だけで書く。「戻す・元に戻した・復元・変更・見直し・改める・調整」のように変化の向き・結果が読み取れない語(外来語の操作名を含む)は、Rに使わない。claimに出てくる向き・結果が曖昧な表記そのものも、Rの文言に使わない。
+5. Rの列挙は、notes_for_writer(既存の注意書き。付いているfactだけ)の内容に依存しない。notes_for_writerが禁じている読みについても、それと**別の読み**(別の成分・別の方向の反転)が作れないかを必ず検討する。notes_for_writerと同じ趣旨のRも、除外せず出してよい。
+6. Rごとに、圧縮文と矛盾しないか(ii)を確かめ、Rが台帳のclaim/scope/conditionsのどれと矛盾するか(contradicts_ledger_field: claim / scope / conditions / none)を決め、矛盾の根拠になる台帳の語句をledger_quoteへ**逐語**で書き写す(claim/scope/conditionsからのみ)。
+7. そのRを採ると記事の主題レベルの結論が変わるか(changes_conclusion)を決め、その理由を1文でconclusion_change_reasonに書く。
+8. (i)〜(iv)を全て満たすRが1つでもあるときだけreversible=trueとする。
+(noteはこの段階では書かない。)
+
+【例の見方】下の例はスクリーニング用の型の参考である。例の出力にはnoteの欄はない。実際の出力では必ずpredicate_direction_explicit・ambiguous_expression・paraphrase_readingsを付ける。出力形式は末尾の指定に従う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のため迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}]}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}]}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}]}
+正例4 fact「Z庁は新制度の適用を当面差し戻した」(scope: 試験運用中の窓口業務) →
+{"fact_id":"EX-9","reversible":true,"compressed_claim":"Z庁が新制度を差し戻し","predicate_direction_explicit":false,"ambiguous_expression":"差し戻した","paraphrase_readings":[{"paraphrase":"受け付けず返した","reading_exists":"制度は存続し、適用だけが保留される","reading_none":"制度そのものが無くなる"},{"paraphrase":"検討前の段階へ戻した","reading_exists":"制度案は残り、再検討される","reading_none":"制度案が白紙になる"}],"reverse_propositions":[{"R":"Z庁は新制度を恒久的に廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"適用を当面差し戻した","changes_conclusion":true,"conclusion_change_reason":"適用の一時停止か制度自体の廃止かで、記事の主題の結論が変わる"}]}
+(型の説明: 述語の表記が向き・結果を示さず、変化後に何が有る/無いかをその語抜きでは言えないので、predicate_direction_explicit=false・ambiguous_expressionに表記を逐語で書く。Rは曖昧な表記を使わず、変化後の状態が分かる語で書く。言い換えごとに「有る」「無い」の両方向を書く)
+正例5 fact「V市は図書貸出サービスの運用を見直した」(scope: 当面は予約分のみ) →
+{"fact_id":"EX-10","reversible":true,"compressed_claim":"V市が図書貸出の運用を見直し","predicate_direction_explicit":false,"ambiguous_expression":"見直した","paraphrase_readings":[{"paraphrase":"やめた","reading_exists":"予約分の貸出は続く","reading_none":"貸出サービスが無くなる"},{"paraphrase":"元に戻した","reading_exists":"以前の貸出が再び行われる","reading_none":"貸出の無い以前の状態になる"},{"paraphrase":"変えた","reading_exists":"予約分だけの貸出になる","reading_none":"貸出が行われなくなる"}],"reverse_propositions":[{"R":"V市は図書貸出サービスを終了した","flipped_component":"polarity","contradicts_ledger_field":"scope","ledger_quote":"当面は予約分のみ","changes_conclusion":true,"conclusion_change_reason":"予約分の貸出が続くかサービス自体が無くなるかで、利用者への影響の結論が変わる"},{"R":"V市は図書貸出サービスを通常どおり再開した","flipped_component":"polarity","contradicts_ledger_field":"scope","ledger_quote":"当面は予約分のみ","changes_conclusion":true,"conclusion_change_reason":"予約分のみの運用か通常の貸出の再開かで、利用者への影響の結論が変わる"}]}
+(型の説明: 曖昧な表記を複数の平易な言い換えに置き換え、各言い換えで対象が「有る」読みと「無い」読みの両方を作ると、台帳と矛盾する方向のRが両方向とも見つかる)
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}]}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。fact一覧の全factについて1要素ずつ(省略しない)返す。
+{"judgments":[{"fact_id":"","reversible":false,"compressed_claim":"","predicate_direction_explicit":false,"ambiguous_expression":"","paraphrase_readings":[{"paraphrase":"","reading_exists":"","reading_none":""}],"reverse_propositions":[{"R":"","flipped_component":"polarity|subject_object|stage|interim_final|cause_effect","contradicts_ledger_field":"claim|scope|conditions|none","ledger_quote":"","changes_conclusion":false,"conclusion_change_reason":""}]}]}
+
+【Fact一覧】
+[
+ {
+  "fact_id": "MUSE-HC-001",
+  "claim": "Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。",
+  "scope": "米国のMuse提供地域・対象ユーザー",
+  "conditions": "Metaの発表時点の提供範囲",
+  "date_or_period": "2026年9月8日",
+  "source_url": null,
+  "notes_for_writer": "Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-002",
+  "claim": "Metaの説明では、Museは専用のクラウド仮想マシン「Muse Secure VM」上で動作し、ブラウザーを開く、フォームに入力する、ユーザーに代わって交渉するなどの作業を実行できる。",
+  "scope": "Museの公式製品設計・機能説明",
+  "conditions": "Museに必要な権限が付与され、対象サービスへ接続されている場合",
+  "date_or_period": "2026年9月8日時点",
+  "source_url": null,
+  "notes_for_writer": "機能の存在を示す事実。実際の性能や成功率を示す事実ではない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-003",
+  "claim": "Metaの公式説明では、Muse Secure VMではユーザーごとに専用のクラウドコンピューターが割り当てられ、接続サービスのデータや認証情報を保存する。Sentinelという別のエージェントが外部通信やコネクター操作の許可を管理する。",
+  "scope": "Museの公式セキュリティ設計",
+  "conditions": "Metaが公開した製品設計上の説明",
+  "date_or_period": "2026年9月8日時点",
+  "source_url": null,
+  "notes_for_writer": "Meta自身の設計説明。人間コンシェルジュ実験における請負業者への情報共有範囲を直接説明する資料ではない。 ([research.meta.ai](https://research.meta.ai/blog/security-and-safety-for-ai-agents-our-approach-with-muse))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-004",
+  "claim": "Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。",
+  "scope": "米国内の企業・店舗への発信",
+  "conditions": "Museの電話機能が利用可能なユーザー",
+  "date_or_period": "2026年9月中旬までに公開・展開",
+  "source_url": null,
+  "notes_for_writer": "Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-005",
+  "claim": "MetaはMuseの電話発信機能を、2026年8月から従業員にテストさせ、Museの一般公開後の数日間にユーザー向けへ段階的に展開したと、社内投稿に基づくReuters報道で伝えられた。",
+  "scope": "Meta従業員およびMuseユーザー",
+  "conditions": "社内投稿に基づく報道内容",
+  "date_or_period": "2026年8月〜2026年9月中旬",
+  "source_url": null,
+  "notes_for_writer": "2026年8月開始という時期は社内投稿に基づく報道。公式の製品発表日と混同しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-006",
+  "claim": "MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。",
+  "scope": "Muse経由で発信された電話の一部",
+  "conditions": "Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件",
+  "date_or_period": "2026年9月中旬",
+  "source_url": null,
+  "notes_for_writer": "全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-007",
+  "claim": "人間コンシェルジュ機能は、2026年9月22日のReuters報道時点で、Meta従業員の半数に有効化されていた。利用を望まない従業員向けにオプトアウト用のグループも設けられていた。",
+  "scope": "Meta従業員の一部",
+  "conditions": "Museの社内テスト参加者に対する機能有効化",
+  "date_or_period": "2026年9月中旬〜2026年9月22日",
+  "source_url": null,
+  "notes_for_writer": "50%を全Meta従業員の厳密な割合として断定しない。分母の不確定性を保持する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-008",
+  "claim": "Metaの社内投稿では、人間が電話を担当した一部テストで、成功率が95〜98%に達する可能性が示された。一方、AIだけで電話をかけた場合の成功率は、それより低いとされたが、具体的な数値は示されていない。",
+  "scope": "人間が電話を担当した一部テスト",
+  "conditions": "成功率の定義、サンプル数、比較対象、測定方法は公開されていない",
+  "date_or_period": "2026年9月時点の社内テスト",
+  "source_url": null,
+  "notes_for_writer": "「人間の方が95〜98%で成功した」と一般化しない。「一部テストで95〜98%の範囲が示された」と書く。因果関係や統計的有意性は確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-009",
+  "claim": "社内投稿では、MuseがAIだと認識した相手側から電話を切られる事例が報告された。報道では、保険会社がMuseのAI発信だと分かると繰り返し電話を切ったという従業員の報告が紹介された。",
+  "scope": "Museが発信した電話の一部",
+  "conditions": "電話の相手が発信者をAIだと認識した場合",
+  "date_or_period": "2026年9月時点",
+  "source_url": null,
+  "notes_for_writer": "「AI電話は一般に切られる」と拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-010",
+  "claim": "Meta従業員は、人間の契約スタッフが電話を担当すると、電話中にユーザーの機微情報がコールセンターの契約スタッフへ意図せず共有される可能性があるとして、社内でプライバシー上の懸念を示した。",
+  "scope": "人間の契約スタッフがMuse経由の電話を担当するテスト",
+  "conditions": "電話の遂行にユーザー情報が必要となる場合",
+  "date_or_period": "2026年9月中旬〜2026年9月22日",
+  "source_url": null,
+  "notes_for_writer": "懸念の存在を示す事実。実際の大規模な情報漏えいが発生したと断定しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-011",
+  "claim": "Museにインターネット・ケーブル料金の交渉を依頼した従業員は、電話の記録に人間の契約スタッフによる人種に関する不適切な発言があったと報告した。",
+  "scope": "インターネット・ケーブル料金交渉の1件として報道された事例",
+  "conditions": "人間の契約スタッフが電話を担当したケース",
+  "date_or_period": "2026年9月時点",
+  "source_url": null,
+  "notes_for_writer": "従業員の報告として記録する。契約スタッフ全体の行動や実験全体の性質へ一般化しない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-012",
+  "claim": "MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。",
+  "scope": "Meta社内テストの人間コンシェルジュ機能",
+  "conditions": "適切な開示なしで契約スタッフが電話を担当していたテスト",
+  "date_or_period": "2026年9月22日まで",
+  "source_url": null,
+  "notes_for_writer": "「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-013",
+  "claim": "Metaの広報担当者Daniel Robertsは、従業員の反応は「圧倒的に肯定的」だったと述べ、テストの目的を、安全・プライバシー保護を実装し、公開前に機能を改善するためのフィードバック収集だと説明した。",
+  "scope": "Meta従業員を対象とした人間コンシェルジュ機能のテスト",
+  "conditions": "Meta広報担当者によるReutersへの説明",
+  "date_or_period": "2026年9月22日",
+  "source_url": null,
+  "notes_for_writer": "Meta広報担当者の説明として記録する。客観的なユーザー満足度の測定値とは扱わない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-014",
+  "claim": "Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。",
+  "scope": "Museの電話機能および人間コンシェルジュを含む可能性のある運用",
+  "conditions": "準備完了および適切な開示が整うこと",
+  "date_or_period": "2026年9月22日時点",
+  "source_url": null,
+  "notes_for_writer": "公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "MUSE-HC-015",
+  "claim": "Metaは公式説明で、Museについて、ユーザーが接続アプリとアクセス権限を選択でき、メール送信や購入などの敏感な操作の前に確認を求め、操作履歴を表示すると説明している。",
+  "scope": "Museの公式製品仕様",
+  "conditions": "Metaが公開した通常の製品設計",
+  "date_or_period": "2026年9月8日時点",
+  "source_url": null,
+  "notes_for_writer": "公式の製品設計上の説明と、実験時の実際の情報共有運用を混同しない。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+  "verification_notes": ""
+ }
+]

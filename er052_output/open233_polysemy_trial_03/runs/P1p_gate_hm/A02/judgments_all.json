@@ -1,0 +1,795 @@
+[
+  {
+    "fact_id": "POL-01",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "POL-01",
+      "reversible": true,
+      "compressed_claim": "英国政府が16・17歳向け夜間SNS設定を導入",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "英国政府は16・17歳向け夜間SNS設定をすでに施行した。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "まだ施行されていない",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "導入計画中なのか、すでに施行済みなのかで政策の現状が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "英国政府は16・17歳向け夜間SNS設定をすでに施行した。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "英国政府は16・17歳向け夜間SNS設定をすでに施行した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「導入」は施行済みの実装も含み得るため、圧縮文に施行済みを妨げる語がない",
+        "compressed_claim": "英国政府が16・17歳向け夜間SNS設定を導入"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "「既に施行済みの義務として書かない」と明記し、施行済みという逆読を禁じている。"
+    }
+  },
+  {
+    "fact_id": "POL-02",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "POL-02",
+      "reversible": true,
+      "compressed_claim": "英国政府が16・17歳に夜間SNS制限を適用",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "16・17歳は夜間制限を自分で解除できず、設定は固定される。",
+          "flipped_component": "polarity",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "利用者による設定変更が可能とされている",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "変更可能な初期設定か、解除不能な強制制限かで制度の性質が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "16・17歳は夜間制限を自分で解除できず、設定は固定される。",
+    "adopted_flipped_component": "polarity",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "16・17歳は夜間制限を自分で解除できず、設定は固定される。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「適用」は解除可否や設定の固定性を示さず、利用者が解除できない設定とも両立する",
+        "compressed_claim": "英国政府が16・17歳に夜間SNS制限を適用"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "完全利用不能や対象年齢の範囲には触れるが、自分で解除できず固定されるという点は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "16・17歳は夜間制限を自分で解除できず、設定は固定される。",
+      "correct_state": "16・17歳の対象SNS利用に午前0時から午前6時まで利用者が選べる初期設定の夜間制限を適用する",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "POL-03",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "POL-03",
+      "reversible": false,
+      "compressed_claim": "夜間制限中はSNS通知をミュート",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "POL-04",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "POL-04",
+      "reversible": true,
+      "compressed_claim": "政府がautoplayとpersonalised feedsをオフ設定",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "16・17歳はautoplayとpersonalised feedsを自分でオンにできず、設定は固定される。",
+          "flipped_component": "polarity",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "利用者は設定を変更できる",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "変更可能なデフォルト設定か、固定された強制設定かで保護措置の性質が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "16・17歳はautoplayとpersonalised feedsを自分でオンにできず、設定は固定される。",
+    "adopted_flipped_component": "polarity",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "16・17歳はautoplayとpersonalised feedsを自分でオンにできず、設定は固定される。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「オフ設定」は初期状態か固定設定かを区別しないため、利用者がオンに戻せない設定とも両立する",
+        "compressed_claim": "政府がautoplayとpersonalised feedsをオフ設定"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "default-offと夜間通知ミュートの混同を禁じるだけで、自分でオンにできず固定されるという点は扱っていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "16・17歳はautoplayとpersonalised feedsを自分でオンにできず、設定は固定される。",
+      "correct_state": "16・17歳の2つの設定を初期状態でオフにし、利用者が選べる状態にする",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "POL-05",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "POL-05",
+      "reversible": false,
+      "compressed_claim": "autoplay等にデフォルト制限を適用",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "POL-06",
+    "passed": false,
+    "dropped_by": [
+      "R_lint_rejected"
+    ],
+    "judgment": {
+      "fact_id": "POL-06",
+      "reversible": true,
+      "compressed_claim": "16・17歳向け保護設定が自動的にオン",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "保護設定は自動的にオンになるが、利用者は変更できず固定される。",
+          "flipped_component": "polarity",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "初期設定として有効化されるが、強制的な変更不能設定ではない",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "本人が変更できる初期設定か、変更不能な強制設定かで制度の意味が変わる"
+        }
+      ]
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [
+      {
+        "stage": "stage1_R",
+        "run": 1,
+        "fact_id": "POL-06",
+        "R": "保護設定は自動的にオンになるが、利用者は変更できず固定される。",
+        "words": [
+          "変更"
+        ]
+      }
+    ]
+  },
+  {
+    "fact_id": "POL-07",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "POL-07",
+      "reversible": true,
+      "compressed_claim": "16・17歳向け追加設定を同範囲SNSに適用",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "英国政府は追加設定の対象サービスを最終確定した。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "最終的なサービス定義および例外は今後の規則で確定",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "対象サービスが暫定方針の段階か、最終確定済みかで政策の確定度が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "英国政府は追加設定の対象サービスを最終確定した。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "英国政府は追加設定の対象サービスを最終確定した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「適用」は対象サービスの確定時期を示さず、対象が最終確定している場合とも両立する",
+        "compressed_claim": "16・17歳向け追加設定を同範囲SNSに適用"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "例示サービスを最終確定リストとして扱わないよう明記し、対象サービスの最終確定という読みを禁じている。"
+    }
+  },
+  {
+    "fact_id": "PILOT-01",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "PILOT-01",
+      "reversible": true,
+      "compressed_claim": "パイロットは309件のインタビューを実施",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "309件のオンライン・デプスインタビューは夜間curfew群だけを対象に実施された。",
+          "flipped_component": "subject_object",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "夜間curfew群だけの人数ではなく",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "全4群を含む研究か夜間curfew群だけの研究かで調査対象の理解が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "309件のオンライン・デプスインタビューは夜間curfew群だけを対象に実施された。",
+    "adopted_flipped_component": "subject_object",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "309件のオンライン・デプスインタビューは夜間curfew群だけを対象に実施された。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「インタビュー」は実施形態や対象群を限定しておらず、309件すべてが夜間curfew群向けでも圧縮文と両立する",
+        "compressed_claim": "パイロットは309件のインタビューを実施"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "309件は4群全体のサンプルであり、curfew群だけとする読みを明示的に禁じている。"
+    }
+  },
+  {
+    "fact_id": "PILOT-02",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "PILOT-02",
+      "reversible": true,
+      "compressed_claim": "参加世帯を4群に配分し3介入を実施",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "研究者が参加者の希望を問わず、4群へ無作為に割り当てた。",
+          "flipped_component": "subject_object",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "配分は参加者の希望に基づく",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "自己選択による配分か無作為割付かで研究デザインと比較結果の解釈が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "研究者が参加者の希望を問わず、4群へ無作為に割り当てた。",
+    "adopted_flipped_component": "subject_object",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "研究者が参加者の希望を問わず、4群へ無作為に割り当てた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「配分」は無作為割り当ても含み得るため、参加者の希望を問わない無作為配分とも両立する",
+        "compressed_claim": "参加世帯を4群に配分し3介入を実施"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "無作為割付試験やランダム化比較試験と呼ばないよう明記し、無作為割付という読みを禁じている。"
+    }
+  },
+  {
+    "fact_id": "PILOT-03",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "PILOT-03",
+      "reversible": false,
+      "compressed_claim": "Wave1の4群は合計309世帯",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "PILOT-04",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "PILOT-04",
+      "reversible": true,
+      "compressed_claim": "night-curfew群が夜間SNSアクセスをブロック",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "対象SNSアプリが、親の操作なしに端末アクセスを自動でブロックした。",
+          "flipped_component": "subject_object",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "親または保護者が毎日午後9時から午前7時まで、対象SNSアプリへのアクセスを端末レベルのペアレンタルコントロールでブロックした",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "家庭の親が実施した介入か、サービス側が自動実施した制限かで介入の仕組みが変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "対象SNSアプリが、親の操作なしに端末アクセスを自動でブロックした。",
+    "adopted_flipped_component": "subject_object",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "対象SNSアプリが、親の操作なしに端末アクセスを自動でブロックした。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「ブロック」は自動作動や親の操作の有無を示さず、アプリが自動でアクセスを遮断した場合とも両立する",
+        "compressed_claim": "night-curfew群が夜間SNSアクセスをブロック"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "介入の型と政策案との同一視は禁じるが、親の操作なしに自動ブロックしたという点は明示していない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "対象SNSアプリが、親の操作なしに端末アクセスを自動でブロックした。",
+      "correct_state": "親または保護者が対象SNSアプリへのアクセスを毎日午後9時から午前7時まで端末でブロックした状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "PILOT-05",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "PILOT-05",
+      "reversible": true,
+      "compressed_claim": "3介入が6つの中核アプリを制限",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsも介入対象だった。",
+          "flipped_component": "subject_object",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsは介入対象外だった",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "制限対象が中核6サービスだけか、通信・教育サービスまで含むかで介入の範囲が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsも介入対象だった。",
+    "adopted_flipped_component": "subject_object",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsも介入対象だった。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "対象アプリ名が示されていないため、列挙されたアプリが6つの中核アプリに含まれていても圧縮文と両立する",
+        "compressed_claim": "3介入が6つの中核アプリを制限"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "パイロット対象アプリを将来規制の最終対象とみなすことを禁じるだけで、パイロット対象だったことは否定していない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "WhatsApp、YouTube、iMessage、Google Classroom、Teamsも介入対象だった。",
+      "correct_state": "5つのサービスを介入対象外とする状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "PILOT-06",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "PILOT-06",
+      "reversible": true,
+      "compressed_claim": "パイロットは自己申告中心の質的研究",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "研究者はデジタル利用状況を直接監視した。",
+          "flipped_component": "polarity",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "デジタル利用状況は直接監視されず",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "自己申告中心で利用実態を確認できない研究か、利用状況を直接把握した研究かで証拠の性質が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "研究者はデジタル利用状況を直接監視した。",
+    "adopted_flipped_component": "polarity",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "研究者はデジタル利用状況を直接監視した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「中心」は自己申告以外の方法を排除しないため、研究者による直接監視も併用した場合と両立する",
+        "compressed_claim": "パイロットは自己申告中心の質的研究"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "結果がself-reportedであると明記し、研究者が直接デジタル利用を監視したという読みを禁じている。"
+    }
+  },
+  {
+    "fact_id": "PILOT-07",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "PILOT-07",
+      "reversible": false,
+      "compressed_claim": "night-curfew群の遵守は53・23・5世帯",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "OUT-01",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "OUT-01",
+      "reversible": false,
+      "compressed_claim": "night-curfewが最も導入・管理しやすい",
+      "predicate_direction_explicit": false,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "OUT-02",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "OUT-02",
+      "reversible": false,
+      "compressed_claim": "night-curfew群で睡眠改善が報告",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "OUT-03",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "OUT-03",
+      "reversible": false,
+      "compressed_claim": "night-curfew群は継続意思と維持が最も強い",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "OUT-04",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "OUT-04",
+      "reversible": false,
+      "compressed_claim": "night-curfewは利用を夜間から日中へ移す",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "OUT-05",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "OUT-05",
+      "reversible": true,
+      "compressed_claim": "night-curfewで前倒し・早朝・代替行動が生じた",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "反動",
+      "reverse_propositions": [
+        {
+          "R": "SNSの前倒し利用や早朝利用が、night-curfewの導入を引き起こした。",
+          "flipped_component": "cause_effect",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "night-curfewへの適応として",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "curfewが利用行動を変えたのか、利用行動がcurfewの導入を招いたのかで因果関係が逆転する"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "SNSの前倒し利用や早朝利用が、night-curfewの導入を引き起こした。",
+    "adopted_flipped_component": "cause_effect",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "反動",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "SNSの前倒し利用や早朝利用が、night-curfewの導入を引き起こした。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「で」は因果だけでなく夜間curfew下での共起も表し得るため、行動が導入を引き起こした場合とも両立する",
+        "compressed_claim": "night-curfewで前倒し・早朝・代替行動が生じた"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "総スクリーン時間との同一視や頻度の定量化を禁じるが、利用パターンがcurfew導入を引き起こしたという因果は扱っていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "SNSの前倒し利用や早朝利用が、night-curfewの導入を引き起こした。",
+      "correct_state": "午後9時から午前7時まで対象SNSにアクセスできず、午前7時以降に対象SNSを利用する状態",
+      "result": "ok"
+    }
+  }
+]

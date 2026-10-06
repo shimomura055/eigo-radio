@@ -1,0 +1,321 @@
+下記の【Fact一覧】の**全てのfact**について、誤読で意味が逆転・重大変質する可能性を一次スクリーニングしてください(noteは書かない)。このスクリーニングは再現率重視です。(i)〜(iv)のいずれかが判断しづらい場合は、reversible=trueで残してください(最終の絞り込みは後段が行う)。ただし、明らかに対象外の型(hedge・帰属・数値精度・評価語・用語定義・範囲限定だけの違い)は残さないでください。件数で絞らず、定義を満たすかどうかだけで判断します。
+
+【対象の定義(誤読すると意味が逆転・重大変質するFactだけを対象にする)】
+対象は、Factの意味・方向・状態・主体・対象・時系列・因果・完了状態などが、誤読により逆転または重大に変質する表現である(例: 撤回と復活、上昇と下落、状態AからB、主体と対象、完了と予定、原因と結果、時系列の逆転)。難語・軽微なニュアンスの違い・表現の好みは対象外。
+
+【操作的定義】
+対象は次の(i)〜(iv)を全て満たす場合のみ。(i)claimの成分を**1つだけ**反転した命題Rを作れる(反転できる成分: 述語の極性・変化の向き(増↔減、付与↔撤回、開始↔停止)/主体↔対象、対象集合/事象の段階(完了↔予定、開発・評価↔配備・実施、模擬↔実在)/途中↔最終/原因↔結果)。(ii)Rが、日本語claimを約30字に圧縮した文(scope・conditions・notesを落とし原資料も見ない状態)と矛盾しない。(iii)Rが台帳のclaim/scope/conditionsのいずれかと矛盾する。(iv)Rを採ると記事の主題レベルの結論が変わる。情報の確からしさ・出所の違い(報道↔確認済み)、hedge・推量、帰属(〜と述べた)、数値の精度・分母、評価語、用語の定義、範囲の限定だけの違いは対象外。各factの本文(claim/scope/conditions等)だけを根拠に判定する。
+
+【判定の手順(各factについて必ず)】
+1. claimを約30字に圧縮する(compressed_claim)。この時点ではscope・conditions・原資料を見ない。scope・conditionsに加えて、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部 など)も落とし、主語+述語だけの文にする。
+2. 反転できる成分ごとに(flipped_component: polarity / subject_object / stage / interim_final / cause_effect)、反転命題Rを作る。**述語の極性反転(polarity)を必ず最初に検討し**、作れるときは最初のRにする。Rは最大2つまで列挙してよい(異なる成分を反転した別のR。作れなければ空の配列)。Rは60字以内の1文で、変化後に何が有る・何が無いかが分かる平易な語だけで書く。「戻す・元に戻した・復元・変更・見直し・改める・調整」のように変化の向き・結果が読み取れない語(外来語の操作名を含む)は、Rに使わない。claimに出てくる向き・結果が曖昧な表記そのものも、Rの文言に使わない。Rごとに以下3〜4を行う。
+3. Rが圧縮文と矛盾しないか(ii)を確かめる。次に、Rが台帳のclaim/scope/conditionsのどれと矛盾するか(contradicts_ledger_field: claim / scope / conditions / none)を決め、矛盾の根拠になる台帳の語句をledger_quoteへ**逐語**で書き写す(claim/scope/conditionsからのみ)。
+4. そのRを採ると記事の主題レベルの結論が変わるか(changes_conclusion)を決め、その理由を1文でconclusion_change_reasonに書く。
+5. factごとに、次の2項目を書く。(a) predicate_direction_explicit: claim/scope/conditionsから、変化後に何が有り何が無いかを、claimの述語の語そのものを使わず平易な日本語で特定できるか(特定できるならtrue、述語の語に頼らないと言えない・特定できないならfalse)。(b) ambiguous_expression: claim中に、変化の向き・結果が曖昧な述語の表記があれば、claimに現れる形のまま逐語で1つ書く(無ければ空文字)。
+6. (i)〜(iv)を全て満たすRが1つでもあるときだけreversible=trueとする。
+(noteはこの段階では書かない。)
+
+【例の見方】下の例はスクリーニング用の型の参考である。例の出力にはnoteの欄はない。実際の出力では必ずpredicate_direction_explicitとambiguous_expressionを付ける。出力形式は末尾の指定に従う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のため迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}]}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}]}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}]}
+正例4 fact「Z庁は新制度の適用を当面差し戻した」(scope: 試験運用中の窓口業務) →
+{"fact_id":"EX-9","reversible":true,"compressed_claim":"Z庁が新制度を差し戻し","predicate_direction_explicit":false,"ambiguous_expression":"差し戻した","reverse_propositions":[{"R":"Z庁は新制度を恒久的に廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"適用を当面差し戻した","changes_conclusion":true,"conclusion_change_reason":"適用の一時停止か制度自体の廃止かで、記事の主題の結論が変わる"}]}
+(型の説明: 述語の表記が向き・結果を示さず、変化後に何が有る/無いかをその語抜きでは言えないので、predicate_direction_explicit=false・ambiguous_expressionに表記を逐語で書く。Rは曖昧な表記を使わず、変化後の状態が分かる語で書く)
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}]}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。fact一覧の全factについて1要素ずつ(省略しない)返す。
+{"judgments":[{"fact_id":"","reversible":false,"compressed_claim":"","predicate_direction_explicit":false,"ambiguous_expression":"","reverse_propositions":[{"R":"","flipped_component":"polarity|subject_object|stage|interim_final|cause_effect","contradicts_ledger_field":"claim|scope|conditions|none","ledger_quote":"","changes_conclusion":false,"conclusion_change_reason":""}]}]}
+
+【Fact一覧】
+[
+ {
+  "fact_id": "F001",
+  "claim": "FIFAワールドカップ2026準決勝・第102試合は、イングランド対アルゼンチンの組み合わせで行われ、アルゼンチンが2-1で勝利した。",
+  "scope": "FIFAワールドカップ2026準決勝・第102試合",
+  "conditions": "90分および後半アディショナルタイム終了時の最終結果",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRは「Semi-final - Match 102」「England 1-2 Argentina」と明記し、APもアルゼンチンの2-1勝利と決勝進出を報じている。FIFA記事の検索タイトルには逆順の「England 2-1 Argentina」が残るが、記事本文のスコアと勝敗はclaimどおりである。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F002",
+  "claim": "試合は2026年7月15日、アトランタ・スタジアムで現地時間15時にキックオフされた。",
+  "scope": "FIFAワールドカップ2026準決勝・第102試合",
+  "conditions": "FIFA大会上の会場名称と現地時刻",
+  "date_or_period": "2026-07-15 15:00 local time",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRに2026年7月15日、15:00キックオフ、Atlanta Stadiumと明記されている。大会日程および現地案内でも第102試合は同日15時、アトランタ開催で一致する。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F003",
+  "claim": "前半は両チーム無得点で終了し、ハーフタイムのスコアは0-0だった。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "前半45分および前半アディショナルタイム終了時",
+  "date_or_period": "2026-07-15・前半終了時",
+  "source_url": "https://www.englandfootball.com/england/mens-senior-team/fixtures-results/2025-26/World-Cup/england-argentina-fifa-world-cup-quarter-final-wednesday-15-july-2026-match-centre",
+  "verification_notes": "イングランド協会のマッチセンターはHTを0-0と記録しており、得点記録も後半の55分、85分、終了間際のみである。([englandfootball.com](https://www.englandfootball.com/england/mens-senior-team/fixtures-results/2025-26/World-Cup/england-argentina-fifa-world-cup-quarter-final-wednesday-15-july-2026-match-centre))"
+ },
+ {
+  "fact_id": "F004",
+  "claim": "55分、アンソニー・ゴードンがモーガン・ロジャーズの右サイドからの低いクロスをファーサイドで合わせ、イングランドが1-0と先制した。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "後半、試合最初の得点",
+  "date_or_period": "2026-07-15・55分",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFAの試合記事は、ロジャーズが右から低いクロスを送り、ゴードンがバックポストで合わせたと記述し、得点時刻を55分としている。イングランド協会もロジャーズのクロスからゴードンが決めたとしている。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F005",
+  "claim": "85分、ショートコーナーの流れからリオネル・メッシが横に送ったボールをエンソ・フェルナンデスがペナルティーエリア外から右足で決め、アルゼンチンが1-1に追いついた。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "アルゼンチンの同点得点",
+  "date_or_period": "2026-07-15・85分",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事はショートコーナー後にメッシがフェルナンデスへ横パスし、フェルナンデスがエリア外から決めたと記載する。85分という時刻、右足のシュート、1-1への同点も独立報道・公式クラブ記事で確認できる。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F006",
+  "claim": "後半アディショナルタイムの90+2分、リオネル・メッシの右足クロスを途中出場のラウタロ・マルティネスがファーサイドで頭で合わせ、アルゼンチンが2-1と逆転した。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "後半アディショナルタイム、決勝点",
+  "date_or_period": "2026-07-15・90+2分",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA公式PMSRとFIFA試合記事はラウタロ・マルティネスの得点を90+2分と記録し、メッシの右足クロスを途中出場のマルティネスがファーポストで決めたとしている。イングランド協会には92分、90+3分、アディショナルタイム3分目という表記揺れがあるが、FIFA公式記録を基準とするclaimは妥当である。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F007",
+  "claim": "公式記録に基づく得点順は、55分ゴードン、85分エンソ・フェルナンデス、90+2分ラウタロ・マルティネスであり、スコアは0-0、1-0、1-1、1-2の順に推移した。",
+  "scope": "試合全体",
+  "conditions": "実際の発生順",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式資料の得点者・時刻はゴードン55分、エンソ・フェルナンデス85分、ラウタロ・マルティネス90+2分であり、スコア推移は0-0から1-0、1-1、1-2となる。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F008",
+  "claim": "ラウタロ・マルティネスの決勝点直前にはアレクシス・マック・アリスターのシュートがポストに当たり、その後メッシがボールを回収してクロスを送った。",
+  "scope": "アルゼンチンの第2得点に至る直前の連続プレー",
+  "conditions": "ラウタロ・マルティネスの得点前",
+  "date_or_period": "2026-07-15・後半アディショナルタイム",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事は、アディショナルタイムにマック・アリスターのシュートがポストをたたき、メッシが攻撃を継続して右足でクロスを送ったと明記している。イングランド協会も同じ連続プレーを記録している。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F009",
+  "claim": "FIFA公式マッチレポートは、アルゼンチンの2得点はいずれもリオネル・メッシのアシストによるものとしている。",
+  "scope": "アルゼンチンの得点",
+  "conditions": "85分と90+2分の2得点",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事はアルゼンチンの2得点を「two Lionel Messi assists」と明記している。APもメッシが両方の終盤得点をアシストしたと報じている。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F010",
+  "claim": "ラウタロ・マルティネスは81分にニコラス・タグリアフィコとの交代で出場し、その後90+2分に決勝点を記録した。",
+  "scope": "途中出場と得点",
+  "conditions": "アルゼンチンの交代選手",
+  "date_or_period": "2026-07-15・81分から試合終了まで",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRはラウタロ・マルティネスを81分出場、90+2分得点と記録している。交代対象がタグリアフィコだったことはイングランド協会のラインアップとインテル公式記事でも一致する。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F011",
+  "claim": "アンソニー・ゴードンは試合時点でFCバルセロナ所属だった。",
+  "scope": "得点関与選手の所属クラブ",
+  "conditions": "2026年5月29日に移籍成立",
+  "date_or_period": "2026-07-15時点",
+  "source_url": "https://www.fcbarcelona.com/en/news/4511134/anthony-gordon-becomes-an-fc-barcelona-player/amp",
+  "verification_notes": "FCバルセロナは2026年5月29日にニューカッスルとの完全移籍合意と5年契約を公式発表し、大会中もゴードンを「Barça winger」「blaugrana」と扱っている。イングランド協会の試合ラインアップも所属をBarcelonaとする。一方、FIFA Squad Listは7月19日版でもNewcastle Unitedと記載しており公式資料間の不整合はあるが、移籍先クラブと代表協会の試合時点資料によりclaimを支持できる。([fcbarcelona.com](https://www.fcbarcelona.com/en/football/first-team/news/4511134/anthony-gordon-becomes-an-fc-barcelona-player/featured?utm_source=openai))"
+ },
+ {
+  "fact_id": "F012",
+  "claim": "モーガン・ロジャーズはアストン・ヴィラFC所属だった。",
+  "scope": "先制点のクロス提供者",
+  "conditions": null,
+  "date_or_period": "2026年大会時点",
+  "source_url": "https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf",
+  "verification_notes": "FIFA公式Squad Listはモーガン・ロジャーズのクラブをAston Villa FCと記載し、イングランド協会の試合ラインアップも同じ所属を示している。([fdp.fifa.org](https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf))"
+ },
+ {
+  "fact_id": "F013",
+  "claim": "エンソ・フェルナンデスはチェルシーFC所属だった。",
+  "scope": "アルゼンチンの同点得点者",
+  "conditions": null,
+  "date_or_period": "2026年大会時点",
+  "source_url": "https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf",
+  "verification_notes": "FIFA公式Squad Listはエンソ・フェルナンデスをChelsea FC所属と記載している。チェルシー公式も同大会の自クラブ選手としてフェルナンデスを扱っている。([fdp.fifa.org](https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf))"
+ },
+ {
+  "fact_id": "F014",
+  "claim": "リオネル・メッシはインテル・マイアミCF所属だった。",
+  "scope": "アルゼンチンの2得点をアシストした選手",
+  "conditions": null,
+  "date_or_period": "2026年大会時点",
+  "source_url": "https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf",
+  "verification_notes": "FIFA公式Squad Listはリオネル・メッシのクラブをInter Miami CFと記載している。大会前のチェルシー公式アルゼンチン選手一覧でも同じ所属である。([fdp.fifa.org](https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf))"
+ },
+ {
+  "fact_id": "F015",
+  "claim": "ラウタロ・マルティネスはFCインテルナツィオナーレ・ミラノ所属だった。",
+  "scope": "アルゼンチンの決勝得点者",
+  "conditions": null,
+  "date_or_period": "2026年大会時点",
+  "source_url": "https://www.inter.it/en/news/england-argentina-semifinals-world-cup-2026-lautaro",
+  "verification_notes": "FIFA公式Squad Listはラウタロ・マルティネスをFC Internazionale Milano所属と記載し、インテル公式も同選手をクラブ主将として準決勝得点を報じている。([fdp.fifa.org](https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf))"
+ },
+ {
+  "fact_id": "F016",
+  "claim": "アレクシス・マック・アリスターはリヴァプールFC、ハリー・ケインはFCバイエルン・ミュンヘン所属だった。",
+  "scope": "マック・アリスターおよびケイン",
+  "conditions": null,
+  "date_or_period": "2026年大会時点",
+  "source_url": "https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf",
+  "verification_notes": "FIFA公式Squad Listはマック・アリスターをLiverpool FC、ケインをFC Bayern München所属と記載している。イングランド協会の試合ラインアップでもケインの所属はBayern Munichで一致する。([fdp.fifa.org](https://fdp.fifa.org/assetspublic/ce281/pdf/SquadLists-English.pdf))"
+ },
+ {
+  "fact_id": "F017",
+  "claim": "イングランドの先発はジョーダン・ピックフォード、デクラン・ライス、ジョン・ストーンズ、マーク・グエイ、エリオット・アンダーソン、ハリー・ケイン、ジュード・ベリンガム、モーガン・ロジャーズ、アンソニー・ゴードン、リース・ジェームズ、ジェド・スペンスだった。",
+  "scope": "キックオフ時の11人",
+  "conditions": "FIFA公式PMSRのStarting欄",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "列挙された11人はFIFA公式PMSRのイングランドSTARTING欄と一致する。イングランド協会およびAPの先発一覧でも同じ11人が確認できる。Andersonの公式PMSR表記はElliotである。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F018",
+  "claim": "アルゼンチンの先発はエミリアーノ・マルティネス、ニコラス・タグリアフィコ、レアンドロ・パレデス、リサンドロ・マルティネス、フリアン・アルバレス、リオネル・メッシ、クリスティアン・ロメロ、ジュリアーノ・シメオネ、アレクシス・マック・アリスター、エンソ・フェルナンデス、ナウエル・モリーナだった。",
+  "scope": "キックオフ時の11人",
+  "conditions": "FIFA公式PMSRのStarting欄",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "列挙された11人はFIFA公式PMSRのアルゼンチンSTARTING欄と一致し、APおよびイングランド協会の先発一覧とも整合する。ラウタロ・マルティネスは先発ではなく控えである。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F019",
+  "claim": "FIFA公式PMSRが示す開始時の基本フォーメーションは、イングランドが4-2-3-1、アルゼンチンが4-4-2だった。",
+  "scope": "両チーム",
+  "conditions": "FIFA公式PMSR上の分類",
+  "date_or_period": "2026-07-15・キックオフ時",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRの開始時フォーメーション欄は、イングランド4-2-3-1、アルゼンチン4-4-2と明記している。試合中の可変配置とは区別された開始時分類としてscopeも正しい。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F020",
+  "claim": "FIFA公式PMSRのシュート統計は、イングランドが5本で枠内2本、アルゼンチンが15本で枠内5本だった。",
+  "scope": "両チーム",
+  "conditions": "FIFA Post Match Summary ReportのAttempts at Goal",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRのKey StatisticsはAttempts at Goalをイングランド5本・枠内2本、アルゼンチン15本・枠内5本と記録している。総シュートと枠内シュートのscopeも正しい。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F021",
+  "claim": "FIFA公式PMSRの期待得点値は、イングランド0.46、アルゼンチン1.47だった。",
+  "scope": "両チーム",
+  "conditions": "FIFA公式モデルによるPost Match Summary Report値",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRのxG欄はイングランド0.46、アルゼンチン1.47である。FIFAモデルによる当該試合全体の値という条件も適切に限定されている。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F022",
+  "claim": "FIFA公式PMSRのポゼッション分類は、イングランド35.2％、イン・コンテスト8.2％、アルゼンチン56.5％だった。",
+  "scope": "両チームおよび争奪中区分",
+  "conditions": "FIFA独自の3区分表示",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRはポゼッションをイングランド35.2％、イン・コンテスト8.2％、アルゼンチン56.5％の3区分で表示している。丸めにより合計が99.9％となる点もclaimの解釈と整合する。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F023",
+  "claim": "総パス数と成功数は、イングランドが353本中293本、アルゼンチンが610本中549本で、成功率はそれぞれ83％と90％だった。",
+  "scope": "両チーム",
+  "conditions": "FIFA公式PMSR",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRは総パス・成功パスをイングランド353本・293本、アルゼンチン610本・549本、成功率を83％・90％と記録している。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F024",
+  "claim": "クロス数はイングランド15本、アルゼンチン20本だった。",
+  "scope": "両チーム",
+  "conditions": "FIFA公式PMSR",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRのチーム全体のCrossesはイングランド15本、アルゼンチン20本である。個別得点場面ではなく試合全体のチーム総計というscopeも正しい。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F025",
+  "claim": "ファイナルサードでのレセプション数はイングランド87回、アルゼンチン230回だった。",
+  "scope": "両チーム",
+  "conditions": "FIFA公式PMSRのReceptions in the Final Third",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRのReceptions in the Final Thirdはイングランド87回、アルゼンチン230回であり、claimの数値と指標scopeが一致する。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F026",
+  "claim": "総走行距離はイングランド107.7km、アルゼンチン106.6kmだった。",
+  "scope": "両チーム",
+  "conditions": "FIFA公式PMSR",
+  "date_or_period": "2026-07-15・試合全体",
+  "source_url": "https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf",
+  "verification_notes": "FIFA公式PMSRのTotal Distance Coveredはイングランド107.7km、アルゼンチン106.6kmである。個人距離ではなくチーム総走行距離として正しく記載されている。([fifatrainingcentre.com](https://www.fifatrainingcentre.com/media/native/tournaments/fifa-world-cup/2026/PMSR-M102-ENG-V-ARG.pdf))"
+ },
+ {
+  "fact_id": "F027",
+  "claim": "アルゼンチンはこの勝利により決勝へ進み、イングランドは3位決定戦へ回った。",
+  "scope": "FIFAワールドカップ2026ノックアウトステージ",
+  "conditions": "準決勝の勝敗に基づく",
+  "date_or_period": "2026-07-15以後",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事とAPは、アルゼンチンが勝者としてスペインとの決勝へ進み、敗者イングランドがフランスとの3位決定戦へ回ったことを明記している。準決勝結果による進出先という因果関係も大会方式どおりである。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F028",
+  "claim": "リオネル・メッシがFIFA公式のSuperior Player of the Matchに選ばれた。",
+  "scope": "イングランド対アルゼンチン",
+  "conditions": "Michelob Ultra Superior Player of the Match",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA公式試合記事のMichelob Ultra Superior Player of the Match欄はLionel Messi（Argentina）としている。受賞写真の説明でも確認できる。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F029",
+  "claim": "メッシは39歳21日で出場し、FIFAワールドカップ準決勝に出場した最年長のフィールドプレーヤーとなった。",
+  "scope": "FIFAワールドカップ準決勝の歴代記録",
+  "conditions": "ゴールキーパーを除く",
+  "date_or_period": "2026-07-15",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA公式記事はメッシが39歳21日でワールドカップ準決勝に出場した最年長フィールドプレーヤーとなったと明記する。従来記録のフリッツ・ヴァルターとグンナー・グレンの37歳236日も一致する。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ },
+ {
+  "fact_id": "F030",
+  "claim": "ハリー・ケインはこの試合でイングランド代表通算121試合出場となり、同代表のフィールドプレーヤー最多出場記録を更新した。",
+  "scope": "イングランド男子代表のフィールドプレーヤー",
+  "conditions": "ゴールキーパーを除く",
+  "date_or_period": "2026-07-15時点",
+  "source_url": "https://www.fifa.com/en/articles/england-argentina-match-report-highlights",
+  "verification_notes": "FIFA記事およびイングランド協会の歴代出場記録ページは、この試合がケインの121試合目で、ウェイン・ルーニーの120試合を超えてイングランド男子代表のフィールドプレーヤー最多となったことを確認している。([fifa.com](https://www.fifa.com/en/articles/england-argentina-match-report-highlights?utm_source=openai))"
+ }
+]

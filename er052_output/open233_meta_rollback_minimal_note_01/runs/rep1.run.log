@@ -1,0 +1,31 @@
+[B3-RUNNER][research_ledger] æ—¢å­˜Ledgerã‚’å†åˆ©ç”¨(æ—¢ç”Ÿæˆæ¸ˆã¿): er052_output/open233_meta_rollback_minimal_note_01/runs/meta/nb/rep1/research_ledger
+[E-FAMILY-RUNNER][cost] so far=0.00 JPY by_provider={} (after research_ledger)
+[E-FAMILY-RUNNER][cost] so far=1.28 JPY by_provider={'openai': 1.28} (after storyline_b3)
+[JA-WRITER][ja_original] Fact Check MAJORã€‚must-fixã§1å›ã ã‘å†ç”Ÿæˆã—ã¾ã™(major_count=2)...
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 192, in run_ja_writer
+    result = jaw.run_ja_writer_o_r1_r2(client, storyline_line, selected_fact_brief_text,
+                                        full_ledger_text=full_ledger_text)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_ja_writer_o_r1_r2_01.py", line 305, in run_ja_writer_o_r1_r2
+    raise JAFactCheckStopError(
+    ...<6 lines>...
+    )
+er019_family_x_ja_writer_o_r1_r2_01.JAFactCheckStopError: [STOP] JA_FACT_CHECK_STOP: JA Original Fact CheckAmust-fix RewriteŒã‚àMAJORA‚Ü‚½‚Í‘O‰ñw“E‚Ì–¢‰ğÁ‚ªc‚è‚Ü‚µ‚½(overall_status=LEDGER_DEVIATION, all_prior_issues_resolved=True)B–{•¶‚ğè‚Å’¼‚³‚¸STOP‚µ‚Ü‚·B
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er052_open233_polysemy_nb_dev_01.py", line 249, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_polysemy_nb_dev_01.py", line 210, in main
+    er019.main()
+    ~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 365, in main
+    writer_result = run_ja_writer(
+        client, storyline_result["selected_storyline"],
+        storyline_result["selected_fact_brief_text"], out_dir,
+        full_ledger_text=ledger_text)
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 203, in run_ja_writer
+    raise RuntimeError(str(exc)) from exc
+RuntimeError: [STOP] JA_FACT_CHECK_STOP: JA Original Fact CheckAmust-fix RewriteŒã‚àMAJORA‚Ü‚½‚Í‘O‰ñw“E‚Ì–¢‰ğÁ‚ªc‚è‚Ü‚µ‚½(overall_status=LEDGER_DEVIATION, all_prior_issues_resolved=True)B–{•¶‚ğè‚Å’¼‚³‚¸STOP‚µ‚Ü‚·B

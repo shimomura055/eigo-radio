@@ -1,0 +1,28 @@
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のため迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}]}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}]}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}]}
+正例4 fact「Z庁は新制度の適用を当面差し戻した」(scope: 試験運用中の窓口業務) →
+{"fact_id":"EX-9","reversible":true,"compressed_claim":"Z庁が新制度を差し戻し","predicate_direction_explicit":false,"ambiguous_expression":"差し戻した","paraphrase_readings":[{"paraphrase":"受け付けず返した","reading_exists":"制度は存続し、適用だけが保留される","reading_none":"制度そのものが無くなる"},{"paraphrase":"検討前の段階へ戻した","reading_exists":"制度案は残り、再検討される","reading_none":"制度案が白紙になる"}],"reverse_propositions":[{"R":"Z庁は新制度を恒久的に廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"適用を当面差し戻した","changes_conclusion":true,"conclusion_change_reason":"適用の一時停止か制度自体の廃止かで、記事の主題の結論が変わる"}]}
+(型の説明: 述語の表記が向き・結果を示さず、変化後に何が有る/無いかをその語抜きでは言えないので、predicate_direction_explicit=false・ambiguous_expressionに表記を逐語で書く。Rは曖昧な表記を使わず、変化後の状態が分かる語で書く。言い換えごとに「有る」「無い」の両方向を書く)
+正例5 fact「V市は図書貸出サービスの運用を見直した」(scope: 当面は予約分のみ) →
+{"fact_id":"EX-10","reversible":true,"compressed_claim":"V市が図書貸出の運用を見直し","predicate_direction_explicit":false,"ambiguous_expression":"見直した","paraphrase_readings":[{"paraphrase":"やめた","reading_exists":"予約分の貸出は続く","reading_none":"貸出サービスが無くなる"},{"paraphrase":"元に戻した","reading_exists":"以前の貸出が再び行われる","reading_none":"貸出の無い以前の状態になる"},{"paraphrase":"変えた","reading_exists":"予約分だけの貸出になる","reading_none":"貸出が行われなくなる"}],"reverse_propositions":[{"R":"V市は図書貸出サービスを終了した","flipped_component":"polarity","contradicts_ledger_field":"scope","ledger_quote":"当面は予約分のみ","changes_conclusion":true,"conclusion_change_reason":"予約分の貸出が続くかサービス自体が無くなるかで、利用者への影響の結論が変わる"},{"R":"V市は図書貸出サービスを通常どおり再開した","flipped_component":"polarity","contradicts_ledger_field":"scope","ledger_quote":"当面は予約分のみ","changes_conclusion":true,"conclusion_change_reason":"予約分のみの運用か通常の貸出の再開かで、利用者への影響の結論が変わる"}]}
+(型の説明: 曖昧な表記を複数の平易な言い換えに置き換え、各言い換えで対象が「有る」読みと「無い」読みの両方を作ると、台帳と矛盾する方向のRが両方向とも見つかる)
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[]}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","predicate_direction_explicit":true,"ambiguous_expression":"","paraphrase_readings":[],"reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}]}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)

@@ -1,0 +1,29 @@
+{
+ "pattern": "P2_stable",
+ "max_chars": 120,
+ "self_check_policy": "derivable_only",
+ "stage2_existing_notes": true,
+ "prefix_file": "prefix.txt",
+ "examples_file": "examples.txt",
+ "stage1_output_key": "judgments",
+ "stage2_output_key": "notes",
+ "mode": "p04_stable",
+ "stage1_repeats": 2,
+ "judge_pass": [
+  "high"
+ ],
+ "compress_source": "stage1",
+ "prompt_files": [
+  "stage1_prompt.txt",
+  "stage1_5_prompt.txt",
+  "stage2_prompt.txt"
+ ],
+ "hypothesis": "P2(stage1安定化): stage1を2回実行し、両回でreversible=true(かつ採用R成立)のfactは判定役をスキップして直行(Rは両回の候補から採用規則で選ぶ)、片回のみのfactは判定役highのみ通過、どちらでもないfactは落とす。stage2はB2と同一。",
+ "pass_rule": "stage1を2回。両回通過=直行。片回通過=判定役highのみ通過(mediumとlowは落とす)。stage2: correct_statement_derivable_from_ledger=trueのみ採用。",
+ "hypotheses": {
+  "H8": "stage1 prompt単一仕様化: B2/B3のstage1は旧版と新版が連結した状態(【出力】2か所・Fact一覧が末尾のみ)だったため、新形式のみの単一仕様(patterns/_common/stage1_prompt.txt、各patternへ同一内容を配置)に統一。各factにつきR最大2つ+compressed_claim(scope/conditions/notes/限定語を落とした主語+述語)+existing_note_covers(既存notesが既にそのRを禁じているか)を出力。",
+  "H9": "R採用規則(コード側pick_reverse_p04): changes_conclusion=trueかつledger_quoteが台帳(claim/scope/conditions)に部分一致するRのうち、existing_note_covers=falseを優先、同点ならflipped_componentの優先順(polarity>stage>subject_object>interim_final>cause_effect)、さらに同点は出現順。既存notesが禁じていない逆読みを選ぶ一般規則(特定factを個別に扱わない)。",
+  "H10": "P2(stage1安定化): stage1を2回実行し、両回でreversible=true(かつ採用R成立)のfactは判定役をスキップして直行(Rは両回の候補から採用規則で選ぶ)、片回のみのfactは判定役highのみ通過、どちらでもないfactは落とす。stage2はB2と同一。"
+ },
+ "diff_from_other": "stage1/stage2/examples/prefixは3patternで同一内容。差は判定役の通過閾値・stage1の回数・判定役へ渡す圧縮文の作り方のみ。"
+}

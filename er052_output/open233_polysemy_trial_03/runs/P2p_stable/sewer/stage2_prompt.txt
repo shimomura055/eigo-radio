@@ -1,0 +1,76 @@
+下記の【候補】は、一次スクリーニングと判定役を通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason・claim中の曖昧表記ambiguous_expression・既に禁じ済みの一覧already_prohibited)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+ambiguous_expressionが空でないとき: 「注意(逆転): 台帳の表記'<ambiguous_expression>'は、<変化後の状態>の意味。<R>ではない。」
+ambiguous_expressionが空のとき: 「注意(逆転): <主体>が<対象>を<変化後の状態>。<R>ではない。」
+- 日本語本文(接頭辞を含む全体)は120字以内、改行なし。
+- <変化後の状態>は、変化後に何が有り何が無いかを、台帳のclaim/scope/conditionsから導ける平易な語だけで書く(correct_stateにも同じ文言を書く)。新しい事実・解釈を足さない。
+- <変化後の状態>とR(r_echo)には、「戻す」「元に戻した」「復元」「変更」「見直し」「改める」「調整」のように向き・結果が曖昧な語(カタカナ語の操作名を含む)、およびambiguous_expressionの語を使わない(引用符で囲んだ表記'...'の中だけは、台帳の表記をそのまま書いてよい)。
+- 英語は、台帳(claim・scope・conditions・notes)に実在する語だけを、3語以内で併記してよい。台帳に無い英語は書かない。
+- <R>の部分は、候補のreverse_readingの主語・述語・目的語をそのまま残して書く(r_echoにreverse_readingを一字一句そのまま書き写す)。Rを言い換えたり別の逆転に差し替えたりしない。
+- Rを否定するときに、<変化後の状態>として正しい読みまで打ち消さない(「Rではない」と書くことで、正しい読みの一部を禁じてはならない)。
+
+【already_prohibitedの扱い】
+already_prohibitedは、その台帳factについて既に禁じ済みの内容であり、「繰り返さない一覧」である。ここに書かれた内容は、noteで繰り返さず、reverse_readingについてだけ書く。already_prohibitedの文言を写したり、肯定的な根拠として使ったりしない。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた<変化後の状態>は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例(架空・別領域。形式の参考だけに使う)】
+候補: claim「Z庁は新制度の適用を当面差し戻した」 ambiguous_expression「差し戻した」 reverse_reading「Z庁は新制度を恒久的に廃止した」 →
+{"fact_id":"EX-9","r_echo":"Z庁は新制度を恒久的に廃止した","correct_state":"新制度の適用が当面行われない状態","note":"注意(逆転): 台帳の表記'差し戻した'は、新制度の適用が当面行われない状態の意味。Z庁は新制度を恒久的に廃止したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+候補: claim「Y社は試作機の評価を開始した」 ambiguous_expressionが空 reverse_reading「Y社は量産機を現場へ配備した」 →
+{"fact_id":"EX-2","r_echo":"Y社は量産機を現場へ配備した","correct_state":"試作機を試験場で評価している段階","note":"注意(逆転): Y社が試作機を試験場で評価している段階。Y社は量産機を現場へ配備したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","r_echo":"","correct_state":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "F-008",
+  "source_quote": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "reverse_reading": "既設単独処理浄化槽はすべて撤去された。",
+  "flipped_component": "interim_final",
+  "conclusion_change_reason": "新設禁止だけでなく、既設設備が残るのか全撤去されたのかで制度の現状理解が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "単独処理浄化槽と合併処理浄化槽を区別する基礎事実。"
+  ]
+ },
+ {
+  "fact_id": "F-011",
+  "source_quote": "既に整備済みの公共下水道区域を浄化槽へ切り替える内容ではなく、未整備区域の計画方式変更",
+  "reverse_reading": "焼津市は未整備区域で浄化槽の設置を完了した。",
+  "flipped_component": "stage",
+  "conclusion_change_reason": "計画上の区域方式変更なのか、浄化槽の実際の設置完了なのかで、整備の進捗に関する結論が変わる",
+  "ambiguous_expression": "転換した",
+  "already_prohibited": [
+   "『切り替えを決定した』ではなく、『未整備区域の計画方式を転換・検討した』と記述する。"
+  ]
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "F-008",
+  "claim": "単独処理浄化槽はし尿のみを処理し、生活雑排水を処理対象としない。平成12年の浄化槽法改正により、単独処理浄化槽の新設は平成13年4月1日から原則禁止された。",
+  "scope": "日本国内の浄化槽新設制度",
+  "conditions": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "date_or_period": "平成13年4月1日以降",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-011",
+  "claim": "焼津市は、公共下水道計画区域の未整備区域について、経済性、将来性、災害時の影響を踏まえて公共下水道と合併処理浄化槽を比較し、2024年度に一部区域を合併処理浄化槽の推進区域へ転換した。2026年には、残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+  "scope": "焼津市の公共下水道計画区域内の未整備区域",
+  "conditions": "既に整備済みの公共下水道区域を浄化槽へ切り替える内容ではなく、未整備区域の計画方式変更",
+  "date_or_period": "2024年度および2026年7月1日〜7月31日の意見募集",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

@@ -5223,3 +5223,30 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 ### §90-8 参照
 - `docs/pm/polysemy_trial_02/`、`docs/pm/polysemy_trial_03/`(F0_failure_analysis.md、L1/L2/L3_element_trial_result.md)、`docs/pm/opus_l2_review_pt03_design_01.md`
 - `er052_output/open233_polysemy_trial_02/ledgers/`、`er052_output/open233_polysemy_trial_03/patterns/`、`.../runs/`、`.../eval/`。OPEN-237、OF-062。
+
+## §91 OPEN-233-META-ROLLBACK-MINIMAL-NOTE-TRIAL-01(最小Note注意喚起Trial、2026-10-07)
+
+### §91-1 目的・条件
+- Meta HC-012「ロールバック」の「元に戻した」型曖昧表現を、B3 brief転記の最小Note(一般的な多義注意喚起1文)で抑止できるかを検証(Trial限定、Metaのみ、N=5評価+rep1参考)。
+- Note全文(逐語): 「注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。」(対象語を指さない一般文)
+
+### §91-2 結果表(HC-012相当文、3値)
+| rep | brief | R0 | R1 | R2 |
+|---|---|---|---|---|
+| 1 | 曖昧 | 未完(却下初稿は曖昧) | 未完 | 未完(参考) |
+| 2 | 曖昧 | 正解「いったん止めた」 | 正解 | 曖昧「いったん元に戻された」 |
+| 3 | 曖昧 | 曖昧「当面、元に戻されました」 | 曖昧 | 曖昧「当面元に戻しました」 |
+| 4 | 曖昧 | 曖昧(同上) | 曖昧 | 曖昧 |
+| 5 | 曖昧 | 曖昧「いったん元に戻された」 | 曖昧「ロールバック...元に戻された」 | 正解寄り「いったん降板した形だ」 |
+| 6 | 曖昧「同機能をロールバックした」 | 曖昧「当面、元の状態に戻しました」 | 曖昧(同文) | 曖昧「当面、元に戻しました」 |
+
+### §91-3 集計とControl比較(N=5、rep2〜6)
+- R2: 正解1(rep5)/誤読0/曖昧4(rep2,3,4,6)。R0: 正解1(rep2)/誤読0/曖昧4(rep3,4,5,6)。
+- Control: trial_04 Control rep1 R2=曖昧(復元型候補)、E2E_02(旧)復元型3/5 run。今回R2復元型候補4/5=Controlと同水準。
+- 実費: rep2〜6計¥21.14(rep1は一部未記録、概算込みtotal_jpy_approx ¥23.25、上限¥40)。
+
+### §91-4 Fable判定
+- Status=**USER_DECISION_REQUIRED**(Production採用判断はしない)。Noteはbriefへ6/6逐語転記(rep1〜6)=Writer入力まで到達。明示的な「復活・再提供」型の誤読は全run全段で0件。ただし最終稿(R2)では「元に戻された/元に戻しました」型の曖昧表現が多数(R2 4/5、R0 4/5)で、Control(trial_04 rep1: R2曖昧・復元型候補/E2E_02: 復元型3/5)と同水準。一般的な注意喚起だけでは「元に戻す」への言い換えを抑止できず、改善効果は限定的(N=5)。rep2はR0/R1で「止めた」と正しく文脈化したがR2で「元に戻された」へ退行(Revision段で台帳表現へ寄せる挙動の疑い)。Production変更なし/Trial限定。
+
+### §91-5 参照
+- `er052_output/open233_meta_rollback_minimal_note_01/eval/E_rollback_minimal_note.md`、`.../runs/meta/nb/rep1〜6/`、`.../cost.json`。OPEN-237。

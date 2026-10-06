@@ -1,0 +1,96 @@
+下記の【候補】は、一次スクリーニングと判定役を通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason・claim中の曖昧表記ambiguous_expression・既に禁じ済みの一覧already_prohibited)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+ambiguous_expressionが空でないとき: 「注意(逆転): 台帳の表記'<ambiguous_expression>'は、<変化後の状態>の意味。<R>ではない。」
+ambiguous_expressionが空のとき: 「注意(逆転): <主体>が<対象>を<変化後の状態>。<R>ではない。」
+- 日本語本文(接頭辞を含む全体)は120字以内、改行なし。
+- <変化後の状態>は、変化後に何が有り何が無いかを、台帳のclaim/scope/conditionsから導ける平易な語だけで書く(correct_stateにも同じ文言を書く)。新しい事実・解釈を足さない。
+- <変化後の状態>とR(r_echo)には、「戻す」「元に戻した」「復元」「変更」「見直し」「改める」「調整」のように向き・結果が曖昧な語(カタカナ語の操作名を含む)、およびambiguous_expressionの語を使わない(引用符で囲んだ表記'...'の中だけは、台帳の表記をそのまま書いてよい)。
+- 英語は、台帳(claim・scope・conditions・notes)に実在する語だけを、3語以内で併記してよい。台帳に無い英語は書かない。
+- <R>の部分は、候補のreverse_readingの主語・述語・目的語をそのまま残して書く(r_echoにreverse_readingを一字一句そのまま書き写す)。Rを言い換えたり別の逆転に差し替えたりしない。
+- Rを否定するときに、<変化後の状態>として正しい読みまで打ち消さない(「Rではない」と書くことで、正しい読みの一部を禁じてはならない)。
+
+【already_prohibitedの扱い】
+already_prohibitedは、その台帳factについて既に禁じ済みの内容であり、「繰り返さない一覧」である。ここに書かれた内容は、noteで繰り返さず、reverse_readingについてだけ書く。already_prohibitedの文言を写したり、肯定的な根拠として使ったりしない。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた<変化後の状態>は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例(架空・別領域。形式の参考だけに使う)】
+候補: claim「Z庁は新制度の適用を当面差し戻した」 ambiguous_expression「差し戻した」 reverse_reading「Z庁は新制度を恒久的に廃止した」 →
+{"fact_id":"EX-9","r_echo":"Z庁は新制度を恒久的に廃止した","correct_state":"新制度の適用が当面行われない状態","note":"注意(逆転): 台帳の表記'差し戻した'は、新制度の適用が当面行われない状態の意味。Z庁は新制度を恒久的に廃止したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+候補: claim「Y社は試作機の評価を開始した」 ambiguous_expressionが空 reverse_reading「Y社は量産機を現場へ配備した」 →
+{"fact_id":"EX-2","r_echo":"Y社は量産機を現場へ配備した","correct_state":"試作機を試験場で評価している段階","note":"注意(逆転): Y社が試作機を試験場で評価している段階。Y社は量産機を現場へ配備したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","r_echo":"","correct_state":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "HF-002",
+  "source_quote": "同海峡を通るすべての貨物に20％の率で償還を求めると投稿した",
+  "reverse_reading": "米国はホルムズ海峡通航貨物から20％の償還料を実際に徴収した",
+  "flipped_component": "stage",
+  "conclusion_change_reason": "支払いの要求段階か、実際の徴収段階かで政策の実施状況が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。"
+  ]
+ },
+ {
+  "fact_id": "HF-006",
+  "source_quote": "翌日に始まる予定とされた米国の対イラン海上封鎖",
+  "reverse_reading": "米国の対イラン海上封鎖はすでに始まり、Brent先物は上昇した",
+  "flipped_component": "stage",
+  "conclusion_change_reason": "予定された封鎖への反応か、すでに始まった封鎖への反応かで市場変動の意味が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "7月13日の上昇全体を「20％料だけが原因」と断定しない。7月14日の撤回はこの清算値より後の出来事。"
+  ]
+ },
+ {
+  "fact_id": "HF-007",
+  "source_quote": "20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した",
+  "reverse_reading": "トランプ大統領は20％償還料を実際に撤廃し、湾岸諸国の対米案件を実施した",
+  "flipped_component": "stage",
+  "conclusion_change_reason": "政策の置換を発表した段階か、実際に撤廃・実施した段階かで結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。"
+  ]
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "HF-002",
+  "claim": "ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+  "scope": "ホルムズ海峡を通じて輸送される「すべての貨物」",
+  "conditions": "米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。",
+  "date_or_period": "2026-07-13 10:16 EDT",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-006",
+  "claim": "Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。",
+  "scope": "Brent原油先物の当日清算値と前日比",
+  "conditions": "米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境",
+  "date_or_period": "2026-07-13清算時点",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-007",
+  "claim": "トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+  "scope": "7月13日に提案したホルムズ海峡通航貨物への20％償還料",
+  "conditions": "トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。",
+  "date_or_period": "2026-07-14 11:04 EDT",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

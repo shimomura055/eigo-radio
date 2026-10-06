@@ -104,3 +104,20 @@ def test_j_note_prefix_env():
     assert "『注意(多義):』" in dev.TRANSFER_BLOCK
     blk = dev.build_transfer_block({"OPEN233_NOTE_PREFIX": "注意(逆転):"})
     assert "『注意(逆転):』" in blk and "注意(多義):" not in blk
+
+
+def test_k_runs_root_env(tmp_path, monkeypatch):
+    led = tmp_path / "l.txt"
+    led.write_text("x", encoding="utf-8")
+    monkeypatch.setenv("OPEN233_B3_VARIANT", "control")
+    new = "er052_output/open233_polysemy_trial_04/runs/zz_test/control/rep1"
+    monkeypatch.delenv("OPEN233_RUNS_ROOT", raising=False)
+    assert dev.get_runs_root() == dev.DEFAULT_RUNS_ROOT
+    with pytest.raises(SystemExit) as e:
+        dev.main(["--theme", "t", "--slug", "s", "--ledger-txt", str(led), "--out-dir", new, "--dry-run"])
+    assert "規約" in str(e.value)
+    monkeypatch.setenv("OPEN233_RUNS_ROOT", "er052_output/open233_polysemy_trial_04/runs")
+    try:
+        dev.main(["--theme", "t", "--slug", "s", "--ledger-txt", str(led), "--out-dir", new, "--dry-run"])
+    except SystemExit as e:
+        assert "規約" not in str(e)

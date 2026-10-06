@@ -1,0 +1,231 @@
+下記の【Fact一覧】の**全てのfact**について、誤読で意味が逆転・重大変質する可能性を一次スクリーニングしてください(noteは書かない)。このスクリーニングは再現率重視です。(i)〜(iv)のいずれかが判断しづらい場合は、reversible=trueで残してください(最終の絞り込みは後段が行う)。ただし、明らかに対象外の型(hedge・帰属・数値精度・評価語・用語定義・範囲限定だけの違い)は残さないでください。件数で絞らず、定義を満たすかどうかだけで判断します。
+
+【対象の定義(誤読すると意味が逆転・重大変質するFactだけを対象にする)】
+対象は、Factの意味・方向・状態・主体・対象・時系列・因果・完了状態などが、誤読により逆転または重大に変質する表現である(例: 撤回と復活、上昇と下落、状態AからB、主体と対象、完了と予定、原因と結果、時系列の逆転)。難語・軽微なニュアンスの違い・表現の好みは対象外。
+
+【操作的定義】
+対象は次の(i)〜(iv)を全て満たす場合のみ。(i)claimの成分を**1つだけ**反転した命題Rを作れる(反転できる成分: 述語の極性・変化の向き(増↔減、付与↔撤回、開始↔停止)/主体↔対象、対象集合/事象の段階(完了↔予定、開発・評価↔配備・実施、模擬↔実在)/途中↔最終/原因↔結果)。(ii)Rが、日本語claimを約30字に圧縮した文(scope・conditions・notesを落とし原資料も見ない状態)と矛盾しない。(iii)Rが台帳のclaim/scope/conditionsのいずれかと矛盾する。(iv)Rを採ると記事の主題レベルの結論が変わる。情報の確からしさ・出所の違い(報道↔確認済み)、hedge・推量、帰属(〜と述べた)、数値の精度・分母、評価語、用語の定義、範囲の限定だけの違いは対象外。各factの本文(claim/scope/conditions等)だけを根拠に判定する。
+
+【判定の手順(各factについて必ず)】
+1. claimを約30字に圧縮する(compressed_claim)。この時点ではscope・conditions・原資料を見ない。scope・conditionsに加えて、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部 など)も落とし、主語+述語だけの文にする。
+2. 反転できる成分ごとに(flipped_component: polarity / subject_object / stage / interim_final / cause_effect)、反転命題Rを作る。**述語の極性反転(polarity)を必ず最初に検討し**、作れるときは最初のRにする。Rは最大2つまで列挙してよい(異なる成分を反転した別のR。作れなければ空の配列)。Rは60字以内の1文で、変化後に何が有る・何が無いかが分かる平易な語だけで書く。「戻す・元に戻した・復元・変更・見直し・改める・調整」のように変化の向き・結果が読み取れない語(外来語の操作名を含む)は、Rに使わない。claimに出てくる向き・結果が曖昧な表記そのものも、Rの文言に使わない。Rごとに以下3〜4を行う。
+3. Rが圧縮文と矛盾しないか(ii)を確かめる。次に、Rが台帳のclaim/scope/conditionsのどれと矛盾するか(contradicts_ledger_field: claim / scope / conditions / none)を決め、矛盾の根拠になる台帳の語句をledger_quoteへ**逐語**で書き写す(claim/scope/conditionsからのみ)。
+4. そのRを採ると記事の主題レベルの結論が変わるか(changes_conclusion)を決め、その理由を1文でconclusion_change_reasonに書く。
+5. factごとに、次の2項目を書く。(a) predicate_direction_explicit: claim/scope/conditionsから、変化後に何が有り何が無いかを、claimの述語の語そのものを使わず平易な日本語で特定できるか(特定できるならtrue、述語の語に頼らないと言えない・特定できないならfalse)。(b) ambiguous_expression: claim中に、変化の向き・結果が曖昧な述語の表記があれば、claimに現れる形のまま逐語で1つ書く(無ければ空文字)。
+6. (i)〜(iv)を全て満たすRが1つでもあるときだけreversible=trueとする。
+(noteはこの段階では書かない。)
+
+【例の見方】下の例はスクリーニング用の型の参考である。例の出力にはnoteの欄はない。実際の出力では必ずpredicate_direction_explicitとambiguous_expressionを付ける。出力形式は末尾の指定に従う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のため迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}]}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}]}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}]}
+正例4 fact「Z庁は新制度の適用を当面差し戻した」(scope: 試験運用中の窓口業務) →
+{"fact_id":"EX-9","reversible":true,"compressed_claim":"Z庁が新制度を差し戻し","predicate_direction_explicit":false,"ambiguous_expression":"差し戻した","reverse_propositions":[{"R":"Z庁は新制度を恒久的に廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"適用を当面差し戻した","changes_conclusion":true,"conclusion_change_reason":"適用の一時停止か制度自体の廃止かで、記事の主題の結論が変わる"}]}
+(型の説明: 述語の表記が向き・結果を示さず、変化後に何が有る/無いかをその語抜きでは言えないので、predicate_direction_explicit=false・ambiguous_expressionに表記を逐語で書く。Rは曖昧な表記を使わず、変化後の状態が分かる語で書く)
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}]}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。fact一覧の全factについて1要素ずつ(省略しない)返す。
+{"judgments":[{"fact_id":"","reversible":false,"compressed_claim":"","predicate_direction_explicit":false,"ambiguous_expression":"","reverse_propositions":[{"R":"","flipped_component":"polarity|subject_object|stage|interim_final|cause_effect","contradicts_ledger_field":"claim|scope|conditions|none","ledger_quote":"","changes_conclusion":false,"conclusion_change_reason":""}]}]}
+
+【Fact一覧】
+[
+ {
+  "fact_id": "F-001",
+  "claim": "全国の下水道管路総延長は約50万kmで、標準耐用年数50年を経過した管路は約4万km（約7%）である。10年後には約11万km（約22%）、20年後には約23万km（約45%）に増加する見込みである。",
+  "scope": "全国、都市下水路を除く下水道管路",
+  "conditions": "標準耐用年数50年を経過した管路を老朽管路として集計",
+  "date_or_period": "令和6年度末時点および将来推計（10年後・20年後）",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-002",
+  "claim": "国土交通省の推計では、下水道の維持管理・更新費は2018年度の約0.8兆円から2048年度には約1.3兆円となり、約1.6倍に増加する見込みである。",
+  "scope": "国土交通省所管の下水道施設を対象とした全国推計",
+  "conditions": "管路施設、処理施設、ポンプ施設を対象。施工条件等により推計値には幅がある。",
+  "date_or_period": "2018〜2048年度の推計",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-003",
+  "claim": "国土交通省は、人口減少等による下水道使用料収入の減少と、施設老朽化に伴う改築更新費の増大が、下水道事業の経営環境を厳しくする要因になると説明している。",
+  "scope": "日本の公共下水道、特定環境保全公共下水道、農業集落排水事業",
+  "conditions": "長期収支見通しの把握を目的とした国土交通省の説明",
+  "date_or_period": "現行の国土交通省説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-004",
+  "claim": "腐食のおそれが大きい下水道管路については、下水道法上、5年に1回以上の適切な頻度で点検することが義務づけられている。",
+  "scope": "腐食のおそれが大きい箇所の下水道管路",
+  "conditions": "すべての下水道管路に一律適用される5年周期ではなく、腐食リスクの高い箇所が対象",
+  "date_or_period": "平成27年の下水道法改正後の制度",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-005",
+  "claim": "合併処理浄化槽は、トイレからのし尿に加えて、台所・風呂・洗濯等から出る生活雑排水を併せて処理する個別分散型の汚水処理施設である。",
+  "scope": "各戸単位等で設置される合併処理浄化槽",
+  "conditions": "工場排水、雨水その他の特殊排水は通常の対象外",
+  "date_or_period": "現行制度上の定義・説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-006",
+  "claim": "合併処理浄化槽は、微生物の浄化機能を利用して汚水を処理し、環境省資料では放流水質BOD20mg/L以下の処理性能を有するものとして説明されている。",
+  "scope": "環境省資料で説明される合併処理浄化槽",
+  "conditions": "個別製品・処理方式・認定性能により仕様は異なるため、BOD値は資料上の性能基準・説明値として扱う",
+  "date_or_period": "環境省資料による説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-007",
+  "claim": "環境省の汚水処理システムの説明では、住宅が分散する地域では個別処理の浄化槽、住宅が密集する地域では公共下水道等の集合処理が経済的に有利になり得るため、地域特性に応じた方式選択が必要とされている。",
+  "scope": "自治体が生活排水処理計画を策定する際の一般的な比較",
+  "conditions": "住宅密度、整備費、維持管理費、既存施設等を総合的に評価",
+  "date_or_period": "環境省マニュアルの説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-008",
+  "claim": "単独処理浄化槽はし尿のみを処理し、生活雑排水を処理対象としない。平成12年の浄化槽法改正により、単独処理浄化槽の新設は平成13年4月1日から原則禁止された。",
+  "scope": "日本国内の浄化槽新設制度",
+  "conditions": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+  "date_or_period": "平成13年4月1日以降",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-009",
+  "claim": "環境省の特定地域生活排水処理事業では、市町村が設置主体となって、特定地域を単位に各戸の合併処理浄化槽を整備し、し尿と雑排水を併せて処理する制度が示されている。",
+  "scope": "市町村が設置主体となる特定地域",
+  "conditions": "共同住宅は当該共同住宅1棟を1戸として扱う制度上の規定がある",
+  "date_or_period": "制度通知に基づく制度",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-010",
+  "claim": "松山市は、下水道施設の老朽化、自然災害、人口減少による財政面の厳しさを踏まえ、公共下水道全体計画を見直し、市街化区域は原則として公共下水道、市街化調整区域は原則として合併処理浄化槽で汚水処理する方針とした。",
+  "scope": "松山市の全体計画区域",
+  "conditions": "市街化区域と市街化調整区域で方針を分ける。『原則』であり、区域内の個別事情を排除する記載ではない。",
+  "date_or_period": "2024年4月1日公表",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-011",
+  "claim": "焼津市は、公共下水道計画区域の未整備区域について、経済性、将来性、災害時の影響を踏まえて公共下水道と合併処理浄化槽を比較し、2024年度に一部区域を合併処理浄化槽の推進区域へ転換した。2026年には、残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+  "scope": "焼津市の公共下水道計画区域内の未整備区域",
+  "conditions": "既に整備済みの公共下水道区域を浄化槽へ切り替える内容ではなく、未整備区域の計画方式変更",
+  "date_or_period": "2024年度および2026年7月1日〜7月31日の意見募集",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-012",
+  "claim": "喜多方市は、施設老朽化に伴う更新等による維持管理費の増加と、人口減少に伴う使用料収入の減少を踏まえ、汚水処理構想を見直した。見直し後、集合処理区域以外を合併処理浄化槽による個別処理区域とし、浄化槽設置費の上乗せ補助を実施するとした。",
+  "scope": "喜多方市全域の汚水処理構想",
+  "conditions": "公共下水道、特定環境保全公共下水道、農業集落排水、小規模集合排水の区域を見直した後の区域設定",
+  "date_or_period": "2021年4月1日公表",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-013",
+  "claim": "佐賀県嬉野市では、人口減少と最大震度6強の地震を想定し、汚水処理方式ごとの設置・維持管理コストを比較した結果、主に住宅散在地で公共下水道より浄化槽の方が低コストとなると整理し、公共下水道区域を494haから395haへ縮小する計画を策定した。",
+  "scope": "嬉野市の公共下水道計画区域および住宅散在地",
+  "conditions": "市のコスト比較結果に基づく計画上の判断",
+  "date_or_period": "平成29年度導入事例、計画上の区域見直し",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-014",
+  "claim": "環境省の嬉野市事例紹介では、浄化槽は個別分散型施設であり、電源が確保できれば地震等の災害後も復旧に日数を要さない特徴があると説明されている。",
+  "scope": "嬉野市が検討した浄化槽方式",
+  "conditions": "電源が確保できる場合という条件付きの説明",
+  "date_or_period": "平成29年度の嬉野市事例紹介",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-015",
+  "claim": "長野県下條村は、34の集落が散在する地域特性を踏まえ、公共下水道ではなく全村合併処理浄化槽方式を選択した。環境省の事例紹介では、公共下水道と比べて事業費約42.5億円、維持費約1.5億円／年を削減したと報告されている。",
+  "scope": "長野県下條村全域",
+  "conditions": "当時の村の計画比較・補助制度・費用条件に基づく事例",
+  "date_or_period": "1990〜2011年度（平成2〜23年度）を中心とする事例",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-016",
+  "claim": "静岡県南伊豆町では、漁業集落排水施設の老朽化を背景に廃止が検討され、2021年度までに施設を廃止し、合併処理浄化槽68基を設置した事例が報告されている。",
+  "scope": "静岡県南伊豆町入間地区の漁業集落排水施設接続建築物",
+  "conditions": "公共下水道ではなく漁業集落排水施設の廃止事例。個人設置型の合併処理浄化槽へ転換。",
+  "date_or_period": "2021年度まで（令和3年度まで）",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-017",
+  "claim": "浄化槽管理者には、浄化槽の保守点検と清掃を、原則として毎年1回以上、環境省令で定める場合はその回数以上実施する義務がある。",
+  "scope": "浄化槽管理者",
+  "conditions": "浄化槽の種類・処理方式・処理対象人員により保守点検回数が異なる",
+  "date_or_period": "現行の浄化槽法に基づく制度",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-018",
+  "claim": "家庭用の小型浄化槽では、保守点検は4か月に1回以上が基本とされるが、処理方式や処理対象人員により回数は異なる。清掃では汚泥等の引き抜きを行い、年1回以上実施する。",
+  "scope": "家庭用の小型浄化槽",
+  "conditions": "処理方式・処理対象人員により異なる。清掃時期は汚泥蓄積等に応じた追加対応が必要となる場合がある。",
+  "date_or_period": "環境省による現行制度説明",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-019",
+  "claim": "法定検査は、保守点検・清掃とは別に実施される。7条検査は使用開始後3か月を経過した日から5か月以内に行い、11条検査は浄化槽の機能と維持管理状況を確認するため毎年1回行う。",
+  "scope": "浄化槽管理者および指定検査機関による法定検査",
+  "conditions": "7条検査は新設・構造変更等の後、11条検査は定期検査として実施",
+  "date_or_period": "現行制度",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "F-020",
+  "claim": "全国の令和6年度の浄化槽維持管理実施率は、保守点検74.5%、清掃65.9%であった。11条検査の受検率は全浄化槽で50.9%、合併処理浄化槽のみで67.2%であった。",
+  "scope": "全国の浄化槽。11条検査は全浄化槽と合併処理浄化槽のみを区分",
+  "conditions": "環境省調査による実施率・受検率。未実施・未受検が残る。",
+  "date_or_period": "令和6年度",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

@@ -1,0 +1,443 @@
+[
+  {
+    "fact_id": "HF-001",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-001",
+      "reversible": true,
+      "compressed_claim": "IMO理事会は通航料なしの維持を再確認",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "IMO理事会は一部の船舶だけを通航料なしにすべきだと再確認した。",
+          "flipped_component": "subject_object",
+          "contradicts_ledger_field": "scope",
+          "ledger_quote": "国際航行に使用されるホルムズ海峡を通航する全船舶",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "全船舶への無差別な通航権か一部船舶だけの扱いかで、制度の主題が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "IMO理事会は一部の船舶だけを通航料なしにすべきだと再確認した。",
+    "adopted_flipped_component": "subject_object",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "IMO理事会は一部の船舶だけを通航料なしにすべきだと再確認した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「通航料なし」は対象範囲を特定しておらず、一部の船舶だけというRを妨げる非限定語がない",
+        "compressed_claim": "IMO理事会は通航料なしの維持を再確認"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "撤回との因果関係を禁じているだけで、通航料免除に関する再確認の有無は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "IMO理事会は一部の船舶だけを通航料なしにすべきだと再確認した。",
+      "correct_state": "通航料・手数料がなく、全船舶が差別なく妨げられず通過できる状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "HF-002",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-002",
+      "reversible": true,
+      "compressed_claim": "トランプ氏は貨物に20％償還を求めると投稿",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "トランプ大統領は一部の貨物にだけ20％の償還を求めると投稿した。",
+          "flipped_component": "subject_object",
+          "contradicts_ledger_field": "scope",
+          "ledger_quote": "ホルムズ海峡を通じて輸送される「すべての貨物」",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "全貨物への一律の負担か一部貨物だけの負担かで、政策の主題が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "トランプ大統領は一部の貨物にだけ20％の償還を求めると投稿した。",
+    "adopted_flipped_component": "subject_object",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "トランプ大統領は一部の貨物にだけ20％の償還を求めると投稿した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「貨物」は対象範囲を特定しておらず、一部の貨物だけというRを妨げる非限定語がない",
+        "compressed_claim": "トランプ氏は貨物に20％償還を求めると投稿"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "出来事の前後関係と価格上昇との因果を扱っており、一部貨物への償還要求という内容の反転は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "トランプ大統領は一部の貨物にだけ20％の償還を求めると投稿した。",
+      "correct_state": "すべての貨物に20％の率で償還を求める投稿をした状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "HF-003",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-003",
+      "reversible": false,
+      "compressed_claim": "20％償還料案の制度設計は示されなかった",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-004",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-004",
+      "reversible": false,
+      "compressed_claim": "VLCC貨物価値は約1億7000万ドル、20％は約3400万ドル",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-005",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-005",
+      "reversible": false,
+      "compressed_claim": "Brent先物は7月13日のOHLCを記録した",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-006",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-006",
+      "reversible": true,
+      "compressed_claim": "Brent原油先物は7月13日に上昇した",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "Reutersは、開始済みの米国の対イラン海上封鎖にBrent先物の上昇を関連付けた。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "翌日に始まる予定とされた米国の対イラン海上封鎖",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "開始前の封鎖への市場反応か、実施中の封鎖への反応かで、価格上昇の主題が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "Reutersは、開始済みの米国の対イラン海上封鎖にBrent先物の上昇を関連付けた。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "Reutersは、開始済みの米国の対イラン海上封鎖にBrent先物の上昇を関連付けた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "圧縮文は上昇の原因や関連先を特定しておらず、Rを妨げる非限定語がない",
+        "compressed_claim": "Brent原油先物は7月13日に上昇した"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "価格上昇の原因を20％料だけと断定しないよう求めているだけで、海上封鎖との関連付けの反転は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "Reutersは、開始済みの米国の対イラン海上封鎖にBrent先物の上昇を関連付けた。",
+      "correct_state": "米国の対イラン海上封鎖が翌日に始まる予定の状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "HF-007",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-007",
+      "reversible": false,
+      "compressed_claim": "トランプ氏は20％料を湾岸国案件に置換すると投稿",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-008",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-008",
+      "reversible": false,
+      "compressed_claim": "トランプ氏は海峡通航船舶への料金に反対した",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-009",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-009",
+      "reversible": false,
+      "compressed_claim": "Brent先物は上げ幅を縮小後、高水準へ戻った",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "戻った",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-010",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-010",
+      "reversible": false,
+      "compressed_claim": "Brent先物は7月14日のOHLCを記録した",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "HF-011",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "HF-011",
+      "reversible": true,
+      "compressed_claim": "Brent先物は上昇し高値で清算された",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "20％償還料案は同日の取引時間中も撤回されず、維持された。",
+          "flipped_component": "polarity",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "20％償還料案は同日の取引時間中に撤回された",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "償還料案の撤回後も上昇したという結論が、案が維持された状態での上昇という結論に変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "20％償還料案は同日の取引時間中も撤回されず、維持された。",
+    "adopted_flipped_component": "polarity",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "20％償還料案は同日の取引時間中も撤回されず、維持された。",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "Brent先物",
+        "blocking_word_missing": false,
+        "reason": "Rは償還料案についての命題であり、圧縮文の主語である「Brent先物」を無視しないと同じ命題として読めない",
+        "compressed_claim": "Brent先物は上昇し高値で清算された"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium",
+      "R_is_natural_reading=false"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "撤回と価格変動の因果推論を禁じているだけで、取引時間中に撤回されず維持されたという反転命題自体を禁止していない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "20％償還料案は同日の取引時間中も撤回されず、維持された。",
+      "correct_state": "同日の取引時間中に20％償還料案が撤回され、Brent原油先物が上昇した状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "HF-012",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "HF-012",
+      "reversible": false,
+      "compressed_claim": "WTI先物はマイナス圏へ転じ、その後回復した",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  }
+]

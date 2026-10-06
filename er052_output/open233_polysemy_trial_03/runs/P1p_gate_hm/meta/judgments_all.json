@@ -1,0 +1,661 @@
+[
+  {
+    "fact_id": "MUSE-HC-001",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-001",
+      "reversible": false,
+      "compressed_claim": "MetaはMuseを発表し米国で展開すると説明",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-002",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-002",
+      "reversible": false,
+      "compressed_claim": "MuseはクラウドVM上で作業を実行できる",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-003",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-003",
+      "reversible": false,
+      "compressed_claim": "専用VMがデータを保存しSentinelが許可管理",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-004",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-004",
+      "reversible": false,
+      "compressed_claim": "Museは米国企業等への電話依頼を実行できる",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-005",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-005",
+      "reversible": true,
+      "compressed_claim": "Metaは電話機能を試験しユーザーへ展開",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "MetaはMuseの一般公開前に、電話発信機能をユーザーへ展開した。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "Museの一般公開後の数日間にユーザー向けへ段階的に展開した",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "一般公開後の段階展開か公開前の展開かで、機能の提供時期と展開経緯が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "MetaはMuseの一般公開前に、電話発信機能をユーザーへ展開した。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "MetaはMuseの一般公開前に、電話発信機能をユーザーへ展開した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「試験」は限定的な語だが、一般公開前にユーザーへ試験展開したというRを妨げる語はない",
+        "compressed_claim": "Metaは電話機能を試験しユーザーへ展開"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "時期と公式発表日の混同を禁じているだけで、一般公開前の展開という反転命題は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "MetaはMuseの一般公開前に、電話発信機能をユーザーへ展開した。",
+      "correct_state": "MetaがMuseの電話発信機能を一般公開後の数日間にユーザー向けへ段階的に展開した状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-006",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-006",
+      "reversible": true,
+      "compressed_claim": "人間の契約スタッフが電話を担当し完了",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "人間の契約スタッフが本番運用の電話を担当し、やり取りを完了させた。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "人間スタッフの関与が試験内に限られるのか、本番運用で行われたのかで機能の実用化状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "人間の契約スタッフが本番運用の電話を担当し、やり取りを完了させた。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "人間の契約スタッフが本番運用の電話を担当し、やり取りを完了させた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "本番かどうかを示す語がなく、人間の契約スタッフによる電話対応と完了は本番運用とも両立する",
+        "compressed_claim": "人間の契約スタッフが電話を担当し完了"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "人間が担当した範囲を「一部の電話」「テスト」に限定しており、本番運用全般で担当・完了したとの読みを禁じている。"
+    }
+  },
+  {
+    "fact_id": "MUSE-HC-007",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-007",
+      "reversible": true,
+      "compressed_claim": "人間コンシェルジュ機能が従業員の半数で有効化",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "人間コンシェルジュ機能はMeta従業員に本番提供されていた。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "Museの社内テスト参加者に対する機能有効化",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "社内テストでの限定的な有効化か、従業員向け本番提供かで機能の展開段階が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "人間コンシェルジュ機能はMeta従業員に本番提供されていた。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "人間コンシェルジュ機能はMeta従業員に本番提供されていた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「従業員の半数で有効化」は本番提供と矛盾せず、社内テストに限定する語もない",
+        "compressed_claim": "人間コンシェルジュ機能が従業員の半数で有効化"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "割合の分母や50%の断定を注意しているだけで、従業員向け本番提供という反転命題は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "人間コンシェルジュ機能はMeta従業員に本番提供されていた。",
+      "correct_state": "人間コンシェルジュ機能がMeta従業員の一部に有効化され、社内テスト中の状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-008",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-008",
+      "reversible": true,
+      "compressed_claim": "人間担当の電話成功率はAIのみより高い",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "人間が電話を担当した本番運用でも、成功率が95〜98%に達する可能性がある。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "scope",
+          "ledger_quote": "人間が電話を担当した一部テスト",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "試験で示された性能か実際の本番運用の性能かで、成功率の実用的な意味が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "人間が電話を担当した本番運用でも、成功率が95〜98%に達する可能性がある。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "人間が電話を担当した本番運用でも、成功率が95〜98%に達する可能性がある。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「AIのみより高い」は絶対的な成功率や運用段階を示さないため、本番で95〜98％というRとも両立する",
+        "compressed_claim": "人間担当の電話成功率はAIのみより高い"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "95〜98%という成功率を人間の本番運用に一般化せず、一部テストに限定するよう明示している。"
+    }
+  },
+  {
+    "fact_id": "MUSE-HC-009",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-009",
+      "reversible": false,
+      "compressed_claim": "相手はMuseがAIと分かると電話を切る",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-010",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-010",
+      "reversible": true,
+      "compressed_claim": "人間スタッフへの機微情報共有の可能性がある",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "本番運用でも、人間の契約スタッフに機微情報が共有される可能性がある。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "scope",
+          "ledger_quote": "人間の契約スタッフがMuse経由の電話を担当するテスト",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "試験中の懸念か本番運用で継続するプライバシーリスクかで、問題の実運用上の重大性が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "本番運用でも、人間の契約スタッフに機微情報が共有される可能性がある。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "本番運用でも、人間の契約スタッフに機微情報が共有される可能性がある。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "機微情報共有の可能性と人間スタッフという記述は、契約スタッフによる本番運用を妨げない",
+        "compressed_claim": "人間スタッフへの機微情報共有の可能性がある"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "大規模な情報漏えいの断定を禁じているだけで、機微情報が共有される可能性は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "本番運用でも、人間の契約スタッフに機微情報が共有される可能性がある。",
+      "correct_state": "Meta従業員がMuse経由の電話テストで、人間の契約スタッフへ機微情報が意図せず共有される可能性を懸念した状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-011",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-011",
+      "reversible": false,
+      "compressed_claim": "人間スタッフが人種に関する不適切発言",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "MUSE-HC-012",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-012",
+      "reversible": true,
+      "compressed_claim": "Metaは人間コンシェルジュ機能を停止",
+      "predicate_direction_explicit": false,
+      "ambiguous_expression": "ロールバック",
+      "reverse_propositions": [
+        {
+          "R": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "機能を当面ロールバックした",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "一時的な停止か機能自体の恒久廃止かで、サービスの存続と今後の展開が逆転する"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": false,
+    "ambiguous_expression": "ロールバック",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「停止」は一時停止にも恒久廃止にも読めるため、恒久的な廃止というRを妨げない",
+        "compressed_claim": "Metaは人間コンシェルジュ機能を停止"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "サービス全体の停止と人間コンシェルジュ機能のロールバックを区別しているだけで、恒久的廃止は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "Metaは人間コンシェルジュ機能を恒久的に廃止した。",
+      "correct_state": "人間コンシェルジュ機能が当面提供されない状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-013",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-013",
+      "reversible": true,
+      "compressed_claim": "Meta広報は社員反応が肯定的と説明",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "人間コンシェルジュ機能は従業員向けの社内テストではなく、一般ユーザー向け本番運用だった。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "scope",
+          "ledger_quote": "Meta従業員を対象とした人間コンシェルジュ機能のテスト",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "従業員向けの公開前テストか一般ユーザー向けの本番運用かで、機能の公開状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "人間コンシェルジュ機能は従業員向けの社内テストではなく、一般ユーザー向け本番運用だった。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "人間コンシェルジュ機能は従業員向けの社内テストではなく、一般ユーザー向け本番運用だった。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "社員の肯定的反応は社内テストに限定されず、一般ユーザー向け本番運用で社員が反応した場合とも両立する",
+        "compressed_claim": "Meta広報は社員反応が肯定的と説明"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "広報担当者の説明と満足度測定値の扱いを区別しているだけで、社内テストか一般向け本番かの反転は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "人間コンシェルジュ機能は従業員向けの社内テストではなく、一般ユーザー向け本番運用だった。",
+      "correct_state": "Meta従業員が人間コンシェルジュ機能を公開前にテストしている状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-014",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "MUSE-HC-014",
+      "reversible": true,
+      "compressed_claim": "Metaは電話機能を公開展開すると説明",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "Metaは準備や適切な開示なしで電話機能を公開展開した。",
+          "flipped_component": "cause_effect",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "準備が整い、適切な開示ができる場合にのみ公開展開すると",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "必要な準備と開示を条件とする慎重な展開か、条件を満たさないままの公開かで、運用方針の結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "Metaは準備や適切な開示なしで電話機能を公開展開した。",
+    "adopted_flipped_component": "cause_effect",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "Metaは準備や適切な開示なしで電話機能を公開展開した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「すると説明」は計画や意向の表明にとどまり、実際の公開展開や準備・開示の不足を否定しない",
+        "compressed_claim": "Metaは電話機能を公開展開すると説明"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "一般機能と人間コンシェルジュ実験の区別を求めているだけで、準備や開示なしの公開展開は禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "Metaは準備や適切な開示なしで電話機能を公開展開した。",
+      "correct_state": "Metaが電話機能を、準備が整い適切な開示ができる場合にのみ公開展開する方針を示した状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "MUSE-HC-015",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "MUSE-HC-015",
+      "reversible": false,
+      "compressed_claim": "Museは敏感な操作前に確認し履歴を表示",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  }
+]

@@ -1,0 +1,638 @@
+[
+  {
+    "fact_id": "F-001",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-001",
+      "reversible": false,
+      "compressed_claim": "老朽管路は将来増加する",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-002",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-002",
+      "reversible": false,
+      "compressed_claim": "下水道の維持更新費は増加する",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-003",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-003",
+      "reversible": false,
+      "compressed_claim": "収入減少と更新費増大が経営を厳しくする",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-004",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-004",
+      "reversible": false,
+      "compressed_claim": "高腐食リスク管路は5年ごとに点検義務",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-005",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-005",
+      "reversible": false,
+      "compressed_claim": "合併処理浄化槽はし尿と雑排水を処理",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-006",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-006",
+      "reversible": false,
+      "compressed_claim": "合併処理浄化槽は微生物で汚水を処理",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-007",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-007",
+      "reversible": false,
+      "compressed_claim": "分散地域は浄化槽、密集地域は集合処理が有利",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-008",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F-008",
+      "reversible": true,
+      "compressed_claim": "単独浄化槽はし尿のみ処理し新設原則禁止",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "既設単独処理浄化槽はすべて撤去された。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "既設単独処理浄化槽が直ちにすべて撤去される制度ではなく、既存設備は残存している。",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "新設禁止と既存設備の残存を示す制度か、既存設備も全廃された制度かで現状の結論が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "既設単独処理浄化槽はすべて撤去された。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "既設単独処理浄化槽はすべて撤去された。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「新設原則禁止」は既設設備の撤去を否定も限定もしておらず、既設単独処理浄化槽の全撤去とも両立する",
+        "compressed_claim": "単独浄化槽はし尿のみ処理し新設原則禁止"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "単独処理浄化槽と合併処理浄化槽の区別にとどまり、既設単独処理浄化槽がすべて撤去されたとの誤読は禁止していない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "既設単独処理浄化槽はすべて撤去された。",
+      "correct_state": "既設単独処理浄化槽が残存し、新設が原則禁止された状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "F-009",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-009",
+      "reversible": false,
+      "compressed_claim": "市町村が各戸浄化槽を整備し汚水処理",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-010",
+    "passed": false,
+    "dropped_by": [
+      "stage2_lint_rejected"
+    ],
+    "judgment": {
+      "fact_id": "F-010",
+      "reversible": true,
+      "compressed_claim": "松山市は区域別の汚水処理方針を定めた",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "見直し",
+      "reverse_propositions": [
+        {
+          "R": "松山市は区域別の汚水処理を実施済みである。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "方針とした",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "処理方針を決めた段階か、実際の汚水処理まで実施済みかで政策の実行状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "松山市は区域別の汚水処理を実施済みである。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "見直し",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "松山市は区域別の汚水処理を実施済みである。",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "定めた",
+        "blocking_word_missing": false,
+        "reason": "「定めた」は方針の策定を示すだけで、汚水処理を実施済みと読むにはこの語を無視する必要がある",
+        "compressed_claim": "松山市は区域別の汚水処理方針を定めた"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "老朽管撤去・浄化槽切替の事例ではないことと方式見直しの範囲を示すだけで、区域別汚水処理の実施済みという命題を明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [
+        "調整",
+        "調整(correct_state)"
+      ],
+      "r_echo": "松山市は区域別の汚水処理を実施済みである。",
+      "correct_state": "市街化区域は原則として公共下水道、市街化調整区域は原則として合併処理浄化槽で汚水処理する方針とした状態",
+      "result": "lint_rejected"
+    }
+  },
+  {
+    "fact_id": "F-011",
+    "passed": false,
+    "dropped_by": [
+      "existing_note_covers_R"
+    ],
+    "judgment": {
+      "fact_id": "F-011",
+      "reversible": true,
+      "compressed_claim": "焼津市は未整備区域を浄化槽区域へ転換",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "焼津市は残る未整備区域全てを浄化槽推進区域にした。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "残る未整備区域全てを合併処理浄化槽の推進区域とする方針案について意見募集を行った。",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "残る区域が意見募集段階の方針案なのか、全て確定した施策なのかで政策の確定状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "焼津市は残る未整備区域全てを浄化槽推進区域にした。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "焼津市は残る未整備区域全てを浄化槽推進区域にした。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「未整備区域を」は対象を一部に限定しておらず、残る未整備区域全ての転換とも両立する",
+        "compressed_claim": "焼津市は未整備区域を浄化槽区域へ転換"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": true,
+      "reason": "『切り替えを決定した』のではなく、計画方式の転換・検討にとどまると明示しており、全てを浄化槽推進区域にしたとの確定的な誤読を禁じている。"
+    }
+  },
+  {
+    "fact_id": "F-012",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F-012",
+      "reversible": true,
+      "compressed_claim": "喜多方市は区域を個別処理化し補助実施",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "見直した",
+      "reverse_propositions": [
+        {
+          "R": "喜多方市は上乗せ補助を実施した。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "浄化槽設置費の上乗せ補助を実施するとした。",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "上乗せ補助が実施予定の段階か、実際に実施済みかで施策の実現状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "喜多方市は上乗せ補助を実施した。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "見直した",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "喜多方市は上乗せ補助を実施した。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "「補助」は補助の種類を特定しない曖昧語であり、上乗せ補助の実施とも両立する",
+        "compressed_claim": "喜多方市は区域を個別処理化し補助実施"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "区域再編の自治体事例であることを示すだけで、上乗せ補助の実施を明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "喜多方市は上乗せ補助を実施した。",
+      "correct_state": "集合処理区域以外を合併処理浄化槽による個別処理区域とし、浄化槽設置費の上乗せ補助を実施するとした状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "F-013",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F-013",
+      "reversible": true,
+      "compressed_claim": "嬉野市は公共下水道区域を縮小する",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "嬉野市は公共下水道区域を494haから395haへ実際に縮小した。",
+          "flipped_component": "stage",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "公共下水道区域を494haから395haへ縮小する計画を策定した。",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "区域縮小の計画を策定しただけか、実際に区域変更を完了したかで計画の実現状況が変わる"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": [],
+    "adopted_R": "嬉野市は公共下水道区域を494haから395haへ実際に縮小した。",
+    "adopted_flipped_component": "stage",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "嬉野市は公共下水道区域を494haから395haへ実際に縮小した。",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "縮小する",
+        "blocking_word_missing": false,
+        "reason": "「縮小する」は実施方針や非過去の実行を示すため、494haから395haへ実際に縮小済みと読むにはこの語の時制・含意を無視する必要がある",
+        "compressed_claim": "嬉野市は公共下水道区域を縮小する"
+      }
+    ],
+    "warnings": [
+      "stage1_5_passed_as_medium"
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "浄化槽の低コスト性に関する比較の限定であり、嬉野市が公共下水道区域を実際に縮小したとの誤読には触れていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": true,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "嬉野市は公共下水道区域を494haから395haへ実際に縮小した。",
+      "correct_state": "嬉野市が公共下水道区域を494haから395haへ縮小する計画を策定した状態",
+      "result": "ok"
+    }
+  },
+  {
+    "fact_id": "F-014",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-014",
+      "reversible": false,
+      "compressed_claim": "浄化槽は災害後も復旧が早い",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-015",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-015",
+      "reversible": false,
+      "compressed_claim": "下條村は全村浄化槽方式を選択し費用削減",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-016",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-016",
+      "reversible": false,
+      "compressed_claim": "南伊豆町は施設を廃止し浄化槽を設置",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-017",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-017",
+      "reversible": false,
+      "compressed_claim": "管理者は浄化槽を定期点検・清掃する義務",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-018",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-018",
+      "reversible": false,
+      "compressed_claim": "小型浄化槽は定期点検・年1回清掃",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-019",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-019",
+      "reversible": false,
+      "compressed_claim": "7条検査は開始後、11条検査は毎年行う",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F-020",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F-020",
+      "reversible": false,
+      "compressed_claim": "浄化槽の維持管理・法定検査が実施される",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false
+    ],
+    "stage1_stable": false,
+    "lint_rejected_R": []
+  }
+]

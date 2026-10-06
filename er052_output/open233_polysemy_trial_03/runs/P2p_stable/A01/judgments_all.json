@@ -1,0 +1,1163 @@
+[
+  {
+    "fact_id": "F001",
+    "passed": false,
+    "dropped_by": [
+      "stage1_5_medium_unstable"
+    ],
+    "judgment": {
+      "fact_id": "F001",
+      "reversible": false,
+      "compressed_claim": "アルゼンチンがイングランドに2-1で勝利",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F001",
+      "reversible": true,
+      "compressed_claim": "アルゼンチンがイングランドに2-1で勝利",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "アルゼンチンは前半終了時に2-1でリードしていた。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "90分および後半アディショナルタイム終了時の最終結果",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "試合終了時の勝者か、前半時点の暫定的なリードかで試合結果の結論が変わる"
+        }
+      ]
+    },
+    "lint_rejected_R": [],
+    "adopted_R": "アルゼンチンは前半終了時に2-1でリードしていた。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "アルゼンチンは前半終了時に2-1でリードしていた。",
+        "likelihood": "medium",
+        "likelihood_raw": "medium",
+        "promoted_low_to_medium": false,
+        "blocking_word": "勝利",
+        "blocking_word_missing": false,
+        "reason": "勝利は試合全体の結果を示すため、前半終了時のリードと読むにはこの語を無視する必要がある",
+        "compressed_claim": "アルゼンチンがイングランドに2-1で勝利"
+      }
+    ]
+  },
+  {
+    "fact_id": "F002",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F002",
+      "reversible": false,
+      "compressed_claim": "試合は7月15日15時にキックオフされた",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F002",
+      "reversible": false,
+      "compressed_claim": "試合はアトランタで15時にキックオフ",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F003",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F003",
+      "reversible": false,
+      "compressed_claim": "前半は0-0で終了",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F003",
+      "reversible": true,
+      "compressed_claim": "前半は0-0で終了",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "試合終了時のスコアは0-0だった。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "前半45分および前半アディショナルタイム終了時",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "ハーフタイムの途中経過か試合終了時の結果かで、最終的な試合の結論が変わる"
+        }
+      ]
+    },
+    "lint_rejected_R": [],
+    "adopted_R": "試合終了時のスコアは0-0だった。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "試合終了時のスコアは0-0だった。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "前半という限定された時点の0-0は試合終了時の0-0とも両立し、Rを妨げる非限定語がない",
+        "compressed_claim": "前半は0-0で終了"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "得点が後半に3点あったことの補足であり、試合終了時の0-0を明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "試合終了時のスコアは0-0だった。",
+      "correct_state": "両チームが前半を無得点で終え、スコアが0-0になった状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "F004",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F004",
+      "reversible": false,
+      "compressed_claim": "ゴードンが先制しイングランドが1-0",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F004",
+      "reversible": true,
+      "compressed_claim": "ゴードンが得点しイングランドが先制",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "試合終了時、イングランドは1-0で勝っていた。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "後半、試合最初の得点",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "試合最初の得点の時点か試合終了時の勝敗かで、試合結果の結論が変わる"
+        }
+      ]
+    },
+    "lint_rejected_R": [],
+    "adopted_R": "試合終了時、イングランドは1-0で勝っていた。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "試合終了時、イングランドは1-0で勝っていた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "先制は最初に得点したことだけを示し、その後も1-0で試合終了するRと両立する",
+        "compressed_claim": "ゴードンが得点しイングランドが先制"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "得点者やクロス担当者の説明であり、イングランドの1-0勝利を明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "試合終了時、イングランドは1-0で勝っていた。",
+      "correct_state": "イングランドが後半55分に試合最初の得点を決め、スコアが1-0になった状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "F005",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F005",
+      "reversible": false,
+      "compressed_claim": "フェルナンデスが決めアルゼンチンが1-1",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F005",
+      "reversible": true,
+      "compressed_claim": "フェルナンデスの同点弾でアルゼンチンが追いつく",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "試合終了時、アルゼンチンは1-1で引き分けた。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "アルゼンチンの同点得点",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "途中の同点得点か試合終了時の引き分けかで、試合の最終結論が変わる"
+        }
+      ]
+    },
+    "lint_rejected_R": [],
+    "adopted_R": "試合終了時、アルゼンチンは1-1で引き分けた。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "試合終了時、アルゼンチンは1-1で引き分けた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "同点弾で追いついた後に追加点がなく1-1で終了するRと両立し、妨げる語がない",
+        "compressed_claim": "フェルナンデスの同点弾でアルゼンチンが追いつく"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "得点者、アシスト、シュート地点の説明であり、1-1の引き分けを明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "試合終了時、アルゼンチンは1-1で引き分けた。",
+      "correct_state": "アルゼンチンが85分に得点し、スコアが1-1になった状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "F006",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F006",
+      "reversible": false,
+      "compressed_claim": "ラウタロが決勝点を決めアルゼンチンが2-1",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      false,
+      true
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F006",
+      "reversible": true,
+      "compressed_claim": "ラウタロが2-1弾でアルゼンチンが逆転",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "アルゼンチンは2-1にしたが、試合終了時は1-1で引き分けた。",
+          "flipped_component": "interim_final",
+          "contradicts_ledger_field": "conditions",
+          "ledger_quote": "決勝点",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "決勝点による勝利か、その後に同点で終わった途中経過かで勝敗の結論が変わる"
+        }
+      ]
+    },
+    "lint_rejected_R": [],
+    "adopted_R": "アルゼンチンは2-1にしたが、試合終了時は1-1で引き分けた。",
+    "adopted_flipped_component": "interim_final",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "アルゼンチンは2-1にしたが、試合終了時は1-1で引き分けた。",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "2-1への逆転は一時点の展開を示すだけで、その後1-1で引き分けるRと両立する",
+        "compressed_claim": "ラウタロが2-1弾でアルゼンチンが逆転"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "得点時刻の表記方法に関する注意であり、2-1や1-1という結果の逆転を明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "アルゼンチンは2-1にしたが、試合終了時は1-1で引き分けた。",
+      "correct_state": "アルゼンチンが後半アディショナルタイム90+2分に得点し、スコアが2-1になった状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "F007",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F007",
+      "reversible": false,
+      "compressed_claim": "得点順にスコアが0-0から1-0、1-1、1-2へ推移",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "推移した",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F007",
+      "reversible": false,
+      "compressed_claim": "得点順にスコアが0-0から1-2へ推移",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "推移した",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F008",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F008",
+      "reversible": false,
+      "compressed_claim": "マックのシュート後メッシが回収しクロス",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F008",
+      "reversible": false,
+      "compressed_claim": "マックのシュート後メッシがクロス",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F009",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F009",
+      "reversible": false,
+      "compressed_claim": "メッシがアルゼンチンの2得点をアシスト",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F009",
+      "reversible": false,
+      "compressed_claim": "アルゼンチンの2得点をメッシがアシスト",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F010",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F010",
+      "reversible": false,
+      "compressed_claim": "ラウタロが途中出場後に決勝点",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F010",
+      "reversible": false,
+      "compressed_claim": "ラウタロが途中出場後に決勝点",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F011",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F011",
+      "reversible": false,
+      "compressed_claim": "ゴードンは試合時点でバルセロナ所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F011",
+      "reversible": false,
+      "compressed_claim": "ゴードンはバルセロナ所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F012",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F012",
+      "reversible": false,
+      "compressed_claim": "ロジャーズはアストン・ヴィラ所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F012",
+      "reversible": false,
+      "compressed_claim": "ロジャーズはアストン・ヴィラ所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F013",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F013",
+      "reversible": false,
+      "compressed_claim": "フェルナンデスはチェルシー所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F013",
+      "reversible": false,
+      "compressed_claim": "フェルナンデスはチェルシー所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F014",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F014",
+      "reversible": false,
+      "compressed_claim": "メッシはインテル・マイアミ所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F014",
+      "reversible": false,
+      "compressed_claim": "メッシはインテル・マイアミ所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F015",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F015",
+      "reversible": false,
+      "compressed_claim": "ラウタロはインテル所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F015",
+      "reversible": false,
+      "compressed_claim": "ラウタロはインテル所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F016",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F016",
+      "reversible": false,
+      "compressed_claim": "マックはリヴァプール、ケインはバイエルン所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F016",
+      "reversible": false,
+      "compressed_claim": "マック・アリスターはリヴァプール、ケインはバイエルン所属",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F017",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F017",
+      "reversible": false,
+      "compressed_claim": "イングランドの先発11人は指定選手",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F017",
+      "reversible": false,
+      "compressed_claim": "イングランドの先発は列挙された11人",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F018",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F018",
+      "reversible": false,
+      "compressed_claim": "アルゼンチンの先発11人は指定選手",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F018",
+      "reversible": false,
+      "compressed_claim": "アルゼンチンの先発は列挙された11人",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F019",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F019",
+      "reversible": false,
+      "compressed_claim": "イングランド4-2-3-1、アルゼンチン4-4-2",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F019",
+      "reversible": false,
+      "compressed_claim": "開始時の陣形は英4-2-3-1、アルゼンチン4-4-2",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F020",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F020",
+      "reversible": false,
+      "compressed_claim": "英は5本2枠内、アルゼンチンは15本5枠内",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F020",
+      "reversible": false,
+      "compressed_claim": "英は5本中2本、アルゼンチンは15本中5本が枠内",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F021",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F021",
+      "reversible": false,
+      "compressed_claim": "英xG0.46、アルゼンチンxG1.47",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F021",
+      "reversible": false,
+      "compressed_claim": "期待得点値は英0.46、アルゼンチン1.47",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F022",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F022",
+      "reversible": false,
+      "compressed_claim": "英35.2%、争奪中8.2%、アルゼンチン56.5%",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F022",
+      "reversible": false,
+      "compressed_claim": "ポゼッションは英35.2%、争奪中8.2%、アルゼンチン56.5%",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F023",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F023",
+      "reversible": false,
+      "compressed_claim": "英は353本中293本、アルゼンチンは610本中549本成功",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F023",
+      "reversible": false,
+      "compressed_claim": "パス成功率は英83%、アルゼンチン90%",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F024",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F024",
+      "reversible": false,
+      "compressed_claim": "英のクロス15本、アルゼンチン20本",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F024",
+      "reversible": false,
+      "compressed_claim": "クロス数は英15本、アルゼンチン20本",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F025",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F025",
+      "reversible": false,
+      "compressed_claim": "英のファイナルサード受け87回、アルゼンチン230回",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F025",
+      "reversible": false,
+      "compressed_claim": "ファイナルサードのレセプションは英87回、アルゼンチン230回",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F026",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F026",
+      "reversible": false,
+      "compressed_claim": "英の総走行107.7km、アルゼンチン106.6km",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F026",
+      "reversible": false,
+      "compressed_claim": "総走行距離は英107.7km、アルゼンチン106.6km",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F027",
+    "passed": true,
+    "dropped_by": [],
+    "judgment": {
+      "fact_id": "F027",
+      "reversible": true,
+      "compressed_claim": "アルゼンチンは決勝、英は3位決定戦へ進出",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": [
+        {
+          "R": "アルゼンチンは決勝進出を受けて準決勝に勝利し、英は3位決定戦へ進んだ",
+          "flipped_component": "cause_effect",
+          "contradicts_ledger_field": "claim",
+          "ledger_quote": "この勝利により決勝へ進み",
+          "changes_conclusion": true,
+          "conclusion_change_reason": "勝利が決勝進出の原因なのか、決勝進出が勝利の原因なのかで大会結果の因果関係が逆転する"
+        }
+      ]
+    },
+    "route": "judge",
+    "stage1_run_pass": [
+      true,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F027",
+      "reversible": false,
+      "compressed_claim": "アルゼンチンは決勝、イングランドは3位決定戦へ進む",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": [],
+    "adopted_R": "アルゼンチンは決勝進出を受けて準決勝に勝利し、英は3位決定戦へ進んだ",
+    "adopted_flipped_component": "cause_effect",
+    "predicate_direction_explicit": true,
+    "ambiguous_expression": "",
+    "stage1_5": [
+      {
+        "cid": "A",
+        "R": "アルゼンチンは決勝進出を受けて準決勝に勝利し、英は3位決定戦へ進んだ",
+        "likelihood": "high",
+        "likelihood_raw": "high",
+        "promoted_low_to_medium": false,
+        "blocking_word": "",
+        "blocking_word_missing": false,
+        "reason": "決勝進出と3位決定戦進出はRの内容と両立し、圧縮文にRを妨げる語がない",
+        "compressed_claim": "アルゼンチンは決勝、英は3位決定戦へ進出"
+      }
+    ],
+    "existing_note": {
+      "has": true,
+      "covers_R": false,
+      "reason": "決勝および3位決定戦の相手の補足であり、準決勝の勝敗や進出先の逆転を明示的に禁じていない。"
+    },
+    "stage2": {
+      "self_check": {
+        "R_is_natural_reading": false,
+        "derivable": true
+      },
+      "r_echo_match": true,
+      "r_in_note": true,
+      "r_coverage": 1.0,
+      "lint_hits": [],
+      "english_not_in_ledger": [],
+      "quote_not_in_ledger": [],
+      "r_echo": "アルゼンチンは決勝進出を受けて準決勝に勝利し、英は3位決定戦へ進んだ",
+      "correct_state": "アルゼンチンが準決勝に勝利して決勝へ進み、イングランドが3位決定戦へ回った状態",
+      "result": "ok"
+    },
+    "warnings": [
+      "R_is_natural_reading=false"
+    ]
+  },
+  {
+    "fact_id": "F028",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F028",
+      "reversible": false,
+      "compressed_claim": "メッシが試合最優秀選手に選出",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F028",
+      "reversible": false,
+      "compressed_claim": "メッシがプレーヤー・オブ・ザ・マッチに選出",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F029",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F029",
+      "reversible": false,
+      "compressed_claim": "メッシが準決勝最年長フィールド選手",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F029",
+      "reversible": false,
+      "compressed_claim": "メッシがW杯準決勝最年長のフィールド選手",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  },
+  {
+    "fact_id": "F030",
+    "passed": false,
+    "dropped_by": [
+      "reversible=false"
+    ],
+    "judgment": {
+      "fact_id": "F030",
+      "reversible": false,
+      "compressed_claim": "ケインが英代表フィールド最多出場記録を更新",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "更新した",
+      "reverse_propositions": []
+    },
+    "route": "drop",
+    "stage1_run_pass": [
+      false,
+      false
+    ],
+    "stage1_stable": false,
+    "judgment_r2": {
+      "fact_id": "F030",
+      "reversible": false,
+      "compressed_claim": "ケインが121試合出場で最多記録を更新",
+      "predicate_direction_explicit": true,
+      "ambiguous_expression": "",
+      "reverse_propositions": []
+    },
+    "lint_rejected_R": []
+  }
+]

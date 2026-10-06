@@ -1,0 +1,159 @@
+下記の【Fact一覧】の**全てのfact**について、誤読で意味が逆転・重大変質する可能性を一次スクリーニングしてください(noteは書かない)。このスクリーニングは再現率重視です。(i)〜(iv)のいずれかが判断しづらい場合は、reversible=trueで残してください(最終の絞り込みは後段が行う)。ただし、明らかに対象外の型(hedge・帰属・数値精度・評価語・用語定義・範囲限定だけの違い)は残さないでください。件数で絞らず、定義を満たすかどうかだけで判断します。
+
+【対象の定義(誤読すると意味が逆転・重大変質するFactだけを対象にする)】
+対象は、Factの意味・方向・状態・主体・対象・時系列・因果・完了状態などが、誤読により逆転または重大に変質する表現である(例: 撤回と復活、上昇と下落、状態AからB、主体と対象、完了と予定、原因と結果、時系列の逆転)。難語・軽微なニュアンスの違い・表現の好みは対象外。
+
+【操作的定義】
+対象は次の(i)〜(iv)を全て満たす場合のみ。(i)claimの成分を**1つだけ**反転した命題Rを作れる(反転できる成分: 述語の極性・変化の向き(増↔減、付与↔撤回、開始↔停止)/主体↔対象、対象集合/事象の段階(完了↔予定、開発・評価↔配備・実施、模擬↔実在)/途中↔最終/原因↔結果)。(ii)Rが、日本語claimを約30字に圧縮した文(scope・conditions・notesを落とし原資料も見ない状態)と矛盾しない。(iii)Rが台帳のclaim/scope/conditionsのいずれかと矛盾する。(iv)Rを採ると記事の主題レベルの結論が変わる。情報の確からしさ・出所の違い(報道↔確認済み)、hedge・推量、帰属(〜と述べた)、数値の精度・分母、評価語、用語の定義、範囲の限定だけの違いは対象外。各factの本文(claim/scope/conditions等)だけを根拠に判定する。
+
+【判定の手順(各factについて必ず)】
+1. claimを約30字に圧縮する(compressed_claim)。この時点ではscope・conditions・原資料を見ない。scope・conditionsに加えて、限定語(当面・一時的・計画・予定・模擬・試験的・暫定・一部 など)も落とし、主語+述語だけの文にする。
+2. 反転できる成分ごとに(flipped_component: polarity / subject_object / stage / interim_final / cause_effect)、反転命題Rを作る。**述語の極性反転(polarity)を必ず最初に検討し**、作れるときは最初のRにする。Rは最大2つまで列挙してよい(異なる成分を反転した別のR。作れなければ空の配列)。Rは60字以内の1文で、変化後に何が有る・何が無いかが分かる平易な語だけで書く。「戻す・元に戻した・復元・変更・見直し・改める・調整」のように変化の向き・結果が読み取れない語(外来語の操作名を含む)は、Rに使わない。claimに出てくる向き・結果が曖昧な表記そのものも、Rの文言に使わない。Rごとに以下3〜4を行う。
+3. Rが圧縮文と矛盾しないか(ii)を確かめる。次に、Rが台帳のclaim/scope/conditionsのどれと矛盾するか(contradicts_ledger_field: claim / scope / conditions / none)を決め、矛盾の根拠になる台帳の語句をledger_quoteへ**逐語**で書き写す(claim/scope/conditionsからのみ)。
+4. そのRを採ると記事の主題レベルの結論が変わるか(changes_conclusion)を決め、その理由を1文でconclusion_change_reasonに書く。
+5. factごとに、次の2項目を書く。(a) predicate_direction_explicit: claim/scope/conditionsから、変化後に何が有り何が無いかを、claimの述語の語そのものを使わず平易な日本語で特定できるか(特定できるならtrue、述語の語に頼らないと言えない・特定できないならfalse)。(b) ambiguous_expression: claim中に、変化の向き・結果が曖昧な述語の表記があれば、claimに現れる形のまま逐語で1つ書く(無ければ空文字)。
+6. (i)〜(iv)を全て満たすRが1つでもあるときだけreversible=trueとする。
+(noteはこの段階では書かない。)
+
+【例の見方】下の例はスクリーニング用の型の参考である。例の出力にはnoteの欄はない。実際の出力では必ずpredicate_direction_explicitとambiguous_expressionを付ける。出力形式は末尾の指定に従う。
+
+【例(架空・別領域。判定の型を示すだけで、実際のFactとは無関係。スクリーニング段階のため迷ったらreversible=trueで残す)】
+正例1 fact「自治体Xは補助金制度の新設を見送った」(scope: 来年度予算案) →
+{"fact_id":"EX-1","reversible":true,"compressed_claim":"X市は補助金新設を見送り","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"X市は補助金制度を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"補助金制度の新設を見送った","changes_conclusion":true,"conclusion_change_reason":"新設見送りか既存制度の廃止かで、記事の主題の結論が変わる"}]}
+正例2 fact「Y社は試作機の評価を開始した」(scope: 社内試験場) →
+{"fact_id":"EX-2","reversible":true,"compressed_claim":"Y社が試作機の評価を開始","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"Y社は量産機を現場へ配備した","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"社内試験場","changes_conclusion":true,"conclusion_change_reason":"評価段階か現場配備かで、記事の主題の結論が変わる"}]}
+正例3 fact「模擬環境での検証で、P方式は負荷時に処理遅延を示した」(scope: 検証用の模擬環境) →
+{"fact_id":"EX-8","reversible":true,"compressed_claim":"検証でP方式が負荷時に遅延","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"P方式は実環境で実際に処理遅延を起こした","flipped_component":"stage","contradicts_ledger_field":"scope","ledger_quote":"検証用の模擬環境","changes_conclusion":true,"conclusion_change_reason":"模擬環境での結果か実際の運用での障害かで、記事の主題の結論が変わる"}]}
+正例4 fact「Z庁は新制度の適用を当面差し戻した」(scope: 試験運用中の窓口業務) →
+{"fact_id":"EX-9","reversible":true,"compressed_claim":"Z庁が新制度を差し戻し","predicate_direction_explicit":false,"ambiguous_expression":"差し戻した","reverse_propositions":[{"R":"Z庁は新制度を恒久的に廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"適用を当面差し戻した","changes_conclusion":true,"conclusion_change_reason":"適用の一時停止か制度自体の廃止かで、記事の主題の結論が変わる"}]}
+(型の説明: 述語の表記が向き・結果を示さず、変化後に何が有る/無いかをその語抜きでは言えないので、predicate_direction_explicit=false・ambiguous_expressionに表記を逐語で書く。Rは曖昧な表記を使わず、変化後の状態が分かる語で書く)
+負例1 fact「新製品は年内に発売される可能性がある」 →
+{"fact_id":"EX-3","reversible":false,"compressed_claim":"新製品は年内発売の可能性","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「可能性がある」はhedgeの強さだけの違いで、成分を1つ反転した命題が作れない)
+負例2 fact「Z社によれば、来期の売上は前年を上回る見通し」 →
+{"fact_id":"EX-4","reversible":false,"compressed_claim":"Z社は来期増収を見込む","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「〜によれば」は帰属の違いであり、方向・主体・段階の反転ではない)
+負例3 fact「調査対象の約3割が在宅勤務を続けている」 →
+{"fact_id":"EX-5","reversible":false,"compressed_claim":"約3割が在宅勤務継続","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 「約3割」は数値の精度・分母の違いに留まり、主題の結論を変える反転にならない)
+負例4 fact「評論家は新型機の設計を『野心的』と評した」 →
+{"fact_id":"EX-6","reversible":false,"compressed_claim":"評論家が新型機を野心的と評価","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[]}
+(対象外の理由: 評価語の違いであり、述語の極性・段階・主体の反転ではない)
+迷う例 fact「W省は旧規則の運用を停止した(新規則の施行日は別途)」 →
+{"fact_id":"EX-7","reversible":true,"compressed_claim":"W省が旧規則の運用を停止","predicate_direction_explicit":true,"ambiguous_expression":"","reverse_propositions":[{"R":"W省は新規則の運用を開始した","flipped_component":"interim_final","contradicts_ledger_field":"conditions","ledger_quote":"新規則の施行日は別途","changes_conclusion":true,"conclusion_change_reason":"停止だけか新規則への移行完了かで、規制の現状理解が変わる"},{"R":"W省は旧規則を廃止した","flipped_component":"polarity","contradicts_ledger_field":"claim","ledger_quote":"運用を停止した","changes_conclusion":false,"conclusion_change_reason":"停止と廃止の差は主題の結論を変えない"}]}
+(迷う場合の扱い: 圧縮文との矛盾の有無が微妙でも、反転できる成分があれば残す。Rが2つあるときは結論を変えるものを先に書く。最終の絞り込みは後段が行う)
+
+【出力】JSONのみ。fact一覧の全factについて1要素ずつ(省略しない)返す。
+{"judgments":[{"fact_id":"","reversible":false,"compressed_claim":"","predicate_direction_explicit":false,"ambiguous_expression":"","reverse_propositions":[{"R":"","flipped_component":"polarity|subject_object|stage|interim_final|cause_effect","contradicts_ledger_field":"claim|scope|conditions|none","ledger_quote":"","changes_conclusion":false,"conclusion_change_reason":""}]}]}
+
+【Fact一覧】
+[
+ {
+  "fact_id": "HF-001",
+  "claim": "国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。",
+  "scope": "国際航行に使用されるホルムズ海峡を通航する全船舶",
+  "conditions": "沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。",
+  "date_or_period": "2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-002",
+  "claim": "ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+  "scope": "ホルムズ海峡を通じて輸送される「すべての貨物」",
+  "conditions": "米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。",
+  "date_or_period": "2026-07-13 10:16 EDT",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-003",
+  "claim": "7月13日の20％償還料の投稿および同日の発言では、徴収主体、支払義務者、評価方法、徴収通貨、免除、執行方法、法的根拠などの具体的制度設計は示されなかった。",
+  "scope": "ホルムズ海峡の貨物通航に対する米国の償還料案",
+  "conditions": null,
+  "date_or_period": "2026-07-13",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-004",
+  "claim": "20％を貨物価値に適用すると仮定した試算では、約200万バレルを積むVLCCの貨物価値はBrent約85ドル時点で約1億7000万ドルとなり、20％相当額は約3400万ドルとなる。別の専門家試算は約3200万ドルだった。",
+  "scope": "約200万バレルを満載した超大型原油タンカー（VLCC）1隻・1航海",
+  "conditions": "20％を積載原油の市場価値に掛けるとの仮定。Brent価格を1バレル約85ドルとして計算。",
+  "date_or_period": "2026-07-14時点の試算",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-005",
+  "claim": "Financial TimesのBrent先物ヒストリカル表は、7月13日の取引について始値78.00ドル、日中高値83.86ドル、日中安値77.28ドル、終値83.30ドルを記録している。",
+  "scope": "Financial Times掲載の期近Brent原油先物ヒストリカルデータ",
+  "conditions": "日次OHLCデータ。価格単位は1バレル当たり米ドル。",
+  "date_or_period": "2026-07-13取引日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-006",
+  "claim": "Brent原油先物は7月13日に7.29ドル、9.59％上昇し、1バレル83.30ドルで清算された。Reutersはこの上昇を、翌日に始まる予定とされた米国の対イラン海上封鎖と、ホルムズ海峡を通るエネルギー輸送への懸念に関連付けた。",
+  "scope": "Brent原油先物の当日清算値と前日比",
+  "conditions": "米国とイランの軍事的緊張、海上封鎖方針、ホルムズ海峡の供給懸念が同時に存在した市場環境",
+  "date_or_period": "2026-07-13清算時点",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-007",
+  "claim": "トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。",
+  "scope": "7月13日に提案したホルムズ海峡通航貨物への20％償還料",
+  "conditions": "トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。",
+  "date_or_period": "2026-07-14 11:04 EDT",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-008",
+  "claim": "トランプ大統領は7月14日、記者団に対し、ホルムズ海峡を通航する船舶に誰も料金を課すべきではないとの考えを示し、料金という考え方自体を好まないと述べた。",
+  "scope": "ホルムズ海峡を通航する船舶への料金一般",
+  "conditions": "米国が世界のために海峡を防護する負担は公平でないとの主張も併記された。",
+  "date_or_period": "2026-07-14（Truth Socialでの置換発表後）",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-009",
+  "claim": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+  "scope": "国際指標Brent原油先物の短時間の値動き",
+  "conditions": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+  "date_or_period": "2026-07-14、撤回発表後の取引時間中",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-010",
+  "claim": "Financial TimesのBrent先物ヒストリカル表は、7月14日の取引について始値84.00ドル、日中高値87.55ドル、日中安値83.37ドル、終値84.73ドルを記録している。",
+  "scope": "Financial Times掲載の期近Brent原油先物ヒストリカルデータ",
+  "conditions": "日次OHLCデータ。価格単位は1バレル当たり米ドル。",
+  "date_or_period": "2026-07-14取引日",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-011",
+  "claim": "Brent原油先物は7月14日に1.43ドル、1.7％上昇し、1バレル84.73ドルで清算された。これは2営業日連続で6月12日以来の高い清算値だった。",
+  "scope": "Brent原油先物の当日清算値と前日比",
+  "conditions": "20％償還料案は同日の取引時間中に撤回されたが、海上封鎖、米・イラン間の攻撃、タンカー被害などの供給懸念は継続していた。",
+  "date_or_period": "2026-07-14清算時点",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-012",
+  "claim": "Reutersは7月14日、トランプ氏が海峡をイラン以外の船舶に開放すると述べた後、米WTI先物が一時マイナス圏へ転じ、その後、イランの巡航ミサイルがUAEの石油タンカー2隻を攻撃したとの報道を受けて価格が回復したと報じた。",
+  "scope": "Reutersが明示した米WTI原油先物の短時間の値動き。Brentに同一の反応があったとは明記されていない",
+  "conditions": "同日に複数の政策発言と軍事・海運ニュースが連続して発生した。",
+  "date_or_period": "2026-07-14取引時間中",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

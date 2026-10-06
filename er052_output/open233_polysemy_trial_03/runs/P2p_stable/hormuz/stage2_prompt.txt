@@ -1,0 +1,96 @@
+下記の【候補】は、一次スクリーニングと判定役を通過したfactです(fact_id・台帳の根拠語句source_quote・誤読の反転命題reverse_reading・結論が変わる理由conclusion_change_reason・claim中の曖昧表記ambiguous_expression・既に禁じ済みの一覧already_prohibited)。各factについて、Writerへ渡す注意書きを書き、自己検証してください。
+
+【注意書きの形式】
+ambiguous_expressionが空でないとき: 「注意(逆転): 台帳の表記'<ambiguous_expression>'は、<変化後の状態>の意味。<R>ではない。」
+ambiguous_expressionが空のとき: 「注意(逆転): <主体>が<対象>を<変化後の状態>。<R>ではない。」
+- 日本語本文(接頭辞を含む全体)は120字以内、改行なし。
+- <変化後の状態>は、変化後に何が有り何が無いかを、台帳のclaim/scope/conditionsから導ける平易な語だけで書く(correct_stateにも同じ文言を書く)。新しい事実・解釈を足さない。
+- <変化後の状態>とR(r_echo)には、「戻す」「元に戻した」「復元」「変更」「見直し」「改める」「調整」のように向き・結果が曖昧な語(カタカナ語の操作名を含む)、およびambiguous_expressionの語を使わない(引用符で囲んだ表記'...'の中だけは、台帳の表記をそのまま書いてよい)。
+- 英語は、台帳(claim・scope・conditions・notes)に実在する語だけを、3語以内で併記してよい。台帳に無い英語は書かない。
+- <R>の部分は、候補のreverse_readingの主語・述語・目的語をそのまま残して書く(r_echoにreverse_readingを一字一句そのまま書き写す)。Rを言い換えたり別の逆転に差し替えたりしない。
+- Rを否定するときに、<変化後の状態>として正しい読みまで打ち消さない(「Rではない」と書くことで、正しい読みの一部を禁じてはならない)。
+
+【already_prohibitedの扱い】
+already_prohibitedは、その台帳factについて既に禁じ済みの内容であり、「繰り返さない一覧」である。ここに書かれた内容は、noteで繰り返さず、reverse_readingについてだけ書く。already_prohibitedの文言を写したり、肯定的な根拠として使ったりしない。
+
+【自己検証(各factについて正直に)】
+- R_is_natural_reading: reverse_readingは、日本語claimだけを読んだ読者が自然に取りうる読みか(不自然・こじつけならfalse)。
+- correct_statement_derivable_from_ledger: noteに書いた<変化後の状態>は、台帳のclaim/scope/conditionsだけから導けるか(推測や外部知識が必要ならfalse)。
+correct_statement_derivable_from_ledgerがfalseのものはコード側で破棄される(R_is_natural_readingがfalseの場合は警告として記録される)。noteが書けないfactはnoteをnullにしてよい。
+
+【例(架空・別領域。形式の参考だけに使う)】
+候補: claim「Z庁は新制度の適用を当面差し戻した」 ambiguous_expression「差し戻した」 reverse_reading「Z庁は新制度を恒久的に廃止した」 →
+{"fact_id":"EX-9","r_echo":"Z庁は新制度を恒久的に廃止した","correct_state":"新制度の適用が当面行われない状態","note":"注意(逆転): 台帳の表記'差し戻した'は、新制度の適用が当面行われない状態の意味。Z庁は新制度を恒久的に廃止したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+候補: claim「Y社は試作機の評価を開始した」 ambiguous_expressionが空 reverse_reading「Y社は量産機を現場へ配備した」 →
+{"fact_id":"EX-2","r_echo":"Y社は量産機を現場へ配備した","correct_state":"試作機を試験場で評価している段階","note":"注意(逆転): Y社が試作機を試験場で評価している段階。Y社は量産機を現場へ配備したのではない。","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}
+
+【出力】JSONのみ。候補の全factについて1要素ずつ。
+{"notes":[{"fact_id":"","r_echo":"","correct_state":"","note":"","self_check":{"R_is_natural_reading":true,"correct_statement_derivable_from_ledger":true}}]}
+
+【候補】
+[
+ {
+  "fact_id": "HF-001",
+  "source_quote": "国際航行に使用されるホルムズ海峡を通航する全船舶",
+  "reverse_reading": "IMO理事会は一部船舶だけが料金なしで通航できる状態を維持すべきだと再確認した。",
+  "flipped_component": "subject_object",
+  "conclusion_change_reason": "全船舶への無料金通航の原則か一部船舶だけの扱いかで、記事の主題の結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "この決議と7月14日の発言撤回との因果関係は一次資料で確認できない。撤回の原因として記述しない。"
+  ]
+ },
+ {
+  "fact_id": "HF-002",
+  "source_quote": "投稿は手続きと体制づくりを直ちに開始するとした。",
+  "reverse_reading": "投稿では、手続きと体制作りを直ちには開始しないとした。",
+  "flipped_component": "polarity",
+  "conclusion_change_reason": "20％料の提示だけでなく、徴収制度の即時準備に進むかどうかで施策の実行段階に関する結論が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "7月13日の提案が先で、7月14日の撤回・置換が後。7月14日の出来事を7月13日の価格上昇の原因として扱わない。"
+  ]
+ },
+ {
+  "fact_id": "HF-009",
+  "source_quote": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+  "reverse_reading": "海上封鎖は撤回発表後も継続していなかった。",
+  "flipped_component": "polarity",
+  "conclusion_change_reason": "撤回後も海上封鎖が続くという市場環境がなくなり、高値への回帰に関する理解が変わる",
+  "ambiguous_expression": "",
+  "already_prohibited": [
+   "撤回後に原油価格が全面的に下落したとは書かない。観測されたのは一時的な上げ幅縮小と、その後の回復。"
+  ]
+ }
+]
+
+【Fact一覧(候補のfactのみ)】
+[
+ {
+  "fact_id": "HF-001",
+  "claim": "国際海事機関（IMO）理事会は、第137回会合で、ホルムズ海峡の通航は国際法およびIMO条約に従い、通航料・手数料を課されない状態を維持すべきだと再確認した。",
+  "scope": "国際航行に使用されるホルムズ海峡を通航する全船舶",
+  "conditions": "沿岸国間の取り決めは、全船舶の無差別かつ妨げられない通過通航権を保証する必要がある。",
+  "date_or_period": "2026-07-06～2026-07-10（第137回理事会開催期間）、2026-07-13公表",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-002",
+  "claim": "ドナルド・トランプ米大統領は7月13日午前10時16分（米東部夏時間）、米国がホルムズ海峡の安全確保に要する費用について、同海峡を通るすべての貨物に20％の率で償還を求めると投稿した。",
+  "scope": "ホルムズ海峡を通じて輸送される「すべての貨物」",
+  "conditions": "米国が海峡の安全と警備を提供するための費用の償還として提示。投稿は手続きと体制づくりを直ちに開始するとした。",
+  "date_or_period": "2026-07-13 10:16 EDT",
+  "source_url": null,
+  "verification_notes": ""
+ },
+ {
+  "fact_id": "HF-009",
+  "claim": "Yahoo Financeは、7月14日の撤回・投資案件への置換発表後、Brent先物が一時的に上げ幅を縮小したものの、ほどなく発表前に近い高い水準へ戻ったと報じた。記事掲載時点ではBrent先物は約2.6％高で、1バレル85ドルを上回っていた。",
+  "scope": "国際指標Brent原油先物の短時間の値動き",
+  "conditions": "撤回発表以外にも、米・イラン間の攻撃、海上封鎖、タンカー安全上の懸念が継続していた。",
+  "date_or_period": "2026-07-14、撤回発表後の取引時間中",
+  "source_url": null,
+  "verification_notes": ""
+ }
+]

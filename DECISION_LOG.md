@@ -20134,3 +20134,9 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (c)【重大発見】(a)B2/B3 stage1 promptは新旧本文連結の欠陥版でH3は実質未検証/(b)stage1判定ゆらぎ(Jaccard 0.29〜0.88)/(c)1.5判定役は弁別力あり(58% vs 29%)だが閾値が厳しすぎた/(d)全ループ未捕捉=EVID-004・CONTROL-001/(e)既存notes依存(Aのablationで8→6)。
 - (d)【ユーザー判断事項(推奨付き)】(1)4ループ目(欠陥prompt修正+閾値high+medium+限定語除去、約¥40) (2)B2のまま5記事Trial(約¥155) (3)推奨=決定論的「既存notes昇格」+B3転記で5記事Trial(約¥155、LLMなし=捏造0、伝達が真因かを先に確定)。いずれも未承認の新仕様候補。
 - Production変更なし/Trial限定(VALIDATED止まり)。実費累計¥160.13/上限¥500。残11 run待機。出典: `docs/pm/polysemy_trial_03/`。
+
+## 2026-10-07 OPEN-233-META-ROLLBACK-MINIMAL-NOTE-TRIAL-01(最小Note注意喚起Trial、Meta N=5、Trial限定)
+
+- (a)【決定】「Trial実施(ユーザー承認済み)」のみ。それ以外は決定ではない。
+- (b)【事実確認】Noteはbriefへ6/6逐語転記(Writer入力到達)。明示的な復活型誤読0件。R2は正解1/誤読0/曖昧4、R0は正解1/誤読0/曖昧4(rep2〜6)。「元に戻した」型曖昧はControlと同水準で効果限定的。実費rep2〜6計¥21.14(概算込み≈¥23)。
+- Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定。出典: REPORT §91。
