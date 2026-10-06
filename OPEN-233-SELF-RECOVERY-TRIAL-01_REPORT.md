@@ -5250,3 +5250,23 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §91-5 参照
 - `er052_output/open233_meta_rollback_minimal_note_01/eval/E_rollback_minimal_note.md`、`.../runs/meta/nb/rep1〜6/`、`.../cost.json`。OPEN-237。
+
+## §92 OPEN-233-META-ROLLBACK-MINIMAL-NOTE-TRIAL-02(同条件 追加N=10、2026-10-07)
+
+### §92-1 条件固定の確認
+- 前回(§91)と同一条件: env `OPEN233_B3_VARIANT=nb`・`OPEN233_NOTE_PREFIX`既定(transfer_block sha abd16d9a...、前回と同一)、`--phase phase1`・同theme・`--budget-jpy 8`、台帳txt sha=FREEZE nb sha `cfd6d702...`(全run一致)、research_calls=0。rep7〜16を同時並列起動。
+- 失敗: rep10/14/15/19=JA_FACT_CHECK_STOP(LEDGER_DEVIATION)。代替rep17,18,19を即時起動(rep19も失敗)。費用上限¥60到達のためこれ以上追加せず=**有効N=9(目標10に1本不足)**。
+
+### §92-2 有効9 runの最終稿(R2)判定(rollback該当段落の全文は評価ファイル)
+- rep7 曖昧「当面のあいだ元に戻されました」(R0は取りやめ=正、R2で退行) / rep8 正しい「当面取りやめて、元に戻されました」 / rep9 曖昧(境界)「機能は当面、以前の状態に戻されました」 / rep11 曖昧「元の状態に戻されました」 / rep12 曖昧「当面ロールバックしました」(R0は正寄り、退行) / rep13 正しい「いったん取りやめにしました」 / rep16 曖昧「ロールバックされました」 / rep17 曖昧「元の状態に戻されました」 / rep18 曖昧「ロールバックしました。Muse全体を止めたわけではありません」。
+
+### §92-3 集計とControl比較
+- 追加N=9(R2): 正しい2/曖昧7/重大誤読0=0%(rep9を厳しく扱うと1/9=11%)。累積N=14(前回R2 正1/曖4/誤0を合算): 正しい3/曖昧11/重大誤読0=0%(厳格扱い1/14=7%)。Note到達9/9。
+- Control参考(復元方向候補3/5、従来基準重大NG 1/5=20%)に対し、明示的な重大誤読は0だが「元に戻した」型の復元型候補は5/9残る。N小のため統計的断定はしない。
+- 実費: 有効9本¥39.14+失敗4本(token比推定)≈¥22.6=**≈¥61.8(推定、上限¥60を約¥2超過)**。
+
+### §92-4 Status
+- **USER_DECISION_REQUIRED**(Production採用判断なし)。本件の決定はTrial実施のみ。判断材料: 効果は限定的(曖昧が多数残る)、rep9境界1件、有効N=9(1本不足、費用上限超過の推定)。
+
+### §92-5 参照
+- `er052_output/open233_meta_rollback_minimal_note_01/eval/E_rollback_minimal_note_trial02.md`、`.../runs/meta/nb/rep7〜19/`、`.../runs/manifest.json`、`.../cost.json`。OPEN-237。

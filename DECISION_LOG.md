@@ -20140,3 +20140,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】「Trial実施(ユーザー承認済み)」のみ。それ以外は決定ではない。
 - (b)【事実確認】Noteはbriefへ6/6逐語転記(Writer入力到達)。明示的な復活型誤読0件。R2は正解1/誤読0/曖昧4、R0は正解1/誤読0/曖昧4(rep2〜6)。「元に戻した」型曖昧はControlと同水準で効果限定的。実費rep2〜6計¥21.14(概算込み≈¥23)。
 - Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定。出典: REPORT §91。
+
+## 2026-10-07 OPEN-233-META-ROLLBACK-MINIMAL-NOTE-TRIAL-02(同条件 追加Trial)
+- (a)【決定】「Trial実施(ユーザー承認済み)」のみ。それ以外は決定ではない。
+- (b)【事実確認】前回と同一条件で追加実施、有効N=9(rep10/14/15/19はJA_FACT_CHECK_STOPで失敗、費用上限で1本不足)。R2: 正しい2/曖昧7/重大誤読0(rep9は境界)。累積N=14: 正しい3/曖昧11/重大誤読0。Control参考(復元候補3/5・重大1/5)に対し明示的重大誤読なしだが復元型表現は残る。実費≈¥61.8(失敗分は推定、上限¥60を約¥2超過)。
+- Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定。出典: REPORT §92。
