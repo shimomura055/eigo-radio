@@ -20006,3 +20006,26 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 計画doc: `docs/pm/plan_open233_checker_floor_production_e2e_01.md`(変更箇所C1〜C6/F1〜F8、時間4.5〜6.5h、9 run費用¥30〜50)。本エントリは記録のみ(コード・Prompt・CURRENT_SPEC仕様本文は未変更、費用¥0)。
 
 (d) 【委任_04追記(2026-10-06、実装・test・runtime evidence、¥0)】Opus条件Aレビュー要旨(`docs/pm/opus_l2_review_open233_checker_floor_production_e2e_01.md`): 計画は修正要(方向妥当)。必須修正=M1再分類を`union_candidates`合流前に経路別entryで1箇所適用(混在候補でモデル側`changed_number`が決定論側保持で残り却下フラグで数字floorが発火しうるため)/M2 Recheckの前回指摘と同文候補は再分類対象外(`prior_issues_resolved`は再分類後の候補で計算)/M3 `make_stage1_call_fn`のlabel依存effort(r3系以外=high)を避け再分類callはmedium固定+DEVELOPER_MESSAGE逐語移植(sha256 test)/M4 precheck数字以外4種を同時廃止(1関数共用)/M5 承認構成をrunner側名前付き定数に+E2E assertへ`STAGE2_DOWNGRADE_VERIFY=False`・`TIER0_G_L_ENABLED=False`追加。Fable判断(全採用): M1〜M5採用。S1は旧E2Eと同じ設定を維持(Stage 2承認構成の一部、S1対象は増える=残存リスク)。数字(b)Stage 1決定論`number_not_in_fact`は候補化のみ=現状維持(floor不発火)、残す機械判定=(a)LLM `changed_number`→`apply_floor`/(c)precheck `number_mismatch`→Stage 2スキップBLOCKING、`floor_reason`で区別。`DISCLOSURE_GAP_DISQUALIFYING_FLAGS`は降格禁止(AI重大の維持)のため維持し明示リストへ切り離し(挙動不変)。再分類失敗はfail-closed(全件CANDIDATE維持)。実装結果: 新module`er052_open233_stage1_reclassify_01.py`、coverage module `candidate_filter`(既定None)、runner `FLOOR_MODE`/`PRECHECK_MODE`/`STAGE1_RECLASSIFY`(いずれも既定=旧挙動)+`OPEN233_APPROVED_FLOW_SWITCHES`/`apply_open233_approved_flow_switches()`/`assert_open233_approved_flow_switches()`。新規test 59件PASS、回帰922件PASS(基準863+59)。Status: APPROVED_FOR_PRODUCTION・実装完了・**E2E未・PRODUCTION_WIRED未**(委任_05で9 run)。残存リスク: same_fact規則/S1対象増/時期gold(neg3 n=1)依存/再分類のRecheck・出口適用はE2E初検証。REPORT §80。
+
+## 2026-10-06 PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01 委任_01: 「開発時間最小化・並列実行原則」をProject運用ルールとして正式採用(APPROVED_FOR_PRODUCTION、本委任でSSOT反映)
+
+- Status: ユーザー正式採用(2026-10-06)=APPROVED_FOR_PRODUCTION。本委任でPM_GOVERNANCE 8-X(2026-09-27並列実行原則を拡張統合)/22/9-0/2-2/11 D-2・委任テンプレート・CLAUDE.md・PM_BRIEFへ反映、commit/push。PRODUCTION_WIRED判定材料を揃えた(最終判定はFable)。コード・Prompt・CURRENT_SPEC変更なし、¥0。
+
+- ユーザー指示原文(逐語、2026-10-06): 委任文保存ファイル `docs/pm/delegation_log/2026-10-06_PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01_01.md` の「ユーザー指示(原文)」節に逐語保存(以下に同文):
+> 管理ID：PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01
+> 目的: 今後の開発について、品質・Safety・再現性・予算管理・PM Gateを維持したまま、可能な限り短時間で完了させることを正式なProject運用ルールにする。ユーザーの正式採用判断です。単なる提案ではなく、ProjectルールとしてProduction/開発運用SSOTへ反映すること。
+> 正式ルール「開発時間最小化・並列実行原則」: 開発時間は極めて重要なQCD要素として扱う。各タスク開始時に必ず、作業依存関係/クリティカルパス/並列実行可能な作業/所要時間見込み/並列化した場合の短縮見込み、を確認する。
+> 原則: 独立して実行できる作業は原則並列化する/実装待ちの間に、先行可能なtest準備・E2E runner準備・集計script・評価基準・review準備・SSOT/報告準備等を進める/E2Eも、順序依存がなく条件同一性・再現性を保てるなら、複数process/workerで並列実行する/評価・ラベル付け・集計・レビューも独立分割できれば並列化する/長時間作業中に新たな短縮余地を発見した場合、ユーザーから指摘されるのを待たず改善する/「順番にやる方が普通だから」という理由だけで直列化しない。
+> 並列化しない条件: 以下のような明確な理由がある場合だけ直列化してよい。前工程の出力がないと次工程を開始できない/同じファイル/branch/stateを触り競合リスクが高い/順序依存がある/API rate limit等で並列化が逆効果/再現性や比較条件が崩れる/Safety/品質/予算管理/PM Gateを弱める/runtime evidenceの信頼性を落とす。その場合は、並列化できない理由を短く明示すること。
+> 時間見積もり: 主要タスクでは開始時に、全体所要時間見込み/主な工程別見込み/どこを並列化するか/クリティカルパス、を提示する。途中で見込みが大きく変わった場合は更新する。
+> QCD上の位置付け: Speedを優先するが、以下は犠牲にしない。Quality/Safety/Production Gate/再現性/runtime evidence/予算Guardrail/user approvalが必要な仕様判断/CURRENT_SPEC / Decision Log / Open Item整合。「早くするために検証を省く」「承認前にProductionへ入れる」は禁止。
+> 今回やること: このルールを、既存Project構成を確認した上で適切な正式SSOTへ反映する。最低限、Project運用ルール/Decision Log/必要ならPM/Claude Code向け実行ルール、へ記録する。既存ルールとの重複がある場合は、重複文書を増やさず、正式な既存SSOTへ統合する。
+> Dangling Reference Check: 新しいルール名や参照を追加する場合、正式SSOTに定義されているか/Claude Code指示側だけに孤立していないか/既存QCD/PM Gateと矛盾しないか、を確認する。
+> Status: ユーザー正式採用済みなので、現在StatusはAPPROVED_FOR_PRODUCTION。今回の作業で、SSOT反映/Decision Log反映/必要な運用文書更新/Git commit/push/実際に次の開発指示/運用で参照可能な状態、まで確認して、初めてPRODUCTION_WIREDとする。
+> 受入条件: 正式Projectルールとして記録済み/開発タスク開始時に時間見積もり・並列化検討が必須になっている/独立作業は原則並列化することが明文化されている/並列化しない場合の理由明示が定義されている/Quality/Safety/PM Gateを弱めない制約が明記されている/Decision Log更新済み/Git commit/push済み/Dangling Referenceなし/今後Claudeへの作業指示でこのルールを適用できる状態。
+> STOP条件: 既存Projectルールと重大な矛盾が見つかった場合のみSTOPして報告する。通常の文書統合・重複整理・commit/pushはユーザー判断待ちにせず完了させること。
+
+- 反映先: PM_GOVERNANCE.md 8-X(見出し改訂+8-X-7〜8-X-12追加。旧8-X-1〜6は旧[2026-09-27]として維持)/22節 Trial開始前チェック項目4/9-0 結論節/2-2/11 D-2追記、DELEGATION_STANDARD_TEMPLATE.md(性質欄記述要件+自己チェック1項目、固定見出し不変)、CLAUDE.md(PM層節に1項目)、PM_BRIEF.md(並列実行原則段落更新)、REPORT_LEDGER.md。
+- 既存ルールとの統合: 2026-09-27並列実行原則(8-X)を拡張。重複文書の新設なし。11節の委任上限(初回+修正3回)は不変、並列初回委任は各管理IDで初回1回と数える運用注記(8-X-11)。8節並列起動条件・8-X-3直列化条件は8-X-9と対応。2節PM Gate・11-3 Opus Gate・7-6予算Capは上書きしない(8-X-10)。重大矛盾なし。
+- Dangling Reference確認: 新ルール名は8-Xに定義済み、CLAUDE.md/PM_BRIEF/テンプレートから8-Xへ参照可、check_delegation_prompt.pyの必須セクション不変(既存委任文でPASS維持を確認)。
+- Fable判断: (未記入)

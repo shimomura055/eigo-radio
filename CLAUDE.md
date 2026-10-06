@@ -99,3 +99,14 @@ https://raw.githubusercontent.com/shimomura055/eigo-radio/main/tts_test.py
   approved-but-unwired・STOP条件を必ず再確認する、(6)Trial結果(`VALIDATED`等)を
   Production仕様(`APPROVED_FOR_PRODUCTION`/`PRODUCTION_WIRED`)と誤認しない、
   (7)`/clear`は自動実行しない。
+- 開発時間最小化・並列実行原則(2026-10-06ユーザー正式採用、
+  PROJECT-DELIVERY-SPEED-PARALLELIZATION-RULE-01): 各タスク開始時に依存関係・
+  クリティカルパス・並列可能作業・所要時間見込み・並列化短縮見込みを確認し、
+  独立作業は原則並列化する(実装待ち中のtest/E2E runner/集計script/評価基準/
+  review/SSOT準備の先行、条件同一性を保てるE2Eの複数process実行、評価・
+  ラベル・集計・レビューの分割)。直列化は明確な理由(前工程出力依存/同一
+  ファイル・state競合/順序依存/rate limit/再現性・比較条件/Safety・品質・
+  予算・PM Gate/runtime evidence)がある場合のみ、理由を短く明示。Speed優先
+  でもQuality/Safety/Production Gate/再現性/runtime evidence/予算Guardrail/
+  ユーザー承認Gate/SSOT整合は犠牲にしない。正本は`docs/pm/PM_GOVERNANCE.md`
+  8-X節(ここへは全文を複製しない)。

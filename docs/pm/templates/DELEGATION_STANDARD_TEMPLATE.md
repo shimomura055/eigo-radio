@@ -21,7 +21,9 @@ APPROVED_FOR_PRODUCTION/PRODUCTION_WIRED/USER_DECISION_REQUIRED等]、
 費用上限[Cap]の記載はT-3の定型文(Guardrail文言)に従う。「上限¥X、
 超えそうなら実行前STOP」のみの記載(継続条件・STOP条件の書き分けが
 無いもの)は使用しない。**Opus独立技術レビューGate(`docs/pm/PM_GOVERNANCE.md`
-11-3節、2026-10-02)の該当判定[条件A/B/C/D/非該当]を1行で記す。**)
+11-3節、2026-10-02)の該当判定[条件A/B/C/D/非該当]を1行で記す。**
+**主要タスクでは時間見込み[全体・工程別]と並列化判断[並列実行する作業/
+直列化する場合の理由]を1〜2行で記す[PM_GOVERNANCE 8-X、2026-10-06]。**)
 
 ## 固定ブロック(E-1/D-1/G-1/F-1/T-0/T-1/T-2/T-3)
 
@@ -109,3 +111,4 @@ import実行される事故防止(CONSOLIDATION-124)。)
 - [ ] 禁止事項・費用上限あり
 - [ ] 並行タスク衝突回避あり
 - [ ] Opus独立技術レビューGate(PM_GOVERNANCE 11-3)の該当判定[A/B/C/D/非該当]あり
+- [ ] 時間見込み・並列化判断あり(主要タスク、PM_GOVERNANCE 8-X)
