@@ -1,0 +1,142 @@
+{
+ "sample": 2,
+ "instance_id": "neg5_hormuz_div_a2",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought a surprise.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "R:L1+L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C5"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Two brought a surprise」は物語の導入的な修辞で、具体的な出来事や新たな事実を特定していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "原油価格の動きを「unexpected」と評価しているが、Ledgerが確認するのはBrent先物の一時的な上げ幅縮小と回復であり、予想外だったことや原油価格全般の動きまでは裏付けていない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "20％案が変わった点はHF-007と一致するが、「overnight」は、7月13日午前10時16分の提案から7月14日午前11時4分の置換まで約24時間48分という時期を正確に表していない。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％案が撤回・置換された点はHF-007と整合するが、「So」は直前の懸念継続が案の撤回をもたらしたという因果を加えており、Ledgerはその因果を裏付けていない。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％案が撤回・置換された点はHF-007と整合するが、「So」は直前の懸念継続が案の撤回をもたらしたという因果を加えており、Ledgerはその因果を裏付けていない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4896,
+    "cached_input_tokens": 0,
+    "output_tokens": 2323,
+    "reasoning_tokens": 1764
+   },
+   "cost_jpy": 0.259,
+   "elapsed": 24.1
+  }
+ ],
+ "cost_jpy": 0.259,
+ "failclosed_cids": []
+}

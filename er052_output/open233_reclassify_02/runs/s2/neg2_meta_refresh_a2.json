@@ -1,0 +1,343 @@
+{
+ "sample": 2,
+ "instance_id": "neg2_meta_refresh_a2",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "There was a small twist.",
+   "routes": [
+    "r3"
+   ],
+   "related": [],
+   "cid": "C1"
+  },
+  {
+   "key": "S2.4",
+   "claim_text": "If AI can handle difficult phone calls, it seems very useful.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "MUSE-HC-004"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S4.1",
+   "claim_text": "The problem was not that humans made the calls.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "MUSE-HC-012",
+    "MUSE-HC-006"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S5.1",
+   "claim_text": "People who asked Muse to make a call might think AI was doing it.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "MUSE-HC-012"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S5.3",
+   "claim_text": "If this was not explained clearly, users could not know if it was AI or a person.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "MUSE-HC-012"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S5.4",
+   "claim_text": "They enjoyed the ease of AI.",
+   "routes": [
+    "r3"
+   ],
+   "related": [],
+   "cid": "C6"
+  },
+  {
+   "key": "S5.5",
+   "claim_text": "But they did not know that a human was on the other end.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "MUSE-HC-012"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "S7.1",
+   "claim_text": "News reports also quoted a report from an employee.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "MUSE-HC-011"
+   ],
+   "cid": "C8"
+  },
+  {
+   "key": "S7.2",
+   "claim_text": "It said that human staff made inappropriate comments about race during calls to bargain over internet or cable fees.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "MUSE-HC-011"
+   ],
+   "cid": "C9"
+  },
+  {
+   "key": "S9.1",
+   "claim_text": "The real challenge for AI phone calls is not only how they speak.",
+   "routes": [
+    "r3"
+   ],
+   "related": [],
+   "cid": "C10"
+  },
+  {
+   "key": "S9.2",
+   "claim_text": "It is also whether they can honestly tell people who is on the other end.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "MUSE-HC-012"
+   ],
+   "cid": "C11"
+  },
+  {
+   "key": "S9.3",
+   "claim_text": "The more useful a service is, the less it should hide the people working behind the scenes.",
+   "routes": [
+    "r3"
+   ],
+   "related": [],
+   "cid": "C12"
+  },
+  {
+   "key": "S9.4",
+   "claim_text": "The Muse case showed this simple but important point.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "MUSE-HC-012"
+   ],
+   "cid": "C13"
+  },
+  {
+   "key": "S6.2",
+   "claim_text": "That information might then be shared by mistake with contract workers at a call center.",
+   "routes": [
+    "r5"
+   ],
+   "related": [
+    "MUSE-HC-010"
+   ],
+   "cid": "C14"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "導入の修辞で、具体的な事実を述べていない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "AIが難しい電話を処理できる場合の有用性についての意見で、実際の能力を断定していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "人間が電話をしたことへの評価を示す論評で、検証可能な具体的事実を追加していない。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "proper_noun"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "利用者がAIだと思う可能性はLedgerに明記されておらず、対象をテスト中の一部の電話に限定せず、テストという条件も落としている。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "negation"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "n_a",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "利用者がAIか人間かを知り得なかったとの主張はLedgerに明記されず、対象範囲とテスト条件も限定されていない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "利用者がAIの利便性を楽しんだという具体的な利用者感情はLedgerに裏付けられていない。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "negation"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "利用者が人間の対応を知らなかったとの断定はLedgerに明記されず、一部のテスト電話という範囲・条件も落としている。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "従業員の報告が報道で紹介されたという点は、個別事例についてのLedgerの記載と一致する。"
+  },
+  "C9": {
+   "cid": "C9",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Ledgerが裏付けるのは料金交渉の1件として報じられた従業員報告だが、記事は複数の電話での行為のように述べ、個別事例という限定を落としている。"
+  },
+  "C10": {
+   "cid": "C10",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "AI電話の課題についての論評で、具体的な事実を追加していない。"
+  },
+  "C11": {
+   "cid": "C11",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "相手に誰が話しているか伝えられるかという論点提示で、具体的な事実の断定ではない。"
+  },
+  "C12": {
+   "cid": "C12",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "サービスの有用性と透明性についての一般的な規範的主張である。"
+  },
+  "C13": {
+   "cid": "C13",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "Museの事例から導いた教訓を述べる編集上のまとめで、具体的事実を追加していない。"
+  },
+  "C14": {
+   "cid": "C14",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "契約スタッフにユーザー情報が意図せず共有される可能性があるという懸念は、Ledgerの記載と一致する。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5337,
+    "cached_input_tokens": 0,
+    "output_tokens": 4381,
+    "reasoning_tokens": 3235
+   },
+   "cost_jpy": 0.4274,
+   "elapsed": 43.5
+  }
+ ],
+ "cost_jpy": 0.4274,
+ "failclosed_cids": []
+}

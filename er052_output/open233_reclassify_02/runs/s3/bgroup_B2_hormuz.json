@@ -1,0 +1,222 @@
+{
+ "sample": 3,
+ "instance_id": "bgroup_B2_hormuz",
+ "items": [
+  {
+   "key": "S3.1",
+   "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "The fee was not actually being collected yet.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-003"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-002",
+    "HF-003",
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S9.1",
+   "claim_text": "The disappearance of the fee plan did not lead to a large, lasting fall in prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S10.1",
+   "claim_text": "Of course, this price movement alone cannot tell us that there was just one reason for the price.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-006"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "R:S10.2+S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009",
+    "HF-007"
+   ],
+   "cid": "C8"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "mismatch",
+   "scope_match": "mismatch",
+   "qualifier_match": "match",
+   "reason": "「船が通るたびに」船舶ごとに料金が発生するように述べているが、Ledgerが示すのは通航する全貨物への提案であり、対象と範囲が一致しない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "negation"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％料は導入済みではなく提案段階で、実際には徴収されていなかったという記述はLedgerと一致する。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "船舶通航貨物への償還料案が湾岸諸国との貿易・投資案件に置き換わったという要約は、HF-007と一致する。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "causality",
+    "negation",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "発表後に上げ幅は一時縮小したものの回復したというHF-009の記述と整合し、大幅で持続的な下落がなかったという要約を裏付ける。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "価格変動だけで単一の原因と断定できないという一般的な留保で、新たな具体的事実を述べていない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "Brent先物が一時的に上げ幅を縮小した後、高い水準へ戻ったという値動きはHF-009と一致する。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "proper_noun",
+    "date",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "match",
+   "reason": "撤回後も高い水準だったことなどはHF-009と整合するが、「原油価格」全般へ広げており、Ledgerが裏付けるBrent先物の範囲を超える。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "一時的に上げ幅を縮小した後に高い水準へ戻ったという要約はHF-009と一致する。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5063,
+    "cached_input_tokens": 0,
+    "output_tokens": 3510,
+    "reasoning_tokens": 2771
+   },
+   "cost_jpy": 0.3548,
+   "elapsed": 34.9
+  }
+ ],
+ "cost_jpy": 0.3548,
+ "failclosed_cids": []
+}

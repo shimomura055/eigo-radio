@@ -1,0 +1,48 @@
+{
+ "sample": 1,
+ "instance_id": "safety_er009_changed_comparison",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "Passengers who saw LOWER suggested tip rates left more money than those who saw higher suggested rates, according to the New York City taxi study.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "F-004"
+   ],
+   "cid": "C1"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "proper_noun",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Ledgerでは、より高い推奨チップ率を見た乗客がより多く残したとされており、記事は比較の方向を逆にしている（qualifier mismatch）。また、Ledgerの対象はニューヨーク市タクシーのクレジットカード利用者だが、記事は対象を乗客一般に広げている（scope mismatch）。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5218,
+    "cached_input_tokens": 0,
+    "output_tokens": 437,
+    "reasoning_tokens": 278
+   },
+   "cost_jpy": 0.1161,
+   "elapsed": 5.6
+  }
+ ],
+ "cost_jpy": 0.1161,
+ "failclosed_cids": []
+}

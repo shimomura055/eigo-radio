@@ -1,0 +1,319 @@
+{
+ "sample": 2,
+ "instance_id": "safety_A2A3",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "In the oil market, the lead role changed in a single day.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009",
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Normally, that might have brought some relief to crude oil prices.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S2.1",
+   "claim_text": "But the market reacted differently.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S2.2",
+   "claim_text": "Just after the charge plan disappeared, prices began to fall.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S2.6",
+   "claim_text": "To understand the turn, we need to look at what the charge was meant to do.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### A fee meant to protect the strait",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "S3.2",
+   "claim_text": "The idea was that those carrying the cargo would repay the money the United States spends to keep the strait safe.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "Crude oil also passes through it, so trouble with transport could push its price higher.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-006"
+   ],
+   "cid": "C8"
+  },
+  {
+   "key": "S4.1",
+   "claim_text": "The stage was ready for a quick change, but the market still had another question.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C9"
+  },
+  {
+   "key": "S5.1",
+   "claim_text": "On July 14, Trump announced that the 20 percent plan would be replaced by trade and investment deals that the Gulf states were working on with the United States.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C10"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "After the announcement, the rise in Brent crude futures briefly narrowed, but prices soon returned to nearly the high level seen before it; at the time of reporting, they were above $85 a barrel, up about 2.6 percent, because attacks between the United States and Iran continued, fears of a blockade at sea remained, and people still did not know whether tankers could pass safely—showing that the charge had left the stage, but the dangerous route remained the real lead actor, with its distant danger reaching gasoline prices and the cost of moving goods through crude oil.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C11"
+  },
+  {
+   "key": "L1",
+   "claim_text": "The fee disappeared in a day, but the danger around the Strait of Hormuz remained.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C12"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "date",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "7月13日の提案から7月14日の置換へ移ったことを「一日で変化」と要約しており、Ledgerの時系列と一致する。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "n_a",
+   "reason": "通常なら原油価格が緩和したかもしれないという市場反応の推測はLedgerに裏付けがなく、Brent先物を超えて原油価格一般へ広げている。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "n_a",
+   "reason": "「市場」の反応全般と述べており、Ledgerが記録するBrent先物の値動きより対象範囲が広い。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Ledgerが示すのはBrent先物の上げ幅が一時縮小したことだが、記事は価格自体が下落し始めたと述べ、範囲と値動きの内容を変えている。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "読者を説明へ導くつなぎで、新たな具体的事実を加えていない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "提案の目的を、海峡の安全確保に要する費用の償還というLedgerの説明に沿って平易に要約している。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "proper_noun",
+    "causality"
+   ],
+   "actor_match": "mismatch",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "貨物を運ぶ者が支払うと支払義務者を特定しているが、Ledgerは支払義務者を示しておらず、具体的制度設計も未提示としている。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "輸送上の問題が価格を押し上げ得るという因果を、LedgerのBrent先物と供給懸念についての記述から原油価格一般へ広げている。"
+  },
+  "C9": {
+   "cid": "C9",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "舞台の比喩によるつなぎで、具体的な市場事実を追加していない。"
+  },
+  "C10": {
+   "cid": "C10",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "7月14日にトランプ氏が20％案を湾岸諸国との貿易・投資案件に置き換えると発表した点はHF-007と一致する。"
+  },
+  "C11": {
+   "cid": "C11",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "mismatch",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Brentの短時間の値動きと数値はHF-009に沿うが、ガソリン価格や輸送費への波及を因果として追加しており、対象と因果の範囲をLedger以上に広げている。"
+  },
+  "C12": {
+   "cid": "C12",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "date",
+    "proper_noun",
+    "negation"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Ledgerが示すのは未導入の20％案の撤回・置換だが、「料金が消えた」は実在した料金の終了とも読め、また約24時間48分を「一日」とする期間表現も一致しない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5360,
+    "cached_input_tokens": 0,
+    "output_tokens": 4378,
+    "reasoning_tokens": 3248
+   },
+   "cost_jpy": 0.4275,
+   "elapsed": 42.2
+  }
+ ],
+ "cost_jpy": 0.4275,
+ "failclosed_cids": []
+}

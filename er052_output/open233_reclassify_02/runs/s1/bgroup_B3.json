@@ -1,0 +1,169 @@
+{
+ "sample": 1,
+ "instance_id": "bgroup_B3",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought an unexpected turn.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "For the moment, only a large number stood at center stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "The change was sudden.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C6"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Two」の展開を表す比喩的なつなぎで、具体的な事実を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Three」の導入として価格の動きを比喩的に表現しており、具体的な値動きや方向は主張していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "negation"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "「20%」以外には何も示されなかったという「only」の含意は、貨物の範囲や費用償還の目的も示されていたLedgerより広い。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "20%案の置換自体は一致するが、「overnight」は時間的限定を加えており、Ledgerの約24時間48分後という経過と一致しない。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "date"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "トランプ氏が20%案を翌日に置き換えたという時系列（約24時間48分後）と整合する「急な変更」という表現。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun",
+    "causality",
+    "negation",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "7月14日の懸念継続と一時的な下げ幅縮小後の回復は一致するが、「so」は懸念が20%案の撤回を引き起こしたという因果を加えており、Ledgerでは確認されていない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4942,
+    "cached_input_tokens": 0,
+    "output_tokens": 4194,
+    "reasoning_tokens": 3618
+   },
+   "cost_jpy": 0.4065,
+   "elapsed": 39.8
+  }
+ ],
+ "cost_jpy": 0.4065,
+ "failclosed_cids": []
+}

@@ -1,0 +1,97 @@
+{
+ "sample": 3,
+ "instance_id": "bgroup_B3",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought an unexpected turn.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Two brought an unexpected turn」は物語上の比喩的なつなぎで、具体的な事実を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Three was an unexpected move in oil prices」は具体的な値動きを特定しない導入上の修辞で、新たな事実を追加していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "7月14日に懸念が続き、20％案の置換とBrentの一時的な上げ幅縮小後の回復があった点はLedgerと整合するが、「so」が継続する懸念を案の撤回理由として結び付けており、その因果関係はLedgerに裏付けられていない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4828,
+    "cached_input_tokens": 0,
+    "output_tokens": 1311,
+    "reasoning_tokens": 976
+   },
+   "cost_jpy": 0.1786,
+   "elapsed": 13.9
+  }
+ ],
+ "cost_jpy": 0.1786,
+ "failclosed_cids": []
+}

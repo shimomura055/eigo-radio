@@ -1,0 +1,221 @@
+{
+ "sample": 2,
+ "instance_id": "neg3_hormuz_prodrunner_b1b",
+ "items": [
+  {
+   "key": "T",
+   "claim_text": "# The 20 Percent Fee Plan Is Withdrawn—But Oil Prices Quickly Return",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.1",
+   "claim_text": "Oil-price news sometimes gets its biggest twist not from a policy announcement, but from what prices do after it.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S2.2",
+   "claim_text": "A large number suddenly appeared, making the proposal the story’s new lead.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "Normally, removing the fee plan would seem likely to calm oil prices.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009",
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S4.4",
+   "claim_text": "At the time of publication, oil was up about 2.6 percent and above $85 a barrel.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "The lesson is that changing the words in an announcement does not always change the price in the same way.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "L1",
+   "claim_text": "The fee plan left the stage, but the events driving oil prices—and the prices themselves—quickly returned.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C7"
+  },
+  {
+   "key": "S3.2",
+   "claim_text": "He also told reporters that no one should charge ships using the Strait of Hormuz, and said he did not like the idea of a fee itself.",
+   "routes": [
+    "r5"
+   ],
+   "related": [
+    "HF-001"
+   ],
+   "cid": "C8"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％案の置換と、発表後に一時縮小した上げ幅がほどなく発表前に近い水準へ戻ったことはHF-007、HF-009と一致する。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "価格の動きを導入に用いた一般的・修辞的な表現で、具体的な事実を追加していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "20％という数値は裏付けられるが、それが提案を記事の主題にしたという因果関係はLedgerにない。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "手数料案の撤回が通常は原油価格を落ち着かせるという予測・因果関係はLedgerで裏付けられていない。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "掲載時点で約2.6％高、1バレル85ドル超という値はHF-009の価格スナップショットと一致する。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "negation",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "発表の文言変更が価格に常に同じ影響を与えるわけではないという一般化は、Ledgerの個別の価格推移だけでは裏付けられない。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "価格に影響する出来事が「戻った」とする時間的描写は、懸念が継続していたというHF-009と食い違う（限定条件・時系列の不一致）。"
+  },
+  "C8": {
+   "cid": "C8",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "proper_noun",
+    "negation"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "トランプ氏が海峡通航船への課金に反対し、料金の考え自体を好まないと述べた点はHF-008と一致する。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5004,
+    "cached_input_tokens": 0,
+    "output_tokens": 2287,
+    "reasoning_tokens": 1552
+   },
+   "cost_jpy": 0.2579,
+   "elapsed": 23.1
+  }
+ ],
+ "cost_jpy": 0.2579,
+ "failclosed_cids": []
+}

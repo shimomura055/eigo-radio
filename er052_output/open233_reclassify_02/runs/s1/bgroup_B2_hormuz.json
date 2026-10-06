@@ -1,0 +1,196 @@
+{
+ "sample": 1,
+ "instance_id": "bgroup_B2_hormuz",
+ "items": [
+  {
+   "key": "S3.1",
+   "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "The fee was not actually being collected yet.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-003"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S3.4",
+   "claim_text": "It was still only at the stage of announcing the policy.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "R:S10.2+S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C7"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "mismatch",
+   "scope_match": "mismatch",
+   "qualifier_match": "match",
+   "reason": "「船が通るたびに」料金が発生するという仕組みを示唆しているが、Ledgerの対象は通航貨物であり、課金単位や徴収方法は未提示。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "negation"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "7月13日時点では徴収方法が示されていない提案段階だったというLedgerの記述と一致する。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "料金案が導入済みではなく、提案・方針表明の段階だったというLedgerの記述に沿う。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "通航貨物への料金案が、湾岸諸国による対米貿易・投資案件に置き換えられたというLedgerの記述の平易な言い換え。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "価格が一時的に上げ幅を縮めて高い水準へ戻ったことは一致するが、「So」はその因果関係を記事独自に結び付けている。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "撤回後にBrentが高い水準へ戻り、緊張やタンカー懸念が続いた点はLedgerと合うが、「as」はそれらを価格高止まりの原因として結び付けている。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "価格が一時的に上げ幅を縮めて高い水準へ戻ったことは一致するが、「So」はその因果関係を記事独自に結び付けている。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4996,
+    "cached_input_tokens": 0,
+    "output_tokens": 3488,
+    "reasoning_tokens": 2835
+   },
+   "cost_jpy": 0.352,
+   "elapsed": 33.5
+  }
+ ],
+ "cost_jpy": 0.352,
+ "failclosed_cids": []
+}

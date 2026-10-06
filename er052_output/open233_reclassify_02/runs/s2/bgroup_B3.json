@@ -1,0 +1,144 @@
+{
+ "sample": 2,
+ "instance_id": "bgroup_B3",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought an unexpected turn.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "The change was sudden.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Concerns about US-Iran attacks, the sea blockade, and tanker safety continued on July 14, so the flashy 20% plan left the stage, but the chart only pulled back briefly before recovering: the policy turn and the oil chart’s “not over yet” movement happened on the same day.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-007",
+    "HF-009"
+   ],
+   "cid": "C5"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Two」「unexpected turn」は展開を示す修辞で、具体的な事実を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "原油価格の動きという記述は、発表後に一時上げ幅を縮小し、その後回復したというHF-009の内容に沿う。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "20％案が「overnight」に変わったとする時間的限定は、提案から置換発表まで約24時間48分というHF-007の時系列と一致しない。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「sudden」は変化を描写する主観的な修辞で、具体的な新事実を追加していない。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "7月14日の懸念継続と価格の一時的な反落・回復はLedgerに沿うが、「so」で懸念が20％案の撤回を引き起こしたと結び付けており、その因果関係はLedgerに裏付けられていない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4904,
+    "cached_input_tokens": 0,
+    "output_tokens": 2809,
+    "reasoning_tokens": 2328
+   },
+   "cost_jpy": 0.2973,
+   "elapsed": 29.7
+  }
+ ],
+ "cost_jpy": 0.2973,
+ "failclosed_cids": []
+}

@@ -1,0 +1,188 @@
+{
+ "sample": 3,
+ "instance_id": "neg5_hormuz_div_a2",
+ "items": [
+  {
+   "key": "S1.3",
+   "claim_text": "Act Two brought a surprise.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S1.4",
+   "claim_text": "Act Three was an unexpected move in oil prices.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S3.5",
+   "claim_text": "For the moment, only a large number stood at center stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-002"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "H1",
+   "claim_text": "### The 20% plan changes overnight",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "The change was sudden.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C6"
+  },
+  {
+   "key": "R:L1+L2",
+   "claim_text": "So the flashy 20% plan left the stage.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-007"
+   ],
+   "cid": "C7"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "NO_FACT_CLAIM",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "n_a",
+   "qualifier_match": "n_a",
+   "reason": "「Act Two」「surprise」は導入上の修辞で、具体的な出来事を追加していない。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Ledgerが裏付けるのはBrent先物の値動きであり、原油価格一般への範囲拡大と「unexpected」という期待との比較は確認できない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "negation"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％の率以外に徴収主体や方法などの制度設計が示されなかったというHF-003の要約に合致する。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "20％案の置換は裏付けられるが、「overnight」は7月13日午前10時16分から7月14日午前11時4分までの約24時間48分という時期を正確に表していない。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "date"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％案が提案から約24時間48分後に置き換えられたという経過を「sudden」と表現しており、Ledgerと矛盾しない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "20％案の撤回・置換は裏付けられるが、「So」は直前の懸念が撤回の原因だったと結び付けており、Ledgerはその因果関係を裏付けていない。"
+  },
+  "C7": {
+   "cid": "C7",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "causality"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "C6と同じ記述であり、「So」が直前の懸念と20％案の撤回を因果的に結び付けているが、その因果関係はLedgerで確認できない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4967,
+    "cached_input_tokens": 0,
+    "output_tokens": 3186,
+    "reasoning_tokens": 2526
+   },
+   "cost_jpy": 0.3278,
+   "elapsed": 33.9
+  }
+ ],
+ "cost_jpy": 0.3278,
+ "failclosed_cids": []
+}

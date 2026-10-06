@@ -19960,3 +19960,11 @@ Fable判断(Opus任意レビュー後、委任_B2/B3、2026-10-06): R5-(a)必須
 (2) 結果: prompt(4点一致)・schema・較正見積器を実装。01実測で較正した見積 mid¥13.8(low¥12.0/high¥16.1)が¥12超のため有料run未実行(実費¥0)。gold/A4-0/候補数は未測定。回帰863件PASS。
 (3) Fable分類待ち: REJECTED/VALIDATED/USER_DECISION_REQUIRED。ユーザー判断事項: 予算枠の扱い(承認済み¥12を超える実行を認めるか)。Production採用ではない。
 
+
+## 2026-10-06 OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02 委任_02: ユーザー上限¥20承認、現行設計のまま本実行(Trial、Production未反映)
+
+出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-CHECKER-SELECTIVITY-RECLASSIFY-02_02.md`、`docs/pm/reclassify_open233_checker_selectivity_02.md`、REPORT §78-2。
+
+(1) ユーザー判断(逐語): 「今回Trialの実行上限を ¥20 まで承認する。したがって、前回準備済みの現行設計のまま本実行へ進めてよい。」実行条件: 4観点(主体/相手先・対象/範囲/限定条件)を個別確認する現行Prompt維持、出力簡素化不要、同じ42 run、Production Checker/KPI/gold/後段AI/機械Safetyルール不変、E2E残11 run再開なし。
+(2) 結果: 実費¥14.38(見積mid¥13.8比+¥0.58)。NORMAL候補 01の9.83→10.75件/記事(AI由来5.33→6.25)、全体8.12→8.57、gold 6/6(A4-0 3/3)、hold-out 9/9、neg5 3/3、K19 3/3、HF-011候補なし、和集合8.57。欠損run0。
+(3) Fable分類待ち(REJECTED/VALIDATED/USER_DECISION_REQUIRED)。VALIDATEDでもProduction採用ではない。

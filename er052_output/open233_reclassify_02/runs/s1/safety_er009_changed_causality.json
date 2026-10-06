@@ -1,0 +1,51 @@
+{
+ "sample": 1,
+ "instance_id": "safety_er009_changed_causality",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "The rise in US restaurant tipping from about 10-15 percent in the early 1970s to about 20 percent by the late 1990s was directly caused by the introduction of digital tip screens.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "F-006"
+   ],
+   "cid": "C1"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "mismatch",
+   "reason": "数値・時期と米国のレストランという範囲はF-006に沿うが、Ledgerはこの上昇を記述的傾向としており、デジタルチップ画面の導入が直接引き起こしたという因果を裏付けていない。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5249,
+    "cached_input_tokens": 0,
+    "output_tokens": 519,
+    "reasoning_tokens": 366
+   },
+   "cost_jpy": 0.1231,
+   "elapsed": 8.1
+  }
+ ],
+ "cost_jpy": 0.1231,
+ "failclosed_cids": []
+}

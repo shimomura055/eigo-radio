@@ -1,0 +1,171 @@
+{
+ "sample": 2,
+ "instance_id": "bgroup_B2_hormuz",
+ "items": [
+  {
+   "key": "S3.1",
+   "claim_text": "It looked like a very large fee would appear every time a ship passed through the strait.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "HF-003",
+    "HF-002"
+   ],
+   "cid": "C1"
+  },
+  {
+   "key": "S3.3",
+   "claim_text": "The fee was not actually being collected yet.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-003"
+   ],
+   "cid": "C2"
+  },
+  {
+   "key": "S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C3"
+  },
+  {
+   "key": "L1",
+   "claim_text": "Trump’s proposed Hormuz fee vanished overnight, but crude oil prices stayed high as tensions and tanker fears remained.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C4"
+  },
+  {
+   "key": "R:S10.2+S10.3",
+   "claim_text": "So the price reacted once, then returned to a high level.",
+   "routes": [
+    "r3"
+   ],
+   "related": [
+    "HF-009"
+   ],
+   "cid": "C5"
+  },
+  {
+   "key": "S6.1",
+   "claim_text": "A story about charging ships suddenly changed into a story about trade and investment.",
+   "routes": [
+    "r5"
+   ],
+   "related": [
+    "HF-002",
+    "HF-003",
+    "HF-007"
+   ],
+   "cid": "C6"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "mismatch",
+   "scope_match": "mismatch",
+   "qualifier_match": "match",
+   "reason": "Ledgerの対象は通航する全貨物への提案だが、記事は船舶ごとに料金が発生する仕組みを示唆しており、対象・範囲を広げている。"
+  },
+  "C2": {
+   "cid": "C2",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "negation"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "n_a",
+   "reason": "Ledgerは提案段階で制度設計が未提示だったことを裏付けるが、徴収が実際に始まっていなかったという否定までは明示していない。"
+  },
+  "C3": {
+   "cid": "C3",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "一時的な上げ幅縮小と回復はHF-009に沿うが、「So」は価格の反応・回復を前段の要因に因果的に結び付けており、その結び付きはLedgerで確認できない。"
+  },
+  "C4": {
+   "cid": "C4",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "number",
+    "date",
+    "proper_noun",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "7月13日の20％案が翌14日に湾岸諸国との貿易・投資案件へ置き換えられ、発表後にBrentが一時上げ幅を縮小して回復し、記事掲載時に高値圏だったという記述はHF-007・HF-009と一致する。"
+  },
+  "C5": {
+   "cid": "C5",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "n_a",
+   "counterpart_match": "n_a",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "一時的な上げ幅縮小と回復はHF-009に沿うが、「So」は価格の反応・回復を前段の要因に因果的に結び付けており、その結び付きはLedgerで確認できない。"
+  },
+  "C6": {
+   "cid": "C6",
+   "verdict": "SUPPORTED",
+   "fact_tags": [
+    "none"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "match",
+   "qualifier_match": "match",
+   "reason": "船舶通航貨物への償還料案が湾岸諸国との対米貿易・投資案件に置き換わったという要約はHF-007に一致する。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 4946,
+    "cached_input_tokens": 0,
+    "output_tokens": 2996,
+    "reasoning_tokens": 2350
+   },
+   "cost_jpy": 0.3126,
+   "elapsed": 31.4
+  }
+ ],
+ "cost_jpy": 0.3126,
+ "failclosed_cids": []
+}

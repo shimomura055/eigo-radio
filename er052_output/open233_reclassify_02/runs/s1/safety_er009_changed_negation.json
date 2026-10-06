@@ -1,0 +1,49 @@
+{
+ "sample": 1,
+ "instance_id": "safety_er009_changed_negation",
+ "items": [
+  {
+   "key": "S1.1",
+   "claim_text": "The taxi study found that passengers who saw higher suggested tip rates did NOT leave more money; the suggested rate had no effect on the final tip.",
+   "routes": [
+    "r3",
+    "r5"
+   ],
+   "related": [
+    "F-004"
+   ],
+   "cid": "C1"
+  }
+ ],
+ "results": {
+  "C1": {
+   "cid": "C1",
+   "verdict": "CANDIDATE",
+   "fact_tags": [
+    "negation",
+    "causality",
+    "comparison"
+   ],
+   "actor_match": "match",
+   "counterpart_match": "match",
+   "scope_match": "mismatch",
+   "qualifier_match": "mismatch",
+   "reason": "Ledgerはニューヨーク市タクシーのクレジットカード利用者について、より高い推奨率を偶然見た乗客が実際により多くチップを残したとするため、「効果がなかった」という否定は正反対であり、対象範囲と偶然見たという限定も記事では落ちている。"
+  }
+ },
+ "calls": [
+  {
+   "attempt": 0,
+   "usage": {
+    "input_tokens": 5221,
+    "cached_input_tokens": 0,
+    "output_tokens": 416,
+    "reasoning_tokens": 255
+   },
+   "cost_jpy": 0.1145,
+   "elapsed": 5.2
+  }
+ ],
+ "cost_jpy": 0.1145,
+ "failclosed_cids": []
+}
