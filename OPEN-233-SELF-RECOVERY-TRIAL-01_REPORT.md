@@ -5137,3 +5137,38 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 ### §88-7 参照
 - 評価: `er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01/eval/`(E1_fact_safety_review.md/E2_critical_ng_checker.md/E3_entertainment.md/cost_summary_02.json)。
 - FREEZE・設計: `docs/pm/ledger_clarity_p_trial/`(00a〜00d・01a)。DEVスクリプト: `er052_open233_ledger_clarity_pprime_dev_01.py`。Opusレビュー(条件A、判定(B)、M-a〜M-e): `docs/pm/opus_l2_review_pt_design_01.md`(並行委任S1作成)。OPUS_FINDINGS_LEDGER OF-060、OPEN-237。
+
+## §89 OPEN-233-LEDGER-POLYSEMY-NOTE-DESIGN-01(多義語notes最小変更設計、2026-10-06)
+
+### §89-1 目的
+- Writerが原資料の多義表現(HC-012「ロールバック」型)を逆向きに読む誤読を、Researcher生成のnotes_for_writerへ最小の注意書きを足して上流予防する案の設計・Opus条件A・Trial計画まで(¥0、設計のみ、Trial未実行、Production変更なし)。到達Status=USER_DECISION_REQUIRED。
+
+### §89-2 事実確認(9項目、A1/A2)
+1. notesはtxtへ常時出る(er003 L302、verdict無関係、REJECTED除く)。
+2. JA初回R0はB3 briefのみを読み、台帳notesを直接見ない。
+3. B3 promptは台帳全文を見るがnotes転記指示なし(grep notes 0件)。
+4. must_fix(Fact Check MAJOR時)・Checker後Rewrite(hint 400字上限)・deviation checkには台帳notesが届く。
+5. EN生成・EN retryは台帳を見ない(JA R2本文のみ)。
+6. schemaのnotes_for_writerは自由文string|nullで変更不要。
+7. Trial-01構成(Writer gpt-5.6-luna全工程・Checker gpt-6-luna・スイッチdump一致・script sha一致)は再現可能。
+8. seedは固定不可。
+9. P-TRIAL-01実証: txtにnotesは届くがB3 briefへは「語義:」「原語=」の文言自体は転記0件(内容は一部反映)。
+
+### §89-3 設計(唯一の変更点・案N/案N+B)
+- 案N: Researcher promptのnotes_for_writer指示に規則4行を追加(逆・反対になる表現に限り1 fact 1件/形式「注意(多義): 原語'<英語原表現>'=<原資料が示す意味>。<逆の読み>ではない。」/確定できなければ「原資料も曖昧。断定しない」/80字以内・改行なし・他フィールド不変)。Verification無変更。Fact本文・schema・Research方法不変。
+- 案N+B: 案Nに加え、B3 promptへ注意文転記規則1行(Production Writer仕様変更=Trial-01同一条件からの逸脱=新Product判断。ユーザー承認時のみ別arm)。
+- Trialではbaseline draft/verificationを固定し、notes追加call(`{fact_id,note}`をコード側で末尾連結)=Fact本文を物理的に固定(offline、Production採用根拠にはしない)。
+- A3発火率見込み: YES 13/44 fact=29.5%(確度高のみ6/44=13.6%)。FP懸念あり(数値・日付中心のFact)。
+
+### §89-4 Opus(B)と反映
+- Opus条件A判定(B)・必須修正6件: 固定台帳はP'版でなくbaseline/連結方式/規則4行圧縮/具体例の意味誤り訂正(HC-012「復元と読まない」→「機能を復活・再提供した意味ではない」、HC-014の解釈確定削除)/Rewrite hint 400字切り詰め検査/注意付与件数・誤付与測定。全件反映(B_design §11〜§13)。OF-061。
+
+### §89-5 Trial計画(未実行、E_trial_plan.md)
+- 条件Control/案N(案N+Bはユーザー承認時のみ別arm)、テーマmeta+hormuz。Phase 1=B3+JAまで×3 repeat(2条件12 run≈¥95、3条件18 run≈¥140)、Phase 2=良条件のみEN+Checker 1〜2 run/テーマ(¥30〜60)。上限案2条件¥130/3条件¥200。所要Phase 1約40分(並列3)+Phase 2約30分+評価約40分。合格基準・STOP事前固定。
+
+### §89-6 STOP該当とユーザー判断
+- STOP該当: (a)notesだけでは確実にWriterへ届かない(Beforeではbriefは正しく「当面ロールバック」と書かれ、誤読はR0の言い換えで発生=R0に注意が届かなければ効かない)、(b)案N+B(B3 promptへ転記規則1行)はProduction Writer仕様変更=Trial-01同一条件からの逸脱=新Product判断。設計・計画は完成させたうえでユーザー判断待ち。
+- ユーザー判断5点: (1)Trial実施可否と上限 (2)案N/N+B/3条件 (3)確度高のみ既定 (4)offline固定台帳の可否 (5)対象テーマ。いずれも未承認。
+
+### §89-7 参照
+- `docs/pm/polysemy_note/A1_notes_delivery_facts.md`、`docs/pm/polysemy_note/A2_trial01_config_freeze.md`、`docs/pm/polysemy_note/A3_polysemy_candidates_and_rules.md`、`docs/pm/polysemy_note/A3_trial_eval_template.md`、`docs/pm/polysemy_note/B_design.md`、`docs/pm/polysemy_note/E_trial_plan.md`、`docs/pm/opus_l2_review_pn_design_01.md`、`er052_output/open233_ledger_polysemy_note_01/phase0/FREEZE_T01_CONFIG.json`。OPEN-237、OF-061。

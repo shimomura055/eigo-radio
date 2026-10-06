@@ -20106,3 +20106,15 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (d)【費用】台帳¥17.89+B3 1.53+JA 6.67+EN 3.10(連鎖¥29.20)+Checker 2.54+pairwise 3.11(上限¥3を¥0.11超過)=¥34.85。初回連鎖590秒timeoutで1回再開、初回EN部分課金未記録の可能性(数円以内)。
 - (e)【ユーザー判断事項5点】(1)P'規則の本番prompt採用 (2)ambiguity/不確実点のtxt出力(R1、台帳生成処理の仕様変更) (3)断定強化・留保欠落を防ぐVerification観点強化/決定論検査 (4)JA R2段の逐語化の扱い (5)n拡大の要否。いずれも未承認の新仕様候補。
 - 残11 run待機、TRIAL-04未開始、S1等採否不変。出典: `docs/pm/delegation_log/2026-10-06_OPEN-233-LEDGER-CLARITY-P-TRIAL-01_S2.md`。
+
+## 2026-10-06 OPEN-233-LEDGER-POLYSEMY-NOTE-DESIGN-01(多義語notes最小変更設計・Opus条件A・Trial計画、設計のみ、Production未反映)
+
+- Status: **USER_DECISION_REQUIRED**(Fable判定。設計・Opus条件A(B)・修正・Trial計画完了、Trial未実行、Production変更なし、¥0)。OPEN-237、REPORT §89、OF-061。
+- (a)【決定】「設計・Opus・Trial計画の実施(¥0)」のみ。それ以外は決定ではない。
+- (b)【事実確認】notesはtxtに常時出る/JA初回R0はB3 briefのみを読み台帳notesを直接見ない/B3 promptはnotes転記指示なし/must_fix・Checker後Rewrite(hint 400字上限)・deviation checkには届く/EN生成・retryは台帳を見ない/schema変更不要/Trial-01構成は再現可能(seed固定不可)。
+- (c)【STOP条件該当】notesだけでは確実にWriterへ届かない/案N+B(B3 promptへ転記規則1行)はProduction Writer仕様変更=Trial-01同一条件からの逸脱=新Product判断。
+- (d)【設計】唯一の変更点(案N)=Researcher promptのnotes_for_writer指示へ規則4行追加(逆・反対になる表現に限り1 fact 1件、80字以内・原語併記、確定できなければ「原資料も曖昧。断定しない」)。Verification・Fact本文・schema・Research方法不変。Trialはbaseline draft/verification固定+notes追加call(offline、Production採用根拠にしない)。
+- (e)【Opus条件A】判定(B)・必須修正6件全件反映(OF-061、`docs/pm/opus_l2_review_pn_design_01.md`)。
+- (f)【Trial計画】Control/案N(案N+Bは承認時のみ別arm)、meta+hormuz、Phase 1×3 repeat+Phase 2(良条件のみ)。上限案2条件¥130/3条件¥200。未実行。
+- (g)【ユーザー判断事項5点】(1)Trial実施可否と上限 (2)案N/N+B/3条件 (3)確度高のみ既定 (4)offline固定台帳の可否 (5)対象テーマ。いずれも未承認の新仕様候補。
+- 残11 run待機、TRIAL-04未開始、S1等採否不変。出典: `docs/pm/polysemy_note/`、`docs/pm/delegation_log/2026-10-06_OPEN-233-LEDGER-POLYSEMY-NOTE-DESIGN-01_E.md`。
