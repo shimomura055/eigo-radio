@@ -1,0 +1,58 @@
+{
+  "slug": "space_weapons",
+  "code": "4mjq",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "ambiguous"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "space_weapons-4mjq-01",
+      "text": "衛星通信を守ること、宇宙の様子を監視すること、ミサイルを追跡することも含まれる(カウンタースペースの定義に)。/ It includes protecting satellite communications, watching what is happening in space, and tracking missiles.(F-011のcounterspace定義は攻撃・防御行動の総称。F-015の任務説明(監視・ミサイル追跡)を連結してcounterspaceに含めた)",
+      "fact_id": "F-011",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": true,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [
+    {
+      "before": "The story has four different faces that look much like a story about military activity in space. The key is to tell them apart by their “addresses.”",
+      "after": "(文を削除)",
+      "before_was_ng": "false",
+      "after_new_ng": "none"
+    }
+  ],
+  "notes": "単独評価、人間確認前。F-001/F-011/F-013の範囲限定は参考扱い。F-001は『公式に認めた』『システム名・攻撃能力は未確認』と限定され正しい。counterspaceへの『監視・ミサイル追跡』連結はF-015とF-011の連結(cross_fact)、軽微。Checkerは『four different faces』文を削除(文章の飾りで事実NGなし)。"
+}

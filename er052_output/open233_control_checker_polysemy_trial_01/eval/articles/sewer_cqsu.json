@@ -1,0 +1,54 @@
+{
+  "slug": "sewer",
+  "code": "cqsu",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 0
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 0
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-012",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "sewer-cqsu-01",
+      "text": "家がまばらな場所まで長い管を伸ばし、大きな施設を動かし続けると、費用が重くなります。(R0のみ。台帳F-007は『経済的に有利になり得る』、R1以降は『有利になる場合がある』に修正)",
+      "fact_id": "F-007",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [
+    {
+      "id": "sewer-cqsu-p1",
+      "text": "下水処理を小さく分ける選択は、設備の負担を軽くする一方で、(R0のみ)",
+      "reason": "一般的断定だが『負担』の範囲が曖昧で、台帳F-007の『有利になり得る』との差が小さい",
+      "leaning": "minor"
+    }
+  ],
+  "checker_rewrites": [],
+  "notes": "単独評価、人間確認前。sewer台帳のみで判定。R2/EN(pre=final)は台帳の数値・限定(F-017/18/19、F-007、F-012)と一致、NGなし。R0のみ軽微1件(R2で解消)。★はF-012のみ扱い、正しい(設置費上乗せ補助は未記載で問題なし)。"
+}

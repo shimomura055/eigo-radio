@@ -1,0 +1,79 @@
+{
+  "slug": "meta",
+  "code": "2xhw",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 2
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-2xhw-01",
+      "text": "人間コンシェルジュ機能を当面、元の状態に戻しました。(EN: temporarily returned the human concierge feature to its previous setup。『元に戻した』のまま方向が確定しない)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "meta-2xhw-02",
+      "text": "しかし、適切な開示がないまま始まったため、社内ではプライバシーへの心配が出ました。(EN: because the test began without proper notice, concerns about privacy arose。懸念の理由は台帳上、機微情報が契約スタッフへ共有されうる点であり、開示欠如を原因とする因果の連結)",
+      "fact_id": "MUSE-HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": true,
+      "regression": true,
+      "kind": "causal"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [],
+  "notes": "単独評価・人間確認前。R0は『ここで社内から心配の声が出ました。...可能性があったからです』で因果が正しく、R2で『開示がないまま始まったため』に変わり退行(軽微)。HC-012は『元の状態に戻す』のままでR2はMuse全体停止ではない旨の補足も無く曖昧、ENのprevious setupは復元と読まれうるが境界は曖昧側に倒した。Checker変更なし(pre=final同一)。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "ambiguous",
+      "quote": "人間コンシェルジュ機能を当面、元の状態に戻しました。"
+    },
+    "en_pre_checker": {
+      "label": "ambiguous",
+      "quote": "The company then temporarily returned the human concierge feature to its previous setup."
+    },
+    "en_final": {
+      "label": "ambiguous",
+      "quote": "The company then temporarily returned the human concierge feature to its previous setup."
+    }
+  }
+}

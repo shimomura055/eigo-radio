@@ -1,0 +1,58 @@
+{
+  "slug": "space_weapons",
+  "code": "kfuf",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 0
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 0
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-002",
+      "label": "not_selected"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-013",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [],
+  "pending": [
+    {
+      "id": "space_weapons-kfuf-P1",
+      "text": "危険を早く知らせる/機器を壊れにくくする/機能を分散する/予備を持つ/衛星を動かして狙いを外す。米宇宙軍は、こうした対策を積極的な防御と受け身の防御に分けています。",
+      "reason": "台帳F-013ではこれらはpassive defenseの例。『こうした対策』を両分類に分けると読ませ、軽く不正確な可能性。R0/R1/R2/ENで共通",
+      "leaning": "minor(scope)だが意味逆転なしのため保留"
+    }
+  ],
+  "checker_rewrites": [
+    {
+      "before": "But the details are still hidden. The weapon's name, what kind of attack ability it has, and what it targets have not been revealed. The only thing we know is that it is being deployed in orbit.",
+      "after": "But the details are still hidden.  The thing we know is that it is being deployed in orbit.",
+      "before_was_ng": "false",
+      "after_new_ng": "none"
+    }
+  ],
+  "notes": "単独評価・人間確認前。重大・軽微の確定NGなし。Checkerは台帳に沿った限定文(名前・攻撃能力・標的は未公表)を削除したが新規NGは生じない(情報の欠落のみ、二重スペースあり)。ロシア2021年の破壊対象が自国衛星である点は記事に無いが誤りではない。未提示チェックリストF-007/F-015は記事に出現せず。"
+}

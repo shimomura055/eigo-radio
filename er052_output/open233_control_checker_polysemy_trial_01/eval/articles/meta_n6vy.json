@@ -1,0 +1,65 @@
+{
+  "slug": "meta",
+  "code": "n6vy",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-n6vy-01",
+      "text": "人間コンシェルジュ機能をロールバックしました。戻されたのは、人間が電話を担当する部分です。(『戻された』が復元とも取れ方向が確定しない)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [],
+  "notes": "単独評価・人間確認前。対象が人間コンシェルジュ機能であることは明示されサービス全体停止との読みは回避されているが、取り下げ方向は明言されず曖昧。R0/R1/R2/ENとも同型。Checkerは変更なし(pre=final同一)。HC-014は電話機能と人間コンシェルジュの区別が保たれcorrect。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "ambiguous",
+      "quote": "そして、人間コンシェルジュ機能をロールバックしました。戻されたのは、人間が電話を担当する部分です。"
+    },
+    "en_pre_checker": {
+      "label": "ambiguous",
+      "quote": "Meta then rolled back the human concierge feature. The part that was rolled back was the part where humans handled the calls."
+    },
+    "en_final": {
+      "label": "ambiguous",
+      "quote": "Meta then rolled back the human concierge feature. The part that was rolled back was the part where humans handled the calls."
+    }
+  }
+}

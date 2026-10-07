@@ -1,0 +1,112 @@
+{
+  "slug": "meta",
+  "code": "qvqc",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 2
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 2
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-qvqc-01",
+      "text": "人間コンシェルジュ機能はいったん元に戻されました。 / The human concierge feature was temporarily rolled back.",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "meta-qvqc-02",
+      "text": "問題は、人間が電話を担当することや、情報が共有される可能性について、適切な説明がないままテストが始まったこと(R0: ユーザーが十分に知らないまま、人間に情報が伝わるかもしれなかった点)。ENのChecker前も 'or that information might be shared' を含む",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "meta-qvqc-03",
+      "text": "EN title: Meta Tested an AI Phone Agent and Found a Human(Metaが人間を『見つけた』と読め、主体が不正確。Checker後に新規)",
+      "fact_id": "MUSE-HC-006",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "subject"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [
+    {
+      "before": "# I Followed an AI Phone Agent and Found a Human",
+      "after": "Meta Tested an AI Phone Agent and Found a Human",
+      "before_was_ng": "false",
+      "after_new_ng": "minor"
+    },
+    {
+      "before": "The AI makes the call. The user asks it to handle a task.",
+      "after": "The AI—and sometimes a human—makes the call. The user asks it to handle a task.",
+      "before_was_ng": "false",
+      "after_new_ng": "none"
+    },
+    {
+      "before": "The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.",
+      "after": "The problem was that testing began without a proper explanation that humans would handle the calls.",
+      "before_was_ng": "true",
+      "after_new_ng": "none"
+    }
+  ],
+  "notes": "単独評価、人間確認前。item1は『元に戻された/rolled back』のみで取りやめ側が確定せずambiguous(ENは'temporarily'と'not stopped as a whole'で復活読みの可能性は低いが基準どおり曖昧側)。item2は『情報共有の可能性についての開示』が台帳(適切な開示なしに契約スタッフが電話をかけるテスト開始)を超える軽微な拡張(R0から存在、Checkerが除去)。item3は題名の主体の曖昧化、境界として軽微に計上。退行なし。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "ambiguous",
+      "quote": "そして、人間コンシェルジュ機能はいったん元に戻されました。電話機能全体を止めたわけではありません。"
+    },
+    "en_pre_checker": {
+      "label": "ambiguous",
+      "quote": "The human concierge feature was temporarily rolled back. The phone feature as a whole was not stopped."
+    },
+    "en_final": {
+      "label": "ambiguous",
+      "quote": "The human concierge feature was temporarily rolled back. The phone feature as a whole was not stopped."
+    }
+  }
+}

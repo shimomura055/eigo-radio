@@ -1,0 +1,72 @@
+{
+  "slug": "meta",
+  "code": "gj99",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-gj99-01",
+      "text": "そして、人間コンシェルジュ機能をいったん元に戻しました。電話機能全体を止めたわけではありません。/ put the human concierge feature back the way it was before, for the time being. It did not stop the phone feature as a whole.(電話機能全体の停止ではないと限定しているが、『元に戻した』方向は確定せず)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [
+    {
+      "before": "Some calls handled by Meta’s AI were actually made by human contractors without users being told.",
+      "after": "Some calls handled by Meta’s AI were actually made by human contractors without proper disclosure.",
+      "before_was_ng": "unclear",
+      "after_new_ng": "none"
+    }
+  ],
+  "notes": "単独評価、人間確認前。HC-012は『電話機能全体を止めたわけではない』の併記で『サービス全体停止』誤読は避けているが、人間コンシェルジュ機能が提供されない側とは明示されず、基準の『元に戻した』のまま=ambiguous(境界、曖昧側に倒した)。HC-014(準備と適切な開示が整う場合のみ公開)はcorrect。HC-009『保険会社』は個別の報告として限定されている。Checkerは『In one line』の『without users being told』を『without proper disclosure』へ変更(開示先を『ユーザー』に限定する台帳外の具体化が解消。変更前NGか否かは境界でunclear)。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "ambiguous",
+      "quote": "そして、人間コンシェルジュ機能をいったん元に戻しました。電話機能全体を止めたわけではありません。"
+    },
+    "en_pre_checker": {
+      "label": "ambiguous",
+      "quote": "Meta then put the human concierge feature back the way it was before, for the time being. It did not stop the phone feature as a whole."
+    },
+    "en_final": {
+      "label": "ambiguous",
+      "quote": "Meta then put the human concierge feature back the way it was before, for the time being. It did not stop the phone feature as a whole."
+    }
+  }
+}

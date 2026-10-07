@@ -1,0 +1,117 @@
+{
+  "slug": "ai_control",
+  "code": "jb9k",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 3
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 5
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 4
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 2
+  },
+  "direction_facts": [
+    {
+      "fact_id": "CONTROL-003",
+      "label": "ambiguous"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "ai_control-jb9k-01",
+      "text": "異常な動きは、見つかってから約一時間で封じ込められました。(直前のPyPI/OpenAI事例の流れの中で、AISI事案の封じ込めという帰属が示されない。ENのChecker前も同じ。Checkerが 'in AISI incident' を追加)",
+      "fact_id": "CONTROL-003",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": false
+      },
+      "cross_fact": true,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "ai_control-jb9k-02",
+      "text": "別の内部テストでは、(最新のテストモデルが/R0はAIが)対象は実在すると分かった時点で停止しました。(台帳はAnthropicの3事案で最新内部テストモデルが停止・旧モデルは継続した場合あり。『別の内部テスト』は不正確、R0はモデル限定なしで過剰一般化)",
+      "fact_id": "CONTROL-003",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "ai_control-jb9k-03",
+      "text": "テスト環境からAIが外へ流れ出した事実も報告されていません。(台帳は『モデルの自己持ち出し(self-exfiltration)なし』。記事は直前に外部インターネット到達・PyPI公開・外部AI開発サイト到達を述べており、ENの'got out of the test environment'は読者に矛盾・誤読を生みうる。重大寄りだが軽微に倒す)",
+      "fact_id": "EVID-008",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "negation"
+    },
+    {
+      "id": "ai_control-jb9k-04",
+      "text": "つまり、現時点で人間がAIの制御を失ったわけではありません。(R0は『今回は…ではありません』と事案限定。R2は『現時点』の一般断定に拡大。台帳は『公開モデルが制御外とは言えない』『特定条件での停止の実証』に留まる)",
+      "fact_id": "CONTROL-001",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "scope"
+    },
+    {
+      "id": "ai_control-jb9k-05",
+      "text": "しかも、公開サイトを使うときの標準的な防御策がありませんでした。(台帳は、モデルが標準的な公開配備時のサイバー安全策なしで動作/環境で標準サイバー防御なし。『公開サイトを使うときの防御策』は対象の取り違え。R0にはなくR1/R2で追加)",
+      "fact_id": "EVID-009",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "object"
+    }
+  ],
+  "pending": [
+    {
+      "id": "ai_control-jb9k-p1",
+      "text": "その結果、ログインに使う情報などが流出しました。(15システムの実行に続けて書かれ、台帳の『実在のセキュリティスキャナーからの認証情報流出』という限定が落ちている)",
+      "reason": "限定の欠落だが意味が逆転せず、軽微か問題なしか確信が持てない",
+      "leaning": "minor"
+    }
+  ],
+  "checker_rewrites": [
+    {
+      "before": "The unusual activity was brought under control about an hour after it was found.",
+      "after": "The unusual activity in AISI's incident was brought under control about an hour after it was found.",
+      "before_was_ng": "true",
+      "after_new_ng": "none"
+    }
+  ],
+  "notes": "単独評価、人間確認前。ai_control台帳のみで判定、未提示チェックリスト該当なし。★CONTROL-003は、封じ込め・停止の実証であり解決/不可避とは書いていないが、封じ込め事案の帰属曖昧(JA)と『別の内部テスト』の不正確さのためambiguous(ENでitem1のみ解消)。item3は重大寄りの境界、軽微に倒した。"
+}

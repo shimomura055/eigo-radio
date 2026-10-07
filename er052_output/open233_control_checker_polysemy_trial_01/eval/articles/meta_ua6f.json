@@ -1,0 +1,79 @@
+{
+  "slug": "meta",
+  "code": "ua6f",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 2
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 0
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-ua6f-01",
+      "text": "手伝っていた人間が、電話の相手にきちんと伝わっていなかったことです。(適切な開示の対象を電話の相手側へ具体化。台帳は開示先を特定していない)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "object"
+    },
+    {
+      "id": "meta-ua6f-02",
+      "text": "人間コンシェルジュ機能を当面ロールバックしました。(ロールバックのまま方向が確定しない。R2は『Muse全体を止めたわけではありません』も欠く)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [],
+  "notes": "単独評価・人間確認前。JAは曖昧、ENは'put on hold'で取りやめ側が明確(correct)。JA/ENで分かれるため悪い方(ambiguous)を採用。R0冒頭の『電話の相手にきちんと伝わっていなかった』は開示先の具体化として軽微に計上(R2では消えている)。HC-008とHC-009は別の場面と明記され連結なし。Checker変更なし(pre=final同一)。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "ambiguous",
+      "quote": "そして、人間コンシェルジュ機能を当面ロールバックしました。"
+    },
+    "en_pre_checker": {
+      "label": "correct",
+      "quote": "The human concierge feature was then put on hold for the time being."
+    },
+    "en_final": {
+      "label": "correct",
+      "quote": "The human concierge feature was then put on hold for the time being."
+    }
+  }
+}

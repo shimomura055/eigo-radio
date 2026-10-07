@@ -1,0 +1,61 @@
+{
+  "slug": "meta",
+  "code": "cz6g",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-cz6g-01",
+      "text": "Metaの人工知能部門の副社長は… / vice president of Meta's artificial intelligence division(台帳はSuperintelligence Labs部門。R0/R1は『超知能研究部門』で正しく、R2で一般的な『人工知能部門』に変わり主体の限定が弱まった)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "subject"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [],
+  "notes": "単独評価、人間確認前。HC-012は『当面取りやめて』(EN: put on hold for the time being)で提供されない側が確定するためcorrect。ENの'returned to its previous state'は付随表現で、前段のon holdにより誤読にはならないと判断(境界、correct側)。副社長の部門名の一般化のみ軽微(R2で退行)。HC-014は扱っていない。Checkerによる変更なし。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "correct",
+      "quote": "人間が対応するコンシェルジュ機能は、当面取りやめて元の状態に戻されました。"
+    },
+    "en_pre_checker": {
+      "label": "correct",
+      "quote": "The human-staffed concierge feature was then put on hold for the time being and returned to its previous state."
+    },
+    "en_final": {
+      "label": "correct",
+      "quote": "The human-staffed concierge feature was then put on hold for the time being and returned to its previous state."
+    }
+  }
+}

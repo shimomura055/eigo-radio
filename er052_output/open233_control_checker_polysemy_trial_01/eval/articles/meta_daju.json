@@ -1,0 +1,82 @@
+{
+  "slug": "meta",
+  "code": "daju",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 2
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-daju-01",
+      "text": "その人が仕事をするために、利用者の情報を見ることになります。(R0のみ。確定的に断定。R2は「必要になることがある」「共有される可能性」に弱まっている)",
+      "fact_id": "MUSE-HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "meta-daju-02",
+      "text": "人間コンシェルジュの機能は当面ロールバック。いったん元に戻された。/ rolled back for now. It was returned to its earlier state for the time being.",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [
+    {
+      "id": "p1",
+      "text": "その結果、人間コンシェルジュの機能は当面ロールバック / As a result, the human concierge feature was rolled back",
+      "reason": "「ミスと認めた」と「ロールバック」の因果は台帳に明記なし。軽い因果づけで品質寄り",
+      "leaning": "NGにしない(または軽微)"
+    }
+  ],
+  "checker_rewrites": [],
+  "notes": "単独評価、人間確認前。HC-012は「元に戻された/returned to its earlier state」のみで、機能が提供されない側を明示せず「サービス全体停止ではない」という限定もなく、ambiguous。Checkerは文面を変えていない(pre_checkerとarticleは同一)。R0にはHC-010の『利用者の情報を見ることになる』断定(R2では修正)。",
+  "rollback_labels": {
+    "ja_r2": {
+      "label": "ambiguous",
+      "quote": "人間コンシェルジュの機能は当面ロールバック。いったん元に戻されました。"
+    },
+    "en_pre_checker": {
+      "label": "ambiguous",
+      "quote": "As a result, the human concierge feature was rolled back for now. It was returned to its earlier state for the time being."
+    },
+    "en_final": {
+      "label": "ambiguous",
+      "quote": "As a result, the human concierge feature was rolled back for now. It was returned to its earlier state for the time being."
+    }
+  }
+}

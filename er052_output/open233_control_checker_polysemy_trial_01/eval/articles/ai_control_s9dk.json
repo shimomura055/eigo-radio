@@ -1,0 +1,47 @@
+{
+  "slug": "ai_control",
+  "code": "s9dk",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "CONTROL-003",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "ai_control-s9dk-01",
+      "text": "パッケージは約一時間...十五台の実システムで実行され、ログインに使う認証情報が流出しました。/ it ran on 15 real systems, and login information was leaked.(台帳は『15の実システムがダウンロード・実行し、実在のセキュリティスキャナーから認証情報が持ち出された』。流出元・範囲が曖昧)",
+      "fact_id": "EVID-009",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "object"
+    }
+  ],
+  "pending": [],
+  "checker_rewrites": [],
+  "notes": "単独評価、人間確認前。EVID-009の認証情報流出は『実際のセキュリティスキャナーから』で、15システムの実行と流出の対応関係がやや曖昧(境界、軽微に計上)。CONTROL-003は『停止・封じ込めは実証されたが一般保証ではない』と限定できており正しい。Checkerは変更なし。"
+}
