@@ -20195,3 +20195,14 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (c)【ユーザー決定(2026-10-07)】段階2再開=YES、4並列=yes、違反記録不要。
 - (d)【未決】Open Item上のclose可否はユーザー確認待ち(新Open Itemは起票しない)。
 - 根拠: 実費累計≈¥434.5(復元不能分推定¥20を含め≈¥454.5、上限¥500内)、N=最大4/条件/テーマ・単独LLM評価・人間確認なし。出典: REPORT §100、`er052_output/open233_b3_trial_01/eval/SUMMARY_STAGE2.md`。
+
+## 2026-10-07 OPEN-233-NG-ROOT-CAUSE-ANALYSIS-01(RCA結論採用、Closeout委任_05)
+- (a)【決定】Fable判定: 原因系分析の結論を採用(Opus任意レビューM1〜M4反映後、ユーザー報告済み)。前回NG多発と今回V0の差の最大の説明は「測定手順一式の差(rubric・評価者・指示文・盲検・NG/保留の線引き。rubricと評価者は分離不能)」(同一15記事で元/再約7.5倍、保留込みの感度で約2〜3倍)。次いで評価範囲(JAのみ残存を重大計上、JAの学習者到達は不明のため「測定の産物」とは断定しない)。Note介入(H-B)は判定不能、Rewrite由来(H-C)は2/84(2.4%)、Gate STOP除外(H-F)はV0基準では不支持。
+- (b)【注意】「前回の評価が過大だった」とは結論しない(再採点側の見落とし実例あり、E1突合で記録上確認できる線引き由来は6%)。従来≥P2≥V0の方向は全評価者で同じだがN=5/10/12では差を検出できず、V0の重大0はChecker不要の根拠にならない。件数比較は同一rubric・盲検で行う。E2(人間判定)/E3は未実施。
+- (c) ¥0、Production変更なし。出典: REPORT §101、`docs/pm/ng_root_cause_01/root_cause_draft.md`、`er052_output/open233_ng_root_cause_01/eval/`。
+
+## 2026-10-07 OPEN-233-CONTROL-CHECKER-POLYSEMY-PRODUCTION-PATH-TRIAL-01(Closeout、委任_05)
+- (a)【決定】事前登録判定=**CONDITIONAL**。ユーザー人間判定(2026-10-07): jb9k「テスト環境からAIが外へ流れ出した事実も報告されていません」=重大NG(台帳EVID-008の外部到達・不正アクセスと矛盾、読者に外へ出ていないと誤解させる)、Checkerによるqvqcタイトル書換え=NG・重大度は軽微(Checker由来の新規誤りとして別枠記録)。Rollback誤読0/10(累積0/22、95%上限12.7%)・Gate STOP 2/18・新規重大0・原価平均¥10.43/最大¥18.50/総額¥195.5。②重大あり記事1/18、④不要Rewrite 4/8(50%、unclear込み75%)=要注意。JAのみ残存軽微3。
+- (b)【Fable判定(a)〜(f)】(a)多義語Note(固定Note+旧引き継ぎ規則)はRollback誤読の予防に有効(0/22)だが曖昧→正の改善はなし(曖昧9/10)。Production採用候補だがNote供給源(既知多義fact登録方式等)が未設計のため採用提案はまだしない。(b)本番経路で、Writer初稿由来の重大1件をCheckerが検知しながらStage2が「ledger_scope→QUALITY」へ格下げして見逃した(否定・不在主張型)。(c)Checker RewriteがBLOCKINGのタイトル(構造要素)を1語置換して新規の主体誤りを作り、Recheckがタイトルを本文単位で照合せず検知できなかった(OPEN-238系failure mode再発)。(d)不要Rewrite率50%は要注意。(e)副所見: 過去TRIAL-04 Control/E2E_02は`--theme`にtopic.txtの内容でなくパス文字列を渡しており、過去結果との厳密比較は不可(影響未測定)。(f)Note系の保留Trial群(LEDGER-POLYSEMY-NOTE-TRIAL-03/04、META-ROLLBACK-MINIMAL-NOTE-TRIAL-01/02、META-ALLFACT-NOTE-ENT-TRIAL-01、META-ALLFACT-NOTE-E2E-TRIAL-02、E2E-STAGEWISE-NG-AUDIT-01、NOTE-TRANSFER-MATRIX-TRIAL-01、LEDGER-POLYSEMY-NOTE-DESIGN-01、LEDGER-CLARITY-DESIGN-01、LEDGER-CLARITY-P-TRIAL-01)は本Trialの結果で上書き(SUPERSEDED/DEFERRED)。
+- (c)【未決】次方向はユーザー判断待ち。Production変更なし、`APPROVED_FOR_PRODUCTION`なし、Checker全体は未配線・残11 run停止継続。新Open Item: 21節分類で(iii)のみC=OPEN-240を新規登録、(i)(iv)=B・(ii)=Aは既存行へ追記(`docs/pm/control_checker_polysemy_trial_01/open_item_check.md`)。
+- 根拠: N=18の範囲の事実で安全の証明ではない。実費¥195.5(本日累計≈¥630)。出典: REPORT §102、`er052_output/open233_control_checker_polysemy_trial_01/eval/{SUMMARY_CCP.md,HUMAN_REVIEW_RESULT.md,RCA_jb9k_qvqc.md}`。

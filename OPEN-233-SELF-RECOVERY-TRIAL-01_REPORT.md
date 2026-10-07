@@ -5529,3 +5529,91 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 
 ### §100-11 参照
 - `er052_output/open233_b3_trial_01/eval/{SUMMARY_STAGE2.md,aggregate_stage2.json,STAGE1_BRIEF_CHECK.md,STAGE2_RUN_CHECK.md,writer_gate_stop_summary.md}`、`docs/pm/b3_trial_01/{design_01.md,eval_rubric.md,blinding.md}`、`docs/pm/b3_brief_structure_hypothesis_01.md`。
+
+## §101 OPEN-233-NG-ROOT-CAUSE-ANALYSIS-01(前回NG多発の原因系分析、2026-10-07)
+
+### §101-1 目的
+- 前回(E2E_02等)のNG多発と、B3 Trial(V0)での重大0・軽微少の差が「改善」か「測定・条件差」かを、既存成果物の再採点と工程別分解で切り分ける(¥0、API無し、Production変更なし)。Fable最終判断(結論採用)・ユーザー報告済み。
+
+### §101-2 3系統の証拠
+- (A) 盲検再採点27記事(従来5/P2 10/B3 V0 12、評価者3名、B3 rubric、MAP開封2026-10-07 17:50頃、評価JSON未修正)。出典 `er052_output/open233_ng_root_cause_01/eval/SUMMARY_RCA.md`・`aggregate_rca.json`。
+- (B1) 条件差分表(`conditions_diff.md`)、(B2) 工程別NG出所分解(`ng_origin_by_stage.md`)。
+
+### §101-3 再採点結果(同じ物差し)
+| 出所 | N | 重大(全工程) | 軽微(全工程)/記事 | 軽微(JA/EN最終)/記事 | 軽微(EN)/記事 | 保留/記事 |
+|---|---|---|---|---|---|---|
+| E2E_02 従来(Note無・Checker有) | 5 | 0 | 7 / 1.40 | 3 / 0.60 | 2 / 0.40 | 0.80 |
+| E2E_02 P2(全fact Note・Checker有) | 10 | 1 | 8 / 0.80 | 7 / 0.70 | 6 / 0.60 | 1.10 |
+| B3 V0(現行brief・Checker無) | 12 | 0 | 7 / 0.58 | 7 / 0.58 | 7 / 0.58 | 0.67 |
+
+- 同じ15記事の元評価(⑤b)対再採点: 従来21→3、P2 61→8、合計82→11(約7.5倍)。評価者別最大差2.2倍、同一rubricの2インスタンス間差約1.3倍(B3 V0 12記事)。重大0件の95%上限は27記事0/27で約11%、B3全55記事0/55で約5%、V0単独0/12で約25%。
+
+### §101-4 E1: 元82項目の線引き/見落とし突合(単独LLM判断・人間未確認)
+- 再採点でNG 13件(16%)・保留として記録 5件(6%)・未検出 64件(78%)。出所別: 従来21件=NG 2/保留 1/未検出 18、P2 61件=NG 11/保留 4/未検出 46。曖昧な対応8件をどちらへ倒しても未検出は73〜83%。未検出が「評価者が非NGとした線引き」か「見落とし」かは記録上区別できない。元の重大4件は、重大一致2(89wf、1件に統合)・軽微へ降格1・未検出1(比喩)。
+- 出典 `er052_output/open233_ng_root_cause_01/eval/E1_item_alignment.md`。E2(人間判定)/E3(同15記事の元eval_template再採点またはpre_checker_en再採点)は未実施。
+
+### §101-5 Opus任意レビューM1〜M4反映後の結論
+- 原因系の順位: (1) H-A 測定手順一式の差(rubric・評価者・指示文・盲検・NG/保留の線引き。rubricと評価者は分離不能。どちらが真値に近いかは未検証、再採点の見落とし実例あり)[M1/M3]、(2) H-E 評価範囲(JAのみ残存を重大計上、重大 ⑤a 1→⑤b 4。JAが学習者に届くか不明のため「測定の産物」と断定しない)[M4]、(3) H-G テーマ差(H-Aの下位)、(4) H-D JA R2段階(R2初出0〜22%、増幅段階)、(5) H-C Rewrite由来(新規2/84=2.4%、選択交絡)、(6) H-B Note介入(判定不能)、(7) H-F Gate STOP除外(V0基準では不支持)。
+- 「前回が過大だった」とは言わない。従来≥P2≥V0の方向は全評価者で同じだが、N=5/10/12では差を検出できず、今回の低NGは「条件改善とも同等とも言えない」[M2]。V0の重大0(Checker無)はChecker不要の根拠にならない(P2でChecker/Rewrite前のEN重大5件のうち4件がRewriteで修正)[M4]。
+- 含意(候補): 件数比較は同一rubric・盲検の値で行う。評価範囲(主指標=EN、副指標=JA残存)を事前定義で固定する。Note/brief介入のTrialは測定を固めるまで優先度は低い(効果がないとは言えない)。
+
+### §101-6 限界
+- N: 従来5/P2 10/V0 12、テーマ別は1〜2記事。評価は単独LLM(3名)、人間確認なし、再現率(見落とし)未検証。評価者と出所・テーマが交絡。元評価と再採点でrubric・評価者が同時に変わる。E2E_02のENはRewrite後、V0はChecker無で非対称(公平比較はR0のみ)。B2機序ラベルは事後付与。
+
+### §101-7 費用
+- ¥0(既存成果物の再採点・集計のみ、Production変更なし)。
+
+### §101-8 参照
+- `docs/pm/ng_root_cause_01/root_cause_draft.md`、`docs/pm/opus_l2_review_ng_root_cause_01.md`、`er052_output/open233_ng_root_cause_01/eval/{SUMMARY_RCA.md,E1_item_alignment.md,aggregate_rca.json}`。
+
+## §102 OPEN-233-CONTROL-CHECKER-POLYSEMY-PRODUCTION-PATH-TRIAL-01(本番経路Trial、2026-10-07)
+
+### §102-1 ユーザー決定・目的
+- 目的: (1) 固定最小Note(旧Note規則abd16d9a、Meta HC-012)によるRollback誤読のN増し、(2) Control+Checker構成の本番経路(未パッチProduction関数`runner.run_instance`、Writerは`er019.main()`をDEVラッパー経由)でのネガ確認。Trial(DEV)、Production変更なし。
+
+### §102-2 構成・事前登録
+- Meta nb 10/他4テーマ(hormuz、space_weapons、sewer、ai_control)control各2=18 run、単層4並列、モデル gpt-6-luna、スイッチ41件はE2E_02と一致、`--theme`はtopic.txtの内容、台帳sha固定でresearch 0回。事前登録=`docs/pm/control_checker_polysemy_trial_01/preregistration_01.md`(指標①〜⑦と総合判定規則)。
+
+### §102-3 run結果
+- 18/18完走(Writer内部Gate STOP 1回目2、同枠再実行で完走、infra連続失敗0、メモリ事故なし)。実費: 完了18本¥187.79(平均¥10.43・最大¥18.50)、失敗試行込み¥195.5。Meta Note到達10/10(rep10 249jはNote位置不良)。Checker final_state: RESOLVED系17、STAGE4_ESCALATION 1(space_weapons 4mjq)。出典 `er052_output/open233_control_checker_polysemy_trial_01/runs/RUN_CHECK.md`。
+
+### §102-4 盲検評価・人間判定・事前登録判定
+- 評価: 評価者A/B/C(各6記事)+rollback_X(Meta 10件)、MAP開封2026-10-07 20:21、評価JSON未修正。Rollback JA R2は正1/曖9/誤0、累積(過去12+今回10=22)正4/曖18/誤0。
+- 人間判定(2026-10-07): ai_control jb9k「テスト環境からAIが外へ流れ出した事実も報告されていません」=**重大NG**。meta qvqcのCheckerタイトル書換え(「I Followed...」→「Meta Tested...」)=**NG・重大度は軽微**(Checker由来の新規誤りとして別枠記録)。他はユーザー異議なし(暫定維持、明示確認は2点のみ)。出典 `eval/HUMAN_REVIEW_RESULT.md`。
+
+| 指標 | 結果 | 判定 |
+|---|---|---|
+| ① Rollback誤読(JA R2) | 0/10、累積0/22(95%上限12.7%) | 合格 |
+| ② 重大あり記事 | 1/18(jb9k) | 条件付き |
+| ③ Gate STOP(1回目) | 2/18 | 懸念なし |
+| ④ 不要Rewrite率 | 4/8=50%(unclear込み6/8=75%) | 要注意 |
+| ⑤ Rewrite由来の新規重大/軽微 | 重大0/軽微2(タイトル主体誤り、qvqcタイトル曖昧化) | 合格 |
+| ⑥ 原価 | 平均¥10.43/最大¥18.50/総額¥195.5 | 合格 |
+| ⑦ JAのみ残存 | 軽微3(jb9k、qvqc、ua6f) | 参考 |
+| **総合** | **CONDITIONAL**(②=1/18、④要注意) | N=18の範囲の事実であり安全の証明ではない |
+
+- 軽微NG: 含む18記事で全工程25件(1.39/記事)、Rollback曖昧9件を除くと16件(0.89/記事)。評価者間差大(C 1.83、A 1.33、B 1.00)。比較値(B3 V0 0.58、E2E_02従来1.40)は評価者を揃えた比較ではなく参考値。
+
+### §102-5 RCA 2件(`eval/RCA_jb9k_qvqc.md`)
+- jb9k: 初出はWriter初稿R0(original/revision1/revision2とも同一文)。台帳EVID-008は外部到達・不正アクセスあり、自己持ち出し/意図的脱出なしのみ。Checkerはこの文を検知(Stage1がMAJOR、`ledger_scope`)したが、Stage2が`materiality=QUALITY`(basis=ledger_scope)へ格下げ、2nd opinionも同判断、cycle2は非ブロッキング判定を再利用しPASS系(RESOLVED_REWRITE_THEN_DOWNGRADE)。事実反転の重大性がscope評価で埋もれた。
+- qvqc: Stage2がタイトル(一人称体験はLedger外)をBLOCKING(unsupported_relationship)と判定、`structural_element_rewrite`で「I」→「Meta」に1語置換。actor_guard(ag1_strict)は`ok=true`、cycle2のstage2判定単位にtitleなし(`STRUCTURAL_PAIRS_TO_RECHECK=true`であったにもかかわらず)で、Recheckは主体照合を行っていない。OPEN-238系(Rewriteが新規の誤りを作りRecheckが拾わない)の再発。
+
+### §102-6 Fable判定(a)〜(f)
+- (a) 多義語Note(固定Note+旧引き継ぎ規則)は「Rollback誤読の予防」に有効(0/22)。曖昧→正への改善効果はなし(曖昧9/10)。Production採用候補だが、Noteの供給源(既知多義factの登録方式等)が未設計のため採用提案はまだしない。
+- (b) Control+Checker本番経路で、Writer初稿由来の重大1件をCheckerが検知しながらStage2が「ledger_scope→QUALITY」へ格下げして見逃した(否定・不在主張型)。
+- (c) Checker RewriteがBLOCKING判定したタイトル(構造要素)を1語置換し新規の主体誤りを作り、Recheckはタイトルを本文単位で照合しないため検知できず(OPEN-238系failure modeの再発)。
+- (d) 不要Rewrite率50%は要注意。
+- (e) 副所見: 過去TRIAL-04 Control/E2E_02では`--theme`にtopic.txtの内容ではなくパス文字列が渡っており(runnerは文字列のまま`{topic}`へ埋め込む)、過去結果との厳密比較は不可。影響は未測定(brief生成入力のみ差が出る)。
+- (f) 多義語Noteに関わる保留Trial群(LEDGER-POLYSEMY-NOTE-TRIAL-03/04、META-ROLLBACK-MINIMAL-NOTE-TRIAL-01/02、META-ALLFACT-NOTE-ENT-TRIAL-01、META-ALLFACT-NOTE-E2E-TRIAL-02、E2E-STAGEWISE-NG-AUDIT-01、NOTE-TRANSFER-MATRIX-TRIAL-01、LEDGER-POLYSEMY-NOTE-DESIGN-01、LEDGER-CLARITY-DESIGN-01、LEDGER-CLARITY-P-TRIAL-01)は本Trialの結果で上書き(SUPERSEDED/DEFERRED)とし、次方向はユーザー判断待ち。Production変更なし。
+
+### §102-7 制約
+- N=18(Meta 10+他4テーマ各2)、単独LLM評価+人間確認はjb9k/qvqcの2件のみ、評価者効果が大きい、タイトル以外のRollback等は暫定維持。V0/E2E_02従来との比較は`--theme`条件差と評価者非同一のため参考値。Checker全体は未配線(Production変更なし)・残11 run停止継続。
+
+### §102-8 費用
+- 本Trial ¥195.5(失敗試行込み)。本日累計(B3 Trial ¥434.5+RCA ¥0+本Trial ¥195.5)≈¥630。
+
+### §102-9 Open Item分類(21節)
+- 新規候補(i)〜(iv)をA/B/Cへ分類: (i)=B、(ii)=A、(iii)=C(新規OPEN-240)、(iv)=B。詳細 `docs/pm/control_checker_polysemy_trial_01/open_item_check.md`。
+
+### §102-10 参照
+- `er052_output/open233_control_checker_polysemy_trial_01/{eval/SUMMARY_CCP.md,eval/HUMAN_REVIEW_RESULT.md,eval/RCA_jb9k_qvqc.md,runs/RUN_CHECK.md,provenance.json,eval/aggregate_ccp.json}`、`docs/pm/control_checker_polysemy_trial_01/{plan_01.md,preregistration_01.md,open_item_check.md}`。
