@@ -20206,3 +20206,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (b)【Fable判定(a)〜(f)】(a)多義語Note(固定Note+旧引き継ぎ規則)はRollback誤読の予防に有効(0/22)だが曖昧→正の改善はなし(曖昧9/10)。Production採用候補だがNote供給源(既知多義fact登録方式等)が未設計のため採用提案はまだしない。(b)本番経路で、Writer初稿由来の重大1件をCheckerが検知しながらStage2が「ledger_scope→QUALITY」へ格下げして見逃した(否定・不在主張型)。(c)Checker RewriteがBLOCKINGのタイトル(構造要素)を1語置換して新規の主体誤りを作り、Recheckがタイトルを本文単位で照合せず検知できなかった(OPEN-238系failure mode再発)。(d)不要Rewrite率50%は要注意。(e)副所見: 過去TRIAL-04 Control/E2E_02は`--theme`にtopic.txtの内容でなくパス文字列を渡しており、過去結果との厳密比較は不可(影響未測定)。(f)Note系の保留Trial群(LEDGER-POLYSEMY-NOTE-TRIAL-03/04、META-ROLLBACK-MINIMAL-NOTE-TRIAL-01/02、META-ALLFACT-NOTE-ENT-TRIAL-01、META-ALLFACT-NOTE-E2E-TRIAL-02、E2E-STAGEWISE-NG-AUDIT-01、NOTE-TRANSFER-MATRIX-TRIAL-01、LEDGER-POLYSEMY-NOTE-DESIGN-01、LEDGER-CLARITY-DESIGN-01、LEDGER-CLARITY-P-TRIAL-01)は本Trialの結果で上書き(SUPERSEDED/DEFERRED)。
 - (c)【未決】次方向はユーザー判断待ち。Production変更なし、`APPROVED_FOR_PRODUCTION`なし、Checker全体は未配線・残11 run停止継続。新Open Item: 21節分類で(iii)のみC=OPEN-240を新規登録、(i)(iv)=B・(ii)=Aは既存行へ追記(`docs/pm/control_checker_polysemy_trial_01/open_item_check.md`)。
 - 根拠: N=18の範囲の事実で安全の証明ではない。実費¥195.5(本日累計≈¥630)。出典: REPORT §102、`er052_output/open233_control_checker_polysemy_trial_01/eval/{SUMMARY_CCP.md,HUMAN_REVIEW_RESULT.md,RCA_jb9k_qvqc.md}`。
+
+## 2026-10-07 OPEN-233-DANGER-SENTENCE-RELATION-CHECK-STAGE0-01(ユーザー決定記録、委任_A)
+- (a)【ユーザー決定1=(A)】Opus独立技術レビュー(`docs/pm/opus_l2_review_stabilization_strategy_01.md`)の推奨経路を採用: Writerは単一パス自由生成のまま、危険文限定の関係検査+構造要素のRewrite置換禁止+否定・不在・全称・方向・主体の格下げ禁止+Writer自己注釈(振り分け用)+台帳側の動詞正規化。Fable当初案(2段Writer+全文関係diff)は撤回。
+- (b)【ユーザー決定2】段階0開始を承認。ユーザーは約8時間不在。その間、予算¥1000でFable主体の自律改善ループ(段階0→方向が違えばOpusレビュー→新規計画→最初のテスト→OKなら進む/ダメなら再検証・再レビュー)。この間Opusレビュー回数は無制限。
+- (c)【Fableの運用条件】Production変更・仕様原則変更・Safetyトレードオフは行わずSTOP/面白さの主指標(ユーザー盲検読み比べ)は夜間は取れないため代理指標のみ・非劣性未確認と明記/重大候補は人間確認パックへ/並列4単層以下/¥950で停止/各段階commit。
+- (d)【Status】Production変更なし、`APPROVED_FOR_PRODUCTION`なし。本記録は決定の転記で、委任_Aは再分類(`er052_output/open233_stage0_01/reclass/`、140件+過去重大8件、dev/held-out分割)と面白さ代理指標v1(暫定・未承認、`docs/pm/stage0_01/narrative_elements_v1.md`)を作成(¥0)。
+- 出典: `docs/pm/opus_l2_review_stabilization_strategy_01.md`、`er052_output/open233_stage0_01/reclass/RECLASS.md`。
