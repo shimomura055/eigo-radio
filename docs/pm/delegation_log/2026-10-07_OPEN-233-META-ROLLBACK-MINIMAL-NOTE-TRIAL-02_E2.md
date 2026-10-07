@@ -1,0 +1,1 @@
+# 委任_E2 OPEN-233-META-ROLLBACK-MINIMAL-NOTE-TRIAL-02: ユーザー指示により代替run(rep17-19)を集計除外するSSOT訂正。¥0、API呼出なし、run成果物変更なし。対象: REPORT §92/DECISION_LOG末尾/OPEN_ITEMS OPEN-237/評価ファイル/ACTIVE_TASK。到達上限USER_DECISION_REQUIRED維持。禁止: run実行・API支出・Production変更・CURRENT_SPEC編集・git add -A・判定ラベル変更。
