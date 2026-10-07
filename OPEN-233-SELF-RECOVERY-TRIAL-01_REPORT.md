@@ -5403,3 +5403,43 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 - USER_DECISION_REQUIRED。修正未実施、Production変更なし(ユーザー承認+Opusレビュー前提)。
 ### §96-7 参照
 - `docs/pm/open238_precheck_mislink_diag_01.md`、`er052_output/open233_allfact_note_e2e_02/eval/stagewise/notes_to_error_trace.md`(notes→誤り変換追跡: 直接証拠0件、仮説不支持)、`docs/pm/delegation_log/2026-10-07_OPEN-238-PRECHECK-MISLINK-DIAG-01_*`。
+
+
+## §97 OPEN-233-NOTE-TRANSFER-MATRIX-TRIAL-01(転記形式×多義語注意の6条件マトリックス、2026-10-07)
+
+### §97-1 設計
+- 目的: 前回P2(逐語notes+多義注意)の誤り多発が「Note転記の形式」か「多義語注意」かを切り分ける。brief本文を3テーマ(meta/hormuz/sewer)ごとに1本へ固定し、T0=転記なし/T1=要約転記/T2=逐語転記 x M0=多義語注意なし/M1=あり の6条件、N=2、計36記事。Checkerなし(ENのb1bが最終)。
+- DEV runnerに「固定brief開始」「Checkerなし」オプションを追加(Trial専用、Production経路不使用、test PASS)。brief・条件一覧: `er052_output/open233_note_transfer_matrix_01/briefs/`、rubric: `docs/pm/note_transfer_matrix_01/eval_rubric.md`(直前監査と同一基準)。
+
+### §97-2 実行
+- Phase B 36枠: EN完成33/STOP3(commit 2c3cd5a5)。停止2枠(hormuz T2M0 rep1 / sewer T0M1 rep2)は各1回再実行して完走(commit 263cddb9)。hormuz T0M0 rep1はdriverの誤判定で失敗扱いとなっていたが1回目成果物(`rep1_failed_a1`)が正常のため採用(2回目は不採用)。結果36/36。
+- 実費≈¥268.8/上限¥600(`er052_output/open233_note_transfer_matrix_01/cost.json`)。API呼び出しなし(評価・集計工程は¥0)。評価は単独判定・人間確認なし。
+
+### §97-3 6条件表(1記事当たり 重大/軽微、各6記事=3テーマ合算)
+| 条件 | ①JA | ②EN | ★correct/ambiguous/misread |
+|---|---|---|---|
+| T0M0 転記なし | 0.00/0.67 | 0.17/0.67 | 12/1/0 |
+| T0M1 | 0.00/0.67 | 0.00/0.67 | 13/1/0 |
+| T1M0 従来相当 | 0.00/0.33 | 0.00/0.33 | 13/1/0 |
+| T1M1 | 0.00/0.50 | 0.00/0.67 | 13/0/0 |
+| T2M0 | 0.00/0.50 | 0.00/0.67 | 14/0/0 |
+| T2M1 P2相当 | 0.00/1.33 | 0.00/1.67 | 14/0/0 |
+- 全36本: ①JA 0/0.67、②EN 0.03/0.78(重大1件)。★fact重大誤読(misread)は0。
+
+### §97-4 主効果・所見・仮説
+- T別(EN軽微/記事): T0 0.67/T1 0.50/T2 1.17。M別: M0 0.56/M1 1.00。T2M1が最多(1.67)で交互作用の可能性があるが、N=2/セルでrun揺れと区別できない。
+- 「福島県」型(台帳に県名なし・現実に正しい、sewer 6項目)を軽微から除くと、全36本のEN軽微は0.78→0.61、T2は1.17→0.83、T2M1は1.67→1.33(傾向は不変)。
+- 参考: 前回(STAGEWISE §4)の従来⑤a 0.0/3.8、P2⑤a 0.1/5.2に対し、brief固定の本Trialでは全6セルのEN軽微(最大1.67)がこれを下回る。標本・条件が異なり厳密比較ではない。
+- 仮説(未検証): Noteの形式より、brief本文の生成条件(notes除外台帳でB3がbriefを作る条件)が効いた可能性。根拠=meta HC-012が11/12本correct、前回P2で多発したhormuzの具体化が再現しない。brief固定のため本Trialでは直接検証していない。
+
+### §97-5 重大NG全件(1件)
+- hormuz-T0M0r2-01(ENのみ、HF-002、object): EN「Mr. Trump posted that for all cargo passing through the Strait of Hormuz, the United States would seek payment equal to 20 percent of the cost of providing safety and security.」(20%の対象が全貨物から安全確保費用へ入れ替わる。JAは正しい)。
+
+### §97-6 境界・保留
+- 境界: meta T2M1 rep2 EN「from employees」の主体ズレは軽微計上。保留(集計外)16件: meta 2/hormuz 9/sewer 5(多くはno_ng寄り、minor寄りはhormuz T1M0r1 EN曖昧、sewer 時制・範囲4件)。追補評価(hormuz T2M0 rep1、sewer T0M1 rep2)は各0/0・0/0(重大0・軽微0)。
+
+### §97-7 Status
+- **USER_DECISION_REQUIRED**(Fable判定理由: 条件間差が小さくN=2で採否を決められない。Production採用判断なし、`APPROVED_FOR_PRODUCTION`なし)。
+
+### §97-8 参照
+- `er052_output/open233_note_transfer_matrix_01/eval/{MATRIX_SUMMARY.md,matrix_summary.json,E_*.md,articles/}`、`docs/pm/note_transfer_matrix_01/{eval_rubric.md,aggregate_matrix.py,append_supplement.py,dangling_check.md}`、`docs/pm/delegation_log/2026-10-07_OPEN-233-NOTE-TRANSFER-MATRIX-TRIAL-01_D1.md`。commit faf6dd4a(Phase A)/2c3cd5a5/263cddb9。OPEN-237/238/239。

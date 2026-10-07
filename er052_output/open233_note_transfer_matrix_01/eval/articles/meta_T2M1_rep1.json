@@ -1,0 +1,60 @@
+{
+ "slug": "meta",
+ "cond": {
+  "T": "T2",
+  "M": "M1"
+ },
+ "rep": 1,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 2
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 2
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 1
+ },
+ "direction_facts": [
+  {
+   "fact_id": "MUSE-HC-012",
+   "label": "correct"
+  },
+  {
+   "fact_id": "MUSE-HC-014",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "meta-T2M1r1-01",
+   "text": "R2: 「まるで、舞台の主役が途中で交代していたような話です。」/ EN: 'the main actor in a play had been replaced halfway through'(AI→人間の途中交代と読める。台帳未提示)",
+   "fact_id": "MUSE-HC-006",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": true,
+   "kind": "added_fact"
+  },
+  {
+   "id": "meta-T2M1r1-02",
+   "text": "R2: 「予定や買い物の内容、家族に関することなど、できれば知らない人には聞かれたくない話もあるでしょう。」(通話内容の具体例。台帳は『ユーザーの機微情報』のみ。ENも同旨)",
+   "fact_id": "MUSE-HC-010",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "added_fact"
+  }
+ ],
+ "pending": [],
+ "notes": "01はR0になく追加=退行。02はR0に同種(予定や買い物、家族のこと『かもしれない』)があり、R2で断定的に変形しただけなので退行としない。 R0の軽微件数=0。人間確認なしの単独判定。"
+}

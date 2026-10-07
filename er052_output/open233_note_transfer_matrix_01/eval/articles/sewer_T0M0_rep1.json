@@ -1,0 +1,52 @@
+{
+ "slug": "sewer",
+ "cond": {
+  "T": "T0",
+  "M": "M0"
+ },
+ "rep": 1,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 1
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 1
+ },
+ "direction_facts": [
+  {
+   "fact_id": "F-010",
+   "label": "not_selected"
+  },
+  {
+   "fact_id": "F-011",
+   "label": "not_selected"
+  },
+  {
+   "fact_id": "F-012",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "sewer-T0M0r1-01",
+   "text": "R2(JA): 「保守点検と清掃とは別に、毎年一回の法定検査もあります。」 / EN: \"an inspection required by law is also needed once a year.\" (F-019は7条検査=使用開始後3か月経過後から5か月以内、11条検査=毎年1回。法定検査全体を毎年1回と読ませ範囲が曖昧)",
+   "fact_id": "F-019",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "kind": "scope",
+   "regression": true
+  }
+ ],
+ "pending": [],
+ "notes": "R0は『法定検査もあります』のみで正しかった。R1/R2で『毎年一回』が加わりNG化(退行)。F-012は『区域・計画の見直し』と読め correct。F-010はbriefに無く not_selected。単独評価・人間確認なし。"
+}

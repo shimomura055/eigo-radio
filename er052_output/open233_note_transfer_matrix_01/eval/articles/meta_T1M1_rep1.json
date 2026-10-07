@@ -1,0 +1,67 @@
+{
+ "slug": "meta",
+ "cond": {
+  "T": "T1",
+  "M": "M1"
+ },
+ "rep": 1,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 2
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 1
+ },
+ "direction_facts": [
+  {
+   "fact_id": "MUSE-HC-012",
+   "label": "correct"
+  },
+  {
+   "fact_id": "MUSE-HC-014",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "meta-T1M1r1-01",
+   "text": "R2: 「ユーザーがMuseに用事を頼むと、電話の舞台裏で人間のスタッフにバトンタッチされるわけです。ロボットに荷物を運ばせたら、最後の階段だけ人間が走って届けるような展開です。」(人間が最後だけ担当する構図は台帳未提示で、他記事は『最後だけではない』と注意する点。ENも同旨)",
+   "fact_id": "MUSE-HC-006",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": true,
+   "kind": "added_fact"
+  },
+  {
+   "id": "meta-T1M1r1-02",
+   "text": "EN: 'Meta’s AI phone service secretly used human workers for some calls, raising privacy concerns.'(In one line。台帳は『適切な開示なし』であり『secretly』は過剰)",
+   "fact_id": "MUSE-HC-012",
+   "severity": "minor",
+   "stage": {
+    "s1": false,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "added_fact"
+  }
+ ],
+ "pending": [
+  {
+   "id": "meta-T1M1r1-P1",
+   "text": "「電話の世界では、AIであることが長所になるとは限らなかったようです」",
+   "reason": "HC-008(成功率95-98%)とHC-009(切断1事例)の並置から一般化する含み。断定でなく『ようです』",
+   "leaning": "軽微(不計上)"
+  }
+ ],
+ "notes": "バトンタッチ記述はR0になく、R2で追加=退行。成功率はHC-008のnotes通り『範囲が示された可能性』で記述(正)。 R0の軽微件数=0。人間確認なしの単独判定。"
+}

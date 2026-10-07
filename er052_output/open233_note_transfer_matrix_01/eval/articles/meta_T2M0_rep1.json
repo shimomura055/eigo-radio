@@ -1,0 +1,60 @@
+{
+ "slug": "meta",
+ "cond": {
+  "T": "T2",
+  "M": "M0"
+ },
+ "rep": 1,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 2
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "MUSE-HC-012",
+   "label": "correct"
+  },
+  {
+   "fact_id": "MUSE-HC-014",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "meta-T2M0r1-01",
+   "text": "R2: 「AIが電話をかけるサービスのはずなのに、舞台の途中で人間が登場する。」/ EN: 'a human appeared in the middle of the show'(通話の途中でAIから人間に交代、と読める。台帳未提示)",
+   "fact_id": "MUSE-HC-006",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "added_fact"
+  },
+  {
+   "id": "meta-T2M0r1-02",
+   "text": "EN: 'For part of a call, the person who handled the conversation ... was not AI.'(JA『電話の一部で』=一部の電話、をENは『通話の一部の間』と読める文にした。範囲変更)",
+   "fact_id": "MUSE-HC-006",
+   "severity": "minor",
+   "stage": {
+    "s1": false,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "scope"
+  }
+ ],
+ "pending": [],
+ "notes": "R0『AIがうまく進められない時に助っ人』と同型のため上記01は退行としない。02はEN新規。 R0の軽微件数=1。人間確認なしの単独判定。"
+}

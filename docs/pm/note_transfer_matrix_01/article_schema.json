@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "note_transfer_matrix article record (1 article)",
+  "type": "object",
+  "required": ["slug","cond","rep","stages","regressions","direction_facts","ng_items","pending","notes"],
+  "properties": {
+    "slug": {"type":"string","enum":["meta","hormuz","sewer"]},
+    "cond": {"type":"object","required":["T","M"],"properties":{"T":{"enum":["T0","T1","T2"]},"M":{"enum":["M0","M1"]}}},
+    "rep": {"type":"integer","enum":[1,2]},
+    "stages": {"type":"object","required":["s1_ja","s2_en"],"properties":{
+      "s1_ja":{"$ref":"#/definitions/counts"},
+      "s2_en":{"$ref":"#/definitions/counts"}}},
+    "regressions": {"$ref":"#/definitions/counts"},
+    "direction_facts": {"type":"array","items":{"type":"object","required":["fact_id","label"],"properties":{
+      "fact_id":{"type":"string"},
+      "label":{"enum":["correct","ambiguous","misread","not_selected"]}}}},
+    "ng_items": {"type":"array","items":{"type":"object","required":["id","text","fact_id","severity","stage","kind"],"properties":{
+      "id":{"type":"string"},
+      "text":{"type":"string"},
+      "fact_id":{"type":"string"},
+      "severity":{"enum":["major","minor"]},
+      "stage":{"type":"object","required":["s1","s2"],"properties":{"s1":{"type":"boolean"},"s2":{"type":"boolean"}}},
+      "regression":{"type":"boolean","description":"R0->R2退行ならtrue(省略=false)"},
+      "kind":{"enum":["subject","object","scope","time","negation","causal","added_fact"]}}}},
+    "pending": {"type":"array","items":{"type":"object"}},
+    "notes": {"type":"string"}
+  },
+  "definitions": {
+    "counts": {"type":"object","required":["major","minor"],"properties":{"major":{"type":"integer","minimum":0},"minor":{"type":"integer","minimum":0}}}
+  }
+}

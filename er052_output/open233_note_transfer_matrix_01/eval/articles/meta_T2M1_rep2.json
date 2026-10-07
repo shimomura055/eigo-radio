@@ -1,0 +1,60 @@
+{
+ "slug": "meta",
+ "cond": {
+  "T": "T2",
+  "M": "M1"
+ },
+ "rep": 2,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 2
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "MUSE-HC-012",
+   "label": "correct"
+  },
+  {
+   "fact_id": "MUSE-HC-014",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "meta-T2M1r2-01",
+   "text": "R2: 「AIだけでなく、訓練を受けた人間の契約スタッフが対応し、相手とのやり取りを完了させていました。」/ EN: 'not only AI but also trained human contract workers handled them'(台帳は人間がかけて完了。AI併走の協働型と読める)",
+   "fact_id": "MUSE-HC-006",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "subject"
+  },
+  {
+   "id": "meta-T2M1r2-02",
+   "text": "EN: 'There were privacy concerns that information might be unintentionally shared from employees with contract workers.'(共有されるのはユーザーの機微情報。『from employees』は主体の取り違え。軽微に倒した境界例=重大寄り)",
+   "fact_id": "MUSE-HC-010",
+   "severity": "minor",
+   "stage": {
+    "s1": false,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "subject"
+  }
+ ],
+ "pending": [],
+ "notes": "01はR0『途中から対応』と同型(退行でない)。02はEN新規で、前の段落でuser情報と明記されているため軽微に倒したが、重大寄りの境界。 R0の軽微件数=1。人間確認なしの単独判定。"
+}

@@ -1,0 +1,58 @@
+{
+ "slug": "sewer",
+ "cond": {
+  "T": "T0",
+  "M": "M0"
+ },
+ "rep": 2,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 1
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "F-010",
+   "label": "not_selected"
+  },
+  {
+   "fact_id": "F-011",
+   "label": "not_selected"
+  },
+  {
+   "fact_id": "F-012",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "sewer-T0M0r2-01",
+   "text": "R2(JA): 「喜多方市は、この作戦で汚水処理の構想を見直した。」(『この作戦』=住宅密度で方式選択する環境省の考え方)。台帳F-012は見直しの理由を老朽化による維持管理費増・人口減少による使用料収入減とし、環境省の方式比較に基づくとは書かない。EN: \"Kitakata City reviewed its wastewater treatment plan based on this idea.\"",
+   "fact_id": "F-012",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "kind": "causal"
+  }
+ ],
+ "pending": [
+  {
+   "id": "sewer-T0M0r2-P1",
+   "text": "EN In one line: \"Kitakata is turning to household septic tanks as its population declines\"",
+   "reason": "喜多方は集合処理区域以外のみ個別処理、理由も人口減少のみでなく老朽化も。要約として許容範囲か境界",
+   "leaning": "minor(scope)"
+  }
+ ],
+ "notes": "R0にも『この考え方で』があり、形を変えただけで退行ではない。F-012は区域・計画見直しとして correct。単独評価・人間確認なし。"
+}

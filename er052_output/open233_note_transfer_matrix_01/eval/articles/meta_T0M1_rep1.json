@@ -1,0 +1,48 @@
+{
+ "slug": "meta",
+ "cond": {
+  "T": "T0",
+  "M": "M1"
+ },
+ "rep": 1,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 1
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "MUSE-HC-012",
+   "label": "ambiguous"
+  },
+  {
+   "fact_id": "MUSE-HC-014",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "meta-T0M1r1-01",
+   "text": "R2: 「会社は機能をいったん元に戻し、当面は公開を止めます。」(HC-012はMeta社内の人間コンシェルジュ機能のロールバック。『公開を止める』は未公開の社内テストに対し公開停止と読め、サービス全体停止と誤読されうる。ENも'will not make it public for the time being')",
+   "fact_id": "MUSE-HC-012",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "scope"
+  }
+ ],
+ "pending": [],
+ "notes": "R0にも同文あり(退行でない)。JA/EN同じ。HC-012は『機能』が直前のテストを指すため重大とはせず軽微(境界、軽微に倒した)。R0にあった『AIが苦手な場面を人が助ける』はR2で解消。 R0の軽微件数=2。人間確認なしの単独判定。"
+}

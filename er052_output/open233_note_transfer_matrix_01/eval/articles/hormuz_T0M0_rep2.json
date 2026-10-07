@@ -1,0 +1,67 @@
+{
+ "slug": "hormuz",
+ "cond": {
+  "T": "T0",
+  "M": "M0"
+ },
+ "rep": 2,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 0
+  },
+  "s2_en": {
+   "major": 1,
+   "minor": 0
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "HF-007",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-008",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-009",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-011",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-012",
+   "label": "not_selected"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "hormuz-T0M0r2-01",
+   "text": "EN: 「Mr. Trump posted that for all cargo passing through the Strait of Hormuz, the United States would seek payment equal to 20 percent of the cost of providing safety and security.」(台帳は全貨物への償還率20%(算定基礎は未明記)。ENは「安全確保費用の20%相当」と読め、20%の対象が貨物から費用へ入れ替わる。JA「安全と警備を提供する費用として、二十パーセントの償還を求める」は正しい。同記事ENは直後に算定方法の未提示を書き、内部でも不整合)",
+   "fact_id": "HF-002",
+   "severity": "major",
+   "stage": {
+    "s1": false,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "object"
+  }
+ ],
+ "pending": [
+  {
+   "id": "hormuz-T0M0r2-P1",
+   "text": "JA: 「市場が見ていたのは、発言の行方だけでなく、原油を運ぶ道の行方でした。」/EN one-line 「...because shipping dangers remained.」",
+   "reason": "相場の動因の解釈。ブリーフのstorylineおよび台帳HF-009 conditions(撤回以外の要因継続)に沿う。断定の強さのみ",
+   "leaning": "no_ng"
+  }
+ ],
+ "notes": "台帳とrubricのみで単独判定、人間確認なし。記事本文を先に判定後に条件ラベルを記録。HF-008はbrief未採用だが本文で言及(correct)。HF-011は言及有無でラベル。R2=revision2.md、EN=b1b/article.md。"
+}

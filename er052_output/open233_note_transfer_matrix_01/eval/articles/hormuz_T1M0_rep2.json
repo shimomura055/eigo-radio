@@ -1,0 +1,67 @@
+{
+ "slug": "hormuz",
+ "cond": {
+  "T": "T1",
+  "M": "M0"
+ },
+ "rep": 2,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 1
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "HF-007",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-008",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-009",
+   "label": "ambiguous"
+  },
+  {
+   "fact_id": "HF-011",
+   "label": "correct"
+  },
+  {
+   "fact_id": "HF-012",
+   "label": "not_selected"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "hormuz-T1M0r2-01",
+   "text": "JA: 「価格は一度だけ身を引き、すぐに高い場所へ戻ってきました。」「ここで価格も下がり続けるのかと思ったら」 / EN: 「Prices fell back once」「You might have thought prices would keep falling」(台帳は一時的な上げ幅縮小。価格が下落/下降基調だったと示唆。R0にも「下がり続ける」同種表現あり=退行でない)",
+   "fact_id": "HF-009",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "regression": false,
+   "kind": "scope"
+  }
+ ],
+ "pending": [
+  {
+   "id": "hormuz-T1M0r2-P1",
+   "text": "JA/EN: 記事掲載時点の「前日比で約2.6%高」",
+   "reason": "台帳は比較基準を明記しない(スナップショット)。R0にも同表現",
+   "leaning": "no_ng"
+  }
+ ],
+ "notes": "台帳とrubricのみで単独判定、人間確認なし。記事本文を先に判定後に条件ラベルを記録。HF-008はbrief未採用だが本文で言及(correct)。HF-011は言及有無でラベル。R2=revision2.md、EN=b1b/article.md。"
+}

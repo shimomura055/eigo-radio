@@ -20167,3 +20167,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - Status=USER_DECISION_REQUIRED。出典: REPORT §95、`er052_output/open233_allfact_note_e2e_02/eval/stagewise/STAGEWISE_SUMMARY.md`。
 
 - 2026-10-07 OPEN-238-PRECHECK-MISLINK-DIAG-01: 診断のみ(¥0、read-only)。決定事項=Fable Status判定USER_DECISION_REQUIRED。修正未実施・Production変更なし。原因(precheck分数語「a third party」の「a third」→33.3%偽陽性→number_mismatch→Stage2スキップBLOCKING→台帳値置換、他run再現0件)・修正案1〜3・推奨(案1+案2、案3は条件A)は`OPEN_ITEMS.md` OPEN-238行と`docs/pm/open238_precheck_mislink_diag_01.md`参照。
+
+## 2026-10-07 OPEN-233-NOTE-TRANSFER-MATRIX-TRIAL-01(転記形式×多義語注意の6条件マトリックスTrial)
+- (a)【決定】「Trial実施(ユーザー承認済み)」とFable Status判定(USER_DECISION_REQUIRED)のみ。Production採用・Production配線の決定なし。DEV runnerへの固定brief開始/Checkerなしオプション追加はTrial専用(Production経路不使用)。
+- (b)【事実確認】6条件(T0/T1/T2 x M0/M1)x3テーマx N=2=36本完走(brief本文固定、Checkerなし)。重大NG1件(hormuz T0M0 rep2 ENのみ)、1記事当たりEN軽微 T0 0.67/T1 0.50/T2 1.17、M0 0.56/M1 1.00、meta HC-012 11/12 correct。前回P2の多発は不再現(仮説: brief生成条件が主因、未検証)。実費≈¥268.8/上限¥600。
+- Status=USER_DECISION_REQUIRED(条件間差が小さくN=2で採否を決められない)。Production変更なし/Trial限定。出典: REPORT §97、`er052_output/open233_note_transfer_matrix_01/eval/MATRIX_SUMMARY.md`。

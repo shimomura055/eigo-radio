@@ -1,0 +1,62 @@
+{
+ "slug": "sewer",
+ "cond": {
+  "T": "T2",
+  "M": "M1"
+ },
+ "rep": 2,
+ "stages": {
+  "s1_ja": {
+   "major": 0,
+   "minor": 1
+  },
+  "s2_en": {
+   "major": 0,
+   "minor": 2
+  }
+ },
+ "regressions": {
+  "major": 0,
+  "minor": 0
+ },
+ "direction_facts": [
+  {
+   "fact_id": "F-010",
+   "label": "not_selected"
+  },
+  {
+   "fact_id": "F-011",
+   "label": "not_selected"
+  },
+  {
+   "fact_id": "F-012",
+   "label": "correct"
+  }
+ ],
+ "ng_items": [
+  {
+   "id": "sewer-T2M1r2-01",
+   "text": "R2(JA): 「福島県喜多方市は…」/ EN: \"Kitakata City in Fukushima Prefecture\"",
+   "fact_id": "F-012",
+   "severity": "minor",
+   "stage": {
+    "s1": true,
+    "s2": true
+   },
+   "kind": "added_fact"
+  },
+  {
+   "id": "sewer-T2M1r2-02",
+   "text": "EN: \"This is an estimated increase to about 1.6 times the current level.\" (JAは『約1.6倍になるという推計』、F-002は2018年度基準→2048年度。ENは基準を『現在』に置換)",
+   "fact_id": "F-002",
+   "severity": "minor",
+   "stage": {
+    "s1": false,
+    "s2": true
+   },
+   "kind": "time"
+  }
+ ],
+ "pending": [],
+ "notes": "R2でF-002(2018→2048年度約1.6倍の推計)が追加されたが、brief(採用6件)には無い。研究台帳から追加された疑い(brief外fact混入はNG判定対象外、PM判断用の注記)。F-002は推計・見込みとして正しく記載。F-012 correct。単独評価・人間確認なし。"
+}
