@@ -13,7 +13,12 @@ LED = "er052_output/open233_polysemy_trial_02/ledgers/{s}"
 MAXRERUN = int(os.environ.get("MAXRERUN", "8"))
 lock = threading.Lock()
 state = {"reruns": 0, "consec_fail": 0, "stop": None, "mem_event": False, "mem_runs": []}
-CUM_BASE = 55.49 + 68.27  # 段階1 + クラッシュ前段階2推定(保守的に二重計上を許容)
+# A6: 累計基準=オンディスク実測(brief+w1完了/失敗 ≈299)+クラッシュ前復元不能分推定20 ≈319。A5の二重計上は廃止。
+CUM_EST0 = 405.6  # A6b: 319 + A6実費86.6(オンディスク実測385.68-299.04)。削除したinfra失敗分4.66は含む(保守的)
+DISK0 = None  # main()開始時のオンディスクw1*合計(以後の増分のみ加算)
+GATE_TOKENS = ("[STOP]", "JA_RECHECK_REQUIRED", "JA_FACT_CHECK_STOP", "Advanced deviation")
+SKIP_FINAL = {"hormuz/V3/b1": "2回試行済み(A4/A5)・Writer内部Gate STOP", "meta/V5/b2": "A5で試行済み・Writer内部Gate STOP(Advanced deviation MAJOR)",
+              "meta/V5/b3": "2回試行済み・JA_FACT_CHECK_STOP", "hormuz/V5/b1": "A6で2回試行済み・Writer内部Gate STOP(LEDGER_DEVIATION MAJOR)", "meta/V5/b4": "ユーザー/Fable指示により再試行対象外(A5で試行済み)"}
 CUM_LIMIT = float(os.environ.get("CUM_LIMIT", "480"))
 RUN_LIMIT = 15.0
 MEMSIG = ("1455", "MemoryError")
@@ -27,7 +32,7 @@ def sha(p):
 def w1_costs():
     import glob
     tot = 0.0; mx = 0.0
-    for f in glob.glob(f"{RUNS}/*/nb/*/b*/w1/cost.json"):
+    for f in glob.glob(f"{RUNS}/*/nb/*/b*/w1*/cost.json"):
         try:
             c = json.load(open(f, encoding="utf-8"))["total_jpy"]
         except Exception:
@@ -41,8 +46,9 @@ def guard():
     if state["stop"] or os.path.exists(f"{B}/logs/STOP"):
         return True
     tot, mx = w1_costs()
-    if CUM_BASE + tot >= CUM_LIMIT:
-        state["stop"] = f"cum {CUM_BASE + tot:.2f} >= {CUM_LIMIT}"
+    cum = CUM_EST0 + tot - (DISK0 or 0.0)
+    if cum >= CUM_LIMIT:
+        state["stop"] = f"cum {cum:.2f} >= {CUM_LIMIT}"
     elif mx > RUN_LIMIT:
         state["stop"] = f"run max {mx:.2f} > {RUN_LIMIT}"
     elif state["consec_fail"] >= 3:
@@ -81,7 +87,8 @@ def run(slug, v, i):
     time.sleep(2)
     rec["status"] = "running"
     rec["brief_sha256"] = sha(brief)
-    for attempt in (1, 2):
+    first = 2 if os.path.isdir(f"{RUNS}/{slug}/nb/{v}/b{i}/w1_failed_a1") else 1  # 既にa1試行済みならa2のみ
+    for attempt in range(first, 3):
         ok = True
         for phase in ("phase1", "phase2"):
             if guard() or state["mem_event"]:
@@ -105,15 +112,18 @@ def run(slug, v, i):
                     return
                 ok = False
                 rec["attempts"][-1]["stop_tail"] = tail
+                rec["attempts"][-1]["failure_class"] = "WRITER_GATE_STOP" if any(m in tail for m in GATE_TOKENS) and rc != -1 else "INFRA"
                 break
         if ok:
             state["consec_fail"] = 0
             rec["status"] = "completed"; return
+        gate = rec["attempts"][-1].get("failure_class") == "WRITER_GATE_STOP"
         with lock:
-            state["consec_fail"] += 1
+            if not gate:
+                state["consec_fail"] += 1  # infra失敗のみカウント(Gate発火は観測結果)
         with lock:
-            if attempt == 2 or state["reruns"] >= MAXRERUN:
-                rec["status"] = "stopped"; return
+            if attempt == 2 or (not gate and state["reruns"] >= MAXRERUN):
+                rec["status"] = "WRITER_GATE_STOP" if gate else "stopped"; return
             state["reruns"] += 1
         _, out, _ = cmd_for(slug, v, i, "phase1")
         if os.path.exists(out):
@@ -127,6 +137,9 @@ def main():
     並列1で再発した場合は、並列1で1回だけ再試行し、以後STOP。完了済みrunはスキップ。"""
     from concurrent.futures import ThreadPoolExecutor
     level = min(int(os.environ.get("STAGE2_WORKERS", "4")), 4)
+    global DISK0
+    DISK0 = w1_costs()[0]
+    json.dump(SKIP_FINAL, open(f"{RUNS}/writer_gate_stop_final.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     history = []
     retry_at_1 = False
     while True:
@@ -134,11 +147,16 @@ def main():
         for v in VARS:
             for s_ in SLUGS:
                 for i in (1, 2, 3, 4):
+                    if f"{s_}/{v}/b{i}" in SKIP_FINAL:
+                        cells[f"{s_}/{v}/b{i}"] = {"slug": s_, "variant": v, "b": i, "status": "WRITER_GATE_STOP_FINAL_SKIPPED", "reason": SKIP_FINAL[f"{s_}/{v}/b{i}"]}
+                        continue
                     base = f"{RUNS}/{s_}/nb/{v}/b{i}/w1"
                     if os.path.exists(f"{base}/writer_run_summary.json") and os.path.exists(f"{base}/b1b/article.md"):
                         cells[f"{s_}/{v}/b{i}"] = {"slug": s_, "variant": v, "b": i, "status": "completed_skipped_existing"}
                     else:
                         todo.append((s_, v, i))
+        if "DRYRUN" in os.environ:
+            print("todo", len(todo), [k for k in cells if cells[k]["status"].startswith("WRITER")]); return
         if not todo or guard():
             break
         state["mem_event"] = False

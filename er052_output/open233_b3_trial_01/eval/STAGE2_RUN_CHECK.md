@@ -28,3 +28,12 @@
 ## 費用(オンディスク実測)
 - briefs 66件(V2 6含む)85.14円(段階1の55.49円を含む。段階2追加分29.65円)/ w1 38件189.87円(完了35件179.39円、平均5.13円、最大12.29円)/ w1_failed 5件24.03円。
 - 合計(段階1含む)約299.04円。クラッシュ前の復元不能分は不明(推定10-20円)。累計約299-320円(上限500、STOP480未到達)。
+
+## 委任_A6/A6b(2026-10-07 16:23-17:06)
+- A6(16:23-16:51): 21 run処理。完了14(V5 meta b1, hormuz b2-4, space b1-4、V6 meta b1-4, hormuz b1-3 の一部)・WRITER_GATE_STOP 1(hormuz V5 b1: JA_FACT_CHECK_STOP/LEDGER_DEVIATION、2回)。V5 hormuz b3は1回目Gate STOP→再試行で完了。その後ネット切断(openai.APIConnectionError / ENOTFOUND)でV6 hormuz b4・space_weapons b1-4がinfra失敗し、連続失敗guard(consec_fail=6)が発火→STOP。発火理由=ネット切断(Gate由来ではない)。
+- A6b手順0: driver/runnerは0件(memmon重複2系統のみ→停止して1本起動)。driver_stage2.pyの編集は完了・構文OK・DRYRUN正常。infra失敗5 runのw1/w1_failed_a1を削除(eval/deleted_A6b.json、失効cost ¥4.66)、logs/STOP削除、CUM_EST0=405.6に更新、同枠再実行(16:59-17:06)。
+- A6b結果: 5 run全て完了(reruns 0、consec_fail 0、STOPなし)。
+- 最終(eval/inventory_after_A6b.json): COMPLETE 55 / WRITER_GATE_STOP確定 5(V3 hormuz b1: Advanced deviation MAJOR->JA_RECHECK_REQUIRED、V5 meta b2: Advanced deviation MAJOR、V5 meta b3: JA_FACT_CHECK_STOP、V5 hormuz b1: JA_FACT_CHECK_STOP(LEDGER_DEVIATION)、V5 meta b4: A5でphase1後にGate停止・再試行対象外指示)。条件別: V0 12/12, V1 12/12, V3 11/12(hormuz b1欠), V5 8/12(meta b2,b3,b4・hormuz b1欠), V6 12/12。テーマ別欠: meta 3(全V5)、hormuz 2(V3 b1,V5 b1)、space 0。Gate種別: Advanced deviation/JA_RECHECK系 2(+b4不明1)、JA_FACT_CHECK_STOP 2。
+- メモリ(A6/A6b、eval/mem_samples.csv 172点): 同時python最大12、Private最大約1.29GB/プロセス、空き物理最小約3.7GB、空きコミット最小約8.7GB。WinError 1455/MemoryError再発0、降格0。
+- 費用(オンディスク実測): brief 85.14 + w1 296.42(58dir) + w1_failed 28.31 = 409.87円。A6+A6b実費≈110.8円(299.04->409.87)。+復元不能推定20 +削除分4.66 -> 累計約¥434.5(上限500、STOP480未達)。1 run最大¥12.29(上限15未達)。
+- infra失敗: ネット切断5 runのみ(削除・再実行済み)。Writer内部Gate緩和・無効化なし、Production変更なし。

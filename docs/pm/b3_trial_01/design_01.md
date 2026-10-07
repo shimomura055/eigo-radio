@@ -60,3 +60,6 @@ V1/V3: brief肥大・読みにくさ。V2: Storyline平板化。V5: fact数増(�
 ## 8 Dangling Reference Check
 実在確認済: `er019_family_x_storyline_b3_fact_selection_01.py`(build_user_prompt L148、指示5 L68)、`er052_open233_polysemy_nb_dev_01.py`(patched_b3 L85、--brief-md/--no-checker、out_dir規約: runs_root/<slug>/<variant=nb>/…を満たす `runs/<slug>/nb/<V>/b<i>/w<j>`)、台帳 `er052_output/open233_polysemy_trial_02/ledgers/{meta,hormuz,space_weapons}/control/research_ledger/verified_fact_ledger.txt`+`topic.txt`、`er052_output/open233_note_transfer_matrix_01/cost.json`、`docs/pm/b3_brief_structure_hypothesis_01.md`。新規: `er052_open233_b3_variant_dev_01.py`、`er052_output/open233_b3_trial_01/{tools/run_b3_variant.py,tests/test_b3_variant_dev_01.py,prompts/*.txt(18),PLAN.md}`。
 注意: hormuz topic.txtは「代替topic」(元theme未記録)。全条件共通のため比較には影響しないが記録。
+
+### 5-A6 WRITER_GATE_STOP の扱い(事前登録、追記: 2026-10-07 16:23、記事評価より前。期待順位・仮説は変更しない)
+- Writer内部Gate(Advanced deviation MAJOR未解決/JA_RECHECK_REQUIRED/JA_FACT_CHECK_STOP)でSTOPしたrunは「記事生成不能(WRITER_GATE_STOP)」として条件別に件数集計し、記事評価の母数から除外する。同符号判定は生成できた記事のみで行い、生成不能件数自体を副次指標(O1相当)として報告する。Gateの緩和・無効化はしない。
