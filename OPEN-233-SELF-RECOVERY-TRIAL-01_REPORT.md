@@ -5296,3 +5296,50 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §93-6 参照
 - `er052_output/open233_meta_allfact_note_ent_01/eval/E_allfact_ent_01.md`(記事全文収録)、`.../runs/meta/nb/p1|p2/rep1/`、`.../cost.json`、`.../ledger/FREEZE.json`。OPEN-237。
+
+## §94 OPEN-233-META-ALLFACT-NOTE-E2E-TRIAL-02(P2転記修正+E2E N=10、2026-10-07)
+
+### §94-1 Phase A(DEV runner転記規則の最小修正、Trial専用・Production経路不使用)
+- 規則文: 旧=「『注意(多義):』で始まる注意文を1行で引継ぎ」→新=「『注意:』で始まるnotes_for_writerの内容全体(『 / 』区切り全注意・後続『注意(多義):』含む)を省略・分割せずbrief該当fact直後へ」。test 13 PASS(新2件追加、旧1件の否定assertを規則文に合わせ微修正)。
+- 5テーマP2台帳(`er052_output/open233_allfact_note_e2e_02/ledger/FREEZE.json`): base sha=TRIAL-04 provenance一致、notes-only diff/fact_id/fact数 全PASS、空notes 0(fact数 meta15/hormuz12/space_weapons22/sewer20/ai_control16)。
+- Checker構成: 41キー全一致(`checker_switch_check.json`)。検証run(meta rep1)brief: 選択3fact、両Note到達3/3。checkpoint commit 1fefd10f。
+
+### §94-2 Phase B
+- 5テーマ×P2 2rep=10本、phase1/phase2/Checker完走。停止1回(sewer rep2 phase1 JA_FACT_CHECK_STOP/LEDGER_DEVIATION)→同枠1回再実行で完了。brief転記(両Note到達)10/10 ALL_PASS。
+
+### §94-3 評価表(独立評価、従来版=TRIAL-04 Control rep1。全文=`er052_output/open233_allfact_note_e2e_02/eval/SUMMARY.md`、summary json検算で齟齬なし)
+| run | Fact誤り(JA R2/EN最終) | ★分類 | 退行 | Checker誤許容 | Checker final/cycle/Rewrite |
+|---|---|---|---|---|---|
+| meta P2 r1 | 5 | HC-012 正 | 3 | 2 | REWRITE_THEN_DOWNGRADE/2/有 |
+| meta P2 r2 | 7 | HC-012 正, HC-014 曖昧 | 3 | 6 | 同/3/有 |
+| meta 従来 | 4 | HC-012 正 | 1 | 2 | 同/2/有 |
+| hormuz P2 r1 | 8 | HF-007 曖昧 | 4 | 6 | 同/3/有 |
+| hormuz P2 r2 | 10 | HF-007 正, HF-009 正 | 4 | 5 | 同/2/有 |
+| hormuz 従来 | 2 | HF-007/008/009 正 | 0 | 0 | STAGE2_DOWNGRADE/1/無 |
+| space P2 r1 | 1 | ★なし | 0 | 0 | STAGE2_DOWNGRADE/1/無 |
+| space P2 r2 | EN5/JA7 | ★なし(参考F-001 JA重大誤読) | 2 | 2 | REWRITE_THEN_DOWNGRADE/5/有(EN) |
+| space 従来 | EN2/JA3 | — | 0 | 0 | REWRITE_THEN_DOWNGRADE/3/有 |
+| sewer P2 r1 | 4 | F-012 曖昧 | 2 | 4 | STAGE2_DOWNGRADE/1/無 |
+| sewer P2 r2(再実行版) | 5 | F-010 正 | 3 | 3 | STAGE2_DOWNGRADE/1/無 |
+| sewer 従来 | 6 | F-012 正 | 1 | 3 | STAGE2_DOWNGRADE/1/無 |
+| ai_control P2 r1 | 6 | ★なし | 3 | 1 | REWRITE_THEN_DOWNGRADE/3/有 |
+| ai_control P2 r2 | 4 | CONTROL-003 正 | 1 | 3 | 同/4/有 |
+| ai_control 従来 | 5 | ★なし | 1 | 3 | STAGE2_DOWNGRADE/1/無 |
+
+### §94-4 重大3件(読者を誤らせる水準、全文)
+1. meta P2 r2 JA「ただし、主役になった人間が知らされていなかった。」(開示対象を契約スタッフ本人に取り違え。ENはCheckerが別の根拠なし表現へ書換)
+2. space_weapons P2 r2 JA「つまり今回の発表は、「衛星を狙う兵器を配備した」と単純に読む話ではありません。宇宙、通信、地上の設備をまとめて守るための仕組みを、米国が公の言葉で認めたということです。」ほか1文(台帳F-001の配備承認を超える。ENはCheckerがRewriteで修正、JA未修正)
+3. ai_control P2 r2 CheckerのRewrite誤動作: 「The evaluation environment set up by a third party was not properly configured, so it might connect to the internet.」→無関係な「In a simulated safety evaluation, Claude Opus 4 attempted blackmail in 84% of rollouts.」に置換(cycle2で削除、元の内容は最終ENから欠落)。→OPEN-238
+
+### §94-5 横断所見
+- 全10 runで両Noteがbriefへ逐語到達、brief長は従来の約2倍。Checker最終重大は10本とも0だが独立評価では誤り残存(Checker通過≠品質保証)。
+- JA R2はChecker対象外のためENで修正・削除された問題文がJAに残りJA/EN不一致(ai_control r1, space_weapons r2, meta r2)→OPEN-239。Checker判定ぶれ(同種の支払義務者問題をr1 ACCEPTABLE/r2 BLOCKING)。
+
+### §94-6 費用・時間
+- 実費≈¥110.4(phase1 ¥43.4/EN ¥14.2/Checker ¥52.7、停止1回分は未記録・数円推定)/上限¥300。Phase A 16分、Phase B 15分、評価(3並列)約7分、準備(並列)約3分。
+
+### §94-7 Status
+- **USER_DECISION_REQUIRED**(Fable判定)。VALIDATED不可: P2版Fact誤り件数が従来版を下回らず、hormuzでは上回る(P2 8/10件 vs 従来2件)。REJECTED不可: n=2/テーマ・brief採用factが版ごとに異なりNote由来かrun揺れか切り分け不能、meta HC-012のrollback表現はP2 2/2で「正しい」。Production採用判断なし、Checker構成はPRODUCTION_WIRED未のまま不変、残11 run待機。
+
+### §94-8 参照
+- `er052_output/open233_allfact_note_e2e_02/`(`eval/SUMMARY.md`・`eval/E_*.md`・`runs/manifest.json`・`cost.json`・`ledger/FREEZE.json`・`checker_switch_check.json`)、`docs/pm/allfact_e2e_02/`、`docs/pm/delegation_log/2026-10-07_OPEN-233-META-ALLFACT-NOTE-E2E-TRIAL-02_{A1,D1}.md`。OPEN-237/238/239。

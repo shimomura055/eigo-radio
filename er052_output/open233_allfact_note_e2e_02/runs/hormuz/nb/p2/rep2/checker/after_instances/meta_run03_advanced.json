@@ -1,0 +1,4663 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Every time a ship passed, it would pay for U.S. security measures.",
+            "issue": "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。 / Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。 / Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs. The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.\n\nImagine a toll booth suddenly appearing in the strait. Every time a ship passed, it would pay for U.S. security measures. It would be quite a large toll booth.\n\nThen came the second act, the next day, July 14. This time, the toll booth disappeared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Quote: “Every time a ship passed, it would pay for U.S. security measures.” Revise to say only that the proposal sought reimbursement on cargo passing through; do not state that each ship itself would pay, since the payment arrangements were unspecified. Ledger fact: HF-003.",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Every time a ship passed, it would pay for U.S. security measures."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Every time a ship passed, it would pay for U.S. security measures."
+        },
+        {
+          "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But in the third act, the reaction from the oil market was much calmer.",
+            "issue": "原油市場の反応が「はるかに穏やか」だったという比較評価は、Ledgerの値動きの記述から直接確認できません。 / Ledgerは一時的な上げ幅縮小とその後の回復を報じているが、市場の反応が外交上の変化より「much calmer」だったという比較は確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A plan to charge passing cargo directly had turned into business talks with the Gulf states. Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table. It was a very sudden turn.\n\nBut in the third act, the reaction from the oil market was much calmer.\n\nAfter the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+            "issue": "質問は料金案撤回にもかかわらず価格が大きく下落しなかったことを前提にし、撤回が価格を下げるはずだったという因果的な期待も含みます。Ledgerはこの反実仮想を述べていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S10.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S10.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Because the danger itself in the strait had not disappeared.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Because the danger itself in the strait had not disappeared.",
+            "issue": "海峡の危険が続いていたことはLedgerにある一方、それが価格が大きく下落しなかった理由だという因果関係はLedgerに明記されていません。 / Ledgerは値動きと継続する懸念を報じているが、海峡の危険が消えていないことが価格が大きく下がらなかった理由だと断定してはいない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S10.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S10.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Because the danger itself in the strait had not disappeared.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Diplomatic announcements can change completely in one day.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Diplomatic announcements can change completely in one day.",
+            "issue": "一連の出来事を超えて、外交発表は一般に一日で完全に変わり得るという一般論へ拡張しています。 / Ledgerが確認するのは今回の具体的な置換発表であり、記事は外交発表一般が一日で全面的に変わり得ると対象を広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Why did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Diplomatic announcements can change completely in one day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+            "issue": "危険海域を航行するタンカーが発表だけでは安全にならないという一般的な主張は、Ledgerに直接記載されていません。 / Ledgerが確認するのはタンカー安全上の懸念の継続であり、危険海域を航行するタンカーが安全ではないことや、発表が安全性を変えないという一般的主張までは確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Why did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "issue": "値動きの一時的な縮小と回復はLedgerにありますが、市場が海峡の現実を「思い出した」ために高水準へ戻ったという因果・解釈はLedgerにありません。 / S11.2の「発表だけではタンカーは安全にならない」ことを、S11.3の価格回復の理由として「So」で結んでいます。この因果関係はLedgerにありません。 / 一時的な上げ幅縮小と回復はLedgerにあるが、市場が海峡の現実を「思い出した」ため価格が戻ったという因果関係はLedgerにない。 / この関係単位は、タンカーが発表だけで安全にならないことと、海峡の危険を市場が再認識したことを、価格が高水準に戻った原因として結び付けている。Ledgerはその因果を確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.3,R:S11.2+S11.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.3",
+                "R:S11.2+S11.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Why did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+            "issue": "料金案撤回後も価格が高かったという要約に加え、海峡が危険なままだったことが価格高止まりの原因だと断定しています。Ledgerはその因果を確認していません。 / Ledgerが報じる一時的な値動きと価格スナップショットを、海峡が危険なままだったことが価格高止まりの原因だと断定している。また、Brent先物から「oil prices」全般に範囲を広げている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Diplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+            "issue": "Ledgerは費用の償還として提示したことを確認する一方、具体的な支払義務者は示されなかったとしている。記事は通過貨物が支払うと特定している。 / 具体的な制度設計は示されなかったというLedgerに対し、記事は貨物を支払義務者として特定している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-002",
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first act was July 13.\n\nTrump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs. The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.\n\nImagine a toll booth suddenly appearing in the strait. Every time a ship passed, it would pay for U.S. security measures. It would be quite a large toll booth.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Quote: “The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.” Revise to describe the proposal as a 20% fee on all passing cargo to reimburse U.S. security costs, without identifying cargo itself as the payer. Ledger fact: HF-002.",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+        },
+        {
+          "claim_text": "Every time a ship passed, it would pay for U.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "Every time a ship passed, it would pay for U.",
+            "issue": "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。 / Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。 / Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Every time a ship passed, it would pay for U.S. security measures."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs. The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.\n\nImagine a toll booth suddenly appearing in the strait. Every time a ship passed, it would pay for U.S. security measures. It would be quite a large toll booth.\n\nThen came the second act, the next day, July 14. This time, the toll booth disappeared.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "BLOCKING",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Quote: “Every time a ship passed, it would pay for U.” Revise to say only that the proposal sought reimbursement on cargo passing through; do not state that each ship itself would pay, since the payment arrangements were unspecified. Ledger fact: HF-003.",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "BLOCKING",
+          "floor_cited_reason": null,
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "Every time a ship passed, it would pay for U."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "Every time a ship passed, it would pay for U."
+        },
+        {
+          "claim_text": "But soon they returned to a high level close to where they had been before the announcement.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "But soon they returned to a high level close to where they had been before the announcement.",
+            "issue": "値動きの一時的な縮小と回復はLedgerにありますが、市場が海峡の現実を「思い出した」ために高水準へ戻ったという因果・解釈はLedgerにありません。 / S11.2の「発表だけではタンカーは安全にならない」ことを、S11.3の価格回復の理由として「So」で結んでいます。この因果関係はLedgerにありません。 / 一時的な上げ幅縮小と回復はLedgerにあるが、市場が海峡の現実を「思い出した」ため価格が戻ったという因果関係はLedgerにない。 / この関係単位は、タンカーが発表だけで安全にならないことと、海峡の危険を市場が再認識したことを、価格が高水準に戻った原因として結び付けている。Ledgerはその因果を確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.3,R:S11.2+S11.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.3",
+                "R:S11.2+S11.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But in the third act, the reaction from the oil market was much calmer.\n\nAfter the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But soon they returned to a high level close to where they had been before the announcement.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs.",
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "dev": {
+            "claim_in_article": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs.",
+            "issue": "料金案撤回後も価格が高かったという要約に加え、海峡が危険なままだったことが価格高止まりの原因だと断定しています。Ledgerはその因果を確認していません。 / Ledgerが報じる一時的な値動きと価格スナップショットを、海峡が危険なままだったことが価格高止まりの原因だと断定している。また、Brent先物から「oil prices」全般に範囲を広げている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The first act was July 13.\n\nTrump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs. The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.\n\nImagine a toll booth suddenly appearing in the strait. Every time a ship passed, it would pay for U.S. security measures. It would be quite a large toll booth.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        },
+        {
+          "claim_text": "A plan to charge passing cargo directly had turned into business talks with the Gulf states.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "A plan to charge passing cargo directly had turned into business talks with the Gulf states.",
+            "issue": "Ledgerは費用の償還として提示したことを確認する一方、具体的な支払義務者は示されなかったとしている。記事は通過貨物が支払うと特定している。 / 具体的な制度設計は示されなかったというLedgerに対し、記事は貨物を支払義務者として特定している。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-002",
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Trump announced that the 20 percent fee plan would be replaced by trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nA plan to charge passing cargo directly had turned into business talks with the Gulf states. Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table. It was a very sudden turn.\n\nBut in the third act, the reaction from the oil market was much calmer.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "A plan to charge passing cargo directly had turned into business talks with the Gulf states.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          }
+        }
+      ],
+      "blocking_count": 3,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Because the danger itself in the strait had not disappeared.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Diplomatic announcements can change completely in one day.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "But soon they returned to a high level close to where they had been before the announcement.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-009",
+          "claim_text": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "A plan to charge passing cargo directly had turned into business talks with the Gulf states.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+          ],
+          "batch_cost_jpy": 0.3747,
+          "batch_n_claims": 10
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e2_generic_rewrite(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "3_sentence",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "Every time a ship passed, it would pay for U.S. security measures."
+              ],
+              "raw_spans": [
+                [
+                  568,
+                  634
+                ]
+              ],
+              "spans": [
+                [
+                  568,
+                  634
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "Every time a ship passed, it would pay for U.S. security measures."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "result": "declined"
+              },
+              {
+                "level": "3_sentence",
+                "targets": [
+                  "Every time a ship passed, it would pay for U.S. security measures."
+                ],
+                "revised": [
+                  "The proposal would seek reimbursement for U.S. security costs on all cargo passing through the strait."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "Every time a ship passed, it would pay for U.S. security measures.",
+                    "after": "The proposal would seek reimbursement for U.S. security costs on all cargo passing through the strait."
+                  }
+                ]
+              }
+            ],
+            "level_used": "3_sentence",
+            "span_unverified": false,
+            "problem_kind": "term_scope",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective",
+              "3_sentence"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:HF-002",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+              ],
+              "raw_spans": [
+                [
+                  406,
+                  511
+                ]
+              ],
+              "spans": [
+                [
+                  406,
+                  511
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "The idea was to have a 20 percent fee on all passing cargo cover the costs the United States would use to keep the strait safe."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+                    "after": "The idea was to have a 20 percent fee on all passing cargo cover the costs the United States would use to keep the strait safe."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "actor",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective"
+            ]
+          }
+        },
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "covered_by_earlier_rewrite_in_cycle",
+          "guard_ok": false,
+          "ladder_level_used": null,
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "Every time a ship passed, it would pay for U.",
+            "resolution": {
+              "status": "covered_by_earlier_rewrite_in_cycle",
+              "lang": "EN",
+              "ranges": [
+                "Every time a ship passed, it would pay for U."
+              ]
+            },
+            "carry_forward_covered": [
+              {
+                "range": "Every time a ship passed, it would pay for U.",
+                "covered_by_claim": "fact:HF-003"
+              }
+            ],
+            "level_attempts": [],
+            "level_used": null,
+            "span_unverified": false,
+            "skipped_covered_by_earlier_rewrite": true,
+            "carry_forward_comparison": [
+              {
+                "covered_by_claim": "fact:HF-003",
+                "issue_string_equal": true,
+                "same_related_fact_id": true,
+                "true_flags_equal": true,
+                "prior_issue": "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。 / Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。 / Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。",
+                "following_issue": "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。 / Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。 / Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。",
+                "prior_related_fact_id": "HF-003",
+                "following_related_fact_id": "HF-003",
+                "prior_true_flags": [
+                  "changed_actor",
+                  "changed_certainty",
+                  "changed_fact",
+                  "changed_scope",
+                  "unsupported_new_claim"
+                ],
+                "following_true_flags": [
+                  "changed_actor",
+                  "changed_certainty",
+                  "changed_fact",
+                  "changed_scope",
+                  "unsupported_new_claim"
+                ]
+              }
+            ],
+            "carry_forward_recheck_resolved": true,
+            "carry_forward_recheck_source": "full_recheck"
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 14.07,
+          "difficult_word_ratio": 0.1599,
+          "word_count": 394
+        },
+        "stats_after": {
+          "avg_sentence_len": 14.36,
+          "difficult_word_ratio": 0.1567,
+          "word_count": 402
+        },
+        "sentence_len_increase": 0.29,
+        "difficulty_ratio_increase": -0.0032,
+        "fragment_stats_before": {
+          "avg_sentence_len": 11.33,
+          "difficult_word_ratio": 0.1176,
+          "word_count": 34
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 14.0,
+          "difficult_word_ratio": 0.0952,
+          "word_count": 42
+        },
+        "fragment_sentence_len_increase": 2.67,
+        "fragment_difficulty_ratio_increase": -0.0224,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 34,
+        "hook_word_count_after": 34,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 17,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 28,
+        "sentence_count_after": 28,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 1,
+        "hedge_word_count_after": 1,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 13,
+        "paragraph_count_after": 13,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting\n\nThis is a sudden change in diplomacy over the Strait of Hormuz. The main focus was one fee schedule. But that fee schedule disappeared in one day, and talk of investment took its place.\n\nThe first act was July 13.\n\nTrump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs. The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.\n\nImagine a toll booth suddenly appearing in the strait. Every time a ship passed, it would pay for U.S. security measures. It would be quite a large toll booth.\n\nThen came the second act, the next day, July 14. This time, the toll booth disappeared.\n\nTrump announced that the 20 percent fee plan would be replaced by trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nA plan to charge passing cargo directly had turned into business talks with the Gulf states. Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table. It was a very sudden turn.\n\nBut in the third act, the reaction from the oil market was much calmer.\n\nAfter the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+      "en_text_after_rewrite": "# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting\n\nThis is a sudden change in diplomacy over the Strait of Hormuz. The main focus was one fee schedule. But that fee schedule disappeared in one day, and talk of investment took its place.\n\nThe first act was July 13.\n\nTrump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs. The idea was to have a 20 percent fee on all passing cargo cover the costs the United States would use to keep the strait safe.\n\nImagine a toll booth suddenly appearing in the strait. The proposal would seek reimbursement for U.S. security costs on all cargo passing through the strait. It would be quite a large toll booth.\n\nThen came the second act, the next day, July 14. This time, the toll booth disappeared.\n\nTrump announced that the 20 percent fee plan would be replaced by trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nA plan to charge passing cargo directly had turned into business talks with the Gulf states. Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table. It was a very sudden turn.\n\nBut in the third act, the reaction from the oil market was much calmer.\n\nAfter the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "paragraph_or_full_or_delete_rewrite",
+        "multiple_claims_rewritten_same_cycle"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text",
+        "current_text",
+        "current_text"
+      ],
+      "recheck_coverage": {
+        "scope_ids": [
+          "S3.1",
+          "S3.2",
+          "S4.1",
+          "S4.2",
+          "S4.3"
+        ],
+        "changed_ids": [
+          "S3.2",
+          "S4.2"
+        ],
+        "n_scope": 5,
+        "n_judged_units": 29,
+        "n_union_candidates": 0,
+        "n_calls": 2,
+        "total_cost_jpy": 0.7614,
+        "n_prior_claim_hits": 3,
+        "missing_after_rerun": [],
+        "api_failure": false,
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 1,
+          "n_targets": 1,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 1,
+          "n_excluded_entries": 1,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.1132,
+          "effort": "medium",
+          "prompt_sha256": "17d6c47975b9dd56a888d84bf28e4d46b54d87c6013bcb163b1ae49155ac203d"
+        }
+      },
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_COMPLIANT",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "coverage scope recheck: no candidate for this issue",
+          "remaining_sentence": ""
+        },
+        {
+          "index": 1,
+          "resolved": true,
+          "explanation": "coverage scope recheck: no candidate for this issue",
+          "remaining_sentence": ""
+        },
+        {
+          "index": 2,
+          "resolved": true,
+          "explanation": "coverage scope recheck: no candidate for this issue",
+          "remaining_sentence": ""
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true,
+        "1": true,
+        "2": true
+      },
+      "recheck_prior_issues_sent_count": 3,
+      "exit_check": {
+        "cycle": 1,
+        "n_candidates": 7,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 29,
+        "total_cost_jpy": 0.6373,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 16,
+          "n_targets": 16,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 8,
+          "n_excluded_entries": 8,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.4617,
+          "effort": "medium",
+          "prompt_sha256": "fe2917a2f44c58cbcc5a7c87c5f67b3b547bfcff2c172b87b442c8c37685c149"
+        }
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+            "issue": "料金案が「within a day」で消えたという時期の表現は、7月13日午前10時16分の提案と7月14日午前11時4分の置換との約24時間48分の間隔と一致しない。また、価格が高止まりした理由を海峡の危険継続に結び付けているが、その因果関係はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Diplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 2,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8e559e260281b60e2e6e2a4df9f972aa437b63bd833ef819c38a56f9e648da9"
+            ],
+            "batch_cost_jpy": 0.0443,
+            "batch_n_claims": 1
+          }
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "A plan to charge passing cargo directly had turned into business talks with the Gulf states. Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table. It was a very sudden turn.\n\nBut in the third act, the reaction from the oil market was much calmer.\n\nAfter the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          },
+          "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+          "dev": {
+            "claim_in_article": "But in the third act, the reaction from the oil market was much calmer.",
+            "issue": "市場の反応が「much calmer」だったという比較評価は、比較対象やその程度をLedgerが示していない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          },
+          "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+          "dev": {
+            "claim_in_article": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+            "issue": "「原油価格があまり下がらなかった」という比較的な評価は明確な基準がなく、問いの前提として価格の反応をLedger以上に特徴付けている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S10.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S10.1"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "After the announcement, Brent futures temporarily gave back some of their gains. But soon they returned to a high level close to where they had been before the announcement. When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.\n\nWhy did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "Because the danger itself in the strait had not disappeared.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          },
+          "claim_text": "Because the danger itself in the strait had not disappeared.",
+          "dev": {
+            "claim_in_article": "Because the danger itself in the strait had not disappeared.",
+            "issue": "Ledgerは複数の懸念が継続したとするが、「海峡の危険そのものが消えていなかった」という包括的な断定は、確認された個別の懸念を超えている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S10.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S10.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "Why did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Diplomatic announcements can change completely in one day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          },
+          "claim_text": "Diplomatic announcements can change completely in one day.",
+          "dev": {
+            "claim_in_article": "Diplomatic announcements can change completely in one day.",
+            "issue": "一つの事例を基に、外交発表一般が一日で完全に変わり得ると一般化している。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S11.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "Why did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          },
+          "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+          "dev": {
+            "claim_in_article": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+            "issue": "危険な水域を航行するタンカーが発表だけでは安全にならないという一般的な主張は、Ledgerに直接記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S11.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.2"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-009",
+          "detected_by": "stage1_llm",
+          "local_context": "Why did oil prices not fall much, even though the fee plan had disappeared? Because the danger itself in the strait had not disappeared. Military attacks between the United States and Iran, a blockade at sea, and concerns about tanker safety are continuing.\n\nDiplomatic announcements can change completely in one day. But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.\n\n## In one line\nTrump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-009",
+            "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+            ],
+            "batch_cost_jpy": 0.3747,
+            "batch_n_claims": 10
+          },
+          "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "dev": {
+            "claim_in_article": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "issue": "「市場が海峡の現実を思い出した」ことを価格回復の理由としているが、Ledgerが述べるのは値動きであり、この因果関係は確認されていない。 / S11.2の「発表だけではタンカーは安全にならない」という主張をSoでS11.3の市場回復に結び付け、海峡の危険が市場回復をもたらしたという因果関係を示しているが、Ledgerはこの関係を述べていない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S11.3,R:S11.2+S11.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S11.3",
+                "R:S11.2+S11.3"
+              ],
+              "related_fact_ids": [
+                "HF-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 2,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8e559e260281b60e2e6e2a4df9f972aa437b63bd833ef819c38a56f9e648da9"
+          ],
+          "batch_cost_jpy": 0.0443,
+          "batch_n_claims": 1
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6371,
+      "usage": {
+        "input_tokens": 5961,
+        "cached_input_tokens": 0,
+        "output_tokens": 6930,
+        "reasoning_tokens": 1963
+      },
+      "elapsed_seconds": 47.917,
+      "prompt_sha256": "572c0535634473a8419de0072cd990a2ce6dde594feeea03ca1f7e323d34554c",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.0381,
+      "usage": {
+        "input_tokens": 5563,
+        "cached_input_tokens": 0,
+        "output_tokens": 12122,
+        "reasoning_tokens": 8792
+      },
+      "elapsed_seconds": 92.531,
+      "prompt_sha256": "7f54b80c899e1cefa76d377a5b5f40d1c9582534d9dd51569f6540cf1c69059e",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.5735,
+      "usage": {
+        "input_tokens": 6190,
+        "cached_input_tokens": 0,
+        "output_tokens": 6073,
+        "reasoning_tokens": 4456
+      },
+      "elapsed_seconds": 50.984,
+      "prompt_sha256": "4578bf12a9fa2d2be022123b5b4e3240f109921ceb879b3fb3e38fe04e029b4a",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4642,
+      "usage": {
+        "input_tokens": 11391,
+        "cached_input_tokens": 0,
+        "output_tokens": 3640,
+        "reasoning_tokens": 3098
+      },
+      "elapsed_seconds": 33.43,
+      "prompt_sha256": "8e1a81c62fc380a56f6c986989cbd98d9755f735fa09b3469f971d93b15533b1"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3747,
+      "usage": {
+        "input_tokens": 10910,
+        "cached_input_tokens": 0,
+        "output_tokens": 2595,
+        "reasoning_tokens": 2309
+      },
+      "elapsed_seconds": 25.463,
+      "prompt_sha256": "e6042c8c6397fa467561b7a55fe73fcfa221afaec761801ecdcf416c29b779d0"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-003_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1168,
+      "usage": {
+        "input_tokens": 4627,
+        "cached_input_tokens": 0,
+        "output_tokens": 563,
+        "reasoning_tokens": 550
+      },
+      "elapsed_seconds": 6.348,
+      "prompt_sha256": "47bf8a1e95f3fdfd47a5d5ab469e85827e537669b6c4ad0e78f14d77000c6b78"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-003_e2_rewrite",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0811,
+      "usage": {
+        "input_tokens": 4462,
+        "cached_input_tokens": 0,
+        "output_tokens": 142,
+        "reasoning_tokens": 109
+      },
+      "elapsed_seconds": 2.416,
+      "prompt_sha256": "22b7c7b4098510914a2fbc3ee716d1860745259e41bed975c0b868fd1f8f50e0"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-002_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.1131,
+      "usage": {
+        "input_tokens": 4572,
+        "cached_input_tokens": 0,
+        "output_tokens": 527,
+        "reasoning_tokens": 485
+      },
+      "elapsed_seconds": 4.658,
+      "prompt_sha256": "92d65aa62029a95c51f2109d9dbb963319dc4b5733a770232ecd6db3eb7030d2"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r3",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2544,
+      "usage": {
+        "input_tokens": 5850,
+        "cached_input_tokens": 0,
+        "output_tokens": 2073,
+        "reasoning_tokens": 1180
+      },
+      "elapsed_seconds": 16.61,
+      "prompt_sha256": "3ba798805dcde9e8d51da61535048eb27033feee18ec39ec67d30e3388f4f469",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r5v",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.507,
+      "usage": {
+        "input_tokens": 5487,
+        "cached_input_tokens": 0,
+        "output_tokens": 5366,
+        "reasoning_tokens": 4440
+      },
+      "elapsed_seconds": 45.726,
+      "prompt_sha256": "e62aa09b9dff98e826d6e454a2e1b707a4ad77733b01d24a1072269a1fa21365",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.1132,
+      "usage": {
+        "input_tokens": 5445,
+        "cached_input_tokens": 0,
+        "output_tokens": 354,
+        "reasoning_tokens": 236
+      },
+      "elapsed_seconds": 4.078,
+      "prompt_sha256": "17d6c47975b9dd56a888d84bf28e4d46b54d87c6013bcb163b1ae49155ac203d",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_exit_r3",
+      "recovery_stage": "stage1_exit_check",
+      "cost_jpy": 0.6373,
+      "usage": {
+        "input_tokens": 5971,
+        "cached_input_tokens": 0,
+        "output_tokens": 6931,
+        "reasoning_tokens": 2200
+      },
+      "elapsed_seconds": 45.249,
+      "prompt_sha256": "dc70e214c7cc4c40f456f0fc01df38151ab38d497fa4dbe90d61e23af6fda4f6",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_exit_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4617,
+      "usage": {
+        "input_tokens": 6139,
+        "cached_input_tokens": 0,
+        "output_tokens": 4658,
+        "reasoning_tokens": 3172
+      },
+      "elapsed_seconds": 38.85,
+      "prompt_sha256": "fe2917a2f44c58cbcc5a7c87c5f67b3b547bfcff2c172b87b442c8c37685c149",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1659,
+      "usage": {
+        "input_tokens": 9168,
+        "cached_input_tokens": 0,
+        "output_tokens": 282,
+        "reasoning_tokens": 231
+      },
+      "elapsed_seconds": 4.181,
+      "prompt_sha256": "a8e559e260281b60e2e6e2a4df9f972aa437b63bd833ef819c38a56f9e648da9"
+    },
+    {
+      "label": "meta_run03_advanced_c2_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0443,
+      "usage": {
+        "input_tokens": 9168,
+        "cached_input_tokens": 9165,
+        "output_tokens": 381,
+        "reasoning_tokens": 330
+      },
+      "elapsed_seconds": 4.593,
+      "prompt_sha256": "a8e559e260281b60e2e6e2a4df9f972aa437b63bd833ef819c38a56f9e648da9"
+    }
+  ],
+  "total_cost_jpy": 5.5824,
+  "total_calls": 15,
+  "elapsed_seconds": 423.132,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Every time a ship passed, it would pay for U.S. security measures.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。 / Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。 / Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But in the third act, the reaction from the oil market was much calmer.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "原油市場の反応が「はるかに穏やか」だったという比較評価は、Ledgerの値動きの記述から直接確認できません。 / Ledgerは一時的な上げ幅縮小とその後の回復を報じているが、市場の反応が外交上の変化より「much calmer」だったという比較は確認していない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "質問は料金案撤回にもかかわらず価格が大きく下落しなかったことを前提にし、撤回が価格を下げるはずだったという因果的な期待も含みます。Ledgerはこの反実仮想を述べていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S10.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Because the danger itself in the strait had not disappeared.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "海峡の危険が続いていたことはLedgerにある一方、それが価格が大きく下落しなかった理由だという因果関係はLedgerに明記されていません。 / Ledgerは値動きと継続する懸念を報じているが、海峡の危険が消えていないことが価格が大きく下がらなかった理由だと断定してはいない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S10.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Diplomatic announcements can change completely in one day.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "一連の出来事を超えて、外交発表は一般に一日で完全に変わり得るという一般論へ拡張しています。 / Ledgerが確認するのは今回の具体的な置換発表であり、記事は外交発表一般が一日で全面的に変わり得ると対象を広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "危険海域を航行するタンカーが発表だけでは安全にならないという一般的な主張は、Ledgerに直接記載されていません。 / Ledgerが確認するのはタンカー安全上の懸念の継続であり、危険海域を航行するタンカーが安全ではないことや、発表が安全性を変えないという一般的主張までは確認していない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "値動きの一時的な縮小と回復はLedgerにありますが、市場が海峡の現実を「思い出した」ために高水準へ戻ったという因果・解釈はLedgerにありません。 / S11.2の「発表だけではタンカーは安全にならない」ことを、S11.3の価格回復の理由として「So」で結んでいます。この因果関係はLedgerにありません。 / 一時的な上げ幅縮小と回復はLedgerにあるが、市場が海峡の現実を「思い出した」ため価格が戻ったという因果関係はLedgerにない。 / この関係単位は、タンカーが発表だけで安全にならないことと、海峡の危険を市場が再認識したことを、価格が高水準に戻った原因として結び付けている。Ledgerはその因果を確認していない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S11.3,R:S11.2+S11.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+        "related_fact_id": "HF-009",
+        "origin": null,
+        "issue": "料金案撤回後も価格が高かったという要約に加え、海峡が危険なままだったことが価格高止まりの原因だと断定しています。Ledgerはその因果を確認していません。 / Ledgerが報じる一時的な値動きと価格スナップショットを、海峡が危険なままだったことが価格高止まりの原因だと断定している。また、Brent先物から「oil prices」全般に範囲を広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+        "related_fact_id": "HF-002",
+        "origin": null,
+        "issue": "Ledgerは費用の償還として提示したことを確認する一方、具体的な支払義務者は示されなかったとしている。記事は通過貨物が支払うと特定している。 / 具体的な制度設計は示されなかったというLedgerに対し、記事は貨物を支払義務者として特定している。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 26,
+      "n_model_entries": 26,
+      "n_targets": 16,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 6,
+      "n_excluded_entries": 6,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.5735,
+          "usage": {
+            "input_tokens": 6190,
+            "cached_input_tokens": 0,
+            "output_tokens": 6073,
+            "reasoning_tokens": 4456
+          },
+          "elapsed_seconds": 50.984,
+          "prompt_sha256": "4578bf12a9fa2d2be022123b5b4e3240f109921ceb879b3fb3e38fe04e029b4a",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.5735,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "料金案が翌日に湾岸諸国との貿易・投資案件へ置き換わったという比喩的な要約はHF-002とHF-007に合致する。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "This is a sudden change in diplomacy over the Strait of Hormuz.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ホルムズ海峡をめぐる料金案から投資案件への急な転換はHF-007に裏付けられている。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "The main focus was one fee schedule.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事の焦点を示す導入上の編集的な枠付けで、具体的な出来事の追加ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S4.1",
+          "claim": "Imagine a toll booth suddenly appearing in the strait.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "海峡に料金所が現れるという読者への想像を促す比喩で、実在の施設を主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S4.2",
+          "claim": "Every time a ship passed, it would pay for U.S. security measures.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "HF-003は支払義務者や徴収方法を示していないのに、船が通過のたびに米国の安全対策費を払う仕組みを具体化している。対象も全貨物から船へ置き換わっている。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S4.3",
+          "claim": "It would be quite a large toll booth.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "料金所の大きさを表す比喩であり、実際の規模についての主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S7.2",
+          "claim": "Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "海峡通航への料金案が投資案件に置き換わったという比喩的な表現はHF-007に合致する。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S8.1",
+          "claim": "But in the third act, the reaction from the oil market was much calmer.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「much calmer」という比較評価はLedgerに明示されず、Ledgerが記録するのはBrent先物の短時間の値動きであって、石油市場全体の反応ではない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S10.1",
+          "claim": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Brentが一時上げ幅を縮小して回復したとの記録はあるが、「原油価格」が大きく下がらなかったという広い範囲・比較評価までは裏付けられない。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S10.2",
+          "claim": "Because the danger itself in the strait had not disappeared.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "危険や懸念が続いていたことはHF-009の条件と整合するが、それが価格の下落幅を抑えた原因だとする因果関係はLedgerに確認できず、危険の範囲も一般化している。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C11",
+          "key": "S11.1",
+          "claim": "Diplomatic announcements can change completely in one day.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "特定の置換発表を外交発表一般の性質へ広げ、「one day」とする期間もLedger記載の提案から置換まで約24時間48分という経過と一致しない。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C12",
+          "key": "S11.2",
+          "claim": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "特定時点で懸念が続いたとの記録を、危険海域を航行するタンカー全般についての一般的な因果・安全性の主張へ広げている。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C13",
+          "key": "S11.3",
+          "claim": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "一時的な上げ幅縮小と高水準への回復はHF-009に合うが、市場が海峡の現実を「思い出した」ために回復したという因果説明や「a little」という程度は確認できず、Brent以外にも範囲を広げている。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C14",
+          "key": "L1",
+          "claim": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "料金案の置換とBrentの一時的な上げ幅縮小・回復は裏付けられるが、「within a day」は約24時間48分という経過と合わず、原油価格全体への一般化もあり、危険が高値継続の原因だと断定している。",
+          "fact_tags": [
+            "proper_noun",
+            "date",
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C15",
+          "key": "R:S11.2+S11.3",
+          "claim": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "一時的な上げ幅縮小と高水準への回復はHF-009に合うが、市場が海峡の現実を「思い出した」ために回復したという因果説明や「a little」という程度は確認できず、Brent以外にも範囲を広げている。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C16",
+          "key": "S3.2",
+          "claim": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "全貨物を対象とした償還料案は裏付けられるが、HF-003は支払義務者を示していないため、通過貨物自体が費用を払うとするのは具体的な制度設計の追加である。",
+          "fact_tags": [
+            "proper_noun",
+            "causality"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "4578bf12a9fa2d2be022123b5b4e3240f109921ceb879b3fb3e38fe04e029b4a"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 41,
+    "n_judged_units": 29,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S11.2+S11.3"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S11.2+S11.3",
+          "S1.1",
+          "S1.2",
+          "S10.1",
+          "S10.2",
+          "S11.1",
+          "S11.2",
+          "S11.3",
+          "S4.1",
+          "S4.2",
+          "S4.3",
+          "S7.2",
+          "S8.1",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "SUPPORTED",
+          "S10.1": "CANDIDATE",
+          "S10.2": "CANDIDATE",
+          "S10.3": "SUPPORTED",
+          "S11.1": "CANDIDATE",
+          "S11.2": "CANDIDATE",
+          "S11.3": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S11.2+S11.3": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6371,
+            "usage": {
+              "input_tokens": 5961,
+              "cached_input_tokens": 0,
+              "output_tokens": 6930,
+              "reasoning_tokens": 1963
+            },
+            "elapsed_seconds": 47.917,
+            "prompt_sha256": "572c0535634473a8419de0072cd990a2ce6dde594feeea03ca1f7e323d34554c",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S9.1": "SUPPORTED",
+          "S9.2": "SUPPORTED",
+          "S9.3": "SUPPORTED",
+          "S10.1": "CANDIDATE",
+          "S10.2": "CANDIDATE",
+          "S10.3": "SUPPORTED",
+          "S11.1": "CANDIDATE",
+          "S11.2": "CANDIDATE",
+          "S11.3": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S11.2+S11.3": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting",
+            "span": [
+              0,
+              85
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案が実際に開始される予定だったかのように読める「Was Supposed to Open」は、Ledgerが確認する「提案」より確定的です。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "This is a sudden change in diplomacy over the Strait of Hormuz.",
+            "span": [
+              87,
+              150
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "出来事を「海峡をめぐる外交の急変」と位置付けていますが、この一般的な評価はLedgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "This is a sudden change in diplomacy over the Strait of Hormuz."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "The main focus was one fee schedule.",
+            "span": [
+              151,
+              187
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「主な焦点は一つの料金体系だった」という記事の構成上の評価は、Ledgerに直接支えられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "The main focus was one fee schedule."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "Imagine a toll booth suddenly appearing in the strait.",
+            "span": [
+              513,
+              567
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案を物理的な料金所が海峡に現れるイメージで描いていますが、Ledgerは料金所の設置や具体的な徴収方式を確認していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Imagine a toll booth suddenly appearing in the strait."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+            "span": [
+              568,
+              634
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Every time a ship passed, it would pay for U.S. security measures."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "It would be quite a large toll booth.",
+            "span": [
+              635,
+              672
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「かなり大きな料金所」という具体的な描写には、Ledger上の裏付けがありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "It would be quite a large toll booth."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table.",
+            "span": [
+              1094,
+              1206
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「海峡の入口に請求書を置く」は、料金徴収の具体的な仕組みを示唆しますが、Ledgerは制度設計が提示されなかったとしています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Instead of putting a bill at the entrance to the strait, they put a menu of investments on the diplomatic table."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+            "span": [
+              1235,
+              1306
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "原油市場の反応が「はるかに穏やか」だったという比較評価は、Ledgerの値動きの記述から直接確認できません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But in the third act, the reaction from the oil market was much calmer."
+          },
+          {
+            "unit_id": "S10.1",
+            "unit_ids": [
+              "S10.1"
+            ],
+            "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+            "span": [
+              1577,
+              1652
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "質問は料金案撤回にもかかわらず価格が大きく下落しなかったことを前提にし、撤回が価格を下げるはずだったという因果的な期待も含みます。Ledgerはこの反実仮想を述べていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Why did oil prices not fall much, even though the fee plan had disappeared?"
+          },
+          {
+            "unit_id": "S10.2",
+            "unit_ids": [
+              "S10.2"
+            ],
+            "claim_text": "Because the danger itself in the strait had not disappeared.",
+            "span": [
+              1653,
+              1713
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "海峡の危険が続いていたことはLedgerにある一方、それが価格が大きく下落しなかった理由だという因果関係はLedgerに明記されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Because the danger itself in the strait had not disappeared."
+          },
+          {
+            "unit_id": "S11.1",
+            "unit_ids": [
+              "S11.1"
+            ],
+            "claim_text": "Diplomatic announcements can change completely in one day.",
+            "span": [
+              1836,
+              1894
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "一連の出来事を超えて、外交発表は一般に一日で完全に変わり得るという一般論へ拡張しています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Diplomatic announcements can change completely in one day."
+          },
+          {
+            "unit_id": "S11.2",
+            "unit_ids": [
+              "S11.2"
+            ],
+            "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+            "span": [
+              1895,
+              1993
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "危険海域を航行するタンカーが発表だけでは安全にならないという一般的な主張は、Ledgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But tankers traveling through dangerous waters do not become safe just because of an announcement."
+          },
+          {
+            "unit_id": "S11.3",
+            "unit_ids": [
+              "S11.3"
+            ],
+            "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "span": [
+              1994,
+              2141
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "値動きの一時的な縮小と回復はLedgerにありますが、市場が海峡の現実を「思い出した」ために高水準へ戻ったという因果・解釈はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+            "span": [
+              2158,
+              2275
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "料金案撤回後も価格が高かったという要約に加え、海峡が危険なままだったことが価格高止まりの原因だと断定しています。Ledgerはその因果を確認していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous."
+          },
+          {
+            "unit_id": "R:S11.2+S11.3",
+            "unit_ids": [
+              "R:S11.2+S11.3"
+            ],
+            "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "span": [
+              1994,
+              2141
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "S11.2の「発表だけではタンカーは安全にならない」ことを、S11.3の価格回復の理由として「So」で結んでいます。この因果関係はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S11.2+S11.3",
+          "S10.2",
+          "S11.1",
+          "S11.2",
+          "S11.3",
+          "S3.2",
+          "S4.2",
+          "S8.1"
+        ],
+        "unit_status": {
+          "S1.2": "MATCH",
+          "S2.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "DEVIATION",
+          "S4.1": "MATCH",
+          "S4.2": "DEVIATION",
+          "S1.1": "MATCH",
+          "S1.3": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S11.1": "DEVIATION",
+          "S8.1": "DEVIATION",
+          "S9.1": "MATCH",
+          "S9.2": "MATCH",
+          "S9.3": "MATCH",
+          "S10.1": "MATCH",
+          "S10.2": "DEVIATION",
+          "S10.3": "MATCH",
+          "S11.2": "DEVIATION",
+          "S11.3": "DEVIATION",
+          "R:S11.2+S11.3": "DEVIATION",
+          "L1": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S4.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.0381,
+            "usage": {
+              "input_tokens": 5563,
+              "cached_input_tokens": 0,
+              "output_tokens": 12122,
+              "reasoning_tokens": 8792
+            },
+            "elapsed_seconds": 92.531,
+            "prompt_sha256": "7f54b80c899e1cefa76d377a5b5f40d1c9582534d9dd51569f6540cf1c69059e",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+            "span": [
+              406,
+              511
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは費用の償還として提示したことを確認する一方、具体的な支払義務者は示されなかったとしている。記事は通過貨物が支払うと特定している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+            "span": [
+              568,
+              634
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "Every time a ship passed, it would pay for U.S. security measures."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+            "span": [
+              406,
+              511
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "具体的な制度設計は示されなかったというLedgerに対し、記事は貨物を支払義務者として特定している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+            "span": [
+              568,
+              634
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "Every time a ship passed, it would pay for U.S. security measures."
+          },
+          {
+            "unit_id": "S11.1",
+            "unit_ids": [
+              "S11.1"
+            ],
+            "claim_text": "Diplomatic announcements can change completely in one day.",
+            "span": [
+              1836,
+              1894
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが確認するのは今回の具体的な置換発表であり、記事は外交発表一般が一日で全面的に変わり得ると対象を広げている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Diplomatic announcements can change completely in one day."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+            "span": [
+              1235,
+              1306
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは一時的な上げ幅縮小とその後の回復を報じているが、市場の反応が外交上の変化より「much calmer」だったという比較は確認していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But in the third act, the reaction from the oil market was much calmer."
+          },
+          {
+            "unit_id": "S10.2",
+            "unit_ids": [
+              "S10.2"
+            ],
+            "claim_text": "Because the danger itself in the strait had not disappeared.",
+            "span": [
+              1653,
+              1713
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerは値動きと継続する懸念を報じているが、海峡の危険が消えていないことが価格が大きく下がらなかった理由だと断定してはいない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Because the danger itself in the strait had not disappeared."
+          },
+          {
+            "unit_id": "S11.2",
+            "unit_ids": [
+              "S11.2"
+            ],
+            "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+            "span": [
+              1895,
+              1993
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが確認するのはタンカー安全上の懸念の継続であり、危険海域を航行するタンカーが安全ではないことや、発表が安全性を変えないという一般的主張までは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But tankers traveling through dangerous waters do not become safe just because of an announcement."
+          },
+          {
+            "unit_id": "S11.3",
+            "unit_ids": [
+              "S11.3"
+            ],
+            "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "span": [
+              1994,
+              2141
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "一時的な上げ幅縮小と回復はLedgerにあるが、市場が海峡の現実を「思い出した」ため価格が戻ったという因果関係はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level."
+          },
+          {
+            "unit_id": "R:S11.2+S11.3",
+            "unit_ids": [
+              "R:S11.2+S11.3"
+            ],
+            "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+            "span": [
+              1994,
+              2141
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "この関係単位は、タンカーが発表だけで安全にならないことと、海峡の危険を市場が再認識したことを、価格が高水準に戻った原因として結び付けている。Ledgerはその因果を確認していない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+            "span": [
+              2158,
+              2275
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが報じる一時的な値動きと価格スナップショットを、海峡が危険なままだったことが価格高止まりの原因だと断定している。また、Brent先物から「oil prices」全般に範囲を広げている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-009"
+            ],
+            "model_claim": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "R:S11.2+S11.3",
+        "S10.2",
+        "S11.1",
+        "S11.2",
+        "S11.3",
+        "S4.2",
+        "S8.1"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S10.1",
+        "S4.1",
+        "S4.3",
+        "S7.2",
+        "T"
+      ],
+      "r5_only": [
+        "S3.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 0
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+        "span": [
+          568,
+          634
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "通過するたびに船が支払うとの記述は、貨物を対象とした提案を船舶の支払義務へ置き換えています。徴収・支払方法もLedgerでは未提示です。",
+          "Ledgerは誰が支払うか、徴収方法や通航ごとの支払いかを示していない。記事は船舶を支払主体とし、通過のたびに支払う仕組みを加えている。",
+          "Ledgerは支払義務者や徴収方法を明らかにしていないが、記事は船舶が通過のたびに支払うと述べ、支払主体と徴収方式を追加している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "Every time a ship passed, it would pay for U.S. security measures."
+        ]
+      },
+      {
+        "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+        "span": [
+          1235,
+          1306
+        ],
+        "unit_ids": [
+          "S8.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "原油市場の反応が「はるかに穏やか」だったという比較評価は、Ledgerの値動きの記述から直接確認できません。",
+          "Ledgerは一時的な上げ幅縮小とその後の回復を報じているが、市場の反応が外交上の変化より「much calmer」だったという比較は確認していない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "But in the third act, the reaction from the oil market was much calmer."
+        ]
+      },
+      {
+        "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+        "span": [
+          1577,
+          1652
+        ],
+        "unit_ids": [
+          "S10.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "質問は料金案撤回にもかかわらず価格が大きく下落しなかったことを前提にし、撤回が価格を下げるはずだったという因果的な期待も含みます。Ledgerはこの反実仮想を述べていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Why did oil prices not fall much, even though the fee plan had disappeared?"
+        ]
+      },
+      {
+        "claim_text": "Because the danger itself in the strait had not disappeared.",
+        "span": [
+          1653,
+          1713
+        ],
+        "unit_ids": [
+          "S10.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "海峡の危険が続いていたことはLedgerにある一方、それが価格が大きく下落しなかった理由だという因果関係はLedgerに明記されていません。",
+          "Ledgerは値動きと継続する懸念を報じているが、海峡の危険が消えていないことが価格が大きく下がらなかった理由だと断定してはいない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Because the danger itself in the strait had not disappeared."
+        ]
+      },
+      {
+        "claim_text": "Diplomatic announcements can change completely in one day.",
+        "span": [
+          1836,
+          1894
+        ],
+        "unit_ids": [
+          "S11.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "一連の出来事を超えて、外交発表は一般に一日で完全に変わり得るという一般論へ拡張しています。",
+          "Ledgerが確認するのは今回の具体的な置換発表であり、記事は外交発表一般が一日で全面的に変わり得ると対象を広げている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "Diplomatic announcements can change completely in one day."
+        ]
+      },
+      {
+        "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+        "span": [
+          1895,
+          1993
+        ],
+        "unit_ids": [
+          "S11.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "危険海域を航行するタンカーが発表だけでは安全にならないという一般的な主張は、Ledgerに直接記載されていません。",
+          "Ledgerが確認するのはタンカー安全上の懸念の継続であり、危険海域を航行するタンカーが安全ではないことや、発表が安全性を変えないという一般的主張までは確認していない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "But tankers traveling through dangerous waters do not become safe just because of an announcement."
+        ]
+      },
+      {
+        "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+        "span": [
+          1994,
+          2141
+        ],
+        "unit_ids": [
+          "S11.3",
+          "R:S11.2+S11.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "値動きの一時的な縮小と回復はLedgerにありますが、市場が海峡の現実を「思い出した」ために高水準へ戻ったという因果・解釈はLedgerにありません。",
+          "S11.2の「発表だけではタンカーは安全にならない」ことを、S11.3の価格回復の理由として「So」で結んでいます。この因果関係はLedgerにありません。",
+          "一時的な上げ幅縮小と回復はLedgerにあるが、市場が海峡の現実を「思い出した」ため価格が戻ったという因果関係はLedgerにない。",
+          "この関係単位は、タンカーが発表だけで安全にならないことと、海峡の危険を市場が再認識したことを、価格が高水準に戻った原因として結び付けている。Ledgerはその因果を確認していない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+          "But tankers traveling through dangerous waters do not become safe just because of an announcement. So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level."
+        ]
+      },
+      {
+        "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+        "span": [
+          2158,
+          2275
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "料金案撤回後も価格が高かったという要約に加え、海峡が危険なままだったことが価格高止まりの原因だと断定しています。Ledgerはその因果を確認していません。",
+          "Ledgerが報じる一時的な値動きと価格スナップショットを、海峡が危険なままだったことが価格高止まりの原因だと断定している。また、Brent先物から「oil prices」全般に範囲を広げている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-009"
+        ],
+        "model_claims": [
+          "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous."
+        ]
+      },
+      {
+        "claim_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+        "span": [
+          406,
+          511
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは費用の償還として提示したことを確認する一方、具体的な支払義務者は示されなかったとしている。記事は通過貨物が支払うと特定している。",
+          "具体的な制度設計は示されなかったというLedgerに対し、記事は貨物を支払義務者として特定している。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-002",
+          "HF-003"
+        ],
+        "model_claims": [
+          "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe."
+        ]
+      }
+    ],
+    "n_union_candidates": 9,
+    "n_model_candidates": 9,
+    "n_deterministic_only_candidates": 0,
+    "total_cost_jpy": 1.6752,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 26,
+    "n_targets": 16,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 6,
+    "n_excluded_entries": 6,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.5735,
+    "effort": "medium",
+    "prompt_sha256": "4578bf12a9fa2d2be022123b5b4e3240f109921ceb879b3fb3e38fe04e029b4a"
+  },
+  "recheck_exit_check": {
+    "done": true,
+    "log": [
+      {
+        "cycle": 1,
+        "n_candidates": 7,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 29,
+        "total_cost_jpy": 0.6373,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 16,
+          "n_targets": 16,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 8,
+          "n_excluded_entries": 8,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.4617,
+          "effort": "medium",
+          "prompt_sha256": "fe2917a2f44c58cbcc5a7c87c5f67b3b547bfcff2c172b87b442c8c37685c149"
+        }
+      }
+    ]
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 4,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": 6
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

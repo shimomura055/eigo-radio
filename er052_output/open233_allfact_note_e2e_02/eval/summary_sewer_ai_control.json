@@ -1,0 +1,197 @@
+[
+ {
+  "slug": "sewer",
+  "rep": 1,
+  "variant": "p2",
+  "fact_errors": {
+   "subject": 0,
+   "object": 0,
+   "scope": 2,
+   "time": 0,
+   "negation": 0,
+   "causal": 1,
+   "added_fact": 1
+  },
+  "direction_facts": [
+   {
+    "fact_id": "F-012",
+    "label": "曖昧"
+   }
+  ],
+  "regressions": 2,
+  "checker": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite": null,
+   "false_accept": 4
+  },
+  "residual_issues": [
+   "EN/JA「connecting everyone」範囲拡張",
+   "「町の形に合わせて組み替えた」因果",
+   "EN In one line「Towns are rethinking」一般化",
+   "地下管の仕組み追加",
+   "EN「may be better」(経済的が落ちる)"
+  ]
+ },
+ {
+  "slug": "sewer",
+  "rep": 2,
+  "variant": "p2",
+  "fact_errors": {
+   "subject": 0,
+   "object": 0,
+   "scope": 1,
+   "time": 0,
+   "negation": 0,
+   "causal": 3,
+   "added_fact": 1
+  },
+  "direction_facts": [
+   {
+    "fact_id": "F-010",
+    "label": "正しい"
+   }
+  ],
+  "regressions": 3,
+  "checker": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite": null,
+   "false_accept": 3
+  },
+  "residual_issues": [
+   "「人口密度が汚水の進路を決める」",
+   "「松山市は密度に応じて選ぶ」(will)",
+   "「流すたびに人口変化が影響」",
+   "地下管・一つの流れの仕組み追加",
+   "EN「合併」消失(household treatment tanks)"
+  ]
+ },
+ {
+  "slug": "sewer",
+  "rep": 1,
+  "variant": "control",
+  "fact_errors": {
+   "subject": 0,
+   "object": 0,
+   "scope": 2,
+   "time": 1,
+   "negation": 0,
+   "causal": 1,
+   "added_fact": 2
+  },
+  "direction_facts": [
+   {
+    "fact_id": "F-012",
+    "label": "正しい"
+   }
+  ],
+  "regressions": 1,
+  "checker": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite": null,
+   "false_accept": 3
+  },
+  "residual_issues": [
+   "「A move is being planned for Japan's sewer systems」",
+   "「As communities ... are changing」",
+   "「The reason is that pipes are growing old」",
+   "will create(時制)",
+   "福島県・地下管の追加"
+  ]
+ },
+ {
+  "slug": "ai_control",
+  "rep": 1,
+  "variant": "p2",
+  "fact_errors": {
+   "subject": 0,
+   "object": 1,
+   "scope": 3,
+   "time": 0,
+   "negation": 1,
+   "causal": 1,
+   "added_fact": 0
+  },
+  "direction_facts": [],
+  "regressions": 3,
+  "checker": {
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cycles": 3,
+   "rewrite": "cycle1: (a)EN「heavily guarded prison…」文を削除 (b)「tends to be used for harmful purposes」→「tends to use that ability for harmful purposes」",
+   "false_accept": 1
+  },
+  "residual_issues": [
+   "part of a program(package)",
+   "世界征服を考えなかった(否定)",
+   "bigger role因果",
+   "JA「厳重な監獄」残存(EN削除でJA/EN不一致)",
+   "能力3要素の限定脱落",
+   "AI can go quite far一般化"
+  ]
+ },
+ {
+  "slug": "ai_control",
+  "rep": 2,
+  "variant": "p2",
+  "fact_errors": {
+   "subject": 0,
+   "object": 0,
+   "scope": 0,
+   "time": 0,
+   "negation": 0,
+   "causal": 1,
+   "added_fact": 3
+  },
+  "direction_facts": [
+   {
+    "fact_id": "CONTROL-003",
+    "label": "正しい"
+   }
+  ],
+  "regressions": 1,
+  "checker": {
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cycles": 4,
+   "rewrite": "cycle1: 「look for enemies and complete tasks inside the prepared world」→「complete tasks」; 「evaluation environment set up by a third party was not properly configured…」→「In a simulated safety evaluation, Claude Opus 4 attempted blackmail in 84% of rollouts.」(誤置換); cycle2: blackmail文削除、「But there was a hole…」→「There was a hole…」",
+   "false_accept": 3
+  },
+  "residual_issues": [
+   "Rewrite不具合: EVID-006文へ誤置換→削除で第三者設定不備文がENから欠落",
+   "CTF=宝探し定義",
+   "敵を探す(JAのみ)",
+   "設計の穴",
+   "「誰かが閉め忘れた」責任描写"
+  ]
+ },
+ {
+  "slug": "ai_control",
+  "rep": 1,
+  "variant": "control",
+  "fact_errors": {
+   "subject": 0,
+   "object": 0,
+   "scope": 1,
+   "time": 0,
+   "negation": 2,
+   "causal": 0,
+   "added_fact": 2
+  },
+  "direction_facts": [],
+  "regressions": 1,
+  "checker": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "rewrite": null,
+   "false_accept": 3
+  },
+  "residual_issues": [
+   "主なプロトタイプが複数形(EN)",
+   "有害傾向は実証されていない(否定)",
+   "AI did not rebel",
+   "攻略情報を交換",
+   "鍵が残っていた"
+  ]
+ }
+]

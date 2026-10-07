@@ -1,0 +1,191 @@
+{
+ "task": "OPEN-233-META-ALLFACT-NOTE-E2E-TRIAL-02 C1",
+ "date": "2026-10-07",
+ "note": "件数は軽微含む。meta Control記事のcausalはJA R2のみ1件を含む。residual_issues=最終EN(Checker rewrite後)に残る判定問題件数(meta rep2は★曖昧1含む)",
+ "runs": [
+  {
+   "slug": "meta",
+   "rep": 1,
+   "variant": "p2",
+   "fact_errors": {
+    "subject": 0,
+    "object": 0,
+    "scope": 0,
+    "time": 0,
+    "negation": 0,
+    "causal": 1,
+    "added_fact": 4
+   },
+   "direction_facts": [
+    {
+     "fact_id": "MUSE-HC-012",
+     "label": "正しい"
+    }
+   ],
+   "regressions": 3,
+   "checker": {
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "cycles": 2,
+    "rewrite": true,
+    "false_accept": 2
+   },
+   "residual_issues": 4
+  },
+  {
+   "slug": "meta",
+   "rep": 2,
+   "variant": "p2",
+   "fact_errors": {
+    "subject": 1,
+    "object": 1,
+    "scope": 0,
+    "time": 0,
+    "negation": 0,
+    "causal": 2,
+    "added_fact": 3
+   },
+   "direction_facts": [
+    {
+     "fact_id": "MUSE-HC-012",
+     "label": "正しい"
+    },
+    {
+     "fact_id": "MUSE-HC-014",
+     "label": "曖昧"
+    }
+   ],
+   "regressions": 3,
+   "checker": {
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "cycles": 3,
+    "rewrite": true,
+    "false_accept": 6
+   },
+   "residual_issues": 8
+  },
+  {
+   "slug": "meta",
+   "rep": 1,
+   "variant": "control",
+   "fact_errors": {
+    "subject": 1,
+    "object": 0,
+    "scope": 0,
+    "time": 0,
+    "negation": 0,
+    "causal": 2,
+    "added_fact": 1
+   },
+   "direction_facts": [
+    {
+     "fact_id": "MUSE-HC-012",
+     "label": "正しい"
+    }
+   ],
+   "regressions": 1,
+   "checker": {
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "cycles": 2,
+    "rewrite": true,
+    "false_accept": 2
+   },
+   "residual_issues": 3
+  },
+  {
+   "slug": "hormuz",
+   "rep": 1,
+   "variant": "p2",
+   "fact_errors": {
+    "subject": 2,
+    "object": 1,
+    "scope": 1,
+    "time": 1,
+    "negation": 0,
+    "causal": 1,
+    "added_fact": 2
+   },
+   "direction_facts": [
+    {
+     "fact_id": "HF-007",
+     "label": "曖昧"
+    }
+   ],
+   "regressions": 4,
+   "checker": {
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "cycles": 3,
+    "rewrite": true,
+    "false_accept": 6
+   },
+   "residual_issues": 7
+  },
+  {
+   "slug": "hormuz",
+   "rep": 2,
+   "variant": "p2",
+   "fact_errors": {
+    "subject": 3,
+    "object": 1,
+    "scope": 1,
+    "time": 1,
+    "negation": 0,
+    "causal": 2,
+    "added_fact": 2
+   },
+   "direction_facts": [
+    {
+     "fact_id": "HF-007",
+     "label": "正しい"
+    },
+    {
+     "fact_id": "HF-009",
+     "label": "正しい"
+    }
+   ],
+   "regressions": 4,
+   "checker": {
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "cycles": 2,
+    "rewrite": true,
+    "false_accept": 5
+   },
+   "residual_issues": 8
+  },
+  {
+   "slug": "hormuz",
+   "rep": 1,
+   "variant": "control",
+   "fact_errors": {
+    "subject": 0,
+    "object": 0,
+    "scope": 1,
+    "time": 0,
+    "negation": 0,
+    "causal": 1,
+    "added_fact": 0
+   },
+   "direction_facts": [
+    {
+     "fact_id": "HF-007",
+     "label": "正しい"
+    },
+    {
+     "fact_id": "HF-008",
+     "label": "正しい"
+    },
+    {
+     "fact_id": "HF-009",
+     "label": "正しい"
+    }
+   ],
+   "regressions": 0,
+   "checker": {
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "cycles": 1,
+    "rewrite": false,
+    "false_accept": 0
+   },
+   "residual_issues": 2
+  }
+ ]
+}

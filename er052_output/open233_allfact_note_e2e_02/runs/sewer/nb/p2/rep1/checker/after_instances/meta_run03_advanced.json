@@ -1,0 +1,3679 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+            "issue": "集合処理の説明に、住宅を地下管で接続して一緒に処理するという具体的な仕組みが加わっていますが、Ledgerで直接確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Two Teams for a Town’s Wastewater\n\nIn the world of wastewater, there are two players. One is collective treatment, which connects homes with underground pipes and treats the wastewater together. The other is combined-treatment septic tanks that work near each home.\n\nThe important thing here is not deciding which one is stronger. It is choosing which player will take part based on the shape of the town.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-007",
+            "claim_text": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+            "issue": "Ledgerが示すのは地域条件によって浄化槽が経済的に有利になり得ることですが、「better」は経済性以外も含む広い優位性を述べています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The important thing here is not deciding which one is stronger. It is choosing which player will take part based on the shape of the town.\n\nIn areas where homes are close together, collective treatment, such as a public sewer system, can be more economical. In areas where homes are spread out, septic tanks installed at each home may be better. Combined-treatment septic tanks do not handle only toilet water. They also take in water from kitchens, baths, and laundry, and treat it using the work of microorganisms. They are small facilities, but they do a full job.\n\nKitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Combined-treatment septic tanks do not handle only toilet water.",
+          "origin": null,
+          "related_fact_id": "F-005",
+          "dev": {
+            "claim_in_article": "Combined-treatment septic tanks do not handle only toilet water.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "F-005",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "F-005"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The important thing here is not deciding which one is stronger. It is choosing which player will take part based on the shape of the town.\n\nIn areas where homes are close together, collective treatment, such as a public sewer system, can be more economical. In areas where homes are spread out, septic tanks installed at each home may be better. Combined-treatment septic tanks do not handle only toilet water. They also take in water from kitchens, baths, and laundry, and treat it using the work of microorganisms. They are small facilities, but they do a full job.\n\nKitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-005",
+            "claim_text": "Combined-treatment septic tanks do not handle only toilet water.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+            "issue": "「everyone」を地下管接続の対象としていたかのように述べ、従来の方式からの変更を一般化しています。Ledgerが示すのは喜多方市の集合処理区域外の計画変更です。 / 集合処理区域が残る計画であるにもかかわらず、「everyone」を地下管路につなぐ方式から変わると表現し、従来の対象を拡大しています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Kitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.\n\nAs a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks. The city also plans to provide extra subsidies for the installation costs of septic tanks. The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas. In other words, the city rearranged its wastewater routes to fit the shape of the town.\n\nBut under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+            "issue": "区域設定の見直しを「町の形に合わせた」結果と説明していますが、その理由・因果関係はLedgerにありません。 / 区域見直しの理由を「町の形に合わせること」としていますが、Ledgerが示す理由は維持管理費の増加と使用料収入の減少です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.4"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Kitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.\n\nAs a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks. The city also plans to provide extra subsidies for the installation costs of septic tanks. The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas. In other words, the city rearranged its wastewater routes to fit the shape of the town.\n\nBut under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+            "issue": "約50万kmという数値は合っていますが、Ledgerの対象範囲である「都市下水路を除く」が示されていません。 / 全国の下水道管路の対象範囲から都市下水路を除くという限定が示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks. The city also plans to provide extra subsidies for the installation costs of septic tanks. The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas. In other words, the city rearranged its wastewater routes to fit the shape of the town.\n\nBut under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.\n\nAccording to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years. In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent. Pipes do not become unusable as soon as they pass 50 years. Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Pipes do not become unusable as soon as they pass 50 years.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "Pipes do not become unusable as soon as they pass 50 years.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.\n\nAccording to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years. In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent. Pipes do not become unusable as soon as they pass 50 years. Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.\n\nIn other words, this is not only about repairing pipes. It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "Pipes do not become unusable as soon as they pass 50 years.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+            "issue": "地域条件に応じた方式選択は支えられますが、「Towns are rethinking」と複数の町で現在再考が進んでいるという範囲・時期の主張はLedgerで直接支えられていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In other words, this is not only about repairing pipes. It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.\n\n## In one line\nTowns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+            "issue": "都市下水路を除くという集計範囲の限定が示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S6.3); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.3"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks. The city also plans to provide extra subsidies for the installation costs of septic tanks. The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas. In other words, the city rearranged its wastewater routes to fit the shape of the town.\n\nBut under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.\n\nAccording to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years. In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent. Pipes do not become unusable as soon as they pass 50 years. Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+            "issue": "前段の集計範囲に都市下水路を除く限定がなく、将来推計の対象範囲も明示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S7.1); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.1"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.\n\nAccording to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years. In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent. Pipes do not become unusable as soon as they pass 50 years. Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.\n\nIn other words, this is not only about repairing pipes. It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+          "origin": null,
+          "related_fact_id": "F-001",
+          "dev": {
+            "claim_in_article": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+            "issue": "将来推計の対象範囲に都市下水路を除く限定が示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "F-001",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "F-001"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.\n\nAccording to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years. In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent. Pipes do not become unusable as soon as they pass 50 years. Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.\n\nIn other words, this is not only about repairing pipes. It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-001",
+            "claim_text": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In areas where homes are close together, collective treatment, such as a public sewer system, can be more economical.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "In areas where homes are close together, collective treatment, such as a public sewer system, can be more economical.",
+            "issue": "集合処理の説明に、住宅を地下管で接続して一緒に処理するという具体的な仕組みが加わっていますが、Ledgerで直接確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The important thing here is not deciding which one is stronger. It is choosing which player will take part based on the shape of the town.\n\nIn areas where homes are close together, collective treatment, such as a public sewer system, can be more economical. In areas where homes are spread out, septic tanks installed at each home may be better. Combined-treatment septic tanks do not handle only toilet water. They also take in water from kitchens, baths, and laundry, and treat it using the work of microorganisms. They are small facilities, but they do a full job.\n\nKitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "In areas where homes are close together, collective treatment, such as a public sewer system, can be more economical.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The other is combined-treatment septic tanks that work near each home.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "The other is combined-treatment septic tanks that work near each home.",
+            "issue": "Ledgerが示すのは地域条件によって浄化槽が経済的に有利になり得ることですが、「better」は経済性以外も含む広い優位性を述べています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In areas where homes are spread out, septic tanks installed at each home may be better."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Two Teams for a Town’s Wastewater\n\nIn the world of wastewater, there are two players. One is collective treatment, which connects homes with underground pipes and treats the wastewater together. The other is combined-treatment septic tanks that work near each home.\n\nThe important thing here is not deciding which one is stronger. It is choosing which player will take part based on the shape of the town.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-007",
+            "claim_text": "The other is combined-treatment septic tanks that work near each home.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+            "issue": "Ledgerが示すのは地域条件によって浄化槽が経済的に有利になり得ることですが、「better」は経済性以外も含む広い優位性を述べています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In areas where homes are spread out, septic tanks installed at each home may be better."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Kitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.\n\nAs a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks. The city also plans to provide extra subsidies for the installation costs of septic tanks. The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas. In other words, the city rearranged its wastewater routes to fit the shape of the town.\n\nBut under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+              "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+            ],
+            "batch_cost_jpy": 0.1844,
+            "batch_n_claims": 14
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 14,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-007",
+          "claim_text": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-005",
+          "claim_text": "Combined-treatment septic tanks do not handle only toilet water.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "Pipes do not become unusable as soon as they pass 50 years.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-001",
+          "claim_text": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "In areas where homes are close together, collective treatment, such as a public sewer system, can be more economical.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-007",
+          "claim_text": "The other is combined-treatment septic tanks that work near each home.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3",
+            "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+          ],
+          "batch_cost_jpy": 0.1844,
+          "batch_n_claims": 14
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6776,
+      "usage": {
+        "input_tokens": 7949,
+        "cached_input_tokens": 0,
+        "output_tokens": 7049,
+        "reasoning_tokens": 1839
+      },
+      "elapsed_seconds": 45.536,
+      "prompt_sha256": "f2e3a1db8f04aef5c64c0ef20c4205f1650e0c4557d5bba0be1ba34ddb02ded9",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6891,
+      "usage": {
+        "input_tokens": 7578,
+        "cached_input_tokens": 0,
+        "output_tokens": 7269,
+        "reasoning_tokens": 4715
+      },
+      "elapsed_seconds": 57.141,
+      "prompt_sha256": "cc88d874662ac41b8733711f2550ec067aeb4c352fe247da2b65a889b0b0965a",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4507,
+      "usage": {
+        "input_tokens": 8236,
+        "cached_input_tokens": 0,
+        "output_tokens": 4099,
+        "reasoning_tokens": 2475
+      },
+      "elapsed_seconds": 34.851,
+      "prompt_sha256": "4f910fc730a83334a4089369b6bf00582db2271a28d482d686e802ac2867caf2",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4071,
+      "usage": {
+        "input_tokens": 14060,
+        "cached_input_tokens": 0,
+        "output_tokens": 2378,
+        "reasoning_tokens": 2043
+      },
+      "elapsed_seconds": 24.359,
+      "prompt_sha256": "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1618,
+      "usage": {
+        "input_tokens": 8493,
+        "cached_input_tokens": 0,
+        "output_tokens": 364,
+        "reasoning_tokens": 287
+      },
+      "elapsed_seconds": 5.265,
+      "prompt_sha256": "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.134,
+      "usage": {
+        "input_tokens": 14060,
+        "cached_input_tokens": 14057,
+        "output_tokens": 1427,
+        "reasoning_tokens": 1078
+      },
+      "elapsed_seconds": 15.746,
+      "prompt_sha256": "a8965a32272317d744c4e9fd39d3e743574e42b9ed08778110ea833c3875dae3"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0504,
+      "usage": {
+        "input_tokens": 8493,
+        "cached_input_tokens": 8490,
+        "output_tokens": 472,
+        "reasoning_tokens": 395
+      },
+      "elapsed_seconds": 4.972,
+      "prompt_sha256": "6c8bb5b262da5d8f770986a65799bb0d5d9d74594fae01225b14eeeed2f039a7"
+    }
+  ],
+  "total_cost_jpy": 2.5707,
+  "total_calls": 7,
+  "elapsed_seconds": 187.915,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "集合処理の説明に、住宅を地下管で接続して一緒に処理するという具体的な仕組みが加わっていますが、Ledgerで直接確認できません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "Ledgerが示すのは地域条件によって浄化槽が経済的に有利になり得ることですが、「better」は経済性以外も含む広い優位性を述べています。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Combined-treatment septic tanks do not handle only toilet water.",
+        "related_fact_id": "F-005",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "「everyone」を地下管接続の対象としていたかのように述べ、従来の方式からの変更を一般化しています。Ledgerが示すのは喜多方市の集合処理区域外の計画変更です。 / 集合処理区域が残る計画であるにもかかわらず、「everyone」を地下管路につなぐ方式から変わると表現し、従来の対象を拡大しています。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "区域設定の見直しを「町の形に合わせた」結果と説明していますが、その理由・因果関係はLedgerにありません。 / 区域見直しの理由を「町の形に合わせること」としていますが、Ledgerが示す理由は維持管理費の増加と使用料収入の減少です。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "約50万kmという数値は合っていますが、Ledgerの対象範囲である「都市下水路を除く」が示されていません。 / 全国の下水道管路の対象範囲から都市下水路を除くという限定が示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Pipes do not become unusable as soon as they pass 50 years.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "地域条件に応じた方式選択は支えられますが、「Towns are rethinking」と複数の町で現在再考が進んでいるという範囲・時期の主張はLedgerで直接支えられていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "都市下水路を除くという集計範囲の限定が示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S6.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "前段の集計範囲に都市下水路を除く限定がなく、将来推計の対象範囲も明示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S7.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+        "related_fact_id": "F-001",
+        "origin": null,
+        "issue": "将来推計の対象範囲に都市下水路を除く限定が示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 23,
+      "n_model_entries": 21,
+      "n_targets": 17,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 8,
+      "n_excluded_entries": 9,
+      "n_excluded_with_changed_number": 1,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4507,
+          "usage": {
+            "input_tokens": 8236,
+            "cached_input_tokens": 0,
+            "output_tokens": 4099,
+            "reasoning_tokens": 2475
+          },
+          "elapsed_seconds": 34.851,
+          "prompt_sha256": "4f910fc730a83334a4089369b6bf00582db2271a28d482d686e802ac2867caf2",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4507,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Two Teams for a Town’s Wastewater",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しの比喩的な表現で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "In the world of wastewater, there are two players.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「二人のプレーヤー」は記事内の方式を紹介する比喩的な導入で、排他的な分類を事実として主張していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "集合処理が地下管で住宅をつなぎ排水をまとめて処理するという具体的な仕組みは、Ledgerに裏付けがない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S2.1",
+          "claim": "The important thing here is not deciding which one is stronger.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "どちらが優れているかを論点にしないという論評で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.2",
+          "claim": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "F-007が示すのは分散地域で浄化槽が経済的に有利になり得ることだが、記事は「better」と基準を広げており、経済性という限定も示していない（scope・qualifier mismatch）。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.5",
+          "claim": "They are small facilities, but they do a full job.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「小さいが十分な仕事をする」は浄化槽の働きを印象的に表す修辞で、具体的な性能を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.3",
+          "claim": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "F-012は区域再編を裏付けるが、従来「全員」を管で接続する方針だったという記載はなく、変更前後の範囲を広げている（scope・qualifier mismatch）。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C8",
+          "key": "S5.4",
+          "claim": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "市が構想を見直したことはF-012と一致するが、「町の形に合わせるため」という理由はLedgerに示されておらず、見直しの限定・理由を変えている（qualifier mismatch）。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S6.2",
+          "claim": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "約50万kmと令和6年度末は一致するが、F-001の対象は都市下水路を除く全国の下水道管路であり、その対象限定を落としている（scope・qualifier mismatch）。",
+          "fact_tags": [
+            "number",
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S8.1",
+          "claim": "In other words, this is not only about repairing pipes.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "修繕だけではないという論旨の転換で、独立した具体的事実を追加していない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S8.2",
+          "claim": "It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "大きなチーム・小さなチームという比喩を用いた提言的な締めで、具体的事実を追加していない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "L1",
+          "claim": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "地域条件に応じた方式選択はF-007と整合するが、「towns」が広く再考しているという一般的傾向はLedgerに裏付けられず、主体・範囲・限定を広げている（actor・scope・qualifier mismatch）。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C13",
+          "key": "R:S4.4+S5.1",
+          "claim": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "喜多方市が構想見直し後、集合処理区域外を合併処理浄化槽による個別処理区域としたというF-012の内容に一致する。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C14",
+          "key": "S6.3",
+          "claim": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "約4万km・約7％・50年という数値は一致するが、全国の下水道管路のうち都市下水路を除くというF-001の対象限定が落ちている（scope・qualifier mismatch）。",
+          "fact_tags": [
+            "number"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C15",
+          "key": "S7.1",
+          "claim": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "約11万km・約22％・10年後という推計は一致し、推計主体も合うが、F-001の対象（都市下水路を除く全国の下水道管路）の限定が示されていない（scope・qualifier mismatch）。",
+          "fact_tags": [
+            "number",
+            "date",
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C16",
+          "key": "S7.2",
+          "claim": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "約23万km・約45％・20年後という数値は一致するが、F-001の対象（都市下水路を除く全国の下水道管路）の限定が示されていない（scope・qualifier mismatch）。",
+          "fact_tags": [
+            "number",
+            "date"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C17",
+          "key": "S7.4",
+          "claim": "Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人口減少による使用料収入の減少と老朽施設の更新費増大が下水道事業の経営環境を厳しくするというF-003の要因関係に一致する。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "4f910fc730a83334a4089369b6bf00582db2271a28d482d686e802ac2867caf2"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 39,
+    "n_judged_units": 30,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.4+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 20,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S4.4+S5.1",
+          "S1.1",
+          "S1.2",
+          "S2.1",
+          "S3.2",
+          "S3.3",
+          "S3.5",
+          "S5.3",
+          "S5.4",
+          "S6.2",
+          "S7.3",
+          "S8.1",
+          "S8.2",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.4": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.4+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6776,
+            "usage": {
+              "input_tokens": 7949,
+              "cached_input_tokens": 0,
+              "output_tokens": 7049,
+              "reasoning_tokens": 1839
+            },
+            "elapsed_seconds": 45.536,
+            "prompt_sha256": "f2e3a1db8f04aef5c64c0ef20c4205f1650e0c4557d5bba0be1ba34ddb02ded9",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "CANDIDATE",
+          "S2.2": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S3.5": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S4.4": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S5.4": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "CANDIDATE",
+          "S6.3": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.4+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Two Teams for a Town’s Wastewater",
+            "span": [
+              0,
+              35
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "下水道と浄化槽を「二つのチーム」とする枠組みは比喩的な要約であり、Ledgerがこの二分法を示しているとは確認できません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "# Two Teams for a Town’s Wastewater"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "In the world of wastewater, there are two players.",
+            "span": [
+              37,
+              87
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "下水処理の選択肢を二つに限定する断定はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": true,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "In the world of wastewater, there are two players."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+            "span": [
+              88,
+              196
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "集合処理の説明に、住宅を地下管で接続して一緒に処理するという具体的な仕組みが加わっていますが、Ledgerで直接確認できません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "The important thing here is not deciding which one is stronger.",
+            "span": [
+              269,
+              332
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "どちらが「強い」かを決めることが重要でないという評価は、Ledgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "The important thing here is not deciding which one is stronger."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+            "span": [
+              527,
+              614
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerが示すのは地域条件によって浄化槽が経済的に有利になり得ることですが、「better」は経済性以外も含む広い優位性を述べています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "In areas where homes are spread out, septic tanks installed at each home may be better."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Combined-treatment septic tanks do not handle only toilet water.",
+            "span": [
+              615,
+              679
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-005"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.5",
+            "unit_ids": [
+              "S3.5"
+            ],
+            "claim_text": "They are small facilities, but they do a full job.",
+            "span": [
+              786,
+              836
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "施設が小さいこと、および「full job」を果たすという評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-005"
+            ],
+            "model_claim": "They are small facilities, but they do a full job."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+            "span": [
+              1362,
+              1485
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「everyone」を地下管接続の対象としていたかのように述べ、従来の方式からの変更を一般化しています。Ledgerが示すのは喜多方市の集合処理区域外の計画変更です。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+            "span": [
+              1486,
+              1573
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "区域設定の見直しを「町の形に合わせた」結果と説明していますが、その理由・因果関係はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "In other words, the city rearranged its wastewater routes to fit the shape of the town."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+            "span": [
+              1641,
+              1728
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "約50万kmという数値は合っていますが、Ledgerの対象範囲である「都市下水路を除く」が示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Pipes do not become unusable as soon as they pass 50 years.",
+            "span": [
+              2109,
+              2168
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "In other words, this is not only about repairing pipes.",
+            "span": [
+              2311,
+              2366
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "問題が単なる管路修繕にとどまらないというまとめは、Ledgerに直接述べられていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "In other words, this is not only about repairing pipes."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.",
+            "span": [
+              2367,
+              2503
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "地域に合う方式を選ぶ一般論に加え、集合処理施設を地下、個別の小規模施設を各戸の近くに配置するという新たな主張があります。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+            "span": [
+              2520,
+              2635
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "地域条件に応じた方式選択は支えられますが、「Towns are rethinking」と複数の町で現在再考が進んでいるという範囲・時期の主張はLedgerで直接支えられていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions."
+          },
+          {
+            "unit_id": "R:S4.4+S5.1",
+            "unit_ids": [
+              "R:S4.4+S5.1"
+            ],
+            "claim_text": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+            "span": [
+              1129,
+              1270
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは喜多方市が構想を見直し、その後の区域設定を示していますが、直前の見直しが当該区域指定を引き起こしたという因果関係までは明示していません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "Based on these facts, the city reviewed its wastewater treatment plan. As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S5.3",
+          "S5.4",
+          "S6.2",
+          "S6.3",
+          "S7.1",
+          "S7.2",
+          "S7.4"
+        ],
+        "unit_status": {
+          "S6.2": "DEVIATION",
+          "S6.3": "DEVIATION",
+          "S7.1": "DEVIATION",
+          "S7.2": "DEVIATION",
+          "S7.3": "MATCH",
+          "S7.4": "DEVIATION",
+          "S3.3": "MATCH",
+          "S3.4": "MATCH",
+          "S2.2": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "L1": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S4.4": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "DEVIATION",
+          "S5.4": "DEVIATION",
+          "R:S4.4+S5.1": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S2.1": "UNMENTIONED",
+          "S3.5": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S8.1": "UNMENTIONED",
+          "S8.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.6891,
+            "usage": {
+              "input_tokens": 7578,
+              "cached_input_tokens": 0,
+              "output_tokens": 7269,
+              "reasoning_tokens": 4715
+            },
+            "elapsed_seconds": 57.141,
+            "prompt_sha256": "cc88d874662ac41b8733711f2550ec067aeb4c352fe247da2b65a889b0b0965a",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+            "span": [
+              1641,
+              1728
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "全国の下水道管路の対象範囲から都市下水路を除くという限定が示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+            "span": [
+              1729,
+              1838
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "都市下水路を除くという集計範囲の限定が示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+            "span": [
+              1840,
+              2024
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "前段の集計範囲に都市下水路を除く限定がなく、将来推計の対象範囲も明示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+            "span": [
+              2025,
+              2108
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "将来推計の対象範囲に都市下水路を除く限定が示されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent."
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.",
+            "span": [
+              2169,
+              2309
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "維持管理・更新費の将来推計を、時期や推計としての限定なしに上昇中の事実として述べ、さらにサービス運営を難しくする因果関係を加えています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-002"
+            ],
+            "model_claim": "Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run."
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.",
+            "span": [
+              2169,
+              2309
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "国土交通省が特定の下水道事業について説明した要因関係を、出典を示さず下水道サービス全般に当てはまる事実として述べています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+            "span": [
+              1362,
+              1485
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "集合処理区域が残る計画であるにもかかわらず、「everyone」を地下管路につなぐ方式から変わると表現し、従来の対象を拡大しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas."
+          },
+          {
+            "unit_id": "S5.4",
+            "unit_ids": [
+              "S5.4"
+            ],
+            "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+            "span": [
+              1486,
+              1573
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "区域見直しの理由を「町の形に合わせること」としていますが、Ledgerが示す理由は維持管理費の増加と使用料収入の減少です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "In other words, the city rearranged its wastewater routes to fit the shape of the town."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S5.3",
+        "S5.4",
+        "S6.2"
+      ],
+      "r3_only": [
+        "L1",
+        "R:S4.4+S5.1",
+        "S1.1",
+        "S1.2",
+        "S2.1",
+        "S3.2",
+        "S3.3",
+        "S3.5",
+        "S7.3",
+        "S8.1",
+        "S8.2",
+        "T"
+      ],
+      "r5_only": [
+        "S6.3",
+        "S7.1",
+        "S7.2",
+        "S7.4"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+        "span": [
+          88,
+          196
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "集合処理の説明に、住宅を地下管で接続して一緒に処理するという具体的な仕組みが加わっていますが、Ledgerで直接確認できません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "One is collective treatment, which connects homes with underground pipes and treats the wastewater together."
+        ]
+      },
+      {
+        "claim_text": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+        "span": [
+          527,
+          614
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerが示すのは地域条件によって浄化槽が経済的に有利になり得ることですが、「better」は経済性以外も含む広い優位性を述べています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "In areas where homes are spread out, septic tanks installed at each home may be better."
+        ]
+      },
+      {
+        "claim_text": "Combined-treatment septic tanks do not handle only toilet water.",
+        "span": [
+          615,
+          679
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-005"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+        "span": [
+          1362,
+          1485
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「everyone」を地下管接続の対象としていたかのように述べ、従来の方式からの変更を一般化しています。Ledgerが示すのは喜多方市の集合処理区域外の計画変更です。",
+          "集合処理区域が残る計画であるにもかかわらず、「everyone」を地下管路につなぐ方式から変わると表現し、従来の対象を拡大しています。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-012"
+        ],
+        "model_claims": [
+          "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas."
+        ]
+      },
+      {
+        "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+        "span": [
+          1486,
+          1573
+        ],
+        "unit_ids": [
+          "S5.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "区域設定の見直しを「町の形に合わせた」結果と説明していますが、その理由・因果関係はLedgerにありません。",
+          "区域見直しの理由を「町の形に合わせること」としていますが、Ledgerが示す理由は維持管理費の増加と使用料収入の減少です。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-012"
+        ],
+        "model_claims": [
+          "In other words, the city rearranged its wastewater routes to fit the shape of the town."
+        ]
+      },
+      {
+        "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+        "span": [
+          1641,
+          1728
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "約50万kmという数値は合っていますが、Ledgerの対象範囲である「都市下水路を除く」が示されていません。",
+          "全国の下水道管路の対象範囲から都市下水路を除くという限定が示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": [
+          "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024."
+        ]
+      },
+      {
+        "claim_text": "Pipes do not become unusable as soon as they pass 50 years.",
+        "span": [
+          2109,
+          2168
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+        "span": [
+          2520,
+          2635
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "地域条件に応じた方式選択は支えられますが、「Towns are rethinking」と複数の町で現在再考が進んでいるという範囲・時期の主張はLedgerで直接支えられていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions."
+        ]
+      },
+      {
+        "claim_text": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+        "span": [
+          1729,
+          1838
+        ],
+        "unit_ids": [
+          "S6.3"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "都市下水路を除くという集計範囲の限定が示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": [
+          "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years."
+        ]
+      },
+      {
+        "claim_text": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+        "span": [
+          1840,
+          2024
+        ],
+        "unit_ids": [
+          "S7.1"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "前段の集計範囲に都市下水路を除く限定がなく、将来推計の対象範囲も明示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": [
+          "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years."
+        ]
+      },
+      {
+        "claim_text": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+        "span": [
+          2025,
+          2108
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "将来推計の対象範囲に都市下水路を除く限定が示されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-001"
+        ],
+        "model_claims": [
+          "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent."
+        ]
+      }
+    ],
+    "n_union_candidates": 11,
+    "n_model_candidates": 9,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.3667,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 21,
+    "n_targets": 17,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 8,
+    "n_excluded_entries": 9,
+    "n_excluded_with_changed_number": 1,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4507,
+    "effort": "medium",
+    "prompt_sha256": "4f910fc730a83334a4089369b6bf00582db2271a28d482d686e802ac2867caf2"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

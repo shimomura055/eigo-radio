@@ -1,0 +1,41 @@
+[
+ {
+  "slug": "space_weapons", "rep": 1, "variant": "P2",
+  "brief_facts": ["F-001","F-011","F-012","F-013"],
+  "fact_errors": {"subject":0,"object":0,"scope":1,"time":0,"negation":0,"causal":0,"added_fact":0},
+  "fact_errors_total": 1,
+  "direction_facts": [],
+  "direction_facts_note": "watchlist上★なし。参考(非★): F-001=正しい, F-011/F-012=正しい, F-013=正しい(「さらに幅広い」の比較のみ曖昧)",
+  "regressions": 0,
+  "ja_en_meaning_changes": 1,
+  "checker": {"final_state":"RESOLVED_STAGE2_DOWNGRADE","cycles":1,"rewrite":false,"false_accept":0},
+  "residual_issues": ["「守る側のメニューはさらに幅広い」(台帳外の比較、R0から残存、Checker QUALITY検出のみ)","EN進行形was deployingと後文had deployedの時制ゆれ(軽微)","Make them movableの代名詞曖昧(軽微)"]
+ },
+ {
+  "slug": "space_weapons", "rep": 2, "variant": "P2",
+  "brief_facts": ["F-001","F-002","F-011"],
+  "fact_errors": {"subject":0,"object":0,"scope":2,"time":0,"negation":1,"causal":1,"added_fact":1},
+  "fact_errors_total": 5,
+  "fact_errors_basis": "EN最終(Checker Rewrite後)。JA R2=object1/scope3/negation1/causal1/added1=7、EN Checker前=7(Rewriteでobject1・scope1が解消)",
+  "fact_errors_ja_r2": {"subject":0,"object":1,"scope":3,"time":0,"negation":1,"causal":1,"added_fact":1},
+  "direction_facts": [],
+  "direction_facts_note": "watchlist上★なし。参考(非★): F-001=JA重大誤読/EN最終は曖昧, F-002=正しい(直前の背景文は曖昧), F-011=曖昧",
+  "regressions": 2,
+  "r0_to_r2_meaning_changes": 3,
+  "ja_en_divergence_after_rewrite_sentences": 4,
+  "checker": {"final_state":"RESOLVED_REWRITE_THEN_DOWNGRADE","cycles":5,"rewrite":true,"rewrite_cycles":[1,2,3],"false_accept":2},
+  "residual_issues": ["JA R2にF-001対象の拡大(宇宙・通信・地上をまとめて守る仕組みを認めた)と「初めて表に出た」が残存(Checker対象外)","space controlとcounterspaceの「でも」接続による混同(JA/EN)","背景=ロシアの対衛星能力+なぜ今の因果断定(Checker QUALITYのみ、過小)","In one lineの「defense, not a space war」(ACCEPTABLEで通過、本文同趣旨はBLOCKING修正済みで判定ゆれ)","Rewrite由来の文法不自然(What is noteworthy is [A]. It is that [B].)","具体的システム名等「開示されなかった」断定(QUALITY)"]
+ },
+ {
+  "slug": "space_weapons", "rep": 1, "variant": "control(従来版・参考)",
+  "brief_facts": ["F-001","F-002","F-011"],
+  "fact_errors": {"subject":0,"object":0,"scope":0,"time":0,"negation":0,"causal":1,"added_fact":1},
+  "fact_errors_total": 2,
+  "fact_errors_basis": "EN最終(Rewrite後)。JA R2=causal1/added2=3",
+  "direction_facts": [],
+  "direction_facts_note": "watchlist上★なし。参考(非★): F-001/F-002/F-011=正しい",
+  "regressions": 0,
+  "checker": {"final_state":"RESOLVED_REWRITE_THEN_DOWNGRADE","cycles":3,"rewrite":true,"rewrite_cycles":[1],"false_accept":0},
+  "residual_issues": ["JA R2に「地上設備が衛星へ指示を送る」等の台帳外説明が残存(ENはRewriteで除去)","通信妨害の効果の因果(could付き、ACCEPTABLE)"]
+ }
+]

@@ -1,0 +1,20 @@
+# Two Teams for a Town’s Wastewater
+
+In the world of wastewater, there are two players. One is collective treatment, which connects homes with underground pipes and treats the wastewater together. The other is combined-treatment septic tanks that work near each home.
+
+The important thing here is not deciding which one is stronger. It is choosing which player will take part based on the shape of the town.
+
+In areas where homes are close together, collective treatment, such as a public sewer system, can be more economical. In areas where homes are spread out, septic tanks installed at each home may be better. Combined-treatment septic tanks do not handle only toilet water. They also take in water from kitchens, baths, and laundry, and treat it using the work of microorganisms. They are small facilities, but they do a full job.
+
+Kitakata City actually reviewed this choice of system. As its facilities grew older, the costs of maintenance, including renewal, were rising. At the same time, a falling population was reducing revenue from user fees. Based on these facts, the city reviewed its wastewater treatment plan.
+
+As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks. The city also plans to provide extra subsidies for the installation costs of septic tanks. The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas. In other words, the city rearranged its wastewater routes to fit the shape of the town.
+
+But under the ground across Japan, another clock is also running. The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024. Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.
+
+According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years. In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent. Pipes do not become unusable as soon as they pass 50 years. Even so, falling revenue caused by population decline and rising costs to renew old facilities make sewerage services more difficult to run.
+
+In other words, this is not only about repairing pipes. It is about choosing a system that fits the town and placing the large team underground and the small teams near homes in the right way.
+
+## In one line
+Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.

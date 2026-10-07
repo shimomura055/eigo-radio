@@ -1,0 +1,4612 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+            "issue": "Ledgerはすべての貨物に20％の率で償還を求める投稿を確認していますが、貨物が費用を「分担する」仕組みや算定基礎は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.\n\nA reimbursement fee is money meant to recover what the United States spends to provide security. In other words, the plan was to have all cargo passing through the strait share the cost at the same rate. There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.\n\nThis is where things suddenly changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "issue": "提案段階で徴収制度が確立していなかったことは読み取れますが、「large system」という制度規模の評価はLedgerにありません。 / 「large system」とする制度の規模・設計はLedgerに記載されていない。 / 提案の具体的な制度設計は示されていないため、「large system」とする規模・設計は裏付けられていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "HF-003",
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.\n\nA reimbursement fee is money meant to recover what the United States spends to provide security. In other words, the plan was to have all cargo passing through the strait share the cost at the same rate. There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.\n\nThis is where things suddenly changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S5.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is where things suddenly changed.\n\nOn the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The key point in this news is not that the fee changed.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The key point in this news is not that the fee changed.",
+            "issue": "ニュースの「重要な点」が何かという評価・順位付けはLedgerにありません。 / 提案は撤回され、別の案件に置き換えられたため、「料金が変わったわけではない」とする否定はLedgerの記述と食い違う。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The key point in this news is not that the fee changed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "It is that the very idea of collecting a fee moved to a different setting.",
+            "issue": "Ledgerは20％償還料を貿易・投資案件に置き換えたと述べていますが、「料金を徴収するという考え自体」が別の場に移ったという表現は置換内容を変えています。 / 料金徴収の考え自体が別の場に移ったという関係はLedgerにない。Ledgerでは料金案が撤回され、貿易・投資案件に置き換えられた。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "Even when the issue is about providing security, there are two ways in.",
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "dev": {
+            "claim_in_article": "Even when the issue is about providing security, there are two ways in.",
+            "issue": "安全提供をめぐって二つの方法があるという一般的な整理はLedgerにありません。特に、貿易・投資案件が安全提供の別方式だとは確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "Even when the issue is about providing security, there are two ways in.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "The other is to use talks with the other country to lead to trade and investment.",
+            "issue": "他国との協議を通じて貿易・投資につなげるという因果関係はLedgerにありません。Ledgerでは、置換の決定が協議に基づくと説明されたにとどまります。 / 話し合いが貿易・投資をもたらすという因果関係はLedgerに記載されていない。また、対象を湾岸諸国以外の「他国」に広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "One is to charge cargo directly.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "One is to charge cargo directly.",
+            "issue": "「cargo directlyに課す」として支払義務者・徴収方法を特定しているが、Ledgerではその具体的な仕組みは示されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "BLOCKING",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "narrow_scope",
+          "rewrite_hint": "Checkerの指摘: cargo directlyに課すとして支払義務者・徴収方法を特定しているが、Ledgerではその具体的な仕組みは示されていない。 Ledgerのnotes_for_writer: 注意: 米国が20％通航料を導入したと確定形で書かず、提案した徴収方針を表明したとする。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。 fact_id=HF-003のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。 対象箇所: “One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment.” 「cargo directly」は、徴収方法が確認されていないのに直接課金の仕組みを加えているため、7月13日に全貨物への20％償還料が提案された一方、支払義務者や徴収方法は示されていなかったと範囲を限定してください（HF-003）。",
+          "floor_reason": "s1_second_opinion_blocking",
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "One is to charge cargo directly.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "BLOCKING",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": false,
+            "split": true,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11,
+            "hint_source": "checker_issue+ledger_notes_for_writer"
+          },
+          "span_resolution_cycle_start": {
+            "status": "resolved",
+            "lang": "EN",
+            "level": "L0",
+            "reason": null,
+            "ranges": [
+              "One is to charge cargo directly."
+            ],
+            "both_langs_ok": false,
+            "per_lang": {
+              "EN": {
+                "status": "ok",
+                "level": "L0"
+              }
+            },
+            "detail": null
+          },
+          "claim_span_text": "One is to charge cargo directly."
+        },
+        {
+          "claim_text": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.",
+            "issue": "Ledgerはすべての貨物に20％の率で償還を求める投稿を確認していますが、貨物が費用を「分担する」仕組みや算定基礎は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In international news, the main story of one day sometimes takes a different form the next day. This time, the setting is the Strait of Hormuz. The two ideas at the center were a toll booth and diplomatic talks, which were quite different from each other.\n\nFirst, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.\n\nA reimbursement fee is money meant to recover what the United States spends to provide security. In other words, the plan was to have all cargo passing through the strait share the cost at the same rate. There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "On July 13, the plan was to charge all cargo passing through the strait at the same rate.",
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "dev": {
+            "claim_in_article": "On July 13, the plan was to charge all cargo passing through the strait at the same rate.",
+            "issue": "Ledgerはすべての貨物に20％の率で償還を求める投稿を確認していますが、貨物が費用を「分担する」仕組みや算定基礎は示されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "On July 13, the plan was to charge all cargo passing through the strait at the same rate.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        },
+        {
+          "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+            "issue": "他国との協議を通じて貿易・投資につなげるという因果関係はLedgerにありません。Ledgerでは、置換の決定が協議に基づくと説明されたにとどまります。 / 話し合いが貿易・投資をもたらすという因果関係はLedgerに記載されていない。また、対象を湾岸諸国以外の「他国」に広げている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The other is to use talks with the other country to lead to trade and investment."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.\n\n## In one line\nA planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          }
+        }
+      ],
+      "blocking_count": 1,
+      "non_blocking_count": 10,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The key point in this news is not that the fee changed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-002",
+          "claim_text": "Even when the issue is about providing security, there are two ways in.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "One is to charge cargo directly.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "BLOCKING",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": false,
+          "split": true,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11,
+          "hint_source": "checker_issue+ledger_notes_for_writer"
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-003",
+          "claim_text": "On July 13, the plan was to charge all cargo passing through the strait at the same rate.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+          ],
+          "batch_cost_jpy": 0.336,
+          "batch_n_claims": 11
+        }
+      ],
+      "rewrite_records": [
+        {
+          "claim_identity": "fact:HF-003",
+          "rewrite_kind": "narrow_scope",
+          "mechanism": "single_text_local(E-2/delete-generic)",
+          "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+          "guard_ok": true,
+          "ladder_level_used": "1_word_connective",
+          "section_type": "body",
+          "target_not_locatable": false,
+          "ladder_exhausted_without_full_rewrite": false,
+          "span_unverified": false,
+          "handoff": {
+            "mode": "violation_span",
+            "checker_claim_text": "One is to charge cargo directly.",
+            "text_lang": "EN",
+            "resolution": {
+              "status": "resolved",
+              "lang": "EN",
+              "level": "L0",
+              "reason": null,
+              "detail": null,
+              "ranges": [
+                "One is to charge cargo directly."
+              ],
+              "raw_spans": [
+                [
+                  1674,
+                  1706
+                ]
+              ],
+              "spans": [
+                [
+                  1674,
+                  1706
+                ]
+              ],
+              "per_lang": {
+                "EN": {
+                  "status": "ok",
+                  "level": "L0"
+                }
+              },
+              "both_langs_ok": false,
+              "frag_levels": null,
+              "stripped": false
+            },
+            "level_attempts": [
+              {
+                "level": "1_word_connective",
+                "targets": [
+                  "One is to charge cargo directly."
+                ],
+                "target_equals_confirmed_ranges": true,
+                "revised": [
+                  "One is to propose a charge on cargo."
+                ],
+                "each_target_changed": [
+                  true
+                ],
+                "actor_guard_decision": [
+                  {
+                    "mode": "ag1_strict",
+                    "ok": true,
+                    "new_classes": []
+                  }
+                ],
+                "result": "success",
+                "before_after": [
+                  {
+                    "before": "One is to charge cargo directly.",
+                    "after": "One is to propose a charge on cargo."
+                  }
+                ]
+              }
+            ],
+            "level_used": "1_word_connective",
+            "span_unverified": false,
+            "problem_kind": "actor",
+            "levels_planned": [
+              "1_word_connective",
+              "3_sentence",
+              "4_paragraph"
+            ],
+            "levels_attempted": [
+              "1_word_connective"
+            ]
+          }
+        }
+      ],
+      "en_title_rewritten": false,
+      "quality_degradation_v2": {
+        "duplicate_paragraphs": [],
+        "duplicate_paragraph_detected": false,
+        "orphan_contrastive_paragraphs": [],
+        "orphan_contrastive_detected": false,
+        "stats_before": {
+          "avg_sentence_len": 15.76,
+          "difficult_word_ratio": 0.1066,
+          "word_count": 394
+        },
+        "stats_after": {
+          "avg_sentence_len": 15.84,
+          "difficult_word_ratio": 0.1061,
+          "word_count": 396
+        },
+        "sentence_len_increase": 0.08,
+        "difficulty_ratio_increase": -0.0005,
+        "fragment_stats_before": {
+          "avg_sentence_len": 6.0,
+          "difficult_word_ratio": 0.1667,
+          "word_count": 6
+        },
+        "fragment_stats_after": {
+          "avg_sentence_len": 8.0,
+          "difficult_word_ratio": 0.125,
+          "word_count": 8
+        },
+        "fragment_sentence_len_increase": 2.0,
+        "fragment_difficulty_ratio_increase": -0.0417,
+        "vocab_difficulty_increased_wholetext": false,
+        "vocab_difficulty_increased_fragment": false,
+        "vocab_difficulty_increased": false,
+        "title_changed": false,
+        "first_paragraph_changed": false,
+        "hook_or_title_changed": false,
+        "needs_regeneration": false,
+        "reasons": ""
+      },
+      "section_role_violation": {
+        "in_one_line_length_increase_ratio": 0.0,
+        "in_one_line_too_long": false,
+        "numbers_added_to_title": false,
+        "numbers_added_to_in_one_line": false,
+        "hook_word_count_before": 46,
+        "hook_word_count_after": 46,
+        "hook_shrank": false,
+        "hook_rhetorical_markers_lost": false,
+        "title_rhetorical_markers_lost": false,
+        "title_word_count_after": 10,
+        "title_degenerate": false,
+        "hook_degenerate": false,
+        "iol_degenerate": false,
+        "section_role_violated": false,
+        "reasons": ""
+      },
+      "quality_degradation_v2_regenerated": false,
+      "quality_degradation_en": {
+        "sentence_count_before": 25,
+        "sentence_count_after": 25,
+        "sentence_drop_rate": 0.0,
+        "hedge_word_count_before": 1,
+        "hedge_word_count_after": 1,
+        "hedge_word_increase": 0,
+        "paragraph_count_before": 11,
+        "paragraph_count_after": 11,
+        "paragraph_delta": 0,
+        "title_changed": false,
+        "degradation_candidate": false
+      },
+      "en_text_before_rewrite": "# The Strait’s Bill Became Business Talks the Next Day\n\nIn international news, the main story of one day sometimes takes a different form the next day. This time, the setting is the Strait of Hormuz. The two ideas at the center were a toll booth and diplomatic talks, which were quite different from each other.\n\nFirst, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.\n\nA reimbursement fee is money meant to recover what the United States spends to provide security. In other words, the plan was to have all cargo passing through the strait share the cost at the same rate. There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.\n\nThis is where things suddenly changed.\n\nOn the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.\n\n## In one line\nA planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+      "en_text_after_rewrite": "# The Strait’s Bill Became Business Talks the Next Day\n\nIn international news, the main story of one day sometimes takes a different form the next day. This time, the setting is the Strait of Hormuz. The two ideas at the center were a toll booth and diplomatic talks, which were quite different from each other.\n\nFirst, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.\n\nA reimbursement fee is money meant to recover what the United States spends to provide security. In other words, the plan was to have all cargo passing through the strait share the cost at the same rate. There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.\n\nThis is where things suddenly changed.\n\nOn the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to propose a charge on cargo. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.\n\n## In one line\nA planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+      "rewrite_new_precheck_findings_count": 0,
+      "full_recheck_required": true,
+      "full_recheck_required_reasons": [
+        "deterministic_floor_claim"
+      ],
+      "local_qa_fastpath_attempted": false,
+      "prior_issue_text_sources": [
+        "current_text"
+      ],
+      "recheck_coverage": {
+        "scope_ids": [
+          "S8.1",
+          "S8.2",
+          "S8.3"
+        ],
+        "changed_ids": [
+          "S8.2"
+        ],
+        "n_scope": 3,
+        "n_judged_units": 25,
+        "n_union_candidates": 2,
+        "n_calls": 2,
+        "total_cost_jpy": 0.6097,
+        "n_prior_claim_hits": 1,
+        "missing_after_rerun": [],
+        "api_failure": false,
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 3,
+          "n_targets": 2,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 0,
+          "n_excluded_entries": 0,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.2512,
+          "effort": "medium",
+          "prompt_sha256": "533221adbbe45ac895fb500bc24c5fbd6162ca30e3c27f489c2517b150972295"
+        }
+      },
+      "recheck_structural_pairs_n": 0,
+      "recheck_overall_status": "LEDGER_DEVIATION",
+      "recheck_all_prior_issues_resolved": true,
+      "recheck_prior_issues_resolved": [
+        {
+          "index": 0,
+          "resolved": true,
+          "explanation": "coverage scope recheck: no candidate for this issue",
+          "remaining_sentence": ""
+        }
+      ],
+      "recheck_prior_issues_resolved_by_index": {
+        "0": true
+      },
+      "recheck_prior_issues_sent_count": 1,
+      "recheck_merge": {
+        "decision": "NEXT_CYCLE",
+        "source": "recheck",
+        "merged_from": [
+          "recheck_major",
+          "recheck_major"
+        ],
+        "n_merged": 2,
+        "n_dedup_dropped": 0,
+        "reverify_deviation_without_major": false,
+        "merged_claims": [
+          {
+            "fact_id": "HF-007",
+            "claim": "Even when the issue is about providing security, there are two ways in.",
+            "label": "recheck_major"
+          },
+          {
+            "fact_id": "HF-007",
+            "claim": "The other is to use talks with the other country to lead to trade and investment.",
+            "label": "recheck_major"
+          }
+        ]
+      }
+    },
+    {
+      "cycle": 2,
+      "stage2_results": [
+        {
+          "claim_text": "Even when the issue is about providing security, there are two ways in.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Even when the issue is about providing security, there are two ways in.",
+            "issue": "二つのアプローチがいずれも安全保障問題への対応策であるという枠組みは、Ledgerに明記されていません。 / 貿易・投資案件への置換を、安全保障を提供するための別の方法として位置付けていますが、Ledgerはその関係を確認していません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to propose a charge on cargo. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 2,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Even when the issue is about providing security, there are two ways in.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "539afc3457f2d50f6fd21cd16c798837f11194c937c92b063229473d62347593"
+            ],
+            "batch_cost_jpy": 0.0987,
+            "batch_n_claims": 1
+          }
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+          "dev": {
+            "claim_in_article": "The other is to use talks with the other country to lead to trade and investment.",
+            "issue": "Ledgerは中東指導者との協議に基づく決定と、湾岸諸国との貿易・投資案件への置換を述べていますが、協議を使って貿易・投資につなげるという因果関係や、相手を単数の「他国」とすることは確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 2,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 2,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Even when the issue is about providing security, there are two ways in.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "539afc3457f2d50f6fd21cd16c798837f11194c937c92b063229473d62347593"
+          ],
+          "batch_cost_jpy": 0.0987,
+          "batch_n_claims": 1
+        }
+      ],
+      "exit_check": {
+        "cycle": 2,
+        "n_candidates": 7,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 25,
+        "total_cost_jpy": 0.5701,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 14,
+          "n_targets": 14,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 7,
+          "n_excluded_entries": 7,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.4148,
+          "effort": "medium",
+          "prompt_sha256": "0af194974995c71fcc389e17913203fd25781c53023e7aa6bc7df6daf2566942"
+        }
+      }
+    },
+    {
+      "cycle": 3,
+      "stage2_results": [
+        {
+          "claim_text": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "dev": {
+            "claim_in_article": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+            "issue": "商品輸送の費用が国同士の取引に変わり得るという一般化・可能性の主張は、Ledgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Even when the issue is about providing security, there are two ways in. One is to propose a charge on cargo. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.\n\n## In one line\nA planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 3,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "50d0bdf34c633f67698b3812ede2ea81e80dfd728ef7bd0167d964968f86bdf2"
+            ],
+            "batch_cost_jpy": 0.0319,
+            "batch_n_claims": 1
+          }
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-003",
+          "detected_by": "stage1_llm",
+          "local_context": "First, on July 13, Trump posted that he would seek a 20 percent fee on all cargo passing through the Strait of Hormuz.\n\nA reimbursement fee is money meant to recover what the United States spends to provide security. In other words, the plan was to have all cargo passing through the strait share the cost at the same rate. There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.\n\nThis is where things suddenly changed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-003",
+            "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+          "dev": {
+            "claim_in_article": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "issue": "料金制度の具体的な設計は示されていないとLedgerにあります。「large system」と、実施時に通過貨物全てを扱う具体的なシステムになるという記述は確認できません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "HF-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "On the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The key point in this news is not that the fee changed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "The key point in this news is not that the fee changed.",
+          "dev": {
+            "claim_in_article": "The key point in this news is not that the fee changed.",
+            "issue": "ニュースの「key point」についての評価・解釈であり、Ledgerが支える事実ではありません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "On the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee. Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. He explained that the decision was based on “very productive talks” with Middle Eastern leaders.\n\nThe key point in this news is not that the fee changed. It is that the very idea of collecting a fee moved to a different setting.\n\nOn July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+          "dev": {
+            "claim_in_article": "It is that the very idea of collecting a fee moved to a different setting.",
+            "issue": "料金徴収の考え方自体が別の場に移ったという解釈は、償還料案が貿易・投資案件に置き換えられたという事実を超えています。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-002",
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-002",
+            "claim_text": "Even when the issue is about providing security, there are two ways in.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "Even when the issue is about providing security, there are two ways in.",
+          "dev": {
+            "claim_in_article": "Even when the issue is about providing security, there are two ways in.",
+            "issue": "安全保障に関する対応には二つの方法があるという一般的な整理は、Ledgerに記載されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": true,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "related_fact_id": "HF-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.1"
+              ],
+              "related_fact_ids": [
+                "HF-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "On July 13, the plan was to charge all cargo passing through the strait at the same rate. But on July 14, it became a plan to promote trade and investment with the Gulf states. The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.\n\nEven when the issue is about providing security, there are two ways in. One is to charge cargo directly. The other is to use talks with the other country to lead to trade and investment. This post showed that the switch happened in one day.\n\nEven when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+          "dev": {
+            "claim_in_article": "The other is to use talks with the other country to lead to trade and investment.",
+            "issue": "他国との協議が貿易・投資につながるという因果的な説明はLedgerにありません。Ledgerが述べるのは、償還料案を湾岸諸国との貿易・投資案件に置き換えるという投稿です。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.3"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        },
+        {
+          "origin": null,
+          "related_fact_id": "HF-007",
+          "detected_by": "stage1_llm",
+          "local_context": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries. A toll booth at sea became a diplomatic table the next day. That sudden turn is what this news was about.\n\n## In one line\nA planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:HF-007",
+            "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+            ],
+            "batch_cost_jpy": 0.336,
+            "batch_n_claims": 11
+          },
+          "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "dev": {
+            "claim_in_article": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+            "issue": "料金案が貿易・投資「talks」になったという表現は、置き換え先の案件と指導者との協議を混同する可能性があります。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "HF-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "reused_nonblocking_verdict": true
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 7,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 3,
+          "route": "body",
+          "claim_identity": "fact:HF-007",
+          "claim_text": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "50d0bdf34c633f67698b3812ede2ea81e80dfd728ef7bd0167d964968f86bdf2"
+          ],
+          "batch_cost_jpy": 0.0319,
+          "batch_n_claims": 1
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5813,
+      "usage": {
+        "input_tokens": 5814,
+        "cached_input_tokens": 0,
+        "output_tokens": 6248,
+        "reasoning_tokens": 2135
+      },
+      "elapsed_seconds": 45.074,
+      "prompt_sha256": "4b3d869a16d08d50f948d843b1821d8ed958a0ca722d695ffa7354530e91d706",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.8842,
+      "usage": {
+        "input_tokens": 5442,
+        "cached_input_tokens": 0,
+        "output_tokens": 10184,
+        "reasoning_tokens": 7182
+      },
+      "elapsed_seconds": 78.142,
+      "prompt_sha256": "d33d6c8c92479782efd8cc4b053ab8ed0fa54f9d331a4470352fcb8f8b860202",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4996,
+      "usage": {
+        "input_tokens": 6260,
+        "cached_input_tokens": 0,
+        "output_tokens": 5117,
+        "reasoning_tokens": 3546
+      },
+      "elapsed_seconds": 42.0,
+      "prompt_sha256": "8acf3c995ebaea43282bd78ece57e2751045f09b5874cae448854354e0e7de5f",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.403,
+      "usage": {
+        "input_tokens": 11230,
+        "cached_input_tokens": 0,
+        "output_tokens": 2892,
+        "reasoning_tokens": 2582
+      },
+      "elapsed_seconds": 26.277,
+      "prompt_sha256": "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.336,
+      "usage": {
+        "input_tokens": 11230,
+        "cached_input_tokens": 11227,
+        "output_tokens": 4059,
+        "reasoning_tokens": 3641
+      },
+      "elapsed_seconds": 37.347,
+      "prompt_sha256": "c7cf5e5af73f0aea6a2a188a3a6e333c5763b2234c526c6e3d8b26c2fe69440c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_fact:HF-003_e1_minimal_word",
+      "recovery_stage": "stage3_rewrite",
+      "cost_jpy": 0.0993,
+      "usage": {
+        "input_tokens": 4759,
+        "cached_input_tokens": 0,
+        "output_tokens": 314,
+        "reasoning_tokens": 292
+      },
+      "elapsed_seconds": 4.564,
+      "prompt_sha256": "2d2217169131fb71b9bf8d4ae3550959ed7ab8c41a424661e76bbbc3ece92376"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r3",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.2116,
+      "usage": {
+        "input_tokens": 5711,
+        "cached_input_tokens": 0,
+        "output_tokens": 1555,
+        "reasoning_tokens": 1010
+      },
+      "elapsed_seconds": 12.793,
+      "prompt_sha256": "2877910a5d0c140f1f259f3dba8b43c190b5c2f1fe273fd4df4e73977494e1c9",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_r5v",
+      "recovery_stage": "stage1_recheck",
+      "cost_jpy": 0.3981,
+      "usage": {
+        "input_tokens": 5412,
+        "cached_input_tokens": 0,
+        "output_tokens": 3993,
+        "reasoning_tokens": 3478
+      },
+      "elapsed_seconds": 33.01,
+      "prompt_sha256": "a1ec94b5bd73022114b93055f5b6c304ab5762ca282663efc2a57e7803cf8bcb",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_c1_recheck_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.2512,
+      "usage": {
+        "input_tokens": 5486,
+        "cached_input_tokens": 0,
+        "output_tokens": 2105,
+        "reasoning_tokens": 1863
+      },
+      "elapsed_seconds": 17.815,
+      "prompt_sha256": "533221adbbe45ac895fb500bc24c5fbd6162ca30e3c27f489c2517b150972295",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c2_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2001,
+      "usage": {
+        "input_tokens": 9212,
+        "cached_input_tokens": 0,
+        "output_tokens": 709,
+        "reasoning_tokens": 658
+      },
+      "elapsed_seconds": 7.889,
+      "prompt_sha256": "539afc3457f2d50f6fd21cd16c798837f11194c937c92b063229473d62347593"
+    },
+    {
+      "label": "meta_run03_advanced_c2_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0987,
+      "usage": {
+        "input_tokens": 9212,
+        "cached_input_tokens": 9209,
+        "output_tokens": 1073,
+        "reasoning_tokens": 1022
+      },
+      "elapsed_seconds": 12.433,
+      "prompt_sha256": "539afc3457f2d50f6fd21cd16c798837f11194c937c92b063229473d62347593"
+    },
+    {
+      "label": "meta_run03_advanced_exit_r3",
+      "recovery_stage": "stage1_exit_check",
+      "cost_jpy": 0.5701,
+      "usage": {
+        "input_tokens": 5816,
+        "cached_input_tokens": 0,
+        "output_tokens": 6105,
+        "reasoning_tokens": 1913
+      },
+      "elapsed_seconds": 40.652,
+      "prompt_sha256": "e3985e3834807a1b053a65621c60690682a6d34c475274488720c51f706117a8",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_exit_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4148,
+      "usage": {
+        "input_tokens": 6045,
+        "cached_input_tokens": 0,
+        "output_tokens": 4079,
+        "reasoning_tokens": 2763
+      },
+      "elapsed_seconds": 33.257,
+      "prompt_sha256": "0af194974995c71fcc389e17913203fd25781c53023e7aa6bc7df6daf2566942",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c3_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1615,
+      "usage": {
+        "input_tokens": 9176,
+        "cached_input_tokens": 0,
+        "output_tokens": 224,
+        "reasoning_tokens": 173
+      },
+      "elapsed_seconds": 3.179,
+      "prompt_sha256": "50d0bdf34c633f67698b3812ede2ea81e80dfd728ef7bd0167d964968f86bdf2"
+    },
+    {
+      "label": "meta_run03_advanced_c3_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0319,
+      "usage": {
+        "input_tokens": 9176,
+        "cached_input_tokens": 9173,
+        "output_tokens": 222,
+        "reasoning_tokens": 171
+      },
+      "elapsed_seconds": 2.749,
+      "prompt_sha256": "50d0bdf34c633f67698b3812ede2ea81e80dfd728ef7bd0167d964968f86bdf2"
+    }
+  ],
+  "total_cost_jpy": 5.1414,
+  "total_calls": 15,
+  "elapsed_seconds": 397.278,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "Ledgerはすべての貨物に20％の率で償還を求める投稿を確認していますが、貨物が費用を「分担する」仕組みや算定基礎は示されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "提案段階で徴収制度が確立していなかったことは読み取れますが、「large system」という制度規模の評価はLedgerにありません。 / 「large system」とする制度の規模・設計はLedgerに記載されていない。 / 提案の具体的な制度設計は示されていないため、「large system」とする規模・設計は裏付けられていない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S5.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The key point in this news is not that the fee changed.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "ニュースの「重要な点」が何かという評価・順位付けはLedgerにありません。 / 提案は撤回され、別の案件に置き換えられたため、「料金が変わったわけではない」とする否定はLedgerの記述と食い違う。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_negation",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "It is that the very idea of collecting a fee moved to a different setting.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "Ledgerは20％償還料を貿易・投資案件に置き換えたと述べていますが、「料金を徴収するという考え自体」が別の場に移ったという表現は置換内容を変えています。 / 料金徴収の考え自体が別の場に移ったという関係はLedgerにない。Ledgerでは料金案が撤回され、貿易・投資案件に置き換えられた。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even when the issue is about providing security, there are two ways in.",
+        "related_fact_id": "HF-002",
+        "origin": null,
+        "issue": "安全提供をめぐって二つの方法があるという一般的な整理はLedgerにありません。特に、貿易・投資案件が安全提供の別方式だとは確認されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The other is to use talks with the other country to lead to trade and investment.",
+        "related_fact_id": "HF-007",
+        "origin": null,
+        "issue": "他国との協議を通じて貿易・投資につなげるという因果関係はLedgerにありません。Ledgerでは、置換の決定が協議に基づくと説明されたにとどまります。 / 話し合いが貿易・投資をもたらすという因果関係はLedgerに記載されていない。また、対象を湾岸諸国以外の「他国」に広げている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "One is to charge cargo directly.",
+        "related_fact_id": "HF-003",
+        "origin": null,
+        "issue": "「cargo directlyに課す」として支払義務者・徴収方法を特定しているが、Ledgerではその具体的な仕組みは示されていない。",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S8.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": [
+      {
+        "cycle": 1,
+        "deviations": [
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "Even when the issue is about providing security, there are two ways in.",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "issue": "二つのアプローチがいずれも安全保障問題への対応策であるという枠組みは、Ledgerに明記されていません。 / 貿易・投資案件への置換を、安全保障を提供するための別の方法として位置付けていますが、Ledgerはその関係を確認していません。",
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.1); severity is decided by Stage 2",
+            "true_flags": [
+              "changed_causality",
+              "changed_scope",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": null,
+            "passed_downstream": true
+          },
+          {
+            "severity": "MAJOR",
+            "claim_in_article": "The other is to use talks with the other country to lead to trade and investment.",
+            "related_fact_id": "HF-007",
+            "origin": null,
+            "issue": "Ledgerは中東指導者との協議に基づく決定と、湾岸諸国との貿易・投資案件への置換を述べていますが、協議を使って貿易・投資につなげるという因果関係や、相手を単数の「他国」とすることは確認できません。",
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+            "true_flags": [
+              "changed_actor",
+              "changed_causality",
+              "changed_scope",
+              "unsupported_new_claim"
+            ],
+            "enumeration_source_claim": false,
+            "same_fact_id_locations": null,
+            "passed_downstream": true
+          }
+        ],
+        "ja_deviations": null
+      }
+    ]
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 27,
+      "n_model_entries": 26,
+      "n_targets": 18,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 11,
+      "n_excluded_entries": 14,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4996,
+          "usage": {
+            "input_tokens": 6260,
+            "cached_input_tokens": 0,
+            "output_tokens": 5117,
+            "reasoning_tokens": 3546
+          },
+          "elapsed_seconds": 42.0,
+          "prompt_sha256": "8acf3c995ebaea43282bd78ece57e2751045f09b5874cae448854354e0e7de5f",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4996,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# The Strait’s Bill Became Business Talks the Next Day",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しの比喩的要約は、7月13日の料金案が翌14日に貿易・投資案件へ置き換えられたというHF-007と一致する。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "In international news, the main story of one day sometimes takes a different form the next day.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "国際ニュース一般についての導入的な一般論で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.3",
+          "claim": "The two ideas at the center were a toll booth and diplomatic talks, which were quite different from each other.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "二つの考え方を対比する記事上の枠付けで、独立した具体的事実を追加していない。",
+          "fact_tags": [
+            "number",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.2",
+          "claim": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "全貨物への20％案は裏付けられるが、貨物が費用を分担する仕組みまで述べており、Ledgerは具体的な算定・徴収設計を示していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.3",
+          "claim": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "未実施の案である点と全貨物という範囲は合うが、「大規模なシステム」として実施されるとの具体的な仕組みを追加している。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S4.1",
+          "claim": "This is where things suddenly changed.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "変化を示すつなぎの表現で、それ自体は具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S6.1",
+          "claim": "The key point in this news is not that the fee changed.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "料金案は翌日に撤回・置換されており、「料金が変わったのではない」とする否定はLedgerの記述と食い違う。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C8",
+          "key": "S6.2",
+          "claim": "It is that the very idea of collecting a fee moved to a different setting.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "料金徴収の考え自体が別の場へ移ったと表現しているが、Ledgerが確認するのは料金案を貿易・投資案件に置き換えたことであり、徴収案の継続ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C9",
+          "key": "S7.2",
+          "claim": "But on July 14, it became a plan to promote trade and investment with the Gulf states.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "7月14日に湾岸諸国との貿易・投資案件へ置き換えるとの投稿があったという要旨はHF-007と一致する。",
+          "fact_tags": [
+            "date",
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "S7.3",
+          "claim": "The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "20％の貨物料金案が翌日に国間のビジネス協議へ置き換わったという比喩的要約はHF-002とHF-007に沿う。",
+          "fact_tags": [
+            "number",
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C11",
+          "key": "S8.1",
+          "claim": "Even when the issue is about providing security, there are two ways in.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "セキュリティ費用に関する二つの実施方法があるとの一般化は、Ledgerが確認する料金案と置換発表の範囲を越えている。",
+          "fact_tags": [
+            "number"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C12",
+          "key": "S8.3",
+          "claim": "The other is to use talks with the other country to lead to trade and investment.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "協議を通じて貿易・投資を実現するという手段・因果関係は確認されておらず、Ledgerは置換の説明として協議に言及しただけである。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "mismatch",
+          "scope_match": "n_a",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C13",
+          "key": "S8.4",
+          "claim": "This post showed that the switch happened in one day.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "7月13日の提案から7月14日の置換発表までが翌日という時間関係はHF-002とHF-007に一致する。",
+          "fact_tags": [
+            "date"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C14",
+          "key": "S9.1",
+          "claim": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "国際的な取引の一般的な可能性を述べる修辞で、特定の事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C15",
+          "key": "S9.2",
+          "claim": "A toll booth at sea became a diplomatic table the next day.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "海上料金案が翌日に外交・貿易投資の協議へ移ったという比喩的表現はHF-007の要旨に沿う。",
+          "fact_tags": [
+            "date",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C16",
+          "key": "S9.3",
+          "claim": "That sudden turn is what this news was about.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "記事の主題を振り返る締めの表現で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C17",
+          "key": "L1",
+          "claim": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ホルムズ海峡の貨物料金案が翌日に貿易・投資協議へ置き換わったという要約はHF-007と一致する。",
+          "fact_tags": [
+            "date",
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C18",
+          "key": "S8.2",
+          "claim": "One is to charge cargo directly.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "貨物への料金案は確認されるが、貨物に直接請求する方法は徴収主体や方法を含む未提示の制度設計を追加している。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "8acf3c995ebaea43282bd78ece57e2751045f09b5874cae448854354e0e7de5f"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 35,
+    "n_judged_units": 25,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 12,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.3",
+          "S3.2",
+          "S3.3",
+          "S4.1",
+          "S5.3",
+          "S6.1",
+          "S6.2",
+          "S7.2",
+          "S7.3",
+          "S8.1",
+          "S8.3",
+          "S8.4",
+          "S9.1",
+          "S9.2",
+          "S9.3",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S4.1": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "CANDIDATE",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "S8.4": "CANDIDATE",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5813,
+            "usage": {
+              "input_tokens": 5814,
+              "cached_input_tokens": 0,
+              "output_tokens": 6248,
+              "reasoning_tokens": 2135
+            },
+            "elapsed_seconds": 45.074,
+            "prompt_sha256": "4b3d869a16d08d50f948d843b1821d8ed958a0ca722d695ffa7354530e91d706",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "CANDIDATE",
+          "S4.1": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S7.1": "SUPPORTED",
+          "S7.2": "CANDIDATE",
+          "S7.3": "CANDIDATE",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "S8.4": "CANDIDATE",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The Strait’s Bill Became Business Talks the Next Day",
+            "span": [
+              0,
+              54
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「fee」が「business talks」になったと述べていますが、Ledgerが確認するのは、提案された償還料が貿易・投資案件に置き換えられたことです。実際に料金徴収案が外交協議そのものになったという表現は、置換内容を変えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The Strait’s Bill Became Business Talks the Next Day"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "In international news, the main story of one day sometimes takes a different form the next day.",
+            "span": [
+              56,
+              151
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「ある日の主なニュースが翌日に別の形を取る」という一般的な主張と、今回の出来事をその例とする評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "In international news, the main story of one day sometimes takes a different form the next day."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "The two ideas at the center were a toll booth and diplomatic talks, which were quite different from each other.",
+            "span": [
+              200,
+              311
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「toll booth」と「diplomatic talks」が中心となる二つの考えだったという整理はLedgerに直接ありません。また、置換先は貿易・投資案件であり、「外交協議」と同一ではありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The two ideas at the center were a toll booth and diplomatic talks, which were quite different from each other."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+            "span": [
+              530,
+              636
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerはすべての貨物に20％の率で償還を求める投稿を確認していますが、貨物が費用を「分担する」仕組みや算定基礎は示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "span": [
+              637,
+              792
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "提案段階で徴収制度が確立していなかったことは読み取れますが、「large system」という制度規模の評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "This is where things suddenly changed.",
+            "span": [
+              794,
+              832
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "出来事が「突然」変わったという時間的評価はLedgerに直接確認されていません。Ledgerが示すのは7月13日の提案と7月14日の置換です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "This is where things suddenly changed."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+            "span": [
+              1049,
+              1145
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The key point in this news is not that the fee changed.",
+            "span": [
+              1147,
+              1202
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ニュースの「重要な点」が何かという評価・順位付けはLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The key point in this news is not that the fee changed."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+            "span": [
+              1203,
+              1277
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは20％償還料を貿易・投資案件に置き換えたと述べていますが、「料金を徴収するという考え自体」が別の場に移ったという表現は置換内容を変えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "It is that the very idea of collecting a fee moved to a different setting."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "But on July 14, it became a plan to promote trade and investment with the Gulf states.",
+            "span": [
+              1369,
+              1455
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは償還料案が貿易・投資案件に置き換えられたと確認していますが、それを「貿易・投資を促進する計画」と目的付ける表現は直接支えられていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "But on July 14, it became a plan to promote trade and investment with the Gulf states."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+            "span": [
+              1456,
+              1600
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "20％の「価格」が貿易協議に変わったという比喩は、提案された償還料が貿易・投資案件に置き換えられたというLedgerの記述と異なり、実際に協議へ転じたように読めます。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day."
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "Even when the issue is about providing security, there are two ways in.",
+            "span": [
+              1602,
+              1673
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "安全提供をめぐって二つの方法があるという一般的な整理はLedgerにありません。特に、貿易・投資案件が安全提供の別方式だとは確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "Even when the issue is about providing security, there are two ways in."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+            "span": [
+              1707,
+              1788
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "他国との協議を通じて貿易・投資につなげるという因果関係はLedgerにありません。Ledgerでは、置換の決定が協議に基づくと説明されたにとどまります。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The other is to use talks with the other country to lead to trade and investment."
+          },
+          {
+            "unit_id": "S8.4",
+            "unit_ids": [
+              "S8.4"
+            ],
+            "claim_text": "This post showed that the switch happened in one day.",
+            "span": [
+              1789,
+              1842
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「one day」は切替が24時間以内に起きたとの読みを生みますが、Ledger上の7月13日10時16分から7月14日11時4分までは約24時間48分です。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "This post showed that the switch happened in one day."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+            "span": [
+              1844,
+              1955
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "貨物輸送の費用が国同士の取引に変わり得るという一般化はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "A toll booth at sea became a diplomatic table the next day.",
+            "span": [
+              1956,
+              2015
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「海上の料金徴収所」が「外交のテーブル」になったという比喩は、提案された償還料が貿易・投資案件に置き換えられたという事実を、外交協議そのものへの転換として表しています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "A toll booth at sea became a diplomatic table the next day."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "That sudden turn is what this news was about.",
+            "span": [
+              2016,
+              2061
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ニュースの主題を「突然の転換」とする評価はLedgerに直接ありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "That sudden turn is what this news was about."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+            "span": [
+              2078,
+              2169
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「cargo fee」が翌日に「trade and investment talks」になったという表現は、償還料が貿易・投資案件に置き換えられたというLedgerの事実を、協議そのものへの転換として述べています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S3.3",
+          "S6.1",
+          "S6.2",
+          "S7.3",
+          "S8.2",
+          "S8.3",
+          "S9.1"
+        ],
+        "unit_status": {
+          "S1.3": "MATCH",
+          "S2.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "DEVIATION",
+          "S7.1": "MATCH",
+          "S7.3": "DEVIATION",
+          "S8.1": "MATCH",
+          "S8.2": "DEVIATION",
+          "S4.1": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S6.1": "DEVIATION",
+          "S6.2": "DEVIATION",
+          "S7.2": "MATCH",
+          "S8.3": "DEVIATION",
+          "S8.4": "MATCH",
+          "S9.1": "DEVIATION",
+          "S9.2": "MATCH",
+          "S9.3": "MATCH",
+          "L1": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.8842,
+            "usage": {
+              "input_tokens": 5442,
+              "cached_input_tokens": 0,
+              "output_tokens": 10184,
+              "reasoning_tokens": 7182
+            },
+            "elapsed_seconds": 78.142,
+            "prompt_sha256": "d33d6c8c92479782efd8cc4b053ab8ed0fa54f9d331a4470352fcb8f8b860202",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "span": [
+              637,
+              792
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「large system」とする制度の規模・設計はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-002"
+            ],
+            "model_claim": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+            "span": [
+              637,
+              792
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案の具体的な制度設計は示されていないため、「large system」とする規模・設計は裏付けられていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "One is to charge cargo directly.",
+            "span": [
+              1674,
+              1706
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "「cargo directlyに課す」として支払義務者・徴収方法を特定しているが、Ledgerではその具体的な仕組みは示されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-003"
+            ],
+            "model_claim": "One is to charge cargo directly."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "The key point in this news is not that the fee changed.",
+            "span": [
+              1147,
+              1202
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "提案は撤回され、別の案件に置き換えられたため、「料金が変わったわけではない」とする否定はLedgerの記述と食い違う。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The key point in this news is not that the fee changed."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+            "span": [
+              1203,
+              1277
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金徴収の考え自体が別の場に移ったという関係はLedgerにない。Ledgerでは料金案が撤回され、貿易・投資案件に置き換えられた。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "It is that the very idea of collecting a fee moved to a different setting."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day.",
+            "span": [
+              1456,
+              1600
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "料金案が撤回されて貿易・投資案件に置き換えられた事実を、貨物に付いた価格表示そのものが話し合いに変わったかのように表現している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The 20 percent price tag that had been attached to cargo until the day before seemed to turn into business talks between countries the next day."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+            "span": [
+              1707,
+              1788
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "話し合いが貿易・投資をもたらすという因果関係はLedgerに記載されていない。また、対象を湾岸諸国以外の「他国」に広げている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "The other is to use talks with the other country to lead to trade and investment."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries.",
+            "span": [
+              1844,
+              1955
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "単一の提案と置換についての事実を、物資移動の費用が国同士の取引に変わり得るという一般的な因果関係に広げている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "Even when the story is about a faraway strait, the cost of moving goods can turn into a deal between countries."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day.",
+            "span": [
+              2078,
+              2169
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerでは料金案の置換先は貿易・投資案件であり、「話し合い」そのものに変わったとはされていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "HF-007"
+            ],
+            "model_claim": "A planned cargo fee in the Strait of Hormuz became trade and investment talks the next day."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S3.3",
+        "S6.1",
+        "S6.2",
+        "S7.3",
+        "S8.3",
+        "S9.1"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.3",
+        "S3.2",
+        "S4.1",
+        "S5.3",
+        "S7.2",
+        "S8.1",
+        "S8.4",
+        "S9.2",
+        "S9.3",
+        "T"
+      ],
+      "r5_only": [
+        "S8.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.",
+        "span": [
+          530,
+          636
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "Ledgerはすべての貨物に20％の率で償還を求める投稿を確認していますが、貨物が費用を「分担する」仕組みや算定基礎は示されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": [
+          "In other words, the plan was to have all cargo passing through the strait share the cost at the same rate."
+        ]
+      },
+      {
+        "claim_text": "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through.",
+        "span": [
+          637,
+          792
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "提案段階で徴収制度が確立していなかったことは読み取れますが、「large system」という制度規模の評価はLedgerにありません。",
+          "「large system」とする制度の規模・設計はLedgerに記載されていない。",
+          "提案の具体的な制度設計は示されていないため、「large system」とする規模・設計は裏付けられていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003",
+          "HF-002"
+        ],
+        "model_claims": [
+          "There was no toll booth yet, but if the plan had been put into effect, it would have been a large system covering every piece of cargo that passed through."
+        ]
+      },
+      {
+        "claim_text": "He explained that the decision was based on “very productive talks” with Middle Eastern leaders.",
+        "span": [
+          1049,
+          1145
+        ],
+        "unit_ids": [
+          "S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The key point in this news is not that the fee changed.",
+        "span": [
+          1147,
+          1202
+        ],
+        "unit_ids": [
+          "S6.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "ニュースの「重要な点」が何かという評価・順位付けはLedgerにありません。",
+          "提案は撤回され、別の案件に置き換えられたため、「料金が変わったわけではない」とする否定はLedgerの記述と食い違う。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "The key point in this news is not that the fee changed."
+        ]
+      },
+      {
+        "claim_text": "It is that the very idea of collecting a fee moved to a different setting.",
+        "span": [
+          1203,
+          1277
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledgerは20％償還料を貿易・投資案件に置き換えたと述べていますが、「料金を徴収するという考え自体」が別の場に移ったという表現は置換内容を変えています。",
+          "料金徴収の考え自体が別の場に移ったという関係はLedgerにない。Ledgerでは料金案が撤回され、貿易・投資案件に置き換えられた。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "It is that the very idea of collecting a fee moved to a different setting."
+        ]
+      },
+      {
+        "claim_text": "Even when the issue is about providing security, there are two ways in.",
+        "span": [
+          1602,
+          1673
+        ],
+        "unit_ids": [
+          "S8.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "安全提供をめぐって二つの方法があるという一般的な整理はLedgerにありません。特に、貿易・投資案件が安全提供の別方式だとは確認されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-002"
+        ],
+        "model_claims": [
+          "Even when the issue is about providing security, there are two ways in."
+        ]
+      },
+      {
+        "claim_text": "The other is to use talks with the other country to lead to trade and investment.",
+        "span": [
+          1707,
+          1788
+        ],
+        "unit_ids": [
+          "S8.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "他国との協議を通じて貿易・投資につなげるという因果関係はLedgerにありません。Ledgerでは、置換の決定が協議に基づくと説明されたにとどまります。",
+          "話し合いが貿易・投資をもたらすという因果関係はLedgerに記載されていない。また、対象を湾岸諸国以外の「他国」に広げている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-007"
+        ],
+        "model_claims": [
+          "The other is to use talks with the other country to lead to trade and investment."
+        ]
+      },
+      {
+        "claim_text": "One is to charge cargo directly.",
+        "span": [
+          1674,
+          1706
+        ],
+        "unit_ids": [
+          "S8.2"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "「cargo directlyに課す」として支払義務者・徴収方法を特定しているが、Ledgerではその具体的な仕組みは示されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "HF-003"
+        ],
+        "model_claims": [
+          "One is to charge cargo directly."
+        ]
+      }
+    ],
+    "n_union_candidates": 8,
+    "n_model_candidates": 7,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.4655,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 26,
+    "n_targets": 18,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 11,
+    "n_excluded_entries": 14,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4996,
+    "effort": "medium",
+    "prompt_sha256": "8acf3c995ebaea43282bd78ece57e2751045f09b5874cae448854354e0e7de5f"
+  },
+  "recheck_exit_check": {
+    "done": true,
+    "log": [
+      {
+        "cycle": 2,
+        "n_candidates": 7,
+        "api_failure": false,
+        "n_calls": 1,
+        "n_judged_units": 25,
+        "total_cost_jpy": 0.5701,
+        "missing_after_rerun": [],
+        "reclassify": {
+          "reclassify_status": "ok",
+          "n_model_entries": 14,
+          "n_targets": 14,
+          "n_protected_keys": 0,
+          "n_excluded_claims": 7,
+          "n_excluded_entries": 7,
+          "n_excluded_with_changed_number": 0,
+          "n_failclosed": 0,
+          "cost_jpy": 0.4148,
+          "effort": "medium",
+          "prompt_sha256": "0af194974995c71fcc389e17913203fd25781c53023e7aa6bc7df6daf2566942"
+        }
+      }
+    ]
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3,
+      "STAGE2_VERDICT_REUSE_NONBLOCKING": 7
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 5.1414,
+  "provenance": {
+    "switch_dump_sha256": "66d18a3a1b28679684d7dcbe6e7af161a4da4223da7415a7ac50e7450de777c1",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-07T10:32:09",
+    "ledger_sha256": "09b89fd527db9ee17f038c9088687075d3e4760335a3e39a77200921dc3ef7e3",
+    "article_sha256": "93cdf8c89eafe9259aaedf7a81a2afbcdc30df79d7f45f69cd4935c795540f7d",
+    "source_article_sha256": "18f945eba3e3492cec6862be7acece7f9c79b41b23e50b5602cffd7de3f26871",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1/checker",
+      "ledger_path": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1/b1b/article.md",
+      "source_path": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1/ja_writer/revision2.md",
+      "budget_jpy": 10.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

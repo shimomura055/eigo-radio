@@ -23,6 +23,15 @@ def check(brief_path, ledger_path):
         ex_body = ex[len("注意:"):].strip() if ex.startswith("注意:") else ex
         has_ex = ex_body in p; has_poly = TXT in p
         res[fid] = {"existing_note": has_ex, "poly_note": has_poly, "PASS": has_ex and has_poly}
+    if not res:  # fallback: IDなし箇条書き(・)briefは、各bulletをノート本文で台帳factへ逆引き
+        bl = [x for x in re.split(r"(?m)^(?=・)", brief) if x.startswith("・")]
+        def body(full):
+            ex = full[:-len(" / 注意(多義): " + TXT)] if full.endswith(" / 注意(多義): " + TXT) else full
+            return ex[len("注意:"):].strip() if ex.startswith("注意:") else ex
+        for i, p in enumerate(bl):
+            hit = [f for f, n in notes.items() if body(n) in p]
+            fid = hit[0] if hit else f"UNMATCHED_BULLET_{i+1}"
+            res[fid] = {"existing_note": bool(hit), "poly_note": TXT in p, "PASS": bool(hit) and TXT in p, "mode": "bullet_fallback"}
     out = {"selected_facts": len(res), "both_reached": sum(v["PASS"] for v in res.values()),
            "existing_only": sum(v["existing_note"] and not v["poly_note"] for v in res.values()),
            "poly_only": sum(v["poly_note"] and not v["existing_note"] for v in res.values()),

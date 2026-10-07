@@ -20155,3 +20155,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】「Trial実施(ユーザー承認済み)」のみ。それ以外は決定ではない。
 - (b)【事実確認】P1(多義のみ)/P2(多義+従来notes)×N=1をJA→EN→Checkerまで実施。P1はbrief転記3/3、P2は多義注意0/3(従来notesのみ)。rollback表現はP1曖昧、P2 JA曖昧/EN正しい寄り、重大誤読0。Checker最終重大0。実費≈¥50.2/上限¥200。
 - Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定。出典: REPORT §93。
+
+## 2026-10-07 OPEN-233-META-ALLFACT-NOTE-E2E-TRIAL-02(P2転記修正+E2E N=10 Trial)
+- (a)【決定】「Trial実施(ユーザー承認済み)」とFable Status判定(USER_DECISION_REQUIRED)のみ。Production採用・Production配線の決定なし。DEV runner転記規則の修正はTrial専用(Production経路不使用)。
+- (b)【事実確認】P2×5テーマ×2rep=10本完走(brief転記10/10)。独立評価でP2のFact誤りは従来版を下回らず(hormuz 8/10 vs 2)、meta HC-012は正しい2/2。重大3件(OPEN-238/239起票)。実費≈¥110.4/上限¥300。
+- Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定、Checker構成はPRODUCTION_WIRED未のまま。出典: REPORT §94。
