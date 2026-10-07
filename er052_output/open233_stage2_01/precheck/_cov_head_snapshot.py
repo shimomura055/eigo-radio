@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import os
 import re
 import unicodedata
 
@@ -610,11 +609,6 @@ def _norm_uid(x):
     return t[1:-1].strip() if len(t) >= 2 and t[0] == "[" and t[-1] == "]" else t
 
 
-def save_r3_support_ids_enabled() -> bool:
-    """STAGE2-01 作業5: `OPEN233_SAVE_R3_SUPPORT_IDS=1`のときだけ、3'-Rの単位別support_fact_idsをaudit(per_route.r3.support_fact_ids)へ保存する。既定OFF=従来とバイト同一。"""
-    return os.environ.get("OPEN233_SAVE_R3_SUPPORT_IDS", "0").strip() in ("1", "true", "True", "ON", "on")
-
-
 def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id: dict, article_text: str,
                 negation_mode: str = "legacy") -> dict:
     """3'-Rの出力itemsを検査し、単位ごとの状態・候補・欠落IDを返す(LLM非依存・決定論)。"""
@@ -650,12 +644,8 @@ def evaluate_r3(items: list, units_by_id: dict, required_ids: list, blocks_by_id
             else:
                 status[uid] = "SUPPORTED"
     orphans = [c for c in (_orphan_candidate("r3", it, article_text) for it in unknown if it.get("verdict") == "CANDIDATE") if c]
-    res = {"status": status, "candidates": cands + orphans, "model_verdict": mverdict,
-           "missing": [i for i in required_ids if i not in first], "unknown_unit_ids": [it.get("unit_id") for it in unknown]}
-    if save_r3_support_ids_enabled():
-        res["support_fact_ids"] = {uid: [x for x in (it.get("support_fact_ids") or []) if isinstance(x, str)]
-                                   for uid, it in first.items()}
-    return res
+    return {"status": status, "candidates": cands + orphans, "model_verdict": mverdict,
+            "missing": [i for i in required_ids if i not in first], "unknown_unit_ids": [it.get("unit_id") for it in unknown]}
 
 
 def apply_group_consistency(status: dict, cands: list, groups: list, units_by_id: dict) -> int:
@@ -780,27 +770,13 @@ def _call_with_one_retry(call_fn, label: str, developer: str, prompt: str, schem
     return None
 
 
-def build_structural_pairs_note(pairs) -> str:
-    """STAGE2-01 W2(`OPEN233_FIX_W2_STRUCTURAL_RECHECK`ON時のみ使用): 構造要素(タイトル等)を書き換えた前後の対を、判定promptの末尾へ併記する。
-    判定は主体・極性・数値の変化に限定(判定規則は不変)。pairsが空なら空文字(=従来とバイト同一)。"""
-    ps = [p for p in (pairs or []) if p.get("before") and p.get("after")]
-    if not ps:
-        return ""
-    lines = ["", "", "【追加情報: 今回のRewriteで書き換えられた構造要素(タイトル・見出し等)の前後】",
-             "下記の変更後の文は、変更前から書き換えられた。変更後の文について、変更前と比べて主体(誰が・何が)・肯定否定・数値が"
-             "変わっていないか、またその変更後の内容がLedgerで支持されるかを通常の判定規則で判定すること。"]
-    for p in ps:
-        lines.append(f"- before: {p['before']}\n  after: {p['after']}")
-    return "\n".join(lines)
-
-
 def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, negation_mode: str = "legacy",
-            required_ids: list | None = None, extra_prompt: str = "") -> dict:
+            required_ids: list | None = None) -> dict:
     required = list(split["judged_ids"]) if required_ids is None else list(required_ids)  # 委任_18: Recheck用の対象限定(既定None=従来)
     calls: list = []
     out = {"route": "r3", "calls": calls, "api_failure": False, "rerun_used": False}
     parsed = _call_with_one_retry(call_fn, "r3", R3_DEVELOPER_MESSAGE,
-                                  build_r3_prompt(fixture["ledger_text"], split["units"], required) + extra_prompt, R3_JSON_SCHEMA, calls)
+                                  build_r3_prompt(fixture["ledger_text"], split["units"], required), R3_JSON_SCHEMA, calls)
     if parsed is None:
         out.update(api_failure=True, status={}, candidates=[], missing_first=required, missing_after_rerun=required)
         return out
@@ -810,7 +786,7 @@ def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
     if ev["missing"]:
         out["rerun_used"] = True
         p2, meta = call_fn("r3_rerun", R3_DEVELOPER_MESSAGE,
-                           build_r3_prompt(fixture["ledger_text"], split["units"], ev["missing"], rerun=True) + extra_prompt, R3_JSON_SCHEMA)
+                           build_r3_prompt(fixture["ledger_text"], split["units"], ev["missing"], rerun=True), R3_JSON_SCHEMA)
         calls.append({"label": "r3_rerun", **(meta or {}), "ok": p2 is not None})
         if p2 is not None:
             items = items + list(p2.get("unit_verdicts") or [])
@@ -824,8 +800,6 @@ def _run_r3(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict
     returned_back = apply_group_consistency(ev["status"], ev["candidates"], split["same_sentence_groups"], units_by_id)
     out.update(status=ev["status"], candidates=ev["candidates"], unknown_unit_ids=ev["unknown_unit_ids"],
                group_returned=returned_back, model_verdict=ev["model_verdict"])
-    if "support_fact_ids" in ev:  # スイッチON時のみ(既定OFFではキー自体を作らない)
-        out["support_fact_ids"] = ev["support_fact_ids"]
     return out
 
 
@@ -922,9 +896,7 @@ def run_stage1_coverage(fixture: dict, call_fn, routes: str = "both", segment_fn
                           "r5v_target_ids": v.get("r5v_target_ids"), "n_r5v_targets": v.get("n_r5v_targets"),
                           "skipped_no_targets": v.get("skipped_no_targets", False),
                           "unknown_unit_ids": v.get("unknown_unit_ids", []),
-                          "candidates": v["candidates"],
-                          **({"support_fact_ids": v["support_fact_ids"]} if "support_fact_ids" in v else {})}
-                         for k, v in res.items()},
+                          "candidates": v["candidates"]} for k, v in res.items()},
         "overlap": ({"both": sorted(ids["r3"] & ids["r5"]), "r3_only": sorted(ids["r3"] - ids["r5"]),
                      "r5_only": sorted(ids["r5"] - ids["r3"])} if routes == "both" else None),
         "returned_by_check": {k: sum(1 for s in v.get("status", {}).values() if s.startswith("SUPPORTED->CANDIDATE"))
@@ -972,8 +944,7 @@ def to_stage1_parsed(result: dict) -> dict:
 #    (a) Recheck=「変更された単位とその前後1単位」を3'-R+5-lite(対象限定)で再判定 (b) Rewrite発生記事は出口前に3'-R全文1回。
 #    単位IDは位置で決まるためRewrite後は`split_units`をやり直す。判定規則・prompt定数・決定論検査は変更しない(対象限定のみ)。
 # ------------------------------------------------------------
-def coverage_changed_scope(before_text: str, after_text: str, segment_fn=None, initial_extra=(), prior_claims=(),
-                           force_changed_texts=()) -> dict:
+def coverage_changed_scope(before_text: str, after_text: str, segment_fn=None, initial_extra=(), prior_claims=()) -> dict:
     """before/afterを`split_units`で分割し、文・タイトル・見出しの正規化列をdifflibで比較して「変更された単位」(after側ID)を求める。
     純削除は削除位置の前後の単位を変更扱い。さらに前回指摘の箇所(`prior_claims`)が現行本文に残っている単位も変更扱い
     (Rewriteが効かず本文が不変でも、未解消を範囲外として見逃さないための安全側)。scope=変更単位+前後1単位(+それを含む関係単位)。"""
@@ -1001,10 +972,6 @@ def coverage_changed_scope(before_text: str, after_text: str, segment_fn=None, i
             if nc in na[k] or (len(na[k]) >= 8 and na[k] in nc):
                 changed.add(k)
                 n_prior_hit += 1
-    for ft in force_changed_texts or []:  # STAGE2-01 W2: 構造要素の書換え後テキストと一致する単位は必ず変更扱い(既定空=従来)
-        nf = norm_sentence(ft or "")
-        if nf:
-            changed.update(k for k in range(len(base_a)) if na[k] == nf)
     idx = set()
     for k in changed:
         idx.update(x for x in (k - 1, k, k + 1) if 0 <= x < len(base_a))
@@ -1018,8 +985,7 @@ def coverage_changed_scope(before_text: str, after_text: str, segment_fn=None, i
             "n_prior_claim_hits": n_prior_hit, "split": sa}
 
 
-def _run_r5_scope(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, scope_ids: list,
-                  extra_prompt: str = "") -> dict:
+def _run_r5_scope(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id: dict, scope_ids: list) -> dict:
     """5-liteの対象限定版(Recheck用)。既存`R5V_*`prompt(検証対象の単位だけを判定、記事全文は文脈)を再利用する。判定規則は不変。"""
     calls: list = []
     fact_ids = list(blocks.keys())
@@ -1030,7 +996,7 @@ def _run_r5_scope(call_fn, split: dict, fixture: dict, blocks: dict, units_by_id
         out.update(status={}, candidates=[], facts_missing=[], unknown_unit_ids=[], skipped_no_targets=True)
         return out
     parsed = _call_with_one_retry(call_fn, "r5v", R5V_DEVELOPER_MESSAGE,
-                                  build_r5v_prompt(fixture["ledger_text"], fixture["article_text"], targets, fact_ids) + extra_prompt,
+                                  build_r5v_prompt(fixture["ledger_text"], fixture["article_text"], targets, fact_ids),
                                   R5_JSON_SCHEMA, calls)
     if parsed is None:
         out.update(api_failure=True, status={}, candidates=[], facts_missing=fact_ids)
@@ -1064,22 +1030,18 @@ def prior_issue_resolution(prior_issues: list, cands: list, units_by_id: dict) -
 
 
 def run_recheck_scope(fixture: dict, call_fn, before_text: str, prior_issues: list, segment_fn=None, initial_extra=(),
-                      negation_mode: str = "legacy", candidate_filter=None, structural_pairs=None) -> dict:
-    """(STAGE2-01 W2) `structural_pairs`非空時のみ、構造要素の前後対を判定promptへ併記し、後側テキストの単位を必ずscopeへ含める。既定None=従来。
-    Rewrite後Recheck(新仕様)。`candidate_filter`は合流前に適用され、`prior_issues_resolved`は再分類後の候補で計算される(委任_04 M1/M2)。fixture["article_text"]=Rewrite後本文。scope=変更単位+前後1単位を3'-R(欠落ID再実行・決定論検査込み)と
+                      negation_mode: str = "legacy", candidate_filter=None) -> dict:
+    """Rewrite後Recheck(新仕様)。`candidate_filter`は合流前に適用され、`prior_issues_resolved`は再分類後の候補で計算される(委任_04 M1/M2)。fixture["article_text"]=Rewrite後本文。scope=変更単位+前後1単位を3'-R(欠落ID再実行・決定論検査込み)と
     5-lite(対象限定)で判定し、∪を返す。API失敗(再実行1回後も)は`api_failure=True`(呼び出し側がfail-closed)。"""
     sc = coverage_changed_scope(before_text, fixture["article_text"], segment_fn, initial_extra,
-                                [pi.get("claim_in_article") or "" for pi in prior_issues or []],
-                                force_changed_texts=[p.get("after") for p in (structural_pairs or [])])
+                                [pi.get("claim_in_article") or "" for pi in prior_issues or []])
     split = sc["split"]
-    _xp = build_structural_pairs_note(structural_pairs)
     units_by_id = {u["id"]: u for u in split["units"]}
     blocks = ledger_fact_blocks(fixture["ledger_text"])
     res = {}
     if sc["scope_ids"]:
-        res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode, required_ids=sc["scope_ids"],
-                           extra_prompt=_xp)
-        res["r5"] = _run_r5_scope(call_fn, split, fixture, blocks, units_by_id, sc["scope_ids"], extra_prompt=_xp)
+        res["r3"] = _run_r3(call_fn, split, fixture, blocks, units_by_id, negation_mode, required_ids=sc["scope_ids"])
+        res["r5"] = _run_r5_scope(call_fn, split, fixture, blocks, units_by_id, sc["scope_ids"])
     failed = [k for k, v in res.items() if v["api_failure"]]
     pre_union, filter_info = apply_candidate_filter(None if failed else candidate_filter,
                                                      [c for v in res.values() for c in v["candidates"]])
@@ -1093,9 +1055,7 @@ def run_recheck_scope(fixture: dict, call_fn, before_text: str, prior_issues: li
                       "n_scope": len(sc["scope_ids"]), "n_judged_units": len(split["judged_ids"]),
                       "n_union_candidates": len(merged), "n_calls": len(calls),
                       "total_cost_jpy": round(sum(c.get("cost_jpy", 0.0) or 0.0 for c in calls), 4),
-                      "missing_after_rerun": (res.get("r3") or {}).get("missing_after_rerun"), "calls": calls,
-                      **({"r3_support_fact_ids": res["r3"]["support_fact_ids"]}
-                         if (res.get("r3") or {}).get("support_fact_ids") is not None else {})}}
+                      "missing_after_rerun": (res.get("r3") or {}).get("missing_after_rerun"), "calls": calls}}
 
 
 def run_exit_full_r3(fixture: dict, call_fn, segment_fn=None, initial_extra=(), negation_mode: str = "legacy",

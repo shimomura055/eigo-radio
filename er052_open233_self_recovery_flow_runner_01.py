@@ -73,6 +73,7 @@ import er010_ledger_local_rewrite_09 as er010
 import er050_gpt6_checker_comparison_trial_01 as g6
 import er051_open233_checker_trial_variant_01 as trial
 import er052_open233_self_recovery_phase1_step3_stage1_compare_01 as step3cmp
+import er052_open233_checker_action_policy_stage2_01 as cap2  # STAGE2-01 委任_02: ①②の新規ロジック(全スイッチ既定OFF)
 import er052_open233_stage1_coverage_checker_01 as cov  # 委任_06: Stage 1再設計(Trial、既定legacy_v4a=不変)
 import er052_open233_stage1_reclassify_01 as reclf  # 委任_04(CHECKER-FLOOR-PRODUCTION-E2E-01): Checker再分類(4観点)。既定OFF
 import er052_open233_self_recovery_precheck_01 as precheck
@@ -1926,8 +1927,30 @@ def stage1_coverage_fresh(client, state, consecutive_errors, call_log, label, fi
     return parsed
 
 
+def stage2_fix_switch(name: str) -> bool:
+    """OPEN-233-CHECKER-ACTION-POLICY-STAGE2-01 委任_01: 新規挙動(W1/W2/r3保存)の環境変数スイッチ。既定OFF(未設定/0)。呼び出し時に読む(テスト容易性)。"""
+    return os.environ.get(name, "0").strip() in ("1", "true", "True", "ON", "on")
+
+
+_MD_HEAD_RE = re.compile(r"^(#{1,6} )")
+
+
+def w1_preserve_title_markup(targets: list, revised: list) -> tuple:
+    """W1(`OPEN233_FIX_W1_TITLE_MARKUP`ON時のみ呼ぶ): 対象が行頭`# `/`## `等のMarkdown見出し記法で始まるのに、Rewrite案が記法を落としていたら
+    元の記法(`# `等)を先頭へ戻す。戻り値=(新revised, 補正した添字のlist)。記法を落とすとsplit_unitsがタイトル/見出しをHook文として扱うため。"""
+    out, fixed = [], []
+    for i, (t, r) in enumerate(zip(targets, revised)):
+        m = _MD_HEAD_RE.match(t or "")
+        if m and not _MD_HEAD_RE.match(r or "") and (r or "").strip():
+            out.append(m.group(1) + r.lstrip())
+            fixed.append(i)
+        else:
+            out.append(r)
+    return out, fixed
+
+
 def run_recheck_coverage(client, state, consecutive_errors, call_log, label, fixture, article_text: str,
-                         prior_issues: list, before_text: str, protected_claims=()) -> dict:
+                         prior_issues: list, before_text: str, protected_claims=(), structural_pairs=None) -> dict:
     """委任_18(`RECHECK_MODE=coverage_union`): `run_recheck`と同形の戻り値(overall_status/deviations/prior_issues_resolved/
     all_prior_issues_resolved/prior_issues_resolved_by_index)を、変更単位+前後1単位の3'-R+5-lite(対象限定)で作る。
     API失敗(再実行1回後も)は`run_recheck`と同じくfail-closed(LEDGER_DEVIATION・未解消・`_recheck_api_failure`)。"""
@@ -1938,7 +1961,8 @@ def run_recheck_coverage(client, state, consecutive_errors, call_log, label, fix
     _prot = [pi.get("claim_in_article") or "" for pi in prior_issues or []] + list(protected_claims or [])
     res = cov.run_recheck_scope(rf, call_fn, before_text, prior_issues, segment_fn=vs_sentence_segments_l6,
                                 initial_extra=CAUSAL_SENTENCE_INITIAL_EN, negation_mode=STAGE1_NEGATION_MODE,
-                                candidate_filter=make_reclassify_filter(client, state, consecutive_errors, call_log, label, rf, _prot))
+                                candidate_filter=make_reclassify_filter(client, state, consecutive_errors, call_log, label, rf, _prot),
+                                structural_pairs=structural_pairs)  # W2: 既定None(=従来)。呼び出し側がスイッチON時のみ渡す
     if res["api_failure"]:
         return {"overall_status": "LEDGER_DEVIATION", "deviations": [], "all_prior_issues_resolved": False,
                 "_recheck_api_failure": True, "recheck_coverage_audit": res["audit"]}
@@ -3814,8 +3838,14 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         # プロンプト内容を維持し、未検証の側作用[prompt priming疑い]の
         # 混入を避ける)。
         section_type = detect_claim_section_type(c["claim_text"], fixture["article_text"])
+        _gt_extra = {}
+        if cap2.switch_on(cap2.SW_READER_BELIEF):  # STAGE2-01 A-(a): ガード対象を決定論で付与(OFF時は一切キーを足さない)
+            _gt = cap2.guard_target(c["claim_text"], c.get("dev"), fixture["ledger_text"])
+            _gt_extra = {"guard_target": _gt["target"], "guard_types": _gt["types"]}
+            if c.get("force_guard_target"):  # 安定性測定用(replayのみ): 非対象でも信念テストを回す
+                _gt_extra["guard_target"] = True
         claim_records.append({**c, "local_context": local_context, "fallback_used": fallback,
-                               "section_type": section_type})
+                               "section_type": section_type, **_gt_extra})
     claim_records_for_stage2 = [{k: v for k, v in c.items() if k != "section_type"} for c in claim_records]
 
     # ------------------------------------------------------------
@@ -3889,26 +3919,72 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
     # `ENABLE_MISCONCEPTION_PRINCIPLE_DEFAULT=False`で復帰できる(既存
     # iteration1〜7・rep7〜15の再現性はそれらのOUT_DIRが既に固定済みの
     # 証跡のため本フラグの既定値変更とは無関係、新規runのみに影響)。
-    _run_stage2_group(
-        body_indices, "body",
-        lambda cl: s2c.run_stage2_batch_variant(
-            client, fixture["ledger_text"], fixture.get("source_article_text"),
-            cl, BODY_RUBRIC_DEFAULT, model=MODEL,
-        ),
-    )
+    belief_on = cap2.switch_on(cap2.SW_READER_BELIEF)  # STAGE2-01 A: 既定OFF=従来と同一のcall
+    if belief_on:
+        def _body_fn(cl):
+            return cap2.run_belief_batch_body(client, fixture["ledger_text"], fixture.get("source_article_text"),
+                                              cl, BODY_RUBRIC_DEFAULT, MODEL)
+    else:
+        def _body_fn(cl):
+            return s2c.run_stage2_batch_variant(
+                client, fixture["ledger_text"], fixture.get("source_article_text"),
+                cl, BODY_RUBRIC_DEFAULT, model=MODEL,
+            )
+    _run_stage2_group(body_indices, "body", _body_fn)
     # title/hook: Hook専用Stage2(s2h、別Prompt・別call。入力はLedger全文+
     # source context+タイトル・hook段落のみ、対象claimを含む段落±1段落の
     # ような広い文脈は渡さない)。委任_30 Part2: Hook rubricも同様にV4
     # (`HOOK_RUBRIC_DEFAULT`)を既定へ昇格する(委任_30 Part1でboundary-1
     # 残存の解消をn=2で確認済み、元Hook/NG4群も非回帰を確認済み)。
     title_hook_text = build_title_hook_context(fixture["article_text"]) if hook_indices else ""
-    _run_stage2_group(
-        hook_indices, "hook",
-        lambda cl: s2h.run_stage2_hook_batch(
-            client, fixture["ledger_text"], fixture.get("source_article_text"),
-            title_hook_text, cl, model=MODEL, hook_rubric_text=HOOK_RUBRIC_DEFAULT,
-        ),
-    )
+    if belief_on:
+        def _hook_fn(cl):
+            return cap2.run_belief_batch_hook(client, fixture["ledger_text"], fixture.get("source_article_text"),
+                                              title_hook_text, cl, HOOK_RUBRIC_DEFAULT, MODEL)
+    else:
+        def _hook_fn(cl):
+            return s2h.run_stage2_hook_batch(
+                client, fixture["ledger_text"], fixture.get("source_article_text"),
+                title_hook_text, cl, model=MODEL, hook_rubric_text=HOOK_RUBRIC_DEFAULT,
+            )
+    _run_stage2_group(hook_indices, "hook", _hook_fn)
+
+    # STAGE2-01 A-(c): 同一call内整合チェック。guard_targetでbelief_vs_ledger==contradictsなのに非BLOCKINGの出力は無効→
+    # そのclaimだけ再判定1回。なお矛盾なら後段でBLOCKING扱い(Rewrite増側と記録)。
+    belief_reasked: dict = {}
+    if belief_on:
+        for _kind, _idxs, _fn in (("body", body_indices, _body_fn), ("hook", hook_indices, _hook_fn)):
+            bad = [i for i in _idxs if i in judgments_by_index and cap2.consistency_invalid(
+                bool(claim_records[i].get("guard_target")), judgments_by_index[i].get("belief_vs_ledger"),
+                judgments_by_index[i].get("materiality"))]
+            if not bad:
+                continue
+            _rlabel = f"{label}_stage2_{_kind}_reask"
+            _res, _err = None, None
+            for _ in range(1 + MAX_RETRIES_PER_CALL):
+                try:
+                    _res = _fn([claim_records_for_stage2[i] for i in bad])
+                    break
+                except Exception as e:  # noqa: BLE001
+                    _err = f"{type(e).__name__}: {e}"
+                    time.sleep(1.0)
+            if _res is None:
+                call_log.append({"label": _rlabel, "recovery_stage": "stage2_second_judge", "stage2_variant": _kind + "_reask",
+                                 "error": _err})
+                record_call(state, consecutive_errors, _rlabel, 0.0, False, "stage2_second_judge")
+                for i in bad:
+                    belief_reasked[i] = {"reasked": True, "reask_failed": True, "first_belief": judgments_by_index[i].get("belief_vs_ledger")}
+                continue
+            call_log.append({"label": _rlabel, "recovery_stage": "stage2_second_judge", "stage2_variant": _kind + "_reask",
+                             "cost_jpy": _res["cost_jpy"], "usage": _res["usage"], "elapsed_seconds": _res["elapsed_seconds"],
+                             "prompt_sha256": _res["prompt_sha256"]})
+            record_call(state, consecutive_errors, _rlabel, _res["cost_jpy"], True, "stage2_second_judge", _res["usage"])
+            for local_idx, gi in enumerate(bad):
+                m2 = next((j for j in _res["parsed"].get("judgments", []) if j.get("claim_index") == local_idx), None)
+                belief_reasked[gi] = {"reasked": True, "first_belief": judgments_by_index[gi].get("belief_vs_ledger"),
+                                      "first_materiality": judgments_by_index[gi].get("materiality")}
+                if m2 is not None:
+                    judgments_by_index[gi] = m2
 
     out = []
     for i, c in enumerate(claim_records):
@@ -3996,6 +4072,27 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
         if disclosure_reason:
             final_materiality = disclosure_materiality
             floor_reason = disclosure_reason
+        # STAGE2-01 A-(c)(d前半): guard_targetの格下げは、1回目callのbelief_vs_ledgerがconsistentのときだけ成立。
+        # contradictsなのに非BLOCKING(再判定後も矛盾)・unclear/unsupported_new_claim/未記入はBLOCKING扱い(=Rewrite増側、記録する)。
+        belief_rec = None
+        if belief_on and c.get("guard_target"):
+            _jm = judgments_by_index.get(i) or {}
+            _ra = belief_reasked.get(i) or {}
+            belief_rec = {"guard_types": c.get("guard_types"), "reader_belief": _jm.get("reader_belief"),
+                          "belief_vs_ledger": _jm.get("belief_vs_ledger"),
+                          "contradicting_fact_ids": _jm.get("contradicting_fact_ids"), **_ra}
+            if i not in failclosed_indices and final_materiality != "BLOCKING":
+                _still_bad = cap2.consistency_invalid(True, _jm.get("belief_vs_ledger"), _jm.get("materiality"))
+                if not cap2.downgrade_established_first_call(True, _jm.get("belief_vs_ledger")) or _still_bad:
+                    belief_rec["forced_blocking"] = True
+                    belief_rec["rewrite_increase_side"] = True  # M3: Rewrite増側(安全側ではない)に作用
+                    belief_rec["forced_reason"] = ("contradicts_but_nonblocking_after_reask" if _still_bad
+                                                   else "belief_" + str(_jm.get("belief_vs_ledger") or "missing"))
+                    final_materiality = "BLOCKING"
+                    floor_reason = "reader_belief_downgrade_not_established:" + belief_rec["forced_reason"]
+                    _blk_b = floor_verify_fact_block(fixture["ledger_text"], dev_for_floor.get("related_fact_id"))
+                    _hint_b, _hs_b = downgrade_verify_rewrite_hint(dev_for_floor, _blk_b)
+                    rewrite_hint = (_hint_b + (" " + rewrite_hint if rewrite_hint else "")) if _hint_b else rewrite_hint
         # 委任_02(Opus#11→Fable評価1〜3、既定OFF`STAGE2_DOWNGRADE_VERIFY`): Checker MAJORをStage 2が非BLOCKINGにした
         # もの(最終値、floor/hook/disclosure適用後)を、Tier 0(決定論Guard)→Tier 1(確認役、call 1回)で再確認する。
         # 解除できないもの(Tier 0該当/UPHOLD/非逐語/失敗)はBLOCKINGへ戻し、Tier 2のhintを付けて既存Rewriteラダーへ
@@ -4069,7 +4166,10 @@ def run_stage2(client, state, consecutive_errors, call_log, label, fixture, clai
                     # 委任_02: 降格確認(Tier 0/1/2)の記録(スイッチ有効のclaimのみ。既定OFFでは付かない)。
                     **({"downgrade_verify": downgrade_verify_rec} if downgrade_verify_rec is not None else {}),
                     # 委任_03: Tier 0(因果floor/補助ベルト)の記録(`CAUSAL_FLOOR`ONのclaimのみ。OFFでは付かない)。
-                    **({"tier0": tier0_rec} if tier0_rec is not None else {})})
+                    **({"tier0": tier0_rec} if tier0_rec is not None else {}),
+                    # STAGE2-01 A: ②読者信念テスト(スイッチON時のみキーが付く。OFFでは従来と同一の出力)
+                    **({"guard_target": bool(c.get("guard_target")), "guard_types": c.get("guard_types")} if belief_on else {}),
+                    **({"reader_belief": belief_rec} if belief_rec is not None else {})})
     return out
 
 
@@ -4157,12 +4257,81 @@ def _s1_second_status(r2: dict) -> str:
     return "ok"
 
 
+def apply_belief_second_opinion(client, state, consecutive_errors, call_log, label_prefix, fixture,
+                                stage2_results: list, instance_id=None, cycle=None) -> tuple:
+    """STAGE2-01 A-(d)/O1(`OPEN233_STAGE2_READER_BELIEF`ON時のみ): guard_targetで1回目が非BLOCKING(=belief consistent)のclaimの2nd opinion。
+    2回目は文を見せず、1回目のreader_beliefとLedgerだけで判定する。両callがconsistentのときだけ格下げ成立、それ以外はBLOCKING。
+    戻り値=(新results, log)。対象外のclaimには`second_opinion`を付けない(通常の2nd opinionへ回る)。"""
+    idx = [i for i, r in enumerate(stage2_results) if stage2_second_opinion_eligible(r) and r.get("guard_target")]
+    if not idx:
+        return stage2_results, []
+    check_budget(state)
+    beliefs = [((stage2_results[i].get("reader_belief") or {}).get("reader_belief") or "") for i in idx]
+    firsts = [((stage2_results[i].get("reader_belief") or {}).get("belief_vs_ledger")) for i in idx]
+    label = f"{label_prefix}_s1_belief"
+    res, err = None, None
+    for _ in range(1 + MAX_RETRIES_PER_CALL):
+        try:
+            res = cap2.run_belief_only(client, fixture["ledger_text"], beliefs, MODEL)
+            break
+        except Exception as e:  # noqa: BLE001
+            err = f"{type(e).__name__}: {e}"
+            time.sleep(1.0)
+    cost, sha = 0.0, []
+    seconds: dict = {}
+    if res is None:
+        call_log.append({"label": label, "recovery_stage": "stage2_second_judge", "stage2_variant": "belief_only", "error": err})
+        record_call(state, consecutive_errors, label, 0.0, False, "stage2_second_judge")
+    else:
+        cost, sha = res["cost_jpy"], [res["prompt_sha256"]]
+        call_log.append({"label": label, "recovery_stage": "stage2_second_judge", "stage2_variant": "belief_only",
+                         "cost_jpy": cost, "usage": res["usage"], "elapsed_seconds": res["elapsed_seconds"],
+                         "prompt_sha256": res["prompt_sha256"]})
+        record_call(state, consecutive_errors, label, cost, True, "stage2_second_judge", res["usage"])
+        seconds = {j.get("item_index"): j for j in res["parsed"].get("judgments", [])}
+    out = list(stage2_results)
+    log = []
+    for k, i in enumerate(idx):
+        r = stage2_results[i]
+        j2 = seconds.get(k)
+        status = "api_failure" if res is None else ("ok" if j2 is not None else "schema_mismatch")
+        second_belief = (j2 or {}).get("belief_vs_ledger")
+        confirmed = status == "ok" and cap2.downgrade_confirmed_by_second(firsts[k], second_belief)
+        rec = {"instance_id": instance_id, "cycle": cycle, "route": r.get("stage2_route"),
+               "claim_identity": claim_identity(r["dev"]), "claim_text": (r.get("claim_text") or "")[:200],
+               "first_materiality": r["materiality"], "first_basis": r.get("basis"),
+               "second_materiality": r["materiality"] if confirmed else "BLOCKING", "second_basis": None,
+               "second_floor_reason": None, "second_floor_anomaly": False, "second_status": status,
+               "confirmed_downgrade": confirmed, "split": not confirmed, "belief_only": True,
+               "first_belief": firsts[k], "second_belief": second_belief,
+               "second_contradicting_fact_ids": (j2 or {}).get("contradicting_fact_ids"),
+               "prompt_sha256": sha, "batch_cost_jpy": cost, "batch_n_claims": len(idx)}
+        if confirmed:
+            out[i] = {**r, "second_opinion": rec}
+        else:
+            block = floor_verify_fact_block(fixture["ledger_text"], (r["dev"] or {}).get("related_fact_id"))
+            hint, hint_source = downgrade_verify_rewrite_hint(r["dev"], block)
+            rec["hint_source"] = hint_source
+            out[i] = {**r, "materiality": "BLOCKING",
+                      "floor_reason": ("s1_second_opinion_failclosed:" + status if status != "ok"
+                                       else "s1_second_opinion_belief_not_consistent"),
+                      "rewrite_kind": r.get("rewrite_kind") or "replace_with_ledger_value",
+                      "rewrite_hint": hint, "second_opinion": rec}
+        log.append(rec)
+    return out, log
+
+
 def apply_stage2_second_opinion(client, state, consecutive_errors, call_log, label_prefix, fixture,
                                 stage2_results: list, instance_id=None, cycle=None) -> tuple:
     """(新stage2_results, `stage2_downgrade_confirm_log`のlist)。対象が無ければcallせず(results, [])。"""
-    eligible_idx = [i for i, r in enumerate(stage2_results) if stage2_second_opinion_eligible(r)]
+    belief_log: list = []
+    if cap2.switch_on(cap2.SW_READER_BELIEF):  # STAGE2-01 A-(d): guard_targetはbelief-only 2回目へ。他は下の通常経路
+        stage2_results, belief_log = apply_belief_second_opinion(
+            client, state, consecutive_errors, call_log, label_prefix, fixture, stage2_results, instance_id, cycle)
+    eligible_idx = [i for i, r in enumerate(stage2_results)
+                    if stage2_second_opinion_eligible(r) and not (belief_log and r.get("second_opinion"))]
     if not eligible_idx:
-        return stage2_results, []
+        return stage2_results, belief_log
     n_before = len(call_log)
     claims = [{"claim_text": stage2_results[i]["claim_text"], "origin": stage2_results[i].get("origin"),
                "related_fact_id": stage2_results[i].get("related_fact_id"), "dev": stage2_results[i]["dev"],
@@ -4200,7 +4369,7 @@ def apply_stage2_second_opinion(client, state, consecutive_errors, call_log, lab
             heavier = max(r["materiality"], r2["materiality"], key=lambda m: S1_MATERIALITY_RANK.get(m, 3))
             out[i] = {**r, "materiality": heavier, "second_opinion": rec}
         log.append(rec)
-    return out, log
+    return out, belief_log + log
 
 
 def s1_summarize(instance_results) -> dict:
@@ -6080,6 +6249,37 @@ def structural_element_reasons(full_text: str, spans: list, ranges: list) -> lis
     return reasons
 
 
+def structural_kind_of(full_text: str, target: str):
+    """STAGE2-01 B-(a): 対象文字列が構造要素(title/heading/in_one_line/hook)のどれに含まれるか(位置照合、¥0)。構造要素でなければNone。
+    Hookは既存`_hook_paragraph_block`(冒頭段落、条件を満たす場合のみ締め文1文を含む)の包含で判定する。"""
+    t = (target or "").strip()
+    if not t or not full_text:
+        return None
+    pos = full_text.find(t)
+    if pos >= 0:
+        rs = structural_element_reasons(full_text, [(pos, pos + len(t))], [t])
+        for k in ("title", "heading", "in_one_line"):
+            if k in rs:
+                return k
+    hb = _hook_paragraph_block(full_text)
+    if hb and (t in hb or (len(hb.strip()) > 0 and hb.strip() in t)):
+        return "hook"
+    return None
+
+
+def structural_article_check(before_text: str, after_text: str, ledger_text: str) -> dict:
+    """STAGE2-01 B-(b): 記事全文が書き換えられた場合(level 6)の構造要素の4照合。title/hook/in_one_lineの本文が変わっていれば4照合を適用。"""
+    vocab = cap2.proper_noun_vocab(ledger_text, before_text)
+    res = []
+    pairs = (("title", _paragraph_title(before_text), _paragraph_title(after_text)),
+             ("hook", _hook_paragraph_block(before_text), _hook_paragraph_block(after_text)),
+             ("in_one_line", _extract_in_one_line_text(before_text), _extract_in_one_line_text(after_text)))
+    for kind, b, a in pairs:
+        if b and a and b.strip() != a.strip():
+            res.append(cap2.four_checks(kind, b, a, vocab, before_text))
+    return {"ok": all(r["ok"] for r in res), "checks": res}
+
+
 def structural_ladder_exhausted_verified(rewrite_records: list) -> dict:
     """委任_12(Fable照合1、I-2整合): `blocking_structural_after_ladder`を返してよいかを関数内で検証する(名前の洗い替え防止)。
     「構造要素であること(`structural_element_reasons`由来の`structural_element_rewrite`/`structural_blocking`印)∧
@@ -6259,14 +6459,32 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                     "ladder_exhausted_without_full_rewrite": True, "handoff": handoff}
 
     structural_rewrite = False
+    struct_rules_on = cap2.switch_on(cap2.SW_STRUCT_RULES)  # STAGE2-01 B: 既定OFF
+    hook_delete_deferred = False
+    _vocab_cache: list = []
+
+    def _vocab_for_rules() -> set:
+        if not _vocab_cache:
+            _vocab_cache.append(cap2.proper_noun_vocab(fixture["ledger_text"], full_text))
+        return _vocab_cache[0]
+
     if STRUCTURAL_ELEMENT_REWRITE and rewrite_kind == "delete":
         st_reasons = structural_element_reasons(full_text, spans, ranges)
+        if (not st_reasons) and struct_rules_on and any(structural_kind_of(full_text, u) == "hook" for u in sentence_units):
+            st_reasons = ["hook"]       # B-(c): Hook文の削除は最終手段。まず書き換え(4照合付き)へ回す
+            hook_delete_deferred = True
         if st_reasons:
             structural_rewrite = True
             handoff["structural_element_rewrite"] = {"reasons": st_reasons, "original_rewrite_kind": "delete"}
             rewrite_kind = "narrow_scope"
             rewrite_hint = rewrite_hint + STRUCTURAL_REWRITE_HINT_SUFFIX
 
+    if struct_rules_on and not structural_rewrite and rewrite_kind != "delete":
+        _kinds0 = [structural_kind_of(full_text, u) for u in sentence_units]
+        if any(_kinds0):
+            structural_rewrite = True  # 空出力の却下・degenerate検査・前後対のRecheck渡し(W2)を構造要素の書換え全般に適用
+            handoff["structural_element_rewrite"] = {"reasons": sorted({k for k in _kinds0 if k}),
+                                                     "original_rewrite_kind": rewrite_kind, "by": "structural_rules"}
     if rewrite_kind == "delete":
         whole = {u.strip() for u in sentence_units}
         del_units = ranges if all(r.strip() in whole for r in ranges) else list(sentence_units)
@@ -6383,6 +6601,52 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                 attempt["result"] = "declined_empty_structural"
                 method_used = f"{lv['tag']}_declined_empty_structural"
                 continue
+            if structural_rewrite and stage2_fix_switch("OPEN233_FIX_W1_TITLE_MARKUP"):  # STAGE2-01 W1(既定OFF)
+                revised, _w1_fixed = w1_preserve_title_markup(targets, revised)
+                if _w1_fixed:
+                    attempt["w1_title_markup_restored"] = _w1_fixed
+                    handoff["w1_title_markup_restored"] = True
+            if struct_rules_on and structural_rewrite:
+                # STAGE2-01 B-(b)(c): 構造要素の全書換え手段に4照合必須(主体・代名詞の部分集合/極性/数値/形式)。不通過→再生成1回→なお不通過ならこのlevelは却下。
+                _sk = [structural_kind_of(full_text, t) for t in targets]
+                if any(_sk):
+                    _sr = handoff.setdefault("structural_rules", {"checks": [], "regen_calls": 0, "rejected_levels": []})
+
+                    def _run_checks(rev, _sk=_sk, _targets=targets):
+                        return [cap2.four_checks(k, t, r, _vocab_for_rules(), full_text) if k else None
+                                for k, t, r in zip(_sk, _targets, rev)]
+                    chk = _run_checks(revised)
+                    bad = [c_ for c_ in chk if c_ and not c_["ok"]]
+                    _sr["checks"].append({"level": lv["name"], "attempt": 1, "ok": not bad,
+                                          "violations": sorted({v_ for c_ in bad for v_ in c_["violations"]}),
+                                          "new_subjects": sorted({x_ for c_ in bad for x_ in c_["new_subjects"]})})
+                    if bad:
+                        _note = cap2.REGEN_NOTE_TEMPLATE.format(viol=", ".join(sorted({v_ for c_ in bad for v_ in c_["violations"]})))
+                        raw2 = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"] + "_regen",
+                                               lv["dev_msg"], lv["prompt"] + _note, model=MODEL)
+                        _sr["regen_calls"] += 1
+                        rev2, err2 = vs_parse_revised_ranges(raw2) if raw2 is not None else (None, "api_failure")
+                        if (not err2 and len(rev2) == len(targets) and all(r_.strip() for r_ in rev2)):
+                            if stage2_fix_switch("OPEN233_FIX_W1_TITLE_MARKUP"):
+                                rev2, _ = w1_preserve_title_markup(targets, rev2)
+                            chk2 = _run_checks(rev2)
+                            bad2 = [c_ for c_ in chk2 if c_ and not c_["ok"]]
+                            _sr["checks"].append({"level": lv["name"], "attempt": 2, "ok": not bad2,
+                                                  "violations": sorted({v_ for c_ in bad2 for v_ in c_["violations"]}),
+                                                  "new_subjects": sorted({x_ for c_ in bad2 for x_ in c_["new_subjects"]})})
+                            if not bad2:
+                                revised, bad = rev2, []
+                            else:
+                                bad = bad2
+                        else:
+                            _sr["checks"].append({"level": lv["name"], "attempt": 2, "ok": False,
+                                                  "violations": ["regen_unusable:" + str(err2 or "count_or_empty")], "new_subjects": []})
+                    if bad:
+                        attempt["result"] = "structural_four_check_rejected"
+                        _sr["rejected_levels"].append(lv["name"])
+                        _sr["kept_original_quality_record"] = True  # 元のまま+QUALITY記録(ladder枯渇経路へ。新しい出口は作らない)
+                        method_used = f"{lv['tag']}_structural_four_check_rejected"
+                        continue
             attempt["revised"] = list(revised)
             changed = [r != t for t, r in zip(targets, revised)]
             attempt["each_target_changed"] = changed
@@ -6449,6 +6713,31 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
             break
 
     handoff["levels_attempted"] = [a.get("level") for a in handoff["level_attempts"]]  # 委任_11: 実際に試行したlevel一覧(`escalated_to_paragraph`是正用)
+    if not guard_ok and hook_delete_deferred:
+        # STAGE2-01 B-(c): Hook文の削除は最終手段。書換えが全て不通過のときだけ、削除で段落が成立する場合(degenerateでない・再出現なし)に限り削除。
+        _whole = {u.strip() for u in sentence_units}
+        _del_units = ranges if all(r.strip() in _whole for r in ranges) else list(sentence_units)
+        _cur, _bad = vs_apply_replacements(full_text, _del_units, [""] * len(_del_units))
+        _att = {"level": "0_delete_hook_last_resort", "targets": _del_units}
+        if _cur is not None and _cur != full_text:
+            _norm_after = vs_norm_str(_cur, True)
+            _reocc = any(vs_norm_str(r, True) and vs_norm_str(r, True) in _norm_after for r in ranges)
+            _sr_chk = measure_section_role_violation(full_text, _cur)
+            _degen = bool(_sr_chk.get("title_degenerate") or _sr_chk.get("hook_degenerate") or _sr_chk.get("iol_degenerate"))
+            _att["delete_reoccurrence_detected"], _att["degenerate"] = _reocc, _degen
+            if not _reocc and not _degen:
+                updated_text, guard_ok = _cur, True
+                method_used = f"hook_last_resort_delete({locate_method})"
+                ladder_level_used = "0_delete_hook_last_resort"
+                before_fragment, after_fragment = " ".join(_del_units), ""
+                handoff["level_used"] = "0_delete_hook_last_resort"
+                handoff["hook_last_resort_delete"] = True
+                _att["result"] = "success"
+            else:
+                _att["result"] = "guard_failed"
+        else:
+            _att["result"] = "writeback_failed"
+        handoff["level_attempts"].append(_att)
     if not guard_ok:
         after_fragment = None
         if not ENABLE_LADDER_LEVEL_6_FULL_REWRITE:
@@ -6468,6 +6757,13 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
             updated_text = fallback_text
             method_used = (method_used or "") + "+fulltext_fallback"
             guard_ok = updated_text != full_text
+            if guard_ok and struct_rules_on:
+                _sc6 = structural_article_check(full_text, updated_text, fixture["ledger_text"])  # STAGE2-01 B-(b): level 6にも4照合
+                handoff["structural_rules_level6"] = _sc6
+                if not _sc6["ok"]:
+                    guard_ok = False
+                    updated_text = full_text
+                    method_used += "+structural_four_check_rejected"
             if guard_ok and STAGE4_ALLOWLIST:
                 _sr6 = measure_section_role_violation(full_text, updated_text)
                 if _sr6.get("title_degenerate") or _sr6.get("hook_degenerate") or _sr6.get("iol_degenerate"):
@@ -8767,7 +9063,10 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
             _keep = []
             for lc in llm_claims:
                 k_ = claim_materiality_key(lc["claim_text"], lc["related_fact_id"], current_en_text)
-                if k_ is not None and k_ in nonblocking_registry:
+                # STAGE2-01 A-(e): guard_targetは前回判定を再利用しない(スイッチON時のみ。毎cycle信念テストを通す)
+                _reuse_blocked = bool(cap2.switch_on(cap2.SW_READER_BELIEF) and cap2.reuse_forbidden(
+                    cap2.guard_target(lc["claim_text"], lc.get("dev"), fixture["ledger_text"])["target"]))
+                if k_ is not None and k_ in nonblocking_registry and not _reuse_blocked:
                     reused_results.append({**nonblocking_registry[k_], "claim_text": lc["claim_text"], "dev": lc["dev"],
                                            "reused_nonblocking_verdict": True})
                     switch_fired["STAGE2_VERDICT_REUSE_NONBLOCKING"] = switch_fired.get("STAGE2_VERDICT_REUSE_NONBLOCKING", 0) + 1
@@ -8832,7 +9131,8 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if STAGE2_VERDICT_REUSE_NONBLOCKING and HANDOFF_MODE == HANDOFF_MODE_VIOLATION_SPAN:
             for r_ in stage2_results:
                 so_ = r_.get("second_opinion") or {}
-                if r_["materiality"] != "BLOCKING" and so_.get("confirmed_downgrade") and not r_.get("floor_reason"):
+                if (r_["materiality"] != "BLOCKING" and so_.get("confirmed_downgrade") and not r_.get("floor_reason")
+                        and not (cap2.switch_on(cap2.SW_READER_BELIEF) and cap2.reuse_forbidden(bool(r_.get("guard_target"))))):
                     k_ = claim_materiality_key(r_.get("claim_text", ""), (r_["dev"].get("related_fact_id") or ""), current_en_text)
                     if k_ is not None:
                         nonblocking_registry[k_] = {kk: vv for kk, vv in r_.items() if kk not in ("claim_text", "dev")}
@@ -9526,9 +9826,14 @@ def run_instance(client, state, consecutive_errors, inst: dict, enable_s1u: bool
         if current_ja_text is not None:
             recheck_fixture["source_article_text"] = current_ja_text
         if RECHECK_MODE == RECHECK_MODE_COVERAGE_UNION:  # 委任_18: 新Stage 1仕様のRecheck(変更単位+前後1単位、既定legacy_v4a=従来)
+            _w2_kwargs = {}  # STAGE2-01 W2: スイッチOFF時は引数を一切追加しない(従来と同一呼び出し)
+            if stage2_fix_switch("OPEN233_FIX_W2_STRUCTURAL_RECHECK"):
+                _w2_kwargs["structural_pairs"] = [p_ for p_ in (before_after_pairs or []) if p_.get("structural")
+                                                  and p_.get("before") and p_.get("after")]
             recheck_parsed = run_recheck_coverage(client, state, consecutive_errors, call_log,
                                                   f"{instance_id}_c{cycle}_recheck", recheck_fixture, current_en_text,
-                                                  prior_issues, en_text_before_rewrite)
+                                                  prior_issues, en_text_before_rewrite,
+                                                  **_w2_kwargs)
             _ra = recheck_parsed.get("recheck_coverage_audit") or {}
             cycle_record["recheck_coverage"] = {k: _ra.get(k) for k in (
                 "scope_ids", "changed_ids", "n_scope", "n_judged_units", "n_union_candidates", "n_calls", "total_cost_jpy",

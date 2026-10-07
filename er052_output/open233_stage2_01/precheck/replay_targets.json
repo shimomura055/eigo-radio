@@ -1,0 +1,564 @@
+{
+ "current_stage1_version": {
+  "module_version": "stage1_coverage_v1",
+  "PROMPT_SHA256": {
+   "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+   "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+   "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+   "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+   "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+   "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+   "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+   "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+   "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+   "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+  }
+ },
+ "match_rule": "ログ内prompt_sha256辞書の10要素全てが現行cov.PROMPT_SHA256と一致(テンプレート・schema・FLAG_DESCRIPTIONS)",
+ "n_instance_logs_same_version": 56,
+ "by_set": {
+  "open233_allfact_note_e2e_02": 10,
+  "open233_control_checker_polysemy_trial_01": 18,
+  "open233_e2e_acceptance_01": 9,
+  "open233_ledger_clarity_p_trial_01": 1,
+  "open233_meta_allfact_note_ent_01": 2,
+  "open233_polysemy_trial_04": 5,
+  "open233_prod_e2e_02": 9,
+  "open238_precheck_fix_trial_01": 2
+ },
+ "other_logs": {
+  "open233_allfact_note_e2e_02|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 10,
+  "open233_control_checker_polysemy_trial_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 18,
+  "open233_e2e_acceptance_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 1,
+  "open233_e2e_acceptance_01_dryrun|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 20,
+  "open233_ledger_clarity_p_trial_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 1,
+  "open233_meta_allfact_note_ent_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 2,
+  "open233_polysemy_trial_04|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 5,
+  "open233_prod_e2e_02|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 9,
+  "open233_stage1_coverage_dryrun_01|diff:R5V_PROMPT_TEMPLATE,R5V_DEVELOPER_MESSAGE": 1,
+  "open233_stage1_loop2_garm_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 12,
+  "open233_stage1_loop2_garm_01|same_but_stage1_only_experiment_output(no cycles)": 21,
+  "open233_stage1_loop2_r5v_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 20,
+  "open233_stage1_loop2_r5v_01|same_but_stage1_only_experiment_output(no cycles)": 22,
+  "open233_stage1_loop2_r5v_cap_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 12,
+  "open233_stage1_loop2_r5v_cap_01|same_but_stage1_only_experiment_output(no cycles)": 15,
+  "open233_stage1_loop2_r5v_cap_medium_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 12,
+  "open233_stage1_loop2_r5v_cap_medium_01|same_but_stage1_only_experiment_output(no cycles)": 15,
+  "open233_stage1_loop2_r5v_fix_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 20,
+  "open233_stage1_loop2_r5v_fix_01|same_but_stage1_only_experiment_output(no cycles)": 22,
+  "open233_stage1_loop2_r5v_fix_medium_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 20,
+  "open233_stage1_loop2_r5v_fix_medium_01|same_but_stage1_only_experiment_output(no cycles)": 22,
+  "open233_stage1_loop2_r5v_medium_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 20,
+  "open233_stage1_loop2_r5v_medium_01|same_but_stage1_only_experiment_output(no cycles)": 22,
+  "open233_stage1_stageA_01|diff:R5V_PROMPT_TEMPLATE,R5V_DEVELOPER_MESSAGE": 43,
+  "open238_precheck_fix_trial_01|same_but_excluded(dup/dryrun/stage1_experiment_artifact)": 2
+ },
+ "b3_trial": "open233_b3_trial_01は--no-checkerのためStage1ログ自体が無い(版違い以前に対象外)",
+ "note": "r3_support_fact_idsは全ログで未保存(Grep確認)。復元には同版でのreplay(API要)が必要。同一記事の重複(ccp 18=meta nb 10+他8、e2e_02等)は記事単位ではinstance単位=記事。",
+ "instances": [
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 4,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_allfact_note_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 5,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep3/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep4/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep5/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep9/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/space_weapons/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "STAGE4_ESCALATION",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_control_checker_polysemy_trial_01/runs/space_weapons/control/rep2/checker/runs/meta_run03_advanced.json",
+   "set": "open233_control_checker_polysemy_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 4,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/bgroup_B3.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "b_group",
+   "instance_id": "bgroup_B3"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/hormuz_run03_advanced.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "hormuz",
+   "instance_id": "hormuz_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/hormuz_run03_standard.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "hormuz",
+   "instance_id": "hormuz_run03_standard"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/meta_run03_advanced.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/meta_run03_standard.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_standard"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/neg1_meta_b3prod_a2.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 4,
+   "rewrite_occurred": true,
+   "group": "negative",
+   "instance_id": "neg1_meta_b3prod_a2"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/neg2_meta_refresh_a2.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "negative",
+   "instance_id": "neg2_meta_refresh_a2"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/neg3_hormuz_prodrunner_b1b.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "negative",
+   "instance_id": "neg3_hormuz_prodrunner_b1b"
+  },
+  {
+   "path": "er052_output/open233_e2e_acceptance_01/runs/s1/neg7_meta_prodrunner_b1b.json",
+   "set": "open233_e2e_acceptance_01",
+   "final_state": "STAGE4_ESCALATION",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "negative",
+   "instance_id": "neg7_meta_prodrunner_b1b"
+  },
+  {
+   "path": "er052_output/open233_ledger_clarity_p_trial_01/checker_after_01/runs/meta_run03_advanced.json",
+   "set": "open233_ledger_clarity_p_trial_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_meta_allfact_note_ent_01/runs/meta/nb/p1/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_meta_allfact_note_ent_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_meta_allfact_note_ent_01/runs/meta/nb/p2/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_meta_allfact_note_ent_01",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_polysemy_trial_04/runs/ai_control/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_polysemy_trial_04",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_polysemy_trial_04",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_polysemy_trial_04",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_polysemy_trial_04",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_polysemy_trial_04/runs/space_weapons/control/rep1/checker/runs/meta_run03_advanced.json",
+   "set": "open233_polysemy_trial_04",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/bgroup_B3.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "b_group",
+   "instance_id": "bgroup_B3"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/hormuz_run03_advanced.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "hormuz",
+   "instance_id": "hormuz_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/hormuz_run03_standard.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "hormuz",
+   "instance_id": "hormuz_run03_standard"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/meta_run03_advanced.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/meta_run03_standard.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_standard"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/neg1_meta_b3prod_a2.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "negative",
+   "instance_id": "neg1_meta_b3prod_a2"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/neg2_meta_refresh_a2.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 2,
+   "rewrite_occurred": true,
+   "group": "negative",
+   "instance_id": "neg2_meta_refresh_a2"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/neg3_hormuz_prodrunner_b1b.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 4,
+   "rewrite_occurred": true,
+   "group": "negative",
+   "instance_id": "neg3_hormuz_prodrunner_b1b"
+  },
+  {
+   "path": "er052_output/open233_prod_e2e_02/runs/neg7_meta_prodrunner_b1b.json",
+   "set": "open233_prod_e2e_02",
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "n_cycles": 1,
+   "rewrite_occurred": false,
+   "group": "negative",
+   "instance_id": "neg7_meta_prodrunner_b1b"
+  },
+  {
+   "path": "er052_output/open238_precheck_fix_trial_01/replay/fixed/runs/meta_run03_advanced.json",
+   "set": "open238_precheck_fix_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  },
+  {
+   "path": "er052_output/open238_precheck_fix_trial_01/runtime_evidence/run/runs/meta_run03_advanced.json",
+   "set": "open238_precheck_fix_trial_01",
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "n_cycles": 3,
+   "rewrite_occurred": true,
+   "group": "meta",
+   "instance_id": "meta_run03_advanced"
+  }
+ ]
+}

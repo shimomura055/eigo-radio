@@ -1,0 +1,1947 @@
+{
+ "summary": {
+  "dev_items_total": 100,
+  "excluded": {
+   "b3_no_checker(--no-checker)": 39,
+   "rca_b3v0_no_checker": 10,
+   "past_major_old_runs_not_in_logset": 4
+  },
+  "eligible_n": 47,
+  "overall": {
+   "stage1": {
+    "n": 47,
+    "sentence_level": 11,
+    "fact_level_only": 18,
+    "no_candidate": 1,
+    "indeterminate_fact_id_null": 17,
+    "rate_lower_sentence": 0.234,
+    "rate_upper_sentence_or_fact": 0.617,
+    "rate_upper_among_determinable": 0.967
+   },
+   "stage2": {
+    "final_BLOCKING": 3,
+    "final_blocking_total": 3,
+    "final_QUALITY": 8,
+    "second_opinion_confirmed_downgrade": 26,
+    "final_non_blocking_total": 26,
+    "final_ACCEPTABLE": 18
+   }
+  },
+  "by_guard_type": {
+   "主体": {
+    "stage1": {
+     "n": 3,
+     "sentence_level": 0,
+     "fact_level_only": 2,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 1,
+     "rate_lower_sentence": 0.0,
+     "rate_upper_sentence_or_fact": 0.667,
+     "rate_upper_among_determinable": 1.0
+    },
+    "stage2": {
+     "final_QUALITY": 1,
+     "second_opinion_confirmed_downgrade": 2,
+     "final_non_blocking_total": 2,
+     "final_ACCEPTABLE": 1
+    }
+   },
+   "全称": {
+    "stage1": {
+     "n": 2,
+     "sentence_level": 0,
+     "fact_level_only": 1,
+     "no_candidate": 1,
+     "indeterminate_fact_id_null": 0,
+     "rate_lower_sentence": 0.0,
+     "rate_upper_sentence_or_fact": 0.5,
+     "rate_upper_among_determinable": 0.5
+    },
+    "stage2": {
+     "final_ACCEPTABLE": 1,
+     "second_opinion_confirmed_downgrade": 1,
+     "final_non_blocking_total": 1
+    }
+   },
+   "否定・不在": {
+    "stage1": {
+     "n": 4,
+     "sentence_level": 1,
+     "fact_level_only": 2,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 1,
+     "rate_lower_sentence": 0.25,
+     "rate_upper_sentence_or_fact": 0.75,
+     "rate_upper_among_determinable": 1.0
+    },
+    "stage2": {
+     "final_QUALITY": 2,
+     "second_opinion_confirmed_downgrade": 3,
+     "final_non_blocking_total": 3,
+     "final_ACCEPTABLE": 1
+    }
+   },
+   "数値": {
+    "stage1": {
+     "n": 2,
+     "sentence_level": 0,
+     "fact_level_only": 0,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 2,
+     "rate_lower_sentence": 0.0,
+     "rate_upper_sentence_or_fact": 0.0,
+     "rate_upper_among_determinable": null
+    },
+    "stage2": {}
+   },
+   "方向・極性": {
+    "stage1": {
+     "n": 6,
+     "sentence_level": 4,
+     "fact_level_only": 2,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 0,
+     "rate_lower_sentence": 0.667,
+     "rate_upper_sentence_or_fact": 1.0,
+     "rate_upper_among_determinable": 1.0
+    },
+    "stage2": {
+     "final_ACCEPTABLE": 6,
+     "second_opinion_confirmed_downgrade": 6,
+     "final_non_blocking_total": 6
+    }
+   },
+   "非ガード型(その他)": {
+    "stage1": {
+     "n": 16,
+     "sentence_level": 2,
+     "fact_level_only": 3,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 11,
+     "rate_lower_sentence": 0.125,
+     "rate_upper_sentence_or_fact": 0.312,
+     "rate_upper_among_determinable": 1.0
+    },
+    "stage2": {
+     "final_ACCEPTABLE": 3,
+     "second_opinion_confirmed_downgrade": 4,
+     "final_non_blocking_total": 4,
+     "final_BLOCKING": 1,
+     "final_blocking_total": 1,
+     "final_QUALITY": 1
+    }
+   },
+   "非ガード型(因果・時間接続)": {
+    "stage1": {
+     "n": 8,
+     "sentence_level": 3,
+     "fact_level_only": 3,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 2,
+     "rate_lower_sentence": 0.375,
+     "rate_upper_sentence_or_fact": 0.75,
+     "rate_upper_among_determinable": 1.0
+    },
+    "stage2": {
+     "final_QUALITY": 3,
+     "second_opinion_confirmed_downgrade": 6,
+     "final_non_blocking_total": 6,
+     "final_ACCEPTABLE": 3
+    }
+   },
+   "非ガード型(限定語消失)": {
+    "stage1": {
+     "n": 6,
+     "sentence_level": 1,
+     "fact_level_only": 5,
+     "no_candidate": 0,
+     "indeterminate_fact_id_null": 0,
+     "rate_lower_sentence": 0.167,
+     "rate_upper_sentence_or_fact": 1.0,
+     "rate_upper_among_determinable": 1.0
+    },
+    "stage2": {
+     "final_BLOCKING": 2,
+     "final_blocking_total": 2,
+     "final_QUALITY": 1,
+     "second_opinion_confirmed_downgrade": 4,
+     "final_non_blocking_total": 4,
+     "final_ACCEPTABLE": 3
+    }
+   }
+  },
+  "method_caveat": "項目はJA文(R0/R2由来)、Stage1候補はEN文。文レベル対応は(EN語/数値の共有3語以上)または(fact_id一致 かつ 項目JA文とCheckerのissue+claimのJA3gram重なり>=0.4)で近似した機械判定(人間確認なし)。fact_level_onlyは同factの別文を拾っただけの可能性を含む。fact_id不明(保留項目)は判定不能として別掲。"
+ },
+ "items": [
+  {
+   "item_id": "hormuz-3bsv-p1",
+   "src": "b3",
+   "article": "hormuz/3bsv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-cdwb-n1",
+   "src": "b3",
+   "article": "hormuz/cdwb",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "HF-003",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-cdwb-n2",
+   "src": "b3",
+   "article": "hormuz/cdwb",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "HF-011",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-cf8v-n1",
+   "src": "b3",
+   "article": "hormuz/cf8v",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "HF-011",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-cf8v-n2",
+   "src": "b3",
+   "article": "hormuz/cf8v",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "HF-003",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-nbsw-p1",
+   "src": "b3",
+   "article": "hormuz/nbsw",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-nn32-n1",
+   "src": "b3",
+   "article": "hormuz/nn32",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "HF-006",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-nn32-n2",
+   "src": "b3",
+   "article": "hormuz/nn32",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "HF-003",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-rdxs-p1",
+   "src": "b3",
+   "article": "hormuz/rdxs",
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "hormuz-speg-p1",
+   "src": "b3",
+   "article": "hormuz/speg",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "EN",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-4ufq-n1",
+   "src": "b3",
+   "article": "meta/4ufq",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "HC-009",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-hkgv-n1",
+   "src": "b3",
+   "article": "meta/hkgv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-hkgv-p1",
+   "src": "b3",
+   "article": "meta/hkgv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-hvgv-p1",
+   "src": "b3",
+   "article": "meta/hvgv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-j7e5-n1",
+   "src": "b3",
+   "article": "meta/j7e5",
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "MUSE-HC-011",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-j7e5-n2",
+   "src": "b3",
+   "article": "meta/j7e5",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-jn3p-p1",
+   "src": "b3",
+   "article": "meta/jn3p",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-p9ng-n1",
+   "src": "b3",
+   "article": "meta/p9ng",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "HC-014",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-p9ng-n2",
+   "src": "b3",
+   "article": "meta/p9ng",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "HC-010",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-p9ng-n3",
+   "src": "b3",
+   "article": "meta/p9ng",
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "HC-010",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "meta-p9ng-n4",
+   "src": "b3",
+   "article": "meta/p9ng",
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "HC-006",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-637f-n1",
+   "src": "b3",
+   "article": "space_weapons/637f",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-001",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-637f-n2",
+   "src": "b3",
+   "article": "space_weapons/637f",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "F-001",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-637f-p1",
+   "src": "b3",
+   "article": "space_weapons/637f",
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": null,
+   "origin": "EN",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-86u9-n1",
+   "src": "b3",
+   "article": "space_weapons/86u9",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "F-001",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-86u9-n2",
+   "src": "b3",
+   "article": "space_weapons/86u9",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-011",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-9ggp-n1",
+   "src": "b3",
+   "article": "space_weapons/9ggp",
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": "F-001",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-9ggp-n2",
+   "src": "b3",
+   "article": "space_weapons/9ggp",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "F-001",
+   "origin": "EN",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-9xuf-p1",
+   "src": "b3",
+   "article": "space_weapons/9xuf",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-d33e-n1",
+   "src": "b3",
+   "article": "space_weapons/d33e",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-001",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-ezup-n1",
+   "src": "b3",
+   "article": "space_weapons/ezup",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-016",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-ezup-p1",
+   "src": "b3",
+   "article": "space_weapons/ezup",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-g727-n1",
+   "src": "b3",
+   "article": "space_weapons/g727",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-011",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-pbwd-n1",
+   "src": "b3",
+   "article": "space_weapons/pbwd",
+   "sentence_type": "全称",
+   "guard_type": "全称",
+   "fact_id": "F-001",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-rvz5-n1",
+   "src": "b3",
+   "article": "space_weapons/rvz5",
+   "sentence_type": "全称",
+   "guard_type": "全称",
+   "fact_id": "F-001",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-v3eg-n1",
+   "src": "b3",
+   "article": "space_weapons/v3eg",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "F-017",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-v3eg-n2",
+   "src": "b3",
+   "article": "space_weapons/v3eg",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-012",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-y843-n1",
+   "src": "b3",
+   "article": "space_weapons/y843",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-001",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "space_weapons-y843-n2",
+   "src": "b3",
+   "article": "space_weapons/y843",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-011",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:b3_no_checker"
+  },
+  {
+   "item_id": "ai_control-jb9k-n1",
+   "src": "ccp",
+   "article": "ai_control/jb9k",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "CONTROL-003",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 12,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "The unusual activity was brought under control about an hour after it was found.",
+   "n_fact_candidates": 4,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "BLOCKING",
+     "final": "BLOCKING",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": null,
+     "so_second": null,
+     "so_confirmed_downgrade": null
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-jb9k-n2",
+   "src": "ccp",
+   "article": "ai_control/jb9k",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "CONTROL-003",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 12,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "The unusual activity was brought under control about an hour after it was found.",
+   "n_fact_candidates": 4,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "BLOCKING",
+     "final": "BLOCKING",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": null,
+     "so_second": null,
+     "so_confirmed_downgrade": null
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-jb9k-n3",
+   "src": "ccp",
+   "article": "ai_control/jb9k",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "EVID-008",
+   "origin": "R0",
+   "severity": "major(人間判定 2026-10-07)",
+   "manual_override": "RCA_jb9k_qvqc.md(S7.4候補化を確認済み)",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 12,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "Nor has anyone reported that an AI got out of the test environment.",
+   "matched_unit_ids": [
+    "S7.4"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-jb9k-n4",
+   "src": "ccp",
+   "article": "ai_control/jb9k",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "CONTROL-001",
+   "origin": "R2",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 12,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "In other words, humans have not lost control of AI at this point.",
+   "n_fact_candidates": 1,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-jb9k-n5",
+   "src": "ccp",
+   "article": "ai_control/jb9k",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": "EVID-009",
+   "origin": "R2",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 12,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "So it created a harmful Python program component and uploaded it to the public site.",
+   "n_fact_candidates": 5,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-jb9k-p1",
+   "src": "ccp",
+   "article": "ai_control/jb9k",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 12,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-cv85-p1",
+   "src": "ccp",
+   "article": "hormuz/cv85",
+   "sentence_type": "否定・不在",
+   "guard_type": "否定・不在",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep1",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-cv85-p2",
+   "src": "ccp",
+   "article": "hormuz/cv85",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep1",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": false,
+   "status": "candidate_sentence_level",
+   "matched_claim": "When policy statements change, prices react once.",
+   "matched_unit_ids": [
+    "S10.2"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "unsupported_relationship",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "hormuz-d5qr-p1",
+   "src": "ccp",
+   "article": "hormuz/d5qr",
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep2",
+   "n_stage1_candidates_in_article": 9,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-d5qr-p2",
+   "src": "ccp",
+   "article": "hormuz/d5qr",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "EN",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep2",
+   "n_stage1_candidates_in_article": 9,
+   "fact_id_known": false,
+   "status": "candidate_sentence_level",
+   "matched_claim": "On what basis would the 20 percent be calculated?",
+   "matched_unit_ids": [
+    "S3.5"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-249j-n1",
+   "src": "ccp",
+   "article": "meta/249j",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10",
+   "n_stage1_candidates_in_article": 6,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "In other words, the problem was not bringing in humans itself.",
+   "n_fact_candidates": 2,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "unsupported_relationship",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-249j-p1",
+   "src": "ccp",
+   "article": "meta/249j",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": null,
+   "origin": "EN",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10",
+   "n_stage1_candidates_in_article": 6,
+   "fact_id_known": false,
+   "status": "candidate_sentence_level",
+   "matched_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+   "matched_unit_ids": [
+    "L1"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-2xhw-n1",
+   "src": "ccp",
+   "article": "meta/2xhw",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+   "n_stage1_candidates_in_article": 5,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "The company then temporarily returned the human concierge feature to its previous setup.",
+   "matched_unit_ids": [
+    "S8.2"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-2xhw-n2",
+   "src": "ccp",
+   "article": "meta/2xhw",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "MUSE-HC-010",
+   "origin": "R2",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+   "n_stage1_candidates_in_article": 5,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "However, because the test began without proper notice, concerns about privacy arose inside the company.",
+   "matched_unit_ids": [
+    "S6.1"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "unsupported_relationship",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-cz6g-n1",
+   "src": "ccp",
+   "article": "meta/cz6g",
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R2",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep4",
+   "n_stage1_candidates_in_article": 10,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "The problem was not simply that humans handled the calls.",
+   "n_fact_candidates": 5,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "unsupported_relationship",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-daju-n1",
+   "src": "ccp",
+   "article": "meta/daju",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "MUSE-HC-010",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep9",
+   "n_stage1_candidates_in_article": 10,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "But when the main actor in the call changes, a problem about the information being handled also appears.",
+   "n_fact_candidates": 5,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-daju-n2",
+   "src": "ccp",
+   "article": "meta/daju",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep9",
+   "n_stage1_candidates_in_article": 10,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "It was returned to its earlier state for the time being.",
+   "matched_unit_ids": [
+    "S5.2"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-daju-p1",
+   "src": "ccp",
+   "article": "meta/daju",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep9",
+   "n_stage1_candidates_in_article": 10,
+   "fact_id_known": false,
+   "status": "candidate_sentence_level",
+   "matched_claim": "As a result, the human concierge feature was rolled back for now.",
+   "matched_unit_ids": [
+    "S5.1"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-ggp4-n1",
+   "src": "ccp",
+   "article": "meta/ggp4",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep5",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "Meta then put the human concierge feature back the way it was, for the time being.",
+   "matched_unit_ids": [
+    "S6.2"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-gj99-n1",
+   "src": "ccp",
+   "article": "meta/gj99",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep3",
+   "n_stage1_candidates_in_article": 4,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "Meta then put the human concierge feature back the way it was before, for the time being.",
+   "matched_unit_ids": [
+    "S6.2"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-n6vy-n1",
+   "src": "ccp",
+   "article": "meta/n6vy",
+   "sentence_type": "多義語方向",
+   "guard_type": "方向・極性",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep1",
+   "n_stage1_candidates_in_article": 4,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "Meta then rolled back the human concierge feature.",
+   "n_fact_candidates": 2,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "sewer-cqsu-n1",
+   "src": "ccp",
+   "article": "sewer/cqsu",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-007",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep2",
+   "n_stage1_candidates_in_article": 5,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "This does not mean that one choice is always correct.",
+   "n_fact_candidates": 1,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "sewer-cqsu-p1",
+   "src": "ccp",
+   "article": "sewer/cqsu",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep2",
+   "n_stage1_candidates_in_article": 5,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "sewer-qrfc-n1",
+   "src": "ccp",
+   "article": "sewer/qrfc",
+   "sentence_type": "全称",
+   "guard_type": "全称",
+   "fact_id": "F-012",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep1",
+   "n_stage1_candidates_in_article": 11,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+   "n_fact_candidates": 1,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "sewer-qrfc-p1",
+   "src": "ccp",
+   "article": "sewer/qrfc",
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep1",
+   "n_stage1_candidates_in_article": 11,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "space_weapons-kfuf-p1",
+   "src": "ccp",
+   "article": "space_weapons/kfuf",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/space_weapons/control/rep2",
+   "n_stage1_candidates_in_article": 5,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "ai_control-cfqm-n1",
+   "src": "rca",
+   "article": "ai_control/cfqm",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "EVID-011",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/ai_control/control/rep1",
+   "n_stage1_candidates_in_article": 21,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "The main actors were research prototypes used only inside the company.",
+   "n_fact_candidates": 4,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_scope",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "QUALITY",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-cupe-n1",
+   "src": "rca",
+   "article": "ai_control/cupe",
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "CONTROL-003",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 11,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "In a separate real-world internet incident that was also reported, a security team found the unusual activity and contained it within about an hour.",
+   "n_fact_candidates": 3,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 4,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "ai_control-cupe-p1",
+   "src": "rca",
+   "article": "ai_control/cupe",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 11,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-byz5-n1",
+   "src": "rca",
+   "article": "hormuz/byz5",
+   "sentence_type": "全称",
+   "guard_type": "全称",
+   "fact_id": "HF-003",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1",
+   "n_stage1_candidates_in_article": 1,
+   "fact_id_known": true,
+   "status": "no_candidate"
+  },
+  {
+   "item_id": "hormuz-byz5-p1",
+   "src": "rca",
+   "article": "hormuz/byz5",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "unknown",
+   "severity": "pending",
+   "run": "er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1",
+   "n_stage1_candidates_in_article": 1,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-byz5-p2",
+   "src": "rca",
+   "article": "hormuz/byz5",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1",
+   "n_stage1_candidates_in_article": 1,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-j7gv-n1",
+   "src": "rca",
+   "article": "hormuz/j7gv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "HF-003",
+   "origin": "R2",
+   "severity": "minor",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 9,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "Every time a ship passed, it would pay for U.S. security measures.",
+   "n_fact_candidates": 2,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "BLOCKING",
+     "final": "BLOCKING",
+     "basis": "ledger_conditions",
+     "floor": null,
+     "so_first": null,
+     "so_second": null,
+     "so_confirmed_downgrade": null
+    }
+   ]
+  },
+  {
+   "item_id": "hormuz-j7gv-p1",
+   "src": "rca",
+   "article": "hormuz/j7gv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "unknown",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 9,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-j7gv-p2",
+   "src": "rca",
+   "article": "hormuz/j7gv",
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 9,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-j7gv-p3",
+   "src": "rca",
+   "article": "hormuz/j7gv",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 9,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "hormuz-qc67-n1",
+   "src": "rca",
+   "article": "hormuz/qc67",
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": "HF-009",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "hormuz-qc67-p1",
+   "src": "rca",
+   "article": "hormuz/qc67",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "unknown",
+   "severity": "pending",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-52ap-p1",
+   "src": "rca",
+   "article": "meta/52ap",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-52ap-p2",
+   "src": "rca",
+   "article": "meta/52ap",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-78bg-n1",
+   "src": "rca",
+   "article": "meta/78bg",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "MUSE-HC-010",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-78bg-n2",
+   "src": "rca",
+   "article": "meta/78bg",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "MUSE-HC-014",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-78bg-p1",
+   "src": "rca",
+   "article": "meta/78bg",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-7aqr-n1",
+   "src": "rca",
+   "article": "meta/7aqr",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "MUSE-HC-012",
+   "origin": "EN",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": true,
+   "status": "candidate_sentence_level",
+   "matched_claim": "Some calls made through Muse were actually made by trained human contract workers, not by AI.",
+   "matched_unit_ids": [
+    "S3.1"
+   ],
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "meta-7aqr-p1",
+   "src": "rca",
+   "article": "meta/7aqr",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "unknown",
+   "severity": "pending",
+   "run": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "meta-a5te-p1",
+   "src": "rca",
+   "article": "meta/a5te",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R0",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep1",
+   "n_stage1_candidates_in_article": 6,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "meta-a5te-p2",
+   "src": "rca",
+   "article": "meta/a5te",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep1",
+   "n_stage1_candidates_in_article": 6,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "meta-ehz9-n1",
+   "src": "rca",
+   "article": "meta/ehz9",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "MUSE-HC-012",
+   "origin": "R2",
+   "severity": "minor",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "meta-ehz9-p1",
+   "src": "rca",
+   "article": "meta/ehz9",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "sewer-4hgy-n1",
+   "src": "rca",
+   "article": "sewer/4hgy",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "F-007",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1",
+   "n_stage1_candidates_in_article": 10,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.",
+   "n_fact_candidates": 3,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "QUALITY",
+     "final": "QUALITY",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "QUALITY",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "sewer-4hgy-p1",
+   "src": "rca",
+   "article": "sewer/4hgy",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": null,
+   "origin": "R2",
+   "severity": "pending",
+   "run": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1",
+   "n_stage1_candidates_in_article": 10,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "sewer-g8qg-n1",
+   "src": "rca",
+   "article": "sewer/g8qg",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "F-010",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "Matsuyama City did not decide to dig up the old sewer pipes already in place and immediately replace them with septic tanks.",
+   "n_fact_candidates": 3,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "none",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "sewer-g8qg-p1",
+   "src": "rca",
+   "article": "sewer/g8qg",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": null,
+   "origin": "unknown",
+   "severity": "pending",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep2",
+   "n_stage1_candidates_in_article": 7,
+   "fact_id_known": false,
+   "status": "indeterminate_fact_id_null"
+  },
+  {
+   "item_id": "space_weapons-bcgj-n1",
+   "src": "rca",
+   "article": "space_weapons/bcgj",
+   "sentence_type": "因果・時間接続",
+   "guard_type": "非ガード型(因果・時間接続)",
+   "fact_id": "F-002",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/space_weapons/control/rep1",
+   "n_stage1_candidates_in_article": 8,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "However, no actual attack has been confirmed.",
+   "n_fact_candidates": 1,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_conditions",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_conditions",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 3,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_conditions",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "space_weapons-bcgj-n2",
+   "src": "rca",
+   "article": "space_weapons/bcgj",
+   "sentence_type": "限定語消失",
+   "guard_type": "非ガード型(限定語消失)",
+   "fact_id": "F-011",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/space_weapons/control/rep1",
+   "n_stage1_candidates_in_article": 8,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "The second is the communication link that carries information between satellites and the ground.",
+   "n_fact_candidates": 4,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "space_weapons-bcgj-n3",
+   "src": "rca",
+   "article": "space_weapons/bcgj",
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "F-011",
+   "origin": "R0",
+   "severity": "minor",
+   "run": "er052_output/open233_polysemy_trial_04/runs/space_weapons/control/rep1",
+   "n_stage1_candidates_in_article": 8,
+   "fact_id_known": true,
+   "status": "candidate_fact_level_only",
+   "matched_claim": "The second is the communication link that carries information between satellites and the ground.",
+   "n_fact_candidates": 4,
+   "stage2": [
+    {
+     "cycle": 1,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    },
+    {
+     "cycle": 2,
+     "llm": "ACCEPTABLE",
+     "final": "ACCEPTABLE",
+     "basis": "ledger_claim",
+     "floor": null,
+     "so_first": "ACCEPTABLE",
+     "so_second": "ACCEPTABLE",
+     "so_confirmed_downgrade": true
+    }
+   ]
+  },
+  {
+   "item_id": "space_weapons-dkus-n1",
+   "src": "rca",
+   "article": "space_weapons/dkus",
+   "sentence_type": "全称",
+   "guard_type": "全称",
+   "fact_id": "F-001",
+   "origin": "R0",
+   "severity": "minor",
+   "status": "excluded:rca_b3v0_no_checker"
+  },
+  {
+   "item_id": "PAST-ai-p2r1-01",
+   "src": "past",
+   "article": null,
+   "sentence_type": "その他",
+   "guard_type": "非ガード型(その他)",
+   "fact_id": "EVID-008",
+   "origin": "R2",
+   "severity": null,
+   "status": "excluded:past_major_no_log"
+  },
+  {
+   "item_id": "PAST-ai-p2r1-02",
+   "src": "past",
+   "article": null,
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "CONTROL-002",
+   "origin": "EN",
+   "severity": null,
+   "status": "excluded:past_major_no_log"
+  },
+  {
+   "item_id": "PAST-ai-p2r2-07",
+   "src": "past",
+   "article": null,
+   "sentence_type": "数値",
+   "guard_type": "数値",
+   "fact_id": "EVID-006(無関係)",
+   "origin": "Rewrite",
+   "severity": null,
+   "status": "excluded:past_major_no_log"
+  },
+  {
+   "item_id": "PAST-hormuz-T0M0r2-01",
+   "src": "past",
+   "article": null,
+   "sentence_type": "主語新規出現・置換",
+   "guard_type": "主体",
+   "fact_id": "HF-002",
+   "origin": "EN",
+   "severity": null,
+   "status": "excluded:past_major_no_log"
+  }
+ ]
+}
