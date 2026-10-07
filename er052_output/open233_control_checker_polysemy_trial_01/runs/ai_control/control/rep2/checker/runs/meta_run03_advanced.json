@@ -1,0 +1,3780 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "Claude was working on its task there, thinking it could not get outside.",
+            "issue": "モデルが「外に出られない」と考えていたとの記述は、Ledgerが確認するのは環境についてそう誤って伝えられたことまでで、モデルの認識状態までは確認していません。 / Ledgerではモデルにインターネット接続がないと誤って伝えられたことを確認しているが、モデル自身が外部に出られないと考えていたとは確認していない。 / Ledgerが確認しているのは、特定の事案でモデルがパッケージレジストリをシミュレーションの一部だと信じていたこと。外部に出られないと考えていたという主張までは確認していない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "EVID-008",
+                "EVID-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Incident That Looked Like an AI Escape: The Door That Was Open Was Somewhere Else\n\nIf we compare this investigation to a movie, the setting is a safe basement. Claude was working on its task there, thinking it could not get outside. But no wall was broken. From the start, a door that was easy to miss had been left open.\n\nIn Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party. The setup was wrong, and standard cybersecurity measures were not enough. The model was also told that it had no internet connection.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "From the start, a door that was easy to miss had been left open.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "From the start, a door that was easy to miss had been left open.",
+            "issue": "環境の誤設定は記録されていますが、「最初から」ドアが開いていたという時期はLedgerに明記されていません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.4"
+              ],
+              "related_fact_ids": [
+                "EVID-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# The Incident That Looked Like an AI Escape: The Door That Was Open Was Somewhere Else\n\nIf we compare this investigation to a movie, the setting is a safe basement. Claude was working on its task there, thinking it could not get outside. But no wall was broken. From the start, a door that was easy to miss had been left open.\n\nIn Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party. The setup was wrong, and standard cybersecurity measures were not enough. The model was also told that it had no internet connection.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "From the start, a door that was easy to miss had been left open.",
+            "first_materiality": "QUALITY",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "EVID-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "If we compare this investigation to a movie, the setting is a safe basement. Claude was working on its task there, thinking it could not get outside. But no wall was broken. From the start, a door that was easy to miss had been left open.\n\nIn Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party. The setup was wrong, and standard cybersecurity measures were not enough. The model was also told that it had no internet connection.\n\nIn other words, Claude thought it was working on made-up tasks in a completely closed practice area. But in fact, a path to the outside world was still open. However, we should not make the story bigger than it is. This was not a report that the model carried itself out of the test environment. What was missed was not a tunnel for the AI to escape through, but a problem in the test setup.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+            "issue": "「Claude thought」とモデルの認識を断定し、さらに全件が「完全に閉じた」環境だったとしています。Ledgerは環境がシミュレーションだと誤って伝えられたことを特定の事案について記していますが、この一般化は支えていません。 / モデルにインターネット接続がないと伝えられた事実を、モデルが実際に完全に閉じた環境だと考えていたという断定にしている。 / モデルがパッケージレジストリをシミュレーションの一部だと考えたことを、環境全体が完全に閉じていると考えていたという、より広い断定にしている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "EVID-008",
+                "EVID-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party. The setup was wrong, and standard cybersecurity measures were not enough. The model was also told that it had no internet connection.\n\nIn other words, Claude thought it was working on made-up tasks in a completely closed practice area. But in fact, a path to the outside world was still open. However, we should not make the story bigger than it is. This was not a report that the model carried itself out of the test environment. What was missed was not a tunnel for the AI to escape through, but a problem in the test setup.\n\nThen, in the second act, the practice task jumped into the real world.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "But in fact, a path to the outside world was still open.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "But in fact, a path to the outside world was still open.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S3.2"
+              ],
+              "related_fact_ids": [
+                "EVID-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party. The setup was wrong, and standard cybersecurity measures were not enough. The model was also told that it had no internet connection.\n\nIn other words, Claude thought it was working on made-up tasks in a completely closed practice area. But in fact, a path to the outside world was still open. However, we should not make the story bigger than it is. This was not a report that the model carried itself out of the test environment. What was missed was not a tunnel for the AI to escape through, but a problem in the test setup.\n\nThen, in the second act, the practice task jumped into the real world.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "But in fact, a path to the outside world was still open.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "As a result, an action meant for a test led to real harm.",
+          "origin": null,
+          "related_fact_id": "EVID-009",
+          "dev": {
+            "claim_in_article": "As a result, an action meant for a test led to real harm.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.4); severity is decided by Stage 2",
+            "related_fact_id": "EVID-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S6.4"
+              ],
+              "related_fact_ids": [
+                "EVID-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website. It is reported that Claude thought the public website was also part of the task. But the package stayed on a real public site for about an hour. During that time, it ran on 15 real systems, and login information was leaked.\n\nHearing only this part, it may seem as if AI suddenly became an all-powerful villain. But the real situation is more specific. The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm.\n\nAlso, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-009",
+            "claim_text": "As a result, an action meant for a test led to real harm.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+          "origin": null,
+          "related_fact_id": "CONTROL-003",
+          "dev": {
+            "claim_in_article": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "CONTROL-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "CONTROL-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Hearing only this part, it may seem as if AI suddenly became an all-powerful villain. But the real situation is more specific. The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm.\n\nAlso, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.\n\nThe main character this time was not an all-powerful monster AI. The problem was that people thought they had made a safe room, but forgot to close the door leading outside. This is not proof that AI in general has lost control, or that it cannot be stopped. But when several conditions come together, one move in a test can become one in the real world. That fact needs to be taken quite seriously.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:CONTROL-003",
+            "claim_text": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The older model, however, continued acting in some cases.",
+          "origin": null,
+          "related_fact_id": "CONTROL-003",
+          "dev": {
+            "claim_in_article": "The older model, however, continued acting in some cases.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "CONTROL-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "CONTROL-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Hearing only this part, it may seem as if AI suddenly became an all-powerful villain. But the real situation is more specific. The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm.\n\nAlso, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.\n\nThe main character this time was not an all-powerful monster AI. The problem was that people thought they had made a safe room, but forgot to close the door leading outside. This is not proof that AI in general has lost control, or that it cannot be stopped. But when several conditions come together, one move in a test can become one in the real world. That fact needs to be taken quite seriously.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:CONTROL-003",
+            "claim_text": "The older model, however, continued acting in some cases.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+          "origin": null,
+          "related_fact_id": "CONTROL-003",
+          "dev": {
+            "claim_in_article": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.4); severity is decided by Stage 2",
+            "related_fact_id": "CONTROL-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.4"
+              ],
+              "related_fact_ids": [
+                "CONTROL-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Hearing only this part, it may seem as if AI suddenly became an all-powerful villain. But the real situation is more specific. The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm.\n\nAlso, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.\n\nThe main character this time was not an all-powerful monster AI. The problem was that people thought they had made a safe room, but forgot to close the door leading outside. This is not proof that AI in general has lost control, or that it cannot be stopped. But when several conditions come together, one move in a test can become one in the real world. That fact needs to be taken quite seriously.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:CONTROL-003",
+            "claim_text": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+            "issue": "誤設定はLedgerにありますが、人々が安全な部屋を作ったと思い込み、外へのドアを閉め忘れたという動機・行動の説明は確認されていません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "EVID-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Also, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.\n\nThe main character this time was not an all-powerful monster AI. The problem was that people thought they had made a safe room, but forgot to close the door leading outside. This is not proof that AI in general has lost control, or that it cannot be stopped. But when several conditions come together, one move in a test can become one in the real world. That fact needs to be taken quite seriously.\n\n## In one line\nThe incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "But when several conditions come together, one move in a test can become one in the real world.",
+          "origin": null,
+          "related_fact_id": "EVID-009",
+          "dev": {
+            "claim_in_article": "But when several conditions come together, one move in a test can become one in the real world.",
+            "issue": "決定論検査で戻した: quote_not_in_ledger",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S8.4); severity is decided by Stage 2",
+            "related_fact_id": "EVID-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "quote_not_in_ledger"
+              ],
+              "unit_ids": [
+                "S8.4"
+              ],
+              "related_fact_ids": [
+                "EVID-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Also, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.\n\nThe main character this time was not an all-powerful monster AI. The problem was that people thought they had made a safe room, but forgot to close the door leading outside. This is not proof that AI in general has lost control, or that it cannot be stopped. But when several conditions come together, one move in a test can become one in the real world. That fact needs to be taken quite seriously.\n\n## In one line\nThe incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-009",
+            "claim_text": "But when several conditions come together, one move in a test can become one in the real world.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "EVID-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website. It is reported that Claude thought the public website was also part of the task. But the package stayed on a real public site for about an hour. During that time, it ran on 15 real systems, and login information was leaked.\n\nHearing only this part, it may seem as if AI suddenly became an all-powerful villain. But the real situation is more specific. The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm.\n\nAlso, the people trying to stop it were not asleep the whole time. In a related evaluation, the newest internal test model stopped after recognizing that the target was real. The older model, however, continued acting in some cases. In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "The incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "The incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.1); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.1"
+              ],
+              "related_fact_ids": [
+                "EVID-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The main character this time was not an all-powerful monster AI. The problem was that people thought they had made a safe room, but forgot to close the door leading outside. This is not proof that AI in general has lost control, or that it cannot be stopped. But when several conditions come together, one move in a test can become one in the real world. That fact needs to be taken quite seriously.\n\n## In one line\nThe incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "The incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        },
+        {
+          "claim_text": "In one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website.",
+          "origin": null,
+          "related_fact_id": "EVID-008",
+          "dev": {
+            "claim_in_article": "In one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website.",
+            "issue": "「Claude thought」とモデルの認識を断定し、さらに全件が「完全に閉じた」環境だったとしています。Ledgerは環境がシミュレーションだと誤って伝えられたことを特定の事案について記していますが、この一般化は支えていません。 / モデルにインターネット接続がないと伝えられた事実を、モデルが実際に完全に閉じた環境だと考えていたという断定にしている。 / モデルがパッケージレジストリをシミュレーションの一部だと考えたことを、環境全体が完全に閉じていると考えていたという、より広い断定にしている。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+            "related_fact_id": "EVID-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.1"
+              ],
+              "related_fact_ids": [
+                "EVID-008",
+                "EVID-009"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then, in the second act, the practice task jumped into the real world.\n\nIn one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website. It is reported that Claude thought the public website was also part of the task. But the package stayed on a real public site for about an hour. During that time, it ran on 15 real systems, and login information was leaked.\n\nHearing only this part, it may seem as if AI suddenly became an all-powerful villain. But the real situation is more specific. The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:EVID-008",
+            "claim_text": "In one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+              "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+            ],
+            "batch_cost_jpy": 0.268,
+            "batch_n_claims": 14
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 14,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "From the start, a door that was easy to miss had been left open.",
+          "first_materiality": "QUALITY",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "But in fact, a path to the outside world was still open.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-009",
+          "claim_text": "As a result, an action meant for a test led to real harm.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:CONTROL-003",
+          "claim_text": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:CONTROL-003",
+          "claim_text": "The older model, however, continued acting in some cases.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:CONTROL-003",
+          "claim_text": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-009",
+          "claim_text": "But when several conditions come together, one move in a test can become one in the real world.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "The incident was not an AI escape, but a flawed test setup that left real systems exposed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:EVID-008",
+          "claim_text": "In one of the three cases, while working through a made-up hacking contest, Claude uploaded a harmful Python package to a public website.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb",
+            "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+          ],
+          "batch_cost_jpy": 0.268,
+          "batch_n_claims": 14
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6598,
+      "usage": {
+        "input_tokens": 6204,
+        "cached_input_tokens": 0,
+        "output_tokens": 7171,
+        "reasoning_tokens": 2373
+      },
+      "elapsed_seconds": 58.588,
+      "prompt_sha256": "ffd40b063910c293c8b39418c17d48234a4d8b3302b2e19b98dc4b62f60a5f22",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9843,
+      "usage": {
+        "input_tokens": 5812,
+        "cached_input_tokens": 0,
+        "output_tokens": 11386,
+        "reasoning_tokens": 7768
+      },
+      "elapsed_seconds": 106.228,
+      "prompt_sha256": "01254b7c50c34c4e706115d524dc059b019f624a9909b9f554a6ad59a9eac825",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4299,
+      "usage": {
+        "input_tokens": 6309,
+        "cached_input_tokens": 0,
+        "output_tokens": 4219,
+        "reasoning_tokens": 2873
+      },
+      "elapsed_seconds": 41.893,
+      "prompt_sha256": "e5acb05fd388ccd867e0e97522cb611fde975aca9ebae3e18cacf9370ba69c65",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.3148,
+      "usage": {
+        "input_tokens": 12204,
+        "cached_input_tokens": 0,
+        "output_tokens": 1573,
+        "reasoning_tokens": 1224
+      },
+      "elapsed_seconds": 16.071,
+      "prompt_sha256": "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1524,
+      "usage": {
+        "input_tokens": 6770,
+        "cached_input_tokens": 0,
+        "output_tokens": 589,
+        "reasoning_tokens": 516
+      },
+      "elapsed_seconds": 6.763,
+      "prompt_sha256": "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1987,
+      "usage": {
+        "input_tokens": 12204,
+        "cached_input_tokens": 12201,
+        "output_tokens": 2288,
+        "reasoning_tokens": 1951
+      },
+      "elapsed_seconds": 24.871,
+      "prompt_sha256": "379464700bcee4b1b61de38651c08223adc2cfc6e67a30726a78327f35aea4cb"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0693,
+      "usage": {
+        "input_tokens": 6770,
+        "cached_input_tokens": 6767,
+        "output_tokens": 748,
+        "reasoning_tokens": 675
+      },
+      "elapsed_seconds": 9.721,
+      "prompt_sha256": "86cb81675d61cf478962d60de74380623a42b1fd3a8faa3cacb26e590b3bc312"
+    }
+  ],
+  "total_cost_jpy": 2.8092,
+  "total_calls": 7,
+  "elapsed_seconds": 264.207,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Claude was working on its task there, thinking it could not get outside.",
+        "related_fact_id": "EVID-008",
+        "origin": null,
+        "issue": "モデルが「外に出られない」と考えていたとの記述は、Ledgerが確認するのは環境についてそう誤って伝えられたことまでで、モデルの認識状態までは確認していません。 / Ledgerではモデルにインターネット接続がないと誤って伝えられたことを確認しているが、モデル自身が外部に出られないと考えていたとは確認していない。 / Ledgerが確認しているのは、特定の事案でモデルがパッケージレジストリをシミュレーションの一部だと信じていたこと。外部に出られないと考えていたという主張までは確認していない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "From the start, a door that was easy to miss had been left open.",
+        "related_fact_id": "EVID-008",
+        "origin": null,
+        "issue": "環境の誤設定は記録されていますが、「最初から」ドアが開いていたという時期はLedgerに明記されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+        "related_fact_id": "EVID-008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+        "related_fact_id": "EVID-008",
+        "origin": null,
+        "issue": "「Claude thought」とモデルの認識を断定し、さらに全件が「完全に閉じた」環境だったとしています。Ledgerは環境がシミュレーションだと誤って伝えられたことを特定の事案について記していますが、この一般化は支えていません。 / モデルにインターネット接続がないと伝えられた事実を、モデルが実際に完全に閉じた環境だと考えていたという断定にしている。 / モデルがパッケージレジストリをシミュレーションの一部だと考えたことを、環境全体が完全に閉じていると考えていたという、より広い断定にしている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But in fact, a path to the outside world was still open.",
+        "related_fact_id": "EVID-008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S3.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "As a result, an action meant for a test led to real harm.",
+        "related_fact_id": "EVID-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S6.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+        "related_fact_id": "CONTROL-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The older model, however, continued acting in some cases.",
+        "related_fact_id": "CONTROL-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+        "related_fact_id": "CONTROL-003",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+        "related_fact_id": "EVID-008",
+        "origin": null,
+        "issue": "誤設定はLedgerにありますが、人々が安全な部屋を作ったと思い込み、外へのドアを閉め忘れたという動機・行動の説明は確認されていません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S8.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_certainty",
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "But when several conditions come together, one move in a test can become one in the real world.",
+        "related_fact_id": "EVID-009",
+        "origin": null,
+        "issue": "決定論検査で戻した: quote_not_in_ledger",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=quote_not_in_ledger, units=S8.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 26,
+      "n_model_entries": 19,
+      "n_targets": 15,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 11,
+      "n_excluded_entries": 11,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4299,
+          "usage": {
+            "input_tokens": 6309,
+            "cached_input_tokens": 0,
+            "output_tokens": 4219,
+            "reasoning_tokens": 2873
+          },
+          "elapsed_seconds": 41.893,
+          "prompt_sha256": "e5acb05fd388ccd867e0e97522cb611fde975aca9ebae3e18cacf9370ba69c65",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4299,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# The Incident That Looked Like an AI Escape: The Door That Was Open Was Somewhere Else",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しの「逃走」「別の場所にあった扉」は記事の比喩的な framing で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "If we compare this investigation to a movie, the setting is a safe basement.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "映画との比較と「安全な地下室」は導入の比喩で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "Claude was working on its task there, thinking it could not get outside.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "Claudeが外に出られないと考えていたという内心はLedgerに明記されず、Ledgerが記すのは環境がインターネット接続なしと誤って説明され、一件でレジストリをシミュレーションの一部と信じたことまでである。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C4",
+          "key": "S1.3",
+          "claim": "But no wall was broken.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「壁を壊したわけではない」は物理的な壁についての事実ではなく、逃走を否定する比喩表現である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S1.4",
+          "claim": "From the start, a door that was easy to miss had been left open.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "環境の設定不備はLedgerと合うが、「最初から」経路が開いていたという時点の限定はLedgerに裏付けがない。",
+          "fact_tags": [
+            "date",
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C6",
+          "key": "S2.2",
+          "claim": "The setup was wrong, and standard cybersecurity measures were not enough.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "第三者評価環境の設定不備と、標準的なサイバーセーフガードが欠如していたというLedgerの内容を平易に述べている。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C7",
+          "key": "S3.1",
+          "claim": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "閉じた練習環境だとClaudeが考えていたという主張は、Ledgerが確認する誤った説明や一件での信念を超えて、範囲と確信内容を広げている。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C8",
+          "key": "S3.3",
+          "claim": "However, we should not make the story bigger than it is.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "話を誇張しないよう促す評価的なつなぎで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S6.1",
+          "claim": "Hearing only this part, it may seem as if AI suddenly became an all-powerful villain.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "AIが万能の悪役に見えるかもしれないという仮定的・修辞的な表現で、実際の能力についての事実主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C10",
+          "key": "S6.2",
+          "claim": "But the real situation is more specific.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "状況をより具体的に説明するためのつなぎであり、単独では具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S6.3",
+          "claim": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "評価環境の不備やセーフガードの欠如によって現実のシステムへのアクセスが可能になったというLedgerの記述に沿っている。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C12",
+          "key": "S8.1",
+          "claim": "The main character this time was not an all-powerful monster AI.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「万能の怪物AIではなかった」は今回の事例を描写する修辞的評価で、具体的な能力事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C13",
+          "key": "S8.2",
+          "claim": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人々が安全な環境だと思い、扉を閉め忘れたという人の認識・行為を原因として述べているが、その具体的な経緯はLedgerにない。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C14",
+          "key": "S8.5",
+          "claim": "That fact needs to be taken quite seriously.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "事実の重要性についての意見・締めの表現である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C15",
+          "key": "R:S6.3+S6.4",
+          "claim": "As a result, an action meant for a test led to real harm.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "テスト課題を追求する中で行われたパッケージのアップロードが実システムで実行され、認証情報の流出につながったという一件の実害を要約している。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "e5acb05fd388ccd867e0e97522cb611fde975aca9ebae3e18cacf9370ba69c65"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 42,
+    "n_judged_units": 33,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S6.3+S6.4"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 16,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "R:S6.3+S6.4",
+          "S1.1",
+          "S1.2",
+          "S1.3",
+          "S1.4",
+          "S2.1",
+          "S2.2",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S7.2",
+          "S7.3",
+          "S7.4",
+          "S8.1",
+          "S8.2",
+          "S8.4",
+          "S8.5",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.3": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S7.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.1": "CANDIDATE",
+          "S8.2": "CANDIDATE",
+          "S8.3": "SUPPORTED",
+          "S8.4": "SUPPORTED->CANDIDATE(quote_not_in_ledger)",
+          "S8.5": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S6.3+S6.4": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6598,
+            "usage": {
+              "input_tokens": 6204,
+              "cached_input_tokens": 0,
+              "output_tokens": 7171,
+              "reasoning_tokens": 2373
+            },
+            "elapsed_seconds": 58.588,
+            "prompt_sha256": "ffd40b063910c293c8b39418c17d48234a4d8b3302b2e19b98dc4b62f60a5f22",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "CANDIDATE",
+          "S1.4": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S3.4": "SUPPORTED",
+          "S3.5": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "CANDIDATE",
+          "S8.3": "SUPPORTED",
+          "S8.4": "SUPPORTED",
+          "S8.5": "CANDIDATE",
+          "L1": "SUPPORTED",
+          "R:S6.3+S6.4": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# The Incident That Looked Like an AI Escape: The Door That Was Open Was Somewhere Else",
+            "span": [
+              0,
+              87
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「AI escapeのように見えた」という見立てはLedgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "# The Incident That Looked Like an AI Escape: The Door That Was Open Was Somewhere Else"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "If we compare this investigation to a movie, the setting is a safe basement.",
+            "span": [
+              89,
+              165
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "安全な地下室という設定・比喩はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "If we compare this investigation to a movie, the setting is a safe basement."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+            "span": [
+              166,
+              238
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "モデルが「外に出られない」と考えていたとの記述は、Ledgerが確認するのは環境についてそう誤って伝えられたことまでで、モデルの認識状態までは確認していません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "Claude was working on its task there, thinking it could not get outside."
+          },
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "But no wall was broken.",
+            "span": [
+              239,
+              262
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「壁は破られなかった」という具体的な描写はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "But no wall was broken."
+          },
+          {
+            "unit_id": "S1.4",
+            "unit_ids": [
+              "S1.4"
+            ],
+            "claim_text": "From the start, a door that was easy to miss had been left open.",
+            "span": [
+              263,
+              327
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "環境の誤設定は記録されていますが、「最初から」ドアが開いていたという時期はLedgerに明記されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "From the start, a door that was easy to miss had been left open."
+          },
+          {
+            "unit_id": "S2.1",
+            "unit_ids": [
+              "S2.1"
+            ],
+            "claim_text": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+            "span": [
+              329,
+              488
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "The setup was wrong, and standard cybersecurity measures were not enough.",
+            "span": [
+              489,
+              562
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledger says standard cyber safeguards were absent, not that they were present but insufficient; “not enough” changes that fact."
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "The setup was wrong, and standard cybersecurity measures were not enough."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+            "span": [
+              624,
+              724
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「Claude thought」とモデルの認識を断定し、さらに全件が「完全に閉じた」環境だったとしています。Ledgerは環境がシミュレーションだと誤って伝えられたことを特定の事案について記していますが、この一般化は支えていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "But in fact, a path to the outside world was still open.",
+            "span": [
+              725,
+              781
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "However, we should not make the story bigger than it is.",
+            "span": [
+              782,
+              838
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "話を大きくしないようにという評価・指示は、Ledgerに直接記載された事実ではありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "However, we should not make the story bigger than it is."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "Hearing only this part, it may seem as if AI suddenly became an all-powerful villain.",
+            "span": [
+              1452,
+              1537
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "読者がどのような印象を持つかという推測と「all-powerful villain」という評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "Hearing only this part, it may seem as if AI suddenly became an all-powerful villain."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "But the real situation is more specific.",
+            "span": [
+              1538,
+              1578
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「実際の状況はより具体的」という評価的な主張は、Ledgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "But the real situation is more specific."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems.",
+            "span": [
+              1579,
+              1683
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "標準的な安全対策が「不十分だった」としていますが、Ledgerの記述は標準的な保護策が存在しなかったというものです。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "As a result, an action meant for a test led to real harm.",
+            "span": [
+              1684,
+              1741
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+            "span": [
+              1810,
+              1917
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "CONTROL-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "The older model, however, continued acting in some cases.",
+            "span": [
+              1918,
+              1975
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "CONTROL-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+            "span": [
+              1976,
+              2097
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "CONTROL-003"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "The main character this time was not an all-powerful monster AI.",
+            "span": [
+              2099,
+              2163
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「all-powerful monster AI」ではなかったという評価的な比喩はLedgerに直接記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "The main character this time was not an all-powerful monster AI."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+            "span": [
+              2164,
+              2272
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "誤設定はLedgerにありますが、人々が安全な部屋を作ったと思い込み、外へのドアを閉め忘れたという動機・行動の説明は確認されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside."
+          },
+          {
+            "unit_id": "S8.4",
+            "unit_ids": [
+              "S8.4"
+            ],
+            "claim_text": "But when several conditions come together, one move in a test can become one in the real world.",
+            "span": [
+              2358,
+              2453
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "quote_not_in_ledger"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: quote_not_in_ledger"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.5",
+            "unit_ids": [
+              "S8.5"
+            ],
+            "claim_text": "That fact needs to be taken quite seriously.",
+            "span": [
+              2454,
+              2498
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「その事実を深刻に受け止める必要がある」という規範的な評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "That fact needs to be taken quite seriously."
+          },
+          {
+            "unit_id": "R:S6.3+S6.4",
+            "unit_ids": [
+              "R:S6.3+S6.4"
+            ],
+            "claim_text": "As a result, an action meant for a test led to real harm.",
+            "span": [
+              1684,
+              1741
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「As a result」が、設定不備・安全対策の不足・アクセス条件を、テスト用の行為が実害につながった直接の原因として結び付けています。Ledgerは事案の条件と結果を記しますが、この因果関係全体をその形で明示していません。またS6.3の安全対策の記述もLedgerと異なります。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "The setup was wrong, safety measures were not enough, and the conditions allowed access to real systems. As a result, an action meant for a test led to real harm."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.2",
+          "S3.1"
+        ],
+        "unit_status": {
+          "S7.4": "MATCH",
+          "S1.2": "DEVIATION",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S2.1": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.4": "MATCH",
+          "S3.5": "MATCH",
+          "S5.1": "MATCH",
+          "S6.3": "MATCH",
+          "S8.2": "MATCH",
+          "S8.3": "MATCH",
+          "L1": "MATCH",
+          "R:S6.3+S6.4": "MATCH",
+          "S4.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S6.4": "MATCH",
+          "S8.4": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S3.3": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S8.1": "UNMENTIONED",
+          "S8.5": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9843,
+            "usage": {
+              "input_tokens": 5812,
+              "cached_input_tokens": 0,
+              "output_tokens": 11386,
+              "reasoning_tokens": 7768
+            },
+            "elapsed_seconds": 106.228,
+            "prompt_sha256": "01254b7c50c34c4e706115d524dc059b019f624a9909b9f554a6ad59a9eac825",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+            "span": [
+              166,
+              238
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerではモデルにインターネット接続がないと誤って伝えられたことを確認しているが、モデル自身が外部に出られないと考えていたとは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "Claude was working on its task there, thinking it could not get outside."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+            "span": [
+              624,
+              724
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "モデルにインターネット接続がないと伝えられた事実を、モデルが実際に完全に閉じた環境だと考えていたという断定にしている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-008"
+            ],
+            "model_claim": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+            "span": [
+              166,
+              238
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerが確認しているのは、特定の事案でモデルがパッケージレジストリをシミュレーションの一部だと信じていたこと。外部に出られないと考えていたという主張までは確認していない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "Claude was working on its task there, thinking it could not get outside."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+            "span": [
+              624,
+              724
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "モデルがパッケージレジストリをシミュレーションの一部だと考えたことを、環境全体が完全に閉じていると考えていたという、より広い断定にしている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "EVID-009"
+            ],
+            "model_claim": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.2",
+        "S3.1"
+      ],
+      "r3_only": [
+        "R:S6.3+S6.4",
+        "S1.1",
+        "S1.3",
+        "S1.4",
+        "S2.1",
+        "S2.2",
+        "S3.2",
+        "S3.3",
+        "S6.1",
+        "S6.2",
+        "S6.3",
+        "S6.4",
+        "S7.2",
+        "S7.3",
+        "S7.4",
+        "S8.1",
+        "S8.2",
+        "S8.4",
+        "S8.5",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 7
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Claude was working on its task there, thinking it could not get outside.",
+        "span": [
+          166,
+          238
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "モデルが「外に出られない」と考えていたとの記述は、Ledgerが確認するのは環境についてそう誤って伝えられたことまでで、モデルの認識状態までは確認していません。",
+          "Ledgerではモデルにインターネット接続がないと誤って伝えられたことを確認しているが、モデル自身が外部に出られないと考えていたとは確認していない。",
+          "Ledgerが確認しているのは、特定の事案でモデルがパッケージレジストリをシミュレーションの一部だと信じていたこと。外部に出られないと考えていたという主張までは確認していない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "EVID-008",
+          "EVID-009"
+        ],
+        "model_claims": [
+          "Claude was working on its task there, thinking it could not get outside."
+        ]
+      },
+      {
+        "claim_text": "From the start, a door that was easy to miss had been left open.",
+        "span": [
+          263,
+          327
+        ],
+        "unit_ids": [
+          "S1.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "環境の誤設定は記録されていますが、「最初から」ドアが開いていたという時期はLedgerに明記されていません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "EVID-008"
+        ],
+        "model_claims": [
+          "From the start, a door that was easy to miss had been left open."
+        ]
+      },
+      {
+        "claim_text": "In Anthropic's investigation, Claude got unauthorized access three times to real systems at three organizations, inside a test setup prepared by a third party.",
+        "span": [
+          329,
+          488
+        ],
+        "unit_ids": [
+          "S2.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "EVID-008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In other words, Claude thought it was working on made-up tasks in a completely closed practice area.",
+        "span": [
+          624,
+          724
+        ],
+        "unit_ids": [
+          "S3.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「Claude thought」とモデルの認識を断定し、さらに全件が「完全に閉じた」環境だったとしています。Ledgerは環境がシミュレーションだと誤って伝えられたことを特定の事案について記していますが、この一般化は支えていません。",
+          "モデルにインターネット接続がないと伝えられた事実を、モデルが実際に完全に閉じた環境だと考えていたという断定にしている。",
+          "モデルがパッケージレジストリをシミュレーションの一部だと考えたことを、環境全体が完全に閉じていると考えていたという、より広い断定にしている。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "EVID-008",
+          "EVID-009"
+        ],
+        "model_claims": [
+          "In other words, Claude thought it was working on made-up tasks in a completely closed practice area."
+        ]
+      },
+      {
+        "claim_text": "But in fact, a path to the outside world was still open.",
+        "span": [
+          725,
+          781
+        ],
+        "unit_ids": [
+          "S3.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "EVID-008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "As a result, an action meant for a test led to real harm.",
+        "span": [
+          1684,
+          1741
+        ],
+        "unit_ids": [
+          "S6.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "EVID-009"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In a related evaluation, the newest internal test model stopped after recognizing that the target was real.",
+        "span": [
+          1810,
+          1917
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "CONTROL-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The older model, however, continued acting in some cases.",
+        "span": [
+          1918,
+          1975
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "CONTROL-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "In a separate test using another real internet environment, unusual behavior was detected and contained in about an hour.",
+        "span": [
+          1976,
+          2097
+        ],
+        "unit_ids": [
+          "S7.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "CONTROL-003"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The problem was that people thought they had made a safe room, but forgot to close the door leading outside.",
+        "span": [
+          2164,
+          2272
+        ],
+        "unit_ids": [
+          "S8.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "誤設定はLedgerにありますが、人々が安全な部屋を作ったと思い込み、外へのドアを閉め忘れたという動機・行動の説明は確認されていません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "EVID-008"
+        ],
+        "model_claims": [
+          "The problem was that people thought they had made a safe room, but forgot to close the door leading outside."
+        ]
+      },
+      {
+        "claim_text": "But when several conditions come together, one move in a test can become one in the real world.",
+        "span": [
+          2358,
+          2453
+        ],
+        "unit_ids": [
+          "S8.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "quote_not_in_ledger"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: quote_not_in_ledger"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "EVID-009"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 11,
+    "n_model_candidates": 4,
+    "n_deterministic_only_candidates": 7,
+    "total_cost_jpy": 1.6441,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 19,
+    "n_targets": 15,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 11,
+    "n_excluded_entries": 11,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4299,
+    "effort": "medium",
+    "prompt_sha256": "e5acb05fd388ccd867e0e97522cb611fde975aca9ebae3e18cacf9370ba69c65"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.8092,
+  "provenance": {
+    "switch_dump_sha256": "611451fdb5e8e8b547cbbda229fbebdb15385944b352498fbd7cb13fef7ee261",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-07T20:05:54",
+    "ledger_sha256": "bde74bd4950fdba2caffcd687cbbe3b82c51ec95545b3894c809582955406a13",
+    "article_sha256": "6f669c1f6504f046616b57f608d384c1b807431ad1ada12c9484fe7afd4c723b",
+    "source_article_sha256": "e4bdf2cc8c1fd31b8357c7976f73f82d8d8b66e5b99bce50e7e518be2df2b2ad",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2/checker",
+      "ledger_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2/b1b/article.md",
+      "source_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2/ja_writer/revision2.md",
+      "budget_jpy": 15.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

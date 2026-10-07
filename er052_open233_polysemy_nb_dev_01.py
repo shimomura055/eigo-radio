@@ -47,10 +47,26 @@ _TRANSFER_TEMPLATE = (
 )
 
 
+RULE_ENV = "OPEN233_NOTE_RULE"
+LEGACY_RULE = "legacy_abd16d9a"
+# 旧規則(0/12当時、E2E_02 Phase A commit 1fefd10f 以前)。env OPEN233_NOTE_RULE=legacy_abd16d9a のときだけ使う。既定は現行。
+_LEGACY_TEMPLATE = (
+    "【多義語注意の引き継ぎ規則】\n"
+    "台帳のnotes_for_writerに『{prefix}』で始まる注意がある場合、そのfactをbriefで使うときは、"
+    "その注意文を意味を変えずそのままbriefの該当箇所の直後に1行で引き継ぐ"
+    "(要約・言い換え・新しい解釈の追加・削除をしない)。注意のないfactには何も足さない。"
+)
+
+
 def build_transfer_block(env=None) -> str:
-    """接頭辞は環境変数OPEN233_NOTE_PREFIX(既定『注意(多義):』)で差し替え可能。"""
+    """接頭辞は環境変数OPEN233_NOTE_PREFIX(既定『注意(多義):』)で差し替え可能。
+    OPEN233_NOTE_RULE=legacy_abd16d9a で旧規則(0/12当時)を再現。未設定=現行規則(他Trialへの影響0)。"""
     env = os.environ if env is None else env
-    return _TRANSFER_TEMPLATE.format(prefix=env.get(PREFIX_ENV) or DEFAULT_NOTE_PREFIX)
+    rule = env.get(RULE_ENV)
+    if rule and rule != LEGACY_RULE:
+        raise ValueError(f"{RULE_ENV}={rule!r} は不正(許可: {LEGACY_RULE}、未設定=現行)")
+    tpl = _LEGACY_TEMPLATE if rule == LEGACY_RULE else _TRANSFER_TEMPLATE
+    return tpl.format(prefix=env.get(PREFIX_ENV) or DEFAULT_NOTE_PREFIX)
 
 
 TRANSFER_BLOCK = build_transfer_block({})

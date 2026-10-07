@@ -1,0 +1,20 @@
+# Is That Phone Call Really from AI?
+
+Have AI call a store for you. Make a reservation, ask about stock, and even request a price estimate. Behind the scenes at Muse, which was supposed to play that useful role, an unexpected performer appeared. A human.
+
+Meta's Muse is an AI agent for individuals that can call businesses and stores in the United States, make haircut appointments, check stock, and ask businesses for price estimates. However, in mid-September, some calls were tests in which trained contract workers, rather than AI, made the calls and finished the conversations. They were called “human concierges.”
+
+There was another scene, too. Internal posts reported cases in which people hung up after realizing that Muse was AI. News reports also included an employee's report that an insurance company repeatedly hung up when it learned that the calls were from Muse's AI.
+
+There is no confirmed explanation, however, that this insurance company incident led to the human concierge test. In the news, the two events are separate scenes placed next to each other. With AI phone calls, one side hung up, while on the other side a human appeared as the caller. It was as if different scenes had begun on the same stage.
+
+In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent. The definition of success, the number of cases, and the way it was measured have not been made public. So this figure cannot be seen as the performance of all the human staff.
+
+Then a privacy issue appeared from the side of the stage. When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center. In one case where a user asked Muse to negotiate internet and cable fees, an employee's report said that the call record included inappropriate remarks about race by a contract worker. This was a case reported in the news.
+
+By September 22, the vice president of Meta's Superintelligence Labs division acknowledged that starting the tests without proper disclosure had been a “mistake.” The human concierge feature was then put on hold for the time being.
+
+Meta explained that it would launch the phone feature publicly only when it was ready and could give proper information. What matters this time is not only how well the AI works. People must be clearly told who is on the other end of the phone. Without that one sentence, the latest AI can turn into a mysterious phone operator in an instant.
+
+## In one line
+Meta’s AI phone tests were sometimes handled by undisclosed human workers, raising concerns about privacy and transparency.

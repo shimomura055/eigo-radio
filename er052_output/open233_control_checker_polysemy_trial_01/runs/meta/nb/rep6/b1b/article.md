@@ -1,0 +1,16 @@
+# When AI Handled the Calls, a Human Took the Lead on the Line
+
+This is a slightly strange story. Meta's AI agent, Muse, is a service that calls companies and stores in the United States to make haircut appointments, check stock, and ask for estimates. However, in some of these calls, a human, not AI, came on the line.
+
+Meta tested what it called “human concierge.” Requests from Muse were handed to trained contract workers. These workers made the calls and completed the conversations. This was a test carried out on some calls, not all of them.
+
+Here, another strange scene appears. An internal post suggested that the success rate for some tests handled by humans could reach 95 to 98 percent. The success rate for AI alone was said to be lower, but no specific number was given. The definition of “success rate” and how it was measured were not made public, either.
+
+Meanwhile, another employee report said that an insurance company repeatedly hung up when it realized that Muse's AI was making the call. The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate. It was almost as if the AI was looking for a human to stand in for it. However, this was about one report and some tests. It does not apply to all phone calls in general.
+
+Behind this change of roles, another problem appeared. When a human contract worker handled a call, sensitive user information could be shared unintentionally with contract workers at the call center during the call. The test had begun without proper disclosure. It was not declared that a large-scale information leak had actually taken place. The issue was whether users had been told who might be able to hear the information.
+
+A Meta vice president in charge admitted that starting the test without proper disclosure was a “mistake,” and the company rolled back the human concierge feature for the time being. It did not stop Muse as a whole. The main feature of these AI phone calls was not how smart the AI was, but that a human came on partway through. On top of that, the company had not explained that the human was there. That is the slightly ironic story behind this case.
+
+## In one line
+Meta’s AI calling service sometimes relied on undisclosed human contractors, prompting the company to pause that feature.

@@ -1,0 +1,20 @@
+{
+  "_comment": "OPEN-233-CONTROL-CHECKER-POLYSEMY-PRODUCTION-PATH-TRIAL-01 Rollback(MUSE-HC-012)3値ラベル用テンプレ。判定基準はMETA-ROLLBACK-MINIMAL-NOTE-TRIAL-01/02(REPORT §91/§92、er052_output/open233_meta_rollback_minimal_note_01/eval/E_rollback_minimal_note*.md 1-2行目)と同一。基準の追加・変更はしない。",
+  "criteria": {
+    "correct": "正しい: 取り下げた・止めた・取りやめた・降板した等、機能が提供されない側が明確。『サービス全体を停止』と読ませず『人間コンシェルジュ機能の当面の取りやめ』と読める。",
+    "ambiguous": "曖昧: 『元に戻した』『元の状態に戻した』『ロールバックした』のまま等、方向が確定できない(復元型候補を含む。誤りとは言えないが読者が『機能が復活した』と読みうる)。",
+    "misread": "重大誤読: 『復活・再提供した』『以前の状態へ復元した』等、機能を戻した(提供する)側へ逆方向、または主体・対象の取り違え。",
+    "not_selected": "記事がHC-012を扱っていない(件数の分母に含めない)",
+    "context_rule": "文単独でなく前後の文脈で判定する。『元に戻した』『ロールバック』の語がある、だけで重大にしない。JA/ENで分かれる場合は悪い方を採用して別途notesに記す(rubric 4節)。境界は曖昧側に倒しnotesに明記(META-ROLLBACK TRIAL-02 rep9の扱い)。"
+  },
+  "code": "<匿名記事コード>",
+  "slug": "meta",
+  "fact_id": "MUSE-HC-012",
+  "rollback_labels": {
+    "ja_r2": {"label": "correct|ambiguous|misread|not_selected", "quote": "<根拠の1文(原文)>"},
+    "en_pre_checker": {"label": "correct|ambiguous|misread|not_selected", "quote": ""},
+    "en_final": {"label": "correct|ambiguous|misread|not_selected", "quote": ""}
+  },
+  "worse_of": "correct|ambiguous|misread|not_selected (3箇所のうち悪い方。優先度 misread > ambiguous > correct)",
+  "notes": "<単独評価、人間確認前>"
+}

@@ -1,0 +1,20 @@
+# An Unexpected Guest on an AI Phone Call
+
+The person at the center of this story is not AI. It is a human who appeared on the other end of the phone.
+
+In calls that Meta tested through Muse, some calls were handled not by AI but by trained human contract workers. The workers made the calls themselves and carried on the conversations to the end.
+
+Hearing this, you may think it is an ordinary call center story. However, these calls were being tested as part of a service that used AI. What is more, the test had begun without making it clear enough that humans were making the calls.
+
+Who is on the other end of the phone? Is AI listening, or is a human? From the user's point of view, this is very important information. The words people choose change depending on whether they speak thinking it is AI, or knowing that what they say might also reach a human staff member.
+
+Meta employees pointed out that users' sensitive information might be shared unintentionally with contract workers. When you are talking about personal matters, you do not know who will learn that information. This is not a small difference hidden in the way the phone system works. It is a major difference that affects users' peace of mind.
+
+The problem was not simply that humans handled the calls. There may be situations in which it is better for a human to listen. The problem was not that an unexpected guest was there, but that users were not told about this guest beforehand. They needed to be told that a human might be on the other end, so they could use the service knowing that.
+
+Later, the vice president of Meta's artificial intelligence division admitted that starting this test without a proper explanation was a “mistake.” The human-staffed concierge feature was then put on hold for the time being and returned to its previous state.
+
+When we use AI services, we tend to focus on convenience. But who is on the other end of the phone is just as important as convenience. In this case, the human guest who suddenly appeared in the age of AI ended up teaching us the importance of explanations and trust.
+
+## In one line
+Meta’s AI phone test used human callers without clearly telling users, raising concerns about privacy and trust.

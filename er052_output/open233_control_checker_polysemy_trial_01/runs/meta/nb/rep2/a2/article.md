@@ -1,0 +1,24 @@
+# I Followed an AI Phone Agent and Found a Human
+
+The AI makes the call. The user asks it to handle a task. So who is really speaking at the other end?
+
+A story about Meta’s AI agent, Muse, has come out. It feels like looking behind the scenes.
+
+Muse can call businesses and stores in the United States. It can book a haircut. It can ask if products are in stock. It can ask a service provider for a price. The system lets AI handle difficult calls for users.
+
+But unexpected performers appeared in some calls. They were not AI. They were trained human contract workers. During a test, workers took over from Muse. They made the actual calls and finished the conversations with the other person.
+
+In other words, it looked like an AI phone service. But a human was handling the call behind the scenes. If you thought the AI was calling alone, a human helper had stepped in. The helper came from the side of the stage. That was the twist.
+
+But this was not only a funny story. The user’s sensitive information may be needed, depending on the call. Meta employees raised privacy concerns. They worried that this information might be shared by mistake with contract workers at a call center.
+
+This does not mean that a large data leak happened. The problem was that testing began without a proper explanation. Users were not told that humans would handle the calls or that information might be shared.
+
+A Meta executive in charge admitted that this was a “mistake.” The human concierge feature was temporarily rolled back. The phone feature itself was not stopped.
+
+Meta says it will keep improving the service with businesses. It will make it available to the public only when it is ready and can clearly explain it to users.
+
+The new thing to check when asking AI to make a call is surprisingly simple: Is the voice we are talking to now an AI or a human? The more convenient the phone service is, the more we want clear introductions. We want it to properly introduce even the last performer to appear. This incident brought those behind-the-scenes rules into the open in a striking way.
+
+## In one line
+During testing, human contract workers sometimes made calls for Meta’s AI phone agent without clearly telling users.

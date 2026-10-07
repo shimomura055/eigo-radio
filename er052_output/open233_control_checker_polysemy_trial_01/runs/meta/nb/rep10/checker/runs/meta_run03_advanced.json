@@ -1,0 +1,3390 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "Of course, humans did not handle every call.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Of course, humans did not handle every call.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S2.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Behind the scenes of AI phone calls, some unusual casting took place. AI was supposed to be the star. But on some calls, trained contract workers were the ones actually making the calls.\n\nMeta tested calls made through its AI agent, Muse. Of course, humans did not handle every call. For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.\n\nThe easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult. But in this test, humans handled some calls from beginning to end. Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Of course, humans did not handle every call.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+            "issue": "人間が最初から最後まで対応した一部の電話は支えられますが、「AIが行き詰まったときに人間を呼ぶ形ではなかった」という比較・否定はLedgerにありません。 / AIが行き詰まって人間へ電話を引き継ぐ方式との対比は、Ledgerにない仕組みを持ち込んでいる。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta tested calls made through its AI agent, Muse. Of course, humans did not handle every call. For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.\n\nThe easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult. But in this test, humans handled some calls from beginning to end. Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.\n\nThis feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "In Japanese, that means a human guide.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "In Japanese, that means a human guide.",
+            "issue": "「human concierge」の日本語での意味が「人間の案内役」だという説明はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult. But in this test, humans handled some calls from beginning to end. Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.\n\nThis feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.\n\nMeta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "In Japanese, that means a human guide.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "In other words, the problem was not bringing in humans itself.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "In other words, the problem was not bringing in humans itself.",
+            "issue": "問題は人間を起用したこと自体ではなかった、という問題の切り分けはLedgerにありません。 / 問題が人間を起用したこと自体ではなかったという評価は、Ledgerに記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.\n\nMeta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.\n\nThis is easy for those of us who are used to automated voices and chat to understand. If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised. There is nothing wrong with getting help from a human. What matters is clearly telling people who is playing each part.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "In other words, the problem was not bringing in humans itself.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+            "issue": "何が注目を集めたか、また注目の対象が派手な技術ではなかったという評価はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This is easy for those of us who are used to automated voices and chat to understand. If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised. There is nothing wrong with getting help from a human. What matters is clearly telling people who is playing each part.\n\nFor now, Meta will put this feature back the way it was. Even though this was news about AI phone calls, what drew attention in the end was not flashy technology. Was the speaker AI, or was it a human? It was the short message before the show began, telling us who the star was. Behind the scenes in the age of AI, that short message seems to be taking an unexpectedly important role.\n\n## In one line\nMeta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+            "issue": "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。 / Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "For now, Meta will put this feature back the way it was. Even though this was news about AI phone calls, what drew attention in the end was not flashy technology. Was the speaker AI, or was it a human? It was the short message before the show began, telling us who the star was. Behind the scenes in the age of AI, that short message seems to be taking an unexpectedly important role.\n\n## In one line\nMeta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "” In Japanese, that means a human guide.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "” In Japanese, that means a human guide.",
+            "issue": "「human concierge」の日本語での意味が「人間の案内役」だという説明はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In Japanese, that means a human guide."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult. But in this test, humans handled some calls from beginning to end. Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.\n\nThis feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.\n\nMeta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "” In Japanese, that means a human guide.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "” In other words, the problem was not bringing in humans itself.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "” In other words, the problem was not bringing in humans itself.",
+            "issue": "問題は人間を起用したこと自体ではなかった、という問題の切り分けはLedgerにありません。 / 問題が人間を起用したこと自体ではなかったという評価は、Ledgerに記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": true,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "In other words, the problem was not bringing in humans itself."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.\n\nMeta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.\n\nThis is easy for those of us who are used to automated voices and chat to understand. If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised. There is nothing wrong with getting help from a human. What matters is clearly telling people who is playing each part.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "” In other words, the problem was not bringing in humans itself.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.",
+            "issue": "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。 / Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Behind the scenes of AI phone calls, some unusual casting took place. AI was supposed to be the star. But on some calls, trained contract workers were the ones actually making the calls.\n\nMeta tested calls made through its AI agent, Muse. Of course, humans did not handle every call. For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.\n\nThe easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult. But in this test, humans handled some calls from beginning to end. Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "It was that the test began without fully telling people who was handling the calls.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "It was that the test began without fully telling people who was handling the calls.",
+            "issue": "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。 / Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult. But in this test, humans handled some calls from beginning to end. Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.\n\nThis feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.\n\nMeta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_conditions",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "It was that the test began without fully telling people who was handling the calls.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_conditions",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "Meta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "Meta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.",
+            "issue": "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。 / Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "This feature was called “human concierge.” In Japanese, that means a human guide. It is a very elegant name, like someone at a hotel who can help with a special request. But the important point this time was not the fancy name. It was that the test began without fully telling people who was handling the calls.\n\nMeta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.\n\nThis is easy for those of us who are used to automated voices and chat to understand. If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised. There is nothing wrong with getting help from a human. What matters is clearly telling people who is playing each part.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "Meta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        },
+        {
+          "claim_text": "What matters is clearly telling people who is playing each part.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "What matters is clearly telling people who is playing each part.",
+            "issue": "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。 / Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Meta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.” In other words, the problem was not bringing in humans itself. If a human is going to appear on the stage, people should be told about it first.\n\nThis is easy for those of us who are used to automated voices and chat to understand. If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised. There is nothing wrong with getting help from a human. What matters is clearly telling people who is playing each part.\n\nFor now, Meta will put this feature back the way it was. Even though this was news about AI phone calls, what drew attention in the end was not flashy technology. Was the speaker AI, or was it a human? It was the short message before the show began, telling us who the star was. Behind the scenes in the age of AI, that short message seems to be taking an unexpectedly important role.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "What matters is clearly telling people who is playing each part.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+            ],
+            "batch_cost_jpy": 0.2384,
+            "batch_n_claims": 12
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 12,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Of course, humans did not handle every call.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "In Japanese, that means a human guide.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "In other words, the problem was not bringing in humans itself.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "” In Japanese, that means a human guide.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "” In other words, the problem was not bringing in humans itself.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "It was that the test began without fully telling people who was handling the calls.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_conditions",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "Meta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "What matters is clearly telling people who is playing each part.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+          ],
+          "batch_cost_jpy": 0.2384,
+          "batch_n_claims": 12
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.5515,
+      "usage": {
+        "input_tokens": 5236,
+        "cached_input_tokens": 0,
+        "output_tokens": 5984,
+        "reasoning_tokens": 1695
+      },
+      "elapsed_seconds": 47.749,
+      "prompt_sha256": "9c20bc3ba95d03aabfb18b5204c7906d222e26875d2f2ce9eff4b5c2c5da0ffd",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6588,
+      "usage": {
+        "input_tokens": 4906,
+        "cached_input_tokens": 0,
+        "output_tokens": 7417,
+        "reasoning_tokens": 5550
+      },
+      "elapsed_seconds": 69.888,
+      "prompt_sha256": "d650bd54181242bfa70ab67faafcd8f49ad995ccd3b73bfc0e5ba6d17d307d81",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.4845,
+      "usage": {
+        "input_tokens": 5778,
+        "cached_input_tokens": 0,
+        "output_tokens": 5021,
+        "reasoning_tokens": 3351
+      },
+      "elapsed_seconds": 49.971,
+      "prompt_sha256": "bd87bf2be5f38c50fd2d2dfd220bb0686a873dfa43df99a023a38d9ff2c765fc",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4445,
+      "usage": {
+        "input_tokens": 11293,
+        "cached_input_tokens": 0,
+        "output_tokens": 3408,
+        "reasoning_tokens": 3065
+      },
+      "elapsed_seconds": 34.132,
+      "prompt_sha256": "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2384,
+      "usage": {
+        "input_tokens": 11293,
+        "cached_input_tokens": 11290,
+        "output_tokens": 2813,
+        "reasoning_tokens": 2468
+      },
+      "elapsed_seconds": 25.877,
+      "prompt_sha256": "823ec2aa01b1e3603891fa194b15f5e6771d791e1088e79833da6bfc99ac389f"
+    }
+  ],
+  "total_cost_jpy": 2.3777,
+  "total_calls": 5,
+  "elapsed_seconds": 227.65,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Of course, humans did not handle every call.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S2.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "人間が最初から最後まで対応した一部の電話は支えられますが、「AIが行き詰まったときに人間を呼ぶ形ではなかった」という比較・否定はLedgerにありません。 / AIが行き詰まって人間へ電話を引き継ぐ方式との対比は、Ledgerにない仕組みを持ち込んでいる。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S3.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_comparison",
+          "changed_fact",
+          "changed_negation",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In Japanese, that means a human guide.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "「human concierge」の日本語での意味が「人間の案内役」だという説明はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In other words, the problem was not bringing in humans itself.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "問題は人間を起用したこと自体ではなかった、という問題の切り分けはLedgerにありません。 / 問題が人間を起用したこと自体ではなかったという評価は、Ledgerに記載されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_negation",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "何が注目を集めたか、また注目の対象が派手な技術ではなかったという評価はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。 / Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 27,
+      "n_model_entries": 26,
+      "n_targets": 20,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 15,
+      "n_excluded_entries": 18,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.4845,
+          "usage": {
+            "input_tokens": 5778,
+            "cached_input_tokens": 0,
+            "output_tokens": 5021,
+            "reasoning_tokens": 3351
+          },
+          "elapsed_seconds": 49.971,
+          "prompt_sha256": "bd87bf2be5f38c50fd2d2dfd220bb0686a873dfa43df99a023a38d9ff2c765fc",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.4845,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# A Human Name Appeared on the Cast List for AI Phone Calls",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "キャスト表に人名が載ったという比喩的な見出しで、具体的な出来事を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.1",
+          "claim": "Behind the scenes of AI phone calls, some unusual casting took place.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「配役」を使った比喩的な導入で、独立した具体的事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S1.2",
+          "claim": "AI was supposed to be the star.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "AIを主役に見立てた修辞で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.1",
+          "claim": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「想像しやすい筋書き」という仮定的な導入で、実際の仕組みを断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.3",
+          "claim": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間が一部の電話を最初から最後まで担当した点は合うが、AIが行き詰まった場合の引き継ぎ方式との対比はLedgerで確認できない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S4.2",
+          "claim": "In Japanese, that means a human guide.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「human concierge」の日本語での意味を具体的に説明しているが、その語義はLedgerに記載されていない。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S4.3",
+          "claim": "It is a very elegant name, like someone at a hotel who can help with a special request.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "ホテルの人になぞらえた比喩と評価で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S4.4",
+          "claim": "But the important point this time was not the fancy name.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "名称より重要な点を論じる編集上の評価で、具体的な事実を述べていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "S5.2",
+          "claim": "In other words, the problem was not bringing in humans itself.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間を関与させること自体は問題でなかったと否定しているが、Ledgerには機微情報共有へのプライバシー懸念も記録されており、問題の範囲を狭めている。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "mismatch",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C10",
+          "key": "S5.3",
+          "claim": "If a human is going to appear on the stage, people should be told about it first.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間が担当する場合に事前告知すべきという規範的な提言で、実際に告知されたという主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C11",
+          "key": "S6.1",
+          "claim": "This is easy for those of us who are used to automated voices and chat to understand.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "自動音声やチャットに慣れた読者への一般的な呼びかけである。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C12",
+          "key": "S6.2",
+          "claim": "If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間の関与を後から知った場合の反応を述べる一般的・仮定的な説明で、記事の具体的な出来事を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C13",
+          "key": "S6.3",
+          "claim": "There is nothing wrong with getting help from a human.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間の助けを得ることへの価値判断で、検証可能な事実の主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C14",
+          "key": "S6.4",
+          "claim": "What matters is clearly telling people who is playing each part.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "誰が担当するかを明確に伝えるべきという規範的な意見である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C15",
+          "key": "S7.1",
+          "claim": "For now, Meta will put this feature back the way it was.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "Metaが人間コンシェルジュ機能を当面ロールバックしたというLedgerの説明と、対象・時期の限定が一致する。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C16",
+          "key": "S7.2",
+          "claim": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "注目を集めたのは派手な技術ではなかったという比較・否定を含む主張だが、注目の対象についてLedgerに裏付けがない。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C17",
+          "key": "S7.3",
+          "claim": "Was the speaker AI, or was it a human?",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "AIか人間かを問う修辞的な問いで、どちらだったかを新たに断定していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C18",
+          "key": "S7.4",
+          "claim": "It was the short message before the show began, telling us who the star was.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "「ショー」や「主役」を使った結びの比喩で、実際に告知メッセージがあったという報告ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C19",
+          "key": "S7.5",
+          "claim": "Behind the scenes in the age of AI, that short message seems to be taking an unexpectedly important role.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "告知の重要性についての推測的な結びで、具体的な新事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C20",
+          "key": "L1",
+          "claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "人間の契約スタッフが担当したことと適切な開示がなかった点は合うが、「一部の電話」という限定が落ち、テスト全体に広げている。",
+          "fact_tags": [
+            "proper_noun",
+            "negation"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "bd87bf2be5f38c50fd2d2dfd220bb0686a873dfa43df99a023a38d9ff2c765fc"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 36,
+    "n_judged_units": 28,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "S1.1",
+          "S1.2",
+          "S2.2",
+          "S3.1",
+          "S3.3",
+          "S4.2",
+          "S4.3",
+          "S4.4",
+          "S5.2",
+          "S5.3",
+          "S6.1",
+          "S6.2",
+          "S6.3",
+          "S6.4",
+          "S7.1",
+          "S7.2",
+          "S7.3",
+          "S7.4",
+          "S7.5",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S4.5": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "CANDIDATE",
+          "S7.1": "CANDIDATE",
+          "S7.2": "CANDIDATE",
+          "S7.3": "CANDIDATE",
+          "S7.4": "CANDIDATE",
+          "S7.5": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.5515,
+            "usage": {
+              "input_tokens": 5236,
+              "cached_input_tokens": 0,
+              "output_tokens": 5984,
+              "reasoning_tokens": 1695
+            },
+            "elapsed_seconds": 47.749,
+            "prompt_sha256": "9c20bc3ba95d03aabfb18b5204c7906d222e26875d2f2ce9eff4b5c2c5da0ffd",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "CANDIDATE",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "CANDIDATE",
+          "S3.2": "SUPPORTED",
+          "S3.3": "CANDIDATE",
+          "S4.1": "SUPPORTED",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S4.5": "SUPPORTED",
+          "S5.1": "SUPPORTED",
+          "S5.2": "CANDIDATE",
+          "S5.3": "CANDIDATE",
+          "S6.1": "CANDIDATE",
+          "S6.2": "CANDIDATE",
+          "S6.3": "CANDIDATE",
+          "S6.4": "CANDIDATE",
+          "S7.1": "CANDIDATE",
+          "S7.2": "CANDIDATE",
+          "S7.3": "CANDIDATE",
+          "S7.4": "CANDIDATE",
+          "S7.5": "CANDIDATE",
+          "L1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# A Human Name Appeared on the Cast List for AI Phone Calls",
+            "span": [
+              0,
+              59
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「人間の名前がキャスト表に現れた」という具体的な主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "A Human Name Appeared on the Cast List for AI Phone Calls"
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "Behind the scenes of AI phone calls, some unusual casting took place.",
+            "span": [
+              61,
+              130
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「異例のキャスティングがあった」という評価・描写はLedgerに記載されていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Behind the scenes of AI phone calls, some unusual casting took place."
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "AI was supposed to be the star.",
+            "span": [
+              131,
+              162
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIが電話の「主役であるはずだった」という位置づけはLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "AI was supposed to be the star."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "Of course, humans did not handle every call.",
+            "span": [
+              300,
+              344
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult.",
+            "span": [
+              480,
+              598
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIが難しい場面になったときだけ人間に引き継ぐ、という想定はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+            "span": [
+              666,
+              793
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が最初から最後まで対応した一部の電話は支えられますが、「AIが行き詰まったときに人間を呼ぶ形ではなかった」という比較・否定はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "In Japanese, that means a human guide.",
+            "span": [
+              838,
+              876
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「human concierge」の日本語での意味が「人間の案内役」だという説明はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "In Japanese, that means a human guide."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "It is a very elegant name, like someone at a hotel who can help with a special request.",
+            "span": [
+              877,
+              964
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "名称の優雅さやホテルでの特別な依頼への対応という比喩は、Ledgerで裏付けられていません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "It is a very elegant name, like someone at a hotel who can help with a special request."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "But the important point this time was not the fancy name.",
+            "span": [
+              965,
+              1022
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「今回の重要点は名称ではなかった」という評価・解釈はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "But the important point this time was not the fancy name."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "In other words, the problem was not bringing in humans itself.",
+            "span": [
+              1249,
+              1311
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "問題は人間を起用したこと自体ではなかった、という問題の切り分けはLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": true,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "In other words, the problem was not bringing in humans itself."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "If a human is going to appear on the stage, people should be told about it first.",
+            "span": [
+              1312,
+              1393
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が関与するなら事前に知らせるべきだという規範的主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "If a human is going to appear on the stage, people should be told about it first."
+          },
+          {
+            "unit_id": "S6.1",
+            "unit_ids": [
+              "S6.1"
+            ],
+            "claim_text": "This is easy for those of us who are used to automated voices and chat to understand.",
+            "span": [
+              1395,
+              1480
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「自動音声やチャットに慣れている」という読者についての主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "This is easy for those of us who are used to automated voices and chat to understand."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised.",
+            "span": [
+              1481,
+              1601
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "機械が対応していると思っていた状況で人間が関与していたと後から知ると驚く、という一般的な反応はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "If we later learn that a human was actually involved in a situation we thought a machine was handling, we are surprised."
+          },
+          {
+            "unit_id": "S6.3",
+            "unit_ids": [
+              "S6.3"
+            ],
+            "claim_text": "There is nothing wrong with getting help from a human.",
+            "span": [
+              1602,
+              1656
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間の助けを得ることに問題はない、という規範的評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "There is nothing wrong with getting help from a human."
+          },
+          {
+            "unit_id": "S6.4",
+            "unit_ids": [
+              "S6.4"
+            ],
+            "claim_text": "What matters is clearly telling people who is playing each part.",
+            "span": [
+              1657,
+              1721
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "誰がどの役割を担うかを明確に伝えることが重要だ、という規範的主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "What matters is clearly telling people who is playing each part."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "For now, Meta will put this feature back the way it was.",
+            "span": [
+              1723,
+              1779
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledgerは機能を当面ロールバックしたとしていますが、記事は今後元の状態に戻す予定であるかのように時期を変えています。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "For now, Meta will put this feature back the way it was."
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+            "span": [
+              1780,
+              1885
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "何が注目を集めたか、また注目の対象が派手な技術ではなかったという評価はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Was the speaker AI, or was it a human?",
+            "span": [
+              1886,
+              1924
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話の発話者がAIか人間かという問いかけ自体はLedgerの事実として提示されていません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Was the speaker AI, or was it a human?"
+          },
+          {
+            "unit_id": "S7.4",
+            "unit_ids": [
+              "S7.4"
+            ],
+            "claim_text": "It was the short message before the show began, telling us who the star was.",
+            "span": [
+              1925,
+              2001
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "開始前に誰が主役かを告げる「短いメッセージ」があった／必要だったという具体的表現はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "It was the short message before the show began, telling us who the star was."
+          },
+          {
+            "unit_id": "S7.5",
+            "unit_ids": [
+              "S7.5"
+            ],
+            "claim_text": "Behind the scenes in the age of AI, that short message seems to be taking an unexpectedly important role.",
+            "span": [
+              2002,
+              2107
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AI時代にその種のメッセージが予想外に重要な役割を担うという一般化はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "Behind the scenes in the age of AI, that short message seems to be taking an unexpectedly important role."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+            "span": [
+              2124,
+              2229
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "S3.1",
+          "S3.3",
+          "S5.2",
+          "S7.1"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S1.3": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S3.1": "DEVIATION",
+          "S3.2": "MATCH",
+          "S3.3": "DEVIATION",
+          "S4.1": "MATCH",
+          "S5.1": "MATCH",
+          "S7.1": "DEVIATION",
+          "L1": "DEVIATION",
+          "S4.5": "MATCH",
+          "S5.2": "DEVIATION",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S4.2": "UNMENTIONED",
+          "S4.3": "UNMENTIONED",
+          "S4.4": "UNMENTIONED",
+          "S5.3": "UNMENTIONED",
+          "S6.1": "UNMENTIONED",
+          "S6.2": "UNMENTIONED",
+          "S6.3": "UNMENTIONED",
+          "S6.4": "UNMENTIONED",
+          "S7.2": "UNMENTIONED",
+          "S7.3": "UNMENTIONED",
+          "S7.4": "UNMENTIONED",
+          "S7.5": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.6588,
+            "usage": {
+              "input_tokens": 4906,
+              "cached_input_tokens": 0,
+              "output_tokens": 7417,
+              "reasoning_tokens": 5550
+            },
+            "elapsed_seconds": 69.888,
+            "prompt_sha256": "d650bd54181242bfa70ab67faafcd8f49ad995ccd3b73bfc0e5ba6d17d307d81",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult.",
+            "span": [
+              480,
+              598
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "AIが困難に直面した場合に人間へ引き継ぐ仕組みはLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "The easiest story to imagine is that AI makes the call and hands it over to a human only when things become difficult."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+            "span": [
+              666,
+              793
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "AIが行き詰まって人間へ電話を引き継ぐ方式との対比は、Ledgerにない仕組みを持ち込んでいる。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "For now, Meta will put this feature back the way it was.",
+            "span": [
+              1723,
+              1779
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerでは当面のロールバックがすでに行われたとされるが、記事はこれから行うと表現している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "For now, Meta will put this feature back the way it was."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+            "span": [
+              2124,
+              2229
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "In other words, the problem was not bringing in humans itself.",
+            "span": [
+              1249,
+              1311
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "問題が人間を起用したこと自体ではなかったという評価は、Ledgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "In other words, the problem was not bringing in humans itself."
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "For now, Meta will put this feature back the way it was.",
+            "span": [
+              1723,
+              1779
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "ロールバックをこれから行うという時制が、Ledgerの実施済みという記述と異なる。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": "For now, Meta will put this feature back the way it was."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "S3.1",
+        "S3.3",
+        "S5.2",
+        "S7.1"
+      ],
+      "r3_only": [
+        "S1.1",
+        "S1.2",
+        "S2.2",
+        "S4.2",
+        "S4.3",
+        "S4.4",
+        "S5.3",
+        "S6.1",
+        "S6.2",
+        "S6.3",
+        "S6.4",
+        "S7.2",
+        "S7.3",
+        "S7.4",
+        "S7.5",
+        "T"
+      ],
+      "r5_only": []
+    },
+    "returned_by_check": {
+      "r3": 1
+    },
+    "union_candidates": [
+      {
+        "claim_text": "Of course, humans did not handle every call.",
+        "span": [
+          300,
+          344
+        ],
+        "unit_ids": [
+          "S2.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+        "span": [
+          666,
+          793
+        ],
+        "unit_ids": [
+          "S3.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "人間が最初から最後まで対応した一部の電話は支えられますが、「AIが行き詰まったときに人間を呼ぶ形ではなかった」という比較・否定はLedgerにありません。",
+          "AIが行き詰まって人間へ電話を引き継ぐ方式との対比は、Ledgerにない仕組みを持ち込んでいる。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end."
+        ]
+      },
+      {
+        "claim_text": "In Japanese, that means a human guide.",
+        "span": [
+          838,
+          876
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "「human concierge」の日本語での意味が「人間の案内役」だという説明はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "In Japanese, that means a human guide."
+        ]
+      },
+      {
+        "claim_text": "In other words, the problem was not bringing in humans itself.",
+        "span": [
+          1249,
+          1311
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "問題は人間を起用したこと自体ではなかった、という問題の切り分けはLedgerにありません。",
+          "問題が人間を起用したこと自体ではなかったという評価は、Ledgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": true,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "In other words, the problem was not bringing in humans itself."
+        ]
+      },
+      {
+        "claim_text": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+        "span": [
+          1780,
+          1885
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "何が注目を集めたか、また注目の対象が派手な技術ではなかったという評価はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": [
+          "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology."
+        ]
+      },
+      {
+        "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+        "span": [
+          2124,
+          2229
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "人間スタッフが担当したのは電話の一部という範囲が省かれ、テスト全体で人間が電話を担当したかのように読めます。",
+          "Ledgerの対象は電話の一部だが、記事はその限定を示さず、テスト全体に広げて読める表現になっている。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking."
+        ]
+      }
+    ],
+    "n_union_candidates": 6,
+    "n_model_candidates": 5,
+    "n_deterministic_only_candidates": 1,
+    "total_cost_jpy": 1.2103,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 26,
+    "n_targets": 20,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 15,
+    "n_excluded_entries": 18,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.4845,
+    "effort": "medium",
+    "prompt_sha256": "bd87bf2be5f38c50fd2d2dfd220bb0686a873dfa43df99a023a38d9ff2c765fc"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 6
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.3777,
+  "provenance": {
+    "switch_dump_sha256": "611451fdb5e8e8b547cbbda229fbebdb15385944b352498fbd7cb13fef7ee261",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-07T19:47:40",
+    "ledger_sha256": "4a650db008f873d8edba28f8adcb7006f0e27692b5e09bf1380fcc77747d6487",
+    "article_sha256": "ea8a4e064a3a049832a8ad075d275ee601d4a846ba2026b2fad2b84869a298ee",
+    "source_article_sha256": "ac04833f6def584f5c0af2e8e35f77feb21a68a59b0108aae2fcd94f85cbd1cc",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10/checker",
+      "ledger_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10/b1b/article.md",
+      "source_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10/ja_writer/revision2.md",
+      "budget_jpy": 15.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}

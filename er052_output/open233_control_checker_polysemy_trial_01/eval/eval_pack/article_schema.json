@@ -1,0 +1,288 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ccp_trial article record (1 article, 匿名コード方式; slug enum拡張と任意フィールドchecker_rewrites/rollback_labels追加以外はB3 schemaと同一)",
+  "description": "評価者は slug と code(er052_output/open233_control_checker_polysemy_trial_01/eval/blind/<slug>/<code>/ の匿名コード)だけを書く。出所・variantは書かない。",
+  "type": "object",
+  "required": [
+    "slug",
+    "code",
+    "stages",
+    "regressions",
+    "direction_facts",
+    "ng_items",
+    "pending",
+    "notes"
+  ],
+  "properties": {
+    "slug": {
+      "type": "string",
+      "enum": [
+        "meta",
+        "hormuz",
+        "space_weapons",
+        "sewer",
+        "ai_control"
+      ]
+    },
+    "code": {
+      "type": "string",
+      "description": "匿名記事コード(例 k7f2)。MAP.jsonで variant/b3_rep/writer_rep に解決される"
+    },
+    "stages": {
+      "type": "object",
+      "required": [
+        "s0_r0",
+        "s1_ja",
+        "s2_en"
+      ],
+      "properties": {
+        "s0_r0": {
+          "$ref": "#/definitions/counts",
+          "description": "R0(ja_writer/original.md、修正前原稿)の重大/軽微件数(M3)。ng_itemsのstage.s0=trueの件数と一致"
+        },
+        "s1_ja": {
+          "$ref": "#/definitions/counts",
+          "description": "①JA R2(ja_writer/revision2.md)"
+        },
+        "s2_en": {
+          "$ref": "#/definitions/counts",
+          "description": "②EN(b1b/article.md)"
+        }
+      }
+    },
+    "regressions": {
+      "$ref": "#/definitions/counts"
+    },
+    "direction_facts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "fact_id",
+          "label"
+        ],
+        "properties": {
+          "fact_id": {
+            "type": "string"
+          },
+          "label": {
+            "enum": [
+              "correct",
+              "ambiguous",
+              "misread",
+              "not_selected"
+            ]
+          }
+        }
+      }
+    },
+    "ng_items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "text",
+          "fact_id",
+          "severity",
+          "stage",
+          "kind"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "<slug>-<code>-NN (匿名コードベース。variantを含めない)"
+          },
+          "text": {
+            "type": "string"
+          },
+          "fact_id": {
+            "type": "string"
+          },
+          "severity": {
+            "enum": [
+              "major",
+              "minor"
+            ]
+          },
+          "stage": {
+            "type": "object",
+            "required": [
+              "s0",
+              "s1",
+              "s2"
+            ],
+            "properties": {
+              "s0": {
+                "type": "boolean",
+                "description": "R0(修正前原稿)に存在"
+              },
+              "s1": {
+                "type": "boolean",
+                "description": "①JA R2に存在"
+              },
+              "s2": {
+                "type": "boolean",
+                "description": "②ENに存在"
+              }
+            }
+          },
+          "cross_fact": {
+            "type": "boolean",
+            "description": "別factの限定語・条件・範囲を連結したことに由来する誤りならtrue(H2集計用)。省略=false"
+          },
+          "regression": {
+            "type": "boolean",
+            "description": "R0->R2退行ならtrue(省略=false)"
+          },
+          "kind": {
+            "enum": [
+              "subject",
+              "object",
+              "scope",
+              "time",
+              "negation",
+              "causal",
+              "added_fact"
+            ]
+          }
+        }
+      }
+    },
+    "pending": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "brief_review": {
+      "type": "object",
+      "description": "M5: 記事評価者とは別インスタンスが匿名briefに対して記入。記事JSONには書かず eval/brief_review/<slug>_<code>.json に出力(下記)",
+      "properties": {}
+    },
+    "notes": {
+      "type": "string"
+    },
+    "checker_rewrites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "before",
+          "after",
+          "before_was_ng",
+          "after_new_ng"
+        ],
+        "properties": {
+          "before": {
+            "type": "string"
+          },
+          "after": {
+            "type": "string"
+          },
+          "before_was_ng": {
+            "enum": [
+              "true",
+              "false",
+              "unclear"
+            ]
+          },
+          "after_new_ng": {
+            "enum": [
+              "none",
+              "minor",
+              "major"
+            ]
+          }
+        }
+      }
+    },
+    "rollback_labels": {
+      "type": "object",
+      "description": "metaのみ。MUSE-HC-012の3値",
+      "properties": {
+        "ja_r2": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "enum": [
+                "correct",
+                "ambiguous",
+                "misread",
+                "not_selected"
+              ]
+            },
+            "quote": {
+              "type": "string"
+            }
+          }
+        },
+        "en_pre_checker": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "enum": [
+                "correct",
+                "ambiguous",
+                "misread",
+                "not_selected"
+              ]
+            },
+            "quote": {
+              "type": "string"
+            }
+          }
+        },
+        "en_final": {
+          "type": "object",
+          "properties": {
+            "label": {
+              "enum": [
+                "correct",
+                "ambiguous",
+                "misread",
+                "not_selected"
+              ]
+            },
+            "quote": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "counts": {
+      "type": "object",
+      "required": [
+        "major",
+        "minor"
+      ],
+      "properties": {
+        "major": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "minor": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "x-brief_review_file": {
+    "path": "er052_output/open233_b3_trial_01/eval/brief_review/<slug>_<code>.json (briefコード単位。codeはbrief匿名コード: MAP.jsonのbrief_codes)",
+    "fields": {
+      "slug": "string",
+      "bcode": "string(brief匿名コード)",
+      "units_total": "int: 評価単位数(箇条書き1項目、または句点区切り1文。Storyline行は1単位)",
+      "omitted_units": "int: 主体・対象・数値/率の掛かる先が台帳にあるのにbriefで落ちている単位数",
+      "omitted_rate": "float = omitted_units/units_total",
+      "omitted_examples": "最大3の抜粋",
+      "cross_fact_qualifier": "bool: Storyline行/単位内で別factの限定語が連結されているか",
+      "unprovided_checklist_hits": "[{item, stated: true/false}] docs/pm/b3_trial_01/unprovided_checklist_<slug>.md の各項目をbriefが「示されていない」等で明記しているか",
+      "notes": "string"
+    }
+  }
+}

@@ -1,0 +1,2060 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules\n\nWhen you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+          "fallback_used": false,
+          "section_type": "title",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "title",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-017",
+            "claim_text": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+            "issue": "喜多方市が「各コミュニティ」で大規模処理と小規模処理の双方を考慮しているという範囲・説明は、Ledgerで直接確認できない。 / 喜多方市の区域再編を、各地域で大規模・小規模両方の処理方式を考慮する計画として述べており、「各地域」という範囲の主張はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules\n\nWhen you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.\n\nThe city reclassified areas outside the group-treatment areas as individual-treatment areas using combined-treatment septic tanks. These are facilities installed for each house or similar unit. They treat not only toilet waste but also household wastewater from kitchens, baths, and washing. They are systems that treat water from daily life near the home.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-012",
+            "claim_text": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "QUALITY",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "This does not mean that one choice is always correct.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "This does not mean that one choice is always correct.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S4.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The background is aging facilities and a falling population. As facilities grow old, the costs of renewal and other maintenance rise. As the population falls, revenue from user fees decreases. Taking these conditions into account, Kitakata City reviewed its wastewater treatment methods.\n\nThe Ministry of the Environment explains that in areas where homes are spread out, individual treatment with septic tanks may be more economical, while in areas where homes are close together, group treatment such as public sewers may be more economical. This does not mean that one choice is always correct. The choice is made to match local features, such as how homes are spread out.\n\nHere, an unexpected side of septic tanks appears. Installing one does not end the matter. Septic tank managers are required to carry out maintenance checks and cleaning. As a general rule, this must be done at least once a year. However, if a ministerial ordinance sets a different number of times, it must be done at least that many times.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "This does not mean that one choice is always correct.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Installing one does not end the matter.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "Installing one does not end the matter.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.2"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The Ministry of the Environment explains that in areas where homes are spread out, individual treatment with septic tanks may be more economical, while in areas where homes are close together, group treatment such as public sewers may be more economical. This does not mean that one choice is always correct. The choice is made to match local features, such as how homes are spread out.\n\nHere, an unexpected side of septic tanks appears. Installing one does not end the matter. Septic tank managers are required to carry out maintenance checks and cleaning. As a general rule, this must be done at least once a year. However, if a ministerial ordinance sets a different number of times, it must be done at least that many times.\n\nFor small household septic tanks, maintenance checks are basically required at least once every four months, and cleaning at least once a year. The number of times differs depending on the treatment method and the number of people the tank is designed to serve. During cleaning, collected sludge and other material are pumped out.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "Installing one does not end the matter.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "A septic tank also includes taking care of it without forgetting.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "A septic tank also includes taking care of it without forgetting.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.4); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S8.4"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are also legally required inspections. These are separate from maintenance checks and cleaning. There is an Article 7 inspection, carried out after use begins, and an Article 11 inspection, which checks the function and maintenance condition. The Article 11 inspection is carried out once a year.\n\nKitakata City's review is about choosing a treatment method that suits each area. In individual-treatment areas, three schedules continue: maintenance checks, cleaning, and legally required inspections. Equipment that cleans water does not simply work quietly. A septic tank also includes taking care of it without forgetting.\n\n## In one line\nInstalling a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "A septic tank also includes taking care of it without forgetting.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Installing a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "Installing a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "T"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Kitakata City's review is about choosing a treatment method that suits each area. In individual-treatment areas, three schedules continue: maintenance checks, cleaning, and legally required inspections. Equipment that cleans water does not simply work quietly. A septic tank also includes taking care of it without forgetting.\n\n## In one line\nInstalling a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "Installing a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Taking these conditions into account, Kitakata City reviewed its wastewater treatment methods.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "Taking these conditions into account, Kitakata City reviewed its wastewater treatment methods.",
+            "issue": "喜多方市が「各コミュニティ」で大規模処理と小規模処理の双方を考慮しているという範囲・説明は、Ledgerで直接確認できない。 / 喜多方市の区域再編を、各地域で大規模・小規模両方の処理方式を考慮する計画として述べており、「各地域」という範囲の主張はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The city reclassified areas outside the group-treatment areas as individual-treatment areas using combined-treatment septic tanks. These are facilities installed for each house or similar unit. They treat not only toilet waste but also household wastewater from kitchens, baths, and washing. They are systems that treat water from daily life near the home.\n\nThe background is aging facilities and a falling population. As facilities grow old, the costs of renewal and other maintenance rise. As the population falls, revenue from user fees decreases. Taking these conditions into account, Kitakata City reviewed its wastewater treatment methods.\n\nThe Ministry of the Environment explains that in areas where homes are spread out, individual treatment with septic tanks may be more economical, while in areas where homes are close together, group treatment such as public sewers may be more economical. This does not mean that one choice is always correct. The choice is made to match local features, such as how homes are spread out.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "Taking these conditions into account, Kitakata City reviewed its wastewater treatment methods.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        },
+        {
+          "claim_text": "Kitakata City's review is about choosing a treatment method that suits each area.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "Kitakata City's review is about choosing a treatment method that suits each area.",
+            "issue": "喜多方市が「各コミュニティ」で大規模処理と小規模処理の双方を考慮しているという範囲・説明は、Ledgerで直接確認できない。 / 喜多方市の区域再編を、各地域で大規模・小規模両方の処理方式を考慮する計画として述べており、「各地域」という範囲の主張はLedgerにありません。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.1"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There are also legally required inspections. These are separate from maintenance checks and cleaning. There is an Article 7 inspection, carried out after use begins, and an Article 11 inspection, which checks the function and maintenance condition. The Article 11 inspection is carried out once a year.\n\nKitakata City's review is about choosing a treatment method that suits each area. In individual-treatment areas, three schedules continue: maintenance checks, cleaning, and legally required inspections. Equipment that cleans water does not simply work quietly. A septic tank also includes taking care of it without forgetting.\n\n## In one line\nInstalling a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "Kitakata City's review is about choosing a treatment method that suits each area.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+              "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+            ],
+            "batch_cost_jpy": 0.0975,
+            "batch_n_claims": 8
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 8,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-017",
+          "claim_text": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-012",
+          "claim_text": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "QUALITY",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "This does not mean that one choice is always correct.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "Installing one does not end the matter.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "A septic tank also includes taking care of it without forgetting.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "Installing a septic tank is only the beginning, because it requires regular maintenance, cleaning, and legal inspections.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "Taking these conditions into account, Kitakata City reviewed its wastewater treatment methods.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "Kitakata City's review is about choosing a treatment method that suits each area.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92",
+            "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+          ],
+          "batch_cost_jpy": 0.0975,
+          "batch_n_claims": 8
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6772,
+      "usage": {
+        "input_tokens": 6657,
+        "cached_input_tokens": 0,
+        "output_tokens": 7302,
+        "reasoning_tokens": 1551
+      },
+      "elapsed_seconds": 50.802,
+      "prompt_sha256": "ed015ba58f493f698508d5ea754534059af9e8ad6ce07d393446a4a20e4c250b",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7607,
+      "usage": {
+        "input_tokens": 6292,
+        "cached_input_tokens": 0,
+        "output_tokens": 8439,
+        "reasoning_tokens": 5557
+      },
+      "elapsed_seconds": 80.817,
+      "prompt_sha256": "196dbebf836ef300f60fbfb6298a0b48ac8eadd7cd698aede72aa4f6282060d2",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.216,
+      "usage": {
+        "input_tokens": 6439,
+        "cached_input_tokens": 0,
+        "output_tokens": 1466,
+        "reasoning_tokens": 1031
+      },
+      "elapsed_seconds": 16.366,
+      "prompt_sha256": "2f34230e26bcfb314463ac3979bdddc32b8b8c7471769ee906adab6ec5c79007",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2219,
+      "usage": {
+        "input_tokens": 11099,
+        "cached_input_tokens": 0,
+        "output_tokens": 609,
+        "reasoning_tokens": 422
+      },
+      "elapsed_seconds": 5.923,
+      "prompt_sha256": "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1642,
+      "usage": {
+        "input_tokens": 7319,
+        "cached_input_tokens": 0,
+        "output_tokens": 630,
+        "reasoning_tokens": 551
+      },
+      "elapsed_seconds": 8.174,
+      "prompt_sha256": "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.0541,
+      "usage": {
+        "input_tokens": 11099,
+        "cached_input_tokens": 11096,
+        "output_tokens": 467,
+        "reasoning_tokens": 286
+      },
+      "elapsed_seconds": 5.485,
+      "prompt_sha256": "376687bcf00d87ccd2a14d1378c9dfa2d59e3a6d1f1ed01dcaae18da8ceefe92"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0434,
+      "usage": {
+        "input_tokens": 7319,
+        "cached_input_tokens": 7316,
+        "output_tokens": 406,
+        "reasoning_tokens": 333
+      },
+      "elapsed_seconds": 6.496,
+      "prompt_sha256": "2f8abb8c08e522d87dc742eec52cce6ba7384f170256f5641fafc272e457395a"
+    }
+  ],
+  "total_cost_jpy": 2.1375,
+  "total_calls": 7,
+  "elapsed_seconds": 174.095,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+        "related_fact_id": "F-017",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=T); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "喜多方市が「各コミュニティ」で大規模処理と小規模処理の双方を考慮しているという範囲・説明は、Ledgerで直接確認できない。 / 喜多方市の区域再編を、各地域で大規模・小規模両方の処理方式を考慮する計画として述べており、「各地域」という範囲の主張はLedgerにありません。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S1.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "This does not mean that one choice is always correct.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S4.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Installing one does not end the matter.",
+        "related_fact_id": "F-017",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "A septic tank also includes taking care of it without forgetting.",
+        "related_fact_id": "F-017",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.4); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 11,
+      "n_model_entries": 7,
+      "n_targets": 6,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 5,
+      "n_excluded_entries": 5,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.216,
+          "usage": {
+            "input_tokens": 6439,
+            "cached_input_tokens": 0,
+            "output_tokens": 1466,
+            "reasoning_tokens": 1031
+          },
+          "elapsed_seconds": 16.366,
+          "prompt_sha256": "2f34230e26bcfb314463ac3979bdddc32b8b8c7471769ee906adab6ec5c79007",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.216,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.1",
+          "claim": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "F-012 supports Kitakata’s area-based shift to individual treatment outside group-treatment areas, but “small systems in each community” broadens the scope and omits that limitation.",
+          "fact_tags": [
+            "proper_noun",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C2",
+          "key": "S5.1",
+          "claim": "Here, an unexpected side of septic tanks appears.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "“An unexpected side” is a rhetorical transition and adds no concrete factual claim.",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S8.1",
+          "claim": "Kitakata City's review is about choosing a treatment method that suits each area.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-012 supports Kitakata’s review and its area-based assignment of individual treatment outside group-treatment areas.",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C4",
+          "key": "S8.3",
+          "claim": "Equipment that cleans water does not simply work quietly.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "This is figurative wording and does not add a concrete factual claim.",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C5",
+          "key": "S3.2",
+          "claim": "As facilities grow old, the costs of renewal and other maintenance rise.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-012 links facility aging with increased maintenance costs from renewal and related work, matching the stated cause and direction.",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C6",
+          "key": "S3.3",
+          "claim": "As the population falls, revenue from user fees decreases.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "F-012 supports the link between population decline and reduced user-fee revenue in Kitakata’s review.",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "2f34230e26bcfb314463ac3979bdddc32b8b8c7471769ee906adab6ec5c79007"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 39,
+    "n_judged_units": 30,
+    "n_relation_units": 0,
+    "relation_ids": [],
+    "same_sentence_groups": [],
+    "n_facts": 20,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S4.2",
+          "S5.1",
+          "S5.2",
+          "S8.1",
+          "S8.3",
+          "S8.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S1.1": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S4.3": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S5.5": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "S8.4": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "L1": "SUPPORTED"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6772,
+            "usage": {
+              "input_tokens": 6657,
+              "cached_input_tokens": 0,
+              "output_tokens": 7302,
+              "reasoning_tokens": 1551
+            },
+            "elapsed_seconds": 50.802,
+            "prompt_sha256": "ed015ba58f493f698508d5ea754534059af9e8ad6ce07d393446a4a20e4c250b",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "CANDIDATE",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S2.4": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "SUPPORTED",
+          "S4.2": "SUPPORTED",
+          "S4.3": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S5.4": "SUPPORTED",
+          "S5.5": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S7.3": "SUPPORTED",
+          "S7.4": "SUPPORTED",
+          "S8.1": "CANDIDATE",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "S8.4": "SUPPORTED",
+          "L1": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+            "span": [
+              0,
+              74
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+            "span": [
+              76,
+              262
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "喜多方市が「各コミュニティ」で大規模処理と小規模処理の双方を考慮しているという範囲・説明は、Ledgerで直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "This does not mean that one choice is always correct.",
+            "span": [
+              1166,
+              1219
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "Here, an unexpected side of septic tanks appears.",
+            "span": [
+              1299,
+              1348
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「unexpected side（意外な側面）」という評価はLedgerに裏付けがない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Here, an unexpected side of septic tanks appears."
+          },
+          {
+            "unit_id": "S5.2",
+            "unit_ids": [
+              "S5.2"
+            ],
+            "claim_text": "Installing one does not end the matter.",
+            "span": [
+              1349,
+              1388
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.1",
+            "unit_ids": [
+              "S8.1"
+            ],
+            "claim_text": "Kitakata City's review is about choosing a treatment method that suits each area.",
+            "span": [
+              2277,
+              2358
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "喜多方市の見直しが「各区域に適した方式を選ぶこと」を目的・内容としていたという説明は、喜多方市の事実としてLedgerに明示されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "Kitakata City's review is about choosing a treatment method that suits each area."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "Equipment that cleans water does not simply work quietly.",
+            "span": [
+              2480,
+              2537
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「静かに動くだけではない」という表現が示す設備の動作について、Ledgerに直接の裏付けがない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "Equipment that cleans water does not simply work quietly."
+          },
+          {
+            "unit_id": "S8.4",
+            "unit_ids": [
+              "S8.4"
+            ],
+            "claim_text": "A septic tank also includes taking care of it without forgetting.",
+            "span": [
+              2538,
+              2603
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": ""
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S1.1",
+          "S3.2",
+          "S3.3"
+        ],
+        "unit_status": {
+          "S3.2": "DEVIATION",
+          "S3.3": "DEVIATION",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S2.4": "MATCH",
+          "S4.1": "MATCH",
+          "S4.2": "MATCH",
+          "S4.3": "MATCH",
+          "S1.1": "DEVIATION",
+          "S2.1": "MATCH",
+          "S3.1": "MATCH",
+          "S3.4": "MATCH",
+          "S8.1": "MATCH",
+          "S5.3": "MATCH",
+          "S5.4": "MATCH",
+          "S5.5": "MATCH",
+          "S6.1": "MATCH",
+          "S6.3": "MATCH",
+          "S8.2": "MATCH",
+          "L1": "MATCH",
+          "S6.2": "MATCH",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "MATCH",
+          "S7.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S5.1": "UNMENTIONED",
+          "S5.2": "UNMENTIONED",
+          "S8.3": "UNMENTIONED",
+          "S8.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.7607,
+            "usage": {
+              "input_tokens": 6292,
+              "cached_input_tokens": 0,
+              "output_tokens": 8439,
+              "reasoning_tokens": 5557
+            },
+            "elapsed_seconds": 80.817,
+            "prompt_sha256": "196dbebf836ef300f60fbfb6298a0b48ac8eadd7cd698aede72aa4f6282060d2",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "As facilities grow old, the costs of renewal and other maintenance rise.",
+            "span": [
+              683,
+              755
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "国土交通省が示す一般的な経営環境の要因を、記事では喜多方市における費用増加として述べており、対象範囲が市の個別状況へ広がっています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "As facilities grow old, the costs of renewal and other maintenance rise."
+          },
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "As the population falls, revenue from user fees decreases.",
+            "span": [
+              756,
+              814
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "国土交通省が示す一般的な経営環境の要因を、記事では喜多方市における使用料収入の減少として述べており、対象範囲が市の個別状況へ広がっています。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "As the population falls, revenue from user fees decreases."
+          },
+          {
+            "unit_id": "S1.1",
+            "unit_ids": [
+              "S1.1"
+            ],
+            "claim_text": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+            "span": [
+              76,
+              262
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "喜多方市の区域再編を、各地域で大規模・小規模両方の処理方式を考慮する計画として述べており、「各地域」という範囲の主張はLedgerにありません。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S1.1"
+      ],
+      "r3_only": [
+        "S4.2",
+        "S5.1",
+        "S5.2",
+        "S8.1",
+        "S8.3",
+        "S8.4",
+        "T"
+      ],
+      "r5_only": [
+        "S3.2",
+        "S3.3"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules",
+        "span": [
+          0,
+          74
+        ],
+        "unit_ids": [
+          "T"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-017"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community.",
+        "span": [
+          76,
+          262
+        ],
+        "unit_ids": [
+          "S1.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "喜多方市が「各コミュニティ」で大規模処理と小規模処理の双方を考慮しているという範囲・説明は、Ledgerで直接確認できない。",
+          "喜多方市の区域再編を、各地域で大規模・小規模両方の処理方式を考慮する計画として述べており、「各地域」という範囲の主張はLedgerにありません。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-012"
+        ],
+        "model_claims": [
+          "When you hear about Kitakata City's plan for wastewater treatment, you can see that it considers sewage treatment through not only large systems but also small systems in each community."
+        ]
+      },
+      {
+        "claim_text": "This does not mean that one choice is always correct.",
+        "span": [
+          1166,
+          1219
+        ],
+        "unit_ids": [
+          "S4.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Installing one does not end the matter.",
+        "span": [
+          1349,
+          1388
+        ],
+        "unit_ids": [
+          "S5.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-017"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "A septic tank also includes taking care of it without forgetting.",
+        "span": [
+          2538,
+          2603
+        ],
+        "unit_ids": [
+          "S8.4"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-017"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 1,
+    "n_deterministic_only_candidates": 4,
+    "total_cost_jpy": 1.4379,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 7,
+    "n_targets": 6,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 5,
+    "n_excluded_entries": 5,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.216,
+    "effort": "medium",
+    "prompt_sha256": "2f34230e26bcfb314463ac3979bdddc32b8b8c7471769ee906adab6ec5c79007"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 3
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

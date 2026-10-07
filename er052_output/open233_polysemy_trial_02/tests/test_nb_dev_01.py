@@ -166,3 +166,25 @@ def test_brief_md_and_no_checker_args_and_dryrun_provenance(tmp_path, monkeypatc
     out = capsys.readouterr().out
     prov = json.loads(out[:out.rindex("}") + 1])
     assert prov["b3_skipped"] is True and prov["brief_md_sha256"]
+
+
+def test_legacy_note_rule_env_switch(monkeypatch):
+    """OPEN233_NOTE_RULE=legacy_abd16d9a: 旧規則(0/12当時)を再現。既定は現行のまま。"""
+    cur = dev.build_transfer_block({})
+    leg = dev.build_transfer_block({"OPEN233_NOTE_RULE": "legacy_abd16d9a"})
+    assert dev.sha256_text(leg).startswith("abd16d9a")  # 旧規則で発火(旧sha一致)
+    assert not dev.sha256_text(cur).startswith("abd16d9a")  # 現行規則は旧shaではない
+    assert "で始まる注意がある場合" in leg and "で始まる注意がある場合" not in cur
+    assert dev.build_transfer_block({"OPEN233_NOTE_RULE": ""}) == cur  # 空=現行
+    assert dev.TRANSFER_BLOCK == cur  # import時の既定は現行
+    # 他notes(prefix差替)への影響なし
+    assert "注意:" in dev.build_transfer_block({"OPEN233_NOTE_PREFIX": "注意:"})
+    assert "注意:" in dev.build_transfer_block({"OPEN233_NOTE_PREFIX": "注意:", "OPEN233_NOTE_RULE": "legacy_abd16d9a"})
+    import pytest as _p
+    with _p.raises(ValueError):
+        dev.build_transfer_block({"OPEN233_NOTE_RULE": "bogus"})
+    # os.environ経由
+    monkeypatch.setenv("OPEN233_NOTE_RULE", "legacy_abd16d9a")
+    assert dev.sha256_text(dev.build_transfer_block()).startswith("abd16d9a")
+    monkeypatch.delenv("OPEN233_NOTE_RULE")
+    assert dev.build_transfer_block() == cur

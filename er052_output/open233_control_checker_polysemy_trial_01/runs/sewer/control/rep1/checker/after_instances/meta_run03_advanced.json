@@ -1,0 +1,4334 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "One route goes through underground pipes to a large treatment plant.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "One route goes through underground pipes to a large treatment plant.",
+            "issue": "公共下水道等の集合処理はLedgerにあるが、地下の管を通って大規模処理場へ運ぶという具体的な経路は記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "# Wastewater’s Journey Is Changing: From Underground Main Arteries to Behind Homes\n\nWater from toilets and kitchens has two routes through a town. One route goes through underground pipes to a large treatment plant. The other route is treated in a septic tank near the home.\n\nIn areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful. In a way, it is a main artery running under the town.",
+          "fallback_used": false,
+          "section_type": "hook",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_claim",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "hook",
+          "stage2_route": "hook",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "hook",
+            "claim_identity": "fact:F-007",
+            "claim_text": "One route goes through underground pipes to a large treatment plant.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_claim",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "issue": "「So」で直前の厳しい状況を方式選択の考え方が現れた原因として結び、「新しい考え方が現れた」という時期・経過も主張しているが、その関係はLedgerに示されていない。 / 「So」が、下水道の厳しい状況を理由として新しい方式選択の考え方が現れたという因果関係を作っている。地域特性に応じた選択や個別自治体の見直しはLedgerにあるが、この一般的な因果関係は記載されていない。 / The relation makes the new approach a consequence of the difficult sewer-system situation; the ledger states the financial pressures but does not establish that they caused this approach to emerge. / The density-based choice of treatment route matches the ledger, but the claim that this is a newly emerged way of thinking adds an unsupported timing/novelty claim. / The density-based choice is consistent with the ledger, but the relation says the approach appeared because of the difficult sewer-system situation and adds an unsupported claim of novelty.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1,R:S4.2+S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1",
+                "R:S4.2+S5.1"
+              ],
+              "related_fact_ids": [
+                "F-007",
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The number of passengers is falling, but the cost of repairing the railway is rising. For a sewer system, this is a very difficult situation.\n\nSo a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built. Public sewers are suitable where homes are close together. Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.\n\nKitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining its aging facilities was rising, while income from user fees was falling as the population decreased. Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra financial support for the cost of installing the tanks.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built. Public sewers are suitable where homes are close together. Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.\n\nKitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining its aging facilities was rising, while income from user fees was falling as the population decreased. Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra financial support for the cost of installing the tanks.\n\nA combined-treatment septic tank is like a small treatment plant near the home. It treats not only toilet water but also household wastewater from the kitchen, bath, and laundry. Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+          "origin": null,
+          "related_fact_id": "F-005",
+          "dev": {
+            "claim_in_article": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+            "issue": "各戸で処理する方式は支えられるが、大規模処理場へ送っていた水の行き先を家庭近くへ変更するという、従来方式からの転換を一般化している。 / The ledger defines what a combined-treatment septic tank processes, but does not claim that the system replaces a route previously sending wastewater to a large plant.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-005",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-005"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Kitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining its aging facilities was rising, while income from user fees was falling as the population decreased. Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra financial support for the cost of installing the tanks.\n\nA combined-treatment septic tank is like a small treatment plant near the home. It treats not only toilet water but also household wastewater from the kitchen, bath, and laundry. Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.\n\nHowever, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-005",
+            "claim_text": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "They are not devices that can be left alone after they are installed.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "They are not devices that can be left alone after they are installed.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S8.2"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A combined-treatment septic tank is like a small treatment plant near the home. It treats not only toilet water but also household wastewater from the kitchen, bath, and laundry. Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.\n\nHowever, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.\n\nIn an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "They are not devices that can be left alone after they are installed.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Users must have them inspected and cleaned.",
+          "origin": null,
+          "related_fact_id": "F-017",
+          "dev": {
+            "claim_in_article": "Users must have them inspected and cleaned.",
+            "issue": "Ledger上の義務を負う主体は「浄化槽管理者」だが、記事は対象を「Users」としており、主体の範囲が一致するとは確認できない。 / The ledger assigns the maintenance and cleaning duties to the septic-tank manager; the article assigns responsibility to “Users,” which is not necessarily the same actor.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": true,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+            "related_fact_id": "F-017",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S8.3"
+              ],
+              "related_fact_ids": [
+                "F-017"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "A combined-treatment septic tank is like a small treatment plant near the home. It treats not only toilet water but also household wastewater from the kitchen, bath, and laundry. Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.\n\nHowever, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.\n\nIn an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-017",
+            "claim_text": "Users must have them inspected and cleaned.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_scope",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "In an age of population decline, sewer systems are not disappearing.",
+          "origin": null,
+          "related_fact_id": "F-003",
+          "dev": {
+            "claim_in_article": "In an age of population decline, sewer systems are not disappearing.",
+            "issue": "下水道がなくならないという将来・全国的な断定はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+            "related_fact_id": "F-003",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.1"
+              ],
+              "related_fact_ids": [
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.\n\nIn an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.\n\n## In one line\nAs populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-003",
+            "claim_text": "In an age of population decline, sewer systems are not disappearing.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "They are trying to change their form.",
+          "origin": null,
+          "related_fact_id": "F-010",
+          "dev": {
+            "claim_in_article": "They are trying to change their form.",
+            "issue": "複数の自治体事例で方式の見直しは確認できるが、下水道全体が形を変えようとしているという一般化はLedgerにない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.2); severity is decided by Stage 2",
+            "related_fact_id": "F-010",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.2"
+              ],
+              "related_fact_ids": [
+                "F-010"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.\n\nIn an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.\n\n## In one line\nAs populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "unsupported_relationship",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-010",
+            "claim_text": "They are trying to change their form.",
+            "first_materiality": "QUALITY",
+            "first_basis": "unsupported_relationship",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+            "issue": "地域特性に応じた方式選択は支えられるが、そうした方式が使い分けられる時代が「始まっている」という時期・傾向はLedgerにない。 / Matching treatment choices to regional characteristics is consistent with the ledger, but the assertion that a new era is beginning is not supported by it.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.4); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S9.4"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.\n\nIn an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.\n\n## In one line\nAs populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+            "issue": "人口減少を背景に、町々が密集地では集合下水道、散在住宅では浄化槽を実際に使い分けているという一般的な現況はLedgerにない。 / The ledger describes a region-dependent choice that may be economically advantageous; it does not establish that towns are currently adopting this pattern because populations are declining.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "L1"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.\n\n## In one line\nAs populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "fallback_used": false,
+          "section_type": "in_one_line",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_scope",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "in_one_line",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_scope",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "The cost of repairing or replacing old equipment keeps rising.",
+          "origin": null,
+          "related_fact_id": "F-002",
+          "dev": {
+            "claim_in_article": "The cost of repairing or replacing old equipment keeps rising.",
+            "issue": "The ledger gives a forecast of maintenance and renewal costs rising between 2018 and 2048; the article states that repair or replacement costs are already and continually rising, without the forecast period or qualification.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "F-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "F-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful. In a way, it is a main artery running under the town.\n\nBut when the population falls, this main artery runs into a problem. Fewer people use the sewer system, so the fees paid to local governments also fall. At the same time, the underground pipes and treatment plants grow old. The cost of repairing or replacing old equipment keeps rising.\n\nThe number of passengers is falling, but the cost of repairing the railway is rising. For a sewer system, this is a very difficult situation.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "QUALITY",
+          "basis": "ledger_date_or_period",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "QUALITY",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-002",
+            "claim_text": "The cost of repairing or replacing old equipment keeps rising.",
+            "first_materiality": "QUALITY",
+            "first_basis": "ledger_date_or_period",
+            "second_materiality": "QUALITY",
+            "second_basis": "ledger_date_or_period",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "At the same time, the underground pipes and treatment plants grow old.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "At the same time, the underground pipes and treatment plants grow old.",
+            "issue": "公共下水道等の集合処理はLedgerにあるが、地下の管を通って大規模処理場へ運ぶという具体的な経路は記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "One route goes through underground pipes to a large treatment plant."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "In areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful. In a way, it is a main artery running under the town.\n\nBut when the population falls, this main artery runs into a problem. Fewer people use the sewer system, so the fees paid to local governments also fall. At the same time, the underground pipes and treatment plants grow old. The cost of repairing or replacing old equipment keeps rising.\n\nThe number of passengers is falling, but the cost of repairing the railway is rising. For a sewer system, this is a very difficult situation.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "At the same time, the underground pipes and treatment plants grow old.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+            "issue": "公共下水道等の集合処理はLedgerにあるが、地下の管を通って大規模処理場へ運ぶという具体的な経路は記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S1.2"
+              ],
+              "related_fact_ids": [
+                "F-007"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "One route goes through underground pipes to a large treatment plant."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "The number of passengers is falling, but the cost of repairing the railway is rising. For a sewer system, this is a very difficult situation.\n\nSo a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built. Public sewers are suitable where homes are close together. Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.\n\nKitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining its aging facilities was rising, while income from user fees was falling as the population decreased. Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra financial support for the cost of installing the tanks.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_conditions",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "One is a large route running under the town, and the other is a small route working behind homes.",
+          "origin": null,
+          "related_fact_id": "F-007",
+          "dev": {
+            "claim_in_article": "One is a large route running under the town, and the other is a small route working behind homes.",
+            "issue": "「So」で直前の厳しい状況を方式選択の考え方が現れた原因として結び、「新しい考え方が現れた」という時期・経過も主張しているが、その関係はLedgerに示されていない。 / 「So」が、下水道の厳しい状況を理由として新しい方式選択の考え方が現れたという因果関係を作っている。地域特性に応じた選択や個別自治体の見直しはLedgerにあるが、この一般的な因果関係は記載されていない。 / The relation makes the new approach a consequence of the difficult sewer-system situation; the ledger states the financial pressures but does not establish that they caused this approach to emerge. / The density-based choice of treatment route matches the ledger, but the claim that this is a newly emerged way of thinking adds an unsupported timing/novelty claim. / The density-based choice is consistent with the ledger, but the relation says the approach appeared because of the difficult sewer-system situation and adds an unsupported claim of novelty.",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1,R:S4.2+S5.1); severity is decided by Stage 2",
+            "related_fact_id": "F-007",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S5.1",
+                "R:S4.2+S5.1"
+              ],
+              "related_fact_ids": [
+                "F-007",
+                "F-003"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "However, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.\n\nIn an age of population decline, sewer systems are not disappearing. They are trying to change their form. One is a large route running under the town, and the other is a small route working behind homes. An age is beginning in which these two routes are used in different ways to match the shape of each region.\n\n## In one line\nAs populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-007",
+            "claim_text": "One is a large route running under the town, and the other is a small route working behind homes.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "A combined-treatment septic tank is like a small treatment plant near the home.",
+          "origin": null,
+          "related_fact_id": "F-012",
+          "dev": {
+            "claim_in_article": "A combined-treatment septic tank is like a small treatment plant near the home.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+            "related_fact_id": "F-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S6.2"
+              ],
+              "related_fact_ids": [
+                "F-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Kitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining its aging facilities was rising, while income from user fees was falling as the population decreased. Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra financial support for the cost of installing the tanks.\n\nA combined-treatment septic tank is like a small treatment plant near the home. It treats not only toilet water but also household wastewater from the kitchen, bath, and laundry. Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.\n\nHowever, septic tanks need care. They are not devices that can be left alone after they are installed. Users must have them inspected and cleaned. In principle, they need to be managed at least once a year, and the number of times varies according to the type and treatment method.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-012",
+            "claim_text": "A combined-treatment septic tank is like a small treatment plant near the home.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "In areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful.",
+          "origin": null,
+          "related_fact_id": "F-005",
+          "dev": {
+            "claim_in_article": "In areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful.",
+            "issue": "各戸で処理する方式は支えられるが、大規模処理場へ送っていた水の行き先を家庭近くへ変更するという、従来方式からの転換を一般化している。 / The ledger defines what a combined-treatment septic tank processes, but does not claim that the system replaces a route previously sending wastewater to a large plant.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+            "related_fact_id": "F-005",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S7.3"
+              ],
+              "related_fact_ids": [
+                "F-005"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Water from toilets and kitchens has two routes through a town. One route goes through underground pipes to a large treatment plant. The other route is treated in a septic tank near the home.\n\nIn areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful. In a way, it is a main artery running under the town.\n\nBut when the population falls, this main artery runs into a problem. Fewer people use the sewer system, so the fees paid to local governments also fall. At the same time, the underground pipes and treatment plants grow old. The cost of repairing or replacing old equipment keeps rising.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-005",
+            "claim_text": "In areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "ledger_claim",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        },
+        {
+          "claim_text": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+          "origin": null,
+          "related_fact_id": "F-002",
+          "dev": {
+            "claim_in_article": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+            "issue": "The ledger gives a forecast of maintenance and renewal costs rising between 2018 and 2048; the article states that repair or replacement costs are already and continually rising, without the forecast period or qualification.",
+            "severity": "MAJOR",
+            "changed_fact": true,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": true,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": true,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S3.4); severity is decided by Stage 2",
+            "related_fact_id": "F-002",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S3.4"
+              ],
+              "related_fact_ids": [
+                "F-002"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The cost of repairing or replacing old equipment keeps rising."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "But when the population falls, this main artery runs into a problem. Fewer people use the sewer system, so the fees paid to local governments also fall. At the same time, the underground pipes and treatment plants grow old. The cost of repairing or replacing old equipment keeps rising.\n\nThe number of passengers is falling, but the cost of repairing the railway is rising. For a sewer system, this is a very difficult situation.\n\nSo a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built. Public sewers are suitable where homes are close together. Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:F-002",
+            "claim_text": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+              "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+            ],
+            "batch_cost_jpy": 0.2047,
+            "batch_n_claims": 17
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 17,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "hook",
+          "claim_identity": "fact:F-007",
+          "claim_text": "One route goes through underground pipes to a large treatment plant.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_claim",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-005",
+          "claim_text": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "They are not devices that can be left alone after they are installed.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-017",
+          "claim_text": "Users must have them inspected and cleaned.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_scope",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-003",
+          "claim_text": "In an age of population decline, sewer systems are not disappearing.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-010",
+          "claim_text": "They are trying to change their form.",
+          "first_materiality": "QUALITY",
+          "first_basis": "unsupported_relationship",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_scope",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-002",
+          "claim_text": "The cost of repairing or replacing old equipment keeps rising.",
+          "first_materiality": "QUALITY",
+          "first_basis": "ledger_date_or_period",
+          "second_materiality": "QUALITY",
+          "second_basis": "ledger_date_or_period",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "At the same time, the underground pipes and treatment plants grow old.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_conditions",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-007",
+          "claim_text": "One is a large route running under the town, and the other is a small route working behind homes.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-012",
+          "claim_text": "A combined-treatment septic tank is like a small treatment plant near the home.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-005",
+          "claim_text": "In areas with large populations and many homes close together, a public sewer system that collects everyone’s wastewater in pipes is useful.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "ledger_claim",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:F-002",
+          "claim_text": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c",
+            "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+          ],
+          "batch_cost_jpy": 0.2047,
+          "batch_n_claims": 17
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.7137,
+      "usage": {
+        "input_tokens": 6778,
+        "cached_input_tokens": 0,
+        "output_tokens": 7743,
+        "reasoning_tokens": 2321
+      },
+      "elapsed_seconds": 60.229,
+      "prompt_sha256": "45302daefa3b7c22e3565482fdcc693b815d38c18fc0455733d508af48c9cd7c",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.9533,
+      "usage": {
+        "input_tokens": 6402,
+        "cached_input_tokens": 0,
+        "output_tokens": 10873,
+        "reasoning_tokens": 8019
+      },
+      "elapsed_seconds": 114.039,
+      "prompt_sha256": "b4bdec375e18cbe99cbf05bf1a9e52d32112fce919b1e318db2e30069a35ae9f",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.496,
+      "usage": {
+        "input_tokens": 7132,
+        "cached_input_tokens": 0,
+        "output_tokens": 4897,
+        "reasoning_tokens": 3150
+      },
+      "elapsed_seconds": 49.147,
+      "prompt_sha256": "854af61efdc3bda620589cde8d806952acbc308c5c4a4761539ede44d34d041e",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.4843,
+      "usage": {
+        "input_tokens": 13393,
+        "cached_input_tokens": 0,
+        "output_tokens": 3495,
+        "reasoning_tokens": 3055
+      },
+      "elapsed_seconds": 34.968,
+      "prompt_sha256": "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.1405,
+      "usage": {
+        "input_tokens": 7314,
+        "cached_input_tokens": 0,
+        "output_tokens": 328,
+        "reasoning_tokens": 278
+      },
+      "elapsed_seconds": 4.883,
+      "prompt_sha256": "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1693,
+      "usage": {
+        "input_tokens": 13393,
+        "cached_input_tokens": 13390,
+        "output_tokens": 1890,
+        "reasoning_tokens": 1445
+      },
+      "elapsed_seconds": 20.838,
+      "prompt_sha256": "3be19fdaa8ea727c1983f019e5d5c9edb2fe501d3635b03ee99ba1e482dd949c"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_hook",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "hook",
+      "cost_jpy": 0.0354,
+      "usage": {
+        "input_tokens": 7314,
+        "cached_input_tokens": 7311,
+        "output_tokens": 304,
+        "reasoning_tokens": 252
+      },
+      "elapsed_seconds": 4.924,
+      "prompt_sha256": "10cd88e7f635eab521bef4981d293938316084c402aa4d1d71b31de27e8a8428"
+    }
+  ],
+  "total_cost_jpy": 2.9925,
+  "total_calls": 7,
+  "elapsed_seconds": 289.073,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "One route goes through underground pipes to a large treatment plant.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "公共下水道等の集合処理はLedgerにあるが、地下の管を通って大規模処理場へ運ぶという具体的な経路は記載されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S1.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "「So」で直前の厳しい状況を方式選択の考え方が現れた原因として結び、「新しい考え方が現れた」という時期・経過も主張しているが、その関係はLedgerに示されていない。 / 「So」が、下水道の厳しい状況を理由として新しい方式選択の考え方が現れたという因果関係を作っている。地域特性に応じた選択や個別自治体の見直しはLedgerにあるが、この一般的な因果関係は記載されていない。 / The relation makes the new approach a consequence of the difficult sewer-system situation; the ledger states the financial pressures but does not establish that they caused this approach to emerge. / The density-based choice of treatment route matches the ledger, but the claim that this is a newly emerged way of thinking adds an unsupported timing/novelty claim. / The density-based choice is consistent with the ledger, but the relation says the approach appeared because of the difficult sewer-system situation and adds an unsupported claim of novelty.",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S5.1,R:S4.2+S5.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+        "related_fact_id": "F-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S6.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+        "related_fact_id": "F-005",
+        "origin": null,
+        "issue": "各戸で処理する方式は支えられるが、大規模処理場へ送っていた水の行き先を家庭近くへ変更するという、従来方式からの転換を一般化している。 / The ledger defines what a combined-treatment septic tank processes, but does not claim that the system replaces a route previously sending wastewater to a large plant.",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S7.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison",
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They are not devices that can be left alone after they are installed.",
+        "related_fact_id": "F-017",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S8.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "Users must have them inspected and cleaned.",
+        "related_fact_id": "F-017",
+        "origin": null,
+        "issue": "Ledger上の義務を負う主体は「浄化槽管理者」だが、記事は対象を「Users」としており、主体の範囲が一致するとは確認できない。 / The ledger assigns the maintenance and cleaning duties to the septic-tank manager; the article assigns responsibility to “Users,” which is not necessarily the same actor.",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S8.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_actor",
+          "changed_scope"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In an age of population decline, sewer systems are not disappearing.",
+        "related_fact_id": "F-003",
+        "origin": null,
+        "issue": "下水道がなくならないという将来・全国的な断定はLedgerにない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "They are trying to change their form.",
+        "related_fact_id": "F-010",
+        "origin": null,
+        "issue": "複数の自治体事例で方式の見直しは確認できるが、下水道全体が形を変えようとしているという一般化はLedgerにない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S9.2); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_fact",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "地域特性に応じた方式選択は支えられるが、そうした方式が使い分けられる時代が「始まっている」という時期・傾向はLedgerにない。 / Matching treatment choices to regional characteristics is consistent with the ledger, but the assertion that a new era is beginning is not supported by it.",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S9.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+        "related_fact_id": "F-007",
+        "origin": null,
+        "issue": "人口減少を背景に、町々が密集地では集合下水道、散在住宅では浄化槽を実際に使い分けているという一般的な現況はLedgerにない。 / The ledger describes a region-dependent choice that may be economically advantageous; it does not establish that towns are currently adopting this pattern because populations are declining.",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=L1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "changed_time",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The cost of repairing or replacing old equipment keeps rising.",
+        "related_fact_id": "F-002",
+        "origin": null,
+        "issue": "The ledger gives a forecast of maintenance and renewal costs rising between 2018 and 2048; the article states that repair or replacement costs are already and continually rising, without the forecast period or qualification.",
+        "explanation": "stage1 coverage candidate (routes=r5, sub_reason=model, units=S3.4); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_certainty",
+          "changed_fact",
+          "changed_scope",
+          "changed_time"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 30,
+      "n_model_entries": 28,
+      "n_targets": 19,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 9,
+      "n_excluded_entries": 11,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.496,
+          "usage": {
+            "input_tokens": 7132,
+            "cached_input_tokens": 0,
+            "output_tokens": 4897,
+            "reasoning_tokens": 3150
+          },
+          "elapsed_seconds": 49.147,
+          "prompt_sha256": "854af61efdc3bda620589cde8d806952acbc308c5c4a4761539ede44d34d041e",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.496,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "T",
+          "claim": "# Wastewater’s Journey Is Changing: From Underground Main Arteries to Behind Homes",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "見出しの「地下の大動脈から家の裏へ」は比喩的な導入で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C2",
+          "key": "S1.2",
+          "claim": "One route goes through underground pipes to a large treatment plant.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "地下管路から大規模処理場へ至る具体的な経路は、参照されたLedgerの記述では裏付けられていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S2.2",
+          "claim": "In a way, it is a main artery running under the town.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "町の下を走る「大動脈」という比喩であり、独立した具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S3.2",
+          "claim": "Fewer people use the sewer system, so the fees paid to local governments also fall.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人口減少等による下水道使用料収入の減少というLedgerの説明と、主体・対象・範囲・因果関係が一致する。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C5",
+          "key": "S4.1",
+          "claim": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "鉄道の乗客と修繕費を用いた下水道状況の比喩で、鉄道についての事実主張ではない。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S5.1",
+          "claim": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "地域特性に応じた方式選択はF-007に沿うが、「新しい考え方が現れた」という新規性と、町で一律に方式を選び直す一般化はLedgerの範囲・限定を超える。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C7",
+          "key": "S5.3",
+          "claim": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "住宅が分散する地域では個別処理が経済的に有利になり得るというF-007の条件付き比較と一致する。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C8",
+          "key": "S7.1",
+          "claim": "A combined-treatment septic tank is like a small treatment plant near the home.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "合併処理浄化槽を各戸単位の汚水処理施設とするF-005の内容を、家庭近くの小規模処理施設にたとえている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C9",
+          "key": "S7.3",
+          "claim": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "浄化槽が汚水を処理する点は一致するが、「大規模処理場へ送らず、家の近くで旅程が終わる」という処理後の行き先・全体の流れはLedgerに裏付けられていない。",
+          "fact_tags": [
+            "negation",
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "mismatch",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C10",
+          "key": "S8.3",
+          "claim": "Users must have them inspected and cleaned.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "点検・清掃の義務主体はLedgerでは浄化槽管理者だが、記事は「利用者」としており主体が一致しない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C11",
+          "key": "S9.1",
+          "claim": "In an age of population decline, sewer systems are not disappearing.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "「下水道システムは消滅していない」という広範な否定はLedgerで確認できず、Ledgerにある個別の計画見直しから一般化できない。",
+          "fact_tags": [
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C12",
+          "key": "S9.2",
+          "claim": "They are trying to change their form.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "松山市などの個別の計画見直しを、下水道システム全体が形を変えようとしているという主体・範囲の広い主張にしている。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C13",
+          "key": "S9.3",
+          "claim": "One is a large route running under the town, and the other is a small route working behind homes.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "下水道と家庭近くの浄化槽を二つの「ルート」として表現する比喩的なまとめで、独立した具体的事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C14",
+          "key": "S9.4",
+          "claim": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "地域特性に応じた方式選択はF-007に沿う一方、「その時代が始まりつつある」という時期・普及状況の主張と一般化はLedgerの限定を超える。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C15",
+          "key": "L1",
+          "claim": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "F-007は地域特性に応じた方式選択を示すが、人口減少をその選択の原因とし、町が実際にその方式を使っているという広い主張までは裏付けない。",
+          "fact_tags": [
+            "causality",
+            "comparison"
+          ],
+          "actor_match": "mismatch",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C16",
+          "key": "R:S4.2+S5.1",
+          "claim": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "C6と同じ主張であり、地域特性に応じた選択はF-007に沿うが、「新しい考え方が現れた」という新規性と一般化はLedgerの範囲を超える。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C17",
+          "key": "S3.3",
+          "claim": "At the same time, the underground pipes and treatment plants grow old.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "下水道管路の老朽化はF-001、施設の老朽化はF-003に沿っており、範囲や限定を広げていない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C18",
+          "key": "S3.4",
+          "claim": "The cost of repairing or replacing old equipment keeps rising.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "維持管理・更新費の増加はF-002と方向が一致するが、Ledgerの将来推計を「上昇し続けている」と断定し、推計という限定を落としている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C19",
+          "key": "S3.1",
+          "claim": "But when the population falls, this main artery runs into a problem.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人口減少等が下水道事業の経営環境を厳しくする要因になるというF-003の説明を、比喩的に要約している。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "854af61efdc3bda620589cde8d806952acbc308c5c4a4761539ede44d34d041e"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 41,
+    "n_judged_units": 31,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S4.2+S5.1"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 20,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S4.2+S5.1",
+          "S1.2",
+          "S2.2",
+          "S3.2",
+          "S4.1",
+          "S5.1",
+          "S5.3",
+          "S6.2",
+          "S7.1",
+          "S7.3",
+          "S8.2",
+          "S8.3",
+          "S9.1",
+          "S9.2",
+          "S9.3",
+          "S9.4",
+          "T"
+        ],
+        "unit_status": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S6.3": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.3": "CANDIDATE",
+          "S8.4": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.2+S5.1": "CANDIDATE"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.7137,
+            "usage": {
+              "input_tokens": 6778,
+              "cached_input_tokens": 0,
+              "output_tokens": 7743,
+              "reasoning_tokens": 2321
+            },
+            "elapsed_seconds": 60.229,
+            "prompt_sha256": "45302daefa3b7c22e3565482fdcc693b815d38c18fc0455733d508af48c9cd7c",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "CANDIDATE",
+          "S1.1": "SUPPORTED",
+          "S1.2": "CANDIDATE",
+          "S1.3": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "CANDIDATE",
+          "S3.1": "SUPPORTED",
+          "S3.2": "CANDIDATE",
+          "S3.3": "SUPPORTED",
+          "S3.4": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "SUPPORTED",
+          "S5.1": "CANDIDATE",
+          "S5.2": "SUPPORTED",
+          "S5.3": "CANDIDATE",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S7.1": "CANDIDATE",
+          "S7.2": "SUPPORTED",
+          "S7.3": "CANDIDATE",
+          "S8.1": "SUPPORTED",
+          "S8.2": "SUPPORTED",
+          "S8.3": "CANDIDATE",
+          "S8.4": "SUPPORTED",
+          "S9.1": "CANDIDATE",
+          "S9.2": "CANDIDATE",
+          "S9.3": "CANDIDATE",
+          "S9.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S4.2+S5.1": "CANDIDATE"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "T",
+            "unit_ids": [
+              "T"
+            ],
+            "claim_text": "# Wastewater’s Journey Is Changing: From Underground Main Arteries to Behind Homes",
+            "span": [
+              0,
+              82
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "下水道から家庭近くの浄化槽へ移る変化を広く示す見出しだが、Ledgerが確認するのは地域・自治体ごとの方式選択や個別事例であり、全国的な変化とは確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "# Wastewater’s Journey Is Changing: From Underground Main Arteries to Behind Homes"
+          },
+          {
+            "unit_id": "S1.2",
+            "unit_ids": [
+              "S1.2"
+            ],
+            "claim_text": "One route goes through underground pipes to a large treatment plant.",
+            "span": [
+              147,
+              215
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "公共下水道等の集合処理はLedgerにあるが、地下の管を通って大規模処理場へ運ぶという具体的な経路は記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "One route goes through underground pipes to a large treatment plant."
+          },
+          {
+            "unit_id": "S2.2",
+            "unit_ids": [
+              "S2.2"
+            ],
+            "claim_text": "In a way, it is a main artery running under the town.",
+            "span": [
+              417,
+              470
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "公共下水道を町の下を走る「主動脈」とし、地下を走るという具体的な描写はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "In a way, it is a main artery running under the town."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Fewer people use the sewer system, so the fees paid to local governments also fall.",
+            "span": [
+              541,
+              624
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人口減少と使用料収入減少は記載されているが、「下水道を使う人が減るため」と収入減少の中間的な因果を加えている。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "Fewer people use the sewer system, so the fees paid to local governments also fall."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+            "span": [
+              760,
+              845
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "鉄道の乗客数や修繕費の変化について、対応する事実がLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [],
+            "model_claim": "The number of passengers is falling, but the cost of repairing the railway is rising."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "span": [
+              903,
+              1061
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」で直前の厳しい状況を方式選択の考え方が現れた原因として結び、「新しい考え方が現れた」という時期・経過も主張しているが、その関係はLedgerに示されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant.",
+            "span": [
+              1121,
+              1272
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "分散地域では浄化槽が経済的に有利になり得るという比較はあるが、長い管を延ばして大規模処理場につなぐ場合との具体的な比較はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "Where homes are spread out, it may be more economical to treat the wastewater at each home than to extend long pipes and connect them to a large plant."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+            "span": [
+              1485,
+              1621
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.1",
+            "unit_ids": [
+              "S7.1"
+            ],
+            "claim_text": "A combined-treatment septic tank is like a small treatment plant near the home.",
+            "span": [
+              1711,
+              1790
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "合併処理浄化槽が個別分散型施設であることは支えられるが、「小さな処理場」という具体的な説明はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-005"
+            ],
+            "model_claim": "A combined-treatment septic tank is like a small treatment plant near the home."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+            "span": [
+              1890,
+              2014
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "各戸で処理する方式は支えられるが、大規模処理場へ送っていた水の行き先を家庭近くへ変更するという、従来方式からの転換を一般化している。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-005"
+            ],
+            "model_claim": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home."
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "They are not devices that can be left alone after they are installed.",
+            "span": [
+              2049,
+              2118
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "Users must have them inspected and cleaned.",
+            "span": [
+              2119,
+              2162
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "Ledger上の義務を負う主体は「浄化槽管理者」だが、記事は対象を「Users」としており、主体の範囲が一致するとは確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": "Users must have them inspected and cleaned."
+          },
+          {
+            "unit_id": "S9.1",
+            "unit_ids": [
+              "S9.1"
+            ],
+            "claim_text": "In an age of population decline, sewer systems are not disappearing.",
+            "span": [
+              2299,
+              2367
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "下水道がなくならないという将来・全国的な断定はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "In an age of population decline, sewer systems are not disappearing."
+          },
+          {
+            "unit_id": "S9.2",
+            "unit_ids": [
+              "S9.2"
+            ],
+            "claim_text": "They are trying to change their form.",
+            "span": [
+              2368,
+              2405
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "複数の自治体事例で方式の見直しは確認できるが、下水道全体が形を変えようとしているという一般化はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-010"
+            ],
+            "model_claim": "They are trying to change their form."
+          },
+          {
+            "unit_id": "S9.3",
+            "unit_ids": [
+              "S9.3"
+            ],
+            "claim_text": "One is a large route running under the town, and the other is a small route working behind homes.",
+            "span": [
+              2406,
+              2503
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "集合処理と個別処理という方式の違いは支えられるが、「町の下を走る大きな経路」「家の裏で働く小さな経路」という規模・位置の説明はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "One is a large route running under the town, and the other is a small route working behind homes."
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+            "span": [
+              2504,
+              2611
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "地域特性に応じた方式選択は支えられるが、そうした方式が使い分けられる時代が「始まっている」という時期・傾向はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "An age is beginning in which these two routes are used in different ways to match the shape of each region."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+            "span": [
+              2628,
+              2735
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人口減少を背景に、町々が密集地では集合下水道、散在住宅では浄化槽を実際に使い分けているという一般的な現況はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes."
+          },
+          {
+            "unit_id": "R:S4.2+S5.1",
+            "unit_ids": [
+              "R:S4.2+S5.1"
+            ],
+            "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "span": [
+              903,
+              1061
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「So」が、下水道の厳しい状況を理由として新しい方式選択の考え方が現れたという因果関係を作っている。地域特性に応じた選択や個別自治体の見直しはLedgerにあるが、この一般的な因果関係は記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "For a sewer system, this is a very difficult situation. So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S4.2+S5.1",
+          "S3.1",
+          "S3.2",
+          "S3.3",
+          "S3.4",
+          "S4.1",
+          "S5.1",
+          "S7.3",
+          "S8.3",
+          "S9.4"
+        ],
+        "unit_status": {
+          "S3.3": "DEVIATION",
+          "S3.4": "DEVIATION",
+          "S3.1": "DEVIATION",
+          "S3.2": "DEVIATION",
+          "S4.1": "DEVIATION",
+          "S4.2": "MATCH",
+          "R:S4.2+S5.1": "DEVIATION",
+          "S7.1": "MATCH",
+          "S7.2": "MATCH",
+          "S7.3": "DEVIATION",
+          "S2.1": "MATCH",
+          "S5.1": "DEVIATION",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "S9.4": "DEVIATION",
+          "L1": "DEVIATION",
+          "S6.1": "MATCH",
+          "S6.2": "MATCH",
+          "S6.3": "MATCH",
+          "S8.3": "DEVIATION",
+          "S8.4": "MATCH",
+          "T": "UNMENTIONED",
+          "S1.1": "UNMENTIONED",
+          "S1.2": "UNMENTIONED",
+          "S1.3": "UNMENTIONED",
+          "S2.2": "UNMENTIONED",
+          "S8.1": "UNMENTIONED",
+          "S8.2": "UNMENTIONED",
+          "S9.1": "UNMENTIONED",
+          "S9.2": "UNMENTIONED",
+          "S9.3": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 0.9533,
+            "usage": {
+              "input_tokens": 6402,
+              "cached_input_tokens": 0,
+              "output_tokens": 10873,
+              "reasoning_tokens": 8019
+            },
+            "elapsed_seconds": 114.039,
+            "prompt_sha256": "b4bdec375e18cbe99cbf05bf1a9e52d32112fce919b1e318db2e30069a35ae9f",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S3.3",
+            "unit_ids": [
+              "S3.3"
+            ],
+            "claim_text": "At the same time, the underground pipes and treatment plants grow old.",
+            "span": [
+              625,
+              695
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The ledger quantifies nationwide sewer pipelines beyond their standard service life; the article broadens this to pipes and treatment plants generally and gives no corresponding scope or period."
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-001"
+            ],
+            "model_claim": "The underground pipes and treatment plants grow old."
+          },
+          {
+            "unit_id": "S3.4",
+            "unit_ids": [
+              "S3.4"
+            ],
+            "claim_text": "The cost of repairing or replacing old equipment keeps rising.",
+            "span": [
+              696,
+              758
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The ledger gives a forecast of maintenance and renewal costs rising between 2018 and 2048; the article states that repair or replacement costs are already and continually rising, without the forecast period or qualification."
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-002"
+            ],
+            "model_claim": "The cost of repairing or replacing old equipment keeps rising."
+          },
+          {
+            "unit_id": "S3.1",
+            "unit_ids": [
+              "S3.1"
+            ],
+            "claim_text": "But when the population falls, this main artery runs into a problem.",
+            "span": [
+              472,
+              540
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The article says population decline itself creates a problem for sewer systems, whereas the ledger identifies reduced fee revenue and aging-related renewal costs as the factors that make the business environment difficult."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "But when the population falls, this main artery runs into a problem."
+          },
+          {
+            "unit_id": "S3.2",
+            "unit_ids": [
+              "S3.2"
+            ],
+            "claim_text": "Fewer people use the sewer system, so the fees paid to local governments also fall.",
+            "span": [
+              541,
+              624
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The ledger links population decline to lower sewerage fee revenue; the article instead specifies that fewer sewer users cause fees paid to local governments to fall."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "Fewer people use the sewer system, so the fees paid to local governments also fall."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "The number of passengers is falling, but the cost of repairing the railway is rising.",
+            "span": [
+              760,
+              845
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The railway-passenger and repair-cost comparison is not established by the ledger, which concerns wastewater business conditions."
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "The number of passengers is falling, but the cost of repairing the railway is rising."
+          },
+          {
+            "unit_id": "R:S4.2+S5.1",
+            "unit_ids": [
+              "R:S4.2+S5.1"
+            ],
+            "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "span": [
+              903,
+              1061
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The relation makes the new approach a consequence of the difficult sewer-system situation; the ledger states the financial pressures but does not establish that they caused this approach to emerge."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-003"
+            ],
+            "model_claim": "For a sewer system, this is a very difficult situation. So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+          },
+          {
+            "unit_id": "S7.3",
+            "unit_ids": [
+              "S7.3"
+            ],
+            "claim_text": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+            "span": [
+              1890,
+              2014
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The ledger defines what a combined-treatment septic tank processes, but does not claim that the system replaces a route previously sending wastewater to a large plant."
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-005"
+            ],
+            "model_claim": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "span": [
+              903,
+              1061
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The density-based choice of treatment route matches the ledger, but the claim that this is a newly emerged way of thinking adds an unsupported timing/novelty claim."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+          },
+          {
+            "unit_id": "S9.4",
+            "unit_ids": [
+              "S9.4"
+            ],
+            "claim_text": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+            "span": [
+              2504,
+              2611
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Matching treatment choices to regional characteristics is consistent with the ledger, but the assertion that a new era is beginning is not supported by it."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "An age is beginning in which these two routes are used in different ways to match the shape of each region."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+            "span": [
+              2628,
+              2735
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The ledger describes a region-dependent choice that may be economically advantageous; it does not establish that towns are currently adopting this pattern because populations are declining."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": true,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes."
+          },
+          {
+            "unit_id": "R:S4.2+S5.1",
+            "unit_ids": [
+              "R:S4.2+S5.1"
+            ],
+            "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+            "span": [
+              903,
+              1061
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The density-based choice is consistent with the ledger, but the relation says the approach appeared because of the difficult sewer-system situation and adds an unsupported claim of novelty."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": true,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "F-007"
+            ],
+            "model_claim": "For a sewer system, this is a very difficult situation. So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "Users must have them inspected and cleaned.",
+            "span": [
+              2119,
+              2162
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "The ledger assigns the maintenance and cleaning duties to the septic-tank manager; the article assigns responsibility to “Users,” which is not necessarily the same actor."
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "F-017"
+            ],
+            "model_claim": "Users must have them inspected and cleaned."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "L1",
+        "R:S4.2+S5.1",
+        "S3.2",
+        "S4.1",
+        "S5.1",
+        "S7.3",
+        "S8.3",
+        "S9.4"
+      ],
+      "r3_only": [
+        "S1.2",
+        "S2.2",
+        "S5.3",
+        "S6.2",
+        "S7.1",
+        "S8.2",
+        "S9.1",
+        "S9.2",
+        "S9.3",
+        "T"
+      ],
+      "r5_only": [
+        "S3.1",
+        "S3.3",
+        "S3.4"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 2
+    },
+    "union_candidates": [
+      {
+        "claim_text": "One route goes through underground pipes to a large treatment plant.",
+        "span": [
+          147,
+          215
+        ],
+        "unit_ids": [
+          "S1.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "公共下水道等の集合処理はLedgerにあるが、地下の管を通って大規模処理場へ運ぶという具体的な経路は記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "One route goes through underground pipes to a large treatment plant."
+        ]
+      },
+      {
+        "claim_text": "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+        "span": [
+          903,
+          1061
+        ],
+        "unit_ids": [
+          "S5.1",
+          "R:S4.2+S5.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "「So」で直前の厳しい状況を方式選択の考え方が現れた原因として結び、「新しい考え方が現れた」という時期・経過も主張しているが、その関係はLedgerに示されていない。",
+          "「So」が、下水道の厳しい状況を理由として新しい方式選択の考え方が現れたという因果関係を作っている。地域特性に応じた選択や個別自治体の見直しはLedgerにあるが、この一般的な因果関係は記載されていない。",
+          "The relation makes the new approach a consequence of the difficult sewer-system situation; the ledger states the financial pressures but does not establish that they caused this approach to emerge.",
+          "The density-based choice of treatment route matches the ledger, but the claim that this is a newly emerged way of thinking adds an unsupported timing/novelty claim.",
+          "The density-based choice is consistent with the ledger, but the relation says the approach appeared because of the difficult sewer-system situation and adds an unsupported claim of novelty."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007",
+          "F-003"
+        ],
+        "model_claims": [
+          "So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built.",
+          "For a sewer system, this is a very difficult situation. So a new way of thinking has appeared: instead of using the same method everywhere in a town, choose the route again based on how closely the homes are built."
+        ]
+      },
+      {
+        "claim_text": "Areas that are not served by a shared treatment system will become areas for individual treatment using combined-treatment septic tanks.",
+        "span": [
+          1485,
+          1621
+        ],
+        "unit_ids": [
+          "S6.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-012"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home.",
+        "span": [
+          1890,
+          2014
+        ],
+        "unit_ids": [
+          "S7.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "各戸で処理する方式は支えられるが、大規模処理場へ送っていた水の行き先を家庭近くへ変更するという、従来方式からの転換を一般化している。",
+          "The ledger defines what a combined-treatment septic tank processes, but does not claim that the system replaces a route previously sending wastewater to a large plant."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-005"
+        ],
+        "model_claims": [
+          "Instead of continuing to send the water to a large treatment plant, this system ends the wastewater’s journey near the home."
+        ]
+      },
+      {
+        "claim_text": "They are not devices that can be left alone after they are installed.",
+        "span": [
+          2049,
+          2118
+        ],
+        "unit_ids": [
+          "S8.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-017"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "Users must have them inspected and cleaned.",
+        "span": [
+          2119,
+          2162
+        ],
+        "unit_ids": [
+          "S8.3"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "Ledger上の義務を負う主体は「浄化槽管理者」だが、記事は対象を「Users」としており、主体の範囲が一致するとは確認できない。",
+          "The ledger assigns the maintenance and cleaning duties to the septic-tank manager; the article assigns responsibility to “Users,” which is not necessarily the same actor."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": true,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-017"
+        ],
+        "model_claims": [
+          "Users must have them inspected and cleaned."
+        ]
+      },
+      {
+        "claim_text": "In an age of population decline, sewer systems are not disappearing.",
+        "span": [
+          2299,
+          2367
+        ],
+        "unit_ids": [
+          "S9.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "下水道がなくならないという将来・全国的な断定はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-003"
+        ],
+        "model_claims": [
+          "In an age of population decline, sewer systems are not disappearing."
+        ]
+      },
+      {
+        "claim_text": "They are trying to change their form.",
+        "span": [
+          2368,
+          2405
+        ],
+        "unit_ids": [
+          "S9.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "複数の自治体事例で方式の見直しは確認できるが、下水道全体が形を変えようとしているという一般化はLedgerにない。"
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-010"
+        ],
+        "model_claims": [
+          "They are trying to change their form."
+        ]
+      },
+      {
+        "claim_text": "An age is beginning in which these two routes are used in different ways to match the shape of each region.",
+        "span": [
+          2504,
+          2611
+        ],
+        "unit_ids": [
+          "S9.4"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "地域特性に応じた方式選択は支えられるが、そうした方式が使い分けられる時代が「始まっている」という時期・傾向はLedgerにない。",
+          "Matching treatment choices to regional characteristics is consistent with the ledger, but the assertion that a new era is beginning is not supported by it."
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "An age is beginning in which these two routes are used in different ways to match the shape of each region."
+        ]
+      },
+      {
+        "claim_text": "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.",
+        "span": [
+          2628,
+          2735
+        ],
+        "unit_ids": [
+          "L1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "人口減少を背景に、町々が密集地では集合下水道、散在住宅では浄化槽を実際に使い分けているという一般的な現況はLedgerにない。",
+          "The ledger describes a region-dependent choice that may be economically advantageous; it does not establish that towns are currently adopting this pattern because populations are declining."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": true,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "F-007"
+        ],
+        "model_claims": [
+          "As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes."
+        ]
+      },
+      {
+        "claim_text": "The cost of repairing or replacing old equipment keeps rising.",
+        "span": [
+          696,
+          758
+        ],
+        "unit_ids": [
+          "S3.4"
+        ],
+        "routes": [
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r5"
+        ],
+        "issues": [
+          "The ledger gives a forecast of maintenance and renewal costs rising between 2018 and 2048; the article states that repair or replacement costs are already and continually rising, without the forecast period or qualification."
+        ],
+        "flags": {
+          "changed_fact": true,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": true,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": true,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "F-002"
+        ],
+        "model_claims": [
+          "The cost of repairing or replacing old equipment keeps rising."
+        ]
+      }
+    ],
+    "n_union_candidates": 11,
+    "n_model_candidates": 9,
+    "n_deterministic_only_candidates": 2,
+    "total_cost_jpy": 1.667,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 28,
+    "n_targets": 19,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 9,
+    "n_excluded_entries": 11,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.496,
+    "effort": "medium",
+    "prompt_sha256": "854af61efdc3bda620589cde8d806952acbc308c5c4a4761539ede44d34d041e"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 6
+    },
+    "unrewritten_blocking_pass": 0
+  }
+}

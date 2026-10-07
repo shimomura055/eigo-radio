@@ -1,0 +1,2194 @@
+{
+  "instance_id": "meta_run03_advanced",
+  "group": "meta",
+  "expected_group_label": "Normal群(§7-5、Stage1のみでACCEPTABLE到達が期待)",
+  "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+  "stage4_reason": null,
+  "cycles": [
+    {
+      "cycle": 1,
+      "stage2_results": [
+        {
+          "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-009",
+          "dev": {
+            "claim_in_article": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+            "issue": "保険会社の事例が人間コンシェルジュテストにつながったという説明が確認されていない、という不在の主張はLedgerで確認されていない。 / Ledgerにない、保険会社の事例と人間コンシェルジュテストの因果関係に関する確認状況を追加している。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": true,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-009",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3",
+                "r5"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-009",
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There was another scene, too. Internal posts reported cases in which people hung up after realizing that Muse was AI. News reports also included an employee's report that an insurance company repeatedly hung up when it learned that the calls were from Muse's AI.\n\nThere is no confirmed explanation, however, that this insurance company incident led to the human concierge test. In the news, the two events are separate scenes placed next to each other. With AI phone calls, one side hung up, while on the other side a human appeared as the caller. It was as if different scenes had begun on the same stage.\n\nIn addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent. The definition of success, the number of cases, and the way it was measured have not been made public. So this figure cannot be seen as the performance of all the human staff.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "QUALITY",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-009",
+            "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "QUALITY",
+            "second_basis": "unsupported_relationship",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-006",
+          "dev": {
+            "claim_in_article": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+            "issue": "別々に報告されたAI電話の切断事例と人間の電話対応を「一方／他方」と結び付けた関係はLedgerに記載されていない。",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": true,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": true,
+            "changed_time": false,
+            "unsupported_new_claim": true,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-006",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "model"
+              ],
+              "unit_ids": [
+                "S4.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-006"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There was another scene, too. Internal posts reported cases in which people hung up after realizing that Muse was AI. News reports also included an employee's report that an insurance company repeatedly hung up when it learned that the calls were from Muse's AI.\n\nThere is no confirmed explanation, however, that this insurance company incident led to the human concierge test. In the news, the two events are separate scenes placed next to each other. With AI phone calls, one side hung up, while on the other side a human appeared as the caller. It was as if different scenes had begun on the same stage.\n\nIn addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent. The definition of success, the number of cases, and the way it was measured have not been made public. So this figure cannot be seen as the performance of all the human staff.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-006",
+            "claim_text": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-008",
+          "dev": {
+            "claim_in_article": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S5.1"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test. In the news, the two events are separate scenes placed next to each other. With AI phone calls, one side hung up, while on the other side a human appeared as the caller. It was as if different scenes had begun on the same stage.\n\nIn addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent. The definition of success, the number of cases, and the way it was measured have not been made public. So this figure cannot be seen as the performance of all the human staff.\n\nThen a privacy issue appeared from the side of the stage. When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center. In one case where a user asked Muse to negotiate internet and cable fees, an employee's report said that the call record included inappropriate remarks about race by a contract worker. This was a case reported in the news.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-008",
+            "claim_text": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-008",
+          "dev": {
+            "claim_in_article": "So this figure cannot be seen as the performance of all the human staff.",
+            "issue": "決定論検査で戻した: causal_not_in_fact",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S5.3,R:S5.2+S5.3); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-008",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "causal_not_in_fact"
+              ],
+              "unit_ids": [
+                "S5.3",
+                "R:S5.2+S5.3"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-008"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test. In the news, the two events are separate scenes placed next to each other. With AI phone calls, one side hung up, while on the other side a human appeared as the caller. It was as if different scenes had begun on the same stage.\n\nIn addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent. The definition of success, the number of cases, and the way it was measured have not been made public. So this figure cannot be seen as the performance of all the human staff.\n\nThen a privacy issue appeared from the side of the stage. When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center. In one case where a user asked Muse to negotiate internet and cable fees, an employee's report said that the call record included inappropriate remarks about race by a contract worker. This was a case reported in the news.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-008",
+            "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "The human concierge feature was then put on hold for the time being.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "The human concierge feature was then put on hold for the time being.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2"
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then a privacy issue appeared from the side of the stage. When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center. In one case where a user asked Muse to negotiate internet and cable fees, an employee's report said that the call record included inappropriate remarks about race by a contract worker. This was a case reported in the news.\n\nBy September 22, the vice president of Meta's Superintelligence Labs division acknowledged that starting the tests without proper disclosure had been a “mistake.” The human concierge feature was then put on hold for the time being.\n\nMeta explained that it would launch the phone feature publicly only when it was ready and could give proper information. What matters this time is not only how well the AI works. People must be clearly told who is on the other end of the phone. Without that one sentence, the latest AI can turn into a mysterious phone operator in an instant.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "The human concierge feature was then put on hold for the time being.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 6
+          }
+        },
+        {
+          "claim_text": "” The human concierge feature was then put on hold for the time being.",
+          "origin": null,
+          "related_fact_id": "MUSE-HC-012",
+          "dev": {
+            "claim_in_article": "” The human concierge feature was then put on hold for the time being.",
+            "issue": "決定論検査で戻した: negation_polarity_mismatch",
+            "severity": "MAJOR",
+            "changed_fact": false,
+            "changed_scope": false,
+            "changed_causality": false,
+            "changed_certainty": false,
+            "changed_number": false,
+            "changed_actor": false,
+            "changed_negation": false,
+            "changed_comparison": false,
+            "changed_time": false,
+            "unsupported_new_claim": false,
+            "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.2); severity is decided by Stage 2",
+            "related_fact_id": "MUSE-HC-012",
+            "origin": null,
+            "auto_downgraded": false,
+            "stage1_coverage": {
+              "routes": [
+                "r3"
+              ],
+              "sub_reasons": [
+                "negation_polarity_mismatch"
+              ],
+              "unit_ids": [
+                "S7.2"
+              ],
+              "related_fact_ids": [
+                "MUSE-HC-012"
+              ]
+            },
+            "severity_final": "BLOCKING",
+            "action": "STOP",
+            "basis": "ledger_fact",
+            "rule_id": "existing_major_v2",
+            "same_fact_id_locations_source": "deterministic_fallback_c233_23",
+            "detected_by_enumeration": true,
+            "enumeration_source_claim": "The human concierge feature was then put on hold for the time being."
+          },
+          "detected_by": "stage1_llm",
+          "local_context": "Then a privacy issue appeared from the side of the stage. When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center. In one case where a user asked Muse to negotiate internet and cable fees, an employee's report said that the call record included inappropriate remarks about race by a contract worker. This was a case reported in the news.\n\nBy September 22, the vice president of Meta's Superintelligence Labs division acknowledged that starting the tests without proper disclosure had been a “mistake.” The human concierge feature was then put on hold for the time being.\n\nMeta explained that it would launch the phone feature publicly only when it was ready and could give proper information. What matters this time is not only how well the AI works. People must be clearly told who is on the other end of the phone. Without that one sentence, the latest AI can turn into a mysterious phone operator in an instant.",
+          "fallback_used": false,
+          "section_type": "body",
+          "materiality": "ACCEPTABLE",
+          "llm_materiality": "ACCEPTABLE",
+          "basis": "none",
+          "rewrite_kind": "replace_with_ledger_value",
+          "rewrite_hint": "",
+          "floor_reason": null,
+          "section_type_observed": "body",
+          "stage2_route": "body",
+          "floor_cited_materiality": "ACCEPTABLE",
+          "floor_cited_reason": null,
+          "second_opinion": {
+            "instance_id": "meta_run03_advanced",
+            "cycle": 1,
+            "route": "body",
+            "claim_identity": "fact:MUSE-HC-012",
+            "claim_text": "” The human concierge feature was then put on hold for the time being.",
+            "first_materiality": "ACCEPTABLE",
+            "first_basis": "none",
+            "second_materiality": "ACCEPTABLE",
+            "second_basis": "none",
+            "second_floor_reason": null,
+            "second_floor_anomaly": false,
+            "second_status": "ok",
+            "confirmed_downgrade": true,
+            "split": false,
+            "prompt_sha256": [
+              "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+            ],
+            "batch_cost_jpy": 0.1252,
+            "batch_n_claims": 6
+          }
+        }
+      ],
+      "blocking_count": 0,
+      "non_blocking_count": 6,
+      "stage2_two_of_two_log": [],
+      "stage2_downgrade_confirm_log": [
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-009",
+          "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "QUALITY",
+          "second_basis": "unsupported_relationship",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-006",
+          "claim_text": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-008",
+          "claim_text": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-008",
+          "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "The human concierge feature was then put on hold for the time being.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 6
+        },
+        {
+          "instance_id": "meta_run03_advanced",
+          "cycle": 1,
+          "route": "body",
+          "claim_identity": "fact:MUSE-HC-012",
+          "claim_text": "” The human concierge feature was then put on hold for the time being.",
+          "first_materiality": "ACCEPTABLE",
+          "first_basis": "none",
+          "second_materiality": "ACCEPTABLE",
+          "second_basis": "none",
+          "second_floor_reason": null,
+          "second_floor_anomaly": false,
+          "second_status": "ok",
+          "confirmed_downgrade": true,
+          "split": false,
+          "prompt_sha256": [
+            "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+          ],
+          "batch_cost_jpy": 0.1252,
+          "batch_n_claims": 6
+        }
+      ]
+    }
+  ],
+  "stage1_call_used": true,
+  "stage1_recall_miss_substituted": false,
+  "s1u_screen_used": false,
+  "s1u_additional_blocking_count": 0,
+  "s1u_additional_block": false,
+  "s1u_additional_block_label": null,
+  "call_log": [
+    {
+      "label": "meta_run03_advanced_stage1_r3",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 0.6419,
+      "usage": {
+        "input_tokens": 5411,
+        "cached_input_tokens": 0,
+        "output_tokens": 7101,
+        "reasoning_tokens": 2466
+      },
+      "elapsed_seconds": 58.289,
+      "prompt_sha256": "49e55a29e64add38e5f07409b9f075f34c2454ec84393a47e80738e70d95f170",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_r5",
+      "recovery_stage": "stage1_initial",
+      "cost_jpy": 1.2645,
+      "usage": {
+        "input_tokens": 5065,
+        "cached_input_tokens": 0,
+        "output_tokens": 15108,
+        "reasoning_tokens": 11863
+      },
+      "elapsed_seconds": 145.92,
+      "prompt_sha256": "b98357f59af3d64ebebf04ebce567ae13fcd5cbf8fa453d8363577fa5cf311c1",
+      "reasoning_effort": "high"
+    },
+    {
+      "label": "meta_run03_advanced_stage1_reclassify",
+      "recovery_stage": "stage1_reclassify",
+      "cost_jpy": 0.3537,
+      "usage": {
+        "input_tokens": 5378,
+        "cached_input_tokens": 0,
+        "output_tokens": 3434,
+        "reasoning_tokens": 2560
+      },
+      "elapsed_seconds": 35.683,
+      "prompt_sha256": "71fec128303dd232d3e2f5422e4aeea55ffd878e6d637bde242beec1c9bc1f96",
+      "reasoning_effort": "medium"
+    },
+    {
+      "label": "meta_run03_advanced_c1_stage2_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.2448,
+      "usage": {
+        "input_tokens": 10139,
+        "cached_input_tokens": 0,
+        "output_tokens": 1093,
+        "reasoning_tokens": 912
+      },
+      "elapsed_seconds": 12.232,
+      "prompt_sha256": "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+    },
+    {
+      "label": "meta_run03_advanced_c1_s1_stage2_body",
+      "recovery_stage": "stage2_second_judge",
+      "stage2_variant": "body",
+      "cost_jpy": 0.1252,
+      "usage": {
+        "input_tokens": 10139,
+        "cached_input_tokens": 10136,
+        "output_tokens": 1393,
+        "reasoning_tokens": 1213
+      },
+      "elapsed_seconds": 16.079,
+      "prompt_sha256": "f75b21434e803375a026dad03f9ec15ffb25fd6296101b8282d1370fd04bbb9a"
+    }
+  ],
+  "total_cost_jpy": 2.6301,
+  "total_calls": 5,
+  "elapsed_seconds": 268.234,
+  "switches": {
+    "JA_MODE": "english_only",
+    "VS_MATCH_EXT": true,
+    "HANDOFF_MODE": "violation_span",
+    "VS_EXPLAIN_SPLIT": true,
+    "VS_SENTENCE_RESTORE": true,
+    "STAGE2_SECOND_OPINION": true,
+    "RECHECK_MERGE_UNRESOLVED": true,
+    "STRUCTURAL_ELEMENT_REWRITE": true,
+    "ACTOR_GUARD_MODE": "ag1_strict",
+    "STRUCTURAL_PAIRS_TO_RECHECK": true,
+    "RECHECK_MODE": "coverage_union",
+    "STAGE1_MODE": "coverage_union",
+    "STAGE1_ROUTES": "both",
+    "F3_PRECHECK_ALWAYS": true,
+    "STAGE1_FAIL_CLOSED": true,
+    "STAGE1_R5_MODE": "full",
+    "STAGE1_R3_REASONING": "medium",
+    "STAGE1_R5_REASONING": "high",
+    "STAGE1_NEGATION_MODE": "a",
+    "STAGE4_ALLOWLIST": true,
+    "LADDER_LOCATION_CARRY": true,
+    "REWRITE_REVERT_GUARD": true,
+    "SPAN_FALLBACK_CHAIN": true,
+    "JUDGE_ONLY_CYCLE_AFTER_CAP": true,
+    "LAST_RESORT_DELETE": true,
+    "MATERIALITY_BLOCKING_PIN": true,
+    "STAGE2_VERDICT_REUSE_NONBLOCKING": true,
+    "STAGE2_SIBLING_LOCATIONS_CYCLE1": true
+  },
+  "all_deviations_raw": {
+    "stage1": [
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+        "related_fact_id": "MUSE-HC-009",
+        "origin": null,
+        "issue": "保険会社の事例が人間コンシェルジュテストにつながったという説明が確認されていない、という不在の主張はLedgerで確認されていない。 / Ledgerにない、保険会社の事例と人間コンシェルジュテストの因果関係に関する確認状況を追加している。",
+        "explanation": "stage1 coverage candidate (routes=r3,r5, sub_reason=model, units=S4.1); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_causality",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+        "related_fact_id": "MUSE-HC-006",
+        "origin": null,
+        "issue": "別々に報告されたAI電話の切断事例と人間の電話対応を「一方／他方」と結び付けた関係はLedgerに記載されていない。",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=model, units=S4.3); severity is decided by Stage 2",
+        "true_flags": [
+          "changed_comparison",
+          "changed_scope",
+          "unsupported_new_claim"
+        ],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+        "related_fact_id": "MUSE-HC-008",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S5.1); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "So this figure cannot be seen as the performance of all the human staff.",
+        "related_fact_id": "MUSE-HC-008",
+        "origin": null,
+        "issue": "決定論検査で戻した: causal_not_in_fact",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=causal_not_in_fact, units=S5.3,R:S5.2+S5.3); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      },
+      {
+        "severity": "MAJOR",
+        "claim_in_article": "The human concierge feature was then put on hold for the time being.",
+        "related_fact_id": "MUSE-HC-012",
+        "origin": null,
+        "issue": "決定論検査で戻した: negation_polarity_mismatch",
+        "explanation": "stage1 coverage candidate (routes=r3, sub_reason=negation_polarity_mismatch, units=S7.2); severity is decided by Stage 2",
+        "true_flags": [],
+        "enumeration_source_claim": false,
+        "same_fact_id_locations": null,
+        "passed_downstream": true
+      }
+    ],
+    "rechecks": []
+  },
+  "residual_at_pass": {
+    "applicable_defs": 0,
+    "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+    "final_state_is_pass_family": true,
+    "defs": []
+  },
+  "severity_wobble": [],
+  "en_title_rewritten": false,
+  "en_title_changes": [],
+  "stage1_coverage": {
+    "candidate_filter": {
+      "status": "ok",
+      "n_entries_in": 18,
+      "n_model_entries": 14,
+      "n_targets": 10,
+      "n_protected_keys": 0,
+      "n_excluded_claims": 8,
+      "n_excluded_entries": 10,
+      "n_excluded_with_changed_number": 0,
+      "n_failclosed": 0,
+      "calls": [
+        {
+          "label": "reclassify",
+          "cost_jpy": 0.3537,
+          "usage": {
+            "input_tokens": 5378,
+            "cached_input_tokens": 0,
+            "output_tokens": 3434,
+            "reasoning_tokens": 2560
+          },
+          "elapsed_seconds": 35.683,
+          "prompt_sha256": "71fec128303dd232d3e2f5422e4aeea55ffd878e6d637bde242beec1c9bc1f96",
+          "reasoning_effort": "medium",
+          "ok": true
+        }
+      ],
+      "cost_jpy": 0.3537,
+      "verdicts": [
+        {
+          "cid": "C1",
+          "key": "S1.3",
+          "claim": "Behind the scenes at Muse, which was supposed to play that useful role, an unexpected performer appeared.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "文脈上の「人間が現れた」はMuse経由の一部の電話を人間の契約スタッフが担当したテストを指し、Ledgerの限定と一致する。",
+          "fact_tags": [
+            "proper_noun"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "n_a",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C2",
+          "key": "S4.1",
+          "claim": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "その因果関係について確認された説明がないという否定的・因果的な主張は、Ledgerでは裏付けられていない。",
+          "fact_tags": [
+            "causality",
+            "negation"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C3",
+          "key": "S4.2",
+          "claim": "In the news, the two events are separate scenes placed next to each other.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "二つの出来事を「別々の場面」と表す、記事の構成に関する修辞的なつなぎである。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C4",
+          "key": "S4.3",
+          "claim": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+          "verdict": "CANDIDATE",
+          "failclosed": false,
+          "excluded": false,
+          "reason": "電話を切る事例と人間が担当したテストの対比はあるが、「一部の事例・テスト」という限定が文面で落ち、範囲を広げている。",
+          "fact_tags": [
+            "comparison"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "mismatch",
+          "qualifier_match": "mismatch"
+        },
+        {
+          "cid": "C5",
+          "key": "S4.4",
+          "claim": "It was as if different scenes had begun on the same stage.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "同じ舞台で異なる場面が始まったという比喩で、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C6",
+          "key": "S8.2",
+          "claim": "What matters this time is not only how well the AI works.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "AIの性能以外も重要だという評価・論評であり、具体的な事実の主張ではない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C7",
+          "key": "S8.3",
+          "claim": "People must be clearly told who is on the other end of the phone.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "電話の相手について明確に伝えるべきだという規範的な提言である。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C8",
+          "key": "S8.4",
+          "claim": "Without that one sentence, the latest AI can turn into a mysterious phone operator in an instant.",
+          "verdict": "NO_FACT_CLAIM",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "AIが「謎めいた電話オペレーター」になるという仮定的・比喩的な締めで、具体的な事実を追加していない。",
+          "fact_tags": [
+            "none"
+          ],
+          "actor_match": "n_a",
+          "counterpart_match": "n_a",
+          "scope_match": "n_a",
+          "qualifier_match": "n_a"
+        },
+        {
+          "cid": "C9",
+          "key": "L1",
+          "claim": "Meta’s AI phone tests were sometimes handled by undisclosed human workers, raising concerns about privacy and transparency.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "人間の契約スタッフが一部の電話を担当し、プライバシー上の懸念が示されたというLedgerの内容と一致し、未開示だった点も記事の文脈で保たれている。",
+          "fact_tags": [
+            "proper_noun",
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        },
+        {
+          "cid": "C10",
+          "key": "S6.2",
+          "claim": "When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center.",
+          "verdict": "SUPPORTED",
+          "failclosed": false,
+          "excluded": true,
+          "reason": "契約スタッフが担当する電話で、ユーザーの機微情報が意図せず共有される可能性があるというLedgerの懸念の記述と一致する。",
+          "fact_tags": [
+            "causality"
+          ],
+          "actor_match": "match",
+          "counterpart_match": "match",
+          "scope_match": "match",
+          "qualifier_match": "match"
+        }
+      ],
+      "effort": "medium",
+      "prompt_sha256": "71fec128303dd232d3e2f5422e4aeea55ffd878e6d637bde242beec1c9bc1f96"
+    },
+    "module_version": "stage1_coverage_v1",
+    "routes": "both",
+    "prompt_sha256": {
+      "R3_PROMPT_TEMPLATE": "ad561d813ee0adea31d577896eab85db395c442239e037d92e43b5d29e86eff7",
+      "R3_DEVELOPER_MESSAGE": "5b737601622c9cef9bcc72952c4fc5eff3cb9d08473efbf0557b7d5a7808f537",
+      "R3_RERUN_NOTE": "787bc940dd4cb4cbab5da9bbd5f763dda1a248b75becc240e1b8d4c68242e554",
+      "R5_PROMPT_TEMPLATE": "20624a72f2d464ce3f971f2ba6ce1e68fcb978cf6b9d3664abf64992fb65c900",
+      "R5_DEVELOPER_MESSAGE": "e33843d9b27d7483e8c7621b4d18f9e6cadc9bf8ecaeccd2a7e6cabea0c52f7b",
+      "FLAG_DESCRIPTIONS": "5a1251cea4c677872e099c2003a1eb09aac24072d552794db541a86bcc30263b",
+      "R3_JSON_SCHEMA": "0343ad918cf085bbdfc8ad53c16671bd74e0dffeeda8240633409b4c089da3da",
+      "R5_JSON_SCHEMA": "d2d5dfb47caee8f68d9675b23f3052c27decd2d725c8c348a237b8b4c1750f05",
+      "R5V_PROMPT_TEMPLATE": "6ccbb492d7321ab286dc23e7f211749723f99bfbde5c0b5cb748d55e8aae7ac4",
+      "R5V_DEVELOPER_MESSAGE": "21aef68bbb316497d5b693e1018c671d140ab238322d5a1ea800ad9a2077d273"
+    },
+    "negation_mode": "a",
+    "r5_mode": "full",
+    "r3_reused": false,
+    "n_units": 39,
+    "n_judged_units": 30,
+    "n_relation_units": 1,
+    "relation_ids": [
+      "R:S5.2+S5.3"
+    ],
+    "same_sentence_groups": [],
+    "n_facts": 15,
+    "per_route": {
+      "r3": {
+        "candidate_unit_ids": [
+          "L1",
+          "R:S5.2+S5.3",
+          "S1.3",
+          "S4.1",
+          "S4.2",
+          "S4.3",
+          "S4.4",
+          "S5.1",
+          "S5.3",
+          "S7.2",
+          "S8.2",
+          "S8.3",
+          "S8.4"
+        ],
+        "unit_status": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED->CANDIDATE(causal_not_in_fact)",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED->CANDIDATE(negation_polarity_mismatch)",
+          "S8.1": "SUPPORTED",
+          "S8.2": "CANDIDATE",
+          "S8.3": "CANDIDATE",
+          "S8.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S5.2+S5.3": "SUPPORTED->CANDIDATE(causal_not_in_fact)"
+        },
+        "calls": [
+          {
+            "label": "r3",
+            "cost_jpy": 0.6419,
+            "usage": {
+              "input_tokens": 5411,
+              "cached_input_tokens": 0,
+              "output_tokens": 7101,
+              "reasoning_tokens": 2466
+            },
+            "elapsed_seconds": 58.289,
+            "prompt_sha256": "49e55a29e64add38e5f07409b9f075f34c2454ec84393a47e80738e70d95f170",
+            "reasoning_effort": "medium",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": [],
+        "missing_after_rerun": [],
+        "group_returned": 0,
+        "facts_missing": null,
+        "reused_from_stored": false,
+        "r5_mode": null,
+        "model_verdict": {
+          "T": "SUPPORTED",
+          "S1.1": "SUPPORTED",
+          "S1.2": "SUPPORTED",
+          "S1.3": "CANDIDATE",
+          "S1.4": "SUPPORTED",
+          "S2.1": "SUPPORTED",
+          "S2.2": "SUPPORTED",
+          "S2.3": "SUPPORTED",
+          "S3.1": "SUPPORTED",
+          "S3.2": "SUPPORTED",
+          "S3.3": "SUPPORTED",
+          "S4.1": "CANDIDATE",
+          "S4.2": "CANDIDATE",
+          "S4.3": "CANDIDATE",
+          "S4.4": "CANDIDATE",
+          "S5.1": "SUPPORTED",
+          "S5.2": "SUPPORTED",
+          "S5.3": "SUPPORTED",
+          "S6.1": "SUPPORTED",
+          "S6.2": "SUPPORTED",
+          "S6.3": "SUPPORTED",
+          "S6.4": "SUPPORTED",
+          "S7.1": "SUPPORTED",
+          "S7.2": "SUPPORTED",
+          "S8.1": "SUPPORTED",
+          "S8.2": "CANDIDATE",
+          "S8.3": "CANDIDATE",
+          "S8.4": "CANDIDATE",
+          "L1": "CANDIDATE",
+          "R:S5.2+S5.3": "SUPPORTED"
+        },
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S1.3",
+            "unit_ids": [
+              "S1.3"
+            ],
+            "claim_text": "Behind the scenes at Muse, which was supposed to play that useful role, an unexpected performer appeared.",
+            "span": [
+              140,
+              245
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間が関与した事実はあるが、その登場が「予想外」だったという主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Behind the scenes at Muse, which was supposed to play that useful role, an unexpected performer appeared."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+            "span": [
+              886,
+              999
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "保険会社の事例が人間コンシェルジュテストにつながったという説明が確認されていない、という不在の主張はLedgerで確認されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-009"
+            ],
+            "model_claim": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "In the news, the two events are separate scenes placed next to each other.",
+            "span": [
+              1000,
+              1074
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "ニュース報道が二つの出来事を隣り合わせに配置したという記事構成上の主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-009"
+            ],
+            "model_claim": "In the news, the two events are separate scenes placed next to each other."
+          },
+          {
+            "unit_id": "S4.3",
+            "unit_ids": [
+              "S4.3"
+            ],
+            "claim_text": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+            "span": [
+              1075,
+              1169
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "別々に報告されたAI電話の切断事例と人間の電話対応を「一方／他方」と結び付けた関係はLedgerに記載されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": true,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller."
+          },
+          {
+            "unit_id": "S4.4",
+            "unit_ids": [
+              "S4.4"
+            ],
+            "claim_text": "It was as if different scenes had begun on the same stage.",
+            "span": [
+              1170,
+              1228
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "二つの出来事が同じ場で起きたかのように描く関係・比喩は、Ledgerが裏付ける事実ではない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": true,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "It was as if different scenes had begun on the same stage."
+          },
+          {
+            "unit_id": "S5.1",
+            "unit_ids": [
+              "S5.1"
+            ],
+            "claim_text": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+            "span": [
+              1230,
+              1369
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S5.3",
+            "unit_ids": [
+              "S5.3"
+            ],
+            "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+            "span": [
+              1473,
+              1545
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S7.2",
+            "unit_ids": [
+              "S7.2"
+            ],
+            "claim_text": "The human concierge feature was then put on hold for the time being.",
+            "span": [
+              2134,
+              2202
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "negation_polarity_mismatch"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: negation_polarity_mismatch"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-012"
+            ],
+            "model_claim": ""
+          },
+          {
+            "unit_id": "S8.2",
+            "unit_ids": [
+              "S8.2"
+            ],
+            "claim_text": "What matters this time is not only how well the AI works.",
+            "span": [
+              2325,
+              2382
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "AIの性能以外に何が重要かという評価・主張はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "What matters this time is not only how well the AI works."
+          },
+          {
+            "unit_id": "S8.3",
+            "unit_ids": [
+              "S8.3"
+            ],
+            "claim_text": "People must be clearly told who is on the other end of the phone.",
+            "span": [
+              2383,
+              2448
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "電話の相手に「誰が電話の反対側にいるか」を明示すべきという具体的要件は、Ledgerの「適切な開示」より具体的で、直接確認できない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-014"
+            ],
+            "model_claim": "People must be clearly told who is on the other end of the phone."
+          },
+          {
+            "unit_id": "S8.4",
+            "unit_ids": [
+              "S8.4"
+            ],
+            "claim_text": "Without that one sentence, the latest AI can turn into a mysterious phone operator in an instant.",
+            "span": [
+              2449,
+              2546
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "「最新のAI」が一瞬で謎の電話オペレーターになるという一般化された可能性はLedgerにない。"
+            ],
+            "flags": {
+              "changed_fact": true,
+              "changed_scope": true,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "Without that one sentence, the latest AI can turn into a mysterious phone operator in an instant."
+          },
+          {
+            "unit_id": "L1",
+            "unit_ids": [
+              "L1"
+            ],
+            "claim_text": "Meta’s AI phone tests were sometimes handled by undisclosed human workers, raising concerns about privacy and transparency.",
+            "span": [
+              2563,
+              2686
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r3"
+            ],
+            "issues": [
+              "人間による電話対応とプライバシー懸念は支えられるが、「透明性への懸念を引き起こした」という具体的な懸念内容はLedgerに明記されていない。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "Meta’s AI phone tests were sometimes handled by undisclosed human workers, raising concerns about privacy and transparency."
+          },
+          {
+            "unit_id": "R:S5.2+S5.3",
+            "unit_ids": [
+              "R:S5.2+S5.3"
+            ],
+            "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+            "span": [
+              1473,
+              1545
+            ],
+            "routes": [
+              "r3"
+            ],
+            "sub_reasons": [
+              "causal_not_in_fact"
+            ],
+            "sources": [
+              "deterministic"
+            ],
+            "issues": [
+              "決定論検査で戻した: causal_not_in_fact"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-008"
+            ],
+            "model_claim": ""
+          }
+        ]
+      },
+      "r5": {
+        "candidate_unit_ids": [
+          "S4.1",
+          "S4.2",
+          "S6.2"
+        ],
+        "unit_status": {
+          "S2.1": "MATCH",
+          "S6.3": "MATCH",
+          "S1.1": "MATCH",
+          "S1.2": "MATCH",
+          "S1.3": "MATCH",
+          "S1.4": "MATCH",
+          "S2.2": "MATCH",
+          "S2.3": "MATCH",
+          "S4.1": "DEVIATION",
+          "S4.2": "DEVIATION",
+          "S4.3": "MATCH",
+          "S6.2": "DEVIATION",
+          "S7.2": "MATCH",
+          "L1": "MATCH",
+          "S5.1": "MATCH",
+          "S5.2": "MATCH",
+          "S5.3": "MATCH",
+          "R:S5.2+S5.3": "MATCH",
+          "S3.2": "MATCH",
+          "S3.3": "MATCH",
+          "S6.1": "MATCH",
+          "S6.4": "MATCH",
+          "S7.1": "MATCH",
+          "S8.1": "MATCH",
+          "T": "UNMENTIONED",
+          "S3.1": "UNMENTIONED",
+          "S4.4": "UNMENTIONED",
+          "S8.2": "UNMENTIONED",
+          "S8.3": "UNMENTIONED",
+          "S8.4": "UNMENTIONED"
+        },
+        "calls": [
+          {
+            "label": "r5",
+            "cost_jpy": 1.2645,
+            "usage": {
+              "input_tokens": 5065,
+              "cached_input_tokens": 0,
+              "output_tokens": 15108,
+              "reasoning_tokens": 11863
+            },
+            "elapsed_seconds": 145.92,
+            "prompt_sha256": "b98357f59af3d64ebebf04ebce567ae13fcd5cbf8fa453d8363577fa5cf311c1",
+            "reasoning_effort": "high",
+            "ok": true
+          }
+        ],
+        "api_failure": false,
+        "rerun_used": false,
+        "missing_first": null,
+        "missing_after_rerun": null,
+        "group_returned": 0,
+        "facts_missing": [],
+        "reused_from_stored": false,
+        "r5_mode": "full",
+        "model_verdict": null,
+        "negation_reapplied": null,
+        "r5v_target_ids": null,
+        "n_r5v_targets": null,
+        "skipped_no_targets": false,
+        "unknown_unit_ids": [],
+        "candidates": [
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+            "span": [
+              886,
+              999
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerにない、保険会社の事例と人間コンシェルジュテストの因果関係に関する確認状況を追加している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "In the news, the two events are separate scenes placed next to each other.",
+            "span": [
+              1000,
+              1074
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "二つの出来事が報道内で隣接して配置されたという、Ledgerにない報道構成上の主張を加えている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-006"
+            ],
+            "model_claim": "In the news, the two events are separate scenes placed next to each other."
+          },
+          {
+            "unit_id": "S4.1",
+            "unit_ids": [
+              "S4.1"
+            ],
+            "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+            "span": [
+              886,
+              999
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "Ledgerにない、保険会社の事例と人間コンシェルジュテストの因果関係に関する確認状況を追加している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": true,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-009"
+            ],
+            "model_claim": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test."
+          },
+          {
+            "unit_id": "S4.2",
+            "unit_ids": [
+              "S4.2"
+            ],
+            "claim_text": "In the news, the two events are separate scenes placed next to each other.",
+            "span": [
+              1000,
+              1074
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "二つの出来事が報道内で隣接して配置されたという、Ledgerにない報道構成上の主張を加えている。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": false,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": true
+            },
+            "related_fact_ids": [
+              "MUSE-HC-009"
+            ],
+            "model_claim": "In the news, the two events are separate scenes placed next to each other."
+          },
+          {
+            "unit_id": "S6.2",
+            "unit_ids": [
+              "S6.2"
+            ],
+            "claim_text": "When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center.",
+            "span": [
+              1605,
+              1746
+            ],
+            "routes": [
+              "r5"
+            ],
+            "sub_reasons": [
+              "model"
+            ],
+            "sources": [
+              "model_r5"
+            ],
+            "issues": [
+              "従業員が示した懸念としての報告ではなく、情報共有の可能性を記事の直接的な記述として提示している。"
+            ],
+            "flags": {
+              "changed_fact": false,
+              "changed_scope": false,
+              "changed_causality": false,
+              "changed_certainty": false,
+              "changed_number": false,
+              "changed_actor": true,
+              "changed_negation": false,
+              "changed_comparison": false,
+              "changed_time": false,
+              "unsupported_new_claim": false
+            },
+            "related_fact_ids": [
+              "MUSE-HC-010"
+            ],
+            "model_claim": "When contract workers handled the calls, users' sensitive information could unintentionally be shared with contract workers at a call center."
+          }
+        ]
+      }
+    },
+    "overlap": {
+      "both": [
+        "S4.1",
+        "S4.2"
+      ],
+      "r3_only": [
+        "L1",
+        "R:S5.2+S5.3",
+        "S1.3",
+        "S4.3",
+        "S4.4",
+        "S5.1",
+        "S5.3",
+        "S7.2",
+        "S8.2",
+        "S8.3",
+        "S8.4"
+      ],
+      "r5_only": [
+        "S6.2"
+      ]
+    },
+    "returned_by_check": {
+      "r3": 4
+    },
+    "union_candidates": [
+      {
+        "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+        "span": [
+          886,
+          999
+        ],
+        "unit_ids": [
+          "S4.1"
+        ],
+        "routes": [
+          "r3",
+          "r5"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3",
+          "model_r5"
+        ],
+        "issues": [
+          "保険会社の事例が人間コンシェルジュテストにつながったという説明が確認されていない、という不在の主張はLedgerで確認されていない。",
+          "Ledgerにない、保険会社の事例と人間コンシェルジュテストの因果関係に関する確認状況を追加している。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": true,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-009",
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test."
+        ]
+      },
+      {
+        "claim_text": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+        "span": [
+          1075,
+          1169
+        ],
+        "unit_ids": [
+          "S4.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "model"
+        ],
+        "sources": [
+          "model_r3"
+        ],
+        "issues": [
+          "別々に報告されたAI電話の切断事例と人間の電話対応を「一方／他方」と結び付けた関係はLedgerに記載されていない。"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": true,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": true,
+          "changed_time": false,
+          "unsupported_new_claim": true
+        },
+        "related_fact_ids": [
+          "MUSE-HC-006"
+        ],
+        "model_claims": [
+          "With AI phone calls, one side hung up, while on the other side a human appeared as the caller."
+        ]
+      },
+      {
+        "claim_text": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+        "span": [
+          1230,
+          1369
+        ],
+        "unit_ids": [
+          "S5.1"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+        "span": [
+          1473,
+          1545
+        ],
+        "unit_ids": [
+          "S5.3",
+          "R:S5.2+S5.3"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "causal_not_in_fact"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: causal_not_in_fact"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-008"
+        ],
+        "model_claims": []
+      },
+      {
+        "claim_text": "The human concierge feature was then put on hold for the time being.",
+        "span": [
+          2134,
+          2202
+        ],
+        "unit_ids": [
+          "S7.2"
+        ],
+        "routes": [
+          "r3"
+        ],
+        "sub_reasons": [
+          "negation_polarity_mismatch"
+        ],
+        "sources": [
+          "deterministic"
+        ],
+        "issues": [
+          "決定論検査で戻した: negation_polarity_mismatch"
+        ],
+        "flags": {
+          "changed_fact": false,
+          "changed_scope": false,
+          "changed_causality": false,
+          "changed_certainty": false,
+          "changed_number": false,
+          "changed_actor": false,
+          "changed_negation": false,
+          "changed_comparison": false,
+          "changed_time": false,
+          "unsupported_new_claim": false
+        },
+        "related_fact_ids": [
+          "MUSE-HC-012"
+        ],
+        "model_claims": []
+      }
+    ],
+    "n_union_candidates": 5,
+    "n_model_candidates": 2,
+    "n_deterministic_only_candidates": 3,
+    "total_cost_jpy": 1.9064,
+    "n_calls": 2
+  },
+  "stage1_reclassify": {
+    "reclassify_status": "ok",
+    "n_model_entries": 14,
+    "n_targets": 10,
+    "n_protected_keys": 0,
+    "n_excluded_claims": 8,
+    "n_excluded_entries": 10,
+    "n_excluded_with_changed_number": 0,
+    "n_failclosed": 0,
+    "cost_jpy": 0.3537,
+    "effort": "medium",
+    "prompt_sha256": "71fec128303dd232d3e2f5422e4aeea55ffd878e6d637bde242beec1c9bc1f96"
+  },
+  "recheck_exit_check": {
+    "done": false,
+    "log": []
+  },
+  "stage4_allowlist": {
+    "decisions": [],
+    "n_rerouted_legacy_exits": 0,
+    "final_reason_outside_allowlist": false,
+    "t_used": false,
+    "carry_blocking_remaining": 0,
+    "pass_blocked_by_carry": 0,
+    "switch_fired": {
+      "STAGE2_SIBLING_LOCATIONS_CYCLE1": 1
+    },
+    "unrewritten_blocking_pass": 0
+  },
+  "run_cost_jpy": 2.6301,
+  "provenance": {
+    "switch_dump_sha256": "611451fdb5e8e8b547cbbda229fbebdb15385944b352498fbd7cb13fef7ee261",
+    "e2e02_switch_dump_worker1_sha256": "081de570a8ace833e22f06be4e06f6743683bac3ac1b4860fa6739ba0ed6abce",
+    "switches_equal_e2e02": true,
+    "model_id": "gpt-6-luna",
+    "started_at": "2026-10-07T19:38:56",
+    "ledger_sha256": "4a650db008f873d8edba28f8adcb7006f0e27692b5e09bf1380fcc77747d6487",
+    "article_sha256": "22a6d6a654dbb1848daa38f462546c56ccde373690461bb161866d5e6d277a35",
+    "source_article_sha256": "62a033bff90eceba82aa1172ed799238bf418899cf1ece76d4ec0f2465c58c03",
+    "args": {
+      "after_dir": "er052_output/open233_ledger_clarity_p_trial_01/after_pprime_01",
+      "out_dir": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/checker",
+      "ledger_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/research_ledger/verified_fact_ledger.txt",
+      "article_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/b1b/article.md",
+      "source_path": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7/ja_writer/revision2.md",
+      "budget_jpy": 15.0,
+      "yes_run_paid": true,
+      "dry_run": false
+    }
+  }
+}
