@@ -1,0 +1,57 @@
+{
+  "slug": "meta",
+  "code": "7aqr",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 0
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-7aqr-01",
+      "text": "EN: the test in which contract workers handled the calls began without properly telling users about it(台帳は『適切な開示なし』で開示先を特定していない。JAは対象を明示せず)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [
+    {
+      "id": "meta-7aqr-p1",
+      "text": "テスト対象が従業員であること(MUSE-HC-007/013)が記事で明示されない。『利用者』に関する記述が一般利用者の話と読める余地",
+      "reason": "台帳の対象範囲との差が文脈次第",
+      "leaning": "NGにしない/ENの軽微と同根"
+    }
+  ],
+  "notes": "単独評価、人間確認なし。ロールバック対象は人間コンシェルジュ機能と明示、HC-012は正しい。JAは『利用者に十分伝わっていなければ』と条件文で断定を避けているためs1はNGにしない。ENのみ開示先をusersと断定したため軽微。"
+}

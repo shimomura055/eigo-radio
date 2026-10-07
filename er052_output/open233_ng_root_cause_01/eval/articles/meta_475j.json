@@ -1,0 +1,57 @@
+{
+  "slug": "meta",
+  "code": "475j",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-475j-01",
+      "text": "R2: ただし、主役になった人間が知らされていなかった。そこが問題でした。(EN: the humans who ended up on the other end had not been properly told)",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "subject"
+    }
+  ],
+  "pending": [
+    {
+      "id": "meta-475j-P1",
+      "text": "R0/R2/EN: 問題は『その事実を相手に十分知らせないまま』(開示されなかった相手を電話の相手と特定)",
+      "reason": "台帳は開示の相手を特定しない。境界のため保留",
+      "leaning": "not_ng"
+    }
+  ],
+  "notes": "単独評価、人間確認なし。NG1は『知らされなかった主体』が契約スタッフ(人間)と読める点が台帳(適切な開示なし)から外れる。『人間の存在が知らされなかった』とも読めるため重大/軽微の境界で軽微に倒した。R0の同箇所は『人間が対応していると適切に開示しなかった』で正しく、R2で新規発生のためregression。"
+}

@@ -1,0 +1,71 @@
+{
+  "slug": "meta",
+  "code": "78bg",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 2
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 2
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-78bg-01",
+      "text": "R2: 電話を終えるには、利用者の予定や希望など、細かな情報が必要になります(R0/ENも同旨)",
+      "fact_id": "MUSE-HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "meta-78bg-02",
+      "text": "R2: 誰が対応するのかを説明し、情報の扱いにも納得してもらえる準備が整った場合にだけ公開する(R0: 誰が対応するのか、どんな情報が共有されるのかをきちんと説明できる状態になってから公開)",
+      "fact_id": "MUSE-HC-014",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [
+    {
+      "id": "meta-78bg-P1",
+      "text": "R2/EN: 『電話を受ける相手からすれば、AIが話していると思っていたのに実は人間だったかもしれない』(開示されなかった相手を電話の相手側に置く)",
+      "reason": "台帳は開示の相手を特定しない。境界のため保留",
+      "leaning": "not_ng"
+    }
+  ],
+  "notes": "単独評価、人間確認なし。NG2件は台帳にない具体(予定や希望/納得してもらえる条件)の軽い具体化として軽微。R0/R2とも同種で退行ではない。HC-012の『ロールバック』は文脈上機能限定(Muse全体を止めていないと明記)でcorrect。"
+}

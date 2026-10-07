@@ -1,0 +1,61 @@
+{
+  "slug": "ai_control",
+  "code": "cupe",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "CONTROL-003",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "EVID-008",
+      "label": "correct"
+    },
+    {
+      "fact_id": "EVID-009",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "ai_control-cupe-01",
+      "text": "「別に報告された実際のインターネット事案(AISI)」に続けて「関連する評価では、最新の内部テストモデルが…停止」(停止はAnthropicの3事案の観察。AISI事案と同一文脈で帰属が混在)",
+      "fact_id": "CONTROL-003",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": true,
+      "regression": false,
+      "kind": "subject"
+    }
+  ],
+  "pending": [
+    {
+      "id": "P1",
+      "text": "R0『認証情報が外へ流れる可能性もありました』/R2『流出させることが可能な仕組み』(台帳はenabled credential exfiltrationで、実際に流出した範囲が曖昧)",
+      "reason": "台帳自体が曖昧で、過小/過大の判定不能",
+      "leaning": "NGでない"
+    }
+  ],
+  "notes": "単独評価、人間確認なし。CONTROL-003は『解決/不可避ではない』方向は守られているが、AISI封じ込めとAnthropic停止の帰属が文脈上混ざるためambiguous(軽微)。"
+}

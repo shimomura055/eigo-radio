@@ -1,0 +1,57 @@
+{
+  "slug": "meta",
+  "code": "ehz9",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-ehz9-01",
+      "text": "しかも、その交代を利用者に十分に知らせないまま、テストが始まっていました(EN: began without fully telling users / Users thought they had asked AI)。台帳は『適切な開示なし』で開示先不明、テストはMeta従業員対象",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "scope"
+    }
+  ],
+  "pending": [
+    {
+      "id": "meta-ehz9-p1",
+      "text": "見出し『人間が主役だった』は一部の電話・テストという本文の限定より強い表現",
+      "reason": "文章表現で本文に『一部』の限定あり",
+      "leaning": "NGにしない"
+    }
+  ],
+  "notes": "単独評価、人間確認なし。R0は『十分に説明しないまま』と開示先を明示しておらずR2で『利用者に』が加わったため退行1(軽微)として計上。HC-012は正しい(機能のみ引き戻し、Muse全体停止でない)。"
+}

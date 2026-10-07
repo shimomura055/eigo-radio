@@ -1,0 +1,86 @@
+{
+  "slug": "space_weapons",
+  "code": "bcgj",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 3
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 2
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-002",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "F-013",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "space_weapons-bcgj-01",
+      "text": "「背景にはロシアの動きがあります/背景にあるのは、ロシアの衛星です/In the background is a Russian satellite」(F-001の米国発表とF-002のロシア衛星を因果的な背景として連結。台帳に連結なし)",
+      "fact_id": "F-002",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": true,
+      "regression": false,
+      "kind": "causal"
+    },
+    {
+      "id": "space_weapons-bcgj-02",
+      "text": "R0: 「通信を邪魔したり、地上の仕組みに影響を与えたりすれば、宇宙の働きを止められる」(断定。R2は『使いにくくできる可能性』に緩和)",
+      "fact_id": "F-011",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "space_weapons-bcgj-03",
+      "text": "「衛星を動かし、指示を出す地上の設備/衛星に指示を出す地上の設備」(台帳は地上セグメント・地上攻撃とするのみで役割の具体化)",
+      "fact_id": "F-011",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。項目1は因果連結(境界で軽微)。R2の『攻撃だけでなく防御も含む』はF-011どおり。"
+}

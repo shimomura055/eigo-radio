@@ -1,0 +1,24 @@
+# Open the Address Book of Space Weapons, and the News Suddenly Gets More Interesting
+
+When you see news about space weapons, do not start by imagining their performance. First, check their address.
+
+Is the weapon in space? Is it on the ground? Does it enter communication networks? Or is it not something that attacks, but a sensor used for defense? Just changing the address can change the meaning of a story that seemed similar.
+
+This story starts with a US announcement. On September 14, 2026, the US Secretary of the Air Force said that the United States was deploying space-control weapons in orbit to protect joint forces from the actions of hostile opponents. An official US government article recorded this as the first statement admitting that the Space Force had deployed weapons in space.
+
+However, there is still a blank space here. We do not know the specific system. Its attack ability and what it would target have not been confirmed.
+
+From here, this becomes a game of checking the addresses of space weapons.
+
+First, the ground address. In 2021, Russia launched an ASAT, or anti-satellite missile, from the ground and destroyed one of its own satellites. The number of pieces of debris that could be tracked went over 1,500. It was a very alarming test, but firing from the ground and keeping a weapon in orbit are different things.
+
+Next, the addresses of communication and ground equipment. In the US Space Force framework, counterspace does not mean only weapons located in space. It is a general term for attacks and defenses carried out in orbit, through communication links, and with ground equipment. It may also include radio jamming and cyberattacks. Even if the name includes “space,” it does not always mean that an object is floating in space.
+
+Then there is the address of defense. Warning of threats, making satellites harder to destroy, spreading out their functions, and keeping backups are different protective measures from placing attack weapons in orbit. Satellites that find and track missiles are also described as sensors for defense. However, active defense may include weapons. We cannot say that something is not a weapon simply because it is used by the side doing the defending.
+
+Finally, let us check the address in the Outer Space Treaty. Article IV bans placing nuclear weapons or other weapons of mass destruction in orbit around Earth or anywhere in outer space, as well as placing them on the Moon or other celestial bodies. It also bans military bases and forts on celestial bodies, along with weapons tests and military exercises there. However, it is not accurate to call it a treaty that completely bans all space weapons.
+
+The main point this time is not that space weapons have suddenly appeared. It is that the United States has officially admitted for the first time that it is deploying them in orbit. Is it a ground-based test, a broad military concept, a defensive system, or a weapon banned by the treaty? If you open the address book, you can begin to see how to tell different kinds of space news apart.
+
+## In one line
+The key news is that the United States has officially admitted deploying weapons in orbit for the first time.

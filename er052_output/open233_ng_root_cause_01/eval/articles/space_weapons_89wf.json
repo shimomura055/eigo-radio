@@ -1,0 +1,86 @@
+{
+  "slug": "space_weapons",
+  "code": "89wf",
+  "stages": {
+    "s0_r0": {
+      "major": 1,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 1,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "misread"
+    },
+    {
+      "fact_id": "F-002",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-013",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "space_weapons-89wf-01",
+      "text": "R0/R2: 「衛星や通信を守るための備え」「宇宙、通信、地上の設備をまとめて守るための仕組み」「宇宙の戸締まり」(F-001は『統合軍を守るためのspace control weapons』で攻撃能力は不明。F-011のcounterspace範囲を転用し、守る対象と性格を取り違え)",
+      "fact_id": "F-001",
+      "severity": "major",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": false
+      },
+      "cross_fact": true,
+      "regression": false,
+      "kind": "object"
+    },
+    {
+      "id": "space_weapons-89wf-02",
+      "text": "EN In one line: the move is about defense, not a space war(防御と断定。台帳は攻撃能力・標的は不明)",
+      "fact_id": "F-001",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "space_weapons-89wf-03",
+      "text": "「背景にある脅威として、米国はロシアの動きも挙げています」/「なぜ今この話が出てきたのか。背景には、米国が見ているロシアの対衛星能力」(F-001とF-002の因果連結。台帳に連結なし)",
+      "fact_id": "F-002",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": true,
+      "regression": false,
+      "kind": "causal"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。項目1は守る対象(統合軍→衛星・通信・地上設備)の入れ替えと防御的性格の断定として重大に計上。ENは本文でprotect joint forcesと正しく戻しているため項目1はs2=false、ワンライナーのみ別項目で軽微。重大/軽微の境界であり確信度は中。"
+}

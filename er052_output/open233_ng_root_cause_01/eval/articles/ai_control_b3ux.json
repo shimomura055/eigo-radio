@@ -1,0 +1,53 @@
+{
+  "slug": "ai_control",
+  "code": "b3ux",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "CONTROL-003",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "ai_control-b3ux-01",
+      "text": "その悪意あるプログラムは...認証情報が流れ出るおそれ/可能性が生まれた(EN: created a chance for login information to leak out)",
+      "fact_id": "EVID-009",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [
+    {
+      "id": "ai_control-b3ux-P1",
+      "text": "R2/EN: 『第一の手がかりはAnthropicの評価です』(台帳は第三者の評価環境の設定ミス。R0は『Anthropicの調査』)",
+      "reason": "評価の主体/環境の帰属の言い換え範囲が境界",
+      "leaning": "not_ng"
+    }
+  ],
+  "notes": "単独評価、人間確認なし。NG1: 台帳は『enabled credential exfiltration from a real security scanner』で、実際の流出可能化を示すのに対し記事は『おそれ/可能性』と弱めている。境界のため軽微に倒した。"
+}

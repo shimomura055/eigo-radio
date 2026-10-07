@@ -1,0 +1,18 @@
+# The Shadow Chasing a Satellite Is Not Only in the Sky
+
+In movies, one satellite sneaks up close to another. It is a space version of a stalking drama. But real counterspace operations have more twists. The main actors are not only satellites. Communications and ground facilities also come onto the same stage.
+
+On September 14, 2026, the United States officially acknowledged for the first time that it had deployed space-control weapons in orbit to protect joint forces from the actions of hostile opponents. The announcement came from the Secretary of the Air Force. An official U.S. government article also describes it as the first statement acknowledging that the Space Force had deployed weapons into space.
+
+But the true nature of the weapons is still hidden. We do not know their names. It has not been confirmed whether they can attack, or what they would target. Viewers are shown only a large presence, not its details. The announcement was like a movie trailer that does not show the full picture.
+
+In the background is a Russian satellite. According to the U.S. Department of Defense, in May 2024, Russia launched a satellite into a low orbit and placed it in the same orbit as a U.S. government satellite. The U.S. side sees it as a possible counterspace weapon that could attack other low-orbit satellites. However, no actual attack has been confirmed.
+
+And here, the story takes another turn. Under the U.S. Space Force framework, counterspace operations have three areas. The first is the orbit where satellites travel. The second is the communication link that carries information between satellites and the ground. The third is the ground segment.
+
+In other words, a battle in space is not only about directly destroying a satellite. Interfering with communications or affecting ground equipment could also make it harder to use a satellite's capabilities. Also, counterspace operations include defense as well as attack.
+
+The struggle over space is not a flashy chase that takes place only high above us. It is a contest over invisible communications and a fight to protect machines on the ground. Even when we look up at the sky and see nothing, the tug-of-war in space reaches all the way down to the ground beneath our feet.
+
+## In one line
+The struggle over satellites is fought not only in orbit, but also through communications and ground facilities.
