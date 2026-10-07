@@ -113,3 +113,13 @@
 
 ## 付録: 生成物
 - `eval/aggregate_ccp.json`(数値の正)、`docs/pm/control_checker_polysemy_trial_01/tools/aggregate_eval_ccp.py`・`build_summary_ccp.py`(再現script、API無し)。人間確認パック=`eval/HUMAN_REVIEW_PACK.md`。
+
+## 人間確認後(委任_04、2026-10-07 21:06)
+ユーザー判定(逐語は `eval/HUMAN_REVIEW_RESULT.md`、RCAは `eval/RCA_jb9k_qvqc.md`):
+- ①Rollback: ユーザー異議なし(暫定維持)=**0/10、累積0/22**。ただしユーザー明示確認は下記2点のみ。
+- ②重大あり記事: **1/18**(jb9k、「AIは外に出ていない」型の否定表現=重大、ユーザー確定。Writer初稿由来、Checkerは候補化したがStage2がQUALITYへ格下げ)。事前登録基準 ②=1/18 → CONDITIONAL条件。
+- ⑤Rewrite由来の新規NG: **1件**(meta qvqc タイトル書換え=NG、重大/軽微はユーザー確認中)。
+- 総合判定(②の重大度確認待ちのため2ケース併記):
+  - **タイトル書換えが重大の場合**: ⑤major≥1=不合格 → **総合FAIL**。
+  - **タイトル書換えが軽微の場合**: ⑤は新規軽微1(major=0で合格)。②=1/18 と④要注意により **総合CONDITIONAL**。
+- 判定は「ユーザーのタイトル書換えの重大/軽微回答」が入るまで確定しない。N=18の範囲の事実であり安全の証明ではない。Production採用は人間ユーザーのみ。
