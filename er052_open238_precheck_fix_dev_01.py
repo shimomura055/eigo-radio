@@ -1,4 +1,5 @@
-"""OPEN-238-PRECHECK-FALSE-POSITIVE-FIX-TRIAL-01 Trial/DEV専用ラッパ(Production非配線、既定では何もしない)。
+"""[Production配線済み(OPEN-238-PRECHECK-FALSE-POSITIVE-PRODUCTION-WIRING-01)。本ファイルはTrial記録用、install()はProductionで不要]
+OPEN-238-PRECHECK-FALSE-POSITIVE-FIX-TRIAL-01 Trial/DEV専用ラッパ(Production非配線、既定では何もしない)。
 
 Opus条件Cレビュー必須修正M1〜M3を反映:
  M1 厳格版抽出(extract_percentages_strict)は check_number_mismatch の foreign_observed 計算のみ。

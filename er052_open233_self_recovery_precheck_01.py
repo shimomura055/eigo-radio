@@ -156,6 +156,55 @@ def extract_percentages(text: str) -> set:
     return out
 
 
+# OPEN-238(OPEN-238-PRECHECK-FALSE-POSITIVE-PRODUCTION-WIRING-01、2026-10-07 APPROVED_FOR_PRODUCTION):
+# 分数語(half/third/quarter等)の誤抽出("third party"/"first half of"等)による
+# number_mismatch偽陽性を除くための厳格版抽出。PERCENT_RE(%/percent)は現行と同一。
+# 分数語のみ文脈判定を行う: (a)直前が連字符/英数字なら不採用、(b)直後が連字符なら不採用、
+# (c)直前語がfirst/second/last/latter/other/better/earlier/laterなら不採用(M3)、
+# (d)直後が文末/句読点、または of・比較語・限定詞・接続語・be/have動詞等のホワイトリスト語なら採用、
+# それ以外(例: "third party", "half an hour")は不採用。
+# 使用箇所は check_number_mismatch の foreign_observed 計算と runner の
+# resolve_precheck_target_sentence のみ(台帳値確認・L322・L666・runner他・coverage_checkerは
+# 現行extract_percentagesのまま、Opus条件C M1/M2)。
+_OPEN238_STRICT_PRIOR_BLOCK = {"first", "second", "last", "latter", "other", "better", "earlier", "later"}
+_OPEN238_COMPARATIVE = {"more", "less", "fewer", "again", "as", "higher", "lower", "larger", "smaller",
+                        "greater", "bigger", "than"}
+_OPEN238_DETERMINERS = {"the", "their", "its", "all", "these", "those"}
+_OPEN238_CONJ = {"and", "or", "but", "so", "that", "is", "was", "are", "were", "had", "has", "to", "by", "in"}
+_OPEN238_FOLLOW_ALLOW = {"of"} | _OPEN238_COMPARATIVE | _OPEN238_DETERMINERS | _OPEN238_CONJ
+_OPEN238_WORD_AFTER = re.compile(r"\s+([A-Za-z]+)")
+_OPEN238_WORD_BEFORE = re.compile(r"([A-Za-z]+)\s+$")
+
+
+def extract_percentages_strict(text: str) -> set:
+    out = set()
+    text = text or ""
+    for m in PERCENT_RE.finditer(text):
+        out.add(round(_to_float(m.group(1)), 2))
+    for phrase, pct in FRACTION_WORD_TO_PERCENT.items():
+        for m in re.finditer(r"\b" + re.escape(phrase) + r"\b", text, re.IGNORECASE):
+            s, e = m.start(), m.end()
+            if s > 0 and (text[s - 1].isalnum() or text[s - 1] == "-"):
+                continue
+            if e < len(text) and text[e] == "-":
+                continue
+            pb = _OPEN238_WORD_BEFORE.search(text[:s])
+            if pb and pb.group(1).lower() in _OPEN238_STRICT_PRIOR_BLOCK:
+                continue
+            rest = text[e:]
+            if rest.strip() == "" or not rest[:1].isspace():
+                ok = True  # 文末 / 句読点・閉じ括弧等が直後
+            else:
+                wa = _OPEN238_WORD_AFTER.match(rest)
+                if wa:
+                    ok = wa.group(1).lower() in _OPEN238_FOLLOW_ALLOW
+                else:
+                    ok = True  # 空白の後が句読点など
+            if ok:
+                out.add(round(pct, 2))
+    return out
+
+
 def extract_counts(text: str) -> set:
     out = set()
     for m in COUNT_WORD_RE.finditer(text or ""):
@@ -259,7 +308,13 @@ def check_number_mismatch(fact: dict, article_text: str,
         return None
     # 記事側の「異なる数値」が、同じLedgerの別Factの正しい値であれば
     # このFactの取り違え証拠にはならない(除外)。
-    foreign_observed = {o for o in observed if not _any_close({o}, other_ledger_values)}
+    # OPEN-238: percent種別のforeign計算のみ厳格版抽出(分数語の文脈判定)を使う。
+    # expected/observed(台帳値確認・natural rounding)・count種別は現行のまま。
+    if kind_label == "percent":
+        observed_for_foreign = extract_percentages_strict(article_text)
+    else:
+        observed_for_foreign = observed
+    foreign_observed = {o for o in observed_for_foreign if not _any_close({o}, other_ledger_values)}
     if not foreign_observed:
         return None
     # Ledger値が本文に無く、かつLedgerのどのFactにも属さない異なる同種数値が

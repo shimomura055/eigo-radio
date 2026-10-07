@@ -8090,7 +8090,8 @@ def resolve_precheck_target_sentence(article_text: str, finding: dict) -> tuple:
     if kind == "number_mismatch":
         for v in finding.get("foreign_values") or []:
             for s in sentences:
-                nums = precheck.extract_percentages(s) | set(precheck.extract_counts(s))
+                # OPEN-238: 対象文特定も厳格版抽出("third party"文を誤って対象にしない)
+                nums = precheck.extract_percentages_strict(s) | set(precheck.extract_counts(s))
                 if v in nums:
                     return s, "precheck_number_locate"
         return None, "not_locatable"
