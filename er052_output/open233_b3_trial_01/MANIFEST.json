@@ -1,14 +1,45 @@
 {
-  "task": "OPEN-233-B3-BRIEF-STRUCTURE-TRIAL-01",
-  "stage": "1_b3_brief_generation_done (Writer/EN未実施)",
-  "variants_run": ["V0","V1","V2","V3","V6"],
-  "variants_not_run": {"V5": "ユーザー判断待ち(Opus M2: 現行V5は複合パッケージで帰属不能。再定義案=V3+未提示明記のみ)", "V4": "欠番(最初の設計から未使用・未実施。O3)"},
-  "slugs": ["meta","hormuz","space_weapons"],
-  "b3_reps": [1,2],
-  "runs": 30,
-  "hormuz_topic_note": "hormuzのtopic.txt(er052_output/open233_polysemy_trial_02/ledgers/hormuz/topic.txt)は代替topic(元themeは未記録)。全条件共通のため比較には影響しない(O3)",
-  "cost_file": "er052_output/open233_b3_trial_01/cost.json",
-  "out_dir_rule": "runs/<slug>/nb/<variant>/b<i>/ (B3のみ、storyline_b3/selected_brief.md)",
-  "provenance": "各b<i>/b3_variant_provenance.json(variant, instruction_sha256, full_prompt_sha256, b3_prompt_sent_sha256_list)",
-  "blinding": "docs/pm/b3_trial_01/blinding.md、tools/make_blind_copies.py、eval/blind/MAP.json(集計まで評価者に渡さない)"
+ "task": "OPEN-233-B3-BRIEF-STRUCTURE-TRIAL-01",
+ "stage": "1_b3_brief_generation_done + A3 V5(redefined) b1-b4 done (Writer/EN未実施)",
+ "variants_run": [
+  "V0",
+  "V1",
+  "V2",
+  "V3",
+  "V5",
+  "V6"
+ ],
+ "variants_not_run": {
+  "V4": "欠番(最初の設計から未使用・未実施。O3)"
+ },
+ "slugs": [
+  "meta",
+  "hormuz",
+  "space_weapons"
+ ],
+ "b3_reps": [
+  1,
+  2
+ ],
+ "runs": 42,
+ "hormuz_topic_note": "hormuzのtopic.txt(er052_output/open233_polysemy_trial_02/ledgers/hormuz/topic.txt)は代替topic(元themeは未記録)。全条件共通のため比較には影響しない(O3)",
+ "cost_file": "er052_output/open233_b3_trial_01/cost.json",
+ "out_dir_rule": "runs/<slug>/nb/<variant>/b<i>/ (B3のみ、storyline_b3/selected_brief.md)",
+ "provenance": "各b<i>/b3_variant_provenance.json(variant, instruction_sha256, full_prompt_sha256, b3_prompt_sent_sha256_list)",
+ "blinding": "docs/pm/b3_trial_01/blinding.md、tools/make_blind_copies.py、eval/blind/MAP.json(集計まで評価者に渡さない)",
+ "v5_redefinition": {
+  "date": "2026-10-07",
+  "by": "ユーザー決定(Opus M2)",
+  "definition": "V5 = V3 + 末尾ブロック BLOCK_V5_EXTRA(台帳の未提示/不明/示されていない/確認できない事項のうちStoryline主題に関わるものを、briefの末尾に「〜は示されていない」と明記)のみ。replace句なし。旧定義(逐語引用・fact_id・採用fact下限5・採用の有無にかかわらず・「簡潔に」句置換)は撤回",
+  "instruction_sha256": "1c0d4f8979650a5a82b393b0885b563f2147d85cdb35dc629e8d8c584f418ff2",
+  "v5_extra_block_sha256": "0c0e8d40e5bf0fe9dcc080446a48a0a16fe07dc89982c33fe4dabf188799c867",
+  "runs": "V5 x meta/hormuz/space_weapons x b1..b4 = 12本(runs/<slug>/nb/V5/b<i>/)",
+  "b3_reps_V5": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "cost_v5_jpy": 19.11
+ }
 }

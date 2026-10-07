@@ -156,7 +156,7 @@ def main():
         led = ledger_text(ns.ledgers, s)
         notes, negnotes = notes_text(ns.ledgers, s)
         for v in VARIANTS:
-            for i in (1, 2):
+            for i in ((1, 2, 3, 4) if v == "V5" else (1, 2)):  # A3: V5はb1〜b4
                 p = find_brief(ns.runs, s, v, i)
                 if not p:
                     missing.append("%s|%s|b%d" % (s, v, i))

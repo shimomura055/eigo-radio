@@ -25,9 +25,9 @@ class T(unittest.TestCase):
             self.assertNotEqual(out, BASE)
 
     def test_phrase_kept_or_replaced(self):
-        for v in ("V1", "V2", "V3"):
+        for v in ("V1", "V2", "V3", "V5"):
             self.assertIn(dev.BASE_PHRASE, dev.apply_variant(BASE, v))
-        for v in ("V5", "V6"):
+        for v in ("V6",):
             self.assertNotIn(dev.BASE_PHRASE, dev.apply_variant(BASE, v))
 
     def test_composition(self):
@@ -36,10 +36,18 @@ class T(unittest.TestCase):
         self.assertIn(dev.BLOCK_V2, a3)
         self.assertIn(a3, dev.VARIANTS["V5"]["append"])
 
+    def test_v5_is_v3_plus_tail_block_only(self):
+        self.assertEqual(dev.VARIANTS["V5"]["replace"], [])
+        self.assertEqual(dev.VARIANTS["V5"]["append"], dev.VARIANTS["V3"]["append"] + "\n\n" + dev.BLOCK_V5_EXTRA)
+        self.assertEqual(dev.apply_variant(BASE, "V5"), dev.apply_variant(BASE, "V3") + "\n\n" + dev.BLOCK_V5_EXTRA)
+
     def test_v5_features(self):
         a = dev.VARIANTS["V5"]["append"]
-        for k in ("fact_id", "逐語", "5件以上", "示されていない"):
+        for k in ("示されていない", "未提示", "numeric_scope", "禁止notes"):
             self.assertIn(k, a)
+        e = dev.BLOCK_V5_EXTRA
+        for k in ("逐語", "fact_id", "5件", "採用の有無", "引用", "簡潔に"):
+            self.assertNotIn(k, e)
 
     def test_forbidden_words(self):
         for v, spec in dev.VARIANTS.items():
