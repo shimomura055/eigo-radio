@@ -38,10 +38,11 @@ PHASE_DEFAULT_BUDGET = {"phase1": 12.0, "phase2": 10.0}
 PREFIX_ENV = "OPEN233_NOTE_PREFIX"
 DEFAULT_NOTE_PREFIX = "注意(多義):"
 _TRANSFER_TEMPLATE = (
-    "【多義語注意の引き継ぎ規則】\n"
-    "台帳のnotes_for_writerに『{prefix}』で始まる注意がある場合、そのfactをbriefで使うときは、"
-    "その注意文を意味を変えずそのままbriefの該当箇所の直後に1行で引き継ぐ"
-    "(要約・言い換え・新しい解釈の追加・削除をしない)。注意のないfactには何も足さない。"
+    "【注意の引き継ぎ規則】\n"
+    "台帳のnotes_for_writerが『{prefix}』で始まる場合、そのnotes_for_writerの内容全体"
+    "(『 / 』で区切られた全ての注意、後続の『注意(多義):』部分を含む)を、"
+    "要約・言い換え・省略・分割せずそのまま、briefの該当factの直後に引き継ぐ。"
+    "注意のないfactには何も足さない。"
 )
 
 

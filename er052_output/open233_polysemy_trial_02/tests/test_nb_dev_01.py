@@ -103,7 +103,7 @@ def test_j_note_prefix_env():
     assert dev.build_transfer_block({}) == dev.TRANSFER_BLOCK
     assert "『注意(多義):』" in dev.TRANSFER_BLOCK
     blk = dev.build_transfer_block({"OPEN233_NOTE_PREFIX": "注意(逆転):"})
-    assert "『注意(逆転):』" in blk and "注意(多義):" not in blk
+    assert "『注意(逆転):』で始まる" in blk and "『注意(多義):』で始まる" not in blk  # 規則文は後続注意として『注意(多義):』に言及する(TRIAL-02 Phase A)
 
 
 def test_k_runs_root_env(tmp_path, monkeypatch):
@@ -121,3 +121,13 @@ def test_k_runs_root_env(tmp_path, monkeypatch):
         dev.main(["--theme", "t", "--slug", "s", "--ledger-txt", str(led), "--out-dir", new, "--dry-run"])
     except SystemExit as e:
         assert "規約" not in str(e)
+
+
+def test_k_template_transfers_whole_notes():
+    b = dev.build_transfer_block({"OPEN233_NOTE_PREFIX": "注意:"})
+    assert "内容全体" in b and "省略" in b and "分割せず" in b
+    assert "後続の『注意(多義):』部分を含む" in b and "『注意:』で始まる" in b
+
+
+def test_l_template_no_addition_for_no_note():
+    assert "注意のないfactには何も足さない" in dev.TRANSFER_BLOCK
