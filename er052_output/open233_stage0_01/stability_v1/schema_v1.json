@@ -1,0 +1,18 @@
+{
+  "name": "relation_extraction_v1_two_stage",
+  "strict": true,
+  "stage1": {"name":"v1_stage1","strict":true,"schema":{"type":"object","additionalProperties":false,
+    "required":["subject_omitted","subject","predicate","polarity","modality"],
+    "properties":{
+      "subject_omitted":{"type":"boolean","description":"文中に主語(主体)の語句が無ければtrue。補完しない"},
+      "subject":{"type":"string","description":"主述語節の主語の表層語句。subject_omitted=trueなら空文字"},
+      "predicate":{"type":"string","enum":["実施・開始","中止・停止","再開・復元","増減","到達・流出・報告","その他"]},
+      "polarity":{"type":"string","enum":["肯定","否定"]},
+      "modality":{"type":"string","enum":["断定","推定","伝聞"]}}}},
+  "stage2": {"name":"v1_stage2","strict":true,"schema":{"type":"object","additionalProperties":false,
+    "required":["qualifier_types","qualifier_words"],
+    "properties":{
+      "qualifier_types":{"type":"array","items":{"type":"string","enum":["主体限定","範囲限定","意図限定","条件限定","時間限定","程度・数量限定"]},"description":"主語・述語を限定する語が文中にあるタイプ。無ければ空"},
+      "qualifier_words":{"type":"array","items":{"type":"string"},"description":"限定語の表層語句(参考)"}}}},
+  "compare": "subject: omitted flag一致 かつ (omitted以外はlenient text一致); predicate/polarity/modality: enum一致; scope_coarse: qualifier_types集合一致; scope_any: 限定語の有無(bool)一致"
+}

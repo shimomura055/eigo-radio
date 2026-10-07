@@ -1,0 +1,2699 @@
+{
+ "n_articles": 100,
+ "n_sentences": 5663,
+ "n_sentences_lang": {
+  "ja": 2796,
+  "en": 2867
+ },
+ "load": {
+  "P1_全規則": {
+   "all": 0.7102242627582553,
+   "ja": 0.7685979971387696,
+   "en": 0.6532961283571678,
+   "pos": {
+    "title": [
+     0.7242798353909465,
+     243
+    ],
+    "summary": [
+     0.78,
+     100
+    ],
+    "intro": [
+     0.5403377110694184,
+     533
+    ],
+    "body": [
+     0.7316418638692364,
+     4099
+    ],
+    "closing": [
+     0.6991279069767442,
+     688
+    ]
+   },
+   "article": {
+    "mean": 0.7125546001995001,
+    "min": 0.47540983606557374,
+    "median": 0.7083333333333334,
+    "max": 0.9285714285714286,
+    "p90": 0.8333333333333334
+   },
+   "marked_per_article": {
+    "mean": 40.22,
+    "min": 27,
+    "median": 40,
+    "max": 55
+   }
+  },
+  "P2_否定+全称+主語新規": {
+   "all": 0.4894932014833127,
+   "ja": 0.5236051502145923,
+   "en": 0.4562260202302058,
+   "pos": {
+    "title": [
+     0.6378600823045267,
+     243
+    ],
+    "summary": [
+     0.62,
+     100
+    ],
+    "intro": [
+     0.4146341463414634,
+     533
+    ],
+    "body": [
+     0.47670163454501097,
+     4099
+    ],
+    "closing": [
+     0.5523255813953488,
+     688
+    ]
+   },
+   "article": {
+    "mean": 0.490468906860196,
+    "min": 0.3333333333333333,
+    "median": 0.4915254237288136,
+    "max": 0.6825396825396826,
+    "p90": 0.5849056603773585
+   },
+   "marked_per_article": {
+    "mean": 27.72,
+    "min": 19,
+    "median": 28,
+    "max": 43
+   }
+  },
+  "P3_P2+因果時間": {
+   "all": 0.5927953381599859,
+   "ja": 0.6216022889842633,
+   "en": 0.5647017788629229,
+   "pos": {
+    "title": [
+     0.6831275720164609,
+     243
+    ],
+    "summary": [
+     0.64,
+     100
+    ],
+    "intro": [
+     0.4540337711069418,
+     533
+    ],
+    "body": [
+     0.5938033666747987,
+     4099
+    ],
+    "closing": [
+     0.6555232558139535,
+     688
+    ]
+   },
+   "article": {
+    "mean": 0.5951998585068115,
+    "min": 0.421875,
+    "median": 0.5925925925925926,
+    "max": 0.7719298245614035,
+    "p90": 0.6981132075471698
+   },
+   "marked_per_article": {
+    "mean": 33.57,
+    "min": 24,
+    "median": 33,
+    "max": 47
+   }
+  },
+  "P4_P3+限定語消失(HEDGE+SCOPE)": {
+   "all": 0.6833833657072224,
+   "ja": 0.7510729613733905,
+   "en": 0.6173700732472969,
+   "pos": {
+    "title": [
+     0.7078189300411523,
+     243
+    ],
+    "summary": [
+     0.67,
+     100
+    ],
+    "intro": [
+     0.5065666041275797,
+     533
+    ],
+    "body": [
+     0.7035862405464748,
+     4099
+    ],
+    "closing": [
+     0.6933139534883721,
+     688
+    ]
+   },
+   "article": {
+    "mean": 0.6857289664508809,
+    "min": 0.47540983606557374,
+    "median": 0.6808510638297872,
+    "max": 0.873015873015873,
+    "p90": 0.803921568627451
+   },
+   "marked_per_article": {
+    "mean": 38.7,
+    "min": 26,
+    "median": 39,
+    "max": 55
+   }
+  },
+  "P5_P3+限定語消失(HEDGEのみ)": {
+   "all": 0.6664312202013067,
+   "ja": 0.73068669527897,
+   "en": 0.6037670038367632,
+   "pos": {
+    "title": [
+     0.7078189300411523,
+     243
+    ],
+    "summary": [
+     0.67,
+     100
+    ],
+    "intro": [
+     0.4915572232645403,
+     533
+    ],
+    "body": [
+     0.683581361307636,
+     4099
+    ],
+    "closing": [
+     0.684593023255814,
+     688
+    ]
+   },
+   "article": {
+    "mean": 0.6692118452528334,
+    "min": 0.47540983606557374,
+    "median": 0.6716417910447762,
+    "max": 0.8392857142857143,
+    "p90": 0.7833333333333333
+   },
+   "marked_per_article": {
+    "mean": 37.74,
+    "min": 25,
+    "median": 38,
+    "max": 49
+   }
+  },
+  "P6_P4から主語新規を除く": {
+   "all": 0.5571251986579552,
+   "ja": 0.6112303290414879,
+   "en": 0.5043599581444018,
+   "pos": {
+    "title": [
+     0.41975308641975306,
+     243
+    ],
+    "summary": [
+     0.54,
+     100
+    ],
+    "intro": [
+     0.34896810506566606,
+     533
+    ],
+    "body": [
+     0.5942912905586728,
+     4099
+    ],
+    "closing": [
+     0.5479651162790697,
+     688
+    ]
+   },
+   "article": {
+    "mean": 0.5603208759543766,
+    "min": 0.32786885245901637,
+    "median": 0.5555555555555556,
+    "max": 0.7916666666666666,
+    "p90": 0.6666666666666666
+   },
+   "marked_per_article": {
+    "mean": 31.55,
+    "min": 20,
+    "median": 32,
+    "max": 46
+   }
+  }
+ },
+ "rule_load": {
+  "NEG": {
+   "all": 0.27405968567896877,
+   "ja": 0.2804005722460658,
+   "en": 0.26787582839204743
+  },
+  "UNIV": {
+   "all": 0.05986226381776444,
+   "ja": 0.044349070100143065,
+   "en": 0.0749912800837112
+  },
+  "CAUSE": {
+   "all": 0.1827653187356525,
+   "ja": 0.2067238912732475,
+   "en": 0.1594000697593303
+  },
+  "NUM": {
+   "all": 0.13402790040614515,
+   "ja": 0.14949928469241774,
+   "en": 0.11893965817928148
+  },
+  "LIMIT_HEDGE": {
+   "all": 0.15133321561010066,
+   "ja": 0.22031473533619456,
+   "en": 0.08405999302406697
+  },
+  "LIMIT_SCOPE": {
+   "all": 0.12149037612572841,
+   "ja": 0.18955650929899856,
+   "en": 0.05510987094523893
+  },
+  "SUBJ": {
+   "all": 0.27070457354758964,
+   "ja": 0.33798283261802575,
+   "en": 0.20509243111266132
+  }
+ },
+ "rule_pos": {
+  "NEG": {
+   "title": 0.1646090534979424,
+   "summary": 0.34,
+   "intro": 0.1669793621013133,
+   "body": 0.28055623322761647,
+   "closing": 0.34738372093023256
+  },
+  "UNIV": {
+   "title": 0.0205761316872428,
+   "summary": 0.02,
+   "intro": 0.03189493433395872,
+   "body": 0.06660161014881678,
+   "closing": 0.061046511627906974
+  },
+  "CAUSE": {
+   "title": 0.18930041152263374,
+   "summary": 0.14,
+   "intro": 0.11069418386491557,
+   "body": 0.19297389607221274,
+   "closing": 0.1816860465116279
+  },
+  "NUM": {
+   "title": 0.1646090534979424,
+   "summary": 0.16,
+   "intro": 0.09568480300187618,
+   "body": 0.15003659429129057,
+   "closing": 0.05377906976744186
+  },
+  "LIMIT_HEDGE": {
+   "title": 0.08641975308641975,
+   "summary": 0.21,
+   "intro": 0.08630393996247655,
+   "body": 0.17858014149792634,
+   "closing": 0.05377906976744186
+  },
+  "LIMIT_SCOPE": {
+   "title": 0.04526748971193416,
+   "summary": 0.2,
+   "intro": 0.06191369606003752,
+   "body": 0.14344962185899,
+   "closing": 0.05232558139534884
+  },
+  "SUBJ": {
+   "title": 0.588477366255144,
+   "summary": 0.4,
+   "intro": 0.28893058161350843,
+   "body": 0.2393266650402537,
+   "closing": 0.3125
+  }
+ },
+ "detection": {
+  "P1_全規則": {
+   "oracle": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 8,
+     "rate": 1.0
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 72,
+     "rate": 0.972972972972973
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 34,
+     "rate": 0.7906976744186046
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 80,
+     "rate": 0.975609756097561
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 15,
+     "rate": 0.9375
+    }
+   },
+   "auto": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 8,
+     "rate": 1.0
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 63,
+     "rate": 0.8513513513513513
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 34,
+     "rate": 0.7906976744186046
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 71,
+     "rate": 0.8658536585365854
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 14,
+     "rate": 0.875
+    }
+   },
+   "by_kind_oracle": {
+    "added_fact": {
+     "n": 21,
+     "detected": 21,
+     "rate": 1.0
+    },
+    "scope": {
+     "n": 37,
+     "detected": 36,
+     "rate": 0.972972972972973
+    },
+    "causal": {
+     "n": 6,
+     "detected": 6,
+     "rate": 1.0
+    },
+    "time": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "subject": {
+     "n": 12,
+     "detected": 11,
+     "rate": 0.9166666666666666
+    },
+    "negation": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "object": {
+     "n": 3,
+     "detected": 3,
+     "rate": 1.0
+    },
+    "unrelated_inserted": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    }
+   },
+   "by_lang_oracle": {
+    "ja": {
+     "n": 67,
+     "detected": 66,
+     "rate": 0.9850746268656716
+    },
+    "en": {
+     "n": 47,
+     "detected": 45,
+     "rate": 0.9574468085106383
+    }
+   }
+  },
+  "P2_否定+全称+主語新規": {
+   "oracle": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 6,
+     "rate": 0.75
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 42,
+     "rate": 0.5675675675675675
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 25,
+     "rate": 0.5813953488372093
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 48,
+     "rate": 0.5853658536585366
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 8,
+     "rate": 0.5
+    }
+   },
+   "auto": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 6,
+     "rate": 0.75
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 42,
+     "rate": 0.5675675675675675
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 25,
+     "rate": 0.5813953488372093
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 48,
+     "rate": 0.5853658536585366
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 8,
+     "rate": 0.5
+    }
+   },
+   "by_kind_oracle": {
+    "added_fact": {
+     "n": 21,
+     "detected": 14,
+     "rate": 0.6666666666666666
+    },
+    "scope": {
+     "n": 37,
+     "detected": 18,
+     "rate": 0.4864864864864865
+    },
+    "causal": {
+     "n": 6,
+     "detected": 4,
+     "rate": 0.6666666666666666
+    },
+    "time": {
+     "n": 1,
+     "detected": 0,
+     "rate": 0.0
+    },
+    "subject": {
+     "n": 12,
+     "detected": 8,
+     "rate": 0.6666666666666666
+    },
+    "negation": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "object": {
+     "n": 3,
+     "detected": 3,
+     "rate": 1.0
+    },
+    "unrelated_inserted": {
+     "n": 1,
+     "detected": 0,
+     "rate": 0.0
+    }
+   },
+   "by_lang_oracle": {
+    "ja": {
+     "n": 67,
+     "detected": 38,
+     "rate": 0.5671641791044776
+    },
+    "en": {
+     "n": 47,
+     "detected": 25,
+     "rate": 0.5319148936170213
+    }
+   }
+  },
+  "P3_P2+因果時間": {
+   "oracle": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 7,
+     "rate": 0.875
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 54,
+     "rate": 0.7297297297297297
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 27,
+     "rate": 0.627906976744186
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 61,
+     "rate": 0.7439024390243902
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 11,
+     "rate": 0.6875
+    }
+   },
+   "auto": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 7,
+     "rate": 0.875
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 54,
+     "rate": 0.7297297297297297
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 27,
+     "rate": 0.627906976744186
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 61,
+     "rate": 0.7439024390243902
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 11,
+     "rate": 0.6875
+    }
+   },
+   "by_kind_oracle": {
+    "added_fact": {
+     "n": 21,
+     "detected": 14,
+     "rate": 0.6666666666666666
+    },
+    "scope": {
+     "n": 37,
+     "detected": 27,
+     "rate": 0.7297297297297297
+    },
+    "causal": {
+     "n": 6,
+     "detected": 6,
+     "rate": 1.0
+    },
+    "time": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "subject": {
+     "n": 12,
+     "detected": 9,
+     "rate": 0.75
+    },
+    "negation": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "object": {
+     "n": 3,
+     "detected": 3,
+     "rate": 1.0
+    },
+    "unrelated_inserted": {
+     "n": 1,
+     "detected": 0,
+     "rate": 0.0
+    }
+   },
+   "by_lang_oracle": {
+    "ja": {
+     "n": 67,
+     "detected": 46,
+     "rate": 0.6865671641791045
+    },
+    "en": {
+     "n": 47,
+     "detected": 30,
+     "rate": 0.6382978723404256
+    }
+   }
+  },
+  "P4_P3+限定語消失(HEDGE+SCOPE)": {
+   "oracle": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 8,
+     "rate": 1.0
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 72,
+     "rate": 0.972972972972973
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 34,
+     "rate": 0.7906976744186046
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 80,
+     "rate": 0.975609756097561
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 15,
+     "rate": 0.9375
+    }
+   },
+   "auto": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 8,
+     "rate": 1.0
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 63,
+     "rate": 0.8513513513513513
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 34,
+     "rate": 0.7906976744186046
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 71,
+     "rate": 0.8658536585365854
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 13,
+     "rate": 0.8125
+    }
+   },
+   "by_kind_oracle": {
+    "added_fact": {
+     "n": 21,
+     "detected": 21,
+     "rate": 1.0
+    },
+    "scope": {
+     "n": 37,
+     "detected": 36,
+     "rate": 0.972972972972973
+    },
+    "causal": {
+     "n": 6,
+     "detected": 6,
+     "rate": 1.0
+    },
+    "time": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "subject": {
+     "n": 12,
+     "detected": 11,
+     "rate": 0.9166666666666666
+    },
+    "negation": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "object": {
+     "n": 3,
+     "detected": 3,
+     "rate": 1.0
+    },
+    "unrelated_inserted": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    }
+   },
+   "by_lang_oracle": {
+    "ja": {
+     "n": 67,
+     "detected": 66,
+     "rate": 0.9850746268656716
+    },
+    "en": {
+     "n": 47,
+     "detected": 45,
+     "rate": 0.9574468085106383
+    }
+   }
+  },
+  "P5_P3+限定語消失(HEDGEのみ)": {
+   "oracle": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 7,
+     "rate": 0.875
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 71,
+     "rate": 0.9594594594594594
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 34,
+     "rate": 0.7906976744186046
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 78,
+     "rate": 0.9512195121951219
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 15,
+     "rate": 0.9375
+    }
+   },
+   "auto": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 7,
+     "rate": 0.875
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 63,
+     "rate": 0.8513513513513513
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 34,
+     "rate": 0.7906976744186046
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 70,
+     "rate": 0.8536585365853658
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 13,
+     "rate": 0.8125
+    }
+   },
+   "by_kind_oracle": {
+    "added_fact": {
+     "n": 21,
+     "detected": 21,
+     "rate": 1.0
+    },
+    "scope": {
+     "n": 37,
+     "detected": 35,
+     "rate": 0.9459459459459459
+    },
+    "causal": {
+     "n": 6,
+     "detected": 6,
+     "rate": 1.0
+    },
+    "time": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "subject": {
+     "n": 12,
+     "detected": 11,
+     "rate": 0.9166666666666666
+    },
+    "negation": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "object": {
+     "n": 3,
+     "detected": 3,
+     "rate": 1.0
+    },
+    "unrelated_inserted": {
+     "n": 1,
+     "detected": 0,
+     "rate": 0.0
+    }
+   },
+   "by_lang_oracle": {
+    "ja": {
+     "n": 67,
+     "detected": 66,
+     "rate": 0.9850746268656716
+    },
+    "en": {
+     "n": 47,
+     "detected": 39,
+     "rate": 0.8297872340425532
+    }
+   }
+  },
+  "P6_P4から主語新規を除く": {
+   "oracle": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 8,
+     "rate": 1.0
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 71,
+     "rate": 0.9594594594594594
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 28,
+     "rate": 0.6511627906976745
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 79,
+     "rate": 0.9634146341463414
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 15,
+     "rate": 0.9375
+    }
+   },
+   "auto": {
+    "重大": {
+     "n_matched": 8,
+     "n_all": 8,
+     "detected": 7,
+     "rate": 0.875
+    },
+    "軽微": {
+     "n_matched": 74,
+     "n_all": 74,
+     "detected": 57,
+     "rate": 0.7702702702702703
+    },
+    "保留": {
+     "n_matched": 43,
+     "n_all": 48,
+     "detected": 28,
+     "rate": 0.6511627906976745
+    },
+    "重大+軽微": {
+     "n_matched": 82,
+     "detected": 64,
+     "rate": 0.7804878048780488
+    },
+    "R0のみ軽微(参考)": {
+     "n_matched": 16,
+     "detected": 13,
+     "rate": 0.8125
+    }
+   },
+   "by_kind_oracle": {
+    "added_fact": {
+     "n": 21,
+     "detected": 20,
+     "rate": 0.9523809523809523
+    },
+    "scope": {
+     "n": 37,
+     "detected": 36,
+     "rate": 0.972972972972973
+    },
+    "causal": {
+     "n": 6,
+     "detected": 6,
+     "rate": 1.0
+    },
+    "time": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "subject": {
+     "n": 12,
+     "detected": 11,
+     "rate": 0.9166666666666666
+    },
+    "negation": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    },
+    "object": {
+     "n": 3,
+     "detected": 3,
+     "rate": 1.0
+    },
+    "unrelated_inserted": {
+     "n": 1,
+     "detected": 1,
+     "rate": 1.0
+    }
+   },
+   "by_lang_oracle": {
+    "ja": {
+     "n": 67,
+     "detected": 65,
+     "rate": 0.9701492537313433
+    },
+    "en": {
+     "n": 47,
+     "detected": 45,
+     "rate": 0.9574468085106383
+    }
+   }
+  }
+ },
+ "single_rule_detection": {
+  "NEG": {
+   "oracle": 0.3048780487804878,
+   "auto": 0.3048780487804878
+  },
+  "UNIV": {
+   "oracle": 0.12195121951219512,
+   "auto": 0.12195121951219512
+  },
+  "CAUSE": {
+   "oracle": 0.34146341463414637,
+   "auto": 0.34146341463414637
+  },
+  "NUM": {
+   "oracle": 0.18292682926829268,
+   "auto": 0.18292682926829268
+  },
+  "LIMIT_HEDGE": {
+   "oracle": 0.6829268292682927,
+   "auto": 0.35365853658536583
+  },
+  "LIMIT_SCOPE": {
+   "oracle": 0.5609756097560976,
+   "auto": 0.2073170731707317
+  },
+  "SUBJ": {
+   "oracle": 0.3780487804878049,
+   "auto": 0.3780487804878049
+  }
+ },
+ "missed": {
+  "P1_全規則": [
+   {
+    "id": "meta-j7e5-01",
+    "bucket": "軽微",
+    "kind": "subject",
+    "fact": "MUSE-HC-011",
+    "sents": {
+     "en": "In addition, in one case where Meta asked someone to negotiate internet and cable fees, a report said that the call record contained inappropriate remarks about race."
+    },
+    "fired_any": {
+     "en": []
+    }
+   },
+   {
+    "id": "space_weapons-4mjq-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "F-011",
+    "sents": {
+     "ja": "衛星通信を守ること、宇宙の様子を監視すること、ミサイルを追跡することも含まれる。",
+     "en": "It includes protecting satellite communications, watching what is happening in space, and tracking missiles."
+    },
+    "fired_any": {
+     "ja": [],
+     "en": []
+    }
+   }
+  ],
+  "P4_P3+限定語消失(HEDGE+SCOPE)": [
+   {
+    "id": "meta-j7e5-01",
+    "bucket": "軽微",
+    "kind": "subject",
+    "fact": "MUSE-HC-011",
+    "sents": {
+     "en": "In addition, in one case where Meta asked someone to negotiate internet and cable fees, a report said that the call record contained inappropriate remarks about race."
+    },
+    "fired_any": {
+     "en": []
+    }
+   },
+   {
+    "id": "space_weapons-4mjq-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "F-011",
+    "sents": {
+     "ja": "衛星通信を守ること、宇宙の様子を監視すること、ミサイルを追跡することも含まれる。",
+     "en": "It includes protecting satellite communications, watching what is happening in space, and tracking missiles."
+    },
+    "fired_any": {
+     "ja": [],
+     "en": []
+    }
+   }
+  ],
+  "P3_P2+因果時間": [
+   {
+    "id": "meta-j7e5-01",
+    "bucket": "軽微",
+    "kind": "subject",
+    "fact": "MUSE-HC-011",
+    "sents": {
+     "en": "In addition, in one case where Meta asked someone to negotiate internet and cable fees, a report said that the call record contained inappropriate remarks about race."
+    },
+    "fired_any": {
+     "en": []
+    }
+   },
+   {
+    "id": "meta-p9ng-01",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "HC-014",
+    "sents": {
+     "ja": "誰が対応するのかを説明し、情報の扱いにも納得してもらえる準備が整った場合にだけ、公開する方針です。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-p9ng-02",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "HC-010",
+    "sents": {
+     "ja": "電話を終えるには、利用者の予定や希望など、細かな情報が必要になります。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-rweb-02",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "MUSE-HC-006",
+    "sents": {
+     "ja": "AIだけでは難しい会話を人間が担当する。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-sccn-01",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "MUSE-HC-010",
+    "sents": {
+     "ja": "ただ、AIとの会話だと思っていた内容を、人間が聞く可能性がある。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-v6r6-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "HC-012",
+    "sents": {
+     "ja": "Metaはこの機能を、当面の間、いったん元の状態に戻しました。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "meta-x5wg-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "HC-012",
+    "sents": {
+     "ja": "そして、この機能は当面ロールバックされました。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "meta-x5wg-02",
+    "bucket": "軽微",
+    "kind": "subject",
+    "fact": "HC-010",
+    "sents": {
+     "ja": "AIに話していると思っているところで、実際にはコールセンターの契約スタッフが聞いている。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "space_weapons-wyg2-03",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "F-003",
+    "sents": {
+     "en": "In the past, Russia used ground-launched ASAT missiles, or anti-satellite missiles, to destroy its own satellites."
+    },
+    "fired_any": {
+     "en": [
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-249j-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "MUSE-HC-012",
+    "sents": {
+     "ja": "Metaはこの機能を、当面はいったん元の状態に戻します。",
+     "en": "For now, Meta will put this feature back the way it was."
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ],
+     "en": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "meta-jdmu-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "MUSE-HC-009",
+    "sents": {
+     "ja": "その報告では、AIとして電話をかけると切られ、人間が担当した一部テストでは高い成功率の可能性が示されていました。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-n6vy-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "MUSE-HC-012",
+    "sents": {
+     "ja": "戻されたのは、人間が電話を担当する部分です。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "meta-qvqc-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "MUSE-HC-012",
+    "sents": {
+     "ja": "そして、人間コンシェルジュ機能はいったん元に戻されました。",
+     "en": "The human concierge feature was temporarily rolled back."
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ],
+     "en": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-ua6f-02",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "MUSE-HC-012",
+    "sents": {
+     "ja": "そして、人間コンシェルジュ機能を当面ロールバックしました。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "space_weapons-4mjq-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "F-011",
+    "sents": {
+     "ja": "衛星通信を守ること、宇宙の様子を監視すること、ミサイルを追跡することも含まれる。",
+     "en": "It includes protecting satellite communications, watching what is happening in space, and tracking missiles."
+    },
+    "fired_any": {
+     "ja": [],
+     "en": []
+    }
+   },
+   {
+    "id": "hormuz-j7gv-01",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "HF-003",
+    "sents": {
+     "ja": "船が通るたびに、アメリカの安全対策費を払う。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "hormuz-kbds-01",
+    "bucket": "軽微",
+    "kind": "subject",
+    "fact": "HF-002",
+    "sents": {
+     "en": "The idea was for the cargo to repay the cost of keeping the strait safe for the United States."
+    },
+    "fired_any": {
+     "en": [
+      "LIMIT_HEDGE"
+     ]
+    }
+   },
+   {
+    "id": "hormuz-qc67-01",
+    "bucket": "軽微",
+    "kind": "scope",
+    "fact": "HF-009",
+    "sents": {
+     "ja": "記事掲載時点では、前日比およそ二・六パーセント高で、一バレル八十五ドルを超えていました。",
+     "en": "At the time this article was published, they were up about 2.6 percent from the previous day and above 85 dollars a barrel."
+    },
+    "fired_any": {
+     "ja": [
+      "NUM",
+      "LIMIT_HEDGE"
+     ],
+     "en": [
+      "NUM",
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-78bg-01",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "MUSE-HC-010",
+    "sents": {
+     "ja": "電話を終えるには、利用者の予定や希望など、細かな情報が必要になります。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "meta-78bg-02",
+    "bucket": "軽微",
+    "kind": "added_fact",
+    "fact": "MUSE-HC-014",
+    "sents": {
+     "ja": "誰が対応するのかを説明し、情報の扱いにも納得してもらえる準備が整った場合にだけ、公開する方針です。"
+    },
+    "fired_any": {
+     "ja": [
+      "LIMIT_HEDGE",
+      "LIMIT_SCOPE"
+     ]
+    }
+   },
+   {
+    "id": "P8-4 ai-p2r2-07",
+    "bucket": "重大",
+    "kind": "unrelated_inserted",
+    "fact": "EVID-006",
+    "sents": {
+     "en": "In a simulated safety evaluation, Claude Opus 4 attempted blackmail in 84% of rollouts."
+    },
+    "fired_any": {
+     "en": [
+      "NUM",
+      "LIMIT_SCOPE"
+     ]
+    }
+   }
+  ]
+ },
+ "unmatched": [],
+ "items_summary": {
+  "保留": 48,
+  "軽微": 90,
+  "重大": 8,
+  "dup": 1
+ },
+ "r0_only_n": 16,
+ "frontier": {
+  "n_items": 82,
+  "best_auto_load_le_40": [
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.39519689210665726,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6360586261698746,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.37630231326152214,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6275825534169168,
+    "det_lax": 0.8414634146341463
+   },
+   {
+    "rules": "LIMIT_HEDGE+SUBJ",
+    "load": 0.3842486314674201,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.8658536585365854,
+    "load_lax": 0.5802578138795691,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE",
+    "load": 0.377008652657602,
+    "det_auto": 0.6219512195121951,
+    "det_oracle": 0.8292682926829268,
+    "load_lax": 0.5793748896344694,
+    "det_lax": 0.7804878048780488
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE",
+    "load": 0.35034434045558893,
+    "det_auto": 0.5975609756097561,
+    "det_oracle": 0.7926829268292683,
+    "load_lax": 0.5601271410912944,
+    "det_lax": 0.7439024390243902
+   }
+  ],
+  "best_oracle_load_le_40": [
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.37630231326152214,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6275825534169168,
+    "det_lax": 0.8414634146341463
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.39519689210665726,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6360586261698746,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.23838954617693803,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.5421154864912591,
+    "det_lax": 0.8170731707317073
+   },
+   {
+    "rules": "NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.2717640826417093,
+    "det_auto": 0.5,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.557831538054035,
+    "det_lax": 0.8292682926829268
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.31361469185943847,
+    "det_auto": 0.5121951219512195,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.580964153275649,
+    "det_lax": 0.8292682926829268
+   }
+  ],
+  "best_auto_load_le_50": [
+   {
+    "rules": "CAUSE+LIMIT_HEDGE+SUBJ",
+    "load": 0.49585025604803107,
+    "det_auto": 0.7682926829268293,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.6586614868444287,
+    "det_lax": 0.926829268292683
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.4504679498499029,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6683736535405262,
+    "det_lax": 0.926829268292683
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.45152745894402263,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.672964859615045,
+    "det_lax": 0.9634146341463414
+   }
+  ],
+  "passing_auto": [],
+  "passing_lax": [],
+  "best_lax_load_le_40": [
+   {
+    "rules": "UNIV+LIMIT_SCOPE",
+    "load": 0.17570192477485433,
+    "det_auto": 0.3170731707317073,
+    "det_oracle": 0.6585365853658537,
+    "load_lax": 0.3658838071693449,
+    "det_lax": 0.5975609756097561
+   },
+   {
+    "rules": "LIMIT_SCOPE",
+    "load": 0.12149037612572841,
+    "det_auto": 0.2073170731707317,
+    "det_oracle": 0.5609756097560976,
+    "load_lax": 0.3196185767261169,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM",
+    "load": 0.32668197068691507,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.4878048780487805,
+    "load_lax": 0.32668197068691507,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "NUM+SUBJ",
+    "load": 0.36093943139678614,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.4878048780487805,
+    "load_lax": 0.36093943139678614,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "UNIV+NUM+SUBJ",
+    "load": 0.39713932544587677,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.4878048780487805,
+    "load_lax": 0.39713932544587677,
+    "det_lax": 0.4878048780487805
+   }
+  ],
+  "passing_oracle": [
+   {
+    "rules": "LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.18965212784743068,
+    "det_auto": 0.4268292682926829,
+    "det_oracle": 0.8902439024390244,
+    "load_lax": 0.5131555712519866,
+    "det_lax": 0.7926829268292683
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.23838954617693803,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.5421154864912591,
+    "det_lax": 0.8170731707317073
+   },
+   {
+    "rules": "NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.2717640826417093,
+    "det_auto": 0.5,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.557831538054035,
+    "det_lax": 0.8292682926829268
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.31361469185943847,
+    "det_auto": 0.5121951219512195,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.580964153275649,
+    "det_lax": 0.8292682926829268
+   },
+   {
+    "rules": "CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.3319795161575137,
+    "det_auto": 0.573170731707317,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.6016245806109836,
+    "det_lax": 0.8170731707317073
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.37630231326152214,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6275825534169168,
+    "det_lax": 0.8414634146341463
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE",
+    "load": 0.377008652657602,
+    "det_auto": 0.6219512195121951,
+    "det_oracle": 0.8292682926829268,
+    "load_lax": 0.5793748896344694,
+    "det_lax": 0.7804878048780488
+   },
+   {
+    "rules": "LIMIT_HEDGE+SUBJ",
+    "load": 0.3842486314674201,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.8658536585365854,
+    "load_lax": 0.5802578138795691,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.39519689210665726,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6360586261698746,
+    "det_lax": 0.8536585365853658
+   }
+  ],
+  "all_subsets": [
+   {
+    "rules": "UNIV",
+    "load": 0.05986226381776444,
+    "det_auto": 0.12195121951219512,
+    "det_oracle": 0.12195121951219512,
+    "load_lax": 0.05986226381776444,
+    "det_lax": 0.12195121951219512
+   },
+   {
+    "rules": "LIMIT_SCOPE",
+    "load": 0.12149037612572841,
+    "det_auto": 0.2073170731707317,
+    "det_oracle": 0.5609756097560976,
+    "load_lax": 0.3196185767261169,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "NUM",
+    "load": 0.13402790040614515,
+    "det_auto": 0.18292682926829268,
+    "det_oracle": 0.18292682926829268,
+    "load_lax": 0.13402790040614515,
+    "det_lax": 0.18292682926829268
+   },
+   {
+    "rules": "LIMIT_HEDGE",
+    "load": 0.15133321561010066,
+    "det_auto": 0.35365853658536583,
+    "det_oracle": 0.6829268292682927,
+    "load_lax": 0.42486314674200953,
+    "det_lax": 0.6463414634146342
+   },
+   {
+    "rules": "UNIV+LIMIT_SCOPE",
+    "load": 0.17570192477485433,
+    "det_auto": 0.3170731707317073,
+    "det_oracle": 0.6585365853658537,
+    "load_lax": 0.3658838071693449,
+    "det_lax": 0.5975609756097561
+   },
+   {
+    "rules": "UNIV+NUM",
+    "load": 0.18135263994349285,
+    "det_auto": 0.2073170731707317,
+    "det_oracle": 0.2073170731707317,
+    "load_lax": 0.18135263994349285,
+    "det_lax": 0.2073170731707317
+   },
+   {
+    "rules": "CAUSE",
+    "load": 0.1827653187356525,
+    "det_auto": 0.34146341463414637,
+    "det_oracle": 0.34146341463414637,
+    "load_lax": 0.1827653187356525,
+    "det_lax": 0.34146341463414637
+   },
+   {
+    "rules": "LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.18965212784743068,
+    "det_auto": 0.4268292682926829,
+    "det_oracle": 0.8902439024390244,
+    "load_lax": 0.5131555712519866,
+    "det_lax": 0.7926829268292683
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE",
+    "load": 0.2023662369768674,
+    "det_auto": 0.4268292682926829,
+    "det_oracle": 0.7195121951219512,
+    "load_lax": 0.4568250044146212,
+    "det_lax": 0.6829268292682927
+   },
+   {
+    "rules": "NUM+LIMIT_SCOPE",
+    "load": 0.226911530990641,
+    "det_auto": 0.34146341463414637,
+    "det_oracle": 0.6585365853658537,
+    "load_lax": 0.4121490376125728,
+    "det_lax": 0.6097560975609756
+   },
+   {
+    "rules": "UNIV+CAUSE",
+    "load": 0.23644711283771852,
+    "det_auto": 0.4146341463414634,
+    "det_oracle": 0.4146341463414634,
+    "load_lax": 0.23644711283771852,
+    "det_lax": 0.4146341463414634
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.23838954617693803,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.5421154864912591,
+    "det_lax": 0.8170731707317073
+   },
+   {
+    "rules": "NUM+LIMIT_HEDGE",
+    "load": 0.2468656189298958,
+    "det_auto": 0.4634146341463415,
+    "det_oracle": 0.7682926829268293,
+    "load_lax": 0.4900229560303726,
+    "det_lax": 0.7317073170731707
+   },
+   {
+    "rules": "SUBJ",
+    "load": 0.27070457354758964,
+    "det_auto": 0.3780487804878049,
+    "det_oracle": 0.3780487804878049,
+    "load_lax": 0.27070457354758964,
+    "det_lax": 0.3780487804878049
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_SCOPE",
+    "load": 0.27105774324562953,
+    "det_auto": 0.35365853658536583,
+    "det_oracle": 0.6707317073170732,
+    "load_lax": 0.4476425922655836,
+    "det_lax": 0.6219512195121951
+   },
+   {
+    "rules": "NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.2717640826417093,
+    "det_auto": 0.5,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.557831538054035,
+    "det_lax": 0.8292682926829268
+   },
+   {
+    "rules": "NEG",
+    "load": 0.27405968567896877,
+    "det_auto": 0.3048780487804878,
+    "det_oracle": 0.3048780487804878,
+    "load_lax": 0.27405968567896877,
+    "det_lax": 0.3048780487804878
+   },
+   {
+    "rules": "CAUSE+LIMIT_SCOPE",
+    "load": 0.27441285537700866,
+    "det_auto": 0.4634146341463415,
+    "det_oracle": 0.7195121951219512,
+    "load_lax": 0.4338689740420272,
+    "det_lax": 0.6585365853658537
+   },
+   {
+    "rules": "CAUSE+NUM",
+    "load": 0.2839484372240862,
+    "det_auto": 0.4634146341463415,
+    "det_oracle": 0.4634146341463415,
+    "load_lax": 0.2839484372240862,
+    "det_lax": 0.4634146341463415
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_HEDGE",
+    "load": 0.2895991523927247,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.7804878048780488,
+    "load_lax": 0.5152745894402261,
+    "det_lax": 0.7439024390243902
+   },
+   {
+    "rules": "NEG+UNIV",
+    "load": 0.29895814939078225,
+    "det_auto": 0.3902439024390244,
+    "det_oracle": 0.3902439024390244,
+    "load_lax": 0.29895814939078225,
+    "det_lax": 0.3902439024390244
+   },
+   {
+    "rules": "CAUSE+LIMIT_HEDGE",
+    "load": 0.3042556948613809,
+    "det_auto": 0.524390243902439,
+    "det_oracle": 0.7560975609756098,
+    "load_lax": 0.5315203955500618,
+    "det_lax": 0.7073170731707317
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.31361469185943847,
+    "det_auto": 0.5121951219512195,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.580964153275649,
+    "det_lax": 0.8292682926829268
+   },
+   {
+    "rules": "UNIV+SUBJ",
+    "load": 0.31714638883983753,
+    "det_auto": 0.45121951219512196,
+    "det_oracle": 0.45121951219512196,
+    "load_lax": 0.31714638883983753,
+    "det_lax": 0.45121951219512196
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_SCOPE",
+    "load": 0.323150273706516,
+    "det_auto": 0.524390243902439,
+    "det_oracle": 0.7682926829268293,
+    "load_lax": 0.4755429984107364,
+    "det_lax": 0.7195121951219512
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM",
+    "load": 0.32668197068691507,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.4878048780487805,
+    "load_lax": 0.32668197068691507,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.3319795161575137,
+    "det_auto": 0.573170731707317,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.6016245806109836,
+    "det_lax": 0.8170731707317073
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE",
+    "load": 0.35034434045558893,
+    "det_auto": 0.5975609756097561,
+    "det_oracle": 0.7926829268292683,
+    "load_lax": 0.5601271410912944,
+    "det_lax": 0.7439024390243902
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_SCOPE",
+    "load": 0.35511213137912767,
+    "det_auto": 0.5487804878048781,
+    "det_oracle": 0.7682926829268293,
+    "load_lax": 0.5053858378951086,
+    "det_lax": 0.7317073170731707
+   },
+   {
+    "rules": "NUM+SUBJ",
+    "load": 0.36093943139678614,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.4878048780487805,
+    "load_lax": 0.36093943139678614,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "LIMIT_SCOPE+SUBJ",
+    "load": 0.36747307081052444,
+    "det_auto": 0.5121951219512195,
+    "det_oracle": 0.6951219512195121,
+    "load_lax": 0.5103302136676673,
+    "det_lax": 0.7317073170731707
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.37630231326152214,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6275825534169168,
+    "det_lax": 0.8414634146341463
+   },
+   {
+    "rules": "NEG+LIMIT_SCOPE",
+    "load": 0.3766554829595621,
+    "det_auto": 0.47560975609756095,
+    "det_oracle": 0.6829268292682927,
+    "load_lax": 0.5119194773088469,
+    "det_lax": 0.6829268292682927
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE",
+    "load": 0.377008652657602,
+    "det_auto": 0.6219512195121951,
+    "det_oracle": 0.8292682926829268,
+    "load_lax": 0.5793748896344694,
+    "det_lax": 0.7804878048780488
+   },
+   {
+    "rules": "LIMIT_HEDGE+SUBJ",
+    "load": 0.3842486314674201,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.8658536585365854,
+    "load_lax": 0.5802578138795691,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "NEG+NUM",
+    "load": 0.3916651951262582,
+    "det_auto": 0.47560975609756095,
+    "det_oracle": 0.47560975609756095,
+    "load_lax": 0.3916651951262582,
+    "det_lax": 0.47560975609756095
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+LIMIT_SCOPE",
+    "load": 0.3948437224086173,
+    "det_auto": 0.5609756097560976,
+    "det_oracle": 0.7804878048780488,
+    "load_lax": 0.5375242804167403,
+    "det_lax": 0.7439024390243902
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.39519689210665726,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6360586261698746,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "UNIV+NUM+SUBJ",
+    "load": 0.39713932544587677,
+    "det_auto": 0.4878048780487805,
+    "det_oracle": 0.4878048780487805,
+    "load_lax": 0.39713932544587677,
+    "det_lax": 0.4878048780487805
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_SCOPE",
+    "load": 0.39872858908705633,
+    "det_auto": 0.5609756097560976,
+    "det_oracle": 0.7682926829268293,
+    "load_lax": 0.5329330743422215,
+    "det_lax": 0.7682926829268293
+   },
+   {
+    "rules": "NEG+LIMIT_HEDGE",
+    "load": 0.40120077697333567,
+    "det_auto": 0.6097560975609756,
+    "det_oracle": 0.7804878048780488,
+    "load_lax": 0.5866148684442875,
+    "det_lax": 0.7804878048780488
+   },
+   {
+    "rules": "NEG+UNIV+NUM",
+    "load": 0.4047324739537348,
+    "det_auto": 0.47560975609756095,
+    "det_oracle": 0.47560975609756095,
+    "load_lax": 0.4047324739537348,
+    "det_lax": 0.47560975609756095
+   },
+   {
+    "rules": "CAUSE+SUBJ",
+    "load": 0.40720466184001414,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.6463414634146342,
+    "load_lax": 0.40720466184001414,
+    "det_lax": 0.6463414634146342
+   },
+   {
+    "rules": "UNIV+LIMIT_SCOPE+SUBJ",
+    "load": 0.40897051033021364,
+    "det_auto": 0.5853658536585366,
+    "det_oracle": 0.7560975609756098,
+    "load_lax": 0.5474130319618576,
+    "det_lax": 0.8048780487804879
+   },
+   {
+    "rules": "LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.41479781034787216,
+    "det_auto": 0.6707317073170732,
+    "det_oracle": 0.926829268292683,
+    "load_lax": 0.6494790746953911,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+LIMIT_HEDGE",
+    "load": 0.415327564894932,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.8414634146341463,
+    "load_lax": 0.6018011654600035,
+    "det_lax": 0.7926829268292683
+   },
+   {
+    "rules": "NEG+CAUSE",
+    "load": 0.4158573194419919,
+    "det_auto": 0.5487804878048781,
+    "det_oracle": 0.5487804878048781,
+    "load_lax": 0.4158573194419919,
+    "det_lax": 0.5487804878048781
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_HEDGE",
+    "load": 0.4211548649125905,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.8048780487804879,
+    "load_lax": 0.6023309200070633,
+    "det_lax": 0.8048780487804879
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE+SUBJ",
+    "load": 0.42327388310083,
+    "det_auto": 0.6707317073170732,
+    "det_oracle": 0.8780487804878049,
+    "load_lax": 0.6062157866855024,
+    "det_lax": 0.9146341463414634
+   },
+   {
+    "rules": "NEG+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.43210312555182767,
+    "det_auto": 0.6707317073170732,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.6544234504679498,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.4326328800988875,
+    "det_auto": 0.6585365853658537,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6563658838071693,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.4342221437400671,
+    "det_auto": 0.5853658536585366,
+    "det_oracle": 0.7560975609756098,
+    "load_lax": 0.5671905350520925,
+    "det_lax": 0.8048780487804879
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE",
+    "load": 0.4372240861734063,
+    "det_auto": 0.5853658536585366,
+    "det_oracle": 0.5853658536585366,
+    "load_lax": 0.4372240861734063,
+    "det_lax": 0.5853658536585366
+   },
+   {
+    "rules": "NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.4465830831714639,
+    "det_auto": 0.6951219512195121,
+    "det_oracle": 0.9024390243902439,
+    "load_lax": 0.6212254988521985,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "UNIV+CAUSE+SUBJ",
+    "load": 0.4488786862087233,
+    "det_auto": 0.6829268292682927,
+    "det_oracle": 0.6829268292682927,
+    "load_lax": 0.4488786862087233,
+    "det_lax": 0.6829268292682927
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.4504679498499029,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6683736535405262,
+    "det_lax": 0.926829268292683
+   },
+   {
+    "rules": "UNIV+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.45152745894402263,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.672964859615045,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.4658308317146389,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6734946141621049,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+NUM+LIMIT_SCOPE",
+    "load": 0.46671375595973863,
+    "det_auto": 0.5975609756097561,
+    "det_oracle": 0.7804878048780488,
+    "load_lax": 0.5903231502737065,
+    "det_lax": 0.7926829268292683
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.46794984990287836,
+    "det_auto": 0.5853658536585366,
+    "det_oracle": 0.7560975609756098,
+    "load_lax": 0.5956206957443051,
+    "det_lax": 0.8048780487804879
+   },
+   {
+    "rules": "NEG+SUBJ",
+    "load": 0.4700688680911178,
+    "det_auto": 0.524390243902439,
+    "det_oracle": 0.524390243902439,
+    "load_lax": 0.4700688680911178,
+    "det_lax": 0.524390243902439
+   },
+   {
+    "rules": "CAUSE+NUM+SUBJ",
+    "load": 0.47395373476955677,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.7073170731707317,
+    "load_lax": 0.47395373476955677,
+    "det_lax": 0.7073170731707317
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.4788981105421155,
+    "det_auto": 0.6951219512195121,
+    "det_oracle": 0.9024390243902439,
+    "load_lax": 0.6417093413385132,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "CAUSE+LIMIT_SCOPE+SUBJ",
+    "load": 0.47907469539113545,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.8048780487804879,
+    "load_lax": 0.592265583612926,
+    "det_lax": 0.8414634146341463
+   },
+   {
+    "rules": "NEG+UNIV+NUM+LIMIT_SCOPE",
+    "load": 0.47907469539113545,
+    "det_auto": 0.5975609756097561,
+    "det_oracle": 0.7804878048780488,
+    "load_lax": 0.6009182412149038,
+    "det_lax": 0.7926829268292683
+   },
+   {
+    "rules": "NEG+NUM+LIMIT_HEDGE",
+    "load": 0.4826063923715345,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.8658536585365854,
+    "load_lax": 0.6440049443757726,
+    "det_lax": 0.8658536585365854
+   },
+   {
+    "rules": "NEG+UNIV+SUBJ",
+    "load": 0.4894932014833127,
+    "det_auto": 0.5853658536585366,
+    "det_oracle": 0.5853658536585366,
+    "load_lax": 0.4894932014833127,
+    "det_lax": 0.5853658536585366
+   },
+   {
+    "rules": "NEG+CAUSE+LIMIT_SCOPE",
+    "load": 0.49355465301077167,
+    "det_auto": 0.6463414634146342,
+    "det_oracle": 0.8048780487804879,
+    "load_lax": 0.5972099593854847,
+    "det_lax": 0.8048780487804879
+   },
+   {
+    "rules": "NEG+UNIV+NUM+LIMIT_HEDGE",
+    "load": 0.49479074695391134,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.8658536585365854,
+    "load_lax": 0.6533639413738301,
+    "det_lax": 0.8658536585365854
+   },
+   {
+    "rules": "CAUSE+LIMIT_HEDGE+SUBJ",
+    "load": 0.49585025604803107,
+    "det_auto": 0.7682926829268293,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.6586614868444287,
+    "det_lax": 0.926829268292683
+   },
+   {
+    "rules": "UNIV+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.4972629348401907,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.69238919300724,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.5004414621225499,
+    "det_auto": 0.7317073170731707,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6916828536111601,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "NEG+CAUSE+NUM",
+    "load": 0.5046794984990288,
+    "det_auto": 0.6585365853658537,
+    "det_oracle": 0.6585365853658537,
+    "load_lax": 0.5046794984990288,
+    "det_lax": 0.6585365853658537
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+SUBJ",
+    "load": 0.5069751015362882,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.7073170731707317,
+    "load_lax": 0.5069751015362882,
+    "det_lax": 0.7073170731707317
+   },
+   {
+    "rules": "NEG+UNIV+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.5122726470068868,
+    "det_auto": 0.7317073170731707,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.699982341515098,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+LIMIT_SCOPE",
+    "load": 0.5128024015539466,
+    "det_auto": 0.6829268292682927,
+    "det_oracle": 0.8414634146341463,
+    "load_lax": 0.61522161398552,
+    "det_lax": 0.8414634146341463
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM",
+    "load": 0.5158043439872859,
+    "det_auto": 0.6585365853658537,
+    "det_oracle": 0.6585365853658537,
+    "load_lax": 0.5158043439872859,
+    "det_lax": 0.6585365853658537
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_SCOPE+SUBJ",
+    "load": 0.5165106833833657,
+    "det_auto": 0.7439024390243902,
+    "det_oracle": 0.8292682926829268,
+    "load_lax": 0.6258167049267173,
+    "det_lax": 0.8780487804878049
+   },
+   {
+    "rules": "NEG+CAUSE+LIMIT_HEDGE",
+    "load": 0.5177467773265054,
+    "det_auto": 0.7073170731707317,
+    "det_oracle": 0.8414634146341463,
+    "load_lax": 0.6667843898993466,
+    "det_lax": 0.8292682926829268
+   },
+   {
+    "rules": "CAUSE+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.5179233621755254,
+    "det_auto": 0.7804878048780488,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.7125198657955147,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.5290482076637825,
+    "det_auto": 0.7439024390243902,
+    "det_oracle": 0.8292682926829268,
+    "load_lax": 0.6358820413208547,
+    "det_lax": 0.8780487804878049
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE+SUBJ",
+    "load": 0.5313438107010419,
+    "det_auto": 0.8048780487804879,
+    "det_oracle": 0.926829268292683,
+    "load_lax": 0.6823238566131026,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+LIMIT_HEDGE",
+    "load": 0.5354052622285008,
+    "det_auto": 0.7439024390243902,
+    "det_oracle": 0.8658536585365854,
+    "load_lax": 0.6803814232738831,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "NEG+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.5405262228500795,
+    "det_auto": 0.7439024390243902,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.7201130143033728,
+    "det_lax": 0.9146341463414634
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.542468656189299,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.6872682323856613,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+NUM+SUBJ",
+    "load": 0.5500618046971569,
+    "det_auto": 0.6219512195121951,
+    "det_oracle": 0.6219512195121951,
+    "load_lax": 0.5500618046971569,
+    "det_lax": 0.6219512195121951
+   },
+   {
+    "rules": "UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.5516510683383365,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9512195121951219,
+    "load_lax": 0.7340632173759492,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+LIMIT_SCOPE+SUBJ",
+    "load": 0.5527105774324563,
+    "det_auto": 0.6341463414634146,
+    "det_oracle": 0.7560975609756098,
+    "load_lax": 0.650008829242451,
+    "det_lax": 0.7926829268292683
+   },
+   {
+    "rules": "CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.5565954441108952,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9512195121951219,
+    "load_lax": 0.73053152039555,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.5571251986579552,
+    "det_auto": 0.7804878048780488,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7322973688857496,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.5597739713932545,
+    "det_auto": 0.7439024390243902,
+    "det_oracle": 0.8292682926829268,
+    "load_lax": 0.6620165989758079,
+    "det_lax": 0.8780487804878049
+   },
+   {
+    "rules": "NEG+UNIV+NUM+SUBJ",
+    "load": 0.5599505562422744,
+    "det_auto": 0.6219512195121951,
+    "det_oracle": 0.6219512195121951,
+    "load_lax": 0.5599505562422744,
+    "det_lax": 0.6219512195121951
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+LIMIT_SCOPE",
+    "load": 0.5624227441285538,
+    "det_auto": 0.7195121951219512,
+    "det_oracle": 0.8536585365853658,
+    "load_lax": 0.6581317322973689,
+    "det_lax": 0.8658536585365854
+   },
+   {
+    "rules": "NEG+LIMIT_HEDGE+SUBJ",
+    "load": 0.5682500441462123,
+    "det_auto": 0.7560975609756098,
+    "det_oracle": 0.9024390243902439,
+    "load_lax": 0.6989228324209783,
+    "det_lax": 0.9146341463414634
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_SCOPE+SUBJ",
+    "load": 0.569309553240332,
+    "det_auto": 0.6951219512195121,
+    "det_oracle": 0.8170731707317073,
+    "load_lax": 0.6667843898993466,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.5717817411266113,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.7059862263817764,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+LIMIT_SCOPE",
+    "load": 0.573017835069751,
+    "det_auto": 0.7195121951219512,
+    "det_oracle": 0.8536585365853658,
+    "load_lax": 0.6669609747483666,
+    "det_lax": 0.8658536585365854
+   },
+   {
+    "rules": "NEG+CAUSE+SUBJ",
+    "load": 0.57690270174819,
+    "det_auto": 0.7195121951219512,
+    "det_oracle": 0.7195121951219512,
+    "load_lax": 0.57690270174819,
+    "det_lax": 0.7195121951219512
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+LIMIT_HEDGE",
+    "load": 0.5793748896344694,
+    "det_auto": 0.7926829268292683,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.7084584142680558,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_HEDGE+SUBJ",
+    "load": 0.5834363411619283,
+    "det_auto": 0.7804878048780488,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.711813526399435,
+    "det_lax": 0.926829268292683
+   },
+   {
+    "rules": "UNIV+CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.585025604803108,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9512195121951219,
+    "load_lax": 0.7476602507504856,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+LIMIT_HEDGE",
+    "load": 0.5897933957266467,
+    "det_auto": 0.7926829268292683,
+    "det_oracle": 0.9146341463414634,
+    "load_lax": 0.7162281476249338,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "NEG+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.592442168461946,
+    "det_auto": 0.7926829268292683,
+    "det_oracle": 0.9512195121951219,
+    "load_lax": 0.7522514568250044,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+SUBJ",
+    "load": 0.5927953381599859,
+    "det_auto": 0.7439024390243902,
+    "det_oracle": 0.7439024390243902,
+    "load_lax": 0.5927953381599859,
+    "det_lax": 0.7439024390243902
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.5927953381599859,
+    "det_auto": 0.8048780487804879,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7485431749955854,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE",
+    "load": 0.6028606745541233,
+    "det_auto": 0.8048780487804879,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7552533992583437,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+UNIV+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6060392018364824,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7637294720113015,
+    "det_lax": 0.975609756097561
+   },
+   {
+    "rules": "NEG+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.6099240685149214,
+    "det_auto": 0.6951219512195121,
+    "det_oracle": 0.8170731707317073,
+    "load_lax": 0.6989228324209783,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "NEG+UNIV+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.619106480663959,
+    "det_auto": 0.6951219512195121,
+    "det_oracle": 0.8170731707317073,
+    "load_lax": 0.7073989051739361,
+    "det_lax": 0.8536585365853658
+   },
+   {
+    "rules": "NEG+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.6215786685502384,
+    "det_auto": 0.8048780487804879,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.7365354052622285,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+UNIV+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.630584495850256,
+    "det_auto": 0.8048780487804879,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.7443051386191065,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6348225322267349,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.773265053858379,
+    "det_lax": 0.975609756097561
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+SUBJ",
+    "load": 0.6358820413208547,
+    "det_auto": 0.7682926829268293,
+    "det_oracle": 0.7682926829268293,
+    "load_lax": 0.6358820413208547,
+    "det_lax": 0.7682926829268293
+   },
+   {
+    "rules": "NEG+CAUSE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6387073989051739,
+    "det_auto": 0.7682926829268293,
+    "det_oracle": 0.8536585365853658,
+    "load_lax": 0.711813526399435,
+    "det_lax": 0.8780487804878049
+   },
+   {
+    "rules": "NEG+UNIV+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6434751898287127,
+    "det_auto": 0.8170731707317073,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7803284478191771,
+    "det_lax": 0.975609756097561
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+SUBJ",
+    "load": 0.6438283595267527,
+    "det_auto": 0.7682926829268293,
+    "det_oracle": 0.7682926829268293,
+    "load_lax": 0.6438283595267527,
+    "det_lax": 0.7682926829268293
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6524810171287303,
+    "det_auto": 0.7926829268292683,
+    "det_oracle": 0.8780487804878049,
+    "load_lax": 0.7255871446229913,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "NEG+CAUSE+LIMIT_HEDGE+SUBJ",
+    "load": 0.6535405262228501,
+    "det_auto": 0.8292682926829268,
+    "det_oracle": 0.9390243902439024,
+    "load_lax": 0.7584319265407028,
+    "det_lax": 0.9390243902439024
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+LIMIT_HEDGE+SUBJ",
+    "load": 0.6664312202013067,
+    "det_auto": 0.8536585365853658,
+    "det_oracle": 0.9512195121951219,
+    "load_lax": 0.76920360233092,
+    "det_lax": 0.9512195121951219
+   },
+   {
+    "rules": "NEG+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6715521808228854,
+    "det_auto": 0.8414634146341463,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7993996115133322,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.6814409323680028,
+    "det_auto": 0.7926829268292683,
+    "det_oracle": 0.8780487804878049,
+    "load_lax": 0.7494260992406852,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.6833833657072224,
+    "det_auto": 0.8658536585365854,
+    "det_oracle": 0.975609756097561,
+    "load_lax": 0.8091117782094296,
+    "det_lax": 0.975609756097561
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+LIMIT_SCOPE+SUBJ",
+    "load": 0.6888574960268409,
+    "det_auto": 0.7926829268292683,
+    "det_oracle": 0.8780487804878049,
+    "load_lax": 0.7561363235034434,
+    "det_lax": 0.9024390243902439
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.6930955324033198,
+    "det_auto": 0.8658536585365854,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.784389899346636,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+LIMIT_HEDGE+SUBJ",
+    "load": 0.7003355112131379,
+    "det_auto": 0.8658536585365854,
+    "det_oracle": 0.9634146341463414,
+    "load_lax": 0.7905703690623345,
+    "det_lax": 0.9634146341463414
+   },
+   {
+    "rules": "NEG+CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.7033374536464772,
+    "det_auto": 0.8658536585365854,
+    "det_oracle": 0.975609756097561,
+    "load_lax": 0.8149390782270881,
+    "det_lax": 0.975609756097561
+   },
+   {
+    "rules": "NEG+UNIV+CAUSE+NUM+LIMIT_HEDGE+LIMIT_SCOPE+SUBJ",
+    "load": 0.7102242627582553,
+    "det_auto": 0.8658536585365854,
+    "det_oracle": 0.975609756097561,
+    "load_lax": 0.8204132085467067,
+    "det_lax": 0.975609756097561
+   }
+  ]
+ }
+}

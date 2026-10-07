@@ -1,0 +1,18 @@
+{
+  "name": "relation_extraction_v0",
+  "note": "stage0: sentence-only extraction (no ledger). predicate_normalized is a closed enum.",
+  "strict": true,
+  "schema": {
+    "type": "object", "additionalProperties": false,
+    "required": ["subject","predicate_normalized","object","polarity","scope_qualifiers","numbers","modality"],
+    "properties": {
+      "subject": {"type": "string", "description": "文中に現れる主体の表層語句。文中に主語が無ければ『(省略)』"},
+      "predicate_normalized": {"type": "string", "enum": ["取りやめ","停止","再開","増加","減少","到達","流出","報告あり","報告なし","開始","終了","元に戻す","説明・発言","保有・配備","因果","比較・対比","存在・状態","その他"]},
+      "object": {"type": "string", "description": "述語の対象・内容の表層語句。無ければ『(なし)』"},
+      "polarity": {"type": "string", "enum": ["肯定","否定"]},
+      "scope_qualifiers": {"type": "array", "items": {"type": "string"}, "description": "主体・範囲・意図・条件・時間の限定語(一部/当面/全体/〜のために等)の表層語句"},
+      "numbers": {"type": "array", "items": {"type": "string"}, "description": "数値表現。算用数字+単位に正規化(例 20%, 15システム, 約1時間)。無ければ空"},
+      "modality": {"type": "string", "enum": ["断定","推定","伝聞"]}
+    }
+  }
+}
