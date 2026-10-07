@@ -1,0 +1,8 @@
+# RUNTIME_EVIDENCE OPEN-238 配線後(2026-10-07、実費¥5.30/上限¥20、17 call、errors 0)
+入力: E2E_02 ai_control nb p2 rep2 の b1b/article.md(=cycle1入力)+同ledger、1 run。
+(1) 実行: wiring commit 874dd6e2(HEAD=9e175a70、precheck/runnerはHEADと差分なし)。precheck sha256=d8abbee250aec9ea1cd745d322d5f5b5cfab346d6860f5df9d39ef2bf3684eec / runner sha256=a05437ff5519c87f739deaf3560522e1cf87d4ba1143780e4233b671bfaaee56。入口=runner.run_instance(Production関数、E2E_02と同ラッパ形式)、DEV install()なし(dev_patch_module_loaded=false、provenance.json)。
+(2) 承認スイッチ: approved_switches_dump.json、E2E_02 ref dumpと内容一致(switches_equal_ref_e2e02=true)、PRECHECK_MODE=number_only/FLOOR_MODE=number_only不変、MODEL=gpt-6-luna。
+(3) precheck findings(precheck_findings_per_cycle.json、同一テキストを配線版と配線前版[b1ed9b66時点のprecheck、tools/precheck_pre_wiring_HEAD_b1ed9b66.py]で再実行): cycle1入力・Rewrite後とも 配線版 number_mismatch 0件(残8件はactor_missing)、配線前版 2件(EVID-006/CONTROL-004、foreign=[33.3])。runner記録でも全cycleのstage2にdetected_by=precheckなし、rewrite_new_precheck_findings_count=0。
+(4) 最終: RESOLVED_REWRITE_THEN_DOWNGRADE、3 cycle(BLOCKING 1/nb15 → 0/nb4 → 0/nb15)。Rewrite 1件のみ(cycle1 fact:EVID-008 narrow_scope): 「The AI was supposed to look for enemies and complete tasks inside the prepared world.」→「The AI was working on a capture-the-flag task in a simulated environment.」。third party文「The evaluation environment set up by a third party was not properly configured, so it might connect to the internet.」は保持(Rewrite後も存在、cycle2/3でRewriteなし)。84%文の混入なし。
+(5) 比較: 配線前HEADの同入力=2件発火(baseline)、third party文消失・4 cycle(B2記録)→配線後 発火0・文保持・3 cycle。retry/fallback 0件、call error 0。
+注意: N=1、LLM非決定性あり(Rewrite文面はB2再生と異なる)。発火消失の決定論的裏付けはRegression(26 run 2→0)。

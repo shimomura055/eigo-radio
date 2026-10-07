@@ -20177,3 +20177,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】Fable Status判定=**VALIDATED(Trial限定)**。案1(ホワイトリスト+M1〜M3)推奨、案2不採用(Opus同意)。ユーザー決定(2026-10-07): O1(分数語をforeign証拠から外す案)は今回不採用・記録のみ。
 - (b)【未決】Production採用はユーザー判断待ち(`APPROVED_FOR_PRODUCTION`ではない、Production無変更)。Checker OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01は未配線のまま、残11 run停止継続(本Trial成功を理由に再開しない)。
 - 根拠: 単体12 PASS・26 run Regression 発火2→0他不変・実経路再生 発火0/third party文保持(実費¥5.54)。出典: REPORT §98、`docs/pm/open238_fix/closeout_01.md`。
+
+
+## 2026-10-07 OPEN-238-PRECHECK-FALSE-POSITIVE-PRODUCTION-WIRING-01(Production配線Closeout、委任_02)
+- (a)【決定】ユーザー決定(2026-10-07): 案1(ホワイトリスト+M1〜M3)をProduction採用=`APPROVED_FOR_PRODUCTION`。残11 runは再開しない(停止継続)。Opus条件C: 必須修正なし。
+- (b)【実施】配線commit 874dd6e2(precheck `extract_percentages_strict`新設+foreign計算のみ厳格版、runner対象文特定、単体12+既存911 PASS、26 run Regression 2→0他不変、9 run判定変化なし)。
+- (c)【evidence】未パッチProduction入口・承認スイッチ不変で ai_control P2 rep2 を1 run(実費¥5.30): precheck number_mismatch発火0(配線前は同入力2件)、third party文保持、RESOLVED_REWRITE_THEN_DOWNGRADE 3 cycle、retry/fallback/error 0。出典: REPORT §99、`er052_output/open238_precheck_fix_trial_01/runtime_evidence/`。
+- (d)【Status】PRODUCTION_WIRED候補(Fable判定待ち)(判定基準a〜e充足、最終判定はFable)。Checker全体(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)は未配線のまま、残11 run停止継続。

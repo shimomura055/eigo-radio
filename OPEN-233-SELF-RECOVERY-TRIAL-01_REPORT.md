@@ -5459,3 +5459,22 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 - **VALIDATED(Trial)**。Production採用はAPPROVED_FOR_PRODUCTIONではなくユーザー判断待ち(採用時は2ファイル数十行+Opus条件C+既存9 run Regression)。Checker PRODUCTION_WIRED未・残11 run停止継続。
 ### §98-7 参照
 - `docs/pm/open238_fix/{design_01.md,closeout_01.md,open_gates.md,dangling_check.md}`、`docs/pm/opus_l2_review_open238_fix_01.md`、`er052_output/open238_precheck_fix_trial_01/`、commit 8f543442/0afc0911/971e9be1。OPEN-238。
+
+
+## §99 OPEN-238-PRECHECK-FALSE-POSITIVE-PRODUCTION-WIRING-01(Production配線、2026-10-07)
+### §99-1 ユーザー決定
+案1(ホワイトリスト+M1-M3)をProduction採用=APPROVED_FOR_PRODUCTION(2026-10-07)。残11 runは再開しない。
+### §99-2 実装差分
+precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のforeign計算のみ厳格版)、runner +2/-1(対象文特定)。expected/observed/ledger_pct/count種別は不変。配線commit 874dd6e2。
+### §99-3 テスト・Regression
+新規単体12 PASS(再実行確認)+既存911 PASS。26 run Regression 発火2→0他不変。9 runは再計算+記録値照合の代替証拠(判定変化なし)。
+### §99-4 Opus条件C
+必須修正なし(`docs/pm/opus_l2_review_open238_wiring_01.md`)。O1は記録のみ。
+### §99-5 runtime evidence
+未パッチProduction関数run_instance・承認スイッチ不変(E2E_02 dumpと一致)でai_control P2 rep2 1 run、実費¥5.30/17 call/上限¥20。配線版number_mismatch 0(配線前版は同テキストで2件)、third party文保持、RESOLVED_REWRITE_THEN_DOWNGRADE 3 cycle、Rewrite 1件(EVID-008)、retry/fallback/error 0。N=1、LLM非決定性あり。
+### §99-6 判定基準と結果
+(a)配線commitがorigin/mainに存在=充足 (b)入口・スイッチ不変=充足 (c)発火0・third party文保持=充足 (d)retry/fallback・例外なし=充足 (e)テスト・Regression PASS=充足。judgement: PRODUCTION_WIRED候補(Fable判定待ち)。
+### §99-7 残存事項
+「seeking a third.」「half the time」「one-half」連字符は未対応(記録のみ)。Checker全体は未配線、残11 run停止継続。
+### §99-8 参照
+`er052_output/open238_precheck_fix_trial_01/runtime_evidence/{RUNTIME_EVIDENCE.md,precheck_findings_per_cycle.json,provenance.json,approved_switches_dump.json,cost.json}`、`er052_output/open238_precheck_fix_trial_01/production_regression/`、`docs/pm/open238_fix/{production_diff_01.md,dangling_check_wiring.md}`。OPEN-238。
