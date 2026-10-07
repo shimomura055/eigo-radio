@@ -20172,3 +20172,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】「Trial実施(ユーザー承認済み)」とFable Status判定(USER_DECISION_REQUIRED)のみ。Production採用・Production配線の決定なし。DEV runnerへの固定brief開始/Checkerなしオプション追加はTrial専用(Production経路不使用)。
 - (b)【事実確認】6条件(T0/T1/T2 x M0/M1)x3テーマx N=2=36本完走(brief本文固定、Checkerなし)。重大NG1件(hormuz T0M0 rep2 ENのみ)、1記事当たりEN軽微 T0 0.67/T1 0.50/T2 1.17、M0 0.56/M1 1.00、meta HC-012 11/12 correct。前回P2の多発は不再現(仮説: brief生成条件が主因、未検証)。実費≈¥268.8/上限¥600。
 - Status=USER_DECISION_REQUIRED(条件間差が小さくN=2で採否を決められない)。Production変更なし/Trial限定。出典: REPORT §97、`er052_output/open233_note_transfer_matrix_01/eval/MATRIX_SUMMARY.md`。
+
+## 2026-10-07 OPEN-238-PRECHECK-FALSE-POSITIVE-FIX-TRIAL-01(Closeout、委任_C1)
+- (a)【決定】Fable Status判定=**VALIDATED(Trial限定)**。案1(ホワイトリスト+M1〜M3)推奨、案2不採用(Opus同意)。ユーザー決定(2026-10-07): O1(分数語をforeign証拠から外す案)は今回不採用・記録のみ。
+- (b)【未決】Production採用はユーザー判断待ち(`APPROVED_FOR_PRODUCTION`ではない、Production無変更)。Checker OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01は未配線のまま、残11 run停止継続(本Trial成功を理由に再開しない)。
+- 根拠: 単体12 PASS・26 run Regression 発火2→0他不変・実経路再生 発火0/third party文保持(実費¥5.54)。出典: REPORT §98、`docs/pm/open238_fix/closeout_01.md`。

@@ -5443,3 +5443,19 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §97-8 参照
 - `er052_output/open233_note_transfer_matrix_01/eval/{MATRIX_SUMMARY.md,matrix_summary.json,E_*.md,articles/}`、`docs/pm/note_transfer_matrix_01/{eval_rubric.md,aggregate_matrix.py,append_supplement.py,dangling_check.md}`、`docs/pm/delegation_log/2026-10-07_OPEN-233-NOTE-TRANSFER-MATRIX-TRIAL-01_D1.md`。commit faf6dd4a(Phase A)/2c3cd5a5/263cddb9。OPEN-237/238/239。
+
+## §98 OPEN-238-PRECHECK-FALSE-POSITIVE-FIX-TRIAL-01(precheck偽陽性対策Trial、2026-10-07)
+### §98-1 目的・ユーザー判断
+- 目的: §96で原因特定したprecheck分数語偽陽性(「a third party」→33.3%)の修正案をTrial専用実装で検証。ユーザー判断: 設計Trial承認、残11 run再開は保留のまま。
+### §98-2 設計
+- 案1(ホワイトリスト+Opus条件C必須修正M1〜M3): 厳格版抽出は`check_number_mismatch`のforeign計算とrunner L8093の対象文特定のみ、他は現行抽出。DEV専用`er052_open238_precheck_fix_dev_01.py`(既定では何もしない)。案2(数字・%なし文をclaim化しない)は不採用(Opus同意)。O1(分数語をforeign証拠から外す)はユーザー決定で今回不採用・記録のみ。
+### §98-3 テスト
+- 単体12 PASS。26 run決定論Regression: 発火2→0、他全finding・loose抽出・L322はbit単位不変。実経路再生N=1: precheck発火0、third party文保持、84%文混入なし、retry/fallback 0、最終RESOLVED_REWRITE_THEN_DOWNGRADE 3cycle。O3(percentage point(s))0件。
+### §98-4 残存リスク
+- 残る偽陽性(「seeking a third.」「half the time」等)、直後が動詞の正当表現の取りこぼし、コーパスに正当分数語が無く取りこぼし実測不足、実経路N=1、分数語以外辞書の網羅走査未実施。
+### §98-5 費用・時間
+- 実費¥5.54/上限¥100(実経路再生のみ)。Phase A約15分・B約14分・B2約8分。precheckは決定論で追加費用0・処理時間影響なし。
+### §98-6 Status
+- **VALIDATED(Trial)**。Production採用はAPPROVED_FOR_PRODUCTIONではなくユーザー判断待ち(採用時は2ファイル数十行+Opus条件C+既存9 run Regression)。Checker PRODUCTION_WIRED未・残11 run停止継続。
+### §98-7 参照
+- `docs/pm/open238_fix/{design_01.md,closeout_01.md,open_gates.md,dangling_check.md}`、`docs/pm/opus_l2_review_open238_fix_01.md`、`er052_output/open238_precheck_fix_trial_01/`、commit 8f543442/0afc0911/971e9be1。OPEN-238。
