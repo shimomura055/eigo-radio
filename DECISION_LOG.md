@@ -20188,3 +20188,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 ## 2026-10-07 OPEN-238-PRECHECK-FALSE-POSITIVE-PRODUCTION-WIRING-01(Fable判定確定、委任_03)
 - 【決定】Fable判定: PRODUCTION_WIRED確定(基準(a)〜(e)全充足、runtime evidence実費¥5.30、REPORT §99-6)。
 - Checker全体(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)の配線・残11 run再開は別判断(本判定では再開しない)。
+
+## 2026-10-07 OPEN-233-B3-BRIEF-STRUCTURE-TRIAL-01(Closeout、委任_D1)
+- (a)【決定】Fable Trial判定=**NOT_SUPPORTED(仮説H1〜H3は本Trialでは支持されず)**。B3 brief構造の操作(V1/V3/V5/V6)は重大NG(55記事で全条件0件=床効果)にも軽微NG(0.4〜0.8件/記事、評価者差と同程度)にも事前登録ルールで判定できる差を生まず(48判定中「傾向あり」1件のみ=V5<V3のEN軽微NG)、逆方向対照V6が悪化しなかったため操作確認も不成立。B3 brief構造の変更はProduction採用候補にしない(Production変更なし)。残る誤読対策はWriter/Checker側(OPEN-233既存ライン)で扱う。
+- (b)【副次所見】V5は未提示明記をbriefに増やす(10/20)がWriter内部Gate STOP 4/12(V3 1/12、V0/V1/V6 0)。V3は採用fact数減(省略率8.5%)。
+- (c)【ユーザー決定(2026-10-07)】段階2再開=YES、4並列=yes、違反記録不要。
+- (d)【未決】Open Item上のclose可否はユーザー確認待ち(新Open Itemは起票しない)。
+- 根拠: 実費累計≈¥434.5(復元不能分推定¥20を含め≈¥454.5、上限¥500内)、N=最大4/条件/テーマ・単独LLM評価・人間確認なし。出典: REPORT §100、`er052_output/open233_b3_trial_01/eval/SUMMARY_STAGE2.md`。

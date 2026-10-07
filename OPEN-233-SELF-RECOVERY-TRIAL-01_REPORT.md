@@ -5479,3 +5479,53 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 「seeking a third.」「half the time」「one-half」連字符は未対応(記録のみ)。Checker全体は未配線、残11 run停止継続。
 ### §99-8 参照
 `er052_output/open238_precheck_fix_trial_01/runtime_evidence/{RUNTIME_EVIDENCE.md,precheck_findings_per_cycle.json,provenance.json,approved_switches_dump.json,cost.json}`、`er052_output/open238_precheck_fix_trial_01/production_regression/`、`docs/pm/open238_fix/{production_diff_01.md,dangling_check_wiring.md}`。OPEN-238。
+
+## §100 OPEN-233-B3-BRIEF-STRUCTURE-TRIAL-01(B3 brief構造Trial、2026-10-07)
+
+### §100-1 目的・条件
+- 目的: Writerへ渡すB3 briefの構造(主体・対象の保持、Storyline連結、未提示事項の明記)が、記事の誤読・創作(重大/軽微NG)のレバーになるかを検証する(仮説H1主体・対象省略、H2Storyline連結、H3未提示不記載。`docs/pm/b3_brief_structure_hypothesis_01.md`)。Trial専用(DEV)、Production(`er019_family_x_storyline_b3_fact_selection_01.py`)は無変更。
+- 条件: V0=現行、V1=主体・対象保持(台帳文寄り)、V3=V1+単一因果、V5=V3+未提示明記、V6=最大簡潔(逆方向対照・操作確認)。V2は段階1のみ(Writer段なし)、V4は欠番。テーマ3(meta/hormuz/space_weapons)。事前登録の読み方は設計書 §5(`docs/pm/b3_trial_01/design_01.md`、Opus条件AレビューM3反映)。
+
+### §100-2 段階1(brief操作確認、非盲検目視)
+- V0/V1/V2/V3/V6 x 3テーマ x 2 = 30 briefで操作の効き方を確認。台帳文12字一致率: V1 0.81/V3 0.84(V0 0.34、V6 0.18)、省略率: V0 0.09/V1 0.00/V3 0.00/V6 0.59。採用fact数はV3が最少(2.50、V0 3.67)。実費¥55.49。出典: `er052_output/open233_b3_trial_01/eval/STAGE1_BRIEF_CHECK.md`。
+
+### §100-3 段階2(Writer段)
+- V0/V1/V3/V5/V6 x 3テーマ x b1〜b4 = 60 run(Writer 1本/brief、`--no-checker`)。完了55/Writer内部Gate STOP 5(記事生成不能)。Gate STOP内訳: V3 1/12、V5 4/12、V0/V1/V6 0。Gate回避はしていない(Production既存のSTOP安全装置の発火)。実費≈¥379(A5+A6+A6b実測)。出典: `eval/STAGE2_RUN_CHECK.md`、`eval/writer_gate_stop_summary.md`。
+
+### §100-4 段階3(盲検評価・集計、¥0)と事前登録判定
+- 評価: 記事55+brief_review 60、評価者インスタンスによる盲検評価、MAP開封は全員分出揃い後(2026-10-07 17:23)。評価JSONは修正していない。重大NGは55記事で全条件0件(床効果)。
+- ②EN基準 条件別(軽微NG 1記事平均/退行/保留):
+
+| 条件 | 評価記事数 | 重大NG | 軽微NG(/記事) | 退行(/記事) | 保留(/記事) | Gate STOP | brief省略率 | 未提示明記(命中/項目) |
+|---|---|---|---|---|---|---|---|---|
+| V0 | 12 | 0 | 9(0.75) | 1(0.08) | 4(0.33) | 0/12 | 0.000 | 1/20 |
+| V1 | 12 | 0 | 10(0.83) | 1(0.08) | 2(0.17) | 0/12 | 0.000 | 3/20 |
+| V3 | 11 | 0 | 8(0.73) | 1(0.09) | 5(0.45) | 1/12 | 0.085 | 1/20 |
+| V5 | 8 | 0 | 3(0.38) | 1(0.12) | 0(0.00) | 4/12 | 0.065 | 10/20 |
+| V6 | 12 | 0 | 6(0.50) | 5(0.42) | 4(0.33) | 0/12 | 0.069 | 3/20 |
+
+- 事前登録ルール(テーマ差>=0.5件/記事 かつ b1〜b4多数同符号、3テーマ中2以上同方向)を6工程x指標=48判定に適用した結果、「傾向あり」は1件のみ: V5対V3 ②EN合計(V5<V3)。ただしmetaはV5が1記事のみでmeta側はn=1、hormuzは逆方向。感度分析(軽微+保留を重大扱い)でも同じ。
+- 主比較: P1(主) V3対V0=未判定(差-0.02)、P2(主・操作確認) V6対V0=未判定(差-0.25、V6は悪化せず操作確認は不成立)、副次 V1対V0=未判定(差+0.08)。事前登録の期待順位との一致は参考のみ(判定規則を満たさず)。
+
+### §100-5 副次所見
+- V5は未提示事項の明記をbriefに増やす(10/20、V0 1/20)一方、Writer内部Gate STOPが4/12と突出(V3 1/12、V0/V1/V6 0)。V3は採用fact数が減る(省略率8.5%)。
+- 評価者間の運用差(軽微の境界判断のぶれ、例: hormuz_A/BとmetaA/Bの扱い差)があり、条件別の軽微差(最大0.4件/記事)は評価者差と同オーダー(`eval/SUMMARY_STAGE2.md` ⑥)。
+
+### §100-6 Fable判定(2026-10-07)
+- Trial判定: **NOT_SUPPORTED(仮説H1〜H3は本Trialでは支持されず)**。B3 brief構造の操作(V1主体・対象保持/V3 V1+単一因果/V5 V3+未提示明記/V6最大簡潔)は、記事の重大NG(55記事で全条件0件=床効果)にも軽微NG(0.4〜0.8件/記事、評価者の境界判断のぶれと同程度)にも、事前登録ルールで判定できる差を生まなかった(48判定中「傾向あり」1件のみ=V5<V3のEN軽微NG、多重比較下で偶然の範囲)。逆方向対照V6が悪化しなかったため操作確認も不成立。
+- 結論: **B3 brief構造の変更はProduction採用候補にしない(Production変更なし)**。「briefの構造」は誤読・創作の主要なレバーではない、というのが本Trialの学び。残る誤読対策はWriter/Checker側(OPEN-233既存ライン)で扱う。
+
+### §100-7 制約
+- N=最大4/条件/テーマ、単独LLM評価・人間確認なし、V5は母数減(選択バイアスの恐れ)、段階1は非盲検目視。
+
+### §100-8 費用
+- 段階1 ¥55.49/段階2 ≈¥379/段階3 ¥0、実測累計≈¥434.5(クラッシュ前の復元不能分推定¥20を含めると≈¥454.5)、上限¥500内。
+
+### §100-9 運用記録
+- 2026-10-07 15:04 PCクラッシュ(段階2の二重並列によるWinError 1455)、単層4並列で再開し再発0。ネット切断1回(infra失敗5 run、削除し同枠で再実行)。ユーザー決定: 段階2再開YES/4並列yes/違反記録不要。
+
+### §100-10 Status
+- Trial=NOT_SUPPORTED(Fable判定2026-10-07)。Open Item上のclose可否はユーザー確認待ち。Production採用判断なし、`APPROVED_FOR_PRODUCTION`なし。
+
+### §100-11 参照
+- `er052_output/open233_b3_trial_01/eval/{SUMMARY_STAGE2.md,aggregate_stage2.json,STAGE1_BRIEF_CHECK.md,STAGE2_RUN_CHECK.md,writer_gate_stop_summary.md}`、`docs/pm/b3_trial_01/{design_01.md,eval_rubric.md,blinding.md}`、`docs/pm/b3_brief_structure_hypothesis_01.md`。
