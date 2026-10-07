@@ -1,0 +1,80 @@
+{
+  "slug": "space_weapons",
+  "code": "v3eg",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-003",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "F-013",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-016",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "space_weapons-v3eg-01",
+      "text": "だから、軌道上の兵器配備という言葉だけで、直ちに条約違反とは言えない(R0)",
+      "fact_id": "F-017",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "space_weapons-v3eg-02",
+      "text": "別の舞台は、衛星と地上を結ぶ通信リンクです(R2/EN: communication link between a satellite and the ground。台帳は通信リンク(space link)のみで、地上-衛星間と限定していない)",
+      "fact_id": "F-012",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。NG01はR0のみ(R1/R2で問いかけ形式に変更され解消)。論理的には妥当だが個別事案の違法性判断をF-017の注意に反して断定気味に書いたため軽微に倒した。NG02はR0に無くR2で追加された限定(退行)。"
+}

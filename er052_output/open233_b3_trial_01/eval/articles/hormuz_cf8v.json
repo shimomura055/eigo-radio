@@ -1,0 +1,72 @@
+{
+  "slug": "hormuz",
+  "code": "cf8v",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 2
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HF-007",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-008",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-009",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-011",
+      "label": "ambiguous"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "hormuz-cf8v-01",
+      "text": "相場が見ていたのは料金を取るのかどうかだけではなく、海峡を安全に通れるのかどうかだった(R2: このミステリーの答えは、料金案が本当の主役ではなかった。EN同旨)",
+      "fact_id": "HF-011",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "causal"
+    },
+    {
+      "id": "hormuz-cf8v-02",
+      "text": "大きな看板は出たものの、制度の中身まではできていなかった(EN: the system behind it was not yet in place)",
+      "fact_id": "HF-003",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "R0の『あくまで提案です』は適切。R2/ENで『制度ができていなかった』と存在否定的に変化(退行)。 単独評価、人間確認なし。"
+}

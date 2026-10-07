@@ -1,0 +1,80 @@
+{
+  "slug": "space_weapons",
+  "code": "86u9",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-003",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-016",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-013",
+      "label": "not_selected"
+    },
+    {
+      "fact_id": "F-015",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "space_weapons-86u9-01",
+      "text": "兵器の名前だけでなく、その住所まで明らかになったからです(EN: Not only the names of the weapons, but also their addresses, had been revealed)。F-001はシステム名等は不明で、軌道上という以上の詳細は示されていない",
+      "fact_id": "F-001",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "added_fact"
+    },
+    {
+      "id": "space_weapons-86u9-02",
+      "text": "監視も防護も地上発射ミサイルも、広い意味ではカウンタースペースです(R0のみ。F-011は攻撃・防御行動の総称であり監視や地上発射ASAT試験まで包含とは述べていない)",
+      "fact_id": "F-011",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。86u9-01はR0になくR1/R2で追加された退行(軽微)。86u9-02はR0のみ、R2で消滅(境界、軽微に倒した)。"
+}

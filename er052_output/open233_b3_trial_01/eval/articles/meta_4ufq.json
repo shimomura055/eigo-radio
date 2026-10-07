@@ -1,0 +1,50 @@
+{
+  "slug": "meta",
+  "code": "4ufq",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-4ufq-01",
+      "text": "背景には、電話の相手がAIを歓迎するとは限らないという事情もありました。(従業員報告のAI電話切断を人間担当の背景・動機として因果づけ。台帳は人間担当の理由を示さない。R0にはなし)",
+      "fact_id": "HC-009",
+      "severity": "minor",
+      "stage": {
+        "s0": 0,
+        "s1": 1,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "causal"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。NG1は重大/軽微の境界(動機の断定)。『とは限らない』のヘッジと個別報告の記述が残るため軽微に倒した。R2で新規のため退行1件。『高い数字が出た』は限定文脈付きのためNG化せず。"
+}

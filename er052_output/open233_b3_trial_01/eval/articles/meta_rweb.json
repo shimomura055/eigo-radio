@@ -1,0 +1,78 @@
+{
+  "slug": "meta",
+  "code": "rweb",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 3
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 3
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 3
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-rweb-01",
+      "text": "MetaはMuseを通じた電話の一部で…実験を行いました…Metaはこの機能を当面、元の状態に戻しました(タイトル『Metaが実験をいったん停止』、ENも'Meta Pauses Experiment'/'put the feature back')。人間コンシェルジュ機能の名称・ロールバック対象の限定が一度も出ず、『MetaのAI機能』全体を戻したとも読める。",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "meta-rweb-02",
+      "text": "AIだけでは難しい会話を人間が担当する。(R0: AIだけでは難しい場面を人間が補う)",
+      "fact_id": "MUSE-HC-006",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "meta-rweb-03",
+      "text": "利用者がAIと話しているつもりでも、実際には契約スタッフが会話を聞いている可能性があった(R0: 電話の相手がそれを知らないままだと…本人が意識しないうちに情報を話す)。電話の相手/利用者のどちらが話者・開示対象か台帳になく、利用者が通話者のように描く。",
+      "fact_id": "MUSE-HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。重大NGなし、軽微3件(全てR0/R2/EN共通、退行なし)。項目3は重大寄りか迷ったが境界のため軽微に計上(R0とR2で表現は異なるが同種)。"
+}

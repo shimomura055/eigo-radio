@@ -1,0 +1,78 @@
+{
+  "slug": "meta",
+  "code": "x5wg",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 3
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 2
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-x5wg-01",
+      "text": "この機能は当面ロールバックされました。ロールバックは、いったん止めて元の状態に戻す、という意味です。(『この機能』の対象が不明確、『止めて』と説明しAI電話機能全体停止とも読める)",
+      "fact_id": "HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": 1,
+        "s1": 1,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "meta-x5wg-02",
+      "text": "AIに話しているつもりでも、実際には契約スタッフに聞かれていた/AIに話していると思っているところで、実際にはコールセンターの契約スタッフが聞いている(台帳は利用者の機微情報が契約スタッフへ意図せず共有される可能性。誰がAIと話すと思っているかの主体が曖昧/ずれ)",
+      "fact_id": "HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": 1,
+        "s1": 1,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "subject"
+    },
+    {
+      "id": "meta-x5wg-03",
+      "text": "AIが苦手な場面で、最後だけ人が対応する。そう考えれば、むしろ現実的です。(スタッフは最後まで担当との台帳とずれ、AIが苦手な場面という理由も台帳にない)",
+      "fact_id": "HC-006",
+      "severity": "minor",
+      "stage": {
+        "s0": 1,
+        "s1": 0,
+        "s2": 0
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。HC-012曖昧。NG2は主体のずれで境界(重大ではなく軽微に倒した)。NG3はR0のみでR1で解消(退行ではない)。"
+}

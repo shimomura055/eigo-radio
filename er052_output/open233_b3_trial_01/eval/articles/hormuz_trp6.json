@@ -1,0 +1,72 @@
+{
+  "slug": "hormuz",
+  "code": "trp6",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HF-007",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-008",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-009",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-011",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "hormuz-trp6-01",
+      "text": "市場は、発言一つだけではなく、その周りの状況も同時に見ていました。",
+      "fact_id": "HF-009",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "causal"
+    },
+    {
+      "id": "hormuz-trp6-02",
+      "text": "ここで財布を開く人が決まったわけでも、徴収方法が決まったわけでもありません。(EN: no one had yet been chosen to pay, and no way to collect ... had been decided.)",
+      "fact_id": "HF-003",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "R0の市場意図断定はR2で解消(退行ではない)。R2の『決まったわけでも』は『示されなかった』より強い断定(退行、軽微)。 単独評価、人間確認なし。"
+}

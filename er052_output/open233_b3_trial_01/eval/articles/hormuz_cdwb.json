@@ -1,0 +1,72 @@
+{
+  "slug": "hormuz",
+  "code": "cdwb",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HF-007",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-008",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-009",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-011",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "hormuz-cdwb-01",
+      "text": "ただ、この案には細かいルールがありませんでした。(EN: the plan had no detailed rules.)",
+      "fact_id": "HF-003",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "added_fact"
+    },
+    {
+      "id": "hormuz-cdwb-02",
+      "text": "EN: it was the highest settlement price since June 12, making it the second straight day to reach a new high.",
+      "fact_id": "HF-011",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "notes": "R0は『示されませんでした』で正確。R2/ENで『ルールがなかった』に変化(退行、軽微)。EN『new high』は『6/12以来の高値の清算値が2日連続』を新高値と読ませうる。 単独評価、人間確認なし。"
+}

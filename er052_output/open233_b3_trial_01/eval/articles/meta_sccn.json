@@ -1,0 +1,50 @@
+{
+  "slug": "meta",
+  "code": "sccn",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-sccn-01",
+      "text": "AIに話していると思っているとき…AIとの会話だと思っていた内容を、人間が聞く可能性がある(R0: AIに話しているつもりで伝えた情報を、実は人間も聞いていた。そう知ったら…)。利用者が通話当事者でAIに話している前提は台帳になく、R0はやや断定的、R2/ENは『実際に話されたと決まったわけではない』と限定。",
+      "fact_id": "MUSE-HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。重大NGなし。R0の『利用者に十分知らせないまま』(開示対象を利用者と限定)も同系列で項目1に含めた。R0->R2退行なし(同種がR0にあり)。"
+}

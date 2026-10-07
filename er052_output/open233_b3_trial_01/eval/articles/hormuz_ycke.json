@@ -1,0 +1,76 @@
+{
+  "slug": "hormuz",
+  "code": "ycke",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 0
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HF-007",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-008",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-009",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HF-011",
+      "label": "not_selected"
+    },
+    {
+      "fact_id": "HF-012",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "hormuz-ycke-01",
+      "text": "なぜか。市場が見ているのは、料金の看板ではなく、タンカーが本当に安全に通れるかどうかだからです。(R0のみ。市場の関心の所在を断定)",
+      "fact_id": "HF-009",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "causal"
+    },
+    {
+      "id": "hormuz-ycke-02",
+      "text": "EN: announced that he would require all cargo passing through the strait to pay a 20 percent reimbursement fee(JAは『求める』、ENは義務づける含意。HF-003の『確定形にしない』に照らし過剰断定)",
+      "fact_id": "HF-003",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。R0の因果断定はR1で『ようだ』に弱まりR2で撤回発表だけで説明できないと記述、解消。EN require は境界判断で軽微に計上。退行なし。"
+}

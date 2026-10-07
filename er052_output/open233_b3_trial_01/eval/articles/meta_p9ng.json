@@ -1,0 +1,92 @@
+{
+  "slug": "meta",
+  "code": "p9ng",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 2
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 3
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 4
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "HC-012",
+      "label": "correct"
+    },
+    {
+      "fact_id": "HC-014",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-p9ng-01",
+      "text": "電話機能は、関係する事業者と改善を続け、誰が対応するのか、どんな情報が共有されるのかをきちんと説明できる状態になってから公開する方針です。(台帳の『適切な開示』の中身を具体化)",
+      "fact_id": "HC-014",
+      "severity": "minor",
+      "stage": {
+        "s0": 1,
+        "s1": 1,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "meta-p9ng-02",
+      "text": "電話を進めるには、利用者の予定や希望など、細かな情報が必要になります。(機微情報の具体例が台帳にない)",
+      "fact_id": "HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": 1,
+        "s1": 1,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "added_fact"
+    },
+    {
+      "id": "meta-p9ng-03",
+      "text": "電話を受ける相手からすれば、AIが話していると思っていたのに、実は人間だったかもしれない。しかも、その人間に利用者の情報が伝わっているかもしれない。(プライバシー懸念の主体が利用者から電話受信側の視点にずれる)",
+      "fact_id": "HC-010",
+      "severity": "minor",
+      "stage": {
+        "s0": 0,
+        "s1": 1,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": true,
+      "kind": "subject"
+    },
+    {
+      "id": "meta-p9ng-04",
+      "text": "You thought it was an AI phone call, but a human answered.(人間が『発信』した話が『answered』=受けた側と読める)",
+      "fact_id": "HC-006",
+      "severity": "minor",
+      "stage": {
+        "s0": 0,
+        "s1": 0,
+        "s2": 1
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "subject"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。NG2は境界(軽い具体化として軽微)。NG3はR2で新規のため退行。NG4はEN翻訳のみ。Metaのロールバック対象と公開方針は区別されている(HC-014)。"
+}

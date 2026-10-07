@@ -1,0 +1,64 @@
+{
+  "slug": "meta",
+  "code": "j7e5",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 0
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 0
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 2
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 0
+  },
+  "direction_facts": [
+    {
+      "fact_id": "MUSE-HC-012",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "MUSE-HC-014",
+      "label": "not_selected"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "meta-j7e5-01",
+      "text": "In one case where Meta asked someone to negotiate internet and cable fees, a report said that the call record contained inappropriate remarks about race.",
+      "fact_id": "MUSE-HC-011",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "subject"
+    },
+    {
+      "id": "meta-j7e5-02",
+      "text": "(In one line) Meta temporarily rolled back a phone-calling feature after it emerged that humans, not AI, handled some calls.",
+      "fact_id": "MUSE-HC-012",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": false,
+        "s2": true
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。R0/R2/ENとも重大NGなし。ENのみ: 料金交渉を依頼した主体がJAは従業員(主体不記載)、ENは'Meta asked someone'で主体取り違え(軽微)。ENのIn one lineは'a phone-calling feature'でロールバック対象が電話機能全体にも読めるため軽微(本文は'only this feature'と明記しており境界、軽微に倒した。HC-012はJA/EN悪い方でambiguous)。"
+}

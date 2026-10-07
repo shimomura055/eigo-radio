@@ -1,0 +1,72 @@
+{
+  "slug": "space_weapons",
+  "code": "y843",
+  "stages": {
+    "s0_r0": {
+      "major": 0,
+      "minor": 1
+    },
+    "s1_ja": {
+      "major": 0,
+      "minor": 1
+    },
+    "s2_en": {
+      "major": 0,
+      "minor": 1
+    }
+  },
+  "regressions": {
+    "major": 0,
+    "minor": 1
+  },
+  "direction_facts": [
+    {
+      "fact_id": "F-001",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-003",
+      "label": "correct"
+    },
+    {
+      "fact_id": "F-011",
+      "label": "ambiguous"
+    },
+    {
+      "fact_id": "F-015",
+      "label": "correct"
+    }
+  ],
+  "ng_items": [
+    {
+      "id": "space_weapons-y843-01",
+      "text": "米空軍長官は、米国が敵対的な相手の行動から米軍を守るため...(R0。台帳は統合軍)",
+      "fact_id": "F-001",
+      "severity": "minor",
+      "stage": {
+        "s0": true,
+        "s1": false,
+        "s2": false
+      },
+      "cross_fact": false,
+      "regression": false,
+      "kind": "scope"
+    },
+    {
+      "id": "space_weapons-y843-02",
+      "text": "この大きな箱(カウンタースペース)の中には、衛星を監視する仕事、通信を支える仕事、...衛星を守る仕事、そして宇宙に置かれた兵器まで入っていた(R2。R1は通信を支える仕事。F-015の任務をF-011の定義(攻撃・防御行動)に含めた)",
+      "fact_id": "F-011",
+      "severity": "minor",
+      "stage": {
+        "s0": false,
+        "s1": true,
+        "s2": true
+      },
+      "cross_fact": true,
+      "regression": true,
+      "kind": "scope"
+    }
+  ],
+  "pending": [],
+  "notes": "単独評価、人間確認なし。NG01はR0のみ(R1で統合軍に修正)。NG02は監視・通信支援をカウンタースペースに含めたように読め、R0では明示されておらず退行として計上。"
+}
