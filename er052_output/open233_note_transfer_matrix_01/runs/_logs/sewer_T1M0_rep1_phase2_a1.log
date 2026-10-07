@@ -1,0 +1,29 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/open233_note_transfer_matrix_01/runs/sewer/nb/T1M0/rep1/research_ledger
+[E-FAMILY-RUNNER][cost] so far=5.39 JPY by_provider={'openai': 5.39} (after research_ledger)
+[B3-RUNNER][storyline_b3] 既存Selected Fact Briefを再利用: er052_output/open233_note_transfer_matrix_01/runs/sewer/nb/T1M0/rep1/storyline_b3
+[B3-RUNNER][writer] 既存JA記事(R2)を再利用: er052_output/open233_note_transfer_matrix_01/runs/sewer/nb/T1M0/rep1/ja_writer/revision2.md
+[E-FAMILY-RUNNER][writer/sewer] Advanced(Family X忠実英訳)生成開始...
+[E-FAMILY-RUNNER][writer/sewer] Advanced deviation check開始...
+[E-FAMILY-RUNNER][cost] so far=6.54 JPY by_provider={'openai': 6.54} (after advanced writer+deviation)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er052_open233_polysemy_nb_dev_01.py", line 294, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_polysemy_nb_dev_01.py", line 253, in main
+    er019.main()
+    ~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 386, in main
+    efam.run_writer_stage(client, theme, ja_text, ledger_text, args.budget_jpy, only="advanced",
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                           storyline_line=storyline_result["selected_storyline"],
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                           selected_fact_brief_text=storyline_result["selected_fact_brief_text"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er012_e_family_entertainment_two_level_runner_01.py", line 592, in run_writer_stage
+    result = _run_writer_stage_once(client, theme, ja_text, ledger_text, budget_jpy, only=only)
+  File "C:\Users\tensh\eigo-radio\er012_e_family_entertainment_two_level_runner_01.py", line 455, in _run_writer_stage_once
+    assert_budget_ok(out_dir, budget_jpy, "after advanced writer+deviation")
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er012_e_family_entertainment_two_level_runner_01.py", line 149, in assert_budget_ok
+    raise RuntimeError(f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
+RuntimeError: [BUDGET_GUARD] cost so far 6.54 JPY > cap 6.0 JPY. Stopping (after advanced writer+deviation).

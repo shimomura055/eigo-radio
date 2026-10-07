@@ -1,0 +1,20 @@
+# A Fee Plan That Lasted One Day, While Oil-Market Worries Went into Overtime
+
+In the oil market, a new sign suddenly went up.
+
+On July 13, Mr. Trump posted a plan to demand a 20 percent payment from all cargo passing through the Strait of Hormuz. The idea was for the United States to recover from the cargo the cost of keeping the strait safe.
+
+But there is something to note here. The number 20 percent was mentioned, but the actual fee had not started. Who would pay it, what the 20 percent would be based on, and how it would be collected—all these details of the system were not given.
+
+Even so, the market reacted strongly. On the same day, Brent crude futures rose $7.29, or 9.59 percent, from the previous day and ended at $83.30 a barrel.
+
+Reuters linked this rise to a US naval blockade of Iran that was expected to begin the next day, as well as concerns about energy shipments passing through the Strait of Hormuz. In other words, it cannot be said that the 20 percent plan alone caused the price rise. The market also had another worry: what would happen to shipments passing through the strait?
+
+Then came the next day, July 14. The sign was quickly replaced. Mr. Trump posted that the 20 percent payment would be replaced by trade and investment deals from Gulf countries involving the United States. He also told reporters that no one should charge ships passing through the strait, and that he did not like the idea of a fee itself.
+
+If the oil price had fallen along with the withdrawal of the plan, the story would be simple. But Brent futures only temporarily reduced their gains. Before long, they returned to a high level close to where they had been before the announcement. At the time of the article, they were up about 2.6 percent, at more than $85 a barrel.
+
+The 20 percent plan appeared and then left the scene the very next day. Even so, concerns about the naval blockade, attacks by the United States and Iran, and the safety of tankers remained. What stayed onstage in the market until the end was not the fee plan that had disappeared, but the unease surrounding the Strait of Hormuz.
+
+## In one line
+The 20 percent fee plan vanished the next day, but worries over Hormuz shipping kept oil prices high.

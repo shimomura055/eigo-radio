@@ -1,0 +1,22 @@
+# Microbial Teams Near Our Homes: The Main Workers in Wastewater Treatment
+
+There are unexpected main workers in the world of wastewater treatment: microorganisms.
+
+As the population falls and the cost of replacing old facilities becomes a heavier burden, local government plans are considering not only large public sewer systems, depending on the area, but also combined-treatment septic tanks for individual homes. The Ministry of Land, Infrastructure, Transport and Tourism explains that lower sewer fee income caused by population decline and other factors, along with rising costs for rebuilding and replacing facilities, are making business conditions for sewer services more difficult.
+
+The combined-treatment septic tank is a small wastewater treatment facility placed near a home. It handles not only toilet wastewater but also household wastewater from the kitchen, bath, and laundry. Inside, microorganisms work hard to treat the pollution.
+
+It is much like having a small water treatment team near your home. However, the team members are microorganisms. People do not need to prepare meals for them, but the equipment still needs to be inspected and cleaned.
+
+According to the Ministry of the Environment, individual septic tanks may be more economical in areas where homes are spread out. On the other hand, shared treatment, such as public sewers, may be better in areas where homes are close together. It is not that one choice always wins. The choice is made by looking at how the homes are arranged, the cost of building the system, and the cost of maintaining it.
+
+Kitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because maintenance costs were rising as its facilities grew old and fee income was falling as the population declined. As a result, the city says that all areas outside the shared-treatment zones will become individual-treatment zones using combined-treatment septic tanks, and that it will provide an additional subsidy for installation costs.
+
+However, the microbial team also has a work schedule. For small household septic tanks, maintenance inspections are basically required at least once every four months, and cleaning at least once a year. The number of times can change depending on the treatment method and the size. During cleaning, built-up sludge and other material is removed.
+
+In addition to maintenance inspections and cleaning, there are also legally required inspections to check the tank's function and its maintenance condition. The regular inspection is done once a year.
+
+A small septic tank is not a magic box that works on its own just because it is placed there. Microorganisms do the work, and people take care of the system regularly. When wastewater treatment is divided into smaller systems, a new treatment worker appears close to our daily lives.
+
+## In one line
+Microorganisms treat wastewater in household septic tanks, but people must regularly inspect and clean the systems.

@@ -1,0 +1,20 @@
+# New Members of Wastewater Treatment: Microorganisms Near Our Homes
+
+Let us compare the world of wastewater treatment to a sports competition. There are two players: public sewer systems, which collect wastewater through one long pipe, and combined-treatment septic tanks, which clean it near homes.
+
+When the population falls, the conditions of the game change. Sewer pipes do not get shorter even when there are fewer people. As facilities grow old, they also need to be rebuilt or replaced. At the same time, fewer users mean less money collected in fees. The Ministry of Land, Infrastructure, Transport and Tourism explains that lower fee income caused by population decline and other factors, together with higher costs for rebuilding and replacing aging facilities, make it harder to run sewer services.
+
+Then, instead of extending long pipes farther and farther, what about treating wastewater close to homes? This is where combined-treatment septic tanks come in.
+
+This equipment does not deal only with toilet wastewater. It treats water from the kitchen, bath, and laundry together. Also, machines are not the only main workers. Microorganisms working inside break down the pollution in household wastewater. Materials from the Ministry of the Environment describe treatment performance that lowers BOD, an indicator of pollution in released water, to 20 milligrams per liter or less. Actual performance and conditions differ depending on the specifications and other factors.
+
+Of course, septic tanks do not always win. In areas where homes are spread out, treating wastewater separately at each home may be more economical. In areas where homes are close together, a shared system such as public sewers may be more advantageous. What decides the winner is not the name of the system, but how the homes are arranged.
+
+Kitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because maintenance costs had increased as facilities aged and fee income had fallen as the population declined. It plans to make all areas outside the shared-treatment zones areas that use combined-treatment septic tanks, and to provide extra subsidies for installation costs. This is not about removing all the existing public sewers at once. It is about reorganizing the areas that will be served in the future.
+
+However, septic tanks have some surprisingly serious behind-the-scenes work. In a small household septic tank, maintenance checks are basically required at least once every four months, and cleaning is required at least once a year. The number of times changes according to the treatment method and size.
+
+When a large sewer system is split into systems for each home, microorganisms take the main role, and maintenance by people is essential. Wastewater treatment in an age of population decline is both a matter of reducing underground pipes and a matter of placing small treatment plants throughout the community.
+
+## In one line
+As populations decline, communities may turn to septic tanks near homes instead of costly, aging sewer networks.

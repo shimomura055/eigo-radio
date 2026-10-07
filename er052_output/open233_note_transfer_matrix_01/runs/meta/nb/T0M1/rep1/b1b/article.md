@@ -1,0 +1,22 @@
+# AI Phone Calls Had Human Staff on the Other End
+
+A small behind-the-scenes mystery.
+
+You ask Meta’s AI, Muse, to make a phone call. From what is shown on the screen, it seems that the AI will talk to the person on the phone and take care of the matter. However, in some calls made through Muse, trained human contract staff completed the interaction with the person on the other end.
+
+What Meta was testing was a system called a “human concierge.” Instead of having AI handle a call all the way to the end, human staff take over the conversation. Put another way, a human helper comes in from behind the scenes while the AI service is running.
+
+Having humans involved is not necessarily a bad thing. A phone call is not just a matter of showing an answer. Someone needs to listen to the other person, keep the conversation going, handle the needed information, and finish the task. If humans handle that part, there may be situations where the call goes more smoothly.
+
+However, the discussion of a useful feature suddenly turns into a privacy issue.
+
+The problem was that the test began without properly telling people that human contract staff would handle the calls. To move a call forward, sensitive user information may sometimes be needed. There was also a possibility that this information could be shared with contract staff in a way the user had not intended.
+
+Meta employees raised concerns about this. In some of the test calls, users thought they were leaving the call to AI. Yet the person actually finishing the conversation might be human. What matters here is not only how smart the AI is. It is also who is speaking and who might have access to the information.
+
+A Meta executive admitted that starting the test without properly telling people was a mistake. The company rolled the feature back for now and will not make it public for the time being. Going forward, it plans to make the phone feature public only when preparations are complete and it can properly tell people, including that contract staff will be involved.
+
+If a service carries the AI label, it should also introduce the people working behind the scenes. This incident showed that simple but important rule in a striking way.
+
+## In one line
+Meta’s AI phone calls sometimes involved undisclosed human contractors, prompting privacy concerns and a temporary rollback.

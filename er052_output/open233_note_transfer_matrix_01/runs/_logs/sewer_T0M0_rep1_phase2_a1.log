@@ -1,0 +1,15 @@
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/open233_note_transfer_matrix_01/runs/sewer/nb/T0M0/rep1/research_ledger
+[E-FAMILY-RUNNER][cost] so far=6.54 JPY by_provider={'openai': 6.54} (after research_ledger)
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er052_open233_polysemy_nb_dev_01.py", line 294, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er052_open233_polysemy_nb_dev_01.py", line 253, in main
+    er019.main()
+    ~~~~~~~~~~^^
+  File "C:\Users\tensh\eigo-radio\er019_family_x_entertainment_production_runner_01.py", line 328, in main
+    efam.assert_budget_ok(out_dir, args.budget_jpy, "after research_ledger")
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er012_e_family_entertainment_two_level_runner_01.py", line 149, in assert_budget_ok
+    raise RuntimeError(f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
+RuntimeError: [BUDGET_GUARD] cost so far 6.54 JPY > cap 6.0 JPY. Stopping (after research_ledger).
