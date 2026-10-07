@@ -1,26 +1,29 @@
 #!/usr/bin/env python3
 """aggregate_b3.py: B3 brief構造Trial 集計(決定論・標準ライブラリのみ・API/生成なし)。
-usage: python aggregate_b3.py [--in DIR] [--features FILE] [--out DIR]
+usage: python aggregate_b3.py [--in DIR] [--features FILE] [--map MAP_stage2.json] [--gate-stop FILE] [--out DIR]
+B1(段階2版): 5条件(V0/V1/V3/V5/V6) x 3テーマ x b1〜b4 x w1=60 - WRITER_GATE_STOP(母数除外、5-A6)。判定は5-A4(b1〜b4の過半数同符号)
 既定 in=er052_output/open233_b3_trial_01/eval/articles, features=<in親>/brief_features.json, out=<in親>
 出力: B3_SUMMARY.md, b3_summary.json
 """
 import argparse, glob, json, math, os, sys
 
-VARS = ["V0", "V1", "V2", "V3", "V5", "V6"]
+VARS = ["V0", "V1", "V3", "V5", "V6"]  # B1: 段階2は V2 なし(design_01 5-A4)
+GATE_STOP = {}
+BS = (1, 2, 3, 4)  # brief b1〜b4、Writerはw1のみ(1本/brief)
 THEMES = ["meta", "hormuz", "space_weapons"]
 LABELS = ["correct", "ambiguous", "misread"]
 EXPECT = [["V5"], ["V3"], ["V1", "V2"], ["V0"], ["V6"]]  # 設計の期待(誤りが少ない=良い順): V5 > V3 > V1/V2 > V0 > V6。V1/V2は同順位。(M1修正: 旧版は逆向き)
-EXPECT_PAIRS = [("V0", "V6"), ("V1", "V0"), ("V2", "V0"), ("V3", "V1"), ("V3", "V2"), ("V5", "V3")]  # (良い=誤り少ない側, 悪い側)。参考表。主判定は下の(h)表(M3)
+EXPECT_PAIRS = [("V0", "V6"), ("V1", "V0"), ("V3", "V1"), ("V5", "V3")]  # (良い=誤り少ない側, 悪い側)。参考表。主判定は下の(h)表(M3)
 # M3: 事前登録の比較(左=処置側, 右=基準側)。P1/P2が主、他は副次
-PAIRS_M3 = [("P1(主)", "V3", "V0"), ("P2(主,操作確認)", "V6", "V0"), ("副次", "V1", "V0"), ("副次", "V2", "V0"), ("副次", "V5", "V3")]
+PAIRS_M3 = [("P1(主)", "V3", "V0"), ("P2(主,操作確認)", "V6", "V0"), ("副次", "V1", "V0"), ("副次", "V5", "V3")]
 H1_KINDS = ("subject", "object", "scope")
 H2_KINDS = ("causal", "scope")  # scopeはng_itemsのcross_fact=true(別fact連結由来)のものだけ
 H3_KINDS = ("added_fact",)
 STAGES3 = [("s0_r0", "s0", "R0(修正前原稿)"), ("s1_ja", "s1", "①JA R2"), ("s2_en", "s2", "②EN")]
 MIN_DIFF = 0.5  # 件/記事
-NOTE = ("注意: 各(条件 x テーマ)は4記事(b1/b2 x w1/w2)、全テーマ合算でも1条件12記事の小標本。差が構造条件由来かB3/Writer揺れかは"
-        "(b)の揺れと比べて読むこと。重大/軽微は単独評価・人間確認なし。本表は採否判断を含まない(Production採用は人間のみ)。"
-        "相関(d)はn小・非独立(同briefが2記事に使われる)で参考値。")
+NOTE = ("注意: 各(条件 x テーマ)は最大4記事(b1〜b4 x w1、Writer1本/brief)、全テーマ合算でも1条件最大12記事の小標本。B3差とWriter差は分離できない(5-A4)。"
+        "WRITER_GATE_STOPの記事は母数から除外(5-A6)、生成不能件数は副次指標として別表。重大/軽微は単独評価・人間確認なし。本表は採否判断を含まない(Production採用は人間のみ)。"
+        "相関(d)はn小で参考値。")
 
 
 def load_map(mpath):
@@ -122,21 +125,15 @@ def fr(v):
 
 
 def variance_split(arts, stage):
-    """同(variant,theme)内: B3差=|b1平均-b2平均|、Writer差=|w1平均-w2平均|(テーマ平均)。"""
+    """5-A4: Writer1本/briefのためB3差とWriter差は分離不可。同(variant,theme)内のb1〜b4(存在分)の誤り件数(重大+軽微)の範囲(max-min)のテーマ平均(記述のみ)。"""
     out = {}
     for v in VARS:
-        bd, wd = [], []
+        rg = []
         for t in THEMES:
-            g = {(a["b3_rep"], a["writer_rep"]): tot(a, stage) for a in arts if a["variant"] == v and a["slug"] == t}
-            if len(g) != 4:
-                continue
-            b1 = (g[(1, 1)] + g[(1, 2)]) / 2.0
-            b2 = (g[(2, 1)] + g[(2, 2)]) / 2.0
-            w1 = (g[(1, 1)] + g[(2, 1)]) / 2.0
-            w2 = (g[(1, 2)] + g[(2, 2)]) / 2.0
-            bd.append(abs(b1 - b2))
-            wd.append(abs(w1 - w2))
-        out[v] = {"cells": len(bd), "b3_diff": mean(bd), "writer_diff": mean(wd)}
+            xs = [tot(a, stage) for a in arts if a["variant"] == v and a["slug"] == t]
+            if len(xs) >= 2:
+                rg.append(max(xs) - min(xs))
+        out[v] = {"cells": len(rg), "b_range": mean(rg)}
     return out
 
 
@@ -170,8 +167,16 @@ def sign(d):
     return 0 if d is None or d == 0 else (1 if d > 0 else -1)
 
 
+def majority_sign(ds, d):
+    """5-A4: b1〜b4(比較可能なb)の差のうち、dと同符号(非0)が比較可能b数の過半数(>半数)を占めれば True。同数・過半数不成立は保留(False)。"""
+    cmp_ = [x for x in ds if x is not None]
+    if not cmp_ or sign(d) == 0:
+        return False
+    return sum(1 for x in cmp_ if sign(x) == sign(d)) * 2 > len(cmp_)
+
+
 def judge_pair(arts, left, right, fn):
-    """事前登録の判定規則(M3): 3テーマ中2以上で『テーマ差の絶対値>=0.5件/記事 かつ b1/b2の差が同符号(非0)』かつ同方向 -> 傾向あり、それ以外 -> 未判定。差=left-right。"""
+    """事前登録の判定規則(M3+5-A4): 3テーマ中2以上で『テーマ差の絶対値>=0.5件/記事 かつ b1〜b4(両条件の記事が存在するb)の差の過半数が同符号(非0)』かつ同方向 -> 傾向あり、それ以外(同数・過半数不成立含む) -> 未判定。差=left-right。Gate STOPで欠けたbは比較可能bから除外。"""
     dirs, detail = [], []
     for t in THEMES:
         dl, dr = cell_mean(arts, left, t, None, fn), cell_mean(arts, right, t, None, fn)
@@ -181,12 +186,12 @@ def judge_pair(arts, left, right, fn):
             continue
         d = dl - dr
         db = []
-        for b in (1, 2):
+        for b in BS:
             bl, br = cell_mean(arts, left, t, b, fn), cell_mean(arts, right, t, b, fn)
             db.append(None if bl is None or br is None else bl - br)
-        ok = abs(d) >= MIN_DIFF and sign(db[0]) == sign(db[1]) == sign(d) != 0
+        ok = abs(d) >= MIN_DIFF and majority_sign(db, d)
         dirs.append(sign(d) if ok else 0)
-        detail.append("%s:%+.2f(b1 %s/b2 %s)%s" % (t, d, "-" if db[0] is None else "%+.2f" % db[0], "-" if db[1] is None else "%+.2f" % db[1], "*" if ok else ""))
+        detail.append("%s:%+.2f(%s)%s" % (t, d, "/".join("b%d %s" % (b, "-" if x is None else "%+.2f" % x) for b, x in zip(BS, db)), "*" if ok else ""))
     up, dn = dirs.count(1), dirs.count(-1)
     if up >= 2:
         verdict = "傾向あり(%s>%s)" % (left, right)
@@ -201,21 +206,31 @@ def BRIEF_KEYS_EXPECTED(arts):
     return {bkey(a) for a in arts}
 
 
+def expected_keys():
+    return {(t, v, b) for t in THEMES for v in VARS for b in BS}
+
+
 def check(arts, feats, brs):
     out, ok = [], True
-    out.append("- 記事数 %d (期待72): %s" % (len(arts), "OK" if len(arts) == 72 else "NG"))
-    ok = ok and len(arts) == 72
-    allok = True
-    for v in VARS:
-        for t in THEMES:
-            ks = sorted((a["b3_rep"], a["writer_rep"]) for a in arts if a["variant"] == v and a["slug"] == t)
-            if ks != [(1, 1), (1, 2), (2, 1), (2, 2)]:
-                allok = False
-                out.append("- セル %s x %s の (b,w)=%s (期待4通り): NG" % (v, t, ks))
-    ok = ok and allok
-    if allok:
-        out.append("- 6条件 x 3テーマ 全て(b1,b2)x(w1,w2)=4記事: OK")
-    keys = [(a["slug"], a["variant"], a["b3_rep"], a["writer_rep"]) for a in arts]
+    gs = {(k.split("/")[0], k.split("/")[1], int(k.split("/")[2][1:])) for k in GATE_STOP}
+    exp = expected_keys() - gs
+    out.append("- 記事数 %d (期待 %d = 60 - WRITER_GATE_STOP %d): %s" % (len(arts), len(exp), len(gs), "OK" if len(arts) == len(exp) else "NG"))
+    ok = ok and len(arts) == len(exp)
+    keys = [(a["slug"], a["variant"], a["b3_rep"]) for a in arts]
+    have = set(keys)
+    miss = sorted(exp - have)
+    extra = sorted(have - exp)
+    if miss:
+        ok = False
+        out.append("- 欠損(Gate STOP宣言以外): %s NG" % miss)
+    if extra:
+        ok = False
+        out.append("- 想定外のセル(Gate STOP宣言分または範囲外): %s NG" % extra)
+    if any(a.get("writer_rep") != 1 for a in arts):
+        ok = False
+        out.append("- writer_rep!=1の記事あり NG")
+    if not miss and not extra:
+        out.append("- 5条件 x 3テーマ x b1〜b4 (Gate STOP %d件除く) 全て1記事: OK" % len(gs))
     dup = sorted({k for k in keys if keys.count(k) > 1})
     if dup:
         ok = False
@@ -247,11 +262,11 @@ def check(arts, feats, brs):
     if miss_br:
         ok = False
     if feats is None:
-        out.append("- brief_features.json: なし(注意)")
+        out.append("- brief_features: なし(注意)")
     else:
-        miss = sorted({bkey(a) for a in arts} - set(feats))
-        out.append("- brief_features: %d briefs(期待36)、記事に対応するもの欠落 %d%s" % (len(feats), len(miss), (" " + ", ".join(miss)) if miss else ""))
-        if miss:
+        missf = sorted({bkey(a) for a in arts} - set(feats))
+        out.append("- brief_features: %d briefs(期待60)、記事に対応するもの欠落 %d%s" % (len(feats), len(missf), (" " + ", ".join(missf)) if missf else ""))
+        if missf:
             ok = False
     return ok, out
 
@@ -260,14 +275,20 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--in", dest="indir", default="er052_output/open233_b3_trial_01/eval/articles")
     ap.add_argument("--features", default=None)
-    ap.add_argument("--map", default=None, help="eval/blind/MAP.json(集計時のみ使用。評価者には渡さない)")
+    ap.add_argument("--map", default=None, help="eval/_private/MAP_stage2.json(集計時のみ使用。評価者には渡さない)")
+    ap.add_argument("--gate-stop", default="er052_output/open233_b3_trial_01/runs/writer_gate_stop_final.json", help="WRITER_GATE_STOP宣言(キー theme/V/bN。5-A6で母数除外)")
     ap.add_argument("--brief-reviews", default=None)
     ap.add_argument("--out", dest="outdir", default=None)
     ns = ap.parse_args()
     outdir = ns.outdir or os.path.dirname(os.path.normpath(ns.indir))
-    fpath = ns.features or os.path.join(os.path.dirname(os.path.normpath(ns.indir)), "brief_features.json")
+    fpath = ns.features or os.path.join(os.path.dirname(os.path.normpath(ns.indir)), "brief_features_stage2.json")
     ev = os.path.dirname(os.path.normpath(ns.indir))
-    mp = load_map(ns.map or os.path.join(ev, "blind", "MAP.json"))
+    mp = load_map(ns.map or os.path.join(ev, "_private", "MAP_stage2.json"))
+    global GATE_STOP
+    GATE_STOP = {}
+    if os.path.isfile(ns.gate_stop):
+        with open(ns.gate_stop, encoding="utf-8") as fh:
+            GATE_STOP = json.load(fh)
     arts, errs = load(ns.indir, mp)
     brs = load_brief_reviews(ns.brief_reviews or os.path.join(ev, "brief_review"), mp)
     for a in arts:
@@ -298,17 +319,21 @@ def main():
             res["by_theme"][t][v] = r
             L.append(row(v, r))
     # (b)
-    L += ["", "## (b) B3揺れ vs Writer揺れ(同条件 x 同テーマ内の4記事。値=記事当たり誤り件数(重大+軽微)の差の絶対値、テーマ平均)",
-          "B3差=|b1平均-b2平均|(Writer側で平均)、Writer差=|w1平均-w2平均|。B3差がWriter差より大きければbrief生成の揺れが支配的。", "",
-          "| 条件 | セル数 | ①JA B3差 | ①JA Writer差 | ②EN B3差 | ②EN Writer差 |", "|---|---|---|---|---|---|"]
+    L += ["", "## (b) brief間のばらつき(同条件 x 同テーマ内のb1〜b4。値=誤り件数(重大+軽微)の範囲 max-min、テーマ平均)",
+          "Writerが1本/briefのためB3差とWriter差は分離できない(design_01 5-A4)。記述のみ。", "",
+          "| 条件 | セル数(>=2記事) | ①JA b間範囲 | ②EN b間範囲 |", "|---|---|---|---|"]
     vs1, vs2 = variance_split(arts, "s1_ja"), variance_split(arts, "s2_en")
     res["variance"] = {"s1_ja": vs1, "s2_en": vs2}
     for v in VARS:
-        L.append("| %s | %d | %s | %s | %s | %s |" % (v, vs2[v]["cells"], fr(vs1[v]["b3_diff"]), fr(vs1[v]["writer_diff"]),
-                                                      fr(vs2[v]["b3_diff"]), fr(vs2[v]["writer_diff"])))
-    all_b = mean([vs2[v]["b3_diff"] for v in VARS if vs2[v]["b3_diff"] is not None])
-    all_w = mean([vs2[v]["writer_diff"] for v in VARS if vs2[v]["writer_diff"] is not None])
-    L.append("| 全条件平均(EN) | - | - | - | %s | %s |" % (fr(all_b), fr(all_w)))
+        L.append("| %s | %d | %s | %s |" % (v, vs2[v]["cells"], fr(vs1[v]["b_range"]), fr(vs2[v]["b_range"])))
+    L += ["", "### WRITER_GATE_STOP(生成不能、母数除外、副次指標 5-A6。非盲検)", "",
+          "| 条件 | 生成不能件数 | 期待run数 | 評価対象記事数 |", "|---|---|---|---|"]
+    res["gate_stop"] = {}
+    for v in VARS:
+        gs = [k for k in GATE_STOP if k.split("/")[1] == v]
+        na = sum(1 for a in arts if a["variant"] == v)
+        res["gate_stop"][v] = {"gate_stop": len(gs), "articles": na}
+        L.append("| %s | %d | %d | %d |" % (v, len(gs), len(THEMES) * len(BS), na))
     # (c)
     L += ["", "## (c) 設計の期待順位 V5>V3>V1/V2>V0>V6(誤りが少ない=良い順、参考。主判定は(h))に対する実測",
           "実測順位の指標=②EN 記事当たり (重大, 軽微) の辞書式昇順(重大が少ない方が上位、同数なら軽微が少ない方)。JAは参考列。", "",
@@ -317,6 +342,7 @@ def main():
     rank = {v: 1 + sum(1 for u in VARS if key[u] < key[v]) for v in VARS}
     exp_rank, pos = {}, 1
     for grp in EXPECT:
+        grp = [v for v in grp if v in VARS]  # V2は段階2に無いので除く
         for v in grp:
             exp_rank[v] = pos
         pos += len(grp)
@@ -333,11 +359,11 @@ def main():
     res["en_rank"] = rank
     # (h) M3 事前登録比較
     L += ["", "## (h) 事前登録の比較(M3、Opus条件Aレビュー反映)",
-          "差=左(処置)-右(基準)の記事当たり件数。判定規則: 3テーマ中2以上で『テーマ差の絶対値>=%.1f件/記事 かつ b1/b2の差が同符号(非0)』かつ同方向 -> 傾向あり、それ以外 -> 未判定。*=そのテーマが規則を満たす。" % MIN_DIFF,
+          "差=左(処置)-右(基準)の記事当たり件数。判定規則: 3テーマ中2以上で『テーマ差の絶対値>=%.1f件/記事 かつ b1〜b4(比較可能なb)の差の過半数が同符号(非0)』かつ同方向 -> 傾向あり、同数・過半数不成立・それ以外 -> 未判定(5-A4)。*=そのテーマが規則を満たす。" % MIN_DIFF,
           "H2のscopeは ng_items.cross_fact=true(別fact連結由来)のみ数える。独立反復の単位はbrief(1条件6本)で、傾向は仮説判定でありProduction採否ではない。", ""]
     res["m3"] = {}
     for label, left, right in PAIRS_M3:
-        L += ["### %s: %s 対 %s" % (label, left, right), "", "| 工程 | 指標 | %s 平均 | %s 平均 | 差 | テーマ別差(b1/b2) | 判定 |" % (left, right), "|---|---|---|---|---|---|---|"]
+        L += ["### %s: %s 対 %s" % (label, left, right), "", "| 工程 | 指標 | %s 平均 | %s 平均 | 差 | テーマ別差(b1〜b4) | 判定 |" % (left, right), "|---|---|---|---|---|---|---|"]
         for sk, sf, sname in STAGES3:
             for mname, mf in METRICS:
                 fn = (lambda a, sk=sk, sf=sf, mf=mf: mf(a, sk, sf))

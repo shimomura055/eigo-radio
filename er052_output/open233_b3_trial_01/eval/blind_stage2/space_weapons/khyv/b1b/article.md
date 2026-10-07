@@ -1,0 +1,26 @@
+# A Slightly Tricky Quiz to Tell Space Weapons Apart
+
+Here is the question. Are all the things the United States uses to protect space security weapons in orbit?
+
+The answer is no. What makes this news interesting is that this difference became very clear.
+
+In September 2026, the U.S. Secretary of the Air Force said that the United States had deployed space-control weapons in orbit to protect the joint forces from hostile actions. This was the first time the United States had officially admitted that it had deployed them.
+
+Now, let us check the weapons’ addresses.
+
+Weapons in orbit travel around Earth like satellites. Ground-launched anti-satellite weapons, on the other hand, may also be used to destroy satellites, but they are different from weapons deployed in orbit.
+
+The destruction of Russia’s satellite Kosmos 1408 in 2021 shows this difference clearly. It was an action to test a ground-launched anti-satellite weapon. The test showed that the weapon could destroy a satellite, but it did not leave the weapon in space.
+
+Is the launch platform on the ground? Or is the weapon itself traveling through space? Even when they are both space weapons, the story changes if their addresses are different.
+
+The word “counterspace” is also quite tricky. In the U.S. Space Force, this word includes not only activities in orbit but also attacks and defenses carried out through communication links and at ground facilities. The workplace of space activities is not only the sky. It also extends to communications and the ground.
+
+That is why GPS, missile tracking, space domain awareness, which means finding out what is in space, and systems that make satellites harder to destroy are also important parts of space security. GPS is used in everyday life for location information and other things, but that alone does not mean that offensive weapons have been deployed in orbit.
+
+In other words, this news cannot be summed up by simply saying that there are weapons in space. Things that watch, systems that protect, tools related to communications, weapons fired from the ground, and weapons placed in orbit. Even if they wear similar uniforms, they belong to different groups.
+
+What the United States officially admitted for the first time was a weapon placed in orbit. When you hear space news, try asking about the weapon’s address before asking its name. Is it on the ground? Or is it in orbit? This alone can change how the story looks.
+
+## In one line
+The United States first admitted deploying weapons in orbit, which are different from ground-launched anti-satellite weapons.

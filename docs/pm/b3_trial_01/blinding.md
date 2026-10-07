@@ -20,3 +20,11 @@
 
 ## 集計
 `aggregate_b3.py --map eval/blind/MAP.json`(既定で `<in親>/blind/MAP.json`)。MAPで記事・briefのcodeをvariantに解決する。評価者は集計完了まで見ない。
+
+## 段階2(B1、2026-10-07)
+- 実行: `python er052_output/open233_b3_trial_01/tools/make_blind_copies.py --stage2`。55記事(60 run - WRITER_GATE_STOP 5)を `eval/blind_stage2/<slug>/<code>/`(ja_writer/original.md,revision1.md,revision2.md、b1b/article.md)へ匿名コピー。
+- **MAP保管場所: `er052_output/open233_b3_trial_01/eval/_private/MAP_stage2.json`**(評価パック `eval/eval_pack_stage2/` と `blind_stage2/` の外。評価者に渡さない・読ませない)。旧 `eval/blind/MAP.json`(段階1)は上書きしていない。条件配分の記録 `eval/_private/assignment_balance.json` も同様に非公開。
+- **開封条件**: 全担当分の記事JSON(`eval/articles/*.json`)が出揃い、Fableが「集計開始」を指示した時のみ(aggregate_b3.pyが `--map` で読む)。評価完了前にFable/準備担当も記事の採点・順位付けを行わない。
+- briefは `eval/blind_stage2/_briefs_for_brief_review/<slug>/<bcode>/selected_brief.md`(60本、別インスタンスのbrief_review専用。記事評価者には読ませない)。
+- Gate STOP 5件は盲検コピーに含めない。件数は非盲検の副次指標 `eval/writer_gate_stop_summary.md`(評価者非公開)。
+- 評価パック生成: `python docs/pm/b3_trial_01/make_eval_pack.py`(割当はseed固定、条件別に交互配分、評価順はseed固定シャッフル)。

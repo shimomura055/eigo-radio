@@ -37,3 +37,12 @@
 - 評価委任文に条件の意味・期待順位を書かない。MAP.jsonは集計まで評価者に渡さない。
 
 - A4注記: 段階2は `make_blind_copies.py --stage2`(既存MAP.jsonは上書きせず `eval/blind/MAP_stage2.json`)。aggregate_b3.py は旧前提(72記事・b1/b2・w1/w2・V2含む)のままのため、集計委任の前に60記事・b1〜b4多数同符号(design_01.md 5-A4)へ別途更新が必要(本A4では未着手)。
+
+## 段階2 最終化(B1、2026-10-07、¥0)
+- 対象: 55記事(60 run - WRITER_GATE_STOP 5。母数除外、5-A6)。テーマ別 meta 17 / hormuz 18 / space_weapons 20。上の「A. 委任文テンプレ」の20本・24匿名記事・`eval/blind/`・w1/w2等の記述は旧版の前提であり、**段階2は本節に従う**。
+- 評価者: **6インスタンス**(テーマ別に2名ずつ、`meta_A/B`、`hormuz_A/B`、`space_weapons_A/B`)。1人あたり meta 9+8、hormuz 9+9、space_weapons 10+10 記事。各記事は4ファイル(R0/R1/R2/EN、各約2〜2.5KB)。推定所要は1人 約20〜40分(6名並列で全体 約40分以内)。
+- 割当: 条件ごとにseed固定シャッフルして評価者A/Bへ交互に配分(条件が評価者間で偏らない。実績の条件配分は `eval/_private/assignment_balance.json`、評価者非公開)。評価者内の評価順もseed固定シャッフル(条件順にならない)。評価者は条件ラベルを見ない(M5)。割当ファイルは `eval/eval_pack_stage2/assignment_<slug>_<A|B>.md`。
+- 評価パック: `er052_output/open233_b3_trial_01/eval/eval_pack_stage2/`(README_EVALUATOR.md[段階2適用メモ+rubric全文]、unprovided_checklist_*.md、article_schema.json、articles_index.md、assignment_*.md、scores_template.json)。再生成は `python docs/pm/b3_trial_01/make_eval_pack.py`。
+- 出力: 記事ごとに `eval/articles/<slug>_<code>.json`(55ファイル)、任意メモ `eval/notes/<slug>_<A|B>.md`。
+- brief_review(60 brief)は別インスタンスへ別委任(本節の対象外。`eval/blind_stage2/_briefs_for_brief_review/`)。brief_featuresは `brief_features.py --stage2`(`eval/brief_features_stage2.json`、生成済み60本)。
+- 集計(55本・brief_review揃い後に1回): `python docs/pm/b3_trial_01/aggregate_b3.py --map er052_output/open233_b3_trial_01/eval/_private/MAP_stage2.json`(既定でGate STOP宣言 `runs/writer_gate_stop_final.json` を母数除外として読む。判定は5-A4: b1〜b4の比較可能なbのうち過半数が同符号、同数・過半数不成立は保留)。

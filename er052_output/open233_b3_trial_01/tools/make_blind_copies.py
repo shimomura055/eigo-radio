@@ -37,12 +37,17 @@ def main():
     ap.add_argument("--what", default="both", choices=("briefs", "articles", "both"))
     ap.add_argument("--stage2", action="store_true", help="A4: 段階2用。V0/V1/V3/V5/V6 x b1..b4 x w1(60記事)。既存MAP.jsonは上書きせずMAP_stage2.jsonを生成。既存MAPのcodeと衝突しない")
     ns = ap.parse_args()
+    global BLIND
+    BLIND_OLD = BLIND
+    if ns.stage2:  # B1: 段階2は eval/blind_stage2/ に出力。MAPは評価者パック外の eval/_private/ に置く。briefは記事評価者の目に触れない別場所へ
+        BLIND = "er052_output/open233_b3_trial_01/eval/blind_stage2"
+    PRIV = "er052_output/open233_b3_trial_01/eval/_private"
     variants = ("V0", "V1", "V3", "V5", "V6") if ns.stage2 else VARIANTS
     briefs_range = (1, 2, 3, 4) if ns.stage2 else (1, 2)
     writers = (1,) if ns.stage2 else (1, 2)
     old = {}
-    if ns.stage2 and os.path.isfile(BLIND + "/MAP.json"):
-        old = json.load(open(BLIND + "/MAP.json", encoding="utf-8"))
+    if ns.stage2 and os.path.isfile(BLIND_OLD + "/MAP.json"):
+        old = json.load(open(BLIND_OLD + "/MAP.json", encoding="utf-8"))
     mp = {"seed": ns.seed, "articles": {}, "briefs": {}, "note": "集計まで評価者に渡さない(M5)。"}
     taken_a, taken_b = {}, {}
     for s in SLUGS:
@@ -64,7 +69,7 @@ def main():
                 if bsrc is not None:
                     mp["briefs"]["%s/%s" % (s, bc)] = {"variant": v, "b3_rep": i, "src": bsrc}
                     if ns.what in ("briefs", "both"):
-                        d = "%s/%s/_briefs/%s" % (BLIND, s, bc)
+                        d = ("%s/_briefs_for_brief_review/%s/%s" if ns.stage2 else "%s/%s/_briefs/%s") % (BLIND, s, bc)
                         os.makedirs(d, exist_ok=True)
                         shutil.copyfile(bsrc, d + "/selected_brief.md")
                 for j in writers:
@@ -80,10 +85,12 @@ def main():
                             dst = "%s/%s/%s/%s" % (BLIND, s, ac, f)
                             os.makedirs(os.path.dirname(dst), exist_ok=True)
                             shutil.copyfile(adir + "/" + f, dst)
-    os.makedirs(BLIND, exist_ok=True)
-    with open(BLIND + ("/MAP_stage2.json" if ns.stage2 else "/MAP.json"), "w", encoding="utf-8", newline="\n") as fh:
+    mdir = PRIV if ns.stage2 else BLIND
+    mname = "MAP_stage2.json" if ns.stage2 else "MAP.json"
+    os.makedirs(mdir, exist_ok=True)
+    with open(mdir + "/" + mname, "w", encoding="utf-8", newline=chr(10)) as fh:
         json.dump(mp, fh, ensure_ascii=False, indent=2, sort_keys=True)
-    print("briefs=%d articles=%d map=%s/%s" % (len(mp["briefs"]), len(mp["articles"]), BLIND, "MAP_stage2.json" if ns.stage2 else "MAP.json"))
+    print("briefs=%d articles=%d map=%s/%s" % (len(mp["briefs"]), len(mp["articles"]), mdir, mname))
 
 
 if __name__ == "__main__":

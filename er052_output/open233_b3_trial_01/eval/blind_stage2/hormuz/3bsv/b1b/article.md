@@ -1,0 +1,30 @@
+# After the Fee Plan Disappeared, Crude Oil Futures Turned Back
+
+This is a race between policy news and oil prices.
+
+The first act came on July 13. US President Donald Trump posted a plan asking all cargo passing through the Strait of Hormuz to pay a 20 percent reimbursement fee.
+
+The idea was to get back from passing cargo the money the US spends on keeping the strait safe. The figure of 20 percent stood out even in the headline.
+
+However, the plan did not explain the details of the system, such as who would pay or how the amount would be calculated.
+
+The second act began the next day. Trump posted that the 20 percent US reimbursement fee would be replaced by trade with the US and investment deals by Gulf countries.
+
+The story changed from collecting a fee to trade and investment. The news story was suddenly rewritten.
+
+So, how did crude oil futures move? Brent futures temporarily gave back some of their gains after the announcement. However, they did not keep falling. Soon, they returned to a high level close to where they had been before the announcement.
+
+At the time this article was published, they were up about 2.6 percent. They were above 85 dollars a barrel.
+
+In movie terms, it was like one character had left, but the tense scene had not ended.
+
+The fee plan disappeared from the stage. However, attacks between the US and Iran, a blockade at sea, and concerns about the safety of tankers continued.
+
+That is why the point to watch this time is that prices reacted a little after the withdrawal announcement, then quickly returned to a high level. Even if one piece of news disappears, the worries continuing at the same time do not always disappear.
+
+The price movement of crude oil futures seemed less like answering one news story at a time and more like running while listening to several stories at once.
+
+Even events across the sea are linked through crude oil prices to familiar energy matters such as gasoline. If you follow not only the price number but also which news disappeared and which worries remained, price movements begin to look a little like a drama.
+
+## In one line
+Oil futures briefly dipped after the fee plan was withdrawn, then quickly returned near their previous high.

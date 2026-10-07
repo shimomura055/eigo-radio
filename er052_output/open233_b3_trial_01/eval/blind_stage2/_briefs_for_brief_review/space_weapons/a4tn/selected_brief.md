@@ -1,0 +1,11 @@
+# Selected Fact Brief
+
+## Storyline
+米国が軌道上のspace control weapons配備を初めて公式に認めたことを受け、宇宙に置く兵器と、軌道・リンク・地上で行われるcounterspace活動および宇宙能力の防御行動を区別して整理する必要が生じた。
+
+## Selected Facts
+- F-001：2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。
+- F-011：米宇宙軍の2025年Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。
+- F-013：同frameworkは防御行動を、友軍の宇宙能力を攻撃・干渉・偶発的危険から守る行動とし、active space defenseとpassive space defenseに分類している。passive defenseの例には脅威警告、硬化、分散、機能分離、機動性、冗長性が含まれる。
+
+具体的なシステム名・攻撃能力・標的は示されていない。

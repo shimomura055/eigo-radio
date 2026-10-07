@@ -150,13 +150,16 @@ def main():
     ap.add_argument("--runs", default="er052_output/open233_b3_trial_01/runs")
     ap.add_argument("--ledgers", default="er052_output/open233_polysemy_trial_02/ledgers")
     ap.add_argument("--out", default="er052_output/open233_b3_trial_01/eval/brief_features.json")
+    ap.add_argument("--stage2", action="store_true", help="B1: 段階2。V0/V1/V3/V5/V6 x b1〜b4=60brief、出力 eval/brief_features_stage2.json")
     ns = ap.parse_args()
+    if ns.stage2 and ns.out.endswith("brief_features.json"):
+        ns.out = ns.out.replace("brief_features.json", "brief_features_stage2.json")
     res, missing = {}, []
     for s in SLUGS:
         led = ledger_text(ns.ledgers, s)
         notes, negnotes = notes_text(ns.ledgers, s)
-        for v in VARIANTS:
-            for i in ((1, 2, 3, 4) if v == "V5" else (1, 2)):  # A3: V5はb1〜b4
+        for v in (["V0", "V1", "V3", "V5", "V6"] if ns.stage2 else VARIANTS):
+            for i in ((1, 2, 3, 4) if (v == "V5" or ns.stage2) else (1, 2)):  # A3: V5はb1〜b4
                 p = find_brief(ns.runs, s, v, i)
                 if not p:
                     missing.append("%s|%s|b%d" % (s, v, i))

@@ -1,0 +1,7 @@
+# Selected Fact Brief
+
+## Storyline
+敵対的な相手の行動から統合軍を防護するため、米国は軌道上のspace control weapons（宇宙管制兵器）を配備していると初めて公式に認めた。
+
+## Selected Facts
+Selected Fact F-001：2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。具体的なシステム名・攻撃能力・標的は補わない。
