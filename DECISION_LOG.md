@@ -20150,3 +20150,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】ユーザー指示により代替run(rep17/18/19)を集計から除外。Trial実施以外の決定なし。
 - (b)【訂正】上記エントリの「有効N=9/累積N=14」を訂正: 開始N=10、完了N=7(正2/曖5/誤0、rep9境界)、累積N=12(正3/曖9/誤0=0%、rep9重大扱いなら1/12=8%)。費用推定≈¥61.8=上限¥60を約¥2超過(要因=旧指示による代替run起動)。
 - Status=USER_DECISION_REQUIRED維持。Production変更なし/Trial限定。出典: REPORT §92。
+
+## 2026-10-07 OPEN-233-META-ALLFACT-NOTE-ENT-TRIAL-01(全fact一律Note 2パターンTrial)
+- (a)【決定】「Trial実施(ユーザー承認済み)」のみ。それ以外は決定ではない。
+- (b)【事実確認】P1(多義のみ)/P2(多義+従来notes)×N=1をJA→EN→Checkerまで実施。P1はbrief転記3/3、P2は多義注意0/3(従来notesのみ)。rollback表現はP1曖昧、P2 JA曖昧/EN正しい寄り、重大誤読0。Checker最終重大0。実費≈¥50.2/上限¥200。
+- Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定。出典: REPORT §93。

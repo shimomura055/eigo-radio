@@ -5273,3 +5273,26 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §92-5 参照
 - `er052_output/open233_meta_rollback_minimal_note_01/eval/E_rollback_minimal_note_trial02.md`、`.../runs/meta/nb/rep7〜19/`、`.../runs/manifest.json`、`.../cost.json`。OPEN-237。
+
+## §93 OPEN-233-META-ALLFACT-NOTE-ENT-TRIAL-01(全fact一律Note 2パターン×N=1、2026-10-07)
+
+### §93-1 条件
+- ベース台帳=control(sha ea0ce587…、15fact、空notes0件)。P1=全factのnotes末尾に「 / 注意(多義): <文言(完全同一)>」(sha b41276bb…、OPEN233_NOTE_PREFIX=「注意(多義):」)。P2=「注意: <既存notes> / 注意(多義): <文言>」(sha d2db1058…、PREFIX=「注意:」)。notes以外差分0検査PASS(両方)。nb variant、B3→JA R0/R1/R2→EN→自動Checker、N=1×2。out-dirは runner制約で runs/meta/nb/<p1|p2>/rep1。
+
+### §93-2 転記状況
+- P1: briefは14行、選択3fact(HC-006/010/012)すべてに多義注意が逐語転記(3/3、切れなし)。P2: brief14行、既存notes3行のみ転記、多義注意0/3(同一行の後半が脱落)=P2は実質「従来notes転記」条件。
+
+### §93-3 rollback(HC-012)判定(全文は評価ファイル)
+- P1 JA/EN=曖昧(「当面ロールバック」+「Muse全体を止めたわけではない」)。P2 JA=曖昧(「いったん戻した」)、P2 EN=正しい寄り境界(「pulled back」)。重大誤読0。参考Control rep1=曖昧、rep13=正しい(「取りやめ」)。
+
+### §93-4 指標・pairwise・Checker
+- JA R2 12字一致率: P1 0.123/P2 0.140/Control 0.126/rep13 0.091。EN 平均文長(語): P1 15.4/P2 16.9/Control 15.4、TTR 0.48/0.49/0.50。
+- pairwise(順序入替2回): JA P1>C(全軸)、JA P2≒C、JA P1 vs P2は軸で分かれる(overall同等)、EN P1>C、EN P2>C(overall)、EN P1>P2(全軸)。単一LLM評価・N=1のため断定しない。
+- Checker: P1=RESOLVED_REWRITE_THEN_DOWNGRADE(3cycle、Rewrite1回)、P2=RESOLVED_STAGE2_DOWNGRADE(1cycle、Rewriteなし)、Control rep1=RESOLVED_REWRITE_THEN_DOWNGRADE(2cycle)。最終重大0(全て)。
+- 費用≈¥50.2/上限¥200(うちpairwise¥29.0)、実時間約17分。
+
+### §93-5 Status
+- **USER_DECISION_REQUIRED**(Production採用判断なし)。決定はTrial実施のみ。判断材料: P1はbrief到達3/3だがrollback曖昧は残る、P2は転記規則の1行内脱落で多義注意が届かない。
+
+### §93-6 参照
+- `er052_output/open233_meta_allfact_note_ent_01/eval/E_allfact_ent_01.md`(記事全文収録)、`.../runs/meta/nb/p1|p2/rep1/`、`.../cost.json`、`.../ledger/FREEZE.json`。OPEN-237。
