@@ -35,13 +35,23 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", default="20261007")
     ap.add_argument("--what", default="both", choices=("briefs", "articles", "both"))
+    ap.add_argument("--stage2", action="store_true", help="A4: 段階2用。V0/V1/V3/V5/V6 x b1..b4 x w1(60記事)。既存MAP.jsonは上書きせずMAP_stage2.jsonを生成。既存MAPのcodeと衝突しない")
     ns = ap.parse_args()
+    variants = ("V0", "V1", "V3", "V5", "V6") if ns.stage2 else VARIANTS
+    briefs_range = (1, 2, 3, 4) if ns.stage2 else (1, 2)
+    writers = (1,) if ns.stage2 else (1, 2)
+    old = {}
+    if ns.stage2 and os.path.isfile(BLIND + "/MAP.json"):
+        old = json.load(open(BLIND + "/MAP.json", encoding="utf-8"))
     mp = {"seed": ns.seed, "articles": {}, "briefs": {}, "note": "集計まで評価者に渡さない(M5)。"}
     taken_a, taken_b = {}, {}
     for s in SLUGS:
         taken_a[s], taken_b[s] = set(), set()
-        for v in VARIANTS:
-            for i in (1, 2):
+        for k, e in old.get("briefs", {}).items():  # 段階2対象外(V2)の既存codeだけ予約(同キーは予約しない=同じcodeを再現)
+            if k.startswith(s + "/") and e["variant"] not in variants:
+                taken_b[s].add(k.split("/", 1)[1])
+        for v in variants:
+            for i in briefs_range:
                 bdir = "%s/%s/nb/%s/b%d" % (RUNS, s, v, i)
                 bkey = "%s|%s|b%d" % (s, v, i)
                 bc = code_for(ns.seed, "brief|" + bkey, taken_b[s])
@@ -57,7 +67,7 @@ def main():
                         d = "%s/%s/_briefs/%s" % (BLIND, s, bc)
                         os.makedirs(d, exist_ok=True)
                         shutil.copyfile(bsrc, d + "/selected_brief.md")
-                for j in (1, 2):
+                for j in writers:
                     adir = "%s/w%d" % (bdir, j)
                     akey = "%s|%s|b%d|w%d" % (s, v, i, j)
                     ac = code_for(ns.seed, "article|" + akey, taken_a[s])
@@ -71,9 +81,9 @@ def main():
                             os.makedirs(os.path.dirname(dst), exist_ok=True)
                             shutil.copyfile(adir + "/" + f, dst)
     os.makedirs(BLIND, exist_ok=True)
-    with open(BLIND + "/MAP.json", "w", encoding="utf-8", newline="\n") as fh:
+    with open(BLIND + ("/MAP_stage2.json" if ns.stage2 else "/MAP.json"), "w", encoding="utf-8", newline="\n") as fh:
         json.dump(mp, fh, ensure_ascii=False, indent=2, sort_keys=True)
-    print("briefs=%d articles=%d map=%s/MAP.json" % (len(mp["briefs"]), len(mp["articles"]), BLIND))
+    print("briefs=%d articles=%d map=%s/%s" % (len(mp["briefs"]), len(mp["articles"]), BLIND, "MAP_stage2.json" if ns.stage2 else "MAP.json"))
 
 
 if __name__ == "__main__":

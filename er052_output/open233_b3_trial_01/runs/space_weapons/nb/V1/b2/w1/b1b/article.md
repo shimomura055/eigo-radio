@@ -1,0 +1,20 @@
+# A Space-Weapons Sorting Game: Firing from the Ground, Placing in Space, and Protecting Are Different Things
+
+This news is like a space version of a sorting game. When we hear “space weapons,” we want to put everything in the same box. But in reality, there are things fired from the ground, things placed in orbit, and systems that protect our side. Each belongs in a different box.
+
+On September 14, 2026, US Secretary of the Air Force Troy Meink said that the United States was deploying space-control weapons in orbit to protect the joint force from actions by hostile parties. The joint force means the military forces of the land, sea, and air services working together. An official article by a US government agency recorded this as the first statement in which the United States officially acknowledged that the Space Force had deployed weapons in space.
+
+Here is the first sorting point. The main point this time is not the general idea that the United States is using space. The point is that it has publicly acknowledged that it calls equipment in orbit weapons.
+
+What about the incident in which Russia destroyed a satellite? In November 2021, Russia destroyed one of its own satellites with an anti-satellite missile, commonly called ASAT, that rises directly from the ground. As a result, more than 1,500 pieces of trackable space debris were created.
+
+This was a destructive test of a ground-launched ASAT. Weapons fired from the ground and weapons kept in orbit are both dangerous, but they are not the same. If we mix them together, space news quickly becomes oversimplified.
+
+The second sorting point is “counterspace.” In a 2025 document, the US Space Force uses this word for attacks and defenses carried out in orbit, through communication links, and at ground facilities. Defense includes not only equipment that stops attacks, but also warning about threats, making equipment stronger, separating its functions, and having backups. Defense systems and weapons do not always mean the same thing.
+
+The last point is the Outer Space Treaty. The treaty bans placing objects carrying nuclear weapons and other weapons of mass destruction in orbit around Earth, placing those weapons on the Moon or other celestial bodies, and deploying them in space in other ways. It also bans military bases on celestial bodies, weapons tests, and military exercises.
+
+However, it is not a treaty that bans all space weapons. So this announcement does not immediately mean that it is a violation of the treaty, nor does it mean that space weapons have been fully allowed. Space news becomes easier to understand when we sort out the words before looking up at the sky.
+
+## In one line
+The United States has acknowledged weapons in orbit, but that does not automatically violate the Outer Space Treaty.
