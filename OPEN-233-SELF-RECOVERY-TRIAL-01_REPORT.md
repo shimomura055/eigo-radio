@@ -5386,3 +5386,20 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §95-8 参照
 - `eval/stagewise/{STAGEWISE_SUMMARY.md,NG_*.md,stagewise_*.json}`、`docs/pm/delegation_log/2026-10-07_OPEN-233-E2E-STAGEWISE-NG-AUDIT-01_C1.md`。OPEN-237/238/239。
+
+## §96 OPEN-238-PRECHECK-MISLINK-DIAG-01(Checker precheck偽陽性の診断、2026-10-07、¥0)
+
+### §96-1 事象
+- ai_control P2 rep2 cycle1でRewriteが無関係文を84%文へ置換(OPEN-238、REPORT §94-4)。
+### §96-2 原因(精査済み)
+- 英文「a third party」の「a third」が分数語辞書(`er052_open233_self_recovery_precheck_01.py` L112)で33.3%として抽出。単一%fact(EVID-006/CONTROL-004)との総当たり不一致でnumber_mismatch発火→Stage2スキップの無条件BLOCKING(runner `er052_open233_self_recovery_flow_runner_01.py` L8784-8800)→Rewriteが台帳値置換指示で置換。
+### §96-3 再現範囲
+- 他run再現0件(json 1,795件+18 run dir再実行)。
+### §96-4 本番影響・関係
+- 承認構成配線後は本番でも発生し得る。OPEN-235とは別経路(OPEN-236との関係は別管理)。
+### §96-5 修正案
+- 案1: party/parties後続は抽出除外。案2: 数字・%なし文はclaim化しない。案3: floor発火でもStage2経由(条件A=Opus独立レビュー要)。Fable推奨=案1+案2。
+### §96-6 Status
+- USER_DECISION_REQUIRED。修正未実施、Production変更なし(ユーザー承認+Opusレビュー前提)。
+### §96-7 参照
+- `docs/pm/open238_precheck_mislink_diag_01.md`、`er052_output/open233_allfact_note_e2e_02/eval/stagewise/notes_to_error_trace.md`(notes→誤り変換追跡: 直接証拠0件、仮説不支持)、`docs/pm/delegation_log/2026-10-07_OPEN-238-PRECHECK-MISLINK-DIAG-01_*`。

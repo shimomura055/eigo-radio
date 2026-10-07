@@ -20165,3 +20165,5 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】「既存E2E 15本(従来版5+P2版10)の工程別NG再評価の実施」(ユーザー指示)のみ。¥0、新規生成・API呼び出しなし、Production変更なし。P2採否・Checker Production反映の決定なし。
 - (b)【事実確認】⑤を⑤a(EN最終残存)/⑤b(+JAのみ残存)へ統一。⑤b 重大: 従来0/P2 4、軽微: 従来21/P2 57。1記事当たり⑤b 従来4.2/P2 6.1。④(Checker生件数)は⑤の軽微と同質でない。重大NG全6件(うちEN最終残存1件=meta-p2r2-02)。
 - Status=USER_DECISION_REQUIRED。出典: REPORT §95、`er052_output/open233_allfact_note_e2e_02/eval/stagewise/STAGEWISE_SUMMARY.md`。
+
+- 2026-10-07 OPEN-238-PRECHECK-MISLINK-DIAG-01: 診断のみ(¥0、read-only)。決定事項=Fable Status判定USER_DECISION_REQUIRED。修正未実施・Production変更なし。原因(precheck分数語「a third party」の「a third」→33.3%偽陽性→number_mismatch→Stage2スキップBLOCKING→台帳値置換、他run再現0件)・修正案1〜3・推奨(案1+案2、案3は条件A)は`OPEN_ITEMS.md` OPEN-238行と`docs/pm/open238_precheck_mislink_diag_01.md`参照。
