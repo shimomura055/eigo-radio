@@ -24,6 +24,7 @@ import time
 ENV_NAME = "OPEN233_B3_VARIANT"
 VARIANTS = ("control", "nb")
 SEP = "\n\n"
+NL = chr(10)
 FREEZE_PATH = "er052_output/open233_ledger_polysemy_note_01/phase0/FREEZE_T01_CONFIG.json"
 CHECKER_TOOL = "er052_output/open233_ledger_clarity_p_trial_01/tools/run_checker_after_p01.py"
 DEFAULT_RUNS_ROOT = "er052_output/open233_polysemy_trial_02/runs"
@@ -153,7 +154,38 @@ def build_arg_parser() -> argparse.ArgumentParser:
     p.add_argument("--checker-budget-jpy", type=float, default=PHASE_DEFAULT_BUDGET["phase2"])
     p.add_argument("--dry-run", action="store_true")
     p.add_argument("--yes-run-paid", action="store_true")
+    p.add_argument("--brief-md", default=None,
+                   help="固定briefを使いB3を実行しない(storyline_b3/selected_brief.md等へ書き出し、JA R0以降を続行)")
+    p.add_argument("--no-checker", action="store_true", help="phase2でChecker(run_checker_after_p01)を呼ばない")
     return p
+
+
+def parse_brief_md(text: str):
+    """selected_brief.md形式から (storyline, selected_fact_brief_text) を取り出す。形式不一致はValueError。"""
+    h1, h2 = "## Storyline" + NL, NL + "## Selected Facts" + NL
+    if h1 not in text or h2 not in text:
+        raise ValueError("brief-mdが『## Storyline』『## Selected Facts』形式でない")
+    after = text.split(h1, 1)[1]
+    storyline, facts = after.split(h2, 1)
+    storyline, facts = storyline.strip(), facts.strip(NL)
+    if not storyline or not facts.strip():
+        raise ValueError("brief-mdのStorylineまたはFactsが空")
+    return storyline, facts
+
+
+def install_fixed_brief(brief_md_path: str, out_dir: str) -> dict:
+    """固定briefをB3出力相当として配置する(er019 runnerの『既存brief再利用』経路でB3が呼ばれない)。"""
+    with open(brief_md_path, encoding="utf-8") as f:
+        text = f.read()
+    storyline, facts = parse_brief_md(text)
+    sd = f"{out_dir}/storyline_b3"
+    os.makedirs(sd, exist_ok=True)
+    with open(f"{sd}/selected_brief.md", "w", encoding="utf-8", newline="") as f:
+        f.write(text)
+    _write_json(f"{sd}/fact_selection_evidence.json", {
+        "selected_storyline": storyline, "selected_fact_brief_text": facts,
+        "source": "fixed_brief_md", "brief_md_sha256": sha256_text(text), "b3_skipped": True})
+    return {"b3_skipped": True, "brief_md": brief_md_path, "brief_md_sha256": sha256_text(text)}
 
 
 def build_runner_argv(args, budget):
@@ -168,6 +200,11 @@ def main(argv=None) -> int:
     args = build_arg_parser().parse_args(argv)
     variant = resolve_variant()
     budget = args.budget_jpy if args.budget_jpy is not None else PHASE_DEFAULT_BUDGET[args.phase]
+    if args.brief_md and not os.path.exists(args.brief_md):
+        raise SystemExit(f"--brief-md が無い: {args.brief_md}")
+    if args.brief_md:
+        with open(args.brief_md, encoding="utf-8") as f:
+            parse_brief_md(f.read())
     if not os.path.exists(args.ledger_txt):
         raise SystemExit(f"--ledger-txt が無い: {args.ledger_txt}")
     norm = args.out_dir.replace("\\", "/")
@@ -182,6 +219,9 @@ def main(argv=None) -> int:
         "ledger_txt_source": args.ledger_txt, "ledger_txt_sha256": sha256_file(args.ledger_txt),
         "ledger_txt_dest": ledger_dest(args.out_dir),
         "freeze_t01_config_sha256": sha256_file(FREEZE_PATH),
+        "b3_skipped": bool(args.brief_md), "brief_md": args.brief_md,
+        "brief_md_sha256": sha256_file(args.brief_md) if args.brief_md else None,
+        "checker": not (args.phase == "phase2" and args.no_checker) if args.phase == "phase2" else None,
         "budget_jpy": budget, "runner_argv": build_runner_argv(args, budget),
         "started_at": time.strftime("%Y-%m-%dT%H:%M:%S"), "args": vars(args),
     }
@@ -198,6 +238,8 @@ def main(argv=None) -> int:
     if args.phase == "phase1":
         os.makedirs(os.path.dirname(ledger_dest(args.out_dir)), exist_ok=True)
         shutil.copyfile(args.ledger_txt, ledger_dest(args.out_dir))
+        if args.brief_md:
+            install_fixed_brief(args.brief_md, args.out_dir)
     if sha256_file(ledger_dest(args.out_dir)) != prov["ledger_txt_sha256"]:
         raise SystemExit("台帳txtのsha256が一致しない(STOP)")
     _write_json(prov_path, prov)
@@ -232,6 +274,8 @@ def main(argv=None) -> int:
         _write_json(prov_path, prov)
     assert prov["research_calls"] == 0, f"Researcher/Ledger段のcallが検出された: {prov['research_calls']}"
 
+    if args.phase == "phase2" and args.no_checker:
+        return 0
     if args.phase == "phase2":
         cmd = [sys.executable, CHECKER_TOOL,
                "--ledger-path", ledger_dest(args.out_dir),

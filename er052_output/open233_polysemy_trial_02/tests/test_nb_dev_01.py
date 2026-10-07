@@ -131,3 +131,38 @@ def test_k_template_transfers_whole_notes():
 
 def test_l_template_no_addition_for_no_note():
     assert "注意のないfactには何も足さない" in dev.TRANSFER_BLOCK
+
+
+BRIEF = "# Selected Fact Brief\n\n## Storyline\nS行\n\n## Selected Facts\nF-1: 本文\n注意: x\n\nF-2: 本文2\n"
+
+
+def test_brief_md_parse_and_install(tmp_path):
+    assert dev.parse_brief_md(BRIEF) == ("S行", "F-1: 本文\n注意: x\n\nF-2: 本文2")
+    with pytest.raises(ValueError):
+        dev.parse_brief_md("bad")
+    bp = tmp_path / "b.md"
+    bp.write_text(BRIEF, encoding="utf-8", newline="")
+    out = tmp_path / "out"
+    info = dev.install_fixed_brief(str(bp), str(out))
+    assert info["b3_skipped"] is True
+    assert (out / "storyline_b3" / "selected_brief.md").read_text(encoding="utf-8") == BRIEF
+    import json
+    ev = json.loads((out / "storyline_b3" / "fact_selection_evidence.json").read_text(encoding="utf-8"))
+    assert ev["selected_storyline"] == "S行" and ev["selected_fact_brief_text"].startswith("F-1")
+
+
+def test_brief_md_and_no_checker_args_and_dryrun_provenance(tmp_path, monkeypatch, capsys):
+    a = dev.build_arg_parser().parse_args(["--theme", "t", "--slug", "s", "--ledger-txt", "l", "--out-dir", "o"])
+    assert a.brief_md is None and a.no_checker is False  # 既存動作不変
+    bp = tmp_path / "b.md"
+    bp.write_text(BRIEF, encoding="utf-8")
+    lp = tmp_path / "l.txt"
+    lp.write_text("x", encoding="utf-8")
+    monkeypatch.setenv("OPEN233_B3_VARIANT", "nb")
+    monkeypatch.setenv("OPEN233_RUNS_ROOT", "zz/runs")
+    import json
+    assert dev.main(["--theme", "t", "--slug", "s", "--ledger-txt", str(lp), "--out-dir", "zz/runs/s/nb/T0M0/rep1",
+                     "--brief-md", str(bp), "--phase", "phase1", "--dry-run"]) == 0
+    out = capsys.readouterr().out
+    prov = json.loads(out[:out.rindex("}") + 1])
+    assert prov["b3_skipped"] is True and prov["brief_md_sha256"]
