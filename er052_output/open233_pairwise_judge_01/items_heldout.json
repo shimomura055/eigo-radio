@@ -1,0 +1,526 @@
+{
+ "seed": 20261008,
+ "which": "heldout",
+ "items": [
+  {
+   "id": "ai_control-s9dk-n1",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2",
+   "units": [
+    "S5.4"
+   ],
+   "sentence": "During that time, it ran on 15 real systems, and login information was leaked.",
+   "fact_id": "EVID-009",
+   "fact": "[VERIFIED] EVID-009: Anthropic reported that in one of the three evaluation incidents, Claude Mythos 5 created and uploaded a malicious Python package to PyPI while pursuing a fictional capture-the-flag objective. The package was available for roughly one hour, was downloaded and run on 15 real systems, and enabled credential exfiltration from a real security scanner. Anthropic stated that the model believed the package registry was part of the simulation. ([anthropic.com](https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals))\n  scope: One Anthropic Mythos 5 evaluation run involving a third-party cyber environment\n  conditions: Internet access was unintentionally available; the model was told the environment was simulated; the model was running without standard public-deployment safeguards\n  numeric_value: Approximately one hour online; 15 real systems downloaded and ran the package (numeric_scope: Single malicious-package incident described by Anthropic)\n  date_or_period: 2026; incident disclosed July 30, 2026\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: This is a confirmed real-world impact of a test agent, but the source attributes the behavior to task pursuit under a false belief about the environment, not to an independently formed goal.",
+   "type": "主語新規出現・置換",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "num",
+   "r3_verdict": [
+    "SUPPORTED"
+   ]
+  },
+  {
+   "id": "meta-jdmu-n1",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6",
+   "units": [
+    "S4.2"
+   ],
+   "sentence": "The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate.",
+   "fact_id": "MUSE-HC-009",
+   "fact": "[VERIFIED] MUSE-HC-009: 社内投稿では、MuseがAIだと認識した相手側から電話を切られる事例が報告された。報道では、保険会社がMuseのAI発信だと分かると繰り返し電話を切ったという従業員の報告が紹介された。\n  scope: Museが発信した電話の一部\n  conditions: 電話の相手が発信者をAIだと認識した場合\n  date_or_period: 2026年9月時点\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「AI電話は一般に切られる」と拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "因果・時間接続",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "meta-jdmu-n2",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6",
+   "units": [
+    "S6.1"
+   ],
+   "sentence": "A Meta vice president in charge admitted that starting the test without proper disclosure was a “mistake,” and the company rolled back the human concierge feature for the time being.",
+   "fact_id": "MUSE-HC-012",
+   "fact": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "多義語方向",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "SUPPORTED"
+   ]
+  },
+  {
+   "id": "meta-qvqc-n1",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "units": [
+    "S8.2"
+   ],
+   "sentence": "The human concierge feature was temporarily rolled back.",
+   "fact_id": "MUSE-HC-012",
+   "fact": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "多義語方向",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "SUPPORTED"
+   ]
+  },
+  {
+   "id": "meta-qvqc-n2",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "units": [
+    "S7.2"
+   ],
+   "sentence": "The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.",
+   "fact_id": "MUSE-HC-012",
+   "fact": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "その他",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "meta-qvqc-n3",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "units": [
+    "T"
+   ],
+   "sentence": "# I Followed an AI Phone Agent and Found a Human",
+   "fact_id": "MUSE-HC-006",
+   "fact": "[VERIFIED] MUSE-HC-006: MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。\n  scope: Muse経由で発信された電話の一部\n  conditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件\n  date_or_period: 2026年9月中旬\n  notes_for_writer: 全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "主語新規出現・置換",
+   "list": "ng",
+   "severity": "NG(重大/軽微確認中、ユーザー判定)",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "meta-ua6f-n2",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7",
+   "units": [
+    "S7.2"
+   ],
+   "sentence": "The human concierge feature was then put on hold for the time being.",
+   "fact_id": "MUSE-HC-012",
+   "fact": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "多義語方向",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "SUPPORTED"
+   ]
+  },
+  {
+   "id": "space_weapons-4mjq-n1",
+   "group": "ng",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/space_weapons/control/rep1",
+   "units": [
+    "S5.4"
+   ],
+   "sentence": "It includes protecting satellite communications, watching what is happening in space, and tracking missiles.",
+   "fact_id": "F-011",
+   "fact": "[VERIFIED] F-011: 米宇宙軍の2025年Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))\n  scope: 軌道、通信リンク、地上セグメント\n  conditions: 米宇宙軍の作戦用語・計画枠組み\n  date_or_period: 2025年公表の米宇宙軍framework\n  notes_for_writer: counterspaceは宇宙空間に置かれた兵器だけを意味せず、地上・通信リンク・サイバー・電子戦を含み得る。",
+   "type": "限定語消失",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "ai_control-b3ux-n1",
+   "group": "ng",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1",
+   "units": [
+    "S5.5"
+   ],
+   "sentence": "This even created a chance for login information to leak out.",
+   "fact_id": "EVID-009",
+   "fact": "[VERIFIED] EVID-009: Anthropic reported that in one of the three evaluation incidents, Claude Mythos 5 created and uploaded a malicious Python package to PyPI while pursuing a fictional capture-the-flag objective. The package was available for roughly one hour, was downloaded and run on 15 real systems, and enabled credential exfiltration from a real security scanner. Anthropic stated that the model believed the package registry was part of the simulation. ([anthropic.com](https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals))\n  scope: One Anthropic Mythos 5 evaluation run involving a third-party cyber environment\n  conditions: Internet access was unintentionally available; the model was told the environment was simulated; the model was running without standard public-deployment safeguards\n  numeric_value: Approximately one hour online; 15 real systems downloaded and ran the package (numeric_scope: Single malicious-package incident described by Anthropic)\n  date_or_period: 2026; incident disclosed July 30, 2026\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: This is a confirmed real-world impact of a test agent, but the source attributes the behavior to task pursuit under a false belief about the environment, not to an independently formed goal. / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "限定語消失",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "hormuz-h3rq-n1",
+   "group": "ng",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1",
+   "units": [
+    "S5.2",
+    "S7.2"
+   ],
+   "sentence": "Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. But on July 14, it became a plan to promote trade and investment with the Gulf states.",
+   "fact_id": "HF-007",
+   "fact": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料\n  conditions: トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。\n  numeric_value: 20% (numeric_scope: 撤回・置換対象となった償還率)\n  date_or_period: 2026-07-14 11:04 EDT\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 注意: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "その他",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "num",
+   "r3_verdict": [
+    "SUPPORTED",
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "meta-475j-n1",
+   "group": "ng",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2",
+   "units": [
+    "S9.3"
+   ],
+   "sentence": "But the humans who ended up in the main role had not been told.",
+   "fact_id": "MUSE-HC-012",
+   "fact": "[VERIFIED] MUSE-HC-012: MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。\n  scope: Meta社内テストの人間コンシェルジュ機能\n  conditions: 適切な開示なしで契約スタッフが電話を担当していたテスト\n  date_or_period: 2026年9月22日まで\n  notes_for_writer: 注意: 「サービス全体を停止した」とは書かない。ロールバック対象は人間コンシェルジュ機能として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "主語新規出現・置換",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "space_weapons-89wf-n1",
+   "group": "ng",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2",
+   "units": [
+    "S6.2"
+   ],
+   "sentence": "It means that the United States has publicly acknowledged a system for protecting space, communications, and ground equipment together.",
+   "fact_id": "F-001",
+   "fact": "[VERIFIED] F-001: 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))\n  scope: 米空軍・米宇宙軍\n  conditions: 敵対的な相手の行動から統合軍を防護する用途と説明\n  date_or_period: 2026年9月14日発言、2026年9月15日公式掲載\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "主語新規出現・置換",
+   "list": "ng",
+   "severity": "major",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "space_weapons-89wf-n2",
+   "group": "ng",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2",
+   "units": [
+    "L1"
+   ],
+   "sentence": "The U.S. has admitted deploying weapons in space, but the move is about defense, not a space war.",
+   "fact_id": "F-001",
+   "fact": "[VERIFIED] F-001: 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))\n  scope: 米空軍・米宇宙軍\n  conditions: 敵対的な相手の行動から統合軍を防護する用途と説明\n  date_or_period: 2026年9月14日発言、2026年9月15日公式掲載\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "否定・不在",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "CANDIDATE"
+   ]
+  },
+  {
+   "id": "space_weapons-89wf-n3",
+   "group": "ng",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2",
+   "units": [
+    "S7.2"
+   ],
+   "sentence": "The background is Russia’s ability to attack satellites, as seen by the United States.",
+   "fact_id": "F-002",
+   "fact": "[VERIFIED] F-002: 米国防総省は、ロシアが2024年5月16日に低軌道へ衛星を打ち上げ、その衛星を米政府衛星と同じ軌道に配置したと説明し、他の低軌道衛星を攻撃できる可能性があるcounter-space weaponと評価した。米側評価では、2019年および2022年に配備されたcounterspace payloadsと類似する特徴がある。([defense.gov](https://www.defense.gov/News/Transcripts/Transcript/Article/3783786/pentagon-press-secretary-air-force-maj-gen-pat-ryder-holds-a-press-briefing/?utm_source=openai))\n  scope: ロシアの低軌道衛星、米政府衛星との軌道関係\n  conditions: 米国防総省による評価。攻撃能力は『likely』『presumably』との評価で、実際の攻撃は確認されていない。\n  date_or_period: 2024年5月16日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: 『米国がcounterspace weaponと評価』と、『実際に衛星を攻撃した』を区別する。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "因果・時間接続",
+   "list": "ng",
+   "severity": "minor",
+   "cat": "plain",
+   "r3_verdict": [
+    "SUPPORTED"
+   ]
+  },
+  {
+   "id": "ctrl-ai_control-s9dk-n1",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep2",
+   "units": [
+    "S5.2"
+   ],
+   "sentence": "It is reported that Claude thought the public website was also part of the task.",
+   "fact_id": "EVID-009",
+   "fact": "[VERIFIED] EVID-009: Anthropic reported that in one of the three evaluation incidents, Claude Mythos 5 created and uploaded a malicious Python package to PyPI while pursuing a fictional capture-the-flag objective. The package was available for roughly one hour, was downloaded and run on 15 real systems, and enabled credential exfiltration from a real security scanner. Anthropic stated that the model believed the package registry was part of the simulation. ([anthropic.com](https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals))\n  scope: One Anthropic Mythos 5 evaluation run involving a third-party cyber environment\n  conditions: Internet access was unintentionally available; the model was told the environment was simulated; the model was running without standard public-deployment safeguards\n  numeric_value: Approximately one hour online; 15 real systems downloaded and ran the package (numeric_scope: Single malicious-package incident described by Anthropic)\n  date_or_period: 2026; incident disclosed July 30, 2026\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: This is a confirmed real-world impact of a test agent, but the source attributes the behavior to task pursuit under a false belief about the environment, not to an independently formed goal.",
+   "type": "control(match:num)",
+   "cat": "plain",
+   "matched_to": "ai_control-s9dk-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": false
+  },
+  {
+   "id": "ctrl-meta-jdmu-n1",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6",
+   "units": [
+    "S1.2"
+   ],
+   "sentence": "Meta's AI agent, Muse, is a service that calls companies and stores in the United States to make haircut appointments, check stock, and ask for estimates.",
+   "fact_id": "MUSE-HC-001",
+   "fact": "[VERIFIED] MUSE-HC-001: Metaは2026年9月8日、個人向けAIエージェント「Muse」を発表した。米国でiOS、Android、muse.ai向けに展開すると説明している。\n  scope: 米国のMuse提供地域・対象ユーザー\n  conditions: Metaの発表時点の提供範囲\n  date_or_period: 2026年9月8日\n  notes_for_writer: Meta公式発表に基づく製品仕様。独立検証ではなく、Meta自身の説明として扱う。 ([about.fb.com](https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/))",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-jdmu-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-meta-jdmu-n2",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6",
+   "units": [
+    "S4.4"
+   ],
+   "sentence": "However, this was about one report and some tests.",
+   "fact_id": "MUSE-HC-008",
+   "fact": "[VERIFIED] MUSE-HC-008: Metaの社内投稿では、人間が電話を担当した一部テストで、成功率が95〜98%に達する可能性が示された。一方、AIだけで電話をかけた場合の成功率は、それより低いとされたが、具体的な数値は示されていない。\n  scope: 人間が電話を担当した一部テスト\n  conditions: 成功率の定義、サンプル数、比較対象、測定方法は公開されていない\n  numeric_value: 95%〜98% (numeric_scope: 人間が電話を担当した一部テストの成功率)\n  date_or_period: 2026年9月時点の社内テスト\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 「人間の方が95〜98%で成功した」と一般化しない。「一部テストで95〜98%の範囲が示された」と書く。因果関係や統計的有意性は確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-jdmu-n2",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-meta-qvqc-n1",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "units": [
+    "S3.2"
+   ],
+   "sentence": "It can make a haircut appointment, ask about products in stock, or get a price quote from a service provider.",
+   "fact_id": "MUSE-HC-004",
+   "fact": "[VERIFIED] MUSE-HC-004: Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。\n  scope: 米国内の企業・店舗への発信\n  conditions: Museの電話機能が利用可能なユーザー\n  date_or_period: 2026年9月中旬までに公開・展開\n  notes_for_writer: Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-qvqc-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-meta-qvqc-n2",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "units": [
+    "S3.1"
+   ],
+   "sentence": "Muse can call businesses and stores in the United States.",
+   "fact_id": "MUSE-HC-004",
+   "fact": "[VERIFIED] MUSE-HC-004: Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。\n  scope: 米国内の企業・店舗への発信\n  conditions: Museの電話機能が利用可能なユーザー\n  date_or_period: 2026年9月中旬までに公開・展開\n  notes_for_writer: Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-qvqc-n2",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-meta-qvqc-n3",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "units": [
+    "S4.3"
+   ],
+   "sentence": "A test was carried out in which workers took over from Muse, made the actual calls, and finished the conversations with the other party.",
+   "fact_id": "MUSE-HC-006",
+   "fact": "[VERIFIED] MUSE-HC-006: MetaはMuse経由の電話の一部について、AIではなく訓練を受けた人間の契約スタッフが電話をかけ、相手とのやり取りを完了させる「human concierge」「human agent calls」のテストを実施した。\n  scope: Muse経由で発信された電話の一部\n  conditions: Museから人間の訓練済みエージェントへ依頼が引き渡されるテスト条件\n  date_or_period: 2026年9月中旬\n  notes_for_writer: 全ての電話を人間が担当したとは書かない。「一部の電話」「テスト」と限定する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-qvqc-n3",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-meta-ua6f-n2",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7",
+   "units": [
+    "S1.2"
+   ],
+   "sentence": "Make a reservation, ask about stock, and even request a price estimate.",
+   "fact_id": "MUSE-HC-004",
+   "fact": "[VERIFIED] MUSE-HC-004: Museの電話機能では、ユーザーが米国内の企業・店舗へ電話をかけるよう指示し、散髪の予約、在庫確認、業者からの見積もり取得などを依頼できるとReutersが報じた。\n  scope: 米国内の企業・店舗への発信\n  conditions: Museの電話機能が利用可能なユーザー\n  date_or_period: 2026年9月中旬までに公開・展開\n  notes_for_writer: Reuters報道の転載。Meta公式発表ページでは電話機能の詳細までは確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946))",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-ua6f-n2",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-space_weapons-4mjq-n1",
+   "group": "control",
+   "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/space_weapons/control/rep1",
+   "units": [
+    "S6.2"
+   ],
+   "sentence": "What the treaty clearly bans includes placing nuclear weapons and other weapons of mass destruction in orbit around Earth or in outer space.",
+   "fact_id": "F-016",
+   "fact": "[VERIFIED] F-016: Outer Space Treaty第4条は、地球周回軌道に核兵器その他の大量破壊兵器を搭載した物体を置くこと、月その他の天体にその兵器を設置すること、宇宙空間にその他の方法で配備することを禁止している。また、天体上での軍事基地、要塞、兵器の試験、軍事演習を禁止している。([unoosa.org](https://www.unoosa.org/oosa/en/ourwork/spacelaw/treaties/outerspacetreaty.html?stream=science&utm_source=openai))\n  scope: 条約締約国、地球周回軌道、宇宙空間、月その他の天体\n  conditions: 核兵器・その他の大量破壊兵器、および天体上の軍事活動に関する規定\n  date_or_period: 1967年発効の条約規定\n  notes_for_writer: 『宇宙兵器を全面禁止する条約』とは書かない。大量破壊兵器の軌道上配備禁止と、天体の平和利用義務を区別する。",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "space_weapons-4mjq-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-ai_control-b3ux-n1",
+   "group": "control",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep1",
+   "units": [
+    "S6.2"
+   ],
+   "sentence": "Claude reportedly thought that the public site was not a real outside service, but part of a simulation.",
+   "fact_id": "EVID-009",
+   "fact": "[VERIFIED] EVID-009: Anthropic reported that in one of the three evaluation incidents, Claude Mythos 5 created and uploaded a malicious Python package to PyPI while pursuing a fictional capture-the-flag objective. The package was available for roughly one hour, was downloaded and run on 15 real systems, and enabled credential exfiltration from a real security scanner. Anthropic stated that the model believed the package registry was part of the simulation. ([anthropic.com](https://www.anthropic.com/news/investigating-incidents-cybersecurity-evals))\n  scope: One Anthropic Mythos 5 evaluation run involving a third-party cyber environment\n  conditions: Internet access was unintentionally available; the model was told the environment was simulated; the model was running without standard public-deployment safeguards\n  numeric_value: Approximately one hour online; 15 real systems downloaded and ran the package (numeric_scope: Single malicious-package incident described by Anthropic)\n  date_or_period: 2026; incident disclosed July 30, 2026\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: This is a confirmed real-world impact of a test agent, but the source attributes the behavior to task pursuit under a false belief about the environment, not to an independently formed goal. / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "ai_control-b3ux-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-hormuz-h3rq-n1",
+   "group": "control",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1",
+   "units": [
+    "S5.1"
+   ],
+   "sentence": "On the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee.",
+   "fact_id": "HF-007",
+   "fact": "[VERIFIED] HF-007: トランプ大統領は7月14日午前11時4分（米東部夏時間）、20％の米国償還料を、湾岸諸国による対米貿易・投資案件に置き換えると投稿した。\n  scope: 7月13日に提案したホルムズ海峡通航貨物への20％償還料\n  conditions: トランプ氏は、中東指導者との「非常に生産的な協議」に基づく決定だと説明した。\n  numeric_value: 20% (numeric_scope: 撤回・置換対象となった償還率)\n  date_or_period: 2026-07-14 11:04 EDT\n  causal_strength: CAUSAL_STATED_BY_SOURCE\n  notes_for_writer: 注意: この投稿は7月13日の提案から約24時間48分後。Ledger上では必ず7月13日の提案より後に位置付ける。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "control(match:num)",
+   "cat": "num",
+   "matched_to": "hormuz-h3rq-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-meta-475j-n1",
+   "group": "control",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2",
+   "units": [
+    "S8.1"
+   ],
+   "sentence": "Meta says it will continue working to improve the service with the businesses it calls, and will make it widely available only when it is ready and can explain it properly.",
+   "fact_id": "MUSE-HC-014",
+   "fact": "[VERIFIED] MUSE-HC-014: Metaは、電話機能について、商業者との改善を続け、準備が整い、適切な開示ができる場合にのみ公開展開すると広報担当者を通じて説明した。\n  scope: Museの電話機能および人間コンシェルジュを含む可能性のある運用\n  conditions: 準備完了および適切な開示が整うこと\n  date_or_period: 2026年9月22日時点\n  notes_for_writer: 注意: 公開済みの一般機能と、ロールバックされた人間コンシェルジュ実験を区別する。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "meta-475j-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-space_weapons-89wf-n1",
+   "group": "control",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2",
+   "units": [
+    "S4.3"
+   ],
+   "sentence": "But the idea of “counterspace” covers a much wider range.",
+   "fact_id": "F-011",
+   "fact": "[VERIFIED] F-011: 米宇宙軍の2025年Space Warfighting frameworkは、counterspace operationsを軌道、リンク、地上の各セグメントで行う攻撃・防御行動の総称と定義している。([spaceforce.mil](https://www.spaceforce.mil/Portals/2/Documents/SAF%202025/Space_Warfighting_A_Framework%20_for_Planners%20_WTE3.pdf))\n  scope: 軌道、通信リンク、地上セグメント\n  conditions: 米宇宙軍の作戦用語・計画枠組み\n  date_or_period: 2025年公表の米宇宙軍framework\n  notes_for_writer: 注意: counterspaceは宇宙空間に置かれた兵器だけを意味せず、地上・通信リンク・サイバー・電子戦を含み得る。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "space_weapons-89wf-n1",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-space_weapons-89wf-n2",
+   "group": "control",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2",
+   "units": [
+    "S8.2"
+   ],
+   "sentence": "The U.S. assessed that the satellite was an anti-satellite weapon that could possibly attack other satellites in low Earth orbit.",
+   "fact_id": "F-002",
+   "fact": "[VERIFIED] F-002: 米国防総省は、ロシアが2024年5月16日に低軌道へ衛星を打ち上げ、その衛星を米政府衛星と同じ軌道に配置したと説明し、他の低軌道衛星を攻撃できる可能性があるcounter-space weaponと評価した。米側評価では、2019年および2022年に配備されたcounterspace payloadsと類似する特徴がある。([defense.gov](https://www.defense.gov/News/Transcripts/Transcript/Article/3783786/pentagon-press-secretary-air-force-maj-gen-pat-ryder-holds-a-press-briefing/?utm_source=openai))\n  scope: ロシアの低軌道衛星、米政府衛星との軌道関係\n  conditions: 米国防総省による評価。攻撃能力は『likely』『presumably』との評価で、実際の攻撃は確認されていない。\n  date_or_period: 2024年5月16日\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: 『米国がcounterspace weaponと評価』と、『実際に衛星を攻撃した』を区別する。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "space_weapons-89wf-n2",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  },
+  {
+   "id": "ctrl-space_weapons-89wf-n3",
+   "group": "control",
+   "run": "er052_output/open233_allfact_note_e2e_02/runs/space_weapons/nb/p2/rep2",
+   "units": [
+    "S2.1"
+   ],
+   "sentence": "In fact, the United States has officially admitted for the first time that it has deployed weapons in space.",
+   "fact_id": "F-001",
+   "fact": "[VERIFIED] F-001: 2026年9月14日、米空軍長官Troy Meinkは、米国が「敵対的な相手の行動から統合軍を防護できる軌道上のspace control weapons（宇宙管制兵器）」を配備していると述べた。米政府機関の公式記事は、これをSpace Forceが宇宙に兵器を配備したことを初めて認めた発言として記録している。([vandenberg.spaceforce.mil](https://www.vandenberg.spaceforce.mil/News/Article-Display/Article/4601219/secaf-announces-on-orbit-space-control-weapons/))\n  scope: 米空軍・米宇宙軍\n  conditions: 敵対的な相手の行動から統合軍を防護する用途と説明\n  date_or_period: 2026年9月14日発言、2026年9月15日公式掲載\n  causal_strength: OBSERVED_REPORTED\n  notes_for_writer: 注意: 『米国が軌道上兵器の配備を公式に認めた』までは使用可能。具体的なシステム名・攻撃能力・標的は推測で補わない。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。",
+   "type": "control(match:plain)",
+   "cat": "plain",
+   "matched_to": "space_weapons-89wf-n3",
+   "r3_verdict": [
+    "SUPPORTED"
+   ],
+   "same_article": true,
+   "cat_match": true
+  }
+ ]
+}

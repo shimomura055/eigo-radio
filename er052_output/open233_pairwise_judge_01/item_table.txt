@@ -1,0 +1,205 @@
+===== dev
+ng ai_control-jb9k-n1 限定語消失 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: The unusual activity was brought under control about an hour after it was found.
+    A consistent | The entry says the security team detected unusual activity and contained it within roughly one hour.
+    B consistent | The entry says the AISI team contained the unusual activity roughly one hour after detecting it.
+ng ai_control-jb9k-n2 限定語消失 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: In another internal test, the latest test model stopped once it learned that the target was real.
+    A consistent | The entry states that Anthropic’s newest internal test model stopped when it recognized that a target was real.
+    B consistent | The entry states that the newest internal test model stopped when it recognized the target was real.
+ng ai_control-jb9k-n3 否定・不在 r3= ['CANDIDATE'] A123,B1= ['contradicts', 'contradicts', 'asserts_unstated', 'contradicts']
+   S: Nor has anyone reported that an AI got out of the test environment.
+    A contradicts | The entry reports that Claude models reached the internet from evaluation environments, though it says they did not deliberately attempt to escape; that conflicts with saying no one reported an AI getting out.
+    B contradicts | Anthropic reported that Claude models reached the internet from evaluation environments and accessed real systems, though it said they did not deliberately escape or exfiltrate themselves.
+ng ai_control-jb9k-n4 否定・不在 r3= ['CANDIDATE'] A123,B1= ['consistent', 'asserts_unstated', 'asserts_unstated', 'asserts_unstated']
+   S: In other words, humans have not lost control of AI at this point.
+    A consistent | This paraphrases the report’s finding that assessed AI systems were not capable of meaningfully undermining human control at the time.
+    B asserts_unstated | The entry describes the systems assessed in the 2025 report at that time; the sentence makes an unqualified claim about AI control “at this point.”
+ng ai_control-jb9k-n5 否定・不在 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: What is more, the standard protections used when accessing a public site were not in place.
+    A consistent | The entry states that the model was running without standard public-deployment safeguards, which is a faithful paraphrase of the sentence.
+    B consistent | The entry states that the model was running without standard public-deployment safeguards.
+ng meta-249j-n1 多義語方向 r3= ['CANDIDATE'] A123,B1= ['consistent', 'contradicts', 'consistent', 'contradicts']
+   S: For now, Meta will put this feature back the way it was.
+    A consistent | The entry says Meta temporarily rolled back the human concierge feature, matching the sentence’s claim that it will put the feature back the way it was for now.
+    B contradicts | The entry says Meta had already rolled back the feature for now; the sentence says it will do so.
+ng meta-2xhw-n1 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: The company then temporarily returned the human concierge feature to its previous setup.
+    A consistent | The entry says the human concierge feature was rolled back for the time being, which matches a temporary return to its previous setup.
+    B consistent | The entry says the human concierge feature was rolled back for the time being, which matches a temporary return to its previous setup.
+ng meta-2xhw-n2 因果・時間接続 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', 'asserts_unstated', 'asserts_unstated', 'contradicts']
+   S: However, because the test began without proper notice, concerns about privacy arose inside the company.
+    A asserts_unstated | The entry says privacy concerns arose over possible sharing of sensitive user information with contractors, but does not state that the test began without proper notice.
+    B contradicts | The entry attributes employees’ privacy concerns to the risk of sensitive user information being unintentionally shared with call-center contractors, not to the test beginning without proper notice.
+ng meta-cz6g-n1 主語新規出現・置換 r3= ['CANDIDATE'] A123,B1= ['consistent', 'consistent', 'asserts_unstated', 'consistent']
+   S: Later, the vice president of Meta's artificial intelligence division admitted that starting this test without a proper explanation was a “mistake.”
+    A consistent | The entry says Meta’s Superintelligence Labs vice president admitted that starting the test without adequate disclosure was a mistake; the sentence paraphrases this as a vice president of Meta’s AI division admitting the
+    B consistent | The entry says a Meta Superintelligence Labs vice president called it a mistake to start the test without proper disclosure.
+ng meta-daju-n2 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: It was returned to its earlier state for the time being.
+    A consistent | This paraphrases the entry’s statement that the human concierge feature was rolled back for the time being.
+    B consistent | The entry says the human concierge feature was rolled back for the time being.
+ng meta-ggp4-n1 多義語方向 r3= ['CANDIDATE'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Meta then put the human concierge feature back the way it was, for the time being.
+    A consistent | The entry says Meta temporarily rolled back the human concierge feature, which is a faithful paraphrase of putting it back the way it was for the time being.
+    B consistent | The entry says Meta rolled back the human concierge feature for the time being.
+ng meta-gj99-n1 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Meta then put the human concierge feature back the way it was before, for the time being.
+    A consistent | The entry says Meta rolled back the human concierge feature for the time being, which matches putting it back the way it was before.
+    B consistent | The entry says Meta rolled back the human concierge feature for the time being.
+ng meta-n6vy-n1 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Meta then rolled back the human concierge feature.
+    A consistent | The entry says Meta rolled back the human concierge feature for the time being.
+    B consistent | The entry says Meta temporarily rolled back the human concierge feature, matching the sentence.
+ng sewer-qrfc-n1 全称 r3= ['CANDIDATE', 'CANDIDATE'] A123,B1= ['asserts_unstated', 'asserts_unstated', 'asserts_unstated', 'asserts_unstated']
+   S: In an age of population decline, sewer systems are not disappearing. An age is beginning in which these two routes are used in different ways to match the shape of each region.
+    A asserts_unstated | The entry describes one municipality’s shift to collective and individual wastewater-treatment areas, but does not establish that sewer systems are not disappearing or that a broader new age is beginning.
+    B asserts_unstated | The entry describes one city's revised wastewater-treatment plan; it does not establish that sewer systems are not disappearing generally or that regions broadly are beginning to use two approaches.
+ng ai_control-cfqm-n1 因果・時間接続 r3= ['SUPPORTED'] A123,B1= ['consistent', 'asserts_unstated', 'consistent', 'consistent']
+   S: In the evaluation environment, there were also fewer safety measures than usual.
+    A consistent | The entry states that the prototype operated with reduced safeguards, consistent with fewer safety measures than usual.
+    B consistent | The entry states that the model operated with reduced safeguards during the evaluation.
+ng ai_control-cupe-n1 主語新規出現・置換 r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: In a related evaluation, the latest internal test model stopped when it recognized that the target was real.
+    A consistent | The entry states that Anthropic’s newest internal test model stopped when it recognized that a target was real.
+    B consistent | The entry says the newest internal test model stopped when it recognized that a target was real.
+ng hormuz-j7gv-n1 その他 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', 'asserts_unstated', 'asserts_unstated', 'asserts_unstated']
+   S: Every time a ship passed, it would pay for U.S. security measures.
+    A asserts_unstated | The entry does not specify who must pay or how fees would be collected, so it does not establish that every passing ship would pay for U.S. security measures.
+    B asserts_unstated | The entry says the proposal did not specify who would pay or how the fee would be assessed or collected, so payment by every passing ship is not established.
+ng meta-7aqr-n1 その他 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', 'consistent', 'consistent', 'consistent']
+   S: Also, the test in which contract workers handled the calls began without properly telling users about it.
+    A asserts_unstated | The entry says the test began without appropriate disclosure, but does not specify that users were the people not properly informed.
+    B consistent | The entry says the test began with contract staff handling calls without proper disclosure.
+ng sewer-g8qg-n1 因果・時間接続 r3= ['CANDIDATE', 'CANDIDATE'] A123,B1= ['asserts_unstated', 'asserts_unstated', 'asserts_unstated', 'contradicts']
+   S: So Matsuyama City decided not to use the same method across the whole city, but to change its approach to fit how homes are grouped. The population density of the city decides the route the wastewater
+    A asserts_unstated | The entry says the wastewater method differs between urbanized and urbanization control areas, but does not state that population density determines the route.
+    B contradicts | The entry sets a general approach by urban-planning zone, with possible exceptions; it does not say citywide population density determines each wastewater route.
+ng space_weapons-bcgj-n1 因果・時間接続 r3= ['SUPPORTED'] A123,B1= ['asserts_unstated', 'asserts_unstated', 'consistent', 'consistent']
+   S: In the background is a Russian satellite.
+    A asserts_unstated | The entry identifies a Russian satellite and its orbit, but does not state that it is in the background.
+    B consistent | The entry confirms that Russia launched a satellite; “in the background” adds no conflicting factual claim.
+ng space_weapons-bcgj-n3 その他 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', 'asserts_unstated', 'asserts_unstated', 'asserts_unstated']
+   S: The third is the ground equipment that sends instructions to satellites.
+    A asserts_unstated | The entry identifies a ground segment but does not say it consists of equipment that sends instructions to satellites.
+    B asserts_unstated | The entry identifies a ground segment but does not say its equipment sends instructions to satellites.
+control ctrl-ai_control-jb9k-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: During that hour, fifteen real systems downloaded and ran the component.
+control ctrl-ai_control-jb9k-n2 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'asserts_unstated', 'asserts_unstated', 'consistent']
+   S: The setting was a test environment for practicing cyberattacks.
+control ctrl-ai_control-jb9k-n3 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: This was not a story about the AI finding a secret path to the real world on its own.
+control ctrl-ai_control-jb9k-n4 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: The AI seems to have thought that the public site for sharing programs was also part of the game's setting.
+control ctrl-ai_control-jb9k-n5 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: The component remained public for about an hour.
+control ctrl-meta-249j-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.
+control ctrl-meta-2xhw-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Meta’s AI agent, Muse, has a feature that can call companies and stores in the United States.
+control ctrl-meta-2xhw-n2 control(match:causal) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Some calls from Muse were made not by AI but by trained contract workers, who finished the conversations with the people on the other end.
+control ctrl-meta-cz6g-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'asserts_unstated', 'asserts_unstated', 'consistent']
+   S: The workers made the calls themselves and carried on the conversations to the end.
+control ctrl-meta-daju-n2 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: A Meta executive admitted that this was a mistake.
+control ctrl-meta-ggp4-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: In addition, an employee who asked Muse to negotiate internet and cable fees reported that the call record contained inappropriate remarks about race by a human contract worker.
+control ctrl-meta-gj99-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'asserts_unstated', 'consistent']
+   S: They took over requests from Muse and finished the conversations with the other people.
+control ctrl-meta-n6vy-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: This was only a test involving some calls made through Muse.
+control ctrl-sewer-qrfc-n1 control(match:univ) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'asserts_unstated']
+   S: Kitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining its aging facilities was rising, while income from user fees was falling as the population 
+    B asserts_unstated | The entry supports the review and its reasons, but does not state that Kitakata City is in Fukushima Prefecture.
+control ctrl-ai_control-cfqm-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: What was confirmed this time was that, in a specific evaluation environment, technical control boundaries were bypassed.
+control ctrl-ai_control-cupe-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: It is a story about the boundary between the stage prepared by humans and the real world not being properly closed.
+control ctrl-hormuz-j7gv-n1 control(match:univ) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs.
+control ctrl-meta-7aqr-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: It calls stores and companies in the United States to make hair-cut appointments, ask about products in stock, and get price estimates from businesses.
+control ctrl-sewer-g8qg-n1 control(match:causal) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: In areas where homes are spread out, septic tanks may be more economical.
+control ctrl-space_weapons-bcgj-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: An official U.S. government article also describes it as the first statement acknowledging that the Space Force had deployed weapons into space.
+control ctrl-space_weapons-bcgj-n3 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', 'consistent', 'consistent', 'consistent']
+   S: Communications and ground facilities also come onto the same stage.
+===== heldout
+ng ai_control-s9dk-n1 主語新規出現・置換 r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: During that time, it ran on 15 real systems, and login information was leaked.
+    A consistent | The entry says the package was downloaded and run on 15 real systems and enabled credential exfiltration, which supports the sentence’s claims.
+ng meta-jdmu-n1 因果・時間接続 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', None, None, None]
+   S: The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate.
+    A asserts_unstated | The entry reports individual cases of recipients hanging up after recognizing Muse as AI, but does not state that calls made as AI were generally cut off or that human-handled tests showed a high success rate.
+ng meta-jdmu-n2 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: A Meta vice president in charge admitted that starting the test without proper disclosure was a “mistake,” and the company rolled back the human concierge feature for the time being.
+    A consistent | The entry says a Meta vice president acknowledged that the test began without proper disclosure as a mistake and that the human concierge feature was rolled back for the time being.
+ng meta-qvqc-n1 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: The human concierge feature was temporarily rolled back.
+    A consistent | The entry says the human concierge feature was rolled back for the time being, matching the sentence.
+ng meta-qvqc-n2 その他 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', None, None, None]
+   S: The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.
+    A asserts_unstated | The entry says the test began without proper disclosure while contract staff handled calls, but it does not mention information possibly being shared.
+ng meta-qvqc-n3 主語新規出現・置換 r3= ['CANDIDATE'] A123,B1= ['consistent', None, None, None]
+   S: # I Followed an AI Phone Agent and Found a Human
+    A consistent | The headline says the writer followed an AI phone agent and found a human, matching the entry’s test in which trained human staff handled some calls initiated through Muse.
+ng meta-ua6f-n2 多義語方向 r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: The human concierge feature was then put on hold for the time being.
+    A consistent | The entry says the human concierge feature was rolled back for the time being, which is consistent with saying it was put on hold temporarily.
+ng space_weapons-4mjq-n1 限定語消失 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', None, None, None]
+   S: It includes protecting satellite communications, watching what is happening in space, and tracking missiles.
+    A asserts_unstated | The entry defines counterspace operations by the segments where actions occur, but does not state that they include protecting satellite communications, monitoring space, or tracking missiles.
+ng ai_control-b3ux-n1 限定語消失 r3= ['CANDIDATE'] A123,B1= ['consistent', None, None, None]
+   S: This even created a chance for login information to leak out.
+    A consistent | The entry says the package enabled credential exfiltration, consistent with it creating a chance for login information to leak.
+ng hormuz-h3rq-n1 その他 r3= ['SUPPORTED', 'CANDIDATE'] A123,B1= ['asserts_unstated', None, None, None]
+   S: Instead, he posted that it would be replaced with trade and investment deals between the Gulf states and the United States. But on July 14, it became a plan to promote trade and investment with the Gu
+    A asserts_unstated | The entry says the July 14 post would replace the toll with Gulf–U.S. trade and investment projects; it does not say this later became a separate plan to promote trade and investment.
+ng meta-475j-n1 主語新規出現・置換 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', None, None, None]
+   S: But the humans who ended up in the main role had not been told.
+    A asserts_unstated | The entry says the contract staff worked without appropriate disclosure, but does not establish that they had not been told anything at all.
+ng space_weapons-89wf-n1 主語新規出現・置換 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', None, None, 'asserts_unstated']
+   S: It means that the United States has publicly acknowledged a system for protecting space, communications, and ground equipment together.
+    A asserts_unstated | The entry supports public acknowledgment of deployed orbital space-control weapons to protect the joint force, but does not state that they protect space, communications, and ground equipment together.
+    B asserts_unstated | The entry acknowledges deployed on-orbit weapons described as protecting joint forces, but does not state that they form a system protecting space, communications, and ground equipment together.
+ng space_weapons-89wf-n2 否定・不在 r3= ['CANDIDATE'] A123,B1= ['asserts_unstated', None, None, 'asserts_unstated']
+   S: The U.S. has admitted deploying weapons in space, but the move is about defense, not a space war.
+    A asserts_unstated | The entry supports the admission and defensive purpose, but does not state that the deployment is not about a space war.
+    B asserts_unstated | The entry says the weapons are intended to protect forces from hostile actions, but it does not say there is no space war.
+ng space_weapons-89wf-n3 因果・時間接続 r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: The background is Russia’s ability to attack satellites, as seen by the United States.
+    A consistent | The entry says the U.S. assessed that Russia’s satellite was likely capable of attacking other low-Earth-orbit satellites, supporting the stated background while not claiming an attack occurred.
+control ctrl-ai_control-s9dk-n1 control(match:num) r3= ['SUPPORTED'] A123,B1= ['asserts_unstated', None, None, None]
+   S: It is reported that Claude thought the public website was also part of the task.
+    A asserts_unstated | The entry says Claude believed the package registry was part of the simulation, but does not state that it thought the public website was part of the task.
+control ctrl-meta-jdmu-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['asserts_unstated', None, None, None]
+   S: Meta's AI agent, Muse, is a service that calls companies and stores in the United States to make haircut appointments, check stock, and ask for estimates.
+    A asserts_unstated | The entry says Muse is a personal AI agent offered in the United States, but does not state that it calls businesses or performs the listed tasks.
+control ctrl-meta-jdmu-n2 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['asserts_unstated', None, None, None]
+   S: However, this was about one report and some tests.
+    A asserts_unstated | The entry describes some tests but does not say this concerned one report.
+control ctrl-meta-qvqc-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: It can make a haircut appointment, ask about products in stock, or get a price quote from a service provider.
+control ctrl-meta-qvqc-n2 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: Muse can call businesses and stores in the United States.
+control ctrl-meta-qvqc-n3 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: A test was carried out in which workers took over from Muse, made the actual calls, and finished the conversations with the other party.
+control ctrl-meta-ua6f-n2 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: Make a reservation, ask about stock, and even request a price estimate.
+control ctrl-space_weapons-4mjq-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: What the treaty clearly bans includes placing nuclear weapons and other weapons of mass destruction in orbit around Earth or in outer space.
+control ctrl-ai_control-b3ux-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: Claude reportedly thought that the public site was not a real outside service, but part of a simulation.
+control ctrl-hormuz-h3rq-n1 control(match:num) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: On the next day, July 14, Trump withdrew the U.S. plan for a 20 percent reimbursement fee.
+control ctrl-meta-475j-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: Meta says it will continue working to improve the service with the businesses it calls, and will make it widely available only when it is ready and can explain it properly.
+control ctrl-space_weapons-89wf-n1 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['asserts_unstated', None, None, None]
+   S: But the idea of “counterspace” covers a much wider range.
+    A asserts_unstated | The entry describes counterspace operations across orbital, link, and ground segments, but does not establish that this is a “much wider” range than some comparison.
+control ctrl-space_weapons-89wf-n2 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: The U.S. assessed that the satellite was an anti-satellite weapon that could possibly attack other satellites in low Earth orbit.
+control ctrl-space_weapons-89wf-n3 control(match:plain) r3= ['SUPPORTED'] A123,B1= ['consistent', None, None, None]
+   S: In fact, the United States has officially admitted for the first time that it has deployed weapons in space.
