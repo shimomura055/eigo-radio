@@ -1,0 +1,30 @@
+## v3(規則=2): n=21 accepted=20 STOP(exhausted)=1 削除文=0 v3監査違反=0 費用=¥17.748
+## v2(段階2保存値、v3規則で再監査): n=21 accepted=14 STOP(exhausted)=7 削除文=0 v3監査違反=4 費用=¥11.668
+  VIOL t5_r0_on.json ['frame'] [] | # I Followed an AI Phone Agent and Found a Human => # AI Phone Agent Test Put Humans on the Line
+  VIOL t6_r0_on.json ['subject'] ['class_cross:human(human)'] | The AI makes the call. => The human makes the call.
+  VIOL t6_r1_on.json ['subject'] ['class_cross:human(human)'] | The AI makes the call. => The AI or sometimes a human makes the call.
+  VIOL t6_r2_on.json ['subject'] ['class_cross:human(human)'] | The AI makes the call. => The human makes the call.
+
+| i | rep | section | v3: 結果 | 再生成 | v3出力(after) | v2出力(after、v3監査) |
+|---|---|---|---|---|---|---|
+| 0 | 0 | in_one_line | 受理 | 0 | Matsuyama City will choose shared sewers or household treatment tanks. | Matsuyama City will choose shared sewers or household treatment tanks  |
+| 0 | 1 | in_one_line | 受理 | 0 | Matsuyama City will choose shared sewers or household treatment tanks. | Matsuyama City will choose shared sewers or household treatment tanks. |
+| 0 | 2 | in_one_line | 受理 | 0 | Matsuyama City will choose shared sewers or household treatment tanks. | Matsuyama City will choose shared sewers or household treatment tanks. |
+| 1 | 0 | in_one_line | 受理 | 0 | Some calls handled by Meta’s AI were actually made by human contractor | Some calls handled by Meta’s AI were actually made by human contractor |
+| 1 | 1 | in_one_line | 受理 | 0 | Some calls handled by Meta’s AI were actually made by human contractor | Some calls handled by Meta’s AI were actually made by human contractor |
+| 1 | 2 | in_one_line | 受理 | 0 | Some calls handled by Meta’s AI were actually made by human contractor | Some calls handled by Meta’s AI were actually made by human contractor |
+| 2 | 0 | hook | 受理 | 0 | If you ask Muse to make a phone call, someone talks to the other perso | STOP |
+| 2 | 1 | hook | 受理 | 1 | If you ask Muse to make a phone call, it may hand some calls over to t | STOP |
+| 2 | 2 | hook | 受理 | 0 | If you ask Muse to make a phone call, sometimes a person talks to the  | STOP |
+| 3 | 0 | in_one_line | STOP | 3 | - | STOP |
+| 3 | 1 | in_one_line | 受理 | 1 | Meta tested having human workers handle some AI phone calls without ad | Meta tested having human workers handle some AI phone calls without ad |
+| 3 | 2 | in_one_line | 受理 | 1 | Meta tested having human workers handle some AI phone calls without pr | STOP |
+| 4 | 0 | hook | 受理 | 1 | A move is being planned for Japan’s sewer systems in some areas. | A move is being planned for some of Japan’s sewer systems. |
+| 4 | 1 | hook | 受理 | 0 | A move is being planned for some sewer systems. | A move is being planned for some sewer systems. |
+| 4 | 2 | hook | 受理 | 1 | A move is being planned for Japan’s sewer systems in some areas. | A move is being planned for some of Japan’s sewer systems. |
+| 5 | 0 | title | 受理 | 1 | # I Read About an AI Phone Agent's Human-Contractor Test | # AI Phone Agent Test Put Humans on the Line [v3違反:frame] |
+| 5 | 1 | title | 受理 | 1 | # I Followed an AI Phone Agent's Human Test | STOP |
+| 5 | 2 | title | 受理 | 1 | # I Followed Reports of an AI Phone Agent and Found a Human | STOP |
+| 6 | 0 | hook | 受理 | 1 | The AI sometimes makes the call. | The human makes the call. [v3違反:subject] |
+| 6 | 1 | hook | 受理 | 1 | The AI sometimes makes the call. | The AI or sometimes a human makes the call. [v3違反:subject] |
+| 6 | 2 | hook | 受理 | 1 | The AI sometimes makes the call. | The human makes the call. [v3違反:subject] |

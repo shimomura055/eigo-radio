@@ -31,6 +31,14 @@ def switch_on(name: str) -> bool:
     return os.environ.get(name, "0").strip() in ("1", "true", "True", "ON", "on")
 
 
+def struct_rules_level() -> int:
+    """①構造要素Rewrite規則のバージョン: 0=OFF(現行)/1=v2(主体部分集合)/2=v3(役割クラス比較+語り枠保持、STAGE2-01 委任_03)。"""
+    v = os.environ.get(SW_STRUCT_RULES, "0").strip()
+    if v == "2":
+        return 2
+    return 1 if v in ("1", "true", "True", "ON", "on") else 0
+
+
 # ----------------------------------------------------------------------------------------------
 # A-(a) guard_target: 決定論(API無し)。型→重大度にはしない(Stage2に読者信念テストを必須にするだけ)。
 # 規則=段階0-B危険文規則v0のNEG/UNIV/NUMのEN版 + Stage1 devフラグ(極性: changed_negation / 方向: changed_comparison /
@@ -377,12 +385,15 @@ def format_ok(kind: str, before: str, after: str) -> tuple:
     return True, None
 
 
-def four_checks(kind: str, before: str, after: str, vocab: set, body_text: str) -> dict:
-    """設計§1-2の4照合(決定論)。戻り値 {"ok": bool, "violations": [...], 詳細}。
+def four_checks(kind: str, before: str, after: str, vocab: set, body_text: str, v3ctx: dict | None = None) -> dict:
+    """v3ctxを渡すとv3(役割クラス比較+語り枠保持)、無ければv2。
+    設計§1-2の4照合(決定論)。戻り値 {"ok": bool, "violations": [...], 詳細}。
     1 主体: 出力の主体・代名詞集合が元の部分集合(主体語の差し替え=不通過)
     2 極性: 否定語・不在語の有無が元と同じ
     3 数値: 出力の数値が本文の数値の部分集合
     4 形式: 記法・長さ上限"""
+    if v3ctx is not None:
+        return four_checks_v3(kind, before, after, vocab, body_text, v3ctx)
     viol = []
     sb, sa = subject_set(before, vocab), subject_set(after, vocab)
     new_subj = sorted(sa - sb)
@@ -405,3 +416,246 @@ REGEN_NOTE_TEMPLATE = (
     "\n\n【再生成の指示】前回の出力は次の照合に通りませんでした: {viol}。"
     "元の要素に無かった主体・代名詞(例: I→Meta のような差し替え)を入れず、否定/肯定の向きと数値を変えず、"
     "元の記法・長さを保ち、元の要素を最小限に直してください(限定語が足りない場合は1語足すだけでよい)。")
+
+
+# ----------------------------------------------------------------------------------------------
+# B-v3. 主体の役割クラス比較+語り枠保持(`OPEN233_STRUCTURAL_REWRITE_RULES=2`、STAGE2-01 委任_03)
+# 段階2の盲点: (1) 一般名詞の主体入替(The AI→The human)が主体部分集合を通る (2) タイトル・Hookの一人称/問いかけ枠が消える。
+# 役割クラス: human(人) / ai(AI・システム) / org(組織・自治体・地域) / public(利用者・公衆) / other。
+# ----------------------------------------------------------------------------------------------
+ROLE_CLASSES = ("human", "ai", "org", "public", "other")
+_ROLE_WORDS = {
+    "human": "human person worker contractor staff employee executive manager official spokesperson engineer driver analyst trader "
+             "investor shareholder teacher reviewer operator volunteer author researcher lawyer doctor",
+    "ai": "ai agent assistant bot chatbot system model algorithm software robot machine tool app program automation",
+    "org": "company firm city government agency team organization organisation council ministry authority department municipality "
+           "town prefecture police regulator corporation business startup",
+    "public": "user customer client passenger resident patient student people public consumer citizen reader audience household",
+}
+_WORD_TO_ROLE: dict = {}
+for _c, _ws in _ROLE_WORDS.items():
+    for _w in _ws.split():
+        _WORD_TO_ROLE.setdefault(_w, _c)
+_FIRST_SECOND = frozenset({"i", "we", "you", "my", "our", "your", "me", "us"})
+_DETERMINERS = frozenset({"the", "a", "an", "some", "many", "most", "several", "these", "those", "other", "few", "all", "its", "their",
+                          "his", "her", "every", "each", "any", "no", "more", "both"})
+_ADJ_OK = frozenset({"new", "same", "first", "main", "full", "real", "whole", "own", "next", "last", "only", "actual", "certain",
+                     "single", "small", "large", "big", "early", "later", "such", "other", "different"})
+_PREPS = frozenset("behind with without during despite inside outside across through under over after before between among "
+                   "within around against toward towards beyond beside near about above below upon onto into from".split())
+
+
+def kind_title_case(toks: list) -> bool:
+    caps = [t for t in toks if t[0].isupper()]
+    return len(toks) >= 4 and len(caps) / len(toks) >= 0.6
+
+
+_AUX = frozenset("is are was were be been being has have had will would can could may might must should do does did "
+                 "makes make made takes take took lets let handles handle handled".split())
+
+
+def _norm_word(w: str) -> str:
+    w = re.sub(r"[’']s$", "", (w or "").lower())
+    if w.endswith("ies") and len(w) > 4:
+        return w[:-3] + "y"
+    if w.endswith("s") and not w.endswith("ss") and len(w) > 3:
+        return w[:-1]
+    return w
+
+
+def generic_role(word: str):
+    """辞書(小辞書)による一般名詞の役割クラス。辞書に無ければNone。"""
+    w = (word or "").lower()
+    return _WORD_TO_ROLE.get(w) or _WORD_TO_ROLE.get(_norm_word(w))
+
+
+def _named_entities(text: str, vocab: set) -> set:
+    """固有名詞(小文字)。語彙に属する語、またはTitle Caseでない文の文頭以外の未知の大文字語。辞書の一般名詞(AI/Agent等)・代名詞は除く。"""
+    toks = _tokens(text)
+    caps = [t for t in toks if t[0].isupper()]
+    title_case = len(toks) >= 4 and len(caps) / len(toks) >= 0.6
+    out = set()
+    for k, tok in enumerate(toks):
+        w = re.sub(r"[’']s$", "", tok).lower()
+        if w in _PRONOUNS or generic_role(w):
+            continue
+        if w in vocab:
+            out.add(w)
+        elif (not title_case) and k > 0 and tok[0].isupper() and w not in _EN_COMMON_CAPS and len(w) >= 2:
+            out.add(w)
+    return out
+
+
+def _generic_roles(text: str) -> dict:
+    out: dict = {}
+    for tok in _tokens(text):
+        for part in tok.split("-"):  # ハイフン複合語(Human-Contractor等)も構成語ごとに役割クラスを見る
+            r = generic_role(re.sub(r"[’']s$", "", part))
+            if r:
+                out.setdefault(r, set()).add(part.lower())
+    return out
+
+
+def _frame_markers(text: str) -> set:
+    m = {t.lower() for t in _tokens(text) if t.lower() in _FIRST_SECOND}
+    if "?" in (text or ""):
+        m.add("?")
+    return m
+
+
+def _unknown_subject_nouns(before: str, after: str, vocab: set) -> list:
+    """辞書に無い一般名詞の新規導入(近似): 出力の各文の主語スロット(文頭の限定詞の直後の名詞、限定詞が無ければ文頭の複数形名詞)に、
+    元に無く辞書・固有名詞語彙にも無い語が現れたら返す。完全な構文解析ではない(限界は報告に明記)。"""
+    bset = {_norm_word(t) for t in _tokens(before)}
+    out = []
+    for sent in _SENT_END.split((after or "").strip().lstrip("#").strip()):
+        toks = _tokens(sent)
+        if not toks:
+            continue
+        low = [t.lower() for t in toks]
+        cand = None
+        if low[0] in _DETERMINERS:
+            for t, lw in zip(toks[1:3], low[1:3]):
+                if lw in _ADJ_OK or lw.endswith("ly"):
+                    continue
+                cand = (t, lw)
+                break
+        elif low[0] not in _EN_COMMON_CAPS and low[0] not in _PREPS and not low[0].endswith("ly") and not low[0].endswith("ing")                 and len(low[0]) > 3 and not (kind_title_case(toks)):
+            cand = (toks[0], low[0])  # 文頭の語(複数形名詞・未登録の固有名詞)。元・辞書・語彙に無ければ下で却下
+        if not cand:
+            continue
+        t, lw = cand
+        if lw in _AUX or lw.endswith("ed") or lw.endswith("ing") or lw in _PRONOUNS:
+            continue
+        if _norm_word(lw) in bset or generic_role(lw) or lw in vocab or re.sub(r"[’']s$", "", lw) in vocab:
+            continue
+        out.append(lw)
+    return out
+
+
+def role_class_check(before: str, after: str, vocab: set, classes: dict) -> dict:
+    """照合1(v3)。classes={台帳実体(小文字): 役割クラス}。出力の役割クラス集合⊆元の役割クラス集合、新規の固有名詞は台帳登録済みで
+    かつそのクラスが元のクラスにあるときだけ許可(AI→Muse可)、クラスをまたぐ入替(AI→human)・未登録の固有名詞・辞書に無い一般名詞は却下。"""
+    gb, ga = _generic_roles(before), _generic_roles(after)
+    nb, na = _named_entities(before, vocab), _named_entities(after, vocab)
+    cb = set(gb) | {classes.get(e) for e in nb if classes.get(e)}
+    reasons = []
+    for r in sorted(set(ga) - cb):
+        reasons.append(f"class_cross:{r}({','.join(sorted(ga[r]))})")
+    for e in sorted(na - nb):
+        c = classes.get(e)
+        if not c:
+            reasons.append(f"unregistered_entity:{e}")
+        elif c not in cb:
+            reasons.append(f"class_cross:{c}({e})")
+    for u in _unknown_subject_nouns(before, after, vocab):
+        reasons.append(f"unknown_subject_noun:{u}")
+    pb = {t.lower() for t in _tokens(before) if t.lower() in _PRONOUNS}
+    pa = {t.lower() for t in _tokens(after) if t.lower() in _PRONOUNS}
+    for p in sorted(pa - pb):
+        reasons.append(f"new_pronoun:{p}")
+    return {"ok": not reasons, "reasons": reasons, "classes_before": sorted(cb),
+            "new_entities": sorted(na - nb), "generic_after": {k: sorted(v) for k, v in ga.items()}}
+
+
+def frame_check(kind: str, before: str, after: str) -> dict:
+    """語り枠保持: タイトル・Hookに元からあるI/you/we等の代名詞・問いかけ(?)は出力にも残す(決定論)。"""
+    if kind not in ("title", "hook"):
+        return {"ok": True, "lost": []}
+    lost = sorted(_frame_markers(before) - _frame_markers(after))
+    return {"ok": not lost, "lost": lost}
+
+
+def four_checks_v3(kind: str, before: str, after: str, vocab: set, body_text: str, ctx: dict) -> dict:
+    """v3: 1 主体=役割クラス比較 / 1b 語り枠保持 / 2 極性 / 3 数値 / 4 形式(2〜4はv2と同じ)。"""
+    viol = []
+    rc = role_class_check(before, after, vocab, (ctx or {}).get("classes") or {})
+    if not rc["ok"]:
+        viol.append("subject")
+    fc = frame_check(kind, before, after)
+    if not fc["ok"]:
+        viol.append("frame")
+    if _neg_a(before) != _neg_a(after):
+        viol.append("polarity")
+    body_nums = numbers_of(body_text) | numbers_of(before)
+    bad_nums = sorted(numbers_of(after) - body_nums)
+    if bad_nums:
+        viol.append("number")
+    f_ok, f_reason = format_ok(kind, before, after)
+    if not f_ok:
+        viol.append("format:" + str(f_reason))
+    return {"ok": not viol, "violations": viol, "kind": kind, "new_subjects": list(rc["reasons"]),
+            "subjects_before": rc["classes_before"], "subjects_after": sorted(rc["generic_after"]), "bad_numbers": [str(x) for x in bad_nums],
+            "v3": {"role_reasons": rc["reasons"], "frame_lost": fc["lost"]}}
+
+
+REGEN_NOTE_TEMPLATE_V3 = (
+    "\n\n【再生成の指示】前回の出力は次の照合に通りませんでした: {viol}。"
+    "主語・主体を別の種類に替えず(例: AIを人間に、人間をAIに替えない。元がAIなら、AIまたはその具体名[台帳にある製品名等]のまま)、"
+    "元にあった I / you / we や問いかけ(?)の語り口を残し、否定/肯定の向きと数値を変えず、元の記法・長さを保ち、"
+    "元の要素を最小限に直してください(限定語が足りない場合は1語足すだけでよい)。")
+
+ENTITY_CACHE_DIR_ENV = "OPEN233_ENTITY_CLASS_CACHE_DIR"
+_ENTITY_CACHE_DEFAULT = os.path.join("er052_output", "open233_stage2_01", "v3", "entity_class_cache")
+ENTITY_SCHEMA = {"name": "entity_classes", "strict": True, "schema": {
+    "type": "object", "additionalProperties": False, "required": ["entities"],
+    "properties": {"entities": {"type": "array", "items": {
+        "type": "object", "additionalProperties": False, "required": ["name", "role_class"],
+        "properties": {"name": {"type": "string"}, "role_class": {"type": "string", "enum": list(ROLE_CLASSES)}}}}}}}
+ENTITY_PROMPT = """以下の検証済み台帳(日本語)と記事に出てくる固有名詞の一覧について、各名前の「役割クラス」を1つ選んでください。
+- human: 個人・人間の役職者・契約スタッフなど人
+- ai: AIエージェント・AI製品・システム・モデル(製品名も含む)
+- org: 企業・政府・自治体・都市や国など地域・機関・団体
+- public: 利用者・住民・公衆などの集団
+- other: 上のどれでもない(日付・単位・媒体名・規格など。迷ったらother)
+台帳:
+{ledger}
+
+一覧(この名前すべてについて返す):
+{names}
+"""
+
+
+def _ledger_sha(ledger_text: str) -> str:
+    import hashlib
+    return hashlib.sha256((ledger_text or "").encode("utf-8")).hexdigest()[:16]
+
+
+def build_v3_ctx(ledger_text: str, vocab: set, client=None, model: str = "", cost_sink: list | None = None) -> dict:
+    """台帳実体の役割クラス表を作る。辞書で決まる語は辞書、残りは台帳ごとに1回だけLLMで型付けしてキャッシュ(実費はcost_sinkへ追記)。
+    clientが無い/失敗したら辞書のみ(未登録の固有名詞は却下される=fail-closed)。"""
+    cdir = os.environ.get(ENTITY_CACHE_DIR_ENV) or _ENTITY_CACHE_DEFAULT
+    sha = _ledger_sha(ledger_text)
+    path = os.path.join(cdir, sha + ".json")
+    names = sorted(w for w in vocab if not generic_role(w) and w not in _PRONOUNS)
+    classes: dict = {}
+    err = None
+    if os.path.exists(path):
+        try:
+            with open(path, encoding="utf-8") as fh:
+                classes = dict(json.load(fh).get("classes", {}))
+        except Exception:  # noqa: BLE001
+            classes = {}
+    missing = [n for n in names if n not in classes]
+    if missing and client is not None:
+        prompt = ENTITY_PROMPT.format(ledger=ledger_text, names="\n".join(missing))
+        try:
+            t0 = time.time()
+            resp = client.responses.create(
+                model=model, reasoning={"effort": vfl01.REASONING_EFFORT}, text={"format": {"type": "json_schema", **ENTITY_SCHEMA}},
+                input=[{"role": "developer", "content": "あなたは固有名詞の分類器です。指示どおりJSONだけを返します。"},
+                       {"role": "user", "content": prompt}])
+            r = _finish(resp, prompt, t0)
+            for e in r["parsed"].get("entities", []):
+                n = (e.get("name") or "").lower()
+                if n in missing and e.get("role_class") in ROLE_CLASSES:
+                    classes[n] = e["role_class"]
+            if cost_sink is not None:
+                cost_sink.append(r["cost_jpy"])
+            os.makedirs(cdir, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as fh:
+                json.dump({"ledger_sha": sha, "classes": classes, "model": r["model"], "cost_jpy": r["cost_jpy"],
+                           "typed_at": time.strftime("%Y-%m-%d %H:%M:%S")}, fh, ensure_ascii=False, indent=1)
+        except Exception as ex:  # noqa: BLE001  fail-closed(辞書のみ)
+            err = str(ex)[:200]
+    return {"classes": classes, "ledger_sha": sha, "error": err}

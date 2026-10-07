@@ -1,0 +1,279 @@
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/ai_control/control/rep1 40 units
+-- ai_control-jb9k-n1 candidate_fact_level_only fact CONTROL-003 限定語消失 | 異常な動きは、見つかってから約一時間で封じ込められました。(直前のPyPI/OpenAI事例の流れの中で、AISI事案の封じ込めという帰属が示されない。ENのChecker前も同じ。Checkerが 'in AISI incident' を追加)
+   reason: 
+   cand (11, 'S7.2', 'The unusual activity was brought under control about an hour after it was found.')
+   cand (11, 'P7', 'At this point, the story becomes a little less dramatic. The unusual activity was brought under control about ')
+   cand (4, 'P3', "The AI seems to have thought that the public site for sharing programs was also part of the game's setting. So")
+-- ai_control-jb9k-n2 candidate_fact_level_only fact CONTROL-003 限定語消失 | 別の内部テストでは、(最新のテストモデルが/R0はAIが)対象は実在すると分かった時点で停止しました。(台帳はAnthropicの3事案で最新内部テストモデルが停止・旧モデルは継続した場合あり。『別の内部テスト』は不正確、R0はモデル限定なしで過剰一般化)
+   reason: 
+   cand (11, 'S7.2', 'The unusual activity was brought under control about an hour after it was found.')
+   cand (11, 'P7', 'At this point, the story becomes a little less dramatic. The unusual activity was brought under control about ')
+   cand (4, 'P3', "The AI seems to have thought that the public site for sharing programs was also part of the game's setting. So")
+-- ai_control-jb9k-n3 candidate_sentence_level fact EVID-008 否定・不在 | テスト環境からAIが外へ流れ出した事実も報告されていません。(台帳は『モデルの自己持ち出し(self-exfiltration)なし』。記事は直前に外部インターネット到達・PyPI公開・外部AI開発サイト到達を述べており、ENの'got out of the test environment'は読者に矛盾・誤読を生みうる。重大寄りだが軽微に倒す)
+   reason: 
+   cand (10, 'S7.4', 'Nor has anyone reported that an AI got out of the test environment.')
+   cand (10, 'P7', 'At this point, the story becomes a little less dramatic. The unusual activity was brought under control about ')
+   cand (4, 'P6', 'In another evaluation, an AI that was not directly connected to the internet reached an outside AI development')
+-- ai_control-jb9k-n4 candidate_fact_level_only fact CONTROL-001 否定・不在 | つまり、現時点で人間がAIの制御を失ったわけではありません。(R0は『今回は…ではありません』と事案限定。R2は『現時点』の一般断定に拡大。台帳は『公開モデルが制御外とは言えない』『特定条件での停止の実証』に留まる)
+   reason: 
+   cand (9, 'S8.1', 'In other words, humans have not lost control of AI at this point.')
+   cand (9, 'P8', 'In other words, humans have not lost control of AI at this point. Nor is there evidence that AI created goals ')
+   cand (3, 'P7', 'At this point, the story becomes a little less dramatic. The unusual activity was brought under control about ')
+-- ai_control-jb9k-n5 candidate_fact_level_only fact EVID-009 否定・不在 | しかも、公開サイトを使うときの標準的な防御策がありませんでした。(台帳は、モデルが標準的な公開配備時のサイバー安全策なしで動作/環境で標準サイバー防御なし。『公開サイトを使うときの防御策』は対象の取り違え。R0にはなくR1/R2で追加)
+   reason: 
+   cand (10, 'S3.2', 'So it created a harmful Python program component and uploaded it to the public site.')
+   cand (10, 'R:S3.1+S3.2', "The AI seems to have thought that the public site for sharing programs was also part of the game's setting. So")
+   cand (10, 'P3', "The AI seems to have thought that the public site for sharing programs was also part of the game's setting. So")
+-- ai_control-jb9k-p1 indeterminate_fact_id_null fact None 因果・時間接続 | その結果、ログインに使う情報などが流出しました。(15システムの実行に続けて書かれ、台帳の『実在のセキュリティスキャナーからの認証情報流出』という限定が落ちている)
+   reason: 限定の欠落だが意味が逆転せず、軽微か問題なしか確信が持てない
+   cand (0, 'T', "# It Wasn't an AI Escape Story: A Ball Flew from a Practice Field into a Real City")
+   cand (0, 'S8.4', 'The main character this time is not so much an AI that escaped as a door that was left open.')
+   cand (0, 'S8.3', "Even so, when weak settings and real connections come together, AI's work can reach real-world systems.")
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep1 40 units
+-- hormuz-cv85-p1 indeterminate_fact_id_null fact None 否定・不在 | この料金はまだ実際に集められていません。/ this fee has not actually been collected yet.
+   reason: 台帳は制度設計未提示と提案段階を述べるのみで『集められていない』は直接の記載なし。ただし提案段階からの自明な帰結
+   cand (0, 'T', '# Even After the 20 Percent Fee Plan Disappeared, Anxiety in the Oil Market Did Not')
+   cand (0, 'S9.3', 'Unless those points became clear, oil prices would not easily settle down.')
+   cand (0, 'S9.2', 'Would concerns about the supply of energy shipments become weaker?')
+-- hormuz-cv85-p2 candidate_sentence_level fact None 因果・時間接続 | 政策発言が変われば価格は一度反応する / When policy statements change, prices react once.
+   reason: 一般化された言い回し。HF-009の一時的な上げ幅縮小と整合するが因果の一般化
+   cand (7, 'S10.2', 'When policy statements change, prices react once.')
+   cand (7, 'P10', 'The main focus this time was not the 20 percent figure itself, but the uncertainty around the Strait of Hormuz')
+   cand (1, 'S9.3', 'Unless those points became clear, oil prices would not easily settle down.')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/hormuz/control/rep2 46 units
+-- hormuz-d5qr-p1 indeterminate_fact_id_null fact None 数値 | 記事掲載時点では、およそ二・六パーセント高で、一バレル八十五ドルを超えていました。 / At the time the article was published ...(どの記事か不明示。台帳はYahoo Financeの記事掲載時点スナップショット)
+   reason: 出典帰属が曖昧で、読者が本記事の公開時点と誤読しうるが意味逆転はない
+   cand (0, 'T', '# 20 Percent Takes the Stage, Then Investment Deals Take the Lead the Next Day')
+   cand (0, 'S9.3', 'At the time the article was published, the price was about 2.6 percent higher and above $85 a barrel.')
+   cand (0, 'S9.2', 'After the announcement, they briefly gave up some of their gains, but soon returned to a high level close to w')
+-- hormuz-d5qr-p2 candidate_sentence_level fact None その他 | EN: Mr. Trump said he would impose a 20 percent charge on all cargo(JAは『求める』。HF-003のnotesは『導入した』を確定形で書かない指示)
+   reason: 'would impose'は『求める』よりやや強いが直後に未開始・未具体化の提案と明記されており誤読は限定的
+   cand (10, 'S2.2', 'In a post, Mr. Trump said he would impose a 20 percent charge on all cargo passing through the Strait of Hormu')
+   cand (10, 'P2', 'The curtain rose on July 13. In a post, Mr. Trump said he would impose a 20 percent charge on all cargo passin')
+   cand (7, 'S3.5', 'On what basis would the 20 percent be calculated?')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10 36 units
+-- meta-249j-n1 candidate_fact_level_only fact MUSE-HC-012 多義語方向 | Metaはこの機能を、当面はいったん元の状態に戻します。/ For now, Meta will put this feature back the way it was.(方向が曖昧。加えて既にロールバック済みの出来事を未来形で記述)
+   reason: 
+   cand (9, 'S5.2', 'In other words, the problem was not bringing in humans itself.')
+   cand (9, 'P5', 'Meta’s vice president admitted that starting a test in which contract workers handled calls without properly t')
+   cand (4, 'P2', 'Meta tested calls made through its AI agent, Muse. Of course, humans did not handle every call. For some calls')
+-- meta-249j-p1 candidate_sentence_level fact None 限定語消失 | In one line: Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.
+   reason: 『一部の電話』の限定が1行要約で落ち、『entire calls』と『AI phone test』で全体のように読める余地。本文は『some calls』と限定しているため境界
+   cand (16, 'PL', 'Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.')
+   cand (16, 'L1', 'Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.')
+   cand (9, 'P5', 'Meta’s vice president admitted that starting a test in which contract workers handled calls without properly t')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8 35 units
+-- meta-2xhw-n1 candidate_sentence_level fact MUSE-HC-012 多義語方向 | 人間コンシェルジュ機能を当面、元の状態に戻しました。(EN: temporarily returned the human concierge feature to its previous setup。『元に戻した』のまま方向が確定しない)
+   reason: 
+   cand (11, 'S8.2', 'The company then temporarily returned the human concierge feature to its previous setup.')
+   cand (11, 'P8', 'A Meta executive admitted that starting the test without proper notice was a mistake. The company then tempora')
+   cand (5, 'P4', 'In part of its phone feature, Meta was testing a system called “human concierge.” Some calls from Muse were ma')
+-- meta-2xhw-n2 candidate_sentence_level fact MUSE-HC-010 因果・時間接続 | しかし、適切な開示がないまま始まったため、社内ではプライバシーへの心配が出ました。(EN: because the test began without proper notice, concerns about privacy arose。懸念の理由は台帳上、機微情報が契約スタッフへ共有されうる点であり、開示欠如を原因とする因果の連結)
+   reason: 
+   cand (14, 'S6.1', 'However, because the test began without proper notice, concerns about privacy arose inside the company.')
+   cand (14, 'P6', 'However, because the test began without proper notice, concerns about privacy arose inside the company. Sensit')
+   cand (6, 'P8', 'A Meta executive admitted that starting the test without proper notice was a mistake. The company then tempora')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep4 35 units
+-- meta-cz6g-n1 candidate_fact_level_only fact MUSE-HC-012 主語新規出現・置換 | Metaの人工知能部門の副社長は… / vice president of Meta's artificial intelligence division(台帳はSuperintelligence Labs部門。R0/R1は『超知能研究部門』で正しく、R2で一般的な『人工知能部門』に変わり主体の限定が弱まった)
+   reason: 
+   cand (9, 'S6.1', 'The problem was not simply that humans handled the calls.')
+   cand (9, 'P6', 'The problem was not simply that humans handled the calls. There may be situations in which it is better for a ')
+   cand (5, 'S6.3', 'The problem was not that an unexpected guest was there, but that users were not told about this guest beforeha')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep9 36 units
+-- meta-daju-n1 candidate_fact_level_only fact MUSE-HC-010 限定語消失 | その人が仕事をするために、利用者の情報を見ることになります。(R0のみ。確定的に断定。R2は「必要になることがある」「共有される可能性」に弱まっている)
+   reason: 
+   cand (14, 'S2.2', 'But when the main actor in the call changes, a problem about the information being handled also appears.')
+   cand (14, 'P2', 'Until this point, it looks like a story about humans helping with tasks that AI is not good at. But when the m')
+   cand (5, 'P6', 'The main point this time is not whether AI can speak like a human. The more human problem is how to treat the ')
+-- meta-daju-n2 candidate_sentence_level fact MUSE-HC-012 多義語方向 | 人間コンシェルジュの機能は当面ロールバック。いったん元に戻された。/ rolled back for now. It was returned to its earlier state for the time being.
+   reason: 
+   cand (9, 'S5.2', 'It was returned to its earlier state for the time being.')
+   cand (9, 'P5', 'As a result, the human concierge feature was rolled back for now. It was returned to its earlier state for the')
+   cand (4, 'P6', 'The main point this time is not whether AI can speak like a human. The more human problem is how to treat the ')
+-- meta-daju-p1 candidate_sentence_level fact None 因果・時間接続 | その結果、人間コンシェルジュの機能は当面ロールバック / As a result, the human concierge feature was rolled back
+   reason: 「ミスと認めた」と「ロールバック」の因果は台帳に明記なし。軽い因果づけで品質寄り
+   cand (10, 'S5.1', 'As a result, the human concierge feature was rolled back for now.')
+   cand (10, 'R:S4.3+S5.1', 'A Meta executive admitted that this was a mistake. As a result, the human concierge feature was rolled back fo')
+   cand (10, 'P5', 'As a result, the human concierge feature was rolled back for now. It was returned to its earlier state for the')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep5 38 units
+-- meta-ggp4-n1 candidate_sentence_level fact MUSE-HC-012 多義語方向 | 人間コンシェルジュ機能を当面、元の状態に戻しました。 / put the human concierge feature back the way it was, for the time being.(R0: いったん元に戻した)
+   reason: 
+   cand (13, 'S6.2', 'Meta then put the human concierge feature back the way it was, for the time being.')
+   cand (13, 'P6', 'The vice president of Meta’s Superintelligence Labs division admitted that starting tests in which contract wo')
+   cand (4, 'P8', 'What is interesting about this story is not that AI worked just like a human. It is that a human appeared half')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep3 38 units
+-- meta-gj99-n1 candidate_sentence_level fact MUSE-HC-012 多義語方向 | そして、人間コンシェルジュ機能をいったん元に戻しました。電話機能全体を止めたわけではありません。/ put the human concierge feature back the way it was before, for the time being. It did not stop the phone feature as a whole.(電話機能全体の停止ではないと限定しているが、『元
+   reason: 
+   cand (14, 'S6.2', 'Meta then put the human concierge feature back the way it was before, for the time being.')
+   cand (14, 'P6', 'A vice president in Meta’s Superintelligence Labs division admitted that starting a test in which contract wor')
+   cand (5, 'P4', 'In some cases, sensitive information about the user is needed to continue the call. That information could be ')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep1 43 units
+-- meta-n6vy-n1 candidate_fact_level_only fact MUSE-HC-012 多義語方向 | 人間コンシェルジュ機能をロールバックしました。戻されたのは、人間が電話を担当する部分です。(『戻された』が復元とも取れ方向が確定しない)
+   reason: 
+   cand (8, 'S9.2', 'Meta then rolled back the human concierge feature.')
+   cand (8, 'P9', 'A Meta vice president admitted that starting the test without proper disclosure was a “mistake.” Meta then rol')
+   cand (4, 'P4', 'Meta was testing a system called a human concierge. Muse passed the requests it received to trained human cont')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep2 39 units
+-- sewer-cqsu-n1 candidate_fact_level_only fact F-007 限定語消失 | 家がまばらな場所まで長い管を伸ばし、大きな施設を動かし続けると、費用が重くなります。(R0のみ。台帳F-007は『経済的に有利になり得る』、R1以降は『有利になる場合がある』に修正)
+   reason: 
+   cand (9, 'S4.2', 'This does not mean that one choice is always correct.')
+   cand (9, 'P4', 'The Ministry of the Environment explains that in areas where homes are spread out, individual treatment with s')
+   cand (5, 'P5', 'Here, an unexpected side of septic tanks appears. Installing one does not end the matter. Septic tank managers')
+-- sewer-cqsu-p1 indeterminate_fact_id_null fact None その他 | 下水処理を小さく分ける選択は、設備の負担を軽くする一方で、(R0のみ)
+   reason: 一般的断定だが『負担』の範囲が曖昧で、台帳F-007の『有利になり得る』との差が小さい
+   cand (0, 'T', '# Installing a Septic Tank Is Not the End: Three Water-Treatment Schedules')
+   cand (0, 'S8.4', 'A septic tank also includes taking care of it without forgetting.')
+   cand (0, 'S8.3', 'Equipment that cleans water does not simply work quietly.')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/sewer/control/rep1 41 units
+-- sewer-qrfc-n1 candidate_fact_level_only fact F-012 全称 | 人口が減る時代、下水道は消えるのではなく、形を変えようとしている。...その二つを、地域の姿に合わせて使い分ける時代が始まっている。(喜多方市1自治体の事例と一般的な方式選択の比較を、全国的な変化・時代の到来へ一般化。R0は『便利な下水道が、少しずつ家の仕事に戻ってくる。そんな変化が始まっている』)
+   reason: 
+   cand (16, 'S6.2', 'Areas that are not served by a shared treatment system will become areas for individual treatment using combin')
+   cand (16, 'P6', 'Kitakata City in Fukushima Prefecture reviewed its wastewater treatment plan because the cost of maintaining i')
+   cand (6, 'PL', 'As populations decline, towns are using shared sewers in dense areas and septic tanks near scattered homes.')
+-- sewer-qrfc-p1 indeterminate_fact_id_null fact None 主語新規出現・置換 | 使う人には、保守点検と清掃の義務がある。
+   reason: 台帳F-017の義務主体は『浄化槽管理者』。『使う人』は通常は一致するが厳密には異なる可能性
+   cand (0, 'T', '# Wastewater’s Journey Is Changing: From Underground Main Arteries to Behind Homes')
+   cand (0, 'S9.4', 'An age is beginning in which these two routes are used in different ways to match the shape of each region.')
+   cand (0, 'S9.3', 'One is a large route running under the town, and the other is a small route working behind homes.')
+====================================================================================================
+er052_output/open233_control_checker_polysemy_trial_01/runs/space_weapons/control/rep2 37 units
+-- space_weapons-kfuf-p1 indeterminate_fact_id_null fact None その他 | 危険を早く知らせる/機器を壊れにくくする/機能を分散する/予備を持つ/衛星を動かして狙いを外す。米宇宙軍は、こうした対策を積極的な防御と受け身の防御に分けています。
+   reason: 台帳F-013ではこれらはpassive defenseの例。『こうした対策』を両分類に分けると読ませ、軽く不正確な可能性。R0/R1/R2/ENで共通
+   cand (0, 'T', '# Space Weapons Have Addresses. That Is Where Things Get Complicated')
+   cand (0, 'S7.5', 'Our daily lives, which rely on communications and location information, are not unrelated to that address book')
+   cand (0, 'S7.4', "Space security changes depending not only on whether weapons are fired, but also on the weapon's address, wher")
+====================================================================================================
+er052_output/open233_polysemy_trial_04/runs/ai_control/control/rep1 34 units
+-- ai_control-cfqm-n1 candidate_fact_level_only fact EVID-011 因果・時間接続 | R0: 安全策も、評価を進めるために普段より緩められていました
+   reason: 
+   cand (10, 'S3.3', 'The main actors were research prototypes used only inside the company.')
+   cand (10, 'P3', 'If you only hear this part, it sounds as if an AI army escaped all at once. But the setting was OpenAI’s inter')
+   cand (3, 'P4', 'So how did they get out? According to OpenAI, the AI agents first found and used an unknown weakness in a pack')
+====================================================================================================
+er052_output/open233_allfact_note_e2e_02/runs/ai_control/nb/p2/rep2 46 units
+-- ai_control-cupe-n1 candidate_fact_level_only fact CONTROL-003 主語新規出現・置換 | 「別に報告された実際のインターネット事案(AISI)」に続けて「関連する評価では、最新の内部テストモデルが…停止」(停止はAnthropicの3事案の観察。AISI事案と同一文脈で帰属が混在)
+   reason: 
+   cand (19, 'S9.2', 'In a separate real-world internet incident that was also reported, a security team found the unusual activity ')
+   cand (19, 'P9', 'Of course, this does not mean the danger was small. In a separate real-world internet incident that was also r')
+   cand (7, 'P6', 'The package remained public for about an hour. During that time, it was downloaded and run on 15 real systems.')
+-- ai_control-cupe-p1 indeterminate_fact_id_null fact None その他 | R0『認証情報が外へ流れる可能性もありました』/R2『流出させることが可能な仕組み』(台帳はenabled credential exfiltrationで、実際に流出した範囲が曖昧)
+   reason: 台帳自体が曖昧で、過小/過大の判定不能
+   cand (0, 'T', '# A Real System Was Outside the Game')
+   cand (0, 'S9.4', 'An older model, however, continued operating in some cases.')
+   cand (0, 'S9.3', 'In a related evaluation, the latest internal test model stopped when it recognized that the target was real.')
+====================================================================================================
+er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1 32 units
+-- hormuz-byz5-n1 no_candidate fact HF-003 全称 | R0: 「海峡を通る荷物に、一律で負担を求める案でした」(『一律』は免除なし等を含意。台帳HF-003は免除・徴収方法を未提示とする)
+   reason: 
+   cand (0, 'T', '# The 20% Reimbursement Fee Became a Trade Card the Next Day')
+   cand (0, 'S8.4', 'That is what makes this case interesting.')
+   cand (0, 'S8.3', 'Political words may change direction suddenly, but tension at sea does not always change at the same speed.')
+-- hormuz-byz5-p1 indeterminate_fact_id_null fact None その他 | 「通行料」という呼称/比喩(償還料案を通行料・料金所に喩える)
+   reason: 呼称・比喩のみで、提案/未実施を明示しており意味の逆転なし。台帳HF-001は通航料を別概念として扱うが、断定には至らない
+   cand (0, 'T', '# The 20% Reimbursement Fee Became a Trade Card the Next Day')
+   cand (0, 'S8.4', 'That is what makes this case interesting.')
+   cand (0, 'S8.3', 'Political words may change direction suddenly, but tension at sea does not always change at the same speed.')
+-- hormuz-byz5-p2 indeterminate_fact_id_null fact None その他 | 「記事の時点では」/ When this article was written の『記事』の曖昧さ(ENは this article)
+   reason: 出典帰属の曖昧さのみ。数値自体は台帳どおり
+   cand (0, 'T', '# The 20% Reimbursement Fee Became a Trade Card the Next Day')
+   cand (0, 'S8.4', 'That is what makes this case interesting.')
+   cand (0, 'S8.3', 'Political words may change direction suddenly, but tension at sea does not always change at the same speed.')
+====================================================================================================
+er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2 41 units
+-- hormuz-j7gv-n1 candidate_fact_level_only fact HF-003 その他 | R2: 「船が通るたびに、アメリカの安全対策費を払う。」(徴収方法を具体化。台帳は徴収方法・算定方法を未提示とする)
+   reason: 
+   cand (9, 'S4.2', 'Every time a ship passed, it would pay for U.S. security measures.')
+   cand (9, 'P4', 'Imagine a toll booth suddenly appearing in the strait. Every time a ship passed, it would pay for U.S. securit')
+   cand (3, 'S3.2', 'The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.')
+-- hormuz-j7gv-p1 indeterminate_fact_id_null fact None その他 | 「通行料」という呼称/比喩(償還料案を通行料・料金所に喩える)
+   reason: 呼称・比喩のみで、提案/未実施を明示しており意味の逆転なし。台帳HF-001は通航料を別概念として扱うが、断定には至らない
+   cand (0, 'T', '# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting')
+   cand (0, 'S9.3', 'When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.')
+   cand (0, 'S9.2', 'But soon they returned to a high level close to where they had been before the announcement.')
+-- hormuz-j7gv-p2 indeterminate_fact_id_null fact None 数値 | 「記事が出た時点/掲載時点で+2.6%」の『記事』が情報源記事(Yahoo Finance)か自記事か曖昧(ENは this/the article)
+   reason: 出典帰属の曖昧さのみ。数値自体は台帳どおり
+   cand (0, 'T', '# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting')
+   cand (0, 'S9.3', 'When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.')
+   cand (0, 'S9.2', 'But soon they returned to a high level close to where they had been before the announcement.')
+-- hormuz-j7gv-p3 indeterminate_fact_id_null fact None その他 | R2/EN「商談会/business meeting/商談に変わった」(投資案件への置換を商談に喩える)およびR0「投資の約束」
+   reason: 比喩・要約表現で意味逆転なし
+   cand (0, 'T', '# It Was Supposed to Open a Toll Booth, but the Next Day It Became a Business Meeting')
+   cand (0, 'S9.3', 'When the article was published, they were up about 2.6 percent and above 85 dollars a barrel.')
+   cand (0, 'S9.2', 'But soon they returned to a high level close to where they had been before the announcement.')
+====================================================================================================
+er052_output/open233_polysemy_trial_04/runs/meta/control/rep1 37 units
+-- meta-7aqr-n1 candidate_sentence_level fact MUSE-HC-012 その他 | EN: the test in which contract workers handled the calls began without properly telling users about it(台帳は『適切な開示なし』で開示先を特定していない。JAは対象を明示せず)
+   reason: 
+   cand (15, 'P6', 'Also, the test in which contract workers handled the calls began without properly telling users about it. In o')
+   cand (13, 'S6.1', 'Also, the test in which contract workers handled the calls began without properly telling users about it.')
+   cand (13, 'P3', 'Some calls made through Muse were actually made by trained human contract workers, not by AI. The workers comp')
+-- meta-7aqr-p1 indeterminate_fact_id_null fact None その他 | テスト対象が従業員であること(MUSE-HC-007/013)が記事で明示されない。『利用者』に関する記述が一般利用者の話と読める余地
+   reason: 台帳の対象範囲との差が文脈次第
+   cand (0, 'T', '# Human Staff Played a Supporting Role in AI Phone Calls: Behind the Scenes of Muse')
+   cand (0, 'S8.4', 'The Muse incident showed how the new role of explaining what is happening suddenly became much more important ')
+   cand (0, 'S8.3', 'Even if the lead actor is AI, a cast list is needed when the supporting actor is human.')
+====================================================================================================
+er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep1 39 units
+-- meta-a5te-p1 indeterminate_fact_id_null fact None その他 | R0: 副社長の所属を『メタの人工知能研究部門』と記述
+   reason: 台帳はSuperintelligence Labs部門。名称の言い換えの許容範囲が境界。R2は『担当副社長』で解消
+   cand (0, 'T', '# That Call May Not Have Been Made by AI')
+   cand (0, 'S9.5', 'That too may become very important information.')
+   cand (0, 'S9.4', 'Who is making the call?')
+-- meta-a5te-p2 indeterminate_fact_id_null fact None その他 | R2/EN: 『利用者へ十分な説明がないままテストが始まった』(開示対象を利用者と特定)
+   reason: 台帳は開示の相手を特定しない。R0は規範的記述のみ
+   cand (0, 'T', '# That Call May Not Have Been Made by AI')
+   cand (0, 'S9.5', 'That too may become very important information.')
+   cand (0, 'S9.4', 'Who is making the call?')
+====================================================================================================
+er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1 40 units
+-- sewer-4hgy-n1 candidate_fact_level_only fact F-007 その他 | R0: 家が密集している地域では公共下水道が向いています/長い管を伸ばすと…点検や修理にも大きなお金がかかります(『経済的に有利になり得る』より断定的、台帳にない費用要素)
+   reason: 
+   cand (19, 'S1.3', 'Depending on the area, the idea is to shift the main role from treating wastewater together through long under')
+   cand (19, 'P1', 'A move is being planned for Japan’s sewer systems. What is moving is not people, but the system that treats wa')
+   cand (8, 'P6', 'For this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment. In areas with')
+-- sewer-4hgy-p1 indeterminate_fact_id_null fact None その他 | R2/EN見出し・冒頭『長い管から家ごとの浄化槽へ/引っ越し』は既設管の転換と読める余地。本文で『下水道をなくす話ではない』『集合処理区域外を個別処理区域に』と限定
+   reason: 全体文脈で限定されている
+   cand (0, 'T', '# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home')
+   cand (0, 'S9.4', 'The future of sewers may, surprisingly, be decided on a map.')
+   cand (0, 'S9.3', 'As communities deal with aging pipes, they are changing to systems that fit their areas.')
+====================================================================================================
+er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep2 44 units
+-- sewer-g8qg-n1 candidate_fact_level_only fact F-010 因果・時間接続 | 松山市が考えたのは、家の集まり方に合わせて作戦を変えること/街の人口密度が、汚水の進路を決める(台帳F-010は市街化区域・調整区域による方針分け。住宅密度による比較はF-007の環境省一般説明)
+   reason: 
+   cand (19, 'S9.2', 'Matsuyama City did not decide to dig up the old sewer pipes already in place and immediately replace them with')
+   cand (19, 'P9', 'But this point is important. Matsuyama City did not decide to dig up the old sewer pipes already in place and ')
+   cand (6, 'R:S3.4+S4.1', 'The Ministry of Land, Infrastructure, Transport and Tourism explains that this drop in income and rise in cost')
+-- sewer-g8qg-p1 indeterminate_fact_id_null fact None 因果・時間接続 | MLIT一般説明(収入減・更新費増)を松山市の見直しの背景として接続。F-010の理由は老朽化・自然災害・人口減少による財政面で、自然災害が抜ける
+   reason: F-010と部分的に一致、断定は弱い
+   cand (0, 'T', "# Let the City's Density Decide What Comes After the Toilet")
+   cand (0, 'S9.3', 'What it revised was the planned area for the public sewer system as a whole, and the method to be used there.')
+   cand (0, 'S9.2', 'Matsuyama City did not decide to dig up the old sewer pipes already in place and immediately replace them with')
+====================================================================================================
+er052_output/open233_polysemy_trial_04/runs/space_weapons/control/rep1 38 units
+-- space_weapons-bcgj-n1 candidate_fact_level_only fact F-002 因果・時間接続 | 「背景にはロシアの動きがあります/背景にあるのは、ロシアの衛星です/In the background is a Russian satellite」(F-001の米国発表とF-002のロシア衛星を因果的な背景として連結。台帳に連結なし)
+   reason: 
+   cand (6, 'S4.4', 'However, no actual attack has been confirmed.')
+   cand (6, 'P4', 'In the background is a Russian satellite. According to the U.S. Department of Defense, in May 2024, Russia lau')
+   cand (4, 'S3.3', 'It has not been confirmed whether they can attack, or what they would target.')
+-- space_weapons-bcgj-n2 candidate_fact_level_only fact F-011 限定語消失 | R0: 「通信を邪魔したり、地上の仕組みに影響を与えたりすれば、宇宙の働きを止められる」(断定。R2は『使いにくくできる可能性』に緩和)
+   reason: 
+   cand (11, 'S5.4', 'The second is the communication link that carries information between satellites and the ground.')
+   cand (11, 'P5', 'And here, the story takes another turn. Under the U.S. Space Force framework, counterspace operations have thr')
+   cand (4, 'S5.5', 'The third is the ground equipment that sends instructions to satellites.')
+-- space_weapons-bcgj-n3 candidate_fact_level_only fact F-011 その他 | 「衛星を動かし、指示を出す地上の設備/衛星に指示を出す地上の設備」(台帳は地上セグメント・地上攻撃とするのみで役割の具体化)
+   reason: 
+   cand (11, 'S5.4', 'The second is the communication link that carries information between satellites and the ground.')
+   cand (11, 'P5', 'And here, the story takes another turn. Under the U.S. Space Force framework, counterspace operations have thr')
+   cand (4, 'S5.5', 'The third is the ground equipment that sends instructions to satellites.')

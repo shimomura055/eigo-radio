@@ -6267,7 +6267,7 @@ def structural_kind_of(full_text: str, target: str):
     return None
 
 
-def structural_article_check(before_text: str, after_text: str, ledger_text: str) -> dict:
+def structural_article_check(before_text: str, after_text: str, ledger_text: str, v3ctx: dict | None = None) -> dict:
     """STAGE2-01 B-(b): 記事全文が書き換えられた場合(level 6)の構造要素の4照合。title/hook/in_one_lineの本文が変わっていれば4照合を適用。"""
     vocab = cap2.proper_noun_vocab(ledger_text, before_text)
     res = []
@@ -6276,7 +6276,7 @@ def structural_article_check(before_text: str, after_text: str, ledger_text: str
              ("in_one_line", _extract_in_one_line_text(before_text), _extract_in_one_line_text(after_text)))
     for kind, b, a in pairs:
         if b and a and b.strip() != a.strip():
-            res.append(cap2.four_checks(kind, b, a, vocab, before_text))
+            res.append(cap2.four_checks(kind, b, a, vocab, before_text, v3ctx))
     return {"ok": all(r["ok"] for r in res), "checks": res}
 
 
@@ -6459,9 +6459,24 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                     "ladder_exhausted_without_full_rewrite": True, "handoff": handoff}
 
     structural_rewrite = False
-    struct_rules_on = cap2.switch_on(cap2.SW_STRUCT_RULES)  # STAGE2-01 B: 既定OFF
+    struct_rules_level = cap2.struct_rules_level()  # STAGE2-01 B: 0=OFF(既定)/1=v2/2=v3(役割クラス比較+語り枠保持)
+    struct_rules_on = struct_rules_level >= 1
     hook_delete_deferred = False
     _vocab_cache: list = []
+    _v3_cache: list = []
+
+    def _v3ctx_for_rules():
+        """v3のみ: 台帳実体の役割クラス表(辞書+台帳ごと1回のLLM型付け・キャッシュ)。v2/OFFではNone。"""
+        if struct_rules_level < 2:
+            return None
+        if not _v3_cache:
+            _sink: list = []
+            _v3_cache.append(cap2.build_v3_ctx(fixture["ledger_text"], _vocab_for_rules(), client, MODEL, _sink))
+            if _sink:
+                state["cumulative_jpy"] = state.get("cumulative_jpy", 0.0) + sum(_sink)
+                state["cumulative_calls"] = state.get("cumulative_calls", 0) + len(_sink)
+                handoff.setdefault("structural_rules", {"checks": [], "regen_calls": 0, "rejected_levels": []})["entity_typing_cost_jpy"] = round(sum(_sink), 4)
+        return _v3_cache[0]
 
     def _vocab_for_rules() -> set:
         if not _vocab_cache:
@@ -6613,7 +6628,7 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                     _sr = handoff.setdefault("structural_rules", {"checks": [], "regen_calls": 0, "rejected_levels": []})
 
                     def _run_checks(rev, _sk=_sk, _targets=targets):
-                        return [cap2.four_checks(k, t, r, _vocab_for_rules(), full_text) if k else None
+                        return [cap2.four_checks(k, t, r, _vocab_for_rules(), full_text, _v3ctx_for_rules()) if k else None
                                 for k, t, r in zip(_sk, _targets, rev)]
                     chk = _run_checks(revised)
                     bad = [c_ for c_ in chk if c_ and not c_["ok"]]
@@ -6621,7 +6636,7 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
                                           "violations": sorted({v_ for c_ in bad for v_ in c_["violations"]}),
                                           "new_subjects": sorted({x_ for c_ in bad for x_ in c_["new_subjects"]})})
                     if bad:
-                        _note = cap2.REGEN_NOTE_TEMPLATE.format(viol=", ".join(sorted({v_ for c_ in bad for v_ in c_["violations"]})))
+                        _note = (cap2.REGEN_NOTE_TEMPLATE_V3 if struct_rules_level >= 2 else cap2.REGEN_NOTE_TEMPLATE).format(viol=", ".join(sorted({v_ for c_ in bad for v_ in c_["violations"]})))
                         raw2 = simple_llm_call(client, state, consecutive_errors, call_log, lv["label"] + "_regen",
                                                lv["dev_msg"], lv["prompt"] + _note, model=MODEL)
                         _sr["regen_calls"] += 1
@@ -6758,7 +6773,7 @@ def rewrite_ranges_ladder(client, state, consecutive_errors, call_log, label_pre
             method_used = (method_used or "") + "+fulltext_fallback"
             guard_ok = updated_text != full_text
             if guard_ok and struct_rules_on:
-                _sc6 = structural_article_check(full_text, updated_text, fixture["ledger_text"])  # STAGE2-01 B-(b): level 6にも4照合
+                _sc6 = structural_article_check(full_text, updated_text, fixture["ledger_text"], _v3ctx_for_rules())  # STAGE2-01 B-(b): level 6にも4照合
                 handoff["structural_rules_level6"] = _sc6
                 if not _sc6["ok"]:
                     guard_ok = False

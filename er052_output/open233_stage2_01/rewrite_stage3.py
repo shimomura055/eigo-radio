@@ -59,7 +59,7 @@ def one(client, tgt, rep, rules_on, budget):
     rd = tgt["run"]
     run, ledger, art = L.load_run(rd)
     sr = tgt["claim"]
-    os.environ[cap2.SW_STRUCT_RULES] = "1" if rules_on else "0"
+    os.environ[cap2.SW_STRUCT_RULES] = os.environ.get("STAGE2_RULES_ON_LEVEL", "1") if rules_on else "0"  # 委任_03: v3 replayは"2"を指定(既定"1"=段階2と同じ)
     state, ce, call_log = L.new_state(), [0], []
     fixture = {"ledger_text": ledger, "article_text": art}
     claim_rec = {"claim_text": sr["claim_text"], "rewrite_kind": sr.get("rewrite_kind") or "replace_with_ledger_value",

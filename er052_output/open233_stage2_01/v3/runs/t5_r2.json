@@ -1,0 +1,71 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+ "source": "saved_blocking",
+ "claim": "# I Followed an AI Phone Agent and Found a Human",
+ "section_type": "title",
+ "rep": 2,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "# I Followed an AI Phone Agent and Found a Human",
+ "after_fragment": "# I Followed Reports of an AI Phone Agent and Found a Human",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": false,
+    "violations": [
+     "frame",
+     "subject"
+    ],
+    "new_subjects": [
+     "class_cross:org(meta)"
+    ]
+   },
+   {
+    "level": "1_word_connective",
+    "attempt": 2,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 1,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.1002,
+ "n_calls": 2,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "T",
+   "S1.1"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "The AI makes the call.",
+    "issue": "Museが電話を依頼できることはLedgerにあるが、実際の発信をAIが行うと一般化できない。一部の電話は人間の契約スタッフが担当したとされている。 / 人間の契約スタッフが担当した一部の電話について、発信主体をAIとして述べており、対象範囲と行為者がLedgerの説明と異なる。",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 0.7183
+ },
+ "updated_text": "# I Followed Reports of an AI Phone Agent and Found a Human\n\nThe AI makes the call. The user asks it to handle a task. So who is actually speaking on the other end?\n\nA story about Meta’s AI agent, Muse, has emerged that feels like looking behind the scenes.\n\nMuse can call businesses and stores in the United States. It can make a haircut appointment, ask about products in stock, or get a price quote from a service provider. The system lets AI handle troublesome calls for the user.\n\nBut unexpected performers appeared in some of the calls. They were not AI, but trained human contract workers. A test was carried out in which workers took over from Muse, made the actual calls, and finished the conversations with the other party.\n\nIn other words, although it looked like an AI phone service, a human was handling the call behind the scenes. If you thought the AI was making the call on its own, a human helper had stepped in from the side of the stage. That was the twist.\n\nBut this was not just a comedy. Depending on the call, the user’s sensitive information may be needed. Meta employees raised privacy concerns over the possibility that this information could be shared unintentionally with contract workers at a call center.\n\nThis does not mean that a large data leak occurred. The problem was that testing began without a proper explanation that humans would handle the calls or that information might be shared.\n\nA Meta executive in charge admitted that this was a “mistake.” The human concierge feature was temporarily rolled back. The phone feature as a whole was not stopped.\n\nMeta says it will continue improving the service with businesses and will make it available to the public only when it is ready and can provide proper disclosure.\n\nThe new thing to check when asking AI to make a call is surprisingly simple: Is the voice we are talking to now an AI or a human? The more convenient the phone service, the more we want it to properly introduce even the last performer to appear. This incident brought those behind-the-scenes rules into the open in a striking way.\n\n## In one line\nDuring testing, Meta’s AI phone agent sometimes had human contractors make calls without properly telling users.",
+ "i": 5,
+ "target_claim": "# I Followed an AI Phone Agent and Found a Human",
+ "total_cost_jpy": 0.8185
+}
