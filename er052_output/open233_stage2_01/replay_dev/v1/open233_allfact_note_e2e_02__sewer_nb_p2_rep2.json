@@ -1,0 +1,553 @@
+{
+ "run": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep2",
+ "results": [
+  {
+   "claim_text": "# Let the City's Density Decide What Comes After the Toilet",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "title",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "title",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Wastewater from areas where homes are close together is collected by a large underground road—the pipes—and then treated together.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "In places with many homes, everyone's wastewater is put into one flow.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_unsupported_new_claim",
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "住宅が密集する場所では、各家庭の汚水が一つの共通した流れに集められる。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_unsupported_new_claim"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "The population density of the city decides the route the wastewater takes.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Matsuyama City did not decide to dig up the old sewer pipes already in place and immediately replace them with septic tanks.",
+   "related_fact_id": "F-010",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "notes_for_writer",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "subject_new_proper_noun"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "subject_new_proper_noun"
+     ],
+     "reader_belief": "松山市は、既設の下水道管を掘り起こして浄化槽へ直ちに置き換える決定をしたわけではない。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Every time we flush the toilet, the shape of the city and changes in its population affect the system underground.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "都市の形や人口の変化が、地下の汚水処理システムに影響する。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Matsuyama City will choose shared sewers or household treatment tanks according to how densely homes are grouped.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "in_one_line",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "in_one_line",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "松山市は、住宅の集まり方に応じて、集合処理の下水道か各戸の処理槽かを選ぶ方針である。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Should wastewater be collected through pipes spread under the city, or should it be treated by equipment at each home?",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "汚水処理には、市街地に広がる管で集める方法と各戸の設備で処理する方法がある。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "According to the Ministry of the Environment, this kind of shared treatment may be more economical in areas where homes are densely packed.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_new_proper_noun"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_new_proper_noun"
+     ],
+     "reader_belief": "環境省によれば、住宅が密集する地域では集合処理がより経済的になる場合がある。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In areas where homes are spread out, septic tanks may be more economical.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "In places where homes are far apart, each home treats its own wastewater.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "住宅が離れている地域では、各戸がそれぞれ汚水を処理する。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "So Matsuyama City decided not to use the same method across the whole city, but to change its approach to fit how homes are grouped.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal",
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal",
+      "subject_flag"
+     ],
+     "reader_belief": "松山市は市全域で同じ方式を採らず、住宅の集まり方に応じて方式を変える方針を決めた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "On the other hand, in urbanization control areas, household wastewater treatment tanks are used in principle.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "松山市では、市街化調整区域は原則として各戸の汚水処理槽を使う方針である。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In crowded areas, public sewers and other shared treatment systems may be more economical.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "住宅が密集する地域では、公共下水道などの集合処理がより経済的になる場合がある。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.6902,
+ "n_calls": 5,
+ "call_log": [
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__sewer_nb_p2_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.2852
+  },
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__sewer_nb_p2_stage2_hook",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.0331
+  },
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__sewer_nb_p2_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.1985
+  },
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__sewer_nb_p2_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1239
+  },
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__sewer_nb_p2_s1_stage2_hook",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.0495
+  }
+ ]
+}

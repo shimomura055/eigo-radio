@@ -407,6 +407,48 @@ class TestFourChecks(unittest.TestCase):
             self.assertIn(w, self.VOCAB)
         self.assertNotIn("followed", self.VOCAB)
 
+    def test_common_words_capitalized_by_position_are_not_proper_nouns(self):
+        body = "Intro here.\n\nHe said: By then it was over. The test began later, by design. They said Meta ran it."
+        v = cap2.proper_noun_vocab("", body)
+        self.assertNotIn("by", v)
+        self.assertIn("meta", v)
+        r = cap2.four_checks("hook", "Meta ran the test.", "Meta ran the test by area.", v, body)
+        self.assertTrue(r["ok"], r)
+
+    def test_proper_nouns_in_ledger_urls_do_not_hide_names(self):
+        # Ledgerのmeta.com等の小文字URLがあっても、本文に小文字形が無い固有名詞(Meta/Muse/AI)は語彙に残る(replay dev実測のバグの再発防止)
+        ledger = "[VERIFIED] X: https://about.meta.com/ai/muse が説明した\n"
+        body = "# T\n\nIf you ask AI to call, it does.\n\nMeta’s agent, Muse, can call stores."
+        v = cap2.proper_noun_vocab(ledger, body)
+        for w in ("ai", "meta", "muse"):
+            self.assertIn(w, v)
+        r = cap2.four_checks("hook", "If you ask AI to call, it does.", "If you ask Muse to call, it does.", v, body)
+        self.assertIn("subject", r["violations"])
+
+    def test_sentence_initial_proper_noun_without_lowercase_form_is_recognized(self):
+        body = "# T\n\nHook sentence one. Another here.\n\nMatsuyama City will choose shared sewers. Japan is large."
+        v = cap2.proper_noun_vocab("", body)
+        self.assertIn("matsuyama", v)
+        r = cap2.four_checks("hook", "A move is planned for the city.", "A move is planned for Matsuyama.", v, body)
+        self.assertIn("subject", r["violations"])
+
+    def test_unknown_capitalized_token_introduced_is_a_new_subject(self):
+        # 本文にもLedger(英語)にも無い固有名詞の持込(例: Japan→Matsuyama)。語彙に無くても、文頭以外の大文字語は主体集合に入る
+        body = "# T\n\nHook sentence one. Another here.\n\nJapan plans a move for sewers."
+        v = cap2.proper_noun_vocab("", body)
+        r = cap2.four_checks("hook", "A move is planned for Japan’s sewer systems.", "A move is planned for Matsuyama’s sewer systems.", v, body)
+        self.assertIn("subject", r["violations"])
+        self.assertIn("matsuyama", r["new_subjects"])
+        r2 = cap2.four_checks("hook", "A move is planned for Japan’s sewer systems.",
+                              "A move is planned for Japan’s sewer systems in some areas.", v, body)
+        self.assertTrue(r2["ok"], r2)
+
+    def test_title_case_does_not_flag_every_capitalized_word(self):
+        body = "# T\n\nHook sentence one. Another here.\n\nMeta ran a test."
+        v = cap2.proper_noun_vocab("", body)
+        r = cap2.four_checks("title", "# I Followed an AI Phone Agent", "# I Followed an AI Phone Agent and Found a Human", v, body)
+        self.assertTrue(r["ok"], r)
+
     def test_m1_subject_replacement_rejected(self):  # qvqc: I -> Meta
         r = cap2.four_checks("title", TITLE, "Meta Tested an AI Phone Agent and Found a Human", self.VOCAB, BEFORE)
         self.assertFalse(r["ok"])
@@ -578,6 +620,41 @@ class TestStructuralRulesLadder(unittest.TestCase):
         self.assertFalse(r["ok"])
         self.assertEqual(r["checks"][0]["kind"], "title")
         self.assertTrue(runner.structural_article_check(BEFORE, BEFORE, LEDGER)["ok"])
+
+
+class TestRubricVersions(unittest.TestCase):
+    def test_v1_default_and_v2_switch(self):
+        env = {k: v for k, v in os.environ.items() if k != cap2.RUBRIC_VERSION_ENV}
+        with mock.patch.dict(os.environ, env, clear=True):
+            self.assertIs(cap2.belief_addendum(), cap2.READER_BELIEF_ADDENDUM_V1)
+        with _env(**{cap2.RUBRIC_VERSION_ENV: "v2"}):
+            self.assertIs(cap2.belief_addendum(), cap2.READER_BELIEF_ADDENDUM_V2)
+        self.assertNotEqual(cap2.READER_BELIEF_ADDENDUM_V1, cap2.READER_BELIEF_ADDENDUM_V2)
+
+    def test_v2_keeps_m2_frame_clause_contradicts_rule_and_guard_note(self):
+        a = cap2.READER_BELIEF_ADDENDUM_V2
+        self.assertIn("語り手の枠", a)
+        self.assertIn("contradictsなら、materialityはBLOCKING", a)
+        self.assertIn("guard_targetは私(システム)が決めて渡します", a)
+
+    def test_belief_only_template_v2_selected_and_still_hides_sentence(self):
+        captured = {}
+
+        class _Resp:
+            output_text = json.dumps({"judgments": [{"item_index": 0, "belief_vs_ledger": "consistent",
+                                                     "contradicting_fact_ids": []}]})
+            model, id, usage = "m", "r", None
+
+        class _Cl:
+            class responses:  # noqa: N801
+                @staticmethod
+                def create(**kw):
+                    captured["prompt"] = kw["input"][1]["content"]
+                    return _Resp()
+        with _env(**{cap2.RUBRIC_VERSION_ENV: "v2"}):
+            cap2.run_belief_only(_Cl, LEDGER, ["人間が裏にいた"], "m")
+        self.assertIn("言い換えた・要約した・組み合わせたもの", captured["prompt"])
+        self.assertNotIn(CLAIM_TEXT, captured["prompt"])
 
 
 class TestR3SaveSwitchName(unittest.TestCase):

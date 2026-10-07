@@ -58,23 +58,29 @@ def _neg_a(text: str) -> bool:
 def proper_noun_vocab(ledger_text: str, article_text: str) -> set:
     """固有名詞語彙(小文字)。本文(`#`行除外)は文頭以外の大文字語+全大文字語、Ledger(JA主体)は全ての英大文字始まり語。"""
     vocab: set = set()
+    initial: set = set()  # 文頭の大文字語(固有名詞か普通語か位置だけでは不明。本文に小文字形が無いものだけ後で採用)
     for ln in (article_text or "").split("\n"):
         s = ln.strip()
         if not s or s.startswith("#"):
             continue
         for sent in _SENT_END.split(s):
-            words = list(_CAP_TOKEN.finditer(sent))
-            for k, m in enumerate(words):
+            for m in _CAP_TOKEN.finditer(sent):
                 if m.start() == 0 or sent[:m.start()].strip(" \"'“‘(") == "":
-                    continue
-                vocab.add(m.group(1).lower())
+                    initial.add(m.group(1).lower())
+                else:
+                    vocab.add(m.group(1).lower())
         for m in _ALLCAPS.finditer(s):
             vocab.add(m.group(0).lower())
     for m in _CAP_TOKEN.finditer(ledger_text or ""):
         vocab.add(m.group(1).lower())
     for m in _ALLCAPS.finditer(ledger_text or ""):
         vocab.add(m.group(0).lower())
-    return {w for w in vocab if w not in _EN_COMMON_CAPS}
+    # 文中の位置(引用符・コロン直後等)だけで大文字になった普通語(By/Usually等)を除くため、本文(URL除去後)に小文字形でも現れる語は固有名詞としない。
+    # Ledgerは小文字のURL・IDを含み(meta.com等)固有名詞まで除いてしまうため、小文字形の証拠には使わない。
+    plain = re.sub(r"https?://\S+", " ", article_text or "")
+    lower_forms = {m.group(0) for m in re.finditer(r"\b[a-z][a-z\-]{1,}\b", plain)}
+    vocab |= {w for w in initial if w not in lower_forms}
+    return {w for w in vocab if w not in _EN_COMMON_CAPS and w not in lower_forms}
 
 
 def guard_target(claim_text: str, dev: dict | None, ledger_text: str = "") -> dict:
@@ -124,7 +130,22 @@ READER_BELIEF_ADDENDUM_V1 = """
 """
 
 # rubric調整1版目(v2): 初回replayの結果を見たうえで追記・変更する場合の置き場。変更点は eval/STAGE2_RESULT.md に記録する(未使用時は v1 と同一)。
-READER_BELIEF_ADDENDUM_V2 = READER_BELIEF_ADDENDUM_V1
+#   v1 dev replay(2026-10-07)の観察: unsupported_new_claim が「Ledgerのfactの言い換え・要約」(例: 経営幹部がミスと認めた=Ledgerのfact)にも大量に付き、
+#   2回目(文を伏せた)もconsistentにならず、既知NGでない候補のBLOCKINGが+1.2件/記事に増えた。labelの定義(言い換え・要約=consistent、
+#   新しい固有名詞・数値・日付・出来事・因果の追加だけがunsupported_new_claim)を明確にし、guard_target=trueではnot_applicableを禁じる。
+#   contradicts/BLOCKINGの規則(3項)・語り手の枠(4項)・guard_targetの扱い(5項の前半)は不変。
+READER_BELIEF_ADDENDUM_V2 = """
+【読者信念テスト(入力のguard_targetがtrueのclaimだけに適用)】
+1. まず、英語学習者がこの文だけを読んだとき、世界について何を信じるかを、1文のreader_belief(日本語)として書いてください。文の言い回しではなく、「世界の事実として何が述べられたと受け取るか」を書きます。
+2. reader_beliefをVerified Fact Ledgerの各factと照合し、belief_vs_ledgerを次から1つ選んでください。
+   - contradicts: Ledgerの肯定的なfactと矛盾する(Ledgerが別の主体・値・方向・否定/肯定を明記している)。矛盾するfact_idをcontradicting_fact_idsへ入れてください。
+   - consistent: reader_beliefが、Ledgerのfactを言い換えた・要約した・組み合わせたものとして読める(同じ事実関係・同じ主体・同じ向き・同じ程度)。Ledgerに同じ文が逐語で無くても、事実関係が同じならconsistentです。記事の結論・評価・日本語訳の説明・一般的な言い回しも、Ledgerの事実関係を変えていなければconsistentです。
+   - unsupported_new_claim: Ledgerのどのfactにも含まれない、新しい固有名詞・数値・日付・出来事・因果の主張がreader_beliefへ新たに加わっている場合だけです。言い換え・要約・一般的な言い回しはこれに当たりません。
+   - unclear: 判断できない。
+3. belief_vs_ledgerがcontradictsなら、materialityはBLOCKINGにしてください(QUALITY/ACCEPTABLEにしないでください)。
+4. 語り手の枠(I/we/youによる語りかけ・問いかけ・体験の演出。例: 「I followed ...」型)は、それ自体を世界についての主張として扱わないでください。枠そのものを根拠にunsupported_new_claim/contradictsにせず、枠の中で述べられる世界の事実の部分だけをreader_beliefにしてください。
+5. guard_targetがtrueのclaimは、必ず上の4つ(contradicts/consistent/unsupported_new_claim/unclear)から1つを選び、reader_beliefを書いてください(not_applicableは不可)。guard_targetがfalseのclaimにはこの手順は不要です(reader_beliefは空文字、belief_vs_ledgerはnot_applicable、contradicting_fact_idsは空配列)。guard_targetは私(システム)が決めて渡します。あなたが対象かどうかを判断する必要はありません。guard_targetがfalseのclaimのmaterialityは、この手順の有無にかかわらず、上記の従来の判定基準だけで判定してください。
+"""
 
 
 def belief_addendum() -> str:
@@ -168,6 +189,22 @@ BELIEF_ONLY_PROMPT_TEMPLATE = """以下の【Verified Fact Ledger(全文)】と�
 - contradicts: Ledgerの肯定的なfactと矛盾する(Ledgerが別の主体・値・方向・否定/肯定を明記している)。矛盾するfact_idをcontradicting_fact_idsへ。
 - unsupported_new_claim: 矛盾はしないが、Ledgerに無い新しい世界についての主張。
 - consistent: Ledgerと矛盾せず、Ledgerのfactで支えられる。
+- unclear: 判断できない。
+item_indexを付けて、同じ順序・同じ件数で返してください。"""
+# v2(rubric調整1版目): consistent/unsupported_new_claimの定義を明確化(addendum v2と同じ定義)。1回目とreader_beliefだけで判定する枠組みは不変。
+BELIEF_ONLY_PROMPT_TEMPLATE_V2 = """以下の【Verified Fact Ledger(全文)】と、読者が信じる内容の記述(reader_belief)の配列があります。
+各reader_beliefがLedgerとどういう関係かを、itemごとに独立に判定してください(記事の文は提示しません。reader_beliefは記事の文を要約した記述です)。
+
+【Verified Fact Ledger(全文)】
+{verified_ledger_text}
+
+【reader_belief配列】
+{items_block}
+
+【判定】belief_vs_ledgerを次から1つ選んでください。
+- contradicts: Ledgerの肯定的なfactと矛盾する(Ledgerが別の主体・値・方向・否定/肯定を明記している)。矛盾するfact_idをcontradicting_fact_idsへ。
+- consistent: reader_beliefが、Ledgerのfactを言い換えた・要約した・組み合わせたものとして読める(同じ事実関係・同じ主体・同じ向き・同じ程度)。Ledgerに同じ文が逐語で無くても、事実関係が同じならconsistentです。
+- unsupported_new_claim: Ledgerのどのfactにも含まれない、新しい固有名詞・数値・日付・出来事・因果の主張がreader_beliefへ新たに加わっている場合だけです。言い換え・要約・一般的な言い回しはこれに当たりません。
 - unclear: 判断できない。
 item_indexを付けて、同じ順序・同じ件数で返してください。"""
 BELIEF_ONLY_SCHEMA = {
@@ -250,7 +287,8 @@ def run_belief_batch_hook(client, ledger_text: str, source_article_text, title_h
 def run_belief_only(client, ledger_text: str, beliefs: list, model: str) -> dict:
     """O1: 文を見せない2回目。beliefs=list[str](reader_belief)。"""
     items = "\n".join(f"[item_index={i}] reader_belief: {b}" for i, b in enumerate(beliefs))
-    prompt = BELIEF_ONLY_PROMPT_TEMPLATE.format(verified_ledger_text=ledger_text, items_block=items)
+    tmpl = BELIEF_ONLY_PROMPT_TEMPLATE_V2 if os.environ.get(RUBRIC_VERSION_ENV, "v1") == "v2" else BELIEF_ONLY_PROMPT_TEMPLATE
+    prompt = tmpl.format(verified_ledger_text=ledger_text, items_block=items)
     t0 = time.time()
     resp = client.responses.create(
         model=model, reasoning={"effort": vfl01.REASONING_EFFORT},
@@ -292,12 +330,17 @@ def _tokens(text: str) -> list:
 def subject_set(text: str, vocab: set) -> set:
     """主体・代名詞集合: 代名詞(I/we/you/they等) ∪ 固有名詞語彙に属する語 ∪ 主体クラス(users/employees等)。"""
     out: set = set()
-    for tok in _tokens(text):
+    toks = _tokens(text)
+    caps = [t for t in toks if t[0].isupper()]
+    title_case = len(toks) >= 4 and len(caps) / len(toks) >= 0.6  # Title Case(タイトル型)は大文字が固有名詞を意味しない
+    for k, tok in enumerate(toks):
         w = re.sub(r"[’']s$", "", tok).lower()
         if w in _PRONOUNS:
             out.add(w)
         elif w in vocab:
             out.add(w)
+        elif (not title_case) and k > 0 and tok[0].isupper() and w not in _EN_COMMON_CAPS and len(w) >= 2:
+            out.add(w)  # 語彙に無い大文字語(文頭以外)=本文・Ledgerに無い新しい固有名詞の持込も主体集合に入れる(例: Japan→Matsuyama)
     import er052_open233_self_recovery_flow_runner_01 as runner
     for cls in runner.actor_classes_in_text(text or ""):
         out.add("class:" + cls)

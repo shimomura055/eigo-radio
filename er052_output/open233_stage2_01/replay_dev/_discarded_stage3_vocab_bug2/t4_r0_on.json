@@ -1,0 +1,57 @@
+{
+ "run": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1",
+ "source": "new_config_blocking",
+ "claim": "A move is being planned for Japan’s sewer systems.",
+ "section_type": "hook",
+ "rep": 0,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "A move is being planned for Japan’s sewer systems.",
+ "after_fragment": "A move is being planned for some of Japan’s sewer systems.",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 0,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.0531,
+ "n_calls": 1,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "T",
+   "S1.1",
+   "S1.2"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+    "issue": "見出しは、既存の長い管路による処理を各戸の浄化槽へ移す計画と読める。Ledgerには未整備区域などでの処理方式の見直し事例はあるが、既存の管路処理を各戸の浄化槽へ移すという一般的な計画までは支えられていない。 / 見直し後に集合処理区域以外を個別処理区域とした事実を、既設の長い管路から各戸浄化槽へ直接切り替える内容のよ",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 1.1879
+ },
+ "total_cost_jpy": 1.241
+}

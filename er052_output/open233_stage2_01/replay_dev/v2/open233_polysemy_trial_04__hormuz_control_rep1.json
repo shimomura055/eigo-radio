@@ -1,0 +1,62 @@
+{
+ "run": "er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1",
+ "results": [
+  {
+   "claim_text": "Political words may change direction suddenly, but tension at sea does not always change at the same speed.",
+   "related_fact_id": "HF-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal",
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal",
+      "direction"
+     ],
+     "reader_belief": "ホルムズ海峡の通航料案は翌日に置き換えられた一方、海上の緊張や供給への懸念はすぐには解消しなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.2279,
+ "n_calls": 2,
+ "call_log": [
+  {
+   "label": "rp_v2_open233_polysemy_trial_04__hormuz_contro_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1633
+  },
+  {
+   "label": "rp_v2_open233_polysemy_trial_04__hormuz_contro_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.0646
+  }
+ ]
+}

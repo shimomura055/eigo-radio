@@ -1,0 +1,524 @@
+{
+ "run": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2",
+ "results": [
+  {
+   "claim_text": "Every time a ship passed, it would pay for U.S. security measures.",
+   "related_fact_id": "HF-003",
+   "saved": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "so_confirmed": null,
+    "so_split": null
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal",
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal",
+      "subject_flag"
+     ],
+     "reader_belief": "ホルムズ海峡を通過するたびに、船舶自身が米国の安全対策費を支払うことになっていた。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "But in the third act, the reaction from the oil market was much calmer.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_unsupported_new_claim",
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "direction"
+     ],
+     "reader_belief": "通航料案の置き換えに対する原油市場の反応は、それ以前の反応に比べて穏やかだった。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_unsupported_new_claim"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Why did oil prices not fall much, even though the fee plan had disappeared?",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "通航料案が撤回されても、原油価格は大きく下落しなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Because the danger itself in the strait had not disappeared.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "通航料案の撤回後も、海峡の危険はなくなっていなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Diplomatic announcements can change completely in one day.",
+   "related_fact_id": "HF-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_date_or_period",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "外交上の発表は、短い期間、場合によっては翌日には大きく変わることがある。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "But tankers traveling through dangerous waters do not become safe just because of an announcement.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "発表があっただけで、危険な海域を航行するタンカーの安全が確保されるわけではない。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "So after reacting a little to the withdrawal of the fee plan, the market seemed to remember the reality of the strait and returned to a high level.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Trump’s proposed Hormuz toll vanished within a day, but oil prices stayed high because the strait remained dangerous.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "in_one_line",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_date_or_period",
+    "section_type": "in_one_line",
+    "guard_target": true,
+    "guard_types": [
+     "subject_new_proper_noun"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_new_proper_noun"
+     ],
+     "reader_belief": "通航料案は翌日には撤回され、海峡の危険が続くなか、原油価格は高い水準を保った。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "The idea was to have passing cargo pay for the costs the United States would use to keep the strait safe.",
+   "related_fact_id": "HF-002",
+   "saved": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "so_confirmed": null,
+    "so_split": null
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "海峡を通過する貨物自身が、米国の安全確保費用を支払う想定だった。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Every time a ship passed, it would pay for U.",
+   "related_fact_id": "HF-003",
+   "saved": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "so_confirmed": null,
+    "so_split": null
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal",
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal",
+      "subject_flag"
+     ],
+     "reader_belief": "船が通過するたびに、その船が米国の安全対策費を支払うことになっていた。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "But soon they returned to a high level close to where they had been before the announcement.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Trump proposed charging all cargo passing through the Strait of Hormuz a 20 percent fee to cover costs.",
+   "related_fact_id": "HF-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal",
+     "subject_new_proper_noun",
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal",
+      "subject_new_proper_noun",
+      "number"
+     ],
+     "reader_belief": "トランプ氏は、ホルムズ海峡を通るすべての貨物に、費用を賄うための20％の料金を課すことを提案した。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "A plan to charge passing cargo directly had turned into business talks with the Gulf states.",
+   "related_fact_id": "HF-002",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "貨物に直接料金を課す案は、湾岸諸国との貿易・投資に関する話し合いに置き換わった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.9423,
+ "n_calls": 3,
+ "call_log": [
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__hormuz_nb_p_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.7609
+  },
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__hormuz_nb_p_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.1393
+  },
+  {
+   "label": "rp_v1_open233_allfact_note_e2e_02__hormuz_nb_p_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.0421
+  }
+ ]
+}

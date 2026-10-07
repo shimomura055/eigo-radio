@@ -1,0 +1,160 @@
+{
+ "n_jobs": 42,
+ "rules_on": {
+  "n": 21,
+  "guard_ok": 19,
+  "exhausted_structural_stop": 2,
+  "regen_calls": 12,
+  "rejected_levels": 9,
+  "hook_last_resort_delete": 0,
+  "deleted_sentences_total": 0,
+  "deleted_sentences_per_job": 0.0,
+  "violations_in_accepted_outputs": 0,
+  "violation_rows": [],
+  "title_markup_missing": 0,
+  "recheck_n": 19,
+  "recheck_status": {
+   "LEDGER_COMPLIANT": 3,
+   "LEDGER_DEVIATION": 16
+  },
+  "recheck_new_deviations": 19,
+  "cost_jpy": 14.202
+ },
+ "rules_off": {
+  "n": 21,
+  "guard_ok": 21,
+  "exhausted_structural_stop": 0,
+  "regen_calls": 0,
+  "rejected_levels": 0,
+  "hook_last_resort_delete": 0,
+  "deleted_sentences_total": 0,
+  "deleted_sentences_per_job": 0.0,
+  "violations_in_accepted_outputs": 7,
+  "violation_rows": [
+   {
+    "file": "t2_r0_off.json",
+    "section": "hook",
+    "before": "If you ask AI to make a phone call, it talks to the other person and takes care of the tas",
+    "after": "If you ask Muse to make a phone call, a trained human agent may talk to the other person a",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "class:agent"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t3_r0_off.json",
+    "section": "in_one_line",
+    "before": "Meta tested having human workers handle some AI phone calls without clearly telling users,",
+    "after": "Meta tested having human workers handle some AI phone calls, raising privacy concerns.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   },
+   {
+    "file": "t3_r1_off.json",
+    "section": "in_one_line",
+    "before": "Meta tested having human workers handle some AI phone calls without clearly telling users,",
+    "after": "Meta tested having human workers handle some AI phone calls, raising privacy concerns.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   },
+   {
+    "file": "t3_r2_off.json",
+    "section": "in_one_line",
+    "before": "Meta tested having human workers handle some AI phone calls without clearly telling users,",
+    "after": "Meta tested having human workers handle some AI phone calls, raising privacy concerns.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   },
+   {
+    "file": "t5_r0_off.json",
+    "section": "title",
+    "before": "# I Followed an AI Phone Agent and Found a Human",
+    "after": "# AI Phone Agent Test Used Human Contractors",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "class:contractor"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t5_r1_off.json",
+    "section": "title",
+    "before": "# I Followed an AI Phone Agent and Found a Human",
+    "after": "# Meta Tested an AI Phone Agent with Human Contractors",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "class:contractor"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t6_r0_off.json",
+    "section": "hook",
+    "before": "The AI makes the call.",
+    "after": "The AI doesn't always make the call.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   }
+  ],
+  "title_markup_missing": 0,
+  "recheck_n": 0,
+  "recheck_status": {},
+  "recheck_new_deviations": 0,
+  "cost_jpy": 1.483
+ },
+ "structural_stop_rate_per_rep": {
+  "1": 0.0455,
+  "2": 0.0455
+ },
+ "structural_stop_articles": {
+  "1": [
+   "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8"
+  ],
+  "2": [
+   "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1"
+  ]
+ },
+ "n_articles_denominator": 22,
+ "deleted_sentences_delta_on_minus_off_total": 0,
+ "deleted_sentences_delta_per_article": 0.0
+}

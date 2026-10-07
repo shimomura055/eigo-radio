@@ -1,0 +1,496 @@
+{
+ "run": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1",
+ "results": [
+  {
+   "claim_text": "Some calls made through Muse were actually made by trained human contract workers, not by AI.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Muse経由の電話の一部は、AIではなく訓練を受けた人間の契約スタッフが担当し、相手との会話を完了させていた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Of course, humans did not take every call.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "人間のスタッフがMuse経由の電話をすべて担当したわけではなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "That was exactly what worried Meta employees.",
+   "related_fact_id": "MUSE-HC-010",
+   "saved": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_blocking",
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": false,
+    "so_split": true
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Meta executives admitted that this way of starting the test was a “mistake.”",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_unsupported_new_claim",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "Metaの幹部たちが、テストの始め方を「ミス」だったと認めた。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_unsupported_new_claim"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "By September 22, they had rolled back the human concierge feature.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_date_or_period",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "number"
+     ],
+     "reader_belief": "Metaは9月22日までに人間コンシェルジュ機能をロールバックした。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "What was rolled back was the feature in which human staff handled the phone calls.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "The Muse incident showed how the new role of explaining what is happening suddenly became much more important behind the scenes of AI.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Sensitive information from users that was needed to continue the calls might have been shared unintentionally with contract workers at call centers.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Also, the test in which contract workers handled the calls began without properly telling users about it.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "契約スタッフが電話を担当するテストは、利用者への適切な開示がないまま始まった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Meta tested having human workers handle some AI phone calls without clearly telling users, raising privacy concerns.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "in_one_line",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "in_one_line",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Metaは、利用者への明確な開示なしに、人間のスタッフが一部のAI電話を担当するテストを行い、プライバシー上の懸念が生じた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Meta executives admitted that this way of starting the test was a “mistake.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_unsupported_new_claim",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "Metaの幹部たちが、テストの始め方を「ミス」だったと認めた。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_unsupported_new_claim"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "” By September 22, they had rolled back the human concierge feature.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_date_or_period",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_new_proper_noun",
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_new_proper_noun",
+      "number"
+     ],
+     "reader_belief": "Metaは9月22日までに人間コンシェルジュ機能をロールバックした。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "What is interesting this time is not only that humans joined AI phone calls.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.762,
+ "n_calls": 3,
+ "call_log": [
+  {
+   "label": "rp_v1_open233_polysemy_trial_04__meta_control__stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.3329
+  },
+  {
+   "label": "rp_v1_open233_polysemy_trial_04__meta_control__s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.1554
+  },
+  {
+   "label": "rp_v1_open233_polysemy_trial_04__meta_control__s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.2737
+  }
+ ]
+}

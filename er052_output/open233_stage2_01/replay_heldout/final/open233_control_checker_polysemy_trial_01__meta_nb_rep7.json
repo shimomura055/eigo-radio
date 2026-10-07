@@ -1,0 +1,257 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep7",
+ "results": [
+  {
+   "claim_text": "There is no confirmed explanation, however, that this insurance company incident led to the human concierge test.",
+   "related_fact_id": "MUSE-HC-009",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_unsupported_new_claim",
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "Checkerの指摘: 保険会社の事例が人間コンシェルジュテストにつながったという説明が確認されていない、という不在の主張はLedgerで確認されていない。 / Ledgerにない、保険会社の事例と人間コンシェルジュテストの因果関係に関する確認状況を追加している。 Ledgerのnotes_for_writer: AI電話は一般に切られると拡張しない。個別の従業員報告として扱う。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) Ledgerのconditions: 電話の相手が発信者をAIだと認識した場合 fact_id=MUSE-HC-009のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "保険会社がMuseのAI電話を切った事例が、人間コンシェルジュのテストにつながったとの説明は確認されていない。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_unsupported_new_claim"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "With AI phone calls, one side hung up, while on the other side a human appeared as the caller.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "direction"
+     ],
+     "reader_belief": "MuseのAI電話を相手が切る事例があり、別の一部の電話では人間が発信者として対応した。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In addition, an internal post suggested that in some tests handled by humans, the success rate might have been as high as 95 to 98 percent.",
+   "related_fact_id": "MUSE-HC-008",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_numeric_value",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "number"
+     ],
+     "reader_belief": "社内投稿では、人間が担当した一部のテストで成功率が95〜98％に達する可能性が示された。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "So this figure cannot be seen as the performance of all the human staff.",
+   "related_fact_id": "MUSE-HC-008",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "notes_for_writer",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "この成功率の数字を、人間のスタッフ全員の実績として扱うことはできない。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "The human concierge feature was then put on hold for the time being.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "” The human concierge feature was then put on hold for the time being.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.5932,
+ "n_calls": 3,
+ "call_log": [
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.3546
+  },
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.0752
+  },
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1634
+  }
+ ]
+}

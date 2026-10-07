@@ -1,0 +1,57 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+ "source": "new_config_blocking",
+ "claim": "If you ask AI to make a phone call, it talks to the other person and takes care of the task for you.",
+ "section_type": "hook",
+ "rep": 0,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "If you ask AI to make a phone call, it talks to the other person and takes care of the task for you.",
+ "after_fragment": "If you ask Muse to make a phone call, in some cases a human talks to the other person and takes care of the task for you.",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 0,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.065,
+ "n_calls": 1,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "T",
+   "S1.1",
+   "S1.2"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "# An Unexpected Helper for AI Phone Calls: A Human Was Behind the Scenes",
+    "issue": "Museの一部の電話に関する社内テストという範囲を示さず、「AI電話」全般について人間が背後にいたかのように読める表現になっています。",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 1.0052
+ },
+ "total_cost_jpy": 1.0702
+}

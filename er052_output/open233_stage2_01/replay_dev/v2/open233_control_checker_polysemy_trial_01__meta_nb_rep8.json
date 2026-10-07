@@ -1,0 +1,396 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+ "results": [
+  {
+   "claim_text": "If you ask AI to make a phone call, it talks to the other person and takes care of the task for you.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "hook",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "hook",
+    "guard_target": true,
+    "guard_types": [
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_flag"
+     ],
+     "reader_belief": "AIに電話を頼むと、AI自身が相手と話し、依頼された用件を処理する。",
+     "belief_vs_ledger": "contradicts",
+     "contradicting_fact_ids": [
+      "MUSE-HC-006"
+     ]
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Some calls from Muse were made not by AI but by trained contract workers, who finished the conversations with the people on the other end.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Museからの一部の電話はAIではなく訓練を受けた契約スタッフがかけ、相手とのやり取りを完了させた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "The important point is that not all the calls were handled by humans.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "人間が担当したのはMuse経由の電話の一部であり、すべての電話が人間によって処理されたわけではない。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "However, because the test began without proper notice, concerns about privacy arose inside the company.",
+   "related_fact_id": "MUSE-HC-010",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "適切な事前開示なしにテストが始まったことを背景に、社内でプライバシー上の懸念が生じた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "The company then temporarily returned the human concierge feature to its previous setup.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "For people who are not good at making phone calls, it is a very helpful secretary.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "電話をかけるのが苦手な人にとって、Museの電話機能は役立つ秘書のようなものだ。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "” Some calls from Muse were made not by AI but by trained contract workers, who finished the conversations with the people on the other end.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Museからの一部の電話はAIではなく訓練を受けた契約スタッフがかけ、相手とのやり取りを完了させた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Who is on the other end of the phone?",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "A Meta executive admitted that starting the test without proper notice was a mistake.",
+   "related_fact_id": "MUSE-HC-010",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Metaの幹部は、適切な開示なしにテストを始めたことが誤りだったと認めた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In part of its phone feature, Meta was testing a system called “human concierge.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.9907,
+ "n_calls": 4,
+ "call_log": [
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.3984
+  },
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_stage2_hook",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.2804
+  },
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.1135
+  },
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1984
+  }
+ ]
+}

@@ -1,0 +1,56 @@
+{
+ "run": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep2",
+ "source": "new_config_blocking",
+ "claim": "Matsuyama City will choose shared sewers or household treatment tanks according to how densely homes are grouped.",
+ "section_type": "in_one_line",
+ "rep": 0,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "Matsuyama City will choose shared sewers or household treatment tanks according to how densely homes are grouped.",
+ "after_fragment": "Matsuyama City will choose shared sewers or household treatment tanks.",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 0,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.0395,
+ "n_calls": 1,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "S10.2",
+   "L1"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "Matsuyama City will choose shared sewers or household treatment tanks.",
+    "issue": "松山市が区域ごとに異なる方針を定めたという範囲の限定が省かれ、下水道と浄化槽の選択を一般化している。",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": false,
+  "api_failure": false,
+  "cost_jpy": 0.3134
+ },
+ "total_cost_jpy": 0.3529
+}

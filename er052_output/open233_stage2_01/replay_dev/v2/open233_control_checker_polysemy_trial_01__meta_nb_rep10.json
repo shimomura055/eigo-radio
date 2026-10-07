@@ -1,0 +1,495 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep10",
+ "results": [
+  {
+   "claim_text": "Of course, humans did not handle every call.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "人間の契約スタッフが担当したのはMuse経由の電話の一部で、すべての電話ではなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Instead of AI calling a human when it got stuck, a human appeared on the AI agent’s stage and performed all the way to the end.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal",
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal",
+      "direction"
+     ],
+     "reader_belief": "一部の電話ではAIから人間へ途中で引き継ぐのではなく、人間の契約スタッフが電話をかけて会話を完了した。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In Japanese, that means a human guide.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "none",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_new_proper_noun"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_new_proper_noun"
+     ],
+     "reader_belief": "記事は「human concierge」を日本語で「人間の案内役」と説明している。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In other words, the problem was not bringing in humans itself.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "問題とされたのは人間を電話に関与させること自体ではなく、適切な開示なしにテストを始めたことだった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Even though this was news about AI phone calls, what drew attention in the end was not flashy technology.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "direction"
+     ],
+     "reader_belief": "記事では、注目点は派手な技術より、電話の相手がAIか人間かという開示の問題だったと位置づけている。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Meta’s AI phone test used human workers for entire calls without clearly telling people who was speaking.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "in_one_line",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "in_one_line",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "MetaのAI電話テストでは、一部の電話を人間の契約スタッフが最初から最後まで担当し、誰が話しているかが適切に開示されていなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "” In Japanese, that means a human guide.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "none",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "subject_new_proper_noun"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_new_proper_noun"
+     ],
+     "reader_belief": "記事は「human concierge」を日本語で「人間の案内役」と説明している。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "” In other words, the problem was not bringing in humans itself.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "問題とされたのは人間を電話に関与させること自体ではなく、適切な開示なしにテストを始めたことだった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "For some calls made through Muse, contract workers placed the calls and completed the conversations with the people on the other end.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "It was that the test began without fully telling people who was handling the calls.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "テストでは、電話を誰が担当しているかについて十分な説明がなされていなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Meta’s vice president admitted that starting a test in which contract workers handled calls without properly telling people was a “mistake.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Metaの副社長は、契約スタッフが電話を担当するテストを適切な説明なしに始めたことを「ミス」だったと認めた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "What matters is clearly telling people who is playing each part.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "s1_second_opinion_belief_not_consistent",
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "記事は、AIか人間かなど、電話で誰がどの役割を担っているかを明確に伝えることが重要だと結論づけている。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": false,
+     "split": true,
+     "first_belief": "consistent",
+     "second_belief": "unsupported_new_claim",
+     "belief_only": true
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.7982,
+ "n_calls": 3,
+ "call_log": [
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.5244
+  },
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.1237
+  },
+  {
+   "label": "rp_v2_open233_control_checker_polysemy_trial_0_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1501
+  }
+ ]
+}

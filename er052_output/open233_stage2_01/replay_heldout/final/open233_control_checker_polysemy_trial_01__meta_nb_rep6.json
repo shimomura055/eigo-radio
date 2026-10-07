@@ -1,0 +1,272 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep6",
+ "results": [
+  {
+   "claim_text": "However, in some of these calls, a human, not AI, came on the line.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "hook",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "hook",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Muse経由の一部の電話では、AIではなく人間の契約スタッフが相手とのやり取りを担当した。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "This was a test carried out on some calls, not all of them.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "Metaのhuman concierge試験は、Muse経由の全通話ではなく一部の通話を対象としていた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "An internal post suggested that the success rate for some tests handled by humans could reach 95 to 98 percent.",
+   "related_fact_id": "MUSE-HC-008",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_numeric_value",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "number"
+     ],
+     "reader_belief": "社内投稿では、人間が担当した一部テストの成功率が95〜98%に達する可能性が示された。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "It does not apply to all phone calls in general.",
+   "related_fact_id": "MUSE-HC-009",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "AI電話が切られたという報告や人間対応テストの高い成功率は、一般のすべての電話に当てはまるものとして述べられていない。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "The main feature of these AI phone calls was not how smart the AI was, but that a human came on partway through.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "so_confirmed": null,
+    "so_split": null
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "rewrite_kind": "narrow_scope",
+    "rewrite_hint": "対象文: “The main feature of these AI phone calls was not how smart the AI was, but that a human came on partway through.” 人間が通話の途中から加わったという未確認の流れを削り、確認済みの範囲に狭めて「一部の依頼は訓練を受けた契約スタッフに引き渡され、スタッフが電話をかけて会話を完了した」と記述する。参照: MUSE-HC-006。",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "direction"
+     ],
+     "reader_belief": "AIが通話を始めた後、その途中から人間が加わることが、Museの電話機能の主な特徴だった。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "The report said that calls made as AI were cut off, while some tests handled by humans showed the possibility of a high success rate.",
+   "related_fact_id": "MUSE-HC-008",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.7574,
+ "n_calls": 4,
+ "call_log": [
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.3814
+  },
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_stage2_hook",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.1205
+  },
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.08
+  },
+  {
+   "label": "rp_final_open233_control_checker_polysemy_trial_0_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.1755
+  }
+ ]
+}

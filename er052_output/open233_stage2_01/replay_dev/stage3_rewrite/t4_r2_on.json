@@ -1,0 +1,69 @@
+{
+ "run": "er052_output/open233_polysemy_trial_04/runs/sewer/control/rep1",
+ "source": "new_config_blocking",
+ "claim": "A move is being planned for Japan’s sewer systems.",
+ "section_type": "hook",
+ "rep": 2,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "A move is being planned for Japan’s sewer systems.",
+ "after_fragment": "A move is being planned for some of Japan’s sewer systems.",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": false,
+    "violations": [
+     "subject"
+    ],
+    "new_subjects": [
+     "matsuyama"
+    ]
+   },
+   {
+    "level": "1_word_connective",
+    "attempt": 2,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 1,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.1508,
+ "n_calls": 2,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "T",
+   "S1.1",
+   "S1.2"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home",
+    "issue": "特定の自治体・未整備区域での計画見直しを、日本の下水道システム全般に及ぶ移行として示しており、対象範囲がLedgerの事例を超えています。また、「各家庭の浄化槽へ」という移行を見出しで一般化しています。",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 0.7164
+ },
+ "updated_text": "# A Sewer System Move: From Long Pipes to Septic Tanks for Each Home\n\nA move is being planned for some of Japan’s sewer systems. What is moving is not people, but the system that treats wastewater. Depending on the area, the idea is to shift the main role from treating wastewater together through long underground pipes to treating it in septic tanks at each home.\n\nThe reason is that the pipes working underground are growing old.\n\nJapan’s sewer pipes total about 500,000 kilometers. Of these, about 7 percent have already passed their standard service life of 50 years. This is expected to rise to about 22 percent in ten years and about 45 percent in 20 years.\n\nHowever, passing 50 years does not mean that the pipes become unusable right away. Even so, maintaining, rebuilding, and replacing old facilities will require more money. The Ministry of Land, Infrastructure, Transport and Tourism estimates that the cost of maintaining and replacing sewer facilities will rise from about 0.8 trillion yen in fiscal 2018 to about 1.3 trillion yen in fiscal 2048.\n\nAt the same time, the population is declining. When the population falls, income from sewer fees also falls. Income goes down, while the cost of rebuilding and replacing old facilities goes up. This is quite a difficult puzzle for sewer system finances.\n\nFor this reason, Kitakata City in Fukushima Prefecture reviewed its map of wastewater treatment. In areas with shared treatment, wastewater is sent through underground pipes and treated together. Outside those areas, the city will create areas for individual treatment using combined-treatment septic tanks. The city plans to provide extra subsidies for the cost of installing septic tanks.\n\nThe Ministry of the Environment also explains that shared treatment, such as public sewers, can be more economical in areas where homes are close together, while individual treatment, such as septic tanks, can be more economical where homes are spread out. In other words, the treatment method is chosen to match how homes are arranged in each area.\n\nCombined-treatment septic tanks treat not only human waste from toilets, but also household wastewater from kitchens, baths, and washing. They use the work of microorganisms, but installing one is not the end of the process. Regular checks, cleaning, and inspections required by law are necessary.\n\nIn other words, this is not a plan to get rid of sewers. It is a plan to use shared treatment underground and individual treatment at each home in different ways. As communities deal with aging pipes, they are changing to systems that fit their areas. The future of sewers may, surprisingly, be decided on a map.\n\n## In one line\nAs Japan’s sewer pipes age, some areas may shift from shared treatment to septic tanks at individual homes.",
+ "total_cost_jpy": 0.8672
+}

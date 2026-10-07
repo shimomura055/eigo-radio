@@ -1,0 +1,56 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+ "source": "saved_blocking",
+ "claim": "# I Followed an AI Phone Agent and Found a Human",
+ "section_type": "title",
+ "rep": 1,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "# I Followed an AI Phone Agent and Found a Human",
+ "after_fragment": "# Meta Tested an AI Phone Agent with Humans",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 0,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.0353,
+ "n_calls": 1,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "T",
+   "S1.1"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "The AI makes the call.",
+    "issue": "「AIが電話をかける」と断定しているが、Ledgerでは電話の一部はAIではなく人間の契約スタッフがかけたとされ、AIが実際に発信する範囲をこの文のように一般化できない。 / 人間の契約スタッフが実際に電話を担当した一部テストについて、発信者をAIと断定しており、行為者を変えている。",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 0.5835
+ },
+ "total_cost_jpy": 0.6188
+}

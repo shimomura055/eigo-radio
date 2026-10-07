@@ -1,0 +1,32 @@
+targets 7 [('new_config_blocking', 'sewer/nb/p2/rep2', 'in_one_line'), ('saved_blocking', 'meta/nb/rep3', 'in_one_line'), ('new_config_blocking', 'meta/nb/rep8', 'hook'), ('new_config_blocking', 'meta/control/rep1', 'in_one_line'), ('new_config_blocking', 'sewer/control/rep1', 'hook'), ('saved_blocking', 'meta/nb/rep2', 'title'), ('saved_blocking', 'meta/nb/rep2', 'hook')]
+Traceback (most recent call last):
+  File "C:\Users\tensh\eigo-radio\er052_output\open233_stage2_01\rewrite_stage3.py", line 155, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\tensh\eigo-radio\er052_output\open233_stage2_01\rewrite_stage3.py", line 146, in main
+    res = list(ex.map(work, jobs))
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\concurrent\futures\_base.py", line 645, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\concurrent\futures\_base.py", line 312, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\concurrent\futures\_base.py", line 447, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\concurrent\futures\_base.py", line 396, in __get_result
+    raise self._exception
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\tensh\AppData\Local\Python\pythoncore-3.14-64\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\tensh\eigo-radio\er052_output\open233_stage2_01\rewrite_stage3.py", line 118, in work
+    out, art, ledger, state, ce, call_log = one(client, targets[i], rep, on, a.budget_jpy)
+                                            ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\tensh\eigo-radio\er052_output\open233_stage2_01\rewrite_stage3.py", line 68, in one
+    res = runner.rewrite_ranges_ladder(client, state, ce, call_log, f"s3_{R.slug(rd)[:30]}_{rep}_{int(rules_on)}", fixture,
+                                       "article_text", claim_rec)
+  File "C:\Users\tensh\eigo-radio\er052_open233_self_recovery_flow_runner_01.py", line 6407, in rewrite_ranges_ladder
+    spans = list(resolution["spans"])
+                 ~~~~~~~~~~^^^^^^^^^
+KeyError: 'spans'

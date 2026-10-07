@@ -1,0 +1,62 @@
+{
+ "run": "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+ "source": "new_config_blocking",
+ "claim": "If you ask AI to make a phone call, it talks to the other person and takes care of the task for you.",
+ "section_type": "hook",
+ "rep": 2,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "If you ask AI to make a phone call, it talks to the other person and takes care of the task for you.",
+ "after_fragment": "If you ask Muse to make a phone call, a human may talk to the other person and take care of the task for you.",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 0,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.1176,
+ "n_calls": 1,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "T",
+   "S1.1",
+   "S1.2"
+  ],
+  "n_deviations": 2,
+  "deviations": [
+   {
+    "claim": "# An Unexpected Helper for AI Phone Calls: A Human Was Behind the Scenes",
+    "issue": "見出しは人間が裏で対応したことを無限定に述べているが、Ledgerが確認しているのはMuse経由の電話の一部におけるテストであり、範囲が広く読める。",
+    "severity": "MAJOR"
+   },
+   {
+    "claim": "If you ask Muse to make a phone call, a human may talk to the other person and take care of the task for you.",
+    "issue": "人間が対応したのはMuse経由の電話の一部におけるテストとされるが、この文はMuseに電話を依頼した場合に利用できる機能のようにも読め、対象範囲や時期を広げている。 / Ledgerが確認しているのは米国内の企業・店舗への電話だが、この単位は相手先を限定せず一般的な電話として述べている。 / 人間が担当したのは従業員向",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 0.768
+ },
+ "total_cost_jpy": 0.8856
+}

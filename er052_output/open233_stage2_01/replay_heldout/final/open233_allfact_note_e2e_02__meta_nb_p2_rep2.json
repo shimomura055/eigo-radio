@@ -1,0 +1,428 @@
+{
+ "run": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2",
+ "results": [
+  {
+   "claim_text": "But some of those calls were not handled by AI.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Muse経由の電話の一部は、AIではなく人間が担当した。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "You think AI is making the call, but behind the scenes, a human staff member appears.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Humans were not handling every call.",
+   "related_fact_id": "MUSE-HC-006",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "universal"
+     ],
+     "reader_belief": "Muse経由の電話すべてを人間が担当したわけではなく、人間が担当したのは一部だった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "If the matter is complicated, things may go more smoothly if a human handles it.",
+   "related_fact_id": "MUSE-HC-008",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_not_applicable",
+    "basis": "none",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "Checkerの指摘: 複雑な案件なら人間の方が円滑に進められる可能性があるという性能・比較の主張は、Ledgerにありません。 / 人間が対応すると複雑な用件がより円滑に進むという効果は、Ledgerに記載されていない。 Ledgerのnotes_for_writer: 注意: 人間の方が95〜98%で成功したと一般化しない。一部テストで95〜98%の範囲が示されたと書く。因果関係や統計的有意性は確認できない。 ([channelnewsasia.com](https://www.channelnewsasia.com/business/exclusive-meta-testing-human-concierge-its-new-personal-ai-agent-muse-6402946)) / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。 Ledgerのconditions: 成功率の定義、サンプル数、比較対象、測定方法は公開されていない fact_id=MUSE-HC-008のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。",
+    "guard_target": true,
+    "guard_types": [
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "direction"
+     ],
+     "reader_belief": "",
+     "belief_vs_ledger": "not_applicable",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_not_applicable"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Meta then temporarily rolled back the human concierge feature.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "What was rolled back was this feature in which humans made the calls.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "But the humans who ended up in the main role had not been told.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "BLOCKING",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "so_confirmed": null,
+    "so_split": null
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "subject_flag"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "subject_flag"
+     ],
+     "reader_belief": "電話を受ける側には、実際には人間の契約スタッフが電話を担当していることが適切に伝えられていなかった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Meta forgot to give that explanation and, for now, brought the curtain down on the stage.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Meta’s AI phone test used undisclosed human callers, so the company temporarily rolled back the feature.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "in_one_line",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "in_one_line",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "” Meta then temporarily rolled back the human concierge feature.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "The vice president of a Meta division admitted that starting a test in which contract workers made calls without proper disclosure was a “mistake.",
+   "related_fact_id": "MUSE-HC-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "Metaの部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを始めたことを「ミス」だったと認めた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  }
+ ],
+ "cost_jpy": 0.8914,
+ "n_calls": 3,
+ "call_log": [
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__meta_nb_p2__stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.476
+  },
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__meta_nb_p2__s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.094
+  },
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__meta_nb_p2__s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.3214
+  }
+ ]
+}

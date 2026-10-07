@@ -1,0 +1,203 @@
+{
+ "n_jobs": 42,
+ "rules_on": {
+  "n": 21,
+  "guard_ok": 14,
+  "exhausted_structural_stop": 7,
+  "regen_calls": 22,
+  "rejected_levels": 20,
+  "hook_last_resort_delete": 0,
+  "deleted_sentences_total": 0,
+  "deleted_sentences_per_job": 0.0,
+  "violations_in_accepted_outputs": 0,
+  "violation_rows": [],
+  "title_markup_missing": 0,
+  "recheck_n": 14,
+  "recheck_status": {
+   "LEDGER_COMPLIANT": 3,
+   "LEDGER_DEVIATION": 11
+  },
+  "recheck_new_deviations": 13,
+  "cost_jpy": 11.668
+ },
+ "rules_off": {
+  "n": 21,
+  "guard_ok": 21,
+  "exhausted_structural_stop": 0,
+  "regen_calls": 0,
+  "rejected_levels": 0,
+  "hook_last_resort_delete": 0,
+  "deleted_sentences_total": 0,
+  "deleted_sentences_per_job": 0.0,
+  "violations_in_accepted_outputs": 9,
+  "violation_rows": [
+   {
+    "file": "t2_r0_off.json",
+    "section": "hook",
+    "before": "If you ask AI to make a phone call, it talks to the other person and takes care of the tas",
+    "after": "If you ask Muse to make a phone call, a caller talks to the other person and takes care of",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "muse"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t2_r1_off.json",
+    "section": "hook",
+    "before": "If you ask AI to make a phone call, it talks to the other person and takes care of the tas",
+    "after": "If you ask Muse to make a phone call, a human sometimes talks to the other person and take",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "muse"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t2_r2_off.json",
+    "section": "hook",
+    "before": "If you ask AI to make a phone call, it talks to the other person and takes care of the tas",
+    "after": "If you ask Muse to make a phone call, sometimes a human talks to the other person and take",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "muse"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t3_r0_off.json",
+    "section": "in_one_line",
+    "before": "Meta tested having human workers handle some AI phone calls without clearly telling users,",
+    "after": "Meta tested having human workers handle some AI phone calls, raising privacy concerns.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   },
+   {
+    "file": "t3_r1_off.json",
+    "section": "in_one_line",
+    "before": "Meta tested having human workers handle some AI phone calls without clearly telling users,",
+    "after": "Meta tested having human workers handle some AI phone calls, raising privacy concerns.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   },
+   {
+    "file": "t3_r2_off.json",
+    "section": "in_one_line",
+    "before": "Meta tested having human workers handle some AI phone calls without clearly telling users,",
+    "after": "Meta tested having human workers handle some AI phone calls, raising privacy concerns.",
+    "flags": {
+     "violations": [
+      "polarity"
+     ],
+     "new_subjects": [],
+     "bad_numbers": [],
+     "polarity_changed": true
+    }
+   },
+   {
+    "file": "t5_r0_off.json",
+    "section": "title",
+    "before": "# I Followed an AI Phone Agent and Found a Human",
+    "after": "# Meta Tested an AI Phone Agent and Used Human Contractors",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "class:contractor",
+      "meta"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t5_r1_off.json",
+    "section": "title",
+    "before": "# I Followed an AI Phone Agent and Found a Human",
+    "after": "# Meta Tested an AI Phone Agent and Used a Human",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "meta"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   },
+   {
+    "file": "t5_r2_off.json",
+    "section": "title",
+    "before": "# I Followed an AI Phone Agent and Found a Human",
+    "after": "# Meta Tested Human-Handled Calls for Its AI Phone Agent",
+    "flags": {
+     "violations": [
+      "subject"
+     ],
+     "new_subjects": [
+      "meta"
+     ],
+     "bad_numbers": [],
+     "polarity_changed": false
+    }
+   }
+  ],
+  "title_markup_missing": 0,
+  "recheck_n": 0,
+  "recheck_status": {},
+  "recheck_new_deviations": 0,
+  "cost_jpy": 1.498
+ },
+ "structural_stop_rate_per_rep": {
+  "0": 0.087,
+  "1": 0.087,
+  "2": 0.1304
+ },
+ "structural_stop_articles": {
+  "0": [
+   "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+   "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1"
+  ],
+  "1": [
+   "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8"
+  ],
+  "2": [
+   "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep2",
+   "er052_output/open233_control_checker_polysemy_trial_01/runs/meta/nb/rep8",
+   "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1"
+  ]
+ },
+ "n_articles_denominator": 23,
+ "deleted_sentences_delta_on_minus_off_total": 0,
+ "deleted_sentences_delta_per_article": 0.0
+}

@@ -1,0 +1,65 @@
+{
+ "run": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1",
+ "source": "new_config_blocking",
+ "claim": "Meta tested having human workers handle some AI phone calls without clearly telling users, raising privacy concerns.",
+ "section_type": "in_one_line",
+ "rep": 1,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e1_minimal_word_edit(violation_span(EN,L0))",
+ "level": "1_word_connective",
+ "exhausted": false,
+ "before_fragment": "Meta tested having human workers handle some AI phone calls without clearly telling users, raising privacy concerns.",
+ "after_fragment": "Meta tested having human workers handle some AI phone calls without always clearly telling users, raising privacy concerns.",
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": false,
+    "violations": [
+     "polarity"
+    ],
+    "new_subjects": []
+   },
+   {
+    "level": "1_word_connective",
+    "attempt": 2,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 1,
+  "rejected_levels": []
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.1301,
+ "n_calls": 2,
+ "diff_flags": {
+  "violations": [],
+  "new_subjects": [],
+  "bad_numbers": [],
+  "polarity_changed": false
+ },
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "S8.4",
+   "L1"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "The Muse incident showed how the new role of explaining what is happening suddenly became much more important behind the",
+    "issue": "Museの事例が説明の役割を新たに生み、それがAIの舞台裏全般で「突然、はるかに重要になった」と示したという比較・一般化は、Ledgerに記載されていません。 / 個別のMuse事件から、AIの舞台裏全般で説明の役割が急に重要になったという一般的な評価を導いていますが、その評価や一般化はLedgerに記載されていません",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 0.7311
+ },
+ "total_cost_jpy": 0.8612
+}

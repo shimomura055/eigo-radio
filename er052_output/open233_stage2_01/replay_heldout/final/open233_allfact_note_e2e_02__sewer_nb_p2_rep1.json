@@ -1,0 +1,583 @@
+{
+ "run": "er052_output/open233_allfact_note_e2e_02/runs/sewer/nb/p2/rep1",
+ "results": [
+  {
+   "claim_text": "One is collective treatment, which connects homes with underground pipes and treats the wastewater together.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "hook",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "hook",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "In areas where homes are spread out, septic tanks installed at each home may be better.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "universal",
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal",
+      "direction"
+     ],
+     "reader_belief": "住宅が分散する地域では、各戸に設置する浄化槽がより適した選択となる場合がある。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Combined-treatment septic tanks do not handle only toilet water.",
+   "related_fact_id": "F-005",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity"
+     ],
+     "reader_belief": "合併処理浄化槽はトイレ排水だけでなく、生活雑排水も処理する。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.",
+   "related_fact_id": "F-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "BLOCKING",
+    "llm_materiality": "QUALITY",
+    "floor_reason": "reader_belief_downgrade_not_established:belief_unsupported_new_claim",
+    "basis": "unsupported_relationship",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "Checkerの指摘: everyoneを地下管接続の対象としていたかのように述べ、従来の方式からの変更を一般化しています。Ledgerが示すのは喜多方市の集合処理区域外の計画変更です。 / 集合処理区域が残る計画であるにもかかわらず、everyoneを地下管路につなぐ方式から変わると表現し、従来の対象を拡大しています。 Ledgerのnotes_for_writer: 注意: 老朽化・人口減少を理由とする区域再編の自治体事例。 / 注意(多義): この表現は多義的なので、単語だけで機械的に解釈・翻訳せず、原文の文脈・主体・対象・前後関係から意味を確定して記事化すること。 Ledgerのconditions: 公共下水道、特定環境保全公共下水道、農業集落排水、小規模集合排水の区域を見直した後の区域設定 fact_id=F-012のLedgerが確認している範囲に収まるよう、該当文から未確認の因果・主体・断定・範囲の拡大を除いて書き直す。",
+    "guard_target": true,
+    "guard_types": [
+     "universal"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal"
+     ],
+     "reader_belief": "汚水処理の方針は、地下管路で全員をつなぐ方式から、一部地域では各戸で処理する方式へ変わりつつある。",
+     "belief_vs_ledger": "unsupported_new_claim",
+     "contradicting_fact_ids": [],
+     "forced_blocking": true,
+     "rewrite_increase_side": true,
+     "forced_reason": "belief_unsupported_new_claim"
+    },
+    "so": {
+     "confirmed_downgrade": null,
+     "split": null,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "In other words, the city rearranged its wastewater routes to fit the shape of the town.",
+   "related_fact_id": "F-012",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "The total length of sewer pipes was about 500,000 kilometers at the end of fiscal 2024.",
+   "related_fact_id": "F-001",
+   "saved": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_scope",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_numeric_value",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "number"
+     ],
+     "reader_belief": "令和6年度末時点で、下水道管路の総延長は約50万kmだった。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Pipes do not become unusable as soon as they pass 50 years.",
+   "related_fact_id": "F-001",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "notes_for_writer",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "negation_absence_or_polarity",
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "negation_absence_or_polarity",
+      "number"
+     ],
+     "reader_belief": "管路は標準耐用年数の50年を超えても、直ちに使用不能になるわけではない。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "in_one_line",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "in_one_line",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "Of that total, about 40,000 kilometers, or about 7 percent, had passed the standard service life of 50 years.",
+   "related_fact_id": "F-001",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_numeric_value",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "number"
+     ],
+     "reader_belief": "全国の下水道管路のうち、約4万km、約7％が標準耐用年数の50年を超えていた。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "According to an estimate by the Ministry of Land, Infrastructure, Transport and Tourism, that figure is expected to grow to about 110,000 kilometers, or about 22 percent, in ten years.",
+   "related_fact_id": "F-001",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_numeric_value",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "subject_new_proper_noun",
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "subject_new_proper_noun",
+      "number"
+     ],
+     "reader_belief": "国土交通省の推計では、標準耐用年数を超えた管路は10年後に約11万km、約22％となる見込みである。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In 20 years, it is expected to reach about 230,000 kilometers, or about 45 percent.",
+   "related_fact_id": "F-001",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_numeric_value",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "number"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "number"
+     ],
+     "reader_belief": "標準耐用年数を超えた管路は、20年後に約23万km、約45％となる見込みである。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "In areas where homes are close together, collective treatment, such as a public sewer system, can be more economical.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_conditions",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": false,
+    "guard_types": [],
+    "reader_belief": null,
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": null,
+     "second_belief": null,
+     "belief_only": null
+    }
+   }
+  },
+  {
+   "claim_text": "The other is combined-treatment septic tanks that work near each home.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "hook",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "QUALITY",
+    "llm_materiality": "QUALITY",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "hook",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "universal",
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "universal",
+      "direction"
+     ],
+     "reader_belief": "合併処理浄化槽は、各家庭の近くで個別に汚水を処理する。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  },
+  {
+   "claim_text": "As a result, areas outside the collective-treatment area were designated as individual-treatment areas using combined-treatment septic tanks.",
+   "related_fact_id": "F-007",
+   "saved": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "none",
+    "section_type": "body",
+    "so_confirmed": true,
+    "so_split": false
+   },
+   "new": {
+    "materiality": "ACCEPTABLE",
+    "llm_materiality": "ACCEPTABLE",
+    "floor_reason": null,
+    "basis": "ledger_claim",
+    "section_type": "body",
+    "rewrite_kind": "replace_with_ledger_value",
+    "rewrite_hint": "",
+    "guard_target": true,
+    "guard_types": [
+     "direction"
+    ],
+    "reader_belief": {
+     "guard_types": [
+      "direction"
+     ],
+     "reader_belief": "喜多方市は、集合処理区域以外を合併処理浄化槽による個別処理区域に設定した。",
+     "belief_vs_ledger": "consistent",
+     "contradicting_fact_ids": []
+    },
+    "so": {
+     "confirmed_downgrade": true,
+     "split": false,
+     "first_belief": "consistent",
+     "second_belief": "consistent",
+     "belief_only": true
+    }
+   }
+  }
+ ],
+ "cost_jpy": 1.2176,
+ "n_calls": 5,
+ "call_log": [
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__sewer_nb_p2_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.454
+  },
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__sewer_nb_p2_stage2_hook",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.1695
+  },
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__sewer_nb_p2_s1_belief",
+   "stage2_variant": "belief_only",
+   "cost_jpy": 0.131
+  },
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__sewer_nb_p2_s1_stage2_body",
+   "stage2_variant": "body",
+   "cost_jpy": 0.3016
+  },
+  {
+   "label": "rp_final_open233_allfact_note_e2e_02__sewer_nb_p2_s1_stage2_hook",
+   "stage2_variant": "hook",
+   "cost_jpy": 0.1615
+  }
+ ]
+}

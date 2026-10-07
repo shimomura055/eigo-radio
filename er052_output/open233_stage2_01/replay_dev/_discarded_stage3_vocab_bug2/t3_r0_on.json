@@ -1,0 +1,102 @@
+{
+ "run": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1",
+ "source": "new_config_blocking",
+ "claim": "Meta tested having human workers handle some AI phone calls without clearly telling users, raising privacy concerns.",
+ "section_type": "in_one_line",
+ "rep": 0,
+ "rules_on": true,
+ "guard_ok": true,
+ "method": "e2_paragraph_rewrite(violation_span(EN,L0))",
+ "level": "4_paragraph",
+ "exhausted": false,
+ "before_fragment": "Meta tested having human workers handle some AI phone calls without clearly telling users, raising privacy concerns.",
+ "after_fragment": null,
+ "structural_rules": {
+  "checks": [
+   {
+    "level": "1_word_connective",
+    "attempt": 1,
+    "ok": false,
+    "violations": [
+     "polarity"
+    ],
+    "new_subjects": []
+   },
+   {
+    "level": "1_word_connective",
+    "attempt": 2,
+    "ok": false,
+    "violations": [
+     "polarity"
+    ],
+    "new_subjects": []
+   },
+   {
+    "level": "3_sentence",
+    "attempt": 1,
+    "ok": false,
+    "violations": [
+     "polarity",
+     "subject"
+    ],
+    "new_subjects": [
+     "class:contractor"
+    ]
+   },
+   {
+    "level": "3_sentence",
+    "attempt": 2,
+    "ok": false,
+    "violations": [
+     "polarity"
+    ],
+    "new_subjects": []
+   },
+   {
+    "level": "4_paragraph",
+    "attempt": 1,
+    "ok": false,
+    "violations": [
+     "polarity"
+    ],
+    "new_subjects": []
+   },
+   {
+    "level": "4_paragraph",
+    "attempt": 2,
+    "ok": true,
+    "violations": [],
+    "new_subjects": []
+   }
+  ],
+  "regen_calls": 3,
+  "rejected_levels": [
+   "1_word_connective",
+   "3_sentence"
+  ],
+  "kept_original_quality_record": true
+ },
+ "hook_last_resort_delete": false,
+ "deleted_sentences": 0,
+ "cost_jpy": 0.6282,
+ "n_calls": 6,
+ "recheck": {
+  "overall_status": "LEDGER_DEVIATION",
+  "scope_ids": [
+   "S8.4",
+   "L1"
+  ],
+  "n_deviations": 1,
+  "deviations": [
+   {
+    "claim": "The Muse incident showed how the new role of explaining what is happening suddenly became much more important behind the",
+    "issue": "人間コンシェルジュの件が、AIの舞台裏で説明する役割の重要性を急に高めたことを示した、という解釈や、AI全般への広い一般化はLedgerに記載されていません。 / Ledgerでは開示なしでテストを開始したことを「ミス」と認めた事実が確認されていますが、それによってAI業界全般で説明の役割が新たに大きくなったという結論",
+    "severity": "MAJOR"
+   }
+  ],
+  "all_prior_resolved": true,
+  "api_failure": false,
+  "cost_jpy": 0.6387
+ },
+ "total_cost_jpy": 1.2669
+}
