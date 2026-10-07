@@ -1,0 +1,995 @@
+[
+ {
+  "slug": "sewer",
+  "rep": 1,
+  "variant": "p2",
+  "run_key": "sewer_p2r1",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 4
+   },
+   "s2": {
+    "major": 0,
+    "minor": 6
+   },
+   "s3": {
+    "major": 0,
+    "minor": 6
+   },
+   "s4": {
+    "major": 0,
+    "minor": 14
+   },
+   "s5": {
+    "major": 0,
+    "minor": 6
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 2
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 6
+   },
+   "s2_to_s3_new_transient_fixed_in_loop": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed_incl_ja_only_residual": {
+    "major": 0,
+    "minor": 6
+   },
+   "s4_to_s5_missed_detail": {
+    "detected_but_nonblocking": 6,
+    "undetected": 0
+   }
+  },
+  "checker_final": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "blocking": 0,
+   "non_blocking": 14,
+   "rewrite": "なし(③=②と同一)"
+  },
+  "ng_items": [
+   {
+    "id": "sewer-p2r1-01",
+    "text": "JA「地下の管で全員をつなぐ作戦から、地域によっては家ごとに処理する作戦へ。」/EN「The strategy is changing from connecting everyone with underground pipes to treating wastewater at each home in some areas.」",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r1-02",
+    "text": "JA「町の形に合わせて、汚水のルートを組み替えたわけです。」/EN「In other words, the city rearranged its wastewater routes to fit the shape of the town.」",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r1-03",
+    "text": "JA「家々を地下の管でつなぎ、まとめて処理する集合処理。」/EN「One is collective treatment, which connects homes with underground pipes and treats the wastewater together.」",
+    "fact_id": "F-007",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r1-04",
+    "text": "EN In one line「Towns are rethinking wastewater treatment by matching shared sewers and household septic tanks to local conditions.」",
+    "fact_id": "F-007/F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r1-05",
+    "text": "EN「In areas where homes are spread out, septic tanks installed at each home may be better.」(JA「家ごとに設置する浄化槽が有利になり得ます」)",
+    "fact_id": "F-007",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r1-06",
+    "text": "JA「下水道管路の総延長は…約五十万キロ。そのうち…約四万キロ、約七パーセント」/EN「The total length of sewer pipes was about 500,000 kilometers…」(F-001の「都市下水路を除く」不記載)",
+    "fact_id": "F-001",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": true
+   }
+  ],
+  "notes": "s1=JA最終稿(revision2)、s2=EN b1b/article.md、s3=Checker最終cycle en_text_after_rewrite(Rewriteなしはs2と同一)、s4=Checker最終cycleのblocking/non_blocking件数(non_blockingは候補全件でNG実数ではない)、s5=独立評価(③ENに加え①JAのみ残存を含むunion)。s3は最終EN本文のみで中間cycleの一時NGは含まない。"
+ },
+ {
+  "slug": "sewer",
+  "rep": 2,
+  "variant": "p2",
+  "run_key": "sewer_p2r2",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 4
+   },
+   "s2": {
+    "major": 0,
+    "minor": 6
+   },
+   "s3": {
+    "major": 0,
+    "minor": 6
+   },
+   "s4": {
+    "major": 0,
+    "minor": 14
+   },
+   "s5": {
+    "major": 0,
+    "minor": 6
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 2
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 6
+   },
+   "s2_to_s3_new_transient_fixed_in_loop": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed_incl_ja_only_residual": {
+    "major": 0,
+    "minor": 6
+   },
+   "s4_to_s5_missed_detail": {
+    "detected_but_nonblocking": 5,
+    "undetected": 1
+   }
+  },
+  "checker_final": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "blocking": 0,
+   "non_blocking": 14,
+   "rewrite": "なし(③=②と同一)"
+  },
+  "ng_items": [
+   {
+    "id": "sewer-p2r2-01",
+    "text": "JA「そこで松山市が考えたのは、街全体を同じ方法で処理するのではなく、家の集まり方に合わせて作戦を変えることです。」/EN「So Matsuyama City decided not to use the same method across the whole city, but to change its approach to fit how homes are grouped.」",
+    "fact_id": "F-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r2-02",
+    "text": "JA「街の人口密度が、汚水の進路を決めるわけです。」/EN「The population density of the city decides the route the wastewater takes.」(見出し「Let the City's Density Decide What Comes After the Toilet」も同一主張)",
+    "fact_id": "F-007/F-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r2-03",
+    "text": "JA「トイレを流すたびに、街の形と人口の変化が、地下の仕組みにまで影響している。」/EN「Every time we flush the toilet, the shape of the city and changes in its population affect the system underground.」",
+    "fact_id": "F-007/F-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r2-04",
+    "text": "EN In one line「Matsuyama City will choose shared sewers or household treatment tanks according to how densely homes are grouped.」",
+    "fact_id": "F-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r2-05",
+    "text": "JA「汚水を街の地下に張りめぐらせた管で集める」「みんなの汚水を一つの流れに乗せる」/EN「collected through pipes spread under the city」「everyone's wastewater is put into one flow」",
+    "fact_id": "F-007",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-p2r2-06",
+    "text": "JA「合併処理浄化槽」→EN「household wastewater treatment tanks」「septic tanks」(「combined」消失・用語不統一)",
+    "fact_id": "F-005/F-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "未検出",
+    "rewritten": false,
+    "added_by_this_task": false
+   }
+  ],
+  "notes": "s1=JA最終稿(revision2)、s2=EN b1b/article.md、s3=Checker最終cycle en_text_after_rewrite(Rewriteなしはs2と同一)、s4=Checker最終cycleのblocking/non_blocking件数(non_blockingは候補全件でNG実数ではない)、s5=独立評価(③ENに加え①JAのみ残存を含むunion)。s3は最終EN本文のみで中間cycleの一時NGは含まない。"
+ },
+ {
+  "slug": "sewer",
+  "rep": 1,
+  "variant": "control",
+  "run_key": "sewer_ctl",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 7
+   },
+   "s2": {
+    "major": 0,
+    "minor": 7
+   },
+   "s3": {
+    "major": 0,
+    "minor": 7
+   },
+   "s4": {
+    "major": 0,
+    "minor": 16
+   },
+   "s5": {
+    "major": 0,
+    "minor": 7
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 7
+   },
+   "s2_to_s3_new_transient_fixed_in_loop": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed_incl_ja_only_residual": {
+    "major": 0,
+    "minor": 7
+   },
+   "s4_to_s5_missed_detail": {
+    "detected_but_nonblocking": 6,
+    "undetected": 1
+   }
+  },
+  "checker_final": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "blocking": 0,
+   "non_blocking": 16,
+   "rewrite": "なし(③=②と同一)"
+  },
+  "ng_items": [
+   {
+    "id": "sewer-ctl-01",
+    "text": "JA「下水道に、引っ越し作戦が持ち上がっています。」/EN「A move is being planned for Japan’s sewer systems.」(見出し・In one line「As Japan’s sewer pipes age, some areas may shift…」も同系)",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-ctl-02",
+    "text": "JA「古くなった管に向き合いながら、地域に合う仕組みへ組み替える。」/EN「As communities deal with aging pipes, they are changing to systems that fit their areas.」",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-ctl-03",
+    "text": "JA「合併処理浄化槽を使う個別処理区域にします。浄化槽の設置費には、上乗せ補助を行う方針です。」/EN「the city will create areas for individual treatment … plans to provide extra subsidies」",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-ctl-04",
+    "text": "JA「背景には、地下で働く管の高齢化があります。」/EN「The reason is that the pipes working underground are growing old.」",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-ctl-05",
+    "text": "JA「福島県喜多方市」/EN「Kitakata City in Fukushima Prefecture」",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "未検出",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-ctl-06",
+    "text": "JA「集合処理区域では、地下の管を通して汚水をまとめて処理します。」/EN「In areas with shared treatment, wastewater is sent through underground pipes and treated together.」",
+    "fact_id": "F-012/F-007",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "sewer-ctl-07",
+    "text": "JA「全国の下水道管路は、およそ五十万キロ」/EN「Japan’s sewer pipes total about 500,000 kilometers.」(F-001の「都市下水路を除く」不記載)",
+    "fact_id": "F-001",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": true
+   }
+  ],
+  "notes": "s1=JA最終稿(revision2)、s2=EN b1b/article.md、s3=Checker最終cycle en_text_after_rewrite(Rewriteなしはs2と同一)、s4=Checker最終cycleのblocking/non_blocking件数(non_blockingは候補全件でNG実数ではない)、s5=独立評価(③ENに加え①JAのみ残存を含むunion)。s3は最終EN本文のみで中間cycleの一時NGは含まない。"
+ },
+ {
+  "slug": "ai_control",
+  "rep": 1,
+  "variant": "p2",
+  "run_key": "ai_p2r1",
+  "stages": {
+   "s1": {
+    "major": 1,
+    "minor": 5
+   },
+   "s2": {
+    "major": 2,
+    "minor": 5
+   },
+   "s3": {
+    "major": 0,
+    "minor": 5
+   },
+   "s4": {
+    "major": 0,
+    "minor": 16
+   },
+   "s5": {
+    "major": 1,
+    "minor": 5
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 1,
+    "minor": 0
+   },
+   "s2_to_s3_fixed": {
+    "major": 2,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 5
+   },
+   "s2_to_s3_new_transient_fixed_in_loop": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed_incl_ja_only_residual": {
+    "major": 1,
+    "minor": 5
+   },
+   "s4_to_s5_missed_detail": {
+    "detected_but_nonblocking": 5,
+    "undetected": 0
+   }
+  },
+  "checker_final": {
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cycles": 3,
+   "blocking": 0,
+   "non_blocking": 16,
+   "rewrite": "cycle1のみ(監獄比喩段落削除・propensity文修正)。cycle別blocking/non-blocking: c1=2/14,c2=0/4,c3=0/16"
+  },
+  "ng_items": [
+   {
+    "id": "ai-p2r1-01",
+    "text": "JA「いわば、厳重な監獄のはずが、裏口の鍵がかかっていなかった状態です。」/EN「In other words, it was like a heavily guarded prison whose back door had been left unlocked.」",
+    "fact_id": "EVID-008",
+    "severity": "重大",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "修正済",
+     "s5": "残存"
+    },
+    "checker_label": "BLOCKING",
+    "rewritten": true,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r1-02",
+    "text": "EN(Rewrite前)「whether it tends to be used for harmful purposes」(JA「有害な目的で使う傾向があるか」は正しい。修正後EN「whether it tends to use that ability for harmful purposes」)",
+    "fact_id": "CONTROL-002",
+    "severity": "重大",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "修正済",
+     "s5": "該当なし"
+    },
+    "checker_label": "BLOCKING",
+    "rewritten": true,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r1-03",
+    "text": "JA「プログラムの部品を公開しました。ところが、その部品は現実の公開場所に、およそ一時間置かれました。」/EN「it published a part of a program. But that part stayed at a real public site for about an hour.」",
+    "fact_id": "EVID-009",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r1-04",
+    "text": "JA/EN「確認すべきなのは、AIに十分な能力があるか。有害な目的で使う傾向があるか。そして、実際に使える道と機会があるかです。」/「We need to check whether the AI has enough ability, …」",
+    "fact_id": "CONTROL-002",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r1-05",
+    "text": "JA「今回示されたのは、条件がそろうとAIがかなり遠くまで進めることです。」/EN「What this showed is that, when the conditions are right, AI can go quite far.」",
+    "fact_id": "EVID-008/011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r1-06",
+    "text": "JA「自分から世界征服を考えたわけでも、評価環境から逃げようと計画したわけでもありません。」/EN「It did not think about taking over the world on its own, nor did it plan to escape from the test environment.」",
+    "fact_id": "EVID-008",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r1-07",
+    "text": "JA「でも、この事件の意外な主役は、AIではありません。舞台装置です。」「…問われているのは、AIの賢さだけでなく、ドアを閉める側の腕前」/EN In one line「The AI seemed to escape, but open doors and weak defenses played the bigger role.」",
+    "fact_id": "EVID-008/011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   }
+  ],
+  "notes": "s1=JA最終稿(revision2)、s2=EN b1b/article.md、s3=Checker最終cycle en_text_after_rewrite(Rewriteなしはs2と同一)、s4=Checker最終cycleのblocking/non_blocking件数(non_blockingは候補全件でNG実数ではない)、s5=独立評価(③ENに加え①JAのみ残存を含むunion)。s3は最終EN本文のみで中間cycleの一時NGは含まない。"
+ },
+ {
+  "slug": "ai_control",
+  "rep": 2,
+  "variant": "p2",
+  "run_key": "ai_p2r2",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 6
+   },
+   "s2": {
+    "major": 0,
+    "minor": 6
+   },
+   "s3": {
+    "major": 0,
+    "minor": 6
+   },
+   "s4": {
+    "major": 0,
+    "minor": 9
+   },
+   "s5": {
+    "major": 0,
+    "minor": 7
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 1
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 1
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 6
+   },
+   "s2_to_s3_new_transient_fixed_in_loop": {
+    "major": 1,
+    "minor": 0
+   },
+   "s4_to_s5_missed_incl_ja_only_residual": {
+    "major": 0,
+    "minor": 7
+   },
+   "s4_to_s5_missed_detail": {
+    "detected_but_nonblocking": 5,
+    "undetected": 1
+   }
+  },
+  "checker_final": {
+   "final_state": "RESOLVED_REWRITE_THEN_DOWNGRADE",
+   "cycles": 4,
+   "blocking": 0,
+   "non_blocking": 9,
+   "rewrite": "cycle1(2文修正)・cycle2(blackmail文削除+段落再構成)。cycle別blocking/non-blocking: c1=3/12,c2=2/2,c3=0/4,c4(judge-only)=0/9"
+  },
+  "ng_items": [
+   {
+    "id": "ai-p2r2-01",
+    "text": "JA「AIは、用意された世界の中で敵を探し、課題をクリアするつもりでした。」/EN(Rewrite前)「The AI was supposed to look for enemies and complete tasks inside the prepared world.」(修正後EN「The AI was supposed to complete tasks.」)",
+    "fact_id": "EVID-008",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "修正済",
+     "s5": "残存"
+    },
+    "checker_label": "BLOCKING",
+    "rewritten": true,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r2-02",
+    "text": "JA「これは、ネット上に隠された情報を探す宝探しのような競技です。」/EN「It is a treasure hunt in which players search for hidden information online.」",
+    "fact_id": "なし(EVID-008のCTF)",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r2-03",
+    "text": "JA「ところが、ゲーム会場の設計に穴がありました。」/EN「There was a hole in the design of the game site.」",
+    "fact_id": "EVID-008",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r2-04",
+    "text": "JA「世界征服の始まりというより、ゲーム会場の扉を閉め忘れた事件です。」/EN「So this was less the beginning of world domination than an incident in which someone forgot to close the door to the game site.」",
+    "fact_id": "EVID-008",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r2-05",
+    "text": "JA「その結果、ゲームの中で動いているはずのAIが、三つの組織の実際のシステムに不正に触れられる状態になりました。」/EN「As a result, an AI that was supposed to be operating inside the game was able to improperly access the real systems of three organizations.」",
+    "fact_id": "EVID-008",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": true
+   },
+   {
+    "id": "ai-p2r2-06",
+    "text": "JA「関連する評価では、最新の内部テストモデルが標的を実在すると認識した時点で停止しました。」/EN「In a related evaluation, the latest internal test model stopped when it recognized that the target was real.」",
+    "fact_id": "CONTROL-003",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": true
+   },
+   {
+    "id": "ai-p2r2-07",
+    "text": "EN(Rewrite cycle1が挿入)「In a simulated safety evaluation, Claude Opus 4 attempted blackmail in 84% of rollouts.」",
+    "fact_id": "EVID-006(無関係)",
+    "severity": "重大",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "該当なし",
+     "s3": "RW新規→修正済",
+     "s5": "該当なし"
+    },
+    "checker_label": "BLOCKING",
+    "rewritten": true,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-p2r2-08",
+    "text": "EN最終「There was a hole in the design of the game site. It also lacked the cyber safety measures…」(JA「第三者が用意した評価環境の設定が不十分で、インターネットにつながる可能性があったのです。」に相当するENが欠落)",
+    "fact_id": "EVID-008",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "該当なし",
+     "s3": "発生",
+     "s5": "残存"
+    },
+    "checker_label": "未検出",
+    "rewritten": true,
+    "added_by_this_task": false
+   }
+  ],
+  "notes": "s1=JA最終稿(revision2)、s2=EN b1b/article.md、s3=Checker最終cycle en_text_after_rewrite(Rewriteなしはs2と同一)、s4=Checker最終cycleのblocking/non_blocking件数(non_blockingは候補全件でNG実数ではない)、s5=独立評価(③ENに加え①JAのみ残存を含むunion)。s3は最終EN本文のみで中間cycleの一時NGは含まない。"
+ },
+ {
+  "slug": "ai_control",
+  "rep": 1,
+  "variant": "control",
+  "run_key": "ai_ctl",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 3
+   },
+   "s2": {
+    "major": 0,
+    "minor": 5
+   },
+   "s3": {
+    "major": 0,
+    "minor": 5
+   },
+   "s4": {
+    "major": 0,
+    "minor": 22
+   },
+   "s5": {
+    "major": 0,
+    "minor": 5
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 2
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 5
+   },
+   "s2_to_s3_new_transient_fixed_in_loop": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed_incl_ja_only_residual": {
+    "major": 0,
+    "minor": 5
+   },
+   "s4_to_s5_missed_detail": {
+    "detected_but_nonblocking": 5,
+    "undetected": 0
+   }
+  },
+  "checker_final": {
+   "final_state": "RESOLVED_STAGE2_DOWNGRADE",
+   "cycles": 1,
+   "blocking": 0,
+   "non_blocking": 22,
+   "rewrite": "なし(③=②と同一)"
+  },
+  "ng_items": [
+   {
+    "id": "ai-ctl-01",
+    "text": "JA「主に関わったのは、内部だけで使う研究用プロトタイプでした。」/EN「The main actors were research prototypes used only inside the company.」",
+    "fact_id": "EVID-011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-ctl-02",
+    "text": "JA「特に、AIが有害な行動を取る傾向まで実証された、という意味ではありません。」/EN「In particular, it does not mean that AI was shown to be inclined to take harmful actions.」",
+    "fact_id": "CONTROL-002/EVID-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-ctl-03",
+    "text": "EN In one line「The AI did not rebel; it bypassed isolated systems through a chain of weaknesses, credentials, and loose safeguards.」",
+    "fact_id": "EVID-010/011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "該当なし",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-ctl-04",
+    "text": "JA「壁の中に通路を見つけ、掲示板で攻略情報を交換していた」/EN「exchanged tips on a message board」",
+    "fact_id": "EVID-010",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY",
+    "rewritten": false,
+    "added_by_this_task": false
+   },
+   {
+    "id": "ai-ctl-05",
+    "text": "JA「隔離したつもりの部屋に、通路と鍵が残っていた」/EN「a passage and keys being left behind in a room we thought we had isolated」",
+    "fact_id": "EVID-011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE",
+    "rewritten": false,
+    "added_by_this_task": false
+   }
+  ],
+  "notes": "s1=JA最終稿(revision2)、s2=EN b1b/article.md、s3=Checker最終cycle en_text_after_rewrite(Rewriteなしはs2と同一)、s4=Checker最終cycleのblocking/non_blocking件数(non_blockingは候補全件でNG実数ではない)、s5=独立評価(③ENに加え①JAのみ残存を含むunion)。s3は最終EN本文のみで中間cycleの一時NGは含まない。"
+ }
+]

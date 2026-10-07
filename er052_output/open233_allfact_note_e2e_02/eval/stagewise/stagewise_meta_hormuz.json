@@ -1,0 +1,859 @@
+{
+ "task": "OPEN-233-E2E-STAGEWISE-NG-AUDIT-01",
+ "criteria": "重大=事実の意味が変わり誤解を与える/軽微=不正確・過剰断定・曖昧・軽い具体化。同一誤りは同一工程1件、ID共有",
+ "stage_defs": {
+  "s1": "JA最終稿 ja_writer/revision2.md",
+  "s2": "EN Rewrite前 b1b/article.md",
+  "s3": "EN Rewrite後(checker json cycle内 en_text_after_rewrite、Rewriteなしは2と同一)",
+  "s4": "Checker最終cycleのblocking_count(重大)/non_blocking_count(軽微相当)",
+  "s5": "3+1JAに対する独立評価(E_*.md)を本基準で再ラベル"
+ },
+ "articles": [
+  {
+   "slug": "meta",
+   "rep": 1,
+   "variant": "p2",
+   "run_dir": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep1",
+   "stages": {
+    "s1": {
+     "major": 0,
+     "minor": 4
+    },
+    "s2": {
+     "major": 0,
+     "minor": 5
+    },
+    "s3": {
+     "major": 0,
+     "minor": 4
+    },
+    "s4": {
+     "major": 0,
+     "minor": 8,
+     "detail": "cycle2 blocking=0 / non_blocking=8 (ACCEPTABLE7+QUALITY1)"
+    },
+    "s5": {
+     "major": 0,
+     "minor": 4
+    }
+   },
+   "transitions": {
+    "s1_to_s2_new": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2_to_s3_fixed": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2_to_s3_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s4_to_s5_missed": {
+     "major": 0,
+     "minor": 4
+    }
+   },
+   "ng_items": [
+    {
+     "id": "meta-p2r1-01",
+     "text": "EN one-liner「Meta’s AI calling test sometimes relied on undisclosed human contractors, raising privacy concerns for users.」(開示不足がプライバシー懸念を生んだ、という因果の結び)",
+     "fact_id": "MUSE-HC-010",
+     "severity": "軽微",
+     "stages": {
+      "s1": "該当なし",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "未検出(one-liner非指摘)",
+     "rewritten": false,
+     "note": "JAに該当文なし(EN工程で新規発生)。HC-010の懸念は情報共有の可能性であり開示不足が原因とは台帳にない"
+    },
+    {
+     "id": "meta-p2r1-02",
+     "text": "JA「AIが仕事を受け取り、困ったところは人間のプロがさっと解決する。そんな華やかな舞台裏にも見えます。」/EN「AI takes the request, and a human professional quickly solves anything difficult.」",
+     "fact_id": "MUSE-HC-006",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "修正済",
+      "s5": "修正済"
+     },
+     "checker_label": "BLOCKING(cycle1)",
+     "rewritten": true,
+     "note": "役割分担・迅速性は台帳なし。ただし「見えます/seemed」の印象表現で後続文が人間の担当を明示するため軽微と判定(Checkerは重大扱い)。ENは修正、JA R2には残存"
+    },
+    {
+     "id": "meta-p2r1-03",
+     "text": "JA「AIにお願いしたはずの電話に、人間の助っ人が登場していたわけです。」/EN「a human helper had appeared in a call that users thought they had asked AI to make.」(利用者の認識の言及。JAは「はず」、ENは「users thought」で断定が強化)",
+     "fact_id": "MUSE-HC-006",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE",
+     "rewritten": false,
+     "note": "台帳に利用者認識の記述なし"
+    },
+    {
+     "id": "meta-p2r1-04",
+     "text": "JA「AIの画面を見ているつもりが、その先で人間が仕事をしている。」/EN「You may think you are looking at an AI screen, while a human is doing the work on the other side.」",
+     "fact_id": "MUSE-HC-006",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE",
+     "rewritten": false,
+     "note": "画面・UI体験は台帳なし"
+    },
+    {
+     "id": "meta-p2r1-05",
+     "text": "JA「問題は、そうした可能性があるのに、利用者へ十分な説明がないままテストが始まったことでした。」/EN「The problem was that, even though this possibility existed, the test began without enough explanation for users.」(開示対象を「利用者」と特定)",
+     "fact_id": "MUSE-HC-012",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "未検出",
+     "rewritten": false,
+     "note": "台帳は「適切な開示なし」のみで開示対象を明記しない。軽い具体化(rep2とは対象が食い違う)"
+    }
+   ],
+   "rewrite_history": [
+    "cycle1 narrow_scope(e2_generic_rewrite): 「AI takes the request, and a human professional quickly solves anything difficult.」→「Some calls were handled by trained human contractors.」"
+   ],
+   "judgement_held": [
+    {
+     "id": "meta-p2r1-H1",
+     "text": "Rewrite後の挿入文「Some calls were handled by trained human contractors. That is what this polished system seemed to be like behind the scenes.」の「That」の指示対象が曖昧",
+     "reason": "事実の意味変化ではなく文章品質(指示語)の問題で、本基準(重大/軽微の事実判定)に当てはまらない。判定保留とし集計には含めない"
+    }
+   ],
+   "notes": "既存評価E_meta A節(Fact整合5件、最終EN残存4件)と同数。本委任で追加したNGなし。 s4のnon_blockingは正しい文へのACCEPTABLE指摘を多く含み、s1-s3/s5の軽微NG件数と同質ではない。s2→s3_newはb1bとen_text_after_rewriteの差分再読で新規NGなし。"
+  },
+  {
+   "slug": "meta",
+   "rep": 2,
+   "variant": "p2",
+   "run_dir": "er052_output/open233_allfact_note_e2e_02/runs/meta/nb/p2/rep2",
+   "stages": {
+    "s1": {
+     "major": 1,
+     "minor": 5
+    },
+    "s2": {
+     "major": 1,
+     "minor": 6
+    },
+    "s3": {
+     "major": 1,
+     "minor": 6
+    },
+    "s4": {
+     "major": 0,
+     "minor": 11,
+     "detail": "cycle3 blocking=0 / non_blocking=11 (ACCEPTABLE10+QUALITY1)"
+    },
+    "s5": {
+     "major": 1,
+     "minor": 6
+    }
+   },
+   "transitions": {
+    "s1_to_s2_new": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2_to_s3_fixed": {
+     "major": 0,
+     "minor": 0
+    },
+    "s2_to_s3_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s4_to_s5_missed": {
+     "major": 1,
+     "minor": 6
+    }
+   },
+   "ng_items": [
+    {
+     "id": "meta-p2r2-01",
+     "text": "JA「電話の相手はAIか、それとも人間か。今回の答えは、少なくとも一部では人間でした。」/EN「Was the person on the other end of the call an AI or a human? This time, at least in some cases, it was a human.」(終盤「Whether the one on the other end of the phone is an AI or a human」も同型)",
+     "fact_id": "MUSE-HC-006",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "QUALITY(cycle3)",
+     "rewritten": false,
+     "note": "「other end」が電話の受け手(事業者)に読める曖昧さ。本文中で「契約スタッフが電話をかけた」と明示されるため前後文脈上は軽微と判定。ENでcallee読みが強まる"
+    },
+    {
+     "id": "meta-p2r2-02",
+     "text": "JA「ただし、主役になった人間が知らされていなかった。」「問題は、その事実を相手に十分知らせないまま、テストを始めたことでした。」/EN b1b「But the humans who ended up in the main role had not been told.」→Rewrite後「But the humans who ended up on the other end had not been properly told.」+「…without properly telling the person on the other end about this fact.」(開示されなかった対象の特定)",
+     "fact_id": "MUSE-HC-012",
+     "severity": "重大",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "BLOCKING(cycle1)→rewrite後cycle3でACCEPTABLE。「telling the person on the other end」文は未検出",
+     "rewritten": true,
+     "note": "台帳は「適切な開示なし」とだけ述べ対象を特定しない。JA/b1bは契約スタッフ本人が知らされていなかったと読め、開示不足の対象の取り違え。Rewriteは対象を「電話の相手側の人間」に置換しただけで、台帳外の対象断定は残存(同一誤りの形を変えた残存。新規発生としては数えない)。E_meta「対象1」と「追加(c)」を同一誤りとして統合"
+    },
+    {
+     "id": "meta-p2r2-03",
+     "text": "JA「Metaはその説明を忘れて、いったん舞台の幕を下ろしたわけです。」/EN「Meta forgot to give that explanation and, for now, brought the curtain down on the stage.」",
+     "fact_id": "MUSE-HC-012",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1のみ。最終cycle3では非掲出=未検出)",
+     "rewritten": false,
+     "note": "「忘れた」は原因・意図の断定。台帳は「ミスと認めた」まで"
+    },
+    {
+     "id": "meta-p2r2-04",
+     "text": "EN one-liner「Meta’s AI phone test used undisclosed human callers, so the company temporarily rolled back the feature.」(開示不足→ロールバックの因果)",
+     "fact_id": "MUSE-HC-012",
+     "severity": "軽微",
+     "stages": {
+      "s1": "該当なし",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1,3)",
+     "rewritten": false,
+     "note": "JAに該当文なし(EN工程で新規発生)"
+    },
+    {
+     "id": "meta-p2r2-05",
+     "text": "JA「AIが電話をかけてくれると思ったら、舞台裏では人間のスタッフが登場する。」/EN「You think AI is making the call, but behind the scenes, a human staff member appears.」",
+     "fact_id": "MUSE-HC-006",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1,3)",
+     "rewritten": false,
+     "note": "利用者の認識は台帳なし"
+    },
+    {
+     "id": "meta-p2r2-06",
+     "text": "JA「ややこしい話なら、人間が対応したほうが自然に進むこともあります。」/EN「If the matter is complicated, things may go more smoothly if a human handles it.」",
+     "fact_id": "MUSE-HC-008(根拠不足)",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1,3)",
+     "rewritten": false,
+     "note": "HC-008は一部テストの成功率レンジのみ。難案件で人間が優る旨は台帳外"
+    },
+    {
+     "id": "meta-p2r2-07",
+     "text": "JA「Metaは、電話の相手となる事業者との改善を続け、準備が整い、適切な説明ができる場合にだけ、広く公開するとしています。」/EN「Meta says it will continue working to improve the service with the businesses it calls, and will make it widely available only when it is ready and can explain it properly.」(「公開」対象が電話機能全体か人間コンシェルジュ機能かが不明)",
+     "fact_id": "MUSE-HC-014",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "未検出",
+     "rewritten": false,
+     "note": "E_metaでは「曖昧」判定。対象や範囲の曖昧さ=軽微として再ラベル(台帳notesの区別要求を満たさない)"
+    }
+   ],
+   "rewrite_history": [
+    "cycle1 narrow_scope(e1_minimal_word_edit): 「But the humans who ended up in the main role had not been told.」→「But the humans who ended up on the other end had not been properly told.」(対象を置換したのみ)"
+   ],
+   "judgement_held": [],
+   "notes": "E_meta B節の最終残存8件(主体1/対象1/因果2/追加3/★曖昧1)に対し本台帳s3は7件。差分理由=E「対象」と「追加(c)」(いずれも開示対象の特定)を同一誤りとして1件に統合(meta-p2r2-02)。重大はこの1件のみ。 s4のnon_blockingは正しい文へのACCEPTABLE指摘を多く含み、s1-s3/s5の軽微NG件数と同質ではない。s2→s3_newはb1bとen_text_after_rewriteの差分再読で新規NGなし。"
+  },
+  {
+   "slug": "meta",
+   "rep": 1,
+   "variant": "control",
+   "run_dir": "er052_output/open233_polysemy_trial_04/runs/meta/control/rep1",
+   "stages": {
+    "s1": {
+     "major": 0,
+     "minor": 3
+    },
+    "s2": {
+     "major": 0,
+     "minor": 4
+    },
+    "s3": {
+     "major": 0,
+     "minor": 3
+    },
+    "s4": {
+     "major": 0,
+     "minor": 7,
+     "detail": "cycle2 blocking=0 / non_blocking=7 (ACCEPTABLE6+QUALITY1)"
+    },
+    "s5": {
+     "major": 0,
+     "minor": 3
+    }
+   },
+   "transitions": {
+    "s1_to_s2_new": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2_to_s3_fixed": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2_to_s3_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s4_to_s5_missed": {
+     "major": 0,
+     "minor": 3
+    }
+   },
+   "ng_items": [
+    {
+     "id": "meta-c-01",
+     "text": "JA「Metaの幹部は、この始め方を「ミス」だったと認めました。そして9月22日までに…ロールバックしました。」/EN「Meta executives admitted … By September 22, they had rolled back…」(台帳は副社長1名。複数形へ拡張)",
+     "fact_id": "MUSE-HC-012",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "QUALITY",
+     "rewritten": false,
+     "note": ""
+    },
+    {
+     "id": "meta-c-02",
+     "text": "JA「Metaの従業員が心配したのは、まさにそこでした。」/EN「That was exactly what worried Meta employees.」(直前の「利用者に十分伝わっていなければ…」へ従業員の懸念を結びつけ)",
+     "fact_id": "MUSE-HC-010",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "修正済",
+      "s5": "修正済"
+     },
+     "checker_label": "BLOCKING(cycle1)",
+     "rewritten": true,
+     "note": "直後の文でHC-010の懸念(情報共有の可能性)が正しく説明されるため前後文脈上は軽微と判定(Checkerは重大扱い)。ENは文削除で解消、JA R2には残存"
+    },
+    {
+     "id": "meta-c-03",
+     "text": "EN one-liner「Meta tested having human workers handle some AI phone calls without clearly telling users, raising privacy concerns.」(開示不足→懸念の因果)",
+     "fact_id": "MUSE-HC-010",
+     "severity": "軽微",
+     "stages": {
+      "s1": "該当なし",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1,2)",
+     "rewritten": false,
+     "note": "JAに該当文なし(EN工程で新規発生)"
+    },
+    {
+     "id": "meta-c-04",
+     "text": "JA「その出演者が誰なのか、利用者に十分伝わっていなければ…」「適切な開示がないまま始まっていました」/EN「if users are not told clearly enough who the performer is」「without properly telling users about it」(開示対象を利用者と特定)",
+     "fact_id": "MUSE-HC-012",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1。最終cycle2では非掲出)",
+     "rewritten": false,
+     "note": "台帳に開示対象の記述なし"
+    }
+   ],
+   "rewrite_history": [
+    "cycle1 narrow_scope(e2_generic_rewrite): 「That was exactly what worried Meta employees.」を削除(以降の情報共有懸念の文は維持)"
+   ],
+   "judgement_held": [],
+   "notes": "E_meta C節(残存3件=主体1/因果1/追加1)と同数。 s4のnon_blockingは正しい文へのACCEPTABLE指摘を多く含み、s1-s3/s5の軽微NG件数と同質ではない。s2→s3_newはb1bとen_text_after_rewriteの差分再読で新規NGなし。"
+  },
+  {
+   "slug": "hormuz",
+   "rep": 1,
+   "variant": "p2",
+   "run_dir": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep1",
+   "stages": {
+    "s1": {
+     "major": 0,
+     "minor": 8
+    },
+    "s2": {
+     "major": 0,
+     "minor": 8
+    },
+    "s3": {
+     "major": 0,
+     "minor": 7
+    },
+    "s4": {
+     "major": 0,
+     "minor": 7,
+     "detail": "cycle3 blocking=0 / non_blocking=7 (ACCEPTABLE5+QUALITY2)"
+    },
+    "s5": {
+     "major": 0,
+     "minor": 7
+    }
+   },
+   "transitions": {
+    "s1_to_s2_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s2_to_s3_fixed": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2_to_s3_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s4_to_s5_missed": {
+     "major": 0,
+     "minor": 7
+    }
+   },
+   "ng_items": [
+    {
+     "id": "hor-p2r1-01",
+     "text": "JA「言い換えると、海峡を通る荷物に、広く同じ割合で費用を負担してもらう案です。」/EN「In other words, the plan was to have all cargo passing through the strait share the cost at the same rate.」(費用負担者=貨物と特定)",
+     "fact_id": "HF-003",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE",
+     "rewritten": false,
+     "note": "HF-002は「すべての貨物への20%償還料」と述べるため貨物への賦課自体は台帳内。支払義務者の細部はHF-003で未提示=軽い具体化"
+    },
+    {
+     "id": "hor-p2r1-02",
+     "text": "JA「貨物に直接料金をかける方法と、…」/EN b1b「One is to charge cargo directly.」(徴収方法の特定)",
+     "fact_id": "HF-003",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "修正済",
+      "s5": "修正済"
+     },
+     "checker_label": "BLOCKING(cycle1)",
+     "rewritten": true,
+     "note": "徴収方法はHF-003で未提示。ENは「propose a charge」に修正、JA R2には残存。Checkerは重大扱い"
+    },
+    {
+     "id": "hor-p2r1-03",
+     "text": "JA題名「海峡の請求書が、翌日には商談になった」/「相手国との協議を通じて貿易や投資につなげる方法」/EN「become trade and investment talks the next day」「use talks with the other country to lead to trade and investment」(置換先を「協議」とし、協議→貿易投資の因果を示唆)",
+     "fact_id": "HF-007",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(3サイクル。cycle3「A planned cargo fee…talks」もACCEPTABLE)",
+     "rewritten": false,
+     "note": "台帳: 置換先は貿易・投資案件、協議は決定の理由。本文の明示文(HF-007)は正確なため軽微。E_hormuzの「対象」「因果」(talks)を統合"
+    },
+    {
+     "id": "hor-p2r1-04",
+     "text": "JA「料金を集めるという発想そのものが、別の舞台へ移ったことです。」/EN「It is that the very idea of collecting a fee moved to a different setting.」(料金案が形を変えて継続した、との示唆)",
+     "fact_id": "HF-007/HF-008",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "QUALITY",
+     "rewritten": false,
+     "note": "直前に「撤回」と明示されており比喩的。HF-008(誰にも課すべきでない)と緊張するが、意味の逆転には至らず軽微"
+    },
+    {
+     "id": "hor-p2r1-05",
+     "text": "JA「相手国との協議」/EN「talks with the other country」(台帳は湾岸諸国=複数。単数化)",
+     "fact_id": "HF-007",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(03と同一文で指摘)",
+     "rewritten": false,
+     "note": "JAは「相手国」、ENで単数が強化"
+    },
+    {
+     "id": "hor-p2r1-06",
+     "text": "JA「今回の投稿は、その切り替えが一日で起きたことを示しました。」/EN「This post showed that the switch happened in one day.」(実際は約24時間48分後)",
+     "fact_id": "HF-007",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "未検出",
+     "rewritten": false,
+     "note": ""
+    },
+    {
+     "id": "hor-p2r1-07",
+     "text": "JA「もし実施されれば、通る貨物すべてが対象になる大きな仕組みでした。」/EN「it would have been a large system covering every piece of cargo that passed through.」(制度規模)",
+     "fact_id": "HF-003",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE",
+     "rewritten": false,
+     "note": "「すべての貨物」はHF-002内、「大きな仕組み」の評価は台帳外"
+    },
+    {
+     "id": "hor-p2r1-08",
+     "text": "JA「同じ安全確保をめぐる話でも、入り口は二つあります。」/EN「Even when the issue is about providing security, there are two ways in.」(貿易・投資案件を安全確保の別方式と位置付け)",
+     "fact_id": "HF-002/HF-007",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "QUALITY(cycle1,3)/ACCEPTABLE(cycle2)",
+     "rewritten": false,
+     "note": ""
+    }
+   ],
+   "rewrite_history": [
+    "cycle1 narrow_scope(e1_minimal_word_edit): 「One is to charge cargo directly.」→「One is to propose a charge on cargo.」"
+   ],
+   "judgement_held": [],
+   "notes": "E_hormuz A節 8件(b1b)/残存7件と同数。内訳の差: E「対象」と「因果」(talks)を統合(hor-p2r1-03)し、E「対象」内の継続性示唆を分離(hor-p2r1-04)。重大なし。 s4のnon_blockingは正しい文へのACCEPTABLE指摘を多く含み、s1-s3/s5の軽微NG件数と同質ではない。s2→s3_newはb1bとen_text_after_rewriteの差分再読で新規NGなし。"
+  },
+  {
+   "slug": "hormuz",
+   "rep": 2,
+   "variant": "p2",
+   "run_dir": "er052_output/open233_allfact_note_e2e_02/runs/hormuz/nb/p2/rep2",
+   "stages": {
+    "s1": {
+     "major": 0,
+     "minor": 8
+    },
+    "s2": {
+     "major": 0,
+     "minor": 8
+    },
+    "s3": {
+     "major": 0,
+     "minor": 6
+    },
+    "s4": {
+     "major": 0,
+     "minor": 7,
+     "detail": "cycle2 blocking=0 / non_blocking=7 (ACCEPTABLE6+QUALITY1)"
+    },
+    "s5": {
+     "major": 0,
+     "minor": 6
+    }
+   },
+   "transitions": {
+    "s1_to_s2_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s2_to_s3_fixed": {
+     "major": 0,
+     "minor": 2
+    },
+    "s2_to_s3_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s4_to_s5_missed": {
+     "major": 0,
+     "minor": 6
+    }
+   },
+   "ng_items": [
+    {
+     "id": "hor-p2r2-01",
+     "text": "JA「船が通るたびに、アメリカの安全対策費を払う。」/EN b1b「Every time a ship passed, it would pay for U.S. security measures.」(支払者=船、通過ごとの徴収)",
+     "fact_id": "HF-003",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "修正済",
+      "s5": "修正済"
+     },
+     "checker_label": "BLOCKING(cycle1)",
+     "rewritten": true,
+     "note": "台帳は貨物への20%賦課(HF-002)で、支払義務者・徴収方式は未提示(HF-003)。船か貨物かの差は意味逆転ではなく軽い具体化と判定(Checkerは重大扱い)。ENは修正、JAには残存"
+    },
+    {
+     "id": "hor-p2r2-02",
+     "text": "JA「…費用を、通過する貨物に負担してもらう考えです。」/EN b1b「The idea was to have passing cargo pay for the costs…」",
+     "fact_id": "HF-002/HF-003",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "修正済",
+      "s5": "修正済"
+     },
+     "checker_label": "BLOCKING(cycle1)",
+     "rewritten": true,
+     "note": "貨物への賦課はHF-002内。「pay」は軽い具体化。ENは「a 20 percent fee on all passing cargo cover」に修正、JAには残存"
+    },
+    {
+     "id": "hor-p2r2-03",
+     "text": "JA「通行する貨物に直接料金をかける話が、湾岸諸国との商談に変わったわけです。」/EN「A plan to charge passing cargo directly had turned into business talks with the Gulf states.」(徴収方法「直接」の特定)",
+     "fact_id": "HF-003",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(cycle1のみ。最終cycle2は非掲出)",
+     "rewritten": false,
+     "note": ""
+    },
+    {
+     "id": "hor-p2r2-04",
+     "text": "JA題名「…翌日には商談会になった」/EN「…the Next Day It Became a Business Meeting」「business talks with the Gulf states」(置換先を商談/talksと言い換え)",
+     "fact_id": "HF-007",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE(03と同一文のみ)",
+     "rewritten": false,
+     "note": "本文の明示文(replaced by trade and investment deals / 協議は理由)は正確なため軽微。E「対象」に相当"
+    },
+    {
+     "id": "hor-p2r2-05",
+     "text": "JA「なぜ原油価格は大きく下がらなかったのでしょうか」/EN one-liner「…oil prices stayed high because the strait remained dangerous.」(台帳はBrent先物。oil prices一般へ拡張)",
+     "fact_id": "HF-009",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "ACCEPTABLE/QUALITY(one-liner, cycle1-2)",
+     "rewritten": false,
+     "note": "因果部分は台帳HF-009がcausal_strength=CAUSAL_STATED_BY_SOURCE・conditionsに危険継続を含むためNG扱いしない。範囲拡張(Brent→oil prices)のみ軽微"
+    },
+    {
+     "id": "hor-p2r2-06",
+     "text": "JA「その料金表は一日で姿を消し」/EN「that fee schedule disappeared in one day」「vanished within a day」(実際は約24時間48分後)",
+     "fact_id": "HF-007",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "QUALITY/ACCEPTABLE(one-liner)",
+     "rewritten": false,
+     "note": ""
+    },
+    {
+     "id": "hor-p2r2-07",
+     "text": "JA「かなり大きな料金所です。」/EN「It would be quite a large toll booth.」(制度規模)",
+     "fact_id": "HF-002",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "未検出",
+     "rewritten": false,
+     "note": ""
+    },
+    {
+     "id": "hor-p2r2-08",
+     "text": "JA「第三幕で原油市場が見せた反応は、もっと冷静でした。」/EN「…the reaction from the oil market was much calmer.」(比較評価)",
+     "fact_id": "HF-009",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "QUALITY(cycle1,2)",
+     "rewritten": false,
+     "note": "台帳外の評価語。軽微"
+    }
+   ],
+   "rewrite_history": [
+    "cycle1 narrow_scope(e2_generic_rewrite): 「Every time a ship passed, it would pay for U.S. security measures.」→「The proposal would seek reimbursement for U.S. security costs on all cargo passing through the strait.」",
+    "cycle1 narrow_scope(e1_minimal_word_edit): 「The idea was to have passing cargo pay for the costs…」→「The idea was to have a 20 percent fee on all passing cargo cover the costs…」",
+    "(3件目BLOCKINGは上記に吸収: covered_by_earlier_rewrite_in_cycle)"
+   ],
+   "judgement_held": [],
+   "notes": "E_hormuz B節 最終残存8件に対し本台帳s3は6件(s2は8件)。差分理由: E「因果①(危険が消えなかったから高止まり)」はHF-009がCAUSAL_STATED_BY_SOURCEで危険継続を条件に記載するためNG非該当、E「因果②(市場が思い出した)」は「seemed」付き比喩のためNG非該当(E_hormuz冒頭方針「比喩は事実誤りに数えない」に準拠)。E「主体」3件(船/貨物/直接)は本台帳01-03に対応(01-02はEN修正済)。 s4のnon_blockingは正しい文へのACCEPTABLE指摘を多く含み、s1-s3/s5の軽微NG件数と同質ではない。s2→s3_newはb1bとen_text_after_rewriteの差分再読で新規NGなし。"
+  },
+  {
+   "slug": "hormuz",
+   "rep": 1,
+   "variant": "control",
+   "run_dir": "er052_output/open233_polysemy_trial_04/runs/hormuz/control/rep1",
+   "stages": {
+    "s1": {
+     "major": 0,
+     "minor": 1
+    },
+    "s2": {
+     "major": 0,
+     "minor": 1
+    },
+    "s3": {
+     "major": 0,
+     "minor": 1
+    },
+    "s4": {
+     "major": 0,
+     "minor": 1,
+     "detail": "cycle1 blocking=0 / non_blocking=1 (ACCEPTABLE: 一般論1文のみ。事実誤りではない)"
+    },
+    "s5": {
+     "major": 0,
+     "minor": 1
+    }
+   },
+   "transitions": {
+    "s1_to_s2_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s2_to_s3_fixed": {
+     "major": 0,
+     "minor": 0
+    },
+    "s2_to_s3_new": {
+     "major": 0,
+     "minor": 0
+    },
+    "s4_to_s5_missed": {
+     "major": 0,
+     "minor": 1
+    }
+   },
+   "ng_items": [
+    {
+     "id": "hor-c-01",
+     "text": "JA「記事の時点では二点六パーセント高の一バレル八十五ドル超」/EN「they were up 2.6 percent, at more than 85 dollars a barrel」(台帳は「約+2.6%」。「約」の脱落)",
+     "fact_id": "HF-009",
+     "severity": "軽微",
+     "stages": {
+      "s1": "発生",
+      "s2": "発生",
+      "s3": "残存",
+      "s5": "残存"
+     },
+     "checker_label": "未検出",
+     "rewritten": false,
+     "note": ""
+    }
+   ],
+   "rewrite_history": [
+    "なし(en_text_after_rewrite無し。③=②と同一)"
+   ],
+   "judgement_held": [],
+   "notes": "E_hormuz C節は残存2件(範囲=「約」脱落/因果=「供給への心配が消えたわけではない」)。因果は台帳HF-009(CAUSAL_STATED_BY_SOURCE・危険継続)で許容されるためNG非該当とし1件。 s4のnon_blockingは正しい文へのACCEPTABLE指摘を多く含み、s1-s3/s5の軽微NG件数と同質ではない。s2→s3_newはb1bとen_text_after_rewriteの差分再読で新規NGなし。"
+  }
+ ],
+ "transition_totals": {
+  "s1_to_s2_new": {
+   "major": 0,
+   "minor": 3
+  },
+  "s2_to_s3_fixed": {
+   "major": 0,
+   "minor": 5
+  },
+  "s2_to_s3_new": {
+   "major": 0,
+   "minor": 0
+  },
+  "s4_to_s5_missed": {
+   "major": 1,
+   "minor": 27
+  }
+ },
+ "judgement_held_total": 1
+}

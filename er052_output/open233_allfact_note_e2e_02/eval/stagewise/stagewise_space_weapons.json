@@ -1,0 +1,376 @@
+[
+ {
+  "slug": "space_weapons",
+  "rep": 1,
+  "variant": "control",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 4
+   },
+   "s2": {
+    "major": 0,
+    "minor": 4
+   },
+   "s3": {
+    "major": 0,
+    "minor": 3
+   },
+   "s4": {
+    "major": 0,
+    "minor": 6
+   },
+   "s5": {
+    "major": 0,
+    "minor": 4
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 1
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 2
+   },
+   "s4_to_s5_missed_ja_unchecked": {
+    "major": 0,
+    "minor": 1
+   }
+  },
+  "ng_items": [
+   {
+    "id": "sw-ctl-01",
+    "text": "JA「第二は、衛星と地上の間で情報を運ぶ通信リンクです。」/ EN「The second is the communication link that carries information between satellites and the ground.」(台帳はlink segmentの存在のみ)",
+    "fact_id": "F-011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "未検出(最終cycle3。cycle1-2はACCEPTABLEで検出)",
+    "rewritten": false,
+    "existing_eval": "既存評価「台帳外追加」(通信リンク)と同一"
+   },
+   {
+    "id": "sw-ctl-02",
+    "text": "JA「第三は、衛星に指示を出す地上の設備です。」/ EN(Rewrite前)「The third is the ground equipment that sends instructions to satellites.」",
+    "fact_id": "F-011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生(JA R2に最終まで残存)",
+     "s2": "発生",
+     "s3": "修正済(cycle1で「The third is the ground segment.」へ置換)",
+     "s5": "残存(JAのみ。EN最終は修正済)"
+    },
+    "checker_label": "BLOCKING(cycle1。materiality=BLOCKING)",
+    "rewritten": true,
+    "existing_eval": "既存評価「台帳外追加」(地上設備)と同一",
+    "relabel_reason": "Checkerはblocking扱いだが、本基準では意味逆転なしの軽い具体化のため軽微",
+    "residual_in": [
+     "JA"
+    ]
+   },
+   {
+    "id": "sw-ctl-03",
+    "text": "JA「通信を邪魔したり、地上の設備に影響を与えたりしても、衛星の力を使いにくくできる可能性があります。」/ EN「Interfering with communications or affecting ground equipment could also make it harder to use a satellite’s capabilities.」(台帳F-012に効果の記述なし。could/可能性で緩和)",
+    "fact_id": "F-012",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "ACCEPTABLE(cycle1・cycle3。最終cycle3で検出)",
+    "rewritten": false,
+    "existing_eval": "既存評価「因果」1件と同一"
+   },
+   {
+    "id": "sw-ctl-04",
+    "text": "JA「ただし、正体はまだベールの中です。兵器の名前は分かりません。攻撃できるのかどうかも、何を標的にするのかも確認されていません。」/ EN「But the true nature of the weapons is still hidden. We do not know their names. It has not been confirmed whether they can attack, or what they would target.」(台帳は「推測で補わない」で「未確認・非開示」とは書かず。P2 rep2のsw-p2r2-06と同種)",
+    "fact_id": "F-001",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "未検出(最終cycle3。cycle1でACCEPTABLE検出)",
+    "rewritten": false,
+    "existing_eval": "既存評価は「正しい」(briefに「確認されていない」が入っていたため)",
+    "added_by_this_task": true,
+    "relabel_reason": "本委任は台帳のみを基準に全記事へ同一適用(P2 rep2の同種文を軽微としているため整合)。brief記載を根拠に許容するかは判定保留"
+   }
+  ],
+  "notes": [
+   "③=cycle1のen_text_after_rewrite(cycle2-3はRewriteなし)。b1b/article.mdはChecker前(=cycle1 before)と同一であることをdiffで確認。",
+   "s4は最終cycle3のnon_blocking生件数(blocking_count=0)。6件中の多くは決定論検査(negation_polarity_mismatch)由来の誤検知寄り。",
+   "s5はEN最終+JA①残存の和集合。ENのみ=軽微3(01,03,04)、JA(Checker対象外)のみ残存=軽微1(02)。",
+   "s4_to_s5_missed(軽微2)=最終cycleで未検出だったsw-ctl-01,04(いずれもcycle1-2では検出)。sw-ctl-03はACCEPTABLEで検出済みのため除外。JAのみ残存のsw-ctl-02(軽微1)はs4_to_s5_missed_ja_uncheckedとして別掲。",
+   "従来版ledger(open233_polysemy_trial_04配下)には独立のledgerファイルが見つからないため、P2 ledgerを基準に使用(既存評価により fact本文は同一、差はnotes_for_writer行のみ)。"
+  ]
+ },
+ {
+  "slug": "space_weapons",
+  "rep": 1,
+  "variant": "p2",
+  "stages": {
+   "s1": {
+    "major": 0,
+    "minor": 1
+   },
+   "s2": {
+    "major": 0,
+    "minor": 2
+   },
+   "s3": {
+    "major": 0,
+    "minor": 2
+   },
+   "s4": {
+    "major": 0,
+    "minor": 9
+   },
+   "s5": {
+    "major": 0,
+    "minor": 2
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 1
+   },
+   "s2_to_s3_fixed": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 1
+   },
+   "s4_to_s5_missed_ja_unchecked": {
+    "major": 0,
+    "minor": 0
+   }
+  },
+  "ng_items": [
+   {
+    "id": "sw-p2r1-01",
+    "text": "JA「そして、守る側のメニューはさらに幅広い。」/ EN「The defense menu is even wider.」(攻撃側との範囲比較は台帳にない)",
+    "fact_id": "F-012/F-013",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "残存",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY(cycle1=最終cycleで検出・非blocking)",
+    "rewritten": false,
+    "existing_eval": "既存評価の範囲1件と同一"
+   },
+   {
+    "id": "sw-p2r1-02",
+    "text": "JA「敵対的な相手から統合軍を守る」→ EN「to protect joint forces from hostile forces」(「相手」が「軍」に狭まる。台帳は「敵対的な相手の行動」)",
+    "fact_id": "F-001",
+    "severity": "軽微",
+    "stages": {
+     "s1": "なし(JAは「相手」で台帳範囲内)",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "未検出",
+    "rewritten": false,
+    "existing_eval": "既存評価(3)に軽微として記載(fact_errorsには非計上)。本委任で軽微NGとして台帳化",
+    "added_by_this_task": true
+   }
+  ],
+  "notes": [
+   "Checker=RESOLVED_STAGE2_DOWNGRADE, 1 cycle, Rewriteなし。そのため③EN Rewrite後=②b1b/article.mdと同一。",
+   "s4はChecker最終cycleのnon_blocking生件数(blocking_count=0)。9件中8件は決定論検査由来で実質的な事実誤りの検出ではない(実質検出はsw-p2r1-01のみ)。",
+   "s4_to_s5_missed=最終cycleで未検出のまま最終稿に残ったNG。QUALITY/ACCEPTABLEで検出済みのNGは「見逃し」に数えない。",
+   "計数外: ENの「was deploying」/「had deployed」時制ゆれ、「Make them movable」の代名詞曖昧は事実の意味が変わらないため非計上(既存評価と同じ)。",
+   "ロシア衛星(F-002)はbriefに無く、背景因果NGは発生していない。"
+  ]
+ },
+ {
+  "slug": "space_weapons",
+  "rep": 2,
+  "variant": "p2",
+  "stages": {
+   "s1": {
+    "major": 2,
+    "minor": 4
+   },
+   "s2": {
+    "major": 2,
+    "minor": 4
+   },
+   "s3": {
+    "major": 0,
+    "minor": 4
+   },
+   "s4": {
+    "major": 0,
+    "minor": 4
+   },
+   "s5": {
+    "major": 2,
+    "minor": 4
+   }
+  },
+  "transitions": {
+   "s1_to_s2_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s2_to_s3_fixed": {
+    "major": 2,
+    "minor": 0
+   },
+   "s2_to_s3_new": {
+    "major": 0,
+    "minor": 0
+   },
+   "s4_to_s5_missed": {
+    "major": 0,
+    "minor": 1
+   },
+   "s4_to_s5_missed_ja_unchecked": {
+    "major": 2,
+    "minor": 0
+   }
+  },
+  "ng_items": [
+   {
+    "id": "sw-p2r2-01",
+    "text": "JA「宇宙、通信、地上の設備をまとめて守るための仕組みを、米国が公の言葉で認めたということです。」/ EN(Rewrite前)「It means that the United States has publicly acknowledged a system for protecting space, communications, and ground equipment together.」(認められたのは軌道上space control weapons配備。counterspace定義F-011を発表内容にすり替え)",
+    "fact_id": "F-001",
+    "severity": "重大",
+    "stages": {
+     "s1": "発生(JA R2に最終まで残存)",
+     "s2": "発生",
+     "s3": "修正済(cycle1でEN「orbital space-control weapons」へ置換、cycle3で前文も置換)",
+     "s5": "残存(JAのみ。EN最終は修正済)"
+    },
+    "checker_label": "BLOCKING(cycle1-3)",
+    "rewritten": true,
+    "existing_eval": "既存評価「対象の誤り」1件と同一",
+    "residual_in": [
+     "JA"
+    ]
+   },
+   {
+    "id": "sw-p2r2-02",
+    "text": "JA「今回の見どころは、宇宙戦争が始まったことではありません。宇宙の戸締まりをするための備えが、初めて表に出たことです。」/ EN(Rewrite前)「It is that preparations to secure space have come into public view for the first time.」(「初めて」は兵器配備の承認に限定されるのに「防衛の備え」へ拡張)",
+    "fact_id": "F-001",
+    "severity": "重大",
+    "stages": {
+     "s1": "発生(JA R2に最終まで残存)",
+     "s2": "発生",
+     "s3": "修正済(cycle1でEN「the deployment of weapons in space ...」へ置換)",
+     "s5": "残存(JAのみ。EN最終は修正済)"
+    },
+    "checker_label": "BLOCKING(cycle1-2)",
+    "rewritten": true,
+    "existing_eval": "既存評価「範囲の誤り(a)」。既存評価はF-001段落を「重大誤読」としており、本委任でNG-01と同系統の重大に再ラベル",
+    "relabel_reason": "「初めて表に出た」対象が兵器配備から防衛の備えへ入れ替わり、記事の主題(何が初めて認められたか)の理解が変わるため重大",
+    "residual_in": [
+     "JA"
+    ]
+   },
+   {
+    "id": "sw-p2r2-03",
+    "text": "JA「では、なぜ今この話が出てきたのでしょうか。背景には、米国が見ているロシアの対衛星能力があります。」/ EN「So why has this story come up now? The background is Russia’s ability to attack satellites, as seen by the United States.」(F-001とF-002の間の因果は台帳になく、F-002は特定衛星の「可能性」評価)",
+    "fact_id": "F-001/F-002",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY(cycle1・cycle5。最終cycleで検出)",
+    "rewritten": false,
+    "existing_eval": "既存評価の「範囲(b)」と「因果」(同一文)を1件に統合",
+    "relabel_reason": "同一文・同一誤りは同一工程1件の基準により統合。後続段落でF-002は「米側の評価」「可能性」と帰属付きで正しく書かれており、意味は逆転しない過剰断定として軽微。ただし重大寄りの境界事例(判定保留)"
+   },
+   {
+    "id": "sw-p2r2-04",
+    "text": "JA/EN「ここで重要なのが、スペースコントロールという言葉です。…でも、カウンタースペースという考え方は、もっと広い範囲を指します。」(F-001のspace control weaponsとF-011のcounterspaceの関係は台帳になく、「でも」で対置。R2で「米宇宙軍の枠組み」の帰属も欠落)",
+    "fact_id": "F-001/F-011",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存",
+     "s5": "残存"
+    },
+    "checker_label": "未検出(cycle1にF-001関連の別文への誤紐付きACCEPTABLEがあるが当該文の検出ではない)",
+    "rewritten": false,
+    "existing_eval": "既存評価「範囲(c)」と同一"
+   },
+   {
+    "id": "sw-p2r2-05",
+    "text": "JA「今回の見どころは、宇宙戦争が始まったことではありません。」/ EN本文「What is noteworthy this time is not that a space war has begun.」+ In one line「…the move is about defense, not a space war.」(「宇宙戦争ではない」は台帳外の否定)",
+    "fact_id": "F-001",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存(本文はcycle3で置換済、In one lineに同趣旨が残存)",
+     "s5": "残存(JA本文・EN In one line)"
+    },
+    "checker_label": "QUALITY(本文cycle1)/ACCEPTABLE(In one line、最終cycle5)",
+    "rewritten": true,
+    "existing_eval": "既存評価「否定の誤り」1件と同一",
+    "relabel_reason": "台帳外の安心断定だが否定の反転ではなく軽微。Rewriteは本文のみ修正しIn one lineは未修正のため「一部修正」",
+    "rewrite_scope": "本文のみ(cycle3)"
+   },
+   {
+    "id": "sw-p2r2-06",
+    "text": "JA「米国が今回認めた発表でも、具体的なシステム名や標的、攻撃能力までは明らかにされていません。」/ EN「Even in the announcement/acknowledgment the United States made this time, the specific system name, targets, and attack capabilities were not disclosed.」(台帳は「推測で補わない」で「非開示」とは書いていない)",
+    "fact_id": "F-001",
+    "severity": "軽微",
+    "stages": {
+     "s1": "発生",
+     "s2": "発生",
+     "s3": "残存(cycle3は「announcement→acknowledgment」の語句変更のみで内容未修正)",
+     "s5": "残存"
+    },
+    "checker_label": "QUALITY(cycle4-5。最終cycle5で検出)",
+    "rewritten": false,
+    "existing_eval": "既存評価「台帳にない具体的事実の追加」と同一",
+    "rewrite_scope": "語句のみ(内容は未修正)"
+   }
+  ],
+  "notes": [
+   "③は累積Rewrite後=cycle3のen_text_after_rewrite(cycle4-5はjudge_onlyでRewriteなし)。",
+   "Rewrite全件(EN側のみ、JA未変更): cycle1: [BEFORE「It means that the United States has publicly acknowledged a system for protecting space, communications, and ground equipment together.」→AFTER「It means that the United States has publicly acknowledged orbital space-control weapons.」] [BEFORE「It is that preparations to secure space have come into public view for the first time.」→AFTER「It is that the deployment of weapons in space has come into public view for the first time.」] / cycle2: [BEFORE「…should not be read simply as saying, “The U.S. has deployed weapons aimed at satellites.”」→AFTER「…“The U.S. has deployed weapons.”」(aimed at satellites削除)] [BEFORE「What is noteworthy this time is not that a space war has begun.」→AFTER「What is noteworthy is not that a space war has begun.」(this time削除)] / cycle3: [BEFORE「In other words, this announcement should not be read simply as saying, “The U.S. has deployed weapons.”」→AFTER「In other words, the announcement described weapons intended to protect joint forces from hostile actors.」] [BEFORE「Even in the announcement the United States made this time, the specific system name, targets, and attack capabilities were not disclosed.」→AFTER 同文のannouncementをacknowledgmentへ変更のみ] [BEFORE「What is noteworthy is not that a space war has begun.」→AFTER「What is noteworthy is the U.S. acknowledgment of orbital space-control weapons meant to protect joint forces from hostile actors.」] / cycle4-5: Rewriteなし。",
+   "cycle1-3でCheckerが出したBLOCKINGは各3件。cycle2のBLOCKING「” It means that…」はcycle1で既に置換済みの文に対する再検出(violation_span_unverified, target_not_locatable)。",
+   "s4はcycle5のnon_blocking生件数(blocking_count=0)。",
+   "s5はEN最終+JA①の残存の和集合(重複はNG IDで統合)。内訳: ENのみ=重大0/軽微4、JA(Checker対象外)のみ残存=重大2(sw-p2r2-01,02)/軽微0。",
+   "s4_to_s5_missed(軽微1)は最終cycleで未検出だったsw-p2r2-04(EN)のみ。QUALITY/ACCEPTABLEで検出済み(03,05,06)は見逃しに含めない。JAのみ残存の重大2はChecker対象外のため s4_to_s5_missed_ja_unchecked として別掲。",
+   "s2_to_s3_newは0: Rewrite後EN本文に事実上の新規NGは見られない(文法の不自然さ「What is noteworthy is [A]. It is that [B].」とJAの「単純に読む話ではない」意図の消失は事実の意味変化ではないため非計上。既存評価と同じ)。"
+  ]
+ }
+]

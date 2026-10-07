@@ -20160,3 +20160,8 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (a)【決定】「Trial実施(ユーザー承認済み)」とFable Status判定(USER_DECISION_REQUIRED)のみ。Production採用・Production配線の決定なし。DEV runner転記規則の修正はTrial専用(Production経路不使用)。
 - (b)【事実確認】P2×5テーマ×2rep=10本完走(brief転記10/10)。独立評価でP2のFact誤りは従来版を下回らず(hormuz 8/10 vs 2)、meta HC-012は正しい2/2。重大3件(OPEN-238/239起票)。実費≈¥110.4/上限¥300。
 - Status=USER_DECISION_REQUIRED。Production変更なし/Trial限定、Checker構成はPRODUCTION_WIRED未のまま。出典: REPORT §94。
+
+## 2026-10-07 OPEN-233-E2E-STAGEWISE-NG-AUDIT-01(E2E工程別NG比較表、既存成果物の再評価のみ)
+- (a)【決定】「既存E2E 15本(従来版5+P2版10)の工程別NG再評価の実施」(ユーザー指示)のみ。¥0、新規生成・API呼び出しなし、Production変更なし。P2採否・Checker Production反映の決定なし。
+- (b)【事実確認】⑤を⑤a(EN最終残存)/⑤b(+JAのみ残存)へ統一。⑤b 重大: 従来0/P2 4、軽微: 従来21/P2 57。1記事当たり⑤b 従来4.2/P2 6.1。④(Checker生件数)は⑤の軽微と同質でない。重大NG全6件(うちEN最終残存1件=meta-p2r2-02)。
+- Status=USER_DECISION_REQUIRED。出典: REPORT §95、`er052_output/open233_allfact_note_e2e_02/eval/stagewise/STAGEWISE_SUMMARY.md`。

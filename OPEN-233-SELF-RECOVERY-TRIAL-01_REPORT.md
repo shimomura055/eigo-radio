@@ -5343,3 +5343,46 @@ Status: 設計検討中・ユーザー判断待ち(到達上限USER_DECISION_REQ
 
 ### §94-8 参照
 - `er052_output/open233_allfact_note_e2e_02/`(`eval/SUMMARY.md`・`eval/E_*.md`・`runs/manifest.json`・`cost.json`・`ledger/FREEZE.json`・`checker_switch_check.json`)、`docs/pm/allfact_e2e_02/`、`docs/pm/delegation_log/2026-10-07_OPEN-233-META-ALLFACT-NOTE-E2E-TRIAL-02_{A1,D1}.md`。OPEN-237/238/239。
+
+## §95 OPEN-233-E2E-STAGEWISE-NG-AUDIT-01(工程別NG比較表、2026-10-07、¥0)
+
+既存成果物(§94のE2E 15本=従来版5+P2版10)の再評価のみ。API呼び出し・記事生成・Production変更なし。詳細は `er052_output/open233_allfact_note_e2e_02/eval/stagewise/STAGEWISE_SUMMARY.md`。
+
+### §95-1 定義
+- 重大=事実の意味が変わり誤解を与える/軽微=不正確・過剰断定・曖昧・軽い具体化(同一誤りは同一工程1件)。①JA最終稿 ②EN Rewrite前 ③EN Rewrite後 ④Checker最終cycle生件数 ⑤独立評価。
+- ⑤は3系統で定義が混在していたため ng_items から再計算し統一: **⑤a=EN最終残存**、**⑤b=⑤a+JAのみ残存(①で発生しENでは修正・不在)**。
+- **④は⑤と同質でない**: 最終cycleのblockingは全15本で0。non_blockingは正しい文へのACCEPTABLE指摘・決定論検査の誤検知を多く含む候補の生件数で、⑤の軽微(実NG)とは比較不可。
+
+### §95-2 主表(重大/軽微)
+| 段階 | 従来5本 | P2 10本 |
+|---|---|---|
+| ① JA最終稿 | 0/18 | 4/49 |
+| ② EN Rewrite前 | 0/21 | 5/56 |
+| ③ EN Rewrite後 | 0/19 | 1/52 |
+| ④ Checker生件数(参考) | 0/52 | 0/99 |
+| ⑤a EN最終残存 | 0/19 | 1/52 |
+| ⑤b ⑤a+JAのみ | 0/21 | 4/57 |
+
+### §95-3 遷移表(重大/軽微)
+- ①→②英語化で新規: 従来0/3、P2 1/7。②→③Rewriteで修正: 従来0/2、P2 4/5。
+- ②→③Rewrite新規: 最終残存 従来0/0、P2 0/1(ai-p2r2-08)/loop内一時発生 従来0/0、P2 1/0(ai-p2r2-07、OPEN-238)。
+- ④→⑤見逃し(=⑤b): 従来0/21、P2 4/57。内訳 検出済み非BLOCKING 従来0/14・P2 0/41、未検出 従来0/5・P2 1/11、JAのみ(Checker対象外) 従来0/2・P2 3/5。
+
+### §95-4 1記事当たり平均(重大/軽微)
+- 従来: ①0.0/3.6、⑤a 0.0/3.8、⑤b 0.0/4.2。P2: ①0.4/4.9、⑤a 0.1/5.2、⑤b 0.4/5.7。テーマ別(従来1 vs P2 2)は STAGEWISE_SUMMARY.md §4。小標本でNote由来かrun揺れか切り分け不可。
+
+### §95-5 重大NG全件(6件、詳細全文はSUMMARY §5)
+- meta-p2r2-02: ENで開示対象を取り違え(「主役になった人間が知らされていなかった」→Rewrite後も「the person on the other end」と台帳外の対象断定が残存)。⑤a/⑤b残存、Checker最終未検出。
+- ai-p2r1-01: 「厳重な監獄のはずが裏口の鍵がかかっていなかった」比喩(EN Rewriteで削除、JAに残存→⑤bのみ)。ai-p2r1-02: EN「whether it tends to be used for harmful purposes」の主体取り違え(Rewriteで修正)。
+- ai-p2r2-07: Rewriteが無関係な「Claude Opus 4 attempted blackmail in 84% of rollouts」を挿入(cycle2で修正、一時発生。原因=precheck floorのEVID-006/CONTROL-004誤紐付け、A2所見・未検証)。
+- sw-p2r2-01: 認められたのは軌道上space control weapons配備なのに「守るための仕組み」と記述(EN修正済、JAに残存)。sw-p2r2-02: 「初めて」の対象を兵器配備から「防衛の備え」へ拡張(EN修正済、JAに残存)。
+
+### §95-6 判定保留・差分理由(要旨)
+- 保留1(meta r1 Rewrite挿入文「That」の指示語、集計外)/境界4(sw r2「なぜ今→ロシア」軽微計上、sw従来sw-ctl-04はbrief根拠で3→4、ai r1「主役は舞台装置」、ai従来「有害傾向は実証されず」)=計5件。
+- E_*.mdとの差の主因=E項目の統合/分離(meta r2 対象+追加を1件に統合、hormuz 因果をHF-009許容・比喩でNG非該当、sewerにF-001範囲不記載を追加等)。詳細はSUMMARY §6・§7。
+
+### §95-7 Status
+- **USER_DECISION_REQUIRED**。P2採否・Checker Production反映は判断しない(Production変更なし)。
+
+### §95-8 参照
+- `eval/stagewise/{STAGEWISE_SUMMARY.md,NG_*.md,stagewise_*.json}`、`docs/pm/delegation_log/2026-10-07_OPEN-233-E2E-STAGEWISE-NG-AUDIT-01_C1.md`。OPEN-237/238/239。
