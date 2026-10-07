@@ -2372,7 +2372,7 @@ $0.25/$1.20、Standard tier、一次ソース`https://platform.openai.com/docs/p
 
 【2026-10-06 ユーザー決定・配線中】floorは数字(changed_number)のみに縮小、Checker新仕様(Ledger食い違い/具体的新事実/4観点照合)を正式採用。APPROVED_FOR_PRODUCTION、PRODUCTION_WIRED未(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)。正式仕様文は配線完了後に更新。【委任_04(2026-10-06)実装完了・E2E未】再分類(合流前filter、effort=medium固定)・`FLOOR_MODE=number_only`・`PRECHECK_MODE=number_only`・承認構成定数`OPEN233_APPROVED_FLOW_SWITCHES`をrunnerへ実装(既定は旧挙動、test 59件・回帰922件PASS)。PRODUCTION_WIRED未(E2E・runtime evidence後に判定)。【2026-10-06 9/20 run E2E完了(REPORT §81)】新仕様9 run E2E完走・正式集計済み(真の重大見逃し1/重大検出3、Human Review 0)、PRODUCTION_WIRED未(残11 runはユーザー総合レビュー待ち)。【2026-10-06 ユーザー決定・注記のみ】E2Eは9/20で一旦停止(残11 runは明示再開まで待機)、PRODUCTION_WIRED未。HC-012見逃しの直接原因は数字以外floor廃止ではない(旧floor全ONでも不発火、Fable訂正、REPORT §81-6/§81-10)。見逃し対策設計=OPEN-233-DIRECTIONAL-MISREAD-SAFETY-DESIGN-01(設計段階)。
 
-【2026-10-07 OPEN-238 precheck分数語抽出】precheckの分数語抽出はホワイトリスト(慣用表現除外: 直後が名詞・連字符・first/second等+halfは除外)で、foreign証拠と対象文特定にのみ適用(OPEN-238、2026-10-07、Status=PRODUCTION_WIRED候補(Fable判定待ち)。ユーザー決定APPROVED_FOR_PRODUCTION、配線commit 874dd6e2、REPORT §99)。
+【2026-10-07 OPEN-238 precheck分数語抽出】precheckの分数語抽出はホワイトリスト(慣用表現除外: 直後が名詞・連字符・first/second等+halfは除外)で、foreign証拠と対象文特定にのみ適用(OPEN-238、2026-10-07、Status=PRODUCTION_WIRED(Fable判定2026-10-07、基準(a)〜(e)充足、REPORT §99)。配線先は承認済みCheckerコード。Checker全体(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)は未配線・残11 run停止継続。ユーザー決定APPROVED_FOR_PRODUCTION、配線commit 874dd6e2、REPORT §99)。
 
 ### OPEN-233 時期の機械判定の追加確認による解放(案1を時期のみへ縮小、2026-10-04ユーザー正式判断[5回目=選択肢3]、`APPROVED_FOR_PRODUCTION`、`PRODUCTION_WIRED`ではない、委任_60・委任_61)
 

@@ -20184,3 +20184,7 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - (b)【実施】配線commit 874dd6e2(precheck `extract_percentages_strict`新設+foreign計算のみ厳格版、runner対象文特定、単体12+既存911 PASS、26 run Regression 2→0他不変、9 run判定変化なし)。
 - (c)【evidence】未パッチProduction入口・承認スイッチ不変で ai_control P2 rep2 を1 run(実費¥5.30): precheck number_mismatch発火0(配線前は同入力2件)、third party文保持、RESOLVED_REWRITE_THEN_DOWNGRADE 3 cycle、retry/fallback/error 0。出典: REPORT §99、`er052_output/open238_precheck_fix_trial_01/runtime_evidence/`。
 - (d)【Status】PRODUCTION_WIRED候補(Fable判定待ち)(判定基準a〜e充足、最終判定はFable)。Checker全体(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)は未配線のまま、残11 run停止継続。
+
+## 2026-10-07 OPEN-238-PRECHECK-FALSE-POSITIVE-PRODUCTION-WIRING-01(Fable判定確定、委任_03)
+- 【決定】Fable判定: PRODUCTION_WIRED確定(基準(a)〜(e)全充足、runtime evidence実費¥5.30、REPORT §99-6)。
+- Checker全体(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)の配線・残11 run再開は別判断(本判定では再開しない)。

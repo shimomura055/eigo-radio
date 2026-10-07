@@ -5474,6 +5474,7 @@ precheck +56/-1(`extract_percentages_strict`新設、`check_number_mismatch`のf
 未パッチProduction関数run_instance・承認スイッチ不変(E2E_02 dumpと一致)でai_control P2 rep2 1 run、実費¥5.30/17 call/上限¥20。配線版number_mismatch 0(配線前版は同テキストで2件)、third party文保持、RESOLVED_REWRITE_THEN_DOWNGRADE 3 cycle、Rewrite 1件(EVID-008)、retry/fallback/error 0。N=1、LLM非決定性あり。
 ### §99-6 判定基準と結果
 (a)配線commitがorigin/mainに存在=充足 (b)入口・スイッチ不変=充足 (c)発火0・third party文保持=充足 (d)retry/fallback・例外なし=充足 (e)テスト・Regression PASS=充足。judgement: PRODUCTION_WIRED候補(Fable判定待ち)。
+**確定(Fable判定2026-10-07)**: 基準(a)〜(e)全充足→Status=PRODUCTION_WIRED。Checker全体(OPEN-233-CHECKER-FLOOR-PRODUCTION-E2E-01)は未配線、残11 run停止継続。
 ### §99-7 残存事項
 「seeking a third.」「half the time」「one-half」連字符は未対応(記録のみ)。Checker全体は未配線、残11 run停止継続。
 ### §99-8 参照

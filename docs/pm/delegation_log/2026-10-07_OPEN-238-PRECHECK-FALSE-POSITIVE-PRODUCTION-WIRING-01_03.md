@@ -1,0 +1,1 @@
+委任_03(T-0簡略): Fable判定PRODUCTION_WIRED確定(基準a-e充足、¥0)をCURRENT_SPEC/OPEN_ITEMS/DECISION_LOG/REPORT §99-6/ACTIVE_TASKへ反映。Checker全体は未配線、残11 run停止継続。
