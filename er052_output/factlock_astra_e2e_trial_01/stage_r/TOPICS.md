@@ -11,3 +11,10 @@
 | coffee_prices (補欠1) | コーヒー価格の高騰 | 入替時のみ使用 |
 | minimum_wage (補欠2) | 最低賃金の引き上げ | 入替時のみ使用 |
 旧4(META/ホルムズ/宇宙兵器/ミニバッグ)は凍結台帳を再利用しresearchを呼ばない。B3再生成に渡すtopicは各凍結台帳の元topic(META/ホルムズ=旧entry_pointのtheme、宇宙兵器=旧entry_pointのtheme、ミニバッグ=run_02のtheme)。
+
+
+## 委任_07 追記(2026-10-09、費用抑制のため対象を1社・1イベントに絞った修正案。旧案は上表のまま残す。原文は topics.json の `streaming_price_v2` / `semiconductor_earnings_v2`)
+| slug | 修正topic要旨 |
+|---|---|
+| streaming_price (v2) | 直近の値上げ発表1件(1サービス)に限定。旧新料金(プラン別)・適用日・対象市場・会社が述べた理由のみ。他サービス比較・契約者反応は対象外 |
+| semiconductor_earnings (v2) | 主要AIチップメーカー1社の直近四半期決算発表1件に限定。売上・データセンター/AI部門売上・次四半期ガイダンス・AI需要への会社側発言のみ。アナリスト予測・他社は対象外 |

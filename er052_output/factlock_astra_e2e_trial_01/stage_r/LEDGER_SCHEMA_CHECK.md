@@ -6,6 +6,8 @@
 | openai_copyright | 8 | 8 | 6 | 8 | 0件 | 不要 | 不要 |
 | central_bank_mortgage | 11 | 11 | 5 | 10 | 0件 | 不要 | 不要 |
 | inbound_tourism | 11 | 11 | 9 | 11 | 0件 | 不要 | 不要 |
+| streaming_price | 5 | 5 | 4 | 5 | 0件 | 不要 | 不要 |
+| semiconductor_earnings | 5 | 5 | 4 | 5 | 0件 | 不要 | 不要 |
 | meta | 15 | 15 | 3 | 15 | 0件 | 不要 | 不要 |
 | hormuz | 12 | 12 | 10 | 12 | 0件 | 不要 | 不要 |
 | space_weapons | 22 | 22 | 8 | 22 | 0件 | 不要 | 不要 |
@@ -16,6 +18,8 @@
 - openai_copyright: field_counts={'scope': 8, 'conditions': 8, 'date_or_period': 8, 'notes_for_writer': 8, 'numeric_value': 6}; warnings=[]
 - central_bank_mortgage: field_counts={'scope': 11, 'conditions': 11, 'date_or_period': 10, 'notes_for_writer': 11, 'numeric_value': 5, 'causal_strength': 6}; warnings=[]
 - inbound_tourism: field_counts={'scope': 11, 'conditions': 11, 'numeric_value': 9, 'date_or_period': 11, 'causal_strength': 9, 'notes_for_writer': 11, 'ambiguity_note': 1}; warnings=[]
+- streaming_price: field_counts={'scope': 5, 'conditions': 5, 'numeric_value': 4, 'date_or_period': 5, 'notes_for_writer': 5, 'ambiguity_note': 1}; warnings=[]
+- semiconductor_earnings: field_counts={'scope': 5, 'conditions': 5, 'numeric_value': 4, 'date_or_period': 5, 'causal_strength': 2, 'notes_for_writer': 4}; warnings=[]
 - meta: field_counts={'scope': 15, 'conditions': 15, 'date_or_period': 15, 'notes_for_writer': 15, 'numeric_value': 3, 'causal_strength': 4}; warnings=[]
 - hormuz: field_counts={'scope': 12, 'conditions': 11, 'numeric_value': 10, 'date_or_period': 12, 'notes_for_writer': 12, 'causal_strength': 7}; warnings=[]
 - space_weapons: field_counts={'scope': 22, 'conditions': 22, 'date_or_period': 22, 'causal_strength': 14, 'notes_for_writer': 22, 'numeric_value': 8}; warnings=[]

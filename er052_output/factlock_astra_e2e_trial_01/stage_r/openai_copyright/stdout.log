@@ -14,3 +14,9 @@ Traceback (most recent call last):
     raise RuntimeError(f"[BUDGET_GUARD] cost so far {jpy:.2f} JPY > cap {budget_jpy} JPY. Stopping ({note}).")
 RuntimeError: [BUDGET_GUARD] cost so far 31.83 JPY > cap 30.0 JPY. Stopping (after research_ledger).
 exit=1
+[B3-RUNNER][research_ledger] 既存Ledgerを再利用(既生成済み): er052_output/factlock_astra_e2e_trial_01/stage_r/openai_copyright/research_ledger
+[E-FAMILY-RUNNER][cost] so far=31.83 JPY by_provider={'openai': 31.83} (after research_ledger)
+[E-FAMILY-RUNNER][cost] so far=32.29 JPY by_provider={'openai': 32.29} (after storyline_b3)
+[B3-RUNNER] stage=storyline_b3で停止(--stop-after storyline_b3)。
+[B3-RUNNER][cost] {'by_stage_jpy': {'research': 22.821, 'ledger': 9.01, 'storyline_b3': 0.456}, 'total_jpy': 32.288}
+exit=0
