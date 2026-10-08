@@ -20298,3 +20298,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 
 - **判定**: `OPEN-242-BUDGET-GUARD-WEB-SEARCH-COST-GAP-FIX-01`(commit 0110d6f1)をFableがPRODUCTION_WIRED確定。受入: cost.json ±0.001円一致(run_01 19.481/19.48、run_02 19.105/19.105)・fail-closed維持・回帰531件PASS(er012 224/er019 268/er006 39)。
 - **Status**: PRODUCTION_WIRED(Fable判定2026-10-08)。
+
+
+## FACTLOCK-WRITER-REDESIGN-TRIAL-01: ASTRA-REVISE-MATRIX-01 Fact Lock R0 起点 Astra R1-R3 x 2系列(2026-10-08、委任_15、MEASURED)
+
+- **ユーザー確定設計(逐語)**: 「モデル Astra / ベース Fact Lock R0 / R0>R1>R2>R3 文字数800-1000ソフト / 日本語まで / 各段を人間がチェック+AI判定 / 軽微・重大カウント / META 1記事 / 2系列(ユーザーPromptのみ・熟練編集者)4×2」。Go: ユーザー「はい、Goしてください。」(2026-10-08)。
+- **実施**: R0 = Fact Lock v1 meta b2 r1 の `original.md`(タグ除去済み)、gpt-6-astra(reasoning high)で 系列A(developerなし)・系列B(Step 1 F2 developer文)それぞれ R1→R2→R3 を逐次生成(計6本)、7本(R0+6)を JA FC(gpt-6-luna全台帳)・決定論指標・(ii)新規具体主張で評価。
+- **結果**: FC MAJOR 全7本で 0件、MINOR は A_r3 に1件のみ(「利用者が知らされていない」、changed_scope/unsupported_new_claim、台帳 MUSE-HC-012)。主体・因果・否定型の重大候補なし。(ii) 新規具体主張 A: 2→0→2、B: 0→0→3(R0は0)。字数は全6本800〜1000字(R0=727)。台帳外数値全0。記号Gate計測のみ: A_r2・A_r3 に「……」「─」検出。実費 約¥48.48(astra単価は未登録のため gpt-6-sol x2.5 の推定、生成¥45.77)。Astra 3段の1記事セット増分は約¥21〜25(現行約¥52/Batch約¥43に加算)。
+- **Status**: MEASURED(**人間確認待ち**: `USER_PACK.md` による盲検読みと `HUMAN_CHECK_MATRIX.md`)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 REPORT §107、`er052_output/factlock_writer_trial_01/astra_revise_matrix_01/`。

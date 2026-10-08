@@ -5755,3 +5755,48 @@ N=3 brief x 1反復、LLM判定のみ(同系列の主・併用judge)、強い位
 ### 注意点
 - N=1/条件・単一記事。astra出力はMarkdown見出し(##)・太字(**)を含み、TTS前に除去処理が必要(記号Gateは通過)。StatusはMEASURED(VALIDATEDではない、Production変更なし)。
 - 次工程候補(未決、ユーザー判断待ち): Step 2 = 現行R0→R1→R2(6-luna)+ R3-fresh(astra, F2/F3)を12 briefで回し、事実指標(FC MAJOR/MINOR、台帳外数値、(ii)増幅)と重大候補の人間確認。
+
+
+## §107 FACTLOCK-WRITER-REDESIGN-TRIAL-01 ASTRA-REVISE-MATRIX-01 Fact Lock R0 起点の Astra Revise R1→R2→R3 x 2系列(委任_15、2026-10-08、MEASURED)
+
+- 位置づけ: Trial(Production変更なし、VALIDATED/APPROVED_FOR_PRODUCTION未宣言、推奨なし)。ユーザーGo取得済み(2026-10-08「はい、Goしてください。」)。**人間確認待ち**。
+- 設計(ユーザー確定): 起点 R0 = Fact Lock v1 meta b2 r1 の `original.md`(Writer直後、R1/R2未通過、タグ除去済み。委任_14準備の `step2_astra_r3_01/inputs/FL_R0/meta/b2/source.md` と末尾改行を除きバイト一致を突合確認、SHA 4dd147ff.../0b672113...)。モデルは全て gpt-6-astra(reasoning high、Step 1 と同一)。2系列 x 3段: 系列A = ユーザーPromptのみ(developer/systemなし)、系列B = 熟練編集者(Step 1 F2 developer 文を conditions.json から逐語)。user メッセージ「以下の記事:\n\n{前段本文}\n\n事実は変えずにエンターテイメント性をもっと上げた記事にReviseください。長さは800〜1000字程度でお願いします。」。逐次(R1入力=R0、R2入力=R1出力、R3入力=R2出力、previous_response_id不使用、記号禁止リストなし)。系列A/Bは2プロセス並列。台帳 = `er052_output/factlock_writer_trial_01/runs/meta/control/b2__factlock__r1/research_ledger/verified_fact_ledger.txt`、B3 brief = 同 `storyline_b3/selected_brief.md`(= `briefs/meta/b2/selected_brief_factlock.md`)。
+- 実費: 総額 約¥48.48(推定。生成6本 ¥45.77(**astra単価は未登録のため gpt-6-sol 単価 x2.5 の推定**、USD/JPY=160)+ JA FC 7本 ¥1.31(luna 実測トークンx登録単価)+ (ii) 7本 ¥1.40(usage非取得のため1本0.2円の概算計上))。予算上限¥60内。生成6本のトークン合計: input 4402 / cached 0 / output 10563(うち reasoning 6303)。所要: 生成は2プロセス並列で約2分、評価約98秒。
+
+### 指標表(7本。SUMMARY_MATRIX.md 転記)
+FC = JA Fact Check(gpt-6-luna、全台帳、sweep/R3-MINIMALと同一呼び出し)。字数等はタイトル行を除く。FC・決定論指標はMarkdown除去後(P1)の本文。系列A=ユーザーPromptのみ、B=熟練編集者。
+
+| 本 | FC MAJOR | FC MINOR | 新規具体主張(ii) | 字数 | 段落 | 1文段落 | 問い | ダッシュ | 台帳外数値 | Markdown残存(raw #行/**) | 記号Gate(raw/P1) | 費用(推定円) | 秒 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| R0 | 0 | 0 | 0 | 727 | 6 | 0 | 0 | 0 | 0 | 0/0 | 0/0 | - | - |
+| A_r1 | 0 | 0 | 2 | 990 | 8 | 0 | 2 | 0 | 0 | 1/0 | 0/0 | 5.14 | 31.9 |
+| A_r2 | 0 | 0 | 0 | 961 | 9 | 0 | 3 | 0 | 0 | 1/0 | 2/2 | 8.43 | 51.5 |
+| A_r3 | 0 | 1 | 2 | 989 | 9 | 0 | 3 | 0 | 0 | 1/0 | 4/4 | 7.50 | 40.2 |
+| B_r1 | 0 | 0 | 0 | 894 | 8 | 0 | 3 | 1 | 0 | 1/0 | 0/0 | 8.83 | 41.6 |
+| B_r2 | 0 | 0 | 0 | 969 | 11 | 1 | 1 | 1 | 0 | 1/0 | 0/0 | 6.43 | 30.9 |
+| B_r3 | 0 | 0 | 3 | 928 | 12 | 1 | 2 | 0 | 0 | 1/0 | 0/0 | 9.45 | 46.5 |
+
+### FC 結果(指摘全文)
+- MAJOR 全7本で 0件。MINOR は A_r3 に1件のみ(他6本は 0件、overall_status は全7本 LEDGER_COMPLIANT)。
+- A_r3 MINOR(型: changed_scope + unsupported_new_claim、related_fact_id MUSE-HC-012): NG文「利用者が知らされていない」「AIに頼んだはずが、説明なしで人間にバトンタッチ」。台帳 MUSE-HC-012 =「MetaのSuperintelligence Labs部門の副社長は、適切な開示なしに契約スタッフが電話をかけるテストを開始したことを「ミス」だったと認め、機能を当面ロールバックしたと社内投稿で説明した。」理由: Ledgerは適切な開示がなかったとするが誰に開示されていなかったかは特定しておらず、記事は「Museを依頼した利用者」が知らされていなかったと対象を絞っている(luna は MINOR と判定。対象範囲の限定の型)。主体・因果・否定型のMINORは 0件。人間確認用の全件は `HUMAN_CHECK_MATRIX.md`。
+
+### 新規具体主張(ii, R0=0件比)
+A_r1 2件(「それは、電話を完了するために渡す「あなたの情報」です。」「電話を頼むということは、用件だけでなく、それに必要な情報も託すということ。」)、A_r2 0件、A_r3 2件(「さらに、受話器の向こうへ渡るのは用件だけではありません。」「電話を済ませるために託した「あなたの情報」もあります。」)、B_r1 0件、B_r2 0件、B_r3 3件(「面倒なやり取りはAIに任せ、こちらは結果を待つだけ。」「声の自然さでも、返答の速さでもありません。」「電話を一本頼むつもりが、情報を誰に見せるかという判断まで、セットで預けることになるのです。」)。いずれも断定・一般化の型(新たな固有事実ではない)。段が進んでも単調には増えない(A: 2→0→2、B: 0→0→3)。
+
+### 費用(COST_MATRIX.md 要点。astra単価は推定)
+- 累積(推定円): 系列A R1のみ 5.14 / R1+R2 13.57 / R1+R2+R3 21.06。系列B R1のみ 8.83 / R1+R2 15.26 / R1+R2+R3 24.71。
+- 同run(Fact Lock v1 meta b2 r1)の Luna R1+R2 実費: ¥0.383(`cost.json` は全項目0円で課金未記録のため、`raw_usage_log.jsonl` の実測トークン x luna登録単価で算出)。Astra で置換する場合の純増は Astra累積 − ¥0.383。
+- 1記事セット換算(文字数一定): 現行約¥52(TTS Standard同期)/¥43(Batch)に、Astra 3段(R1+R2+R3)で約+¥21〜¥25(合計 約¥73〜¥77 / Batch基準 約¥64〜¥68)。1段のみなら +¥5〜¥9。Astraにbatch割引は仮定しない。
+
+### 主要観察(事実のみ、推奨なし)
+- FC MAJOR は全7本で 0件(R0含む)。N=1 brief x 1回 x 系列あたり1本で、差が1件以内は誤差内。「事実が保たれている」とは書かない。
+- 字数: R0 727字に対し、全6本が800〜1000字の範囲に入った(A 990/961/989、B 894/969/928)。
+- 構成: 系列Bは段が進むと段落数が増え(8→11→12)、1文段落が R2・R3 で 1。系列Aは 8→9→9、1文段落 0。問いは生成6本で 1〜3(R0は0)。ダッシュは B_r1・B_r2 に各1。
+- 記号Gate(計測のみ): A_r2(……x2)、A_r3(……x2 と ─ x2)が検出。他は0。台帳外数値は全7本 0。
+- 面白さは機械指標で判断せず、人間盲検 `USER_PACK.md`(X/Yラベル、系列対応は `_private/MAP.json` でgit管理外)で確認する。
+
+### 注意点・限界
+N=1記事・1回・系列あたり1本、FCと(ii)は gpt-6-luna の自己判定(同系列モデル)。astra単価は推定。Step 1 の人間盲検は長さ交絡があったが、本試験は全て800〜1000字ソフト指定で長さがほぼ揃っている(R0は727字)。
+
+### Status
+MEASURED(人間確認待ち)。Production変更なし(VALIDATED/APPROVED_FOR_PRODUCTION未宣言)。詳細 `er052_output/factlock_writer_trial_01/astra_revise_matrix_01/`(DESIGN.md、runs/、eval/、USER_PACK.md、tools/)。
