@@ -1,0 +1,16 @@
+# The Mini Bag Comeback Trial: Micro Bags Are a Separate Case
+
+Let’s hold our own trial about bag sizes. There is one question: “If mini bags are in the news, can we say that micro bags are back too?” When we look at the evidence, the answer is not so simple.
+
+First, the fashion magazine ELLE featured mini bags as a trend in its coverage of the fall collections. The article showed that mini bags are getting attention. But it introduced products and collections; it was not a study of sales. Being featured in an article and having more people buy them are, in court terms, different pieces of evidence.
+
+Next, testimony from the runway. In one roundup of fall collections, small minaudières from several brands appeared. The article described them as small clutches that are more about art than usefulness. The important point is that this applies to “those” bags. It does not mean that every small bag is for decoration. And the same roundup also listed large, roomy shapes as a major trend. This is not testimony that small bags alone took over the runway.
+
+As for micro bags, an editor at another fashion magazine called their trend “short-lived” and featured bags that are bigger than micro bags but smaller than totes. Again, this was not a conclusion based on sales research, but the editor’s view.
+
+So there is evidence that “mini bags are getting attention.” But there is not enough evidence to conclude that “micro bags are popular again” or that “demand for small bags has returned across the whole consumer market.” Editorial attention to mini bags, the way certain small clutches appeared on the runway, and an editor’s view of micro bags may sound like cases about similar sizes, but they are actually separate cases.
+
+Bags are not just about how they look; they are also about what you can carry in them. So it is too soon to think that everyone is carrying less just because small bags appear in magazines. This time, the verdict is: “Mini bags are getting attention. But we cannot say that micro bags, or the market as a whole, have made a comeback.” The words for bag sizes are more complicated than you might think.
+
+## In one line
+Mini bags are attracting attention, but that doesn’t prove micro bags or small-bag demand have returned.

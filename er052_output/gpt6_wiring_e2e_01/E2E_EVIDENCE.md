@@ -43,3 +43,17 @@ web_search_call_count 合計 8(research 6 + ledger 2)。
 
 - `er012_e...compute_cost_jpy_so_far()`(`assert_budget_ok`の予算ガード)は web_search tool課金(`web_search_call`単価)を計上しない。本E2Eでガード表示累計=6.68 JPYに対し、runnerの`compute_stage_cost_breakdown`は19.48 JPY(差=web_search 8 call分≒12.8 JPY)。`--budget-jpy 15`は事実上トークン費のみを制限した。本変更(単価未登録のfail-closed化)で生じた差ではなく既存仕様。修正は本委任のscope外のため行っていない(Fable判断事項)。
 - 本件はO3(量産最初の10本で「EN Advanced deviation STOP 3本以上または保留0.3/記事以上」で条件D見直し)の観測として、n=1中STOP 1件(5.6時代の同一テーマrun_01は同Gateを通過して完走[`er019_output/.../run_01/cost.json`にadvanced/standard有り])。nが小さく評価は未確定。
+
+---
+
+# 委任_04 追記: 完走E2E(run_02、2026-10-08)
+
+- 入口: `er019_family_x_entertainment_production_runner_01.py --theme <small_bag既存入力> --slug gpt6_wiring_e2e_small_bag_02 --out-dir er052_output/gpt6_wiring_e2e_01/run_02 --budget-jpy 20 --stage all`(TTSなし)。テーマは`er019_output/family_x_b3_diversity_trial_01/small_bag/run_02/entry_point.json`の再利用(新規選定なし)。
+- 結果: **完走(exit=0)**。Advanced/Standard deviation check通過、Mandatory STOP(Standardまで)。KP解説stageは本runnerのstage外のため未実行(未観測)。
+- 実行時メモリ: 空き物理メモリ4GB未満が60分続き(最大待機到達、最終約1.9GB)、API clientのみの軽量処理のため待機上限後に実行。
+- model_id実測(raw_usage_log.jsonl): research / ledger / storyline_b3 / ja_original / ja_original_check / ja_original_must_fix / ja_original_check_retry / ja_r1 / ja_r2 / ja_r2_check / advanced(3 call) / standard(2 call) の全12 stage・14 call全て`gpt-6-luna`、`gpt-5.6`は0件。web_search: research 5 + ledger 4。
+- cost.json total_jpy=**19.105**(research 9.214 / ledger 7.332 / storyline_b3 0.4 / ja_original 0.21 / check 0.177 / must_fix 0.375 / check_retry 0.101 / ja_r1 0.215 / ja_r2 0.231 / ja_r2_check 0.089 / advanced 0.318 / standard 0.443)。
+- 予算ガード累計表示: 最終4.70 JPY(>0)。cost.json実費19.105との差≒14.4円はweb_search未計上(OPEN-242)。
+- 所要: 326秒(`run_02_start_epoch.txt`/`run_02_end_epoch.txt`)。stdout: `run_02_stdout.log`。
+- 記事本文: `er052_output/gpt6_wiring_e2e_01/run_02/a2/article.md`(Standard)、Advancedは`run_02/`配下。
+- O3観測: EN Advanced deviation STOP 1/2本。

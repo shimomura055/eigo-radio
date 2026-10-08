@@ -5,6 +5,7 @@
 **追記索引(2026-10-08)**: `ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01`(全5.6工程→6-luna比較Trial、MEASURED)のユーザー判断・結果は本ファイル末尾`## ALL-6-LUNA-WRITER-REDESIGN-NECESSITY-TRIAL-01`節。
 **追記索引(2026-10-08、判断7)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`(全6-luna化=Production方針のユーザー決定、PLANNED、OPEN-241)は本ファイル末尾`## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`節。
 **追記索引(2026-10-08、判断7配線完了)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`委任_03(Model Routing全工程gpt-6-luna配線・予算ガードfail-closed化・Production E2E 1本[Advanced deviation Gate STOP]、配線完了・Fable受入待ち、PRODUCTION_WIRED未確定、OPEN-241)は本ファイル末尾`## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01: 委任_03`節。
+**追記索引(2026-10-08、判断7完走E2E)**: `PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01`委任_04(完走E2E evidence取得: 別テーマsmall_bag、全12 stage `gpt-6-luna`、cost.json ¥19.105、ガード4.70、O3観測EN STOP 1/2本、OPEN-242起票)は本ファイル末尾の委任_04エントリ参照。
 
 **履歴全文(直前の記録・その前の記録、以下さらに前の記録、合計12件、原文のまま移動): `DECISION_LOG_HISTORY.md`の`## ER-PM-001_CHAIN`節参照**
 **区分について(2026-08-17追記)**: 以下のDecisionは「サービス・生成仕様」
@@ -20243,3 +20244,11 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **切り戻し**: commit 756ed882(Phase 2)のrevertのみ(単価追記・fail-closed化=Phase 1は戻さない、戻すと費用0円計上に逆戻り)。revert後は常駐processを再起動(`run_deviation_check`既定値等がimport時固定)、回帰全件実行。
 - **Opus条件C**: M1〜M6/O1〜O3反映済み(OPUS_FINDINGS_LEDGER OF-063〜071更新)。6-luna配線とFact Lock配線は別commit(本配線にFact Lock・prompt・Checker要素なし)。
 - **Status**: APPROVED_FOR_PRODUCTION(配線完了・回帰PASS・E2E evidence取得[Advanced deviation Gate STOPのため完走evidenceではない]・Fable受入待ち)。PRODUCTION_WIRED確定はFable判定。
+
+## PRODUCTION-MODEL-ROUTING-GPT6-WIRING-01: 委任_04 完走E2E evidence(2026-10-08)
+
+- **Status**: APPROVED_FOR_PRODUCTION(配線完了・完走E2E evidence取得・Fable受入待ち)。PRODUCTION_WIRED確定はFable判定。
+- 実行: Family X Production正式入口、別テーマ(small_bag、過去diversity trial入力の再利用、新規選定なし)、`--stage all --budget-jpy 20`、TTSなし。完走(exit=0、Advanced/Standard deviation check通過)。全12 stage(14 call)の`model_id`は`gpt-6-luna`、5.6残存0。cost.json total=¥19.105、予算ガード累計4.70、所要326秒。KP解説stageは本runner外(未実行)。
+- O3観測: EN Advanced deviation STOP 1/2本(委任_03 STOP、委任_04 通過)。
+- OPEN-242起票(予算ガードのweb_search未計上、修正は別タスク)。実費¥19.105/¥50。
+- 証跡: `er052_output/gpt6_wiring_e2e_01/E2E_EVIDENCE.md`、`er052_output/gpt6_wiring_e2e_01/run_02/`。
