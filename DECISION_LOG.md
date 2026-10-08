@@ -20347,3 +20347,10 @@ Opus条件Aレビュー要旨: 根本原因=Stage 1 `changed_*`フラグ生成�
 - **ユーザー決定5(2026-10-09)**: 設計書作成へGo(「OKです。開始してください。」)。**実行(API支出)は未Go**。
 - **成果物(委任_01、API費用¥0、Production変更なし)**: `er052_output/factlock_astra_e2e_trial_01/DESIGN_E2E_01.md`(設計書)、`PREREGISTRATION_01.md`(事前登録)、`NEW_THEME_CANDIDATES_01.md`(新テーマ候補10件、ユーザー選定待ち)。費用見積(出典付き・確定値ではない): 合計約¥650(範囲約¥560〜780)、所要約2〜2.5時間。
 - **Status**: DESIGN_READY(実行Go未、Opus条件Aレビュー未、前提作業(a)〜(j)未実装)。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。
+
+## FACTLOCK-ASTRA-E2E-TRIAL-01 委任_03: ユーザー決定6〜8とOpus条件Aレビュー反映(2026-10-09、DESIGN v2、DESIGN_READY維持)
+- **ユーザー決定6(2026-10-09)**: 案B(JA再確認)の新腕は**B1採用**=新Writerの再実行で回復する(Fact Lock R0に既存must-fixブロック`original_must_fix`を付けて再生成→Astra R1→R2[系列X逐語]→後処理→EN再実行)。1記事1回まで、Trial全体の上限3回(見積約¥105)、超過はSTOP記録。
+- **ユーザー決定7(2026-10-09)**: B3注記仕様をTrial前に正式なTrial仕様として先に固定する。要旨=都度判断の注記では記事ごとに条件が揺れFact Lockの性能が測れない。何を【事実N】とするか/複数要素の分け方/重要数値の定義/数字が主役の場合/名称内番号/台帳由来制約/迷った場合/注記後の照合、を固定し、旧4+新6の全10記事を同一仕様で再注記する(ユーザー逐語は`docs/pm/delegation_log/2026-10-09_FACTLOCK-ASTRA-E2E-TRIAL-01_02.md`に保存)。手順: B3注記仕様作成(¥0、委任_02)→Opusレビュー→ユーザー提示・確認→E2E実装・実行。
+- **ユーザー決定8(2026-10-09)**: 新6テーマの選定は未回答(候補10件は`NEW_THEME_CANDIDATES_01.md`で提示済み)。
+- **Opus条件Aレビュー実施(2026-10-09)とFable採用判断**: 設計書・事前登録(v1)の8論点(交絡/案B/Production等価性/M1 Standard/注記人手依存/判定線/停止・費用/R0復唱)にOpus独立レビュー(PM_GOVERNANCE 11-3 条件A)を実施。Fableが採用判断し、DESIGN_E2E_01.md・PREREGISTRATION_01.mdをv2へ改訂(委任_03)。要点=Arm C不要で影の対照を両腕に拡張(v1の「M1(b)の反実仮想は安く再現できない」は誤りと訂正)、B1採用、shadow_stopと複合主指標「人手介入必要率」、M1 Standard未実装・未測定明記、注記は条件付き可(全10記事再注記・独立二重注記・G0でJSONもsha256照合)、EN STOP率判定線の厳格化(3記事差以上かつtranslation MAJOR×0.75)、分母を予定run数20に固定、旧4でresearch/B3のAPI呼び出し検出時は即停止、横断予算予約・×1.5係数・G1拡張・中間チェック、R0復唱は検出のみ。推定総額約¥690〜900(上限¥1,000内、Opus/Fable推定)。全文転記=`docs/pm/opus_a_review_factlock_astra_e2e_01.md`、台帳=OPUS_FINDINGS_LEDGER OF-095〜OF-102。
+- **Status**: DESIGN_READY(v2)。実行Go未、B3注記仕様 v1(委任_02)のユーザー確認待ち、新6テーマ選定待ち。API支出¥0、Production変更なし。VALIDATED/APPROVED_FOR_PRODUCTION未宣言。OPEN項目候補「B3自動注記」(Production化に必要)は起票未(Fable判断待ち)。
