@@ -1,0 +1,72 @@
+{
+  "note": "注記者の参照許可は自分のプロンプト1つ(Readのみ)。audit_strict_01.py に渡す。allow_substrings は b3_annotator_audit_01.py の --allow-substring 用(禁止語にヒットしても許可する語)。",
+  "annotators": {
+    "A": {
+      "allowed_read_paths": [
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/byd_recall__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/central_bank_mortgage__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/hormuz__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/inbound_tourism__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/meta__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/openai_copyright__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/semiconductor_earnings__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/small_bag__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/space_weapons__A.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/streaming_price__A.md"
+      ],
+      "allow_substrings": [
+        "prompts/byd_recall__A.md",
+        "prompts/central_bank_mortgage__A.md",
+        "prompts/hormuz__A.md",
+        "prompts/inbound_tourism__A.md",
+        "prompts/meta__A.md",
+        "prompts/openai_copyright__A.md",
+        "prompts/semiconductor_earnings__A.md",
+        "prompts/small_bag__A.md",
+        "prompts/space_weapons__A.md",
+        "prompts/streaming_price__A.md"
+      ]
+    },
+    "B": {
+      "allowed_read_paths": [
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/byd_recall__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/central_bank_mortgage__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/hormuz__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/inbound_tourism__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/meta__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/openai_copyright__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/semiconductor_earnings__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/small_bag__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/space_weapons__B.md",
+        "er052_output/factlock_astra_e2e_trial_01/annotation/prompts/streaming_price__B.md"
+      ],
+      "allow_substrings": [
+        "prompts/byd_recall__B.md",
+        "prompts/central_bank_mortgage__B.md",
+        "prompts/hormuz__B.md",
+        "prompts/inbound_tourism__B.md",
+        "prompts/meta__B.md",
+        "prompts/openai_copyright__B.md",
+        "prompts/semiconductor_earnings__B.md",
+        "prompts/small_bag__B.md",
+        "prompts/space_weapons__B.md",
+        "prompts/streaming_price__B.md"
+      ]
+    }
+  },
+  "forbidden_scope": "リポジトリ全体(許可パス以外すべて)。特に他方の注記者のプロンプト・out/、stage_r/、仕様v1/v2本体・OLD4_EXPECTED、PREREGISTRATION、DESIGN、過去の注記・評価・ER-*_REPORT、SSOT各種、Web、MCP。",
+  "allowed_tools": [
+    "Read(自分のプロンプト1ファイルのみ。1テーマ=1回)"
+  ],
+  "forbidden_tools": [
+    "Grep",
+    "Glob",
+    "Bash",
+    "Write",
+    "Edit",
+    "WebSearch",
+    "WebFetch",
+    "mcp__*",
+    "Agent"
+  ]
+}
